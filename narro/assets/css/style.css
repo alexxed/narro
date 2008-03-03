@@ -1,0 +1,51 @@
+@CHARSET "UTF-8";
+@import "font-large.css";
+
+a:link, a:visited {
+  color: #557D0C;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+a:active, a.active {
+  color: #6c871d;
+}
+
+td, th{
+    text-align: left;
+}
+
+th.dtg_header_row a {
+    color: black;
+}
+
+div.graph {
+border:0px solid black;
+height:20px;
+position:relative;
+width:100px;
+}
+
+div.translated {
+background:transparent url(../images/green-bar.png) repeat-x scroll 0pt 50%;
+height:100%;
+left:0%;
+position:absolute;
+top:0px;
+}
+
+div.fuzzy {
+background:transparent url(../images/orange-bar.png) repeat-x scroll 0pt 50%;
+height:100%;
+position:absolute;
+top:0px;
+}
+
+div.untranslated {
+background:transparent url(../images/red-bar.png) repeat-x scroll 0pt 50%;
+height:100%;
+position:absolute;
+top:0px;
+}
+
