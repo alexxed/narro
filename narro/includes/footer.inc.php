@@ -17,8 +17,9 @@
      */
 
 ?>
-<br />
-<br />
+    <br />
+    <br />
+    </div>
 <?php
     if (QApplication::$Database[1]->EnableProfiling)
         QApplication::$Database[1]->OutputProfiling();

@@ -270,6 +270,7 @@
 
 			$objBuilder->AddSelectItem($strTableName . '.`comment_id` AS ' . $strAliasPrefix . 'comment_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_id` AS ' . $strAliasPrefix . 'suggestion_id`');
+			$objBuilder->AddSelectItem($strTableName . '.`user_id` AS ' . $strAliasPrefix . 'user_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`comment_text` AS ' . $strAliasPrefix . 'comment_text`');
 		}
 
@@ -300,6 +301,7 @@
 
 			$objToReturn->intCommentId = $objDbRow->GetColumn($strAliasPrefix . 'comment_id', 'Integer');
 			$objToReturn->intSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_id', 'Integer');
+			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
 			$objToReturn->strCommentText = $objDbRow->GetColumn($strAliasPrefix . 'comment_text', 'Blob');
 
 			// Instantiate Virtual Attributes
@@ -317,6 +319,10 @@
 			// Check for Suggestion Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'suggestion_id__suggestion_id')))
 				$objToReturn->objSuggestion = NarroTextSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'suggestion_id__', $strExpandAsArrayNodes);
+
+			// Check for User Early Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'user_id__user_id')))
+				$objToReturn->objUser = NarroUser::InstantiateDbRow($objDbRow, $strAliasPrefix . 'user_id__', $strExpandAsArrayNodes);
 
 
 
@@ -403,6 +409,38 @@
 				QQ::Equal(QQN::NarroSuggestionComment()->SuggestionId, $intSuggestionId)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroSuggestionComment objects,
+		 * by UserId Index(es)
+		 * @param integer $intUserId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroSuggestionComment[]
+		*/
+		public static function LoadArrayByUserId($intUserId, $objOptionalClauses = null) {
+			// Call NarroSuggestionComment::QueryArray to perform the LoadArrayByUserId query
+			try {
+				return NarroSuggestionComment::QueryArray(
+					QQ::Equal(QQN::NarroSuggestionComment()->UserId, $intUserId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroSuggestionComments
+		 * by UserId Index(es)
+		 * @param integer $intUserId
+		 * @return int
+		*/
+		public static function CountByUserId($intUserId) {
+			// Call NarroSuggestionComment::QueryCount to perform the CountByUserId query
+			return NarroSuggestionComment::QueryCount(
+				QQ::Equal(QQN::NarroSuggestionComment()->UserId, $intUserId)
+			);
+		}
 
 
 
@@ -434,9 +472,11 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `narro_suggestion_comment` (
 							`suggestion_id`,
+							`user_id`,
 							`comment_text`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
+							' . $objDatabase->SqlVariable($this->intUserId) . ',
 							' . $objDatabase->SqlVariable($this->strCommentText) . '
 						)
 					');
@@ -454,6 +494,7 @@
 							`narro_suggestion_comment`
 						SET
 							`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
+							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
 							`comment_text` = ' . $objDatabase->SqlVariable($this->strCommentText) . '
 						WHERE
 							`comment_id` = ' . $objDatabase->SqlVariable($this->intCommentId) . '
@@ -552,6 +593,13 @@
 					 */
 					return $this->intSuggestionId;
 
+				case 'UserId':
+					/**
+					 * Gets the value for intUserId (Not Null)
+					 * @return integer
+					 */
+					return $this->intUserId;
+
 				case 'CommentText':
 					/**
 					 * Gets the value for strCommentText (Not Null)
@@ -572,6 +620,20 @@
 						if ((!$this->objSuggestion) && (!is_null($this->intSuggestionId)))
 							$this->objSuggestion = NarroTextSuggestion::Load($this->intSuggestionId);
 						return $this->objSuggestion;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'User':
+					/**
+					 * Gets the value for the NarroUser object referenced by intUserId (Not Null)
+					 * @return NarroUser
+					 */
+					try {
+						if ((!$this->objUser) && (!is_null($this->intUserId)))
+							$this->objUser = NarroUser::Load($this->intUserId);
+						return $this->objUser;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -620,6 +682,20 @@
 						throw $objExc;
 					}
 
+				case 'UserId':
+					/**
+					 * Sets the value for intUserId (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						$this->objUser = null;
+						return ($this->intUserId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'CommentText':
 					/**
 					 * Sets the value for strCommentText (Not Null)
@@ -663,6 +739,38 @@
 						// Update Local Member Variables
 						$this->objSuggestion = $mixValue;
 						$this->intSuggestionId = $mixValue->SuggestionId;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'User':
+					/**
+					 * Sets the value for the NarroUser object referenced by intUserId (Not Null)
+					 * @param NarroUser $mixValue
+					 * @return NarroUser
+					 */
+					if (is_null($mixValue)) {
+						$this->intUserId = null;
+						$this->objUser = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a NarroUser object
+						try {
+							$mixValue = QType::Cast($mixValue, 'NarroUser');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED NarroUser object
+						if (is_null($mixValue->UserId))
+							throw new QCallerException('Unable to set an unsaved User for this NarroSuggestionComment');
+
+						// Update Local Member Variables
+						$this->objUser = $mixValue;
+						$this->intUserId = $mixValue->UserId;
 
 						// Return $mixValue
 						return $mixValue;
@@ -720,6 +828,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_suggestion_comment.user_id
+		 * @var integer intUserId
+		 */
+		protected $intUserId;
+		const UserIdDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_suggestion_comment.comment_text
 		 * @var string strCommentText
 		 */
@@ -758,6 +874,16 @@
 		 */
 		protected $objSuggestion;
 
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column narro_suggestion_comment.user_id.
+		 *
+		 * NOTE: Always use the User property getter to correctly retrieve this NarroUser object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var NarroUser objUser
+		 */
+		protected $objUser;
+
 
 
 
@@ -771,6 +897,7 @@
 			$strToReturn = '<complexType name="NarroSuggestionComment"><sequence>';
 			$strToReturn .= '<element name="CommentId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Suggestion" type="xsd1:NarroTextSuggestion"/>';
+			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="CommentText" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -781,6 +908,7 @@
 			if (!array_key_exists('NarroSuggestionComment', $strComplexTypeArray)) {
 				$strComplexTypeArray['NarroSuggestionComment'] = NarroSuggestionComment::GetSoapComplexTypeXml();
 				NarroTextSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -800,6 +928,9 @@
 			if ((property_exists($objSoapObject, 'Suggestion')) &&
 				($objSoapObject->Suggestion))
 				$objToReturn->Suggestion = NarroTextSuggestion::GetObjectFromSoapObject($objSoapObject->Suggestion);
+			if ((property_exists($objSoapObject, 'User')) &&
+				($objSoapObject->User))
+				$objToReturn->User = NarroUser::GetObjectFromSoapObject($objSoapObject->User);
 			if (property_exists($objSoapObject, 'CommentText'))
 				$objToReturn->strCommentText = $objSoapObject->CommentText;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -824,6 +955,10 @@
 				$objObject->objSuggestion = NarroTextSuggestion::GetSoapObjectFromObject($objObject->objSuggestion, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intSuggestionId = null;
+			if ($objObject->objUser)
+				$objObject->objUser = NarroUser::GetSoapObjectFromObject($objObject->objUser, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intUserId = null;
 			return $objObject;
 		}
 	}
@@ -848,6 +983,10 @@
 					return new QQNode('suggestion_id', 'integer', $this);
 				case 'Suggestion':
 					return new QQNodeNarroTextSuggestion('suggestion_id', 'integer', $this);
+				case 'UserId':
+					return new QQNode('user_id', 'integer', $this);
+				case 'User':
+					return new QQNodeNarroUser('user_id', 'integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'string', $this);
 
@@ -876,6 +1015,10 @@
 					return new QQNode('suggestion_id', 'integer', $this);
 				case 'Suggestion':
 					return new QQNodeNarroTextSuggestion('suggestion_id', 'integer', $this);
+				case 'UserId':
+					return new QQNode('user_id', 'integer', $this);
+				case 'User':
+					return new QQNodeNarroUser('user_id', 'integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'string', $this);
 

@@ -16,14 +16,14 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf((user_access('narro suggest'))?QApplication::Translate('Translate "%s"'):QApplication::Translate('See suggestions for "%s"'),
+    $strPageTitle = sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId))?QApplication::Translate('Translate "%s"'):QApplication::Translate('See suggestions for "%s"'),
         (strlen($this->objNarroTextContext->Text->TextValue)>30)?substr($this->objNarroTextContext->Text->TextValue, 0, 30) . '...':$this->objNarroTextContext->Text->TextValue);
 
     require('includes/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
-        <div class="title_action" style="width:100%;display:block;">
+        <div style="width:100%;display:block;">
             <div style="float:left">
             <?php $this->pnlNavigator->Render(); ?>
             </div>
@@ -31,18 +31,18 @@
         </div>
         <br class="item_divider" />
 
-        <?php _t('Text to translate:'); ?>
-        <div style="border:1px dotted black;padding:5px;background-color:lightgreen;" title="Textul original">
+        <?php _t('Text to translate'); ?>:
+        <div class="green3dbg" style="border:1px dotted #DDDDDD;padding:5px;" title="Textul original">
             <?php $this->pnlOriginalText->Render(); ?>
         </div>
-        <div style="border:1px dotted black;border-top:0px;font-size:80%;padding:5px;background-color:white;" title="Detalii despre locul în care apare textul">
+        <div class="white3dbg" style="border:1px solid #DDDDDD; padding:5px" title="Detalii despre locul în care apare textul">
             <?php $this->pnlContext->Render(); ?>
         </div>
-
+        <br />
         <?php $this->pnlSuggestionList->Render(); ?>
-
-        <?php if (user_access('narro suggest')) { ?>
-            <?php _t('Your suggestion:'); ?>
+        <br />
+        <?php if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId)) { ?>
+            <?php _t('Your suggestion'); ?>:
             <br />
             <?php $this->pnlSpellcheckText->Render(); ?>
 
@@ -58,28 +58,24 @@
                 <?php $this->chkGoToNext->Render() ?> <label for="<?php echo $this->chkGoToNext->ControlId ?>"><?php _t('After, go to the next text') ?></label>
                 <br />
                 <?php $this->chkIgnoreSpellcheck->Render() ?> <label for="<?php echo $this->chkIgnoreSpellcheck->ControlId ?>"><?php _t('Ignore spellchecking') ?></label>
-                <?php if (user_access('validate')) { ?>
+                <?php if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroTextContext->ProjectId)) { ?>
                     <br />
                     <?php $this->chkValidate->Render() ?> <label for="<?php echo $this->chkValidate->ControlId ?>"><?php _t('Validate') ?></label>
                 <?php } ?>
             </td>
             </tr>
             </table>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <?php $this->btnPrevious100->Render() ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <?php $this->btnPrevious->Render() ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <?php $this->btnNext->Render(); ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <?php $this->btnNext100->Render(); ?>
-
-            <?php if (user_access('validate')) { ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <?php //$this->btnKeepUntranslated->Render() ?>
-            <?php } ?>
-            <?php $this->lblMessage->Render() ?>
         <?php } ?>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <?php $this->btnPrevious100->Render() ?>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <?php $this->btnPrevious->Render() ?>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <?php $this->btnNext->Render(); ?>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <?php $this->btnNext100->Render(); ?>
+
+        <?php $this->lblMessage->Render() ?>
 
         <?php if($this->txtSuggestionValue->Display) $this->txtSuggestionValue->Focus(); ?>
 

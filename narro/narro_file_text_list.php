@@ -36,11 +36,11 @@
         }
 
         public function dtgNarroTextContext_Actions_Render(NarroTextContext $objNarroTextContext) {
-            if (user_access('narro suggest') && user_access('narro vote'))
+            if (QApplication::$objUser->hasPermission('Can suggest', $objNarroTextContext->ProjectId) && QApplication::$objUser->hasPermission('Can vote', $objNarroTextContext->ProjectId))
                 $strText = QApplication::Translate('Suggest / Vote');
-            elseif (user_access('narro suggest'))
+            elseif (QApplication::$objUser->hasPermission('Can suggest', $objNarroTextContext->ProjectId))
                 $strText = QApplication::Translate('Suggest');
-            elseif (user_access('narro vote'))
+            elseif (QApplication::$objUser->hasPermission('Can vote', $objNarroTextContext->ProjectId))
                 $strText = QApplication::Translate('Vote');
             else
                 $strText = QApplication::Translate('Details');

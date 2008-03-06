@@ -333,6 +333,10 @@
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'text_id__text_id')))
 				$objToReturn->objText = NarroText::InstantiateDbRow($objDbRow, $strAliasPrefix . 'text_id__', $strExpandAsArrayNodes);
 
+			// Check for User Early Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'user_id__user_id')))
+				$objToReturn->objUser = NarroUser::InstantiateDbRow($objDbRow, $strAliasPrefix . 'user_id__', $strExpandAsArrayNodes);
+
 
 
 
@@ -454,6 +458,38 @@
 			// Call NarroSuggestionVote::QueryCount to perform the CountBySuggestionId query
 			return NarroSuggestionVote::QueryCount(
 				QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $intSuggestionId)
+			);
+		}
+			
+		/**
+		 * Load an array of NarroSuggestionVote objects,
+		 * by UserId Index(es)
+		 * @param integer $intUserId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroSuggestionVote[]
+		*/
+		public static function LoadArrayByUserId($intUserId, $objOptionalClauses = null) {
+			// Call NarroSuggestionVote::QueryArray to perform the LoadArrayByUserId query
+			try {
+				return NarroSuggestionVote::QueryArray(
+					QQ::Equal(QQN::NarroSuggestionVote()->UserId, $intUserId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroSuggestionVotes
+		 * by UserId Index(es)
+		 * @param integer $intUserId
+		 * @return int
+		*/
+		public static function CountByUserId($intUserId) {
+			// Call NarroSuggestionVote::QueryCount to perform the CountByUserId query
+			return NarroSuggestionVote::QueryCount(
+				QQ::Equal(QQN::NarroSuggestionVote()->UserId, $intUserId)
 			);
 		}
 
@@ -663,6 +699,20 @@
 						throw $objExc;
 					}
 
+				case 'User':
+					/**
+					 * Gets the value for the NarroUser object referenced by intUserId (PK)
+					 * @return NarroUser
+					 */
+					try {
+						if ((!$this->objUser) && (!is_null($this->intUserId)))
+							$this->objUser = NarroUser::Load($this->intUserId);
+						return $this->objUser;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				////////////////////////////
 				// Virtual Object References (Many to Many and Reverse References)
@@ -727,6 +777,7 @@
 					 * @return integer
 					 */
 					try {
+						$this->objUser = null;
 						return ($this->intUserId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
@@ -808,6 +859,38 @@
 						// Update Local Member Variables
 						$this->objText = $mixValue;
 						$this->intTextId = $mixValue->TextId;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'User':
+					/**
+					 * Sets the value for the NarroUser object referenced by intUserId (PK)
+					 * @param NarroUser $mixValue
+					 * @return NarroUser
+					 */
+					if (is_null($mixValue)) {
+						$this->intUserId = null;
+						$this->objUser = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a NarroUser object
+						try {
+							$mixValue = QType::Cast($mixValue, 'NarroUser');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED NarroUser object
+						if (is_null($mixValue->UserId))
+							throw new QCallerException('Unable to set an unsaved User for this NarroSuggestionVote');
+
+						// Update Local Member Variables
+						$this->objUser = $mixValue;
+						$this->intUserId = $mixValue->UserId;
 
 						// Return $mixValue
 						return $mixValue;
@@ -942,6 +1025,16 @@
 		 */
 		protected $objText;
 
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column narro_suggestion_vote.user_id.
+		 *
+		 * NOTE: Always use the User property getter to correctly retrieve this NarroUser object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var NarroUser objUser
+		 */
+		protected $objUser;
+
 
 
 
@@ -955,7 +1048,7 @@
 			$strToReturn = '<complexType name="NarroSuggestionVote"><sequence>';
 			$strToReturn .= '<element name="Suggestion" type="xsd1:NarroTextSuggestion"/>';
 			$strToReturn .= '<element name="Text" type="xsd1:NarroText"/>';
-			$strToReturn .= '<element name="UserId" type="xsd:int"/>';
+			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="VoteValue" type="xsd:int"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -967,6 +1060,7 @@
 				$strComplexTypeArray['NarroSuggestionVote'] = NarroSuggestionVote::GetSoapComplexTypeXml();
 				NarroTextSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroText::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -987,8 +1081,9 @@
 			if ((property_exists($objSoapObject, 'Text')) &&
 				($objSoapObject->Text))
 				$objToReturn->Text = NarroText::GetObjectFromSoapObject($objSoapObject->Text);
-			if (property_exists($objSoapObject, 'UserId'))
-				$objToReturn->intUserId = $objSoapObject->UserId;
+			if ((property_exists($objSoapObject, 'User')) &&
+				($objSoapObject->User))
+				$objToReturn->User = NarroUser::GetObjectFromSoapObject($objSoapObject->User);
 			if (property_exists($objSoapObject, 'VoteValue'))
 				$objToReturn->intVoteValue = $objSoapObject->VoteValue;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -1017,6 +1112,10 @@
 				$objObject->objText = NarroText::GetSoapObjectFromObject($objObject->objText, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intTextId = null;
+			if ($objObject->objUser)
+				$objObject->objUser = NarroUser::GetSoapObjectFromObject($objObject->objUser, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intUserId = null;
 			return $objObject;
 		}
 	}
@@ -1045,6 +1144,8 @@
 					return new QQNodeNarroText('text_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
+				case 'User':
+					return new QQNodeNarroUser('user_id', 'integer', $this);
 				case 'VoteValue':
 					return new QQNode('vote_value', 'integer', $this);
 
@@ -1077,6 +1178,8 @@
 					return new QQNodeNarroText('text_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
+				case 'User':
+					return new QQNodeNarroUser('user_id', 'integer', $this);
 				case 'VoteValue':
 					return new QQNode('vote_value', 'integer', $this);
 

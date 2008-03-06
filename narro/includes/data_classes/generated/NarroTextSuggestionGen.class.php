@@ -271,6 +271,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_id` AS ' . $strAliasPrefix . 'suggestion_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`user_id` AS ' . $strAliasPrefix . 'user_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_id` AS ' . $strAliasPrefix . 'text_id`');
+			$objBuilder->AddSelectItem($strTableName . '.`language_id` AS ' . $strAliasPrefix . 'language_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_value` AS ' . $strAliasPrefix . 'suggestion_value`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_value_md5` AS ' . $strAliasPrefix . 'suggestion_value_md5`');
 		}
@@ -353,18 +354,6 @@
 					$blnExpandedViaArray = true;
 				}
 
-				if ((array_key_exists($strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__plural_id', $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__plural_id')))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroTextContextPluralAsPopularSuggestionArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objNarroTextContextPluralAsPopularSuggestionArray[$intPreviousChildItemCount - 1];
-						$objChildItem = NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__', $strExpandAsArrayNodes, $objPreviousChildItem);
-						if ($objChildItem)
-							array_push($objPreviousItem->_objNarroTextContextPluralAsPopularSuggestionArray, $objChildItem);
-					} else
-						array_push($objPreviousItem->_objNarroTextContextPluralAsPopularSuggestionArray, NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__', $strExpandAsArrayNodes));
-					$blnExpandedViaArray = true;
-				}
-
 				if ((array_key_exists($strAliasPrefix . 'narrotextcontextpluralasvalidsuggestion__plural_id', $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcontextpluralasvalidsuggestion__plural_id')))) {
 					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroTextContextPluralAsValidSuggestionArray)) {
@@ -374,6 +363,18 @@
 							array_push($objPreviousItem->_objNarroTextContextPluralAsValidSuggestionArray, $objChildItem);
 					} else
 						array_push($objPreviousItem->_objNarroTextContextPluralAsValidSuggestionArray, NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralasvalidsuggestion__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
+				if ((array_key_exists($strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__plural_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__plural_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroTextContextPluralAsPopularSuggestionArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroTextContextPluralAsPopularSuggestionArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroTextContextPluralAsPopularSuggestionArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroTextContextPluralAsPopularSuggestionArray, NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__', $strExpandAsArrayNodes));
 					$blnExpandedViaArray = true;
 				}
 
@@ -391,6 +392,7 @@
 			$objToReturn->intSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_id', 'Integer');
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
 			$objToReturn->intTextId = $objDbRow->GetColumn($strAliasPrefix . 'text_id', 'Integer');
+			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasPrefix . 'language_id', 'Integer');
 			$objToReturn->strSuggestionValue = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_value', 'Blob');
 			$objToReturn->strSuggestionValueMd5 = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_value_md5', 'VarChar');
 
@@ -406,9 +408,17 @@
 			if (!$strAliasPrefix)
 				$strAliasPrefix = 'narro_text_suggestion__';
 
+			// Check for User Early Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'user_id__user_id')))
+				$objToReturn->objUser = NarroUser::InstantiateDbRow($objDbRow, $strAliasPrefix . 'user_id__', $strExpandAsArrayNodes);
+
 			// Check for Text Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'text_id__text_id')))
 				$objToReturn->objText = NarroText::InstantiateDbRow($objDbRow, $strAliasPrefix . 'text_id__', $strExpandAsArrayNodes);
+
+			// Check for Language Early Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'language_id__language_id')))
+				$objToReturn->objLanguage = NarroLanguage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'language_id__', $strExpandAsArrayNodes);
 
 
 
@@ -445,20 +455,20 @@
 					$objToReturn->_objNarroTextContextAsPopularSuggestion = NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextaspopularsuggestion__', $strExpandAsArrayNodes);
 			}
 
-			// Check for NarroTextContextPluralAsPopularSuggestion Virtual Binding
-			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__plural_id'))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__plural_id', $strExpandAsArrayNodes)))
-					array_push($objToReturn->_objNarroTextContextPluralAsPopularSuggestionArray, NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__', $strExpandAsArrayNodes));
-				else
-					$objToReturn->_objNarroTextContextPluralAsPopularSuggestion = NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__', $strExpandAsArrayNodes);
-			}
-
 			// Check for NarroTextContextPluralAsValidSuggestion Virtual Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcontextpluralasvalidsuggestion__plural_id'))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrotextcontextpluralasvalidsuggestion__plural_id', $strExpandAsArrayNodes)))
 					array_push($objToReturn->_objNarroTextContextPluralAsValidSuggestionArray, NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralasvalidsuggestion__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objNarroTextContextPluralAsValidSuggestion = NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralasvalidsuggestion__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroTextContextPluralAsPopularSuggestion Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__plural_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__plural_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroTextContextPluralAsPopularSuggestionArray, NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroTextContextPluralAsPopularSuggestion = NarroTextContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextpluralaspopularsuggestion__', $strExpandAsArrayNodes);
 			}
 
 			return $objToReturn;
@@ -514,16 +524,18 @@
 			
 		/**
 		 * Load a single NarroTextSuggestion object,
-		 * by TextId, SuggestionValueMd5 Index(es)
+		 * by TextId, SuggestionValueMd5, LanguageId Index(es)
 		 * @param integer $intTextId
 		 * @param string $strSuggestionValueMd5
+		 * @param integer $intLanguageId
 		 * @return NarroTextSuggestion
 		*/
-		public static function LoadByTextIdSuggestionValueMd5($intTextId, $strSuggestionValueMd5) {
+		public static function LoadByTextIdSuggestionValueMd5LanguageId($intTextId, $strSuggestionValueMd5, $intLanguageId) {
 			return NarroTextSuggestion::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::NarroTextSuggestion()->TextId, $intTextId),
-				QQ::Equal(QQN::NarroTextSuggestion()->SuggestionValueMd5, $strSuggestionValueMd5)
+				QQ::Equal(QQN::NarroTextSuggestion()->SuggestionValueMd5, $strSuggestionValueMd5),
+				QQ::Equal(QQN::NarroTextSuggestion()->LanguageId, $intLanguageId)
 				)
 			);
 		}
@@ -591,6 +603,38 @@
 				QQ::Equal(QQN::NarroTextSuggestion()->TextId, $intTextId)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroTextSuggestion objects,
+		 * by LanguageId Index(es)
+		 * @param integer $intLanguageId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroTextSuggestion[]
+		*/
+		public static function LoadArrayByLanguageId($intLanguageId, $objOptionalClauses = null) {
+			// Call NarroTextSuggestion::QueryArray to perform the LoadArrayByLanguageId query
+			try {
+				return NarroTextSuggestion::QueryArray(
+					QQ::Equal(QQN::NarroTextSuggestion()->LanguageId, $intLanguageId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroTextSuggestions
+		 * by LanguageId Index(es)
+		 * @param integer $intLanguageId
+		 * @return int
+		*/
+		public static function CountByLanguageId($intLanguageId) {
+			// Call NarroTextSuggestion::QueryCount to perform the CountByLanguageId query
+			return NarroTextSuggestion::QueryCount(
+				QQ::Equal(QQN::NarroTextSuggestion()->LanguageId, $intLanguageId)
+			);
+		}
 
 
 
@@ -623,11 +667,13 @@
 						INSERT INTO `narro_text_suggestion` (
 							`user_id`,
 							`text_id`,
+							`language_id`,
 							`suggestion_value`,
 							`suggestion_value_md5`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
 							' . $objDatabase->SqlVariable($this->intTextId) . ',
+							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							' . $objDatabase->SqlVariable($this->strSuggestionValue) . ',
 							' . $objDatabase->SqlVariable($this->strSuggestionValueMd5) . '
 						)
@@ -647,6 +693,7 @@
 						SET
 							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
 							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . ',
+							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							`suggestion_value` = ' . $objDatabase->SqlVariable($this->strSuggestionValue) . ',
 							`suggestion_value_md5` = ' . $objDatabase->SqlVariable($this->strSuggestionValueMd5) . '
 						WHERE
@@ -753,6 +800,13 @@
 					 */
 					return $this->intTextId;
 
+				case 'LanguageId':
+					/**
+					 * Gets the value for intLanguageId (Not Null)
+					 * @return integer
+					 */
+					return $this->intLanguageId;
+
 				case 'SuggestionValue':
 					/**
 					 * Gets the value for strSuggestionValue (Not Null)
@@ -771,6 +825,20 @@
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'User':
+					/**
+					 * Gets the value for the NarroUser object referenced by intUserId 
+					 * @return NarroUser
+					 */
+					try {
+						if ((!$this->objUser) && (!is_null($this->intUserId)))
+							$this->objUser = NarroUser::Load($this->intUserId);
+						return $this->objUser;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'Text':
 					/**
 					 * Gets the value for the NarroText object referenced by intTextId (Not Null)
@@ -780,6 +848,20 @@
 						if ((!$this->objText) && (!is_null($this->intTextId)))
 							$this->objText = NarroText::Load($this->intTextId);
 						return $this->objText;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Language':
+					/**
+					 * Gets the value for the NarroLanguage object referenced by intLanguageId (Not Null)
+					 * @return NarroLanguage
+					 */
+					try {
+						if ((!$this->objLanguage) && (!is_null($this->intLanguageId)))
+							$this->objLanguage = NarroLanguage::Load($this->intLanguageId);
+						return $this->objLanguage;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -855,22 +937,6 @@
 					 */
 					return (array) $this->_objNarroTextContextAsPopularSuggestionArray;
 
-				case '_NarroTextContextPluralAsPopularSuggestion':
-					/**
-					 * Gets the value for the private _objNarroTextContextPluralAsPopularSuggestion (Read-Only)
-					 * if set due to an expansion on the narro_text_context_plural.popular_suggestion_id reverse relationship
-					 * @return NarroTextContextPlural
-					 */
-					return $this->_objNarroTextContextPluralAsPopularSuggestion;
-
-				case '_NarroTextContextPluralAsPopularSuggestionArray':
-					/**
-					 * Gets the value for the private _objNarroTextContextPluralAsPopularSuggestionArray (Read-Only)
-					 * if set due to an ExpandAsArray on the narro_text_context_plural.popular_suggestion_id reverse relationship
-					 * @return NarroTextContextPlural[]
-					 */
-					return (array) $this->_objNarroTextContextPluralAsPopularSuggestionArray;
-
 				case '_NarroTextContextPluralAsValidSuggestion':
 					/**
 					 * Gets the value for the private _objNarroTextContextPluralAsValidSuggestion (Read-Only)
@@ -886,6 +952,22 @@
 					 * @return NarroTextContextPlural[]
 					 */
 					return (array) $this->_objNarroTextContextPluralAsValidSuggestionArray;
+
+				case '_NarroTextContextPluralAsPopularSuggestion':
+					/**
+					 * Gets the value for the private _objNarroTextContextPluralAsPopularSuggestion (Read-Only)
+					 * if set due to an expansion on the narro_text_context_plural.popular_suggestion_id reverse relationship
+					 * @return NarroTextContextPlural
+					 */
+					return $this->_objNarroTextContextPluralAsPopularSuggestion;
+
+				case '_NarroTextContextPluralAsPopularSuggestionArray':
+					/**
+					 * Gets the value for the private _objNarroTextContextPluralAsPopularSuggestionArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_text_context_plural.popular_suggestion_id reverse relationship
+					 * @return NarroTextContextPlural[]
+					 */
+					return (array) $this->_objNarroTextContextPluralAsPopularSuggestionArray;
 
 				default:
 					try {
@@ -917,6 +999,7 @@
 					 * @return integer
 					 */
 					try {
+						$this->objUser = null;
 						return ($this->intUserId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
@@ -932,6 +1015,20 @@
 					try {
 						$this->objText = null;
 						return ($this->intTextId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'LanguageId':
+					/**
+					 * Sets the value for intLanguageId (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						$this->objLanguage = null;
+						return ($this->intLanguageId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -967,6 +1064,38 @@
 				///////////////////
 				// Member Objects
 				///////////////////
+				case 'User':
+					/**
+					 * Sets the value for the NarroUser object referenced by intUserId 
+					 * @param NarroUser $mixValue
+					 * @return NarroUser
+					 */
+					if (is_null($mixValue)) {
+						$this->intUserId = null;
+						$this->objUser = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a NarroUser object
+						try {
+							$mixValue = QType::Cast($mixValue, 'NarroUser');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED NarroUser object
+						if (is_null($mixValue->UserId))
+							throw new QCallerException('Unable to set an unsaved User for this NarroTextSuggestion');
+
+						// Update Local Member Variables
+						$this->objUser = $mixValue;
+						$this->intUserId = $mixValue->UserId;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				case 'Text':
 					/**
 					 * Sets the value for the NarroText object referenced by intTextId (Not Null)
@@ -993,6 +1122,38 @@
 						// Update Local Member Variables
 						$this->objText = $mixValue;
 						$this->intTextId = $mixValue->TextId;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'Language':
+					/**
+					 * Sets the value for the NarroLanguage object referenced by intLanguageId (Not Null)
+					 * @param NarroLanguage $mixValue
+					 * @return NarroLanguage
+					 */
+					if (is_null($mixValue)) {
+						$this->intLanguageId = null;
+						$this->objLanguage = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a NarroLanguage object
+						try {
+							$mixValue = QType::Cast($mixValue, 'NarroLanguage');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED NarroLanguage object
+						if (is_null($mixValue->LanguageId))
+							throw new QCallerException('Unable to set an unsaved Language for this NarroTextSuggestion');
+
+						// Update Local Member Variables
+						$this->objLanguage = $mixValue;
+						$this->intLanguageId = $mixValue->LanguageId;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1634,156 +1795,6 @@
 
 			
 		
-		// Related Objects' Methods for NarroTextContextPluralAsPopularSuggestion
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated NarroTextContextPluralsAsPopularSuggestion as an array of NarroTextContextPlural objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextContextPlural[]
-		*/ 
-		public function GetNarroTextContextPluralAsPopularSuggestionArray($objOptionalClauses = null) {
-			if ((is_null($this->intSuggestionId)))
-				return array();
-
-			try {
-				return NarroTextContextPlural::LoadArrayByPopularSuggestionId($this->intSuggestionId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated NarroTextContextPluralsAsPopularSuggestion
-		 * @return int
-		*/ 
-		public function CountNarroTextContextPluralsAsPopularSuggestion() {
-			if ((is_null($this->intSuggestionId)))
-				return 0;
-
-			return NarroTextContextPlural::CountByPopularSuggestionId($this->intSuggestionId);
-		}
-
-		/**
-		 * Associates a NarroTextContextPluralAsPopularSuggestion
-		 * @param NarroTextContextPlural $objNarroTextContextPlural
-		 * @return void
-		*/ 
-		public function AssociateNarroTextContextPluralAsPopularSuggestion(NarroTextContextPlural $objNarroTextContextPlural) {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextContextPluralAsPopularSuggestion on this unsaved NarroTextSuggestion.');
-			if ((is_null($objNarroTextContextPlural->PluralId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextContextPluralAsPopularSuggestion on this NarroTextSuggestion with an unsaved NarroTextContextPlural.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroTextSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_text_context_plural`
-				SET
-					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-				WHERE
-					`plural_id` = ' . $objDatabase->SqlVariable($objNarroTextContextPlural->PluralId) . '
-			');
-		}
-
-		/**
-		 * Unassociates a NarroTextContextPluralAsPopularSuggestion
-		 * @param NarroTextContextPlural $objNarroTextContextPlural
-		 * @return void
-		*/ 
-		public function UnassociateNarroTextContextPluralAsPopularSuggestion(NarroTextContextPlural $objNarroTextContextPlural) {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this unsaved NarroTextSuggestion.');
-			if ((is_null($objNarroTextContextPlural->PluralId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this NarroTextSuggestion with an unsaved NarroTextContextPlural.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroTextSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_text_context_plural`
-				SET
-					`popular_suggestion_id` = null
-				WHERE
-					`plural_id` = ' . $objDatabase->SqlVariable($objNarroTextContextPlural->PluralId) . ' AND
-					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all NarroTextContextPluralsAsPopularSuggestion
-		 * @return void
-		*/ 
-		public function UnassociateAllNarroTextContextPluralsAsPopularSuggestion() {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this unsaved NarroTextSuggestion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroTextSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_text_context_plural`
-				SET
-					`popular_suggestion_id` = null
-				WHERE
-					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated NarroTextContextPluralAsPopularSuggestion
-		 * @param NarroTextContextPlural $objNarroTextContextPlural
-		 * @return void
-		*/ 
-		public function DeleteAssociatedNarroTextContextPluralAsPopularSuggestion(NarroTextContextPlural $objNarroTextContextPlural) {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this unsaved NarroTextSuggestion.');
-			if ((is_null($objNarroTextContextPlural->PluralId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this NarroTextSuggestion with an unsaved NarroTextContextPlural.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroTextSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_text_context_plural`
-				WHERE
-					`plural_id` = ' . $objDatabase->SqlVariable($objNarroTextContextPlural->PluralId) . ' AND
-					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated NarroTextContextPluralsAsPopularSuggestion
-		 * @return void
-		*/ 
-		public function DeleteAllNarroTextContextPluralsAsPopularSuggestion() {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this unsaved NarroTextSuggestion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroTextSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_text_context_plural`
-				WHERE
-					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-			
-		
 		// Related Objects' Methods for NarroTextContextPluralAsValidSuggestion
 		//-------------------------------------------------------------------
 
@@ -1932,6 +1943,156 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for NarroTextContextPluralAsPopularSuggestion
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroTextContextPluralsAsPopularSuggestion as an array of NarroTextContextPlural objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroTextContextPlural[]
+		*/ 
+		public function GetNarroTextContextPluralAsPopularSuggestionArray($objOptionalClauses = null) {
+			if ((is_null($this->intSuggestionId)))
+				return array();
+
+			try {
+				return NarroTextContextPlural::LoadArrayByPopularSuggestionId($this->intSuggestionId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroTextContextPluralsAsPopularSuggestion
+		 * @return int
+		*/ 
+		public function CountNarroTextContextPluralsAsPopularSuggestion() {
+			if ((is_null($this->intSuggestionId)))
+				return 0;
+
+			return NarroTextContextPlural::CountByPopularSuggestionId($this->intSuggestionId);
+		}
+
+		/**
+		 * Associates a NarroTextContextPluralAsPopularSuggestion
+		 * @param NarroTextContextPlural $objNarroTextContextPlural
+		 * @return void
+		*/ 
+		public function AssociateNarroTextContextPluralAsPopularSuggestion(NarroTextContextPlural $objNarroTextContextPlural) {
+			if ((is_null($this->intSuggestionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextContextPluralAsPopularSuggestion on this unsaved NarroTextSuggestion.');
+			if ((is_null($objNarroTextContextPlural->PluralId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextContextPluralAsPopularSuggestion on this NarroTextSuggestion with an unsaved NarroTextContextPlural.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroTextSuggestion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_text_context_plural`
+				SET
+					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
+				WHERE
+					`plural_id` = ' . $objDatabase->SqlVariable($objNarroTextContextPlural->PluralId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroTextContextPluralAsPopularSuggestion
+		 * @param NarroTextContextPlural $objNarroTextContextPlural
+		 * @return void
+		*/ 
+		public function UnassociateNarroTextContextPluralAsPopularSuggestion(NarroTextContextPlural $objNarroTextContextPlural) {
+			if ((is_null($this->intSuggestionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this unsaved NarroTextSuggestion.');
+			if ((is_null($objNarroTextContextPlural->PluralId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this NarroTextSuggestion with an unsaved NarroTextContextPlural.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroTextSuggestion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_text_context_plural`
+				SET
+					`popular_suggestion_id` = null
+				WHERE
+					`plural_id` = ' . $objDatabase->SqlVariable($objNarroTextContextPlural->PluralId) . ' AND
+					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroTextContextPluralsAsPopularSuggestion
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroTextContextPluralsAsPopularSuggestion() {
+			if ((is_null($this->intSuggestionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this unsaved NarroTextSuggestion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroTextSuggestion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_text_context_plural`
+				SET
+					`popular_suggestion_id` = null
+				WHERE
+					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroTextContextPluralAsPopularSuggestion
+		 * @param NarroTextContextPlural $objNarroTextContextPlural
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroTextContextPluralAsPopularSuggestion(NarroTextContextPlural $objNarroTextContextPlural) {
+			if ((is_null($this->intSuggestionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this unsaved NarroTextSuggestion.');
+			if ((is_null($objNarroTextContextPlural->PluralId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this NarroTextSuggestion with an unsaved NarroTextContextPlural.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroTextSuggestion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_text_context_plural`
+				WHERE
+					`plural_id` = ' . $objDatabase->SqlVariable($objNarroTextContextPlural->PluralId) . ' AND
+					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroTextContextPluralsAsPopularSuggestion
+		 * @return void
+		*/ 
+		public function DeleteAllNarroTextContextPluralsAsPopularSuggestion() {
+			if ((is_null($this->intSuggestionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextPluralAsPopularSuggestion on this unsaved NarroTextSuggestion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroTextSuggestion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_text_context_plural`
+				WHERE
+					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
+			');
+		}
+
 
 
 
@@ -1961,6 +2122,14 @@
 		 */
 		protected $intTextId;
 		const TextIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_text_suggestion.language_id
+		 * @var integer intLanguageId
+		 */
+		protected $intLanguageId;
+		const LanguageIdDefault = null;
 
 
 		/**
@@ -2045,22 +2214,6 @@
 		private $_objNarroTextContextAsPopularSuggestionArray = array();
 
 		/**
-		 * Private member variable that stores a reference to a single NarroTextContextPluralAsPopularSuggestion object
-		 * (of type NarroTextContextPlural), if this NarroTextSuggestion object was restored with
-		 * an expansion on the narro_text_context_plural association table.
-		 * @var NarroTextContextPlural _objNarroTextContextPluralAsPopularSuggestion;
-		 */
-		private $_objNarroTextContextPluralAsPopularSuggestion;
-
-		/**
-		 * Private member variable that stores a reference to an array of NarroTextContextPluralAsPopularSuggestion objects
-		 * (of type NarroTextContextPlural[]), if this NarroTextSuggestion object was restored with
-		 * an ExpandAsArray on the narro_text_context_plural association table.
-		 * @var NarroTextContextPlural[] _objNarroTextContextPluralAsPopularSuggestionArray;
-		 */
-		private $_objNarroTextContextPluralAsPopularSuggestionArray = array();
-
-		/**
 		 * Private member variable that stores a reference to a single NarroTextContextPluralAsValidSuggestion object
 		 * (of type NarroTextContextPlural), if this NarroTextSuggestion object was restored with
 		 * an expansion on the narro_text_context_plural association table.
@@ -2075,6 +2228,22 @@
 		 * @var NarroTextContextPlural[] _objNarroTextContextPluralAsValidSuggestionArray;
 		 */
 		private $_objNarroTextContextPluralAsValidSuggestionArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single NarroTextContextPluralAsPopularSuggestion object
+		 * (of type NarroTextContextPlural), if this NarroTextSuggestion object was restored with
+		 * an expansion on the narro_text_context_plural association table.
+		 * @var NarroTextContextPlural _objNarroTextContextPluralAsPopularSuggestion;
+		 */
+		private $_objNarroTextContextPluralAsPopularSuggestion;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroTextContextPluralAsPopularSuggestion objects
+		 * (of type NarroTextContextPlural[]), if this NarroTextSuggestion object was restored with
+		 * an ExpandAsArray on the narro_text_context_plural association table.
+		 * @var NarroTextContextPlural[] _objNarroTextContextPluralAsPopularSuggestionArray;
+		 */
+		private $_objNarroTextContextPluralAsPopularSuggestionArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -2099,6 +2268,16 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column narro_text_suggestion.user_id.
+		 *
+		 * NOTE: Always use the User property getter to correctly retrieve this NarroUser object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var NarroUser objUser
+		 */
+		protected $objUser;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
 		 * in the database column narro_text_suggestion.text_id.
 		 *
 		 * NOTE: Always use the Text property getter to correctly retrieve this NarroText object.
@@ -2106,6 +2285,16 @@
 		 * @var NarroText objText
 		 */
 		protected $objText;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column narro_text_suggestion.language_id.
+		 *
+		 * NOTE: Always use the Language property getter to correctly retrieve this NarroLanguage object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var NarroLanguage objLanguage
+		 */
+		protected $objLanguage;
 
 
 
@@ -2119,8 +2308,9 @@
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="NarroTextSuggestion"><sequence>';
 			$strToReturn .= '<element name="SuggestionId" type="xsd:int"/>';
-			$strToReturn .= '<element name="UserId" type="xsd:int"/>';
+			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="Text" type="xsd1:NarroText"/>';
+			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
 			$strToReturn .= '<element name="SuggestionValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="SuggestionValueMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -2131,7 +2321,9 @@
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
 			if (!array_key_exists('NarroTextSuggestion', $strComplexTypeArray)) {
 				$strComplexTypeArray['NarroTextSuggestion'] = NarroTextSuggestion::GetSoapComplexTypeXml();
+				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroText::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroLanguage::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -2148,11 +2340,15 @@
 			$objToReturn = new NarroTextSuggestion();
 			if (property_exists($objSoapObject, 'SuggestionId'))
 				$objToReturn->intSuggestionId = $objSoapObject->SuggestionId;
-			if (property_exists($objSoapObject, 'UserId'))
-				$objToReturn->intUserId = $objSoapObject->UserId;
+			if ((property_exists($objSoapObject, 'User')) &&
+				($objSoapObject->User))
+				$objToReturn->User = NarroUser::GetObjectFromSoapObject($objSoapObject->User);
 			if ((property_exists($objSoapObject, 'Text')) &&
 				($objSoapObject->Text))
 				$objToReturn->Text = NarroText::GetObjectFromSoapObject($objSoapObject->Text);
+			if ((property_exists($objSoapObject, 'Language')) &&
+				($objSoapObject->Language))
+				$objToReturn->Language = NarroLanguage::GetObjectFromSoapObject($objSoapObject->Language);
 			if (property_exists($objSoapObject, 'SuggestionValue'))
 				$objToReturn->strSuggestionValue = $objSoapObject->SuggestionValue;
 			if (property_exists($objSoapObject, 'SuggestionValueMd5'))
@@ -2175,10 +2371,18 @@
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
+			if ($objObject->objUser)
+				$objObject->objUser = NarroUser::GetSoapObjectFromObject($objObject->objUser, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intUserId = null;
 			if ($objObject->objText)
 				$objObject->objText = NarroText::GetSoapObjectFromObject($objObject->objText, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intTextId = null;
+			if ($objObject->objLanguage)
+				$objObject->objLanguage = NarroLanguage::GetSoapObjectFromObject($objObject->objLanguage, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intLanguageId = null;
 			return $objObject;
 		}
 	}
@@ -2201,10 +2405,16 @@
 					return new QQNode('suggestion_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
+				case 'User':
+					return new QQNodeNarroUser('user_id', 'integer', $this);
 				case 'TextId':
 					return new QQNode('text_id', 'integer', $this);
 				case 'Text':
 					return new QQNodeNarroText('text_id', 'integer', $this);
+				case 'LanguageId':
+					return new QQNode('language_id', 'integer', $this);
+				case 'Language':
+					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 				case 'SuggestionValue':
 					return new QQNode('suggestion_value', 'string', $this);
 				case 'SuggestionValueMd5':
@@ -2217,10 +2427,10 @@
 					return new QQReverseReferenceNodeNarroTextContext($this, 'narrotextcontextasvalidsuggestion', 'reverse_reference', 'valid_suggestion_id');
 				case 'NarroTextContextAsPopularSuggestion':
 					return new QQReverseReferenceNodeNarroTextContext($this, 'narrotextcontextaspopularsuggestion', 'reverse_reference', 'popular_suggestion_id');
-				case 'NarroTextContextPluralAsPopularSuggestion':
-					return new QQReverseReferenceNodeNarroTextContextPlural($this, 'narrotextcontextpluralaspopularsuggestion', 'reverse_reference', 'popular_suggestion_id');
 				case 'NarroTextContextPluralAsValidSuggestion':
 					return new QQReverseReferenceNodeNarroTextContextPlural($this, 'narrotextcontextpluralasvalidsuggestion', 'reverse_reference', 'valid_suggestion_id');
+				case 'NarroTextContextPluralAsPopularSuggestion':
+					return new QQReverseReferenceNodeNarroTextContextPlural($this, 'narrotextcontextpluralaspopularsuggestion', 'reverse_reference', 'popular_suggestion_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('suggestion_id', 'integer', $this);
@@ -2245,10 +2455,16 @@
 					return new QQNode('suggestion_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
+				case 'User':
+					return new QQNodeNarroUser('user_id', 'integer', $this);
 				case 'TextId':
 					return new QQNode('text_id', 'integer', $this);
 				case 'Text':
 					return new QQNodeNarroText('text_id', 'integer', $this);
+				case 'LanguageId':
+					return new QQNode('language_id', 'integer', $this);
+				case 'Language':
+					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 				case 'SuggestionValue':
 					return new QQNode('suggestion_value', 'string', $this);
 				case 'SuggestionValueMd5':
@@ -2261,10 +2477,10 @@
 					return new QQReverseReferenceNodeNarroTextContext($this, 'narrotextcontextasvalidsuggestion', 'reverse_reference', 'valid_suggestion_id');
 				case 'NarroTextContextAsPopularSuggestion':
 					return new QQReverseReferenceNodeNarroTextContext($this, 'narrotextcontextaspopularsuggestion', 'reverse_reference', 'popular_suggestion_id');
-				case 'NarroTextContextPluralAsPopularSuggestion':
-					return new QQReverseReferenceNodeNarroTextContextPlural($this, 'narrotextcontextpluralaspopularsuggestion', 'reverse_reference', 'popular_suggestion_id');
 				case 'NarroTextContextPluralAsValidSuggestion':
 					return new QQReverseReferenceNodeNarroTextContextPlural($this, 'narrotextcontextpluralasvalidsuggestion', 'reverse_reference', 'valid_suggestion_id');
+				case 'NarroTextContextPluralAsPopularSuggestion':
+					return new QQReverseReferenceNodeNarroTextContextPlural($this, 'narrotextcontextpluralaspopularsuggestion', 'reverse_reference', 'popular_suggestion_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('suggestion_id', 'integer', $this);

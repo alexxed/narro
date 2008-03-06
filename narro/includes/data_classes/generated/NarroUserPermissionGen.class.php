@@ -1,48 +1,48 @@
 <?php
 	/**
-	 * The abstract NarroTextContextCommentGen class defined here is
+	 * The abstract NarroUserPermissionGen class defined here is
 	 * code-generated and contains all the basic CRUD-type functionality as well as
 	 * basic methods to handle relationships and index-based loading.
 	 *
-	 * To use, you should use the NarroTextContextComment subclass which
-	 * extends this NarroTextContextCommentGen class.
+	 * To use, you should use the NarroUserPermission subclass which
+	 * extends this NarroUserPermissionGen class.
 	 *
 	 * Because subsequent re-code generations will overwrite any changes to this
 	 * file, you should leave this file unaltered to prevent yourself from losing
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
-	 * in the NarroTextContextComment class.
+	 * in the NarroUserPermission class.
 	 * 
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * 
 	 */
-	class NarroTextContextCommentGen extends QBaseClass {
+	class NarroUserPermissionGen extends QBaseClass {
 		///////////////////////////////
 		// COMMON LOAD METHODS
 		///////////////////////////////
 
 		/**
-		 * Load a NarroTextContextComment from PK Info
-		 * @param integer $intCommentId
-		 * @return NarroTextContextComment
+		 * Load a NarroUserPermission from PK Info
+		 * @param integer $intUserPermissionId
+		 * @return NarroUserPermission
 		 */
-		public static function Load($intCommentId) {
+		public static function Load($intUserPermissionId) {
 			// Use QuerySingle to Perform the Query
-			return NarroTextContextComment::QuerySingle(
-				QQ::Equal(QQN::NarroTextContextComment()->CommentId, $intCommentId)
+			return NarroUserPermission::QuerySingle(
+				QQ::Equal(QQN::NarroUserPermission()->UserPermissionId, $intUserPermissionId)
 			);
 		}
 
 		/**
-		 * Load all NarroTextContextComments
+		 * Load all NarroUserPermissions
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextContextComment[]
+		 * @return NarroUserPermission[]
 		 */
 		public static function LoadAll($objOptionalClauses = null) {
-			// Call NarroTextContextComment::QueryArray to perform the LoadAll query
+			// Call NarroUserPermission::QueryArray to perform the LoadAll query
 			try {
-				return NarroTextContextComment::QueryArray(QQ::All(), $objOptionalClauses);
+				return NarroUserPermission::QueryArray(QQ::All(), $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -50,12 +50,12 @@
 		}
 
 		/**
-		 * Count all NarroTextContextComments
+		 * Count all NarroUserPermissions
 		 * @return int
 		 */
 		public static function CountAll() {
-			// Call NarroTextContextComment::QueryCount to perform the CountAll query
-			return NarroTextContextComment::QueryCount(QQ::All());
+			// Call NarroUserPermission::QueryCount to perform the CountAll query
+			return NarroUserPermission::QueryCount(QQ::All());
 		}
 
 
@@ -84,12 +84,12 @@
 		 */
 		protected static function BuildQueryStatement(&$objQueryBuilder, QQCondition $objConditions, $objOptionalClauses, $mixParameterArray, $blnCountOnly) {
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroUserPermission::GetDatabase();
 
-			// Create/Build out the QueryBuilder object with NarroTextContextComment-specific SELET and FROM fields
-			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_text_context_comment');
-			NarroTextContextComment::GetSelectFields($objQueryBuilder);
-			$objQueryBuilder->AddFromItem('`narro_text_context_comment` AS `narro_text_context_comment`');
+			// Create/Build out the QueryBuilder object with NarroUserPermission-specific SELET and FROM fields
+			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_user_permission');
+			NarroUserPermission::GetSelectFields($objQueryBuilder);
+			$objQueryBuilder->AddFromItem('`narro_user_permission` AS `narro_user_permission`');
 
 			// Set "CountOnly" option (if applicable)
 			if ($blnCountOnly)
@@ -128,39 +128,39 @@
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a single NarroTextContextComment object.
+		 * Static Qcodo Query method to query for a single NarroUserPermission object.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClausees additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return NarroTextContextComment the queried object
+		 * @return NarroUserPermission the queried object
 		 */
 		public static function QuerySingle(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = NarroTextContextComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = NarroUserPermission::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
 
-			// Perform the Query, Get the First Row, and Instantiate a new NarroTextContextComment object
+			// Perform the Query, Get the First Row, and Instantiate a new NarroUserPermission object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return NarroTextContextComment::InstantiateDbRow($objDbResult->GetNextRow());
+			return NarroUserPermission::InstantiateDbRow($objDbResult->GetNextRow());
 		}
 
 		/**
-		 * Static Qcodo Query method to query for an array of NarroTextContextComment objects.
+		 * Static Qcodo Query method to query for an array of NarroUserPermission objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClausees additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return NarroTextContextComment[] the queried objects as an array
+		 * @return NarroUserPermission[] the queried objects as an array
 		 */
 		public static function QueryArray(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = NarroTextContextComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = NarroUserPermission::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -168,11 +168,11 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return NarroTextContextComment::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes);
+			return NarroUserPermission::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes);
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a count of NarroTextContextComment objects.
+		 * Static Qcodo Query method to query for a count of NarroUserPermission objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClausees additional optional QQClause objects for this query
@@ -182,7 +182,7 @@
 		public static function QueryCount(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = NarroTextContextComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
+				$strQuery = NarroUserPermission::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -213,15 +213,15 @@
 
 /*		public static function QueryArrayCached($strConditions, $mixParameterArray = null) {
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroUserPermission::GetDatabase();
 
 			// Lookup the QCache for This Query Statement
-			$objCache = new QCache('query', 'narro_text_context_comment_' . serialize($strConditions));
+			$objCache = new QCache('query', 'narro_user_permission_' . serialize($strConditions));
 			if (!($strQuery = $objCache->GetData())) {
-				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with NarroTextContextComment-specific fields
+				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with NarroUserPermission-specific fields
 				$objQueryBuilder = new QQueryBuilder($objDatabase);
-				NarroTextContextComment::GetSelectFields($objQueryBuilder);
-				NarroTextContextComment::GetFromFields($objQueryBuilder);
+				NarroUserPermission::GetSelectFields($objQueryBuilder);
+				NarroUserPermission::GetFromFields($objQueryBuilder);
 
 				// Ensure the Passed-in Conditions is a string
 				try {
@@ -251,11 +251,11 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objDatabase->Query($strQuery);
-			return NarroTextContextComment::InstantiateDbResult($objDbResult);
+			return NarroUserPermission::InstantiateDbResult($objDbResult);
 		}*/
 
 		/**
-		 * Updates a QQueryBuilder with the SELECT fields for this NarroTextContextComment
+		 * Updates a QQueryBuilder with the SELECT fields for this NarroUserPermission
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
@@ -264,14 +264,14 @@
 				$strTableName = '`' . $strPrefix . '`';
 				$strAliasPrefix = '`' . $strPrefix . '__';
 			} else {
-				$strTableName = '`narro_text_context_comment`';
+				$strTableName = '`narro_user_permission`';
 				$strAliasPrefix = '`';
 			}
 
-			$objBuilder->AddSelectItem($strTableName . '.`comment_id` AS ' . $strAliasPrefix . 'comment_id`');
-			$objBuilder->AddSelectItem($strTableName . '.`context_id` AS ' . $strAliasPrefix . 'context_id`');
+			$objBuilder->AddSelectItem($strTableName . '.`user_permission_id` AS ' . $strAliasPrefix . 'user_permission_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`user_id` AS ' . $strAliasPrefix . 'user_id`');
-			$objBuilder->AddSelectItem($strTableName . '.`comment_text` AS ' . $strAliasPrefix . 'comment_text`');
+			$objBuilder->AddSelectItem($strTableName . '.`permission_id` AS ' . $strAliasPrefix . 'permission_id`');
+			$objBuilder->AddSelectItem($strTableName . '.`project_id` AS ' . $strAliasPrefix . 'project_id`');
 		}
 
 
@@ -281,13 +281,13 @@
 		///////////////////////////////
 
 		/**
-		 * Instantiate a NarroTextContextComment from a Database Row.
+		 * Instantiate a NarroUserPermission from a Database Row.
 		 * Takes in an optional strAliasPrefix, used in case another Object::InstantiateDbRow
-		 * is calling this NarroTextContextComment::InstantiateDbRow in order to perform
+		 * is calling this NarroUserPermission::InstantiateDbRow in order to perform
 		 * early binding on referenced objects.
 		 * @param DatabaseRowBase $objDbRow
 		 * @param string $strAliasPrefix
-		 * @return NarroTextContextComment
+		 * @return NarroUserPermission
 		*/
 		public static function InstantiateDbRow($objDbRow, $strAliasPrefix = null, $strExpandAsArrayNodes = null, $objPreviousItem = null) {
 			// If blank row, return null
@@ -295,15 +295,14 @@
 				return null;
 
 
-			// Create a new instance of the NarroTextContextComment object
-			$objToReturn = new NarroTextContextComment();
+			// Create a new instance of the NarroUserPermission object
+			$objToReturn = new NarroUserPermission();
 			$objToReturn->__blnRestored = true;
 
-			$objToReturn->intCommentId = $objDbRow->GetColumn($strAliasPrefix . 'comment_id', 'Integer');
-			$objToReturn->__intCommentId = $objDbRow->GetColumn($strAliasPrefix . 'comment_id', 'Integer');
-			$objToReturn->intContextId = $objDbRow->GetColumn($strAliasPrefix . 'context_id', 'Integer');
+			$objToReturn->intUserPermissionId = $objDbRow->GetColumn($strAliasPrefix . 'user_permission_id', 'Integer');
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
-			$objToReturn->strCommentText = $objDbRow->GetColumn($strAliasPrefix . 'comment_text', 'Blob');
+			$objToReturn->intPermissionId = $objDbRow->GetColumn($strAliasPrefix . 'permission_id', 'Integer');
+			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasPrefix . 'project_id', 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -315,15 +314,19 @@
 
 			// Prepare to Check for Early/Virtual Binding
 			if (!$strAliasPrefix)
-				$strAliasPrefix = 'narro_text_context_comment__';
-
-			// Check for Context Early Binding
-			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'context_id__context_id')))
-				$objToReturn->objContext = NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'context_id__', $strExpandAsArrayNodes);
+				$strAliasPrefix = 'narro_user_permission__';
 
 			// Check for User Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'user_id__user_id')))
 				$objToReturn->objUser = NarroUser::InstantiateDbRow($objDbRow, $strAliasPrefix . 'user_id__', $strExpandAsArrayNodes);
+
+			// Check for Permission Early Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'permission_id__permission_id')))
+				$objToReturn->objPermission = NarroPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'permission_id__', $strExpandAsArrayNodes);
+
+			// Check for Project Early Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'project_id__project_id')))
+				$objToReturn->objProject = NarroProject::InstantiateDbRow($objDbRow, $strAliasPrefix . 'project_id__', $strExpandAsArrayNodes);
 
 
 
@@ -332,9 +335,9 @@
 		}
 
 		/**
-		 * Instantiate an array of NarroTextContextComments from a Database Result
+		 * Instantiate an array of NarroUserPermissions from a Database Result
 		 * @param DatabaseResultBase $objDbResult
-		 * @return NarroTextContextComment[]
+		 * @return NarroUserPermission[]
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null) {
 			$objToReturn = array();
@@ -347,7 +350,7 @@
 			if ($strExpandAsArrayNodes) {
 				$objLastRowItem = null;
 				while ($objDbRow = $objDbResult->GetNextRow()) {
-					$objItem = NarroTextContextComment::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem);
+					$objItem = NarroUserPermission::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem);
 					if ($objItem) {
 						array_push($objToReturn, $objItem);
 						$objLastRowItem = $objItem;
@@ -355,7 +358,7 @@
 				}
 			} else {
 				while ($objDbRow = $objDbResult->GetNextRow())
-					array_push($objToReturn, NarroTextContextComment::InstantiateDbRow($objDbRow));
+					array_push($objToReturn, NarroUserPermission::InstantiateDbRow($objDbRow));
 			}
 
 			return $objToReturn;
@@ -368,61 +371,29 @@
 		///////////////////////////////////////////////////
 			
 		/**
-		 * Load a single NarroTextContextComment object,
-		 * by CommentId Index(es)
-		 * @param integer $intCommentId
-		 * @return NarroTextContextComment
+		 * Load a single NarroUserPermission object,
+		 * by UserPermissionId Index(es)
+		 * @param integer $intUserPermissionId
+		 * @return NarroUserPermission
 		*/
-		public static function LoadByCommentId($intCommentId) {
-			return NarroTextContextComment::QuerySingle(
-				QQ::Equal(QQN::NarroTextContextComment()->CommentId, $intCommentId)
+		public static function LoadByUserPermissionId($intUserPermissionId) {
+			return NarroUserPermission::QuerySingle(
+				QQ::Equal(QQN::NarroUserPermission()->UserPermissionId, $intUserPermissionId)
 			);
 		}
 			
 		/**
-		 * Load an array of NarroTextContextComment objects,
-		 * by ContextId Index(es)
-		 * @param integer $intContextId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextContextComment[]
-		*/
-		public static function LoadArrayByContextId($intContextId, $objOptionalClauses = null) {
-			// Call NarroTextContextComment::QueryArray to perform the LoadArrayByContextId query
-			try {
-				return NarroTextContextComment::QueryArray(
-					QQ::Equal(QQN::NarroTextContextComment()->ContextId, $intContextId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count NarroTextContextComments
-		 * by ContextId Index(es)
-		 * @param integer $intContextId
-		 * @return int
-		*/
-		public static function CountByContextId($intContextId) {
-			// Call NarroTextContextComment::QueryCount to perform the CountByContextId query
-			return NarroTextContextComment::QueryCount(
-				QQ::Equal(QQN::NarroTextContextComment()->ContextId, $intContextId)
-			);
-		}
-			
-		/**
-		 * Load an array of NarroTextContextComment objects,
+		 * Load an array of NarroUserPermission objects,
 		 * by UserId Index(es)
 		 * @param integer $intUserId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextContextComment[]
+		 * @return NarroUserPermission[]
 		*/
 		public static function LoadArrayByUserId($intUserId, $objOptionalClauses = null) {
-			// Call NarroTextContextComment::QueryArray to perform the LoadArrayByUserId query
+			// Call NarroUserPermission::QueryArray to perform the LoadArrayByUserId query
 			try {
-				return NarroTextContextComment::QueryArray(
-					QQ::Equal(QQN::NarroTextContextComment()->UserId, $intUserId),
+				return NarroUserPermission::QueryArray(
+					QQ::Equal(QQN::NarroUserPermission()->UserId, $intUserId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -431,15 +402,79 @@
 		}
 
 		/**
-		 * Count NarroTextContextComments
+		 * Count NarroUserPermissions
 		 * by UserId Index(es)
 		 * @param integer $intUserId
 		 * @return int
 		*/
 		public static function CountByUserId($intUserId) {
-			// Call NarroTextContextComment::QueryCount to perform the CountByUserId query
-			return NarroTextContextComment::QueryCount(
-				QQ::Equal(QQN::NarroTextContextComment()->UserId, $intUserId)
+			// Call NarroUserPermission::QueryCount to perform the CountByUserId query
+			return NarroUserPermission::QueryCount(
+				QQ::Equal(QQN::NarroUserPermission()->UserId, $intUserId)
+			);
+		}
+			
+		/**
+		 * Load an array of NarroUserPermission objects,
+		 * by PermissionId Index(es)
+		 * @param integer $intPermissionId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroUserPermission[]
+		*/
+		public static function LoadArrayByPermissionId($intPermissionId, $objOptionalClauses = null) {
+			// Call NarroUserPermission::QueryArray to perform the LoadArrayByPermissionId query
+			try {
+				return NarroUserPermission::QueryArray(
+					QQ::Equal(QQN::NarroUserPermission()->PermissionId, $intPermissionId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroUserPermissions
+		 * by PermissionId Index(es)
+		 * @param integer $intPermissionId
+		 * @return int
+		*/
+		public static function CountByPermissionId($intPermissionId) {
+			// Call NarroUserPermission::QueryCount to perform the CountByPermissionId query
+			return NarroUserPermission::QueryCount(
+				QQ::Equal(QQN::NarroUserPermission()->PermissionId, $intPermissionId)
+			);
+		}
+			
+		/**
+		 * Load an array of NarroUserPermission objects,
+		 * by ProjectId Index(es)
+		 * @param integer $intProjectId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroUserPermission[]
+		*/
+		public static function LoadArrayByProjectId($intProjectId, $objOptionalClauses = null) {
+			// Call NarroUserPermission::QueryArray to perform the LoadArrayByProjectId query
+			try {
+				return NarroUserPermission::QueryArray(
+					QQ::Equal(QQN::NarroUserPermission()->ProjectId, $intProjectId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroUserPermissions
+		 * by ProjectId Index(es)
+		 * @param integer $intProjectId
+		 * @return int
+		*/
+		public static function CountByProjectId($intProjectId) {
+			// Call NarroUserPermission::QueryCount to perform the CountByProjectId query
+			return NarroUserPermission::QueryCount(
+				QQ::Equal(QQN::NarroUserPermission()->ProjectId, $intProjectId)
 			);
 		}
 
@@ -456,14 +491,14 @@
 		//////////////////
 
 		/**
-		 * Save this NarroTextContextComment
+		 * Save this NarroUserPermission
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
-		 * @return void
+		 * @return int
 		*/
 		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroUserPermission::GetDatabase();
 
 			$mixToReturn = null;
 
@@ -471,20 +506,19 @@
 				if ((!$this->__blnRestored) || ($blnForceInsert)) {
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
-						INSERT INTO `narro_text_context_comment` (
-							`comment_id`,
-							`context_id`,
+						INSERT INTO `narro_user_permission` (
 							`user_id`,
-							`comment_text`
+							`permission_id`,
+							`project_id`
 						) VALUES (
-							' . $objDatabase->SqlVariable($this->intCommentId) . ',
-							' . $objDatabase->SqlVariable($this->intContextId) . ',
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
-							' . $objDatabase->SqlVariable($this->strCommentText) . '
+							' . $objDatabase->SqlVariable($this->intPermissionId) . ',
+							' . $objDatabase->SqlVariable($this->intProjectId) . '
 						)
 					');
 
-
+					// Update Identity column and return its value
+					$mixToReturn = $this->intUserPermissionId = $objDatabase->InsertId('narro_user_permission', 'user_permission_id');
 				} else {
 					// Perform an UPDATE query
 
@@ -493,14 +527,13 @@
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
-							`narro_text_context_comment`
+							`narro_user_permission`
 						SET
-							`comment_id` = ' . $objDatabase->SqlVariable($this->intCommentId) . ',
-							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ',
 							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
-							`comment_text` = ' . $objDatabase->SqlVariable($this->strCommentText) . '
+							`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId) . ',
+							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
 						WHERE
-							`comment_id` = ' . $objDatabase->SqlVariable($this->__intCommentId) . '
+							`user_permission_id` = ' . $objDatabase->SqlVariable($this->intUserPermissionId) . '
 					');
 				}
 
@@ -511,7 +544,6 @@
 
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
-			$this->__intCommentId = $this->intCommentId;
 
 
 			// Return 
@@ -519,50 +551,50 @@
 		}
 
 				/**
-		 * Delete this NarroTextContextComment
+		 * Delete this NarroUserPermission
 		 * @return void
 		*/
 		public function Delete() {
-			if ((is_null($this->intCommentId)))
-				throw new QUndefinedPrimaryKeyException('Cannot delete this NarroTextContextComment with an unset primary key.');
+			if ((is_null($this->intUserPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Cannot delete this NarroUserPermission with an unset primary key.');
 
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroUserPermission::GetDatabase();
 
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`narro_text_context_comment`
+					`narro_user_permission`
 				WHERE
-					`comment_id` = ' . $objDatabase->SqlVariable($this->intCommentId) . '');
+					`user_permission_id` = ' . $objDatabase->SqlVariable($this->intUserPermissionId) . '');
 		}
 
 		/**
-		 * Delete all NarroTextContextComments
+		 * Delete all NarroUserPermissions
 		 * @return void
 		*/
 		public static function DeleteAll() {
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroUserPermission::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`narro_text_context_comment`');
+					`narro_user_permission`');
 		}
 
 		/**
-		 * Truncate narro_text_context_comment table
+		 * Truncate narro_user_permission table
 		 * @return void
 		*/
 		public static function Truncate() {
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroUserPermission::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
-				TRUNCATE `narro_text_context_comment`');
+				TRUNCATE `narro_user_permission`');
 		}
 
 
@@ -583,19 +615,12 @@
 				///////////////////
 				// Member Variables
 				///////////////////
-				case 'CommentId':
+				case 'UserPermissionId':
 					/**
-					 * Gets the value for intCommentId (PK)
+					 * Gets the value for intUserPermissionId (Read-Only PK)
 					 * @return integer
 					 */
-					return $this->intCommentId;
-
-				case 'ContextId':
-					/**
-					 * Gets the value for intContextId (Not Null)
-					 * @return integer
-					 */
-					return $this->intContextId;
+					return $this->intUserPermissionId;
 
 				case 'UserId':
 					/**
@@ -604,31 +629,24 @@
 					 */
 					return $this->intUserId;
 
-				case 'CommentText':
+				case 'PermissionId':
 					/**
-					 * Gets the value for strCommentText (Not Null)
-					 * @return string
+					 * Gets the value for intPermissionId (Not Null)
+					 * @return integer
 					 */
-					return $this->strCommentText;
+					return $this->intPermissionId;
+
+				case 'ProjectId':
+					/**
+					 * Gets the value for intProjectId 
+					 * @return integer
+					 */
+					return $this->intProjectId;
 
 
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Context':
-					/**
-					 * Gets the value for the NarroTextContext object referenced by intContextId (Not Null)
-					 * @return NarroTextContext
-					 */
-					try {
-						if ((!$this->objContext) && (!is_null($this->intContextId)))
-							$this->objContext = NarroTextContext::Load($this->intContextId);
-						return $this->objContext;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'User':
 					/**
 					 * Gets the value for the NarroUser object referenced by intUserId (Not Null)
@@ -638,6 +656,34 @@
 						if ((!$this->objUser) && (!is_null($this->intUserId)))
 							$this->objUser = NarroUser::Load($this->intUserId);
 						return $this->objUser;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Permission':
+					/**
+					 * Gets the value for the NarroPermission object referenced by intPermissionId (Not Null)
+					 * @return NarroPermission
+					 */
+					try {
+						if ((!$this->objPermission) && (!is_null($this->intPermissionId)))
+							$this->objPermission = NarroPermission::Load($this->intPermissionId);
+						return $this->objPermission;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Project':
+					/**
+					 * Gets the value for the NarroProject object referenced by intProjectId 
+					 * @return NarroProject
+					 */
+					try {
+						if ((!$this->objProject) && (!is_null($this->intProjectId)))
+							$this->objProject = NarroProject::Load($this->intProjectId);
+						return $this->objProject;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -672,33 +718,6 @@
 				///////////////////
 				// Member Variables
 				///////////////////
-				case 'CommentId':
-					/**
-					 * Sets the value for intCommentId (PK)
-					 * @param integer $mixValue
-					 * @return integer
-					 */
-					try {
-						return ($this->intCommentId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'ContextId':
-					/**
-					 * Sets the value for intContextId (Not Null)
-					 * @param integer $mixValue
-					 * @return integer
-					 */
-					try {
-						$this->objContext = null;
-						return ($this->intContextId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'UserId':
 					/**
 					 * Sets the value for intUserId (Not Null)
@@ -713,14 +732,29 @@
 						throw $objExc;
 					}
 
-				case 'CommentText':
+				case 'PermissionId':
 					/**
-					 * Sets the value for strCommentText (Not Null)
-					 * @param string $mixValue
-					 * @return string
+					 * Sets the value for intPermissionId (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
 					 */
 					try {
-						return ($this->strCommentText = QType::Cast($mixValue, QType::String));
+						$this->objPermission = null;
+						return ($this->intPermissionId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ProjectId':
+					/**
+					 * Sets the value for intProjectId 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						$this->objProject = null;
+						return ($this->intProjectId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -730,38 +764,6 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Context':
-					/**
-					 * Sets the value for the NarroTextContext object referenced by intContextId (Not Null)
-					 * @param NarroTextContext $mixValue
-					 * @return NarroTextContext
-					 */
-					if (is_null($mixValue)) {
-						$this->intContextId = null;
-						$this->objContext = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a NarroTextContext object
-						try {
-							$mixValue = QType::Cast($mixValue, 'NarroTextContext');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						} 
-
-						// Make sure $mixValue is a SAVED NarroTextContext object
-						if (is_null($mixValue->ContextId))
-							throw new QCallerException('Unable to set an unsaved Context for this NarroTextContextComment');
-
-						// Update Local Member Variables
-						$this->objContext = $mixValue;
-						$this->intContextId = $mixValue->ContextId;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
 				case 'User':
 					/**
 					 * Sets the value for the NarroUser object referenced by intUserId (Not Null)
@@ -783,11 +785,75 @@
 
 						// Make sure $mixValue is a SAVED NarroUser object
 						if (is_null($mixValue->UserId))
-							throw new QCallerException('Unable to set an unsaved User for this NarroTextContextComment');
+							throw new QCallerException('Unable to set an unsaved User for this NarroUserPermission');
 
 						// Update Local Member Variables
 						$this->objUser = $mixValue;
 						$this->intUserId = $mixValue->UserId;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'Permission':
+					/**
+					 * Sets the value for the NarroPermission object referenced by intPermissionId (Not Null)
+					 * @param NarroPermission $mixValue
+					 * @return NarroPermission
+					 */
+					if (is_null($mixValue)) {
+						$this->intPermissionId = null;
+						$this->objPermission = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a NarroPermission object
+						try {
+							$mixValue = QType::Cast($mixValue, 'NarroPermission');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED NarroPermission object
+						if (is_null($mixValue->PermissionId))
+							throw new QCallerException('Unable to set an unsaved Permission for this NarroUserPermission');
+
+						// Update Local Member Variables
+						$this->objPermission = $mixValue;
+						$this->intPermissionId = $mixValue->PermissionId;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'Project':
+					/**
+					 * Sets the value for the NarroProject object referenced by intProjectId 
+					 * @param NarroProject $mixValue
+					 * @return NarroProject
+					 */
+					if (is_null($mixValue)) {
+						$this->intProjectId = null;
+						$this->objProject = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a NarroProject object
+						try {
+							$mixValue = QType::Cast($mixValue, 'NarroProject');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED NarroProject object
+						if (is_null($mixValue->ProjectId))
+							throw new QCallerException('Unable to set an unsaved Project for this NarroUserPermission');
+
+						// Update Local Member Variables
+						$this->objProject = $mixValue;
+						$this->intProjectId = $mixValue->ProjectId;
 
 						// Return $mixValue
 						return $mixValue;
@@ -829,30 +895,15 @@
 		///////////////////////////////////////////////////////////////////////
 		
 		/**
-		 * Protected member variable that maps to the database PK column narro_text_context_comment.comment_id
-		 * @var integer intCommentId
+		 * Protected member variable that maps to the database PK Identity column narro_user_permission.user_permission_id
+		 * @var integer intUserPermissionId
 		 */
-		protected $intCommentId;
-		const CommentIdDefault = null;
+		protected $intUserPermissionId;
+		const UserPermissionIdDefault = null;
 
 
 		/**
-		 * Protected internal member variable that stores the original version of the PK column value (if restored)
-		 * Used by Save() to update a PK column during UPDATE
-		 * @var integer __intCommentId;
-		 */
-		protected $__intCommentId;
-
-		/**
-		 * Protected member variable that maps to the database column narro_text_context_comment.context_id
-		 * @var integer intContextId
-		 */
-		protected $intContextId;
-		const ContextIdDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column narro_text_context_comment.user_id
+		 * Protected member variable that maps to the database column narro_user_permission.user_id
 		 * @var integer intUserId
 		 */
 		protected $intUserId;
@@ -860,11 +911,19 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_text_context_comment.comment_text
-		 * @var string strCommentText
+		 * Protected member variable that maps to the database column narro_user_permission.permission_id
+		 * @var integer intPermissionId
 		 */
-		protected $strCommentText;
-		const CommentTextDefault = null;
+		protected $intPermissionId;
+		const PermissionIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_user_permission.project_id
+		 * @var integer intProjectId
+		 */
+		protected $intProjectId;
+		const ProjectIdDefault = null;
 
 
 		/**
@@ -890,23 +949,33 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column narro_text_context_comment.context_id.
-		 *
-		 * NOTE: Always use the Context property getter to correctly retrieve this NarroTextContext object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var NarroTextContext objContext
-		 */
-		protected $objContext;
-
-		/**
-		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column narro_text_context_comment.user_id.
+		 * in the database column narro_user_permission.user_id.
 		 *
 		 * NOTE: Always use the User property getter to correctly retrieve this NarroUser object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
 		 * @var NarroUser objUser
 		 */
 		protected $objUser;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column narro_user_permission.permission_id.
+		 *
+		 * NOTE: Always use the Permission property getter to correctly retrieve this NarroPermission object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var NarroPermission objPermission
+		 */
+		protected $objPermission;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column narro_user_permission.project_id.
+		 *
+		 * NOTE: Always use the Project property getter to correctly retrieve this NarroProject object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var NarroProject objProject
+		 */
+		protected $objProject;
 
 
 
@@ -918,21 +987,22 @@
 		////////////////////////////////////////
 
 		public static function GetSoapComplexTypeXml() {
-			$strToReturn = '<complexType name="NarroTextContextComment"><sequence>';
-			$strToReturn .= '<element name="CommentId" type="xsd:int"/>';
-			$strToReturn .= '<element name="Context" type="xsd1:NarroTextContext"/>';
+			$strToReturn = '<complexType name="NarroUserPermission"><sequence>';
+			$strToReturn .= '<element name="UserPermissionId" type="xsd:int"/>';
 			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
-			$strToReturn .= '<element name="CommentText" type="xsd:string"/>';
+			$strToReturn .= '<element name="Permission" type="xsd1:NarroPermission"/>';
+			$strToReturn .= '<element name="Project" type="xsd1:NarroProject"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
 		}
 
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
-			if (!array_key_exists('NarroTextContextComment', $strComplexTypeArray)) {
-				$strComplexTypeArray['NarroTextContextComment'] = NarroTextContextComment::GetSoapComplexTypeXml();
-				NarroTextContext::AlterSoapComplexTypeArray($strComplexTypeArray);
+			if (!array_key_exists('NarroUserPermission', $strComplexTypeArray)) {
+				$strComplexTypeArray['NarroUserPermission'] = NarroUserPermission::GetSoapComplexTypeXml();
 				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroPermission::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroProject::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -940,23 +1010,24 @@
 			$objArrayToReturn = array();
 
 			foreach ($objSoapArray as $objSoapObject)
-				array_push($objArrayToReturn, NarroTextContextComment::GetObjectFromSoapObject($objSoapObject));
+				array_push($objArrayToReturn, NarroUserPermission::GetObjectFromSoapObject($objSoapObject));
 
 			return $objArrayToReturn;
 		}
 
 		public static function GetObjectFromSoapObject($objSoapObject) {
-			$objToReturn = new NarroTextContextComment();
-			if (property_exists($objSoapObject, 'CommentId'))
-				$objToReturn->intCommentId = $objSoapObject->CommentId;
-			if ((property_exists($objSoapObject, 'Context')) &&
-				($objSoapObject->Context))
-				$objToReturn->Context = NarroTextContext::GetObjectFromSoapObject($objSoapObject->Context);
+			$objToReturn = new NarroUserPermission();
+			if (property_exists($objSoapObject, 'UserPermissionId'))
+				$objToReturn->intUserPermissionId = $objSoapObject->UserPermissionId;
 			if ((property_exists($objSoapObject, 'User')) &&
 				($objSoapObject->User))
 				$objToReturn->User = NarroUser::GetObjectFromSoapObject($objSoapObject->User);
-			if (property_exists($objSoapObject, 'CommentText'))
-				$objToReturn->strCommentText = $objSoapObject->CommentText;
+			if ((property_exists($objSoapObject, 'Permission')) &&
+				($objSoapObject->Permission))
+				$objToReturn->Permission = NarroPermission::GetObjectFromSoapObject($objSoapObject->Permission);
+			if ((property_exists($objSoapObject, 'Project')) &&
+				($objSoapObject->Project))
+				$objToReturn->Project = NarroProject::GetObjectFromSoapObject($objSoapObject->Project);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -969,20 +1040,24 @@
 			$objArrayToReturn = array();
 
 			foreach ($objArray as $objObject)
-				array_push($objArrayToReturn, NarroTextContextComment::GetSoapObjectFromObject($objObject, true));
+				array_push($objArrayToReturn, NarroUserPermission::GetSoapObjectFromObject($objObject, true));
 
 			return unserialize(serialize($objArrayToReturn));
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
-			if ($objObject->objContext)
-				$objObject->objContext = NarroTextContext::GetSoapObjectFromObject($objObject->objContext, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intContextId = null;
 			if ($objObject->objUser)
 				$objObject->objUser = NarroUser::GetSoapObjectFromObject($objObject->objUser, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intUserId = null;
+			if ($objObject->objPermission)
+				$objObject->objPermission = NarroPermission::GetSoapObjectFromObject($objObject->objPermission, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intPermissionId = null;
+			if ($objObject->objProject)
+				$objObject->objProject = NarroProject::GetSoapObjectFromObject($objObject->objProject, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intProjectId = null;
 			return $objObject;
 		}
 	}
@@ -995,27 +1070,29 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
-	class QQNodeNarroTextContextComment extends QQNode {
-		protected $strTableName = 'narro_text_context_comment';
-		protected $strPrimaryKey = 'comment_id';
-		protected $strClassName = 'NarroTextContextComment';
+	class QQNodeNarroUserPermission extends QQNode {
+		protected $strTableName = 'narro_user_permission';
+		protected $strPrimaryKey = 'user_permission_id';
+		protected $strClassName = 'NarroUserPermission';
 		public function __get($strName) {
 			switch ($strName) {
-				case 'CommentId':
-					return new QQNode('comment_id', 'integer', $this);
-				case 'ContextId':
-					return new QQNode('context_id', 'integer', $this);
-				case 'Context':
-					return new QQNodeNarroTextContext('context_id', 'integer', $this);
+				case 'UserPermissionId':
+					return new QQNode('user_permission_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
 				case 'User':
 					return new QQNodeNarroUser('user_id', 'integer', $this);
-				case 'CommentText':
-					return new QQNode('comment_text', 'string', $this);
+				case 'PermissionId':
+					return new QQNode('permission_id', 'integer', $this);
+				case 'Permission':
+					return new QQNodeNarroPermission('permission_id', 'integer', $this);
+				case 'ProjectId':
+					return new QQNode('project_id', 'integer', $this);
+				case 'Project':
+					return new QQNodeNarroProject('project_id', 'integer', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNode('comment_id', 'integer', $this);
+					return new QQNode('user_permission_id', 'integer', $this);
 				default:
 					try {
 						return parent::__get($strName);
@@ -1027,27 +1104,29 @@
 		}
 	}
 
-	class QQReverseReferenceNodeNarroTextContextComment extends QQReverseReferenceNode {
-		protected $strTableName = 'narro_text_context_comment';
-		protected $strPrimaryKey = 'comment_id';
-		protected $strClassName = 'NarroTextContextComment';
+	class QQReverseReferenceNodeNarroUserPermission extends QQReverseReferenceNode {
+		protected $strTableName = 'narro_user_permission';
+		protected $strPrimaryKey = 'user_permission_id';
+		protected $strClassName = 'NarroUserPermission';
 		public function __get($strName) {
 			switch ($strName) {
-				case 'CommentId':
-					return new QQNode('comment_id', 'integer', $this);
-				case 'ContextId':
-					return new QQNode('context_id', 'integer', $this);
-				case 'Context':
-					return new QQNodeNarroTextContext('context_id', 'integer', $this);
+				case 'UserPermissionId':
+					return new QQNode('user_permission_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
 				case 'User':
 					return new QQNodeNarroUser('user_id', 'integer', $this);
-				case 'CommentText':
-					return new QQNode('comment_text', 'string', $this);
+				case 'PermissionId':
+					return new QQNode('permission_id', 'integer', $this);
+				case 'Permission':
+					return new QQNodeNarroPermission('permission_id', 'integer', $this);
+				case 'ProjectId':
+					return new QQNode('project_id', 'integer', $this);
+				case 'Project':
+					return new QQNodeNarroProject('project_id', 'integer', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNode('comment_id', 'integer', $this);
+					return new QQNode('user_permission_id', 'integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

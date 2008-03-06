@@ -21,6 +21,8 @@
             */
             define('ALLOW_REMOTE_ADMIN', false);
 
+            define('ADMIN_EMAIL_ADDRESS', 'alexxed@gmail.com');
+
 
 
             /* Constants for Document Root (and Virtual Directories / Subfoldering)
@@ -59,7 +61,7 @@
             */
             define ('__DOCROOT__', realpath(dirname(__FILE__) . '/../..'));
             define ('__VIRTUAL_DIRECTORY__', '');
-            define ('__SUBDIRECTORY__', '/narro/includes/qcodo/wwwroot');
+            define ('__SUBDIRECTORY__', '/narro');
 
 
             /*
@@ -71,7 +73,7 @@
 
             // Constant for the DevTools (Command Line Interface) Directory
             // (We're assuming it's at one level above __DOCROOT__... but feel free to specify any absolute path
-            define ('__DEVTOOLS_CLI__', __DOCROOT__ . __SUBDIRECTORY__ . '/../_devtools_cli');
+            define ('__DEVTOOLS_CLI__', __DOCROOT__ . __SUBDIRECTORY__ . '/_devtools_cli');
 
 
             /* Absolute File Paths for Internal Directories
@@ -99,10 +101,10 @@
             define ('__QCODO_CORE__', __INCLUDES__ . '/qcodo/_core');
 
             // Destination for Code Generated class files
-            define ('__DATA_CLASSES__', __DOCROOT__ . '/narro/includes/data_classes');
-            define ('__DATAGEN_CLASSES__', __DOCROOT__ . '/narro/includes/data_classes/generated');
-            define ('__FORMBASE_CLASSES__', __INCLUDES__ . '/formbase_classes_generated');
-            define ('__PANELBASE_CLASSES__', __INCLUDES__ . '/panelbase_classes_generated');
+            define ('__DATA_CLASSES__', __INCLUDES__ . '/data_classes');
+            define ('__DATAGEN_CLASSES__', __INCLUDES__ . '/data_classes/generated');
+            define ('__FORMBASE_CLASSES__', __DOCROOT__ .  __SUBDIRECTORY__ . '/data/qcodo_generated/formbase_classes_generated');
+            define ('__PANELBASE_CLASSES__', __DOCROOT__ .  __SUBDIRECTORY__ . '/data/qcodo_generated/panelbase_classes_generated');
 
 
 
@@ -125,17 +127,17 @@
             define ('__DEVTOOLS__', __SUBDIRECTORY__ . '/_devtools');
 
             // Destination for generated form drafts and panel drafts
-            define ('__FORM_DRAFTS__', __SUBDIRECTORY__ . '/form_drafts');
-            define ('__PANEL_DRAFTS__', __SUBDIRECTORY__ . '/panel_drafts');
+            define ('__FORM_DRAFTS__', __SUBDIRECTORY__ . '/data/qcodo_generated/form_drafts');
+            define ('__PANEL_DRAFTS__', __SUBDIRECTORY__ . '/data/qcodo_generated/panel_drafts');
 
             // Location of the Examples site
             define ('__EXAMPLES__', __SUBDIRECTORY__ . '/examples');
 
             // Location of Qcodo-specific Web Assets (JavaScripts, CSS, Images, and PHP Pages/Popups)
             define ('__JS_ASSETS__', __SUBDIRECTORY__ . '/assets/js');
-            define ('__CSS_ASSETS__', '/narro/assets/css');
+            define ('__CSS_ASSETS__', __SUBDIRECTORY__ . '/assets/css');
             define ('__IMAGE_ASSETS__', __SUBDIRECTORY__ . '/assets/images');
-            define ('__PHP_ASSETS__', '/narro/assets/php');
+            define ('__PHP_ASSETS__', __SUBDIRECTORY__ . '/assets/php');
 
 
 
@@ -193,4 +195,6 @@
             define('ERROR_PAGE_PATH', __PHP_ASSETS__ . '/_core/error_page.php');
             break;
     }
+
+    set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/narro');
 ?>

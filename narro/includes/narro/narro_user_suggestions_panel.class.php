@@ -39,11 +39,6 @@
 
             // Setup DataGrid
             $this->dtgSuggestions = new QDataGrid($this);
-            $this->dtgSuggestions->CellSpacing = 0;
-            $this->dtgSuggestions->CellPadding = 4;
-            $this->dtgSuggestions->GridLines = QGridLines::Both;
-            $this->dtgSuggestions->BorderWidth = 1;
-            $this->dtgSuggestions->BorderStyle = QBorderStyle::Dotted;
             $this->dtgSuggestions->SetCustomStyle('padding', '5px');
             //$this->dtgSuggestions->SetCustomStyle('margin-left', '15px');
 

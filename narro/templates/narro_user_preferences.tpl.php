@@ -16,19 +16,14 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = QApplication::Translate('Project list');
+    $strPageTitle = sprintf(QApplication::Translate('Preferences for %s'), QApplication::$objUser->Username);
 
-
-    require('includes/header.inc.php')
+    require('includes/header.inc.php');
 ?>
 
     <?php $this->RenderBegin() ?>
-        <h3><?php _t('Project list') ?></h3>
-        <p><?php _t('This is a list of projects that are being translated here. You can help too. Click on any project name to start translating.'); ?></p>
-        <br />
-
-        <?php $this->dtgNarroProject->Render() ?>
-
+        <p><?php _t('Here you can set your preferences.');?></p>
+        <?php $this->pnlPreferences->Render() ?>
     <?php $this->RenderEnd() ?>
 
 <?php require('includes/footer.inc.php'); ?>

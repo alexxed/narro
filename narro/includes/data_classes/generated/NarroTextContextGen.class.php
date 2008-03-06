@@ -275,7 +275,6 @@
 			$objBuilder->AddSelectItem($strTableName . '.`file_id` AS ' . $strAliasPrefix . 'file_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`valid_suggestion_id` AS ' . $strAliasPrefix . 'valid_suggestion_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`popular_suggestion_id` AS ' . $strAliasPrefix . 'popular_suggestion_id`');
-			$objBuilder->AddSelectItem($strTableName . '.`is_fuzzy` AS ' . $strAliasPrefix . 'is_fuzzy`');
 			$objBuilder->AddSelectItem($strTableName . '.`has_suggestion` AS ' . $strAliasPrefix . 'has_suggestion`');
 			$objBuilder->AddSelectItem($strTableName . '.`has_plural` AS ' . $strAliasPrefix . 'has_plural`');
 			$objBuilder->AddSelectItem($strTableName . '.`active` AS ' . $strAliasPrefix . 'active`');
@@ -354,7 +353,6 @@
 			$objToReturn->intFileId = $objDbRow->GetColumn($strAliasPrefix . 'file_id', 'Integer');
 			$objToReturn->intValidSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'valid_suggestion_id', 'Integer');
 			$objToReturn->intPopularSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'popular_suggestion_id', 'Integer');
-			$objToReturn->intIsFuzzy = $objDbRow->GetColumn($strAliasPrefix . 'is_fuzzy', 'Integer');
 			$objToReturn->intHasSuggestion = $objDbRow->GetColumn($strAliasPrefix . 'has_suggestion', 'Integer');
 			$objToReturn->blnHasPlural = $objDbRow->GetColumn($strAliasPrefix . 'has_plural', 'Bit');
 			$objToReturn->intActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Integer');
@@ -721,7 +719,6 @@
 							`file_id`,
 							`valid_suggestion_id`,
 							`popular_suggestion_id`,
-							`is_fuzzy`,
 							`has_suggestion`,
 							`has_plural`,
 							`active`,
@@ -733,7 +730,6 @@
 							' . $objDatabase->SqlVariable($this->intFileId) . ',
 							' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
-							' . $objDatabase->SqlVariable($this->intIsFuzzy) . ',
 							' . $objDatabase->SqlVariable($this->intHasSuggestion) . ',
 							' . $objDatabase->SqlVariable($this->blnHasPlural) . ',
 							' . $objDatabase->SqlVariable($this->intActive) . ',
@@ -759,7 +755,6 @@
 							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . ',
 							`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
 							`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
-							`is_fuzzy` = ' . $objDatabase->SqlVariable($this->intIsFuzzy) . ',
 							`has_suggestion` = ' . $objDatabase->SqlVariable($this->intHasSuggestion) . ',
 							`has_plural` = ' . $objDatabase->SqlVariable($this->blnHasPlural) . ',
 							`active` = ' . $objDatabase->SqlVariable($this->intActive) . ',
@@ -895,13 +890,6 @@
 					 * @return integer
 					 */
 					return $this->intPopularSuggestionId;
-
-				case 'IsFuzzy':
-					/**
-					 * Gets the value for intIsFuzzy (Not Null)
-					 * @return integer
-					 */
-					return $this->intIsFuzzy;
 
 				case 'HasSuggestion':
 					/**
@@ -1144,19 +1132,6 @@
 					try {
 						$this->objPopularSuggestion = null;
 						return ($this->intPopularSuggestionId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'IsFuzzy':
-					/**
-					 * Sets the value for intIsFuzzy (Not Null)
-					 * @param integer $mixValue
-					 * @return integer
-					 */
-					try {
-						return ($this->intIsFuzzy = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1769,14 +1744,6 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_text_context.is_fuzzy
-		 * @var integer intIsFuzzy
-		 */
-		protected $intIsFuzzy;
-		const IsFuzzyDefault = null;
-
-
-		/**
 		 * Protected member variable that maps to the database column narro_text_context.has_suggestion
 		 * @var integer intHasSuggestion
 		 */
@@ -1929,7 +1896,6 @@
 			$strToReturn .= '<element name="File" type="xsd1:NarroFile"/>';
 			$strToReturn .= '<element name="ValidSuggestion" type="xsd1:NarroTextSuggestion"/>';
 			$strToReturn .= '<element name="PopularSuggestion" type="xsd1:NarroTextSuggestion"/>';
-			$strToReturn .= '<element name="IsFuzzy" type="xsd:int"/>';
 			$strToReturn .= '<element name="HasSuggestion" type="xsd:int"/>';
 			$strToReturn .= '<element name="HasPlural" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Active" type="xsd:int"/>';
@@ -1980,8 +1946,6 @@
 			if ((property_exists($objSoapObject, 'PopularSuggestion')) &&
 				($objSoapObject->PopularSuggestion))
 				$objToReturn->PopularSuggestion = NarroTextSuggestion::GetObjectFromSoapObject($objSoapObject->PopularSuggestion);
-			if (property_exists($objSoapObject, 'IsFuzzy'))
-				$objToReturn->intIsFuzzy = $objSoapObject->IsFuzzy;
 			if (property_exists($objSoapObject, 'HasSuggestion'))
 				$objToReturn->intHasSuggestion = $objSoapObject->HasSuggestion;
 			if (property_exists($objSoapObject, 'HasPlural'))
@@ -2070,8 +2034,6 @@
 					return new QQNode('popular_suggestion_id', 'integer', $this);
 				case 'PopularSuggestion':
 					return new QQNodeNarroTextSuggestion('popular_suggestion_id', 'integer', $this);
-				case 'IsFuzzy':
-					return new QQNode('is_fuzzy', 'integer', $this);
 				case 'HasSuggestion':
 					return new QQNode('has_suggestion', 'integer', $this);
 				case 'HasPlural':
@@ -2128,8 +2090,6 @@
 					return new QQNode('popular_suggestion_id', 'integer', $this);
 				case 'PopularSuggestion':
 					return new QQNodeNarroTextSuggestion('popular_suggestion_id', 'integer', $this);
-				case 'IsFuzzy':
-					return new QQNode('is_fuzzy', 'integer', $this);
 				case 'HasSuggestion':
 					return new QQNode('has_suggestion', 'integer', $this);
 				case 'HasPlural':

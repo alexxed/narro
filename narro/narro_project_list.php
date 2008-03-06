@@ -25,6 +25,7 @@
         // DataGrid Columns
         protected $colProjectName;
         protected $colPercentTranslated;
+        protected $colActions;
 
 
         protected function Form_Create() {
@@ -36,14 +37,12 @@
             $this->colPercentTranslated->HtmlEntities = false;
             $this->colPercentTranslated->Width = 160;
 
+            $this->colActions = new QDataGridColumn(QApplication::Translate('Actions'), '<?= $_FORM->dtgNarroProject_Actions_Render($_ITEM) ?>');
+            $this->colActions->HtmlEntities = false;
+            $this->colActions->Width = 160;
+
             // Setup DataGrid
             $this->dtgNarroProject = new QDataGrid($this);
-            $this->dtgNarroProject->CellSpacing = 0;
-            $this->dtgNarroProject->CellPadding = 4;
-            $this->dtgNarroProject->BorderStyle = QBorderStyle::Solid;
-            $this->dtgNarroProject->BorderWidth = 1;
-            $this->dtgNarroProject->GridLines = QGridLines::Both;
-            $this->dtgNarroProject->Width = '100%';
 
             // Datagrid Paginator
             $this->dtgNarroProject->Paginator = new QPaginator($this->dtgNarroProject);
@@ -57,6 +56,10 @@
 
             $this->dtgNarroProject->AddColumn($this->colProjectName);
             $this->dtgNarroProject->AddColumn($this->colPercentTranslated);
+
+            if (QApplication::$objUser->hasPermission('Can import') || QApplication::$objUser->hasPermission('Can export') ) {
+                $this->dtgNarroProject->AddColumn($this->colActions);
+            }
 
         }
 
@@ -101,7 +104,6 @@
                 $objProgressBar->Fuzzy = $intTranslatedTexts;
 
                 $sOutput .= $objProgressBar->Render(false);
-
             }
             return $sOutput;
 
@@ -112,6 +114,19 @@
                 $objNarroProject->ProjectId,
                 $objNarroProject->ProjectName
             );
+        }
+
+        public function dtgNarroProject_Actions_Render(NarroProject $objNarroProject) {
+            $strOutput = '';
+            if (QApplication::$objUser->hasPermission('Can import')) {
+                $strOutput .= sprintf(' <a href="narro_project_import.php?p=%d&pn=%s">%s</a>', $objNarroProject->ProjectId, $objNarroProject->ProjectName, QApplication::Translate('Import'));
+            }
+
+            if (QApplication::$objUser->hasPermission('Can export')) {
+                $strOutput .= sprintf(' <a href="narro_project_export.php?p=%d&pn=%s">%s</a>', $objNarroProject->ProjectId, $objNarroProject->ProjectName, QApplication::Translate('Export'));
+            }
+
+            return $strOutput;
         }
 
         protected function dtgNarroProject_Bind() {

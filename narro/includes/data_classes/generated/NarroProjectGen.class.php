@@ -327,6 +327,18 @@
 					$blnExpandedViaArray = true;
 				}
 
+				if ((array_key_exists($strAliasPrefix . 'narrouserpermissionasproject__user_permission_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserpermissionasproject__user_permission_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserPermissionAsProjectArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroUserPermissionAsProjectArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionasproject__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroUserPermissionAsProjectArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroUserPermissionAsProjectArray, NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionasproject__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -371,6 +383,14 @@
 					array_push($objToReturn->_objNarroTextContextAsProjectArray, NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextasproject__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objNarroTextContextAsProject = NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextasproject__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroUserPermissionAsProject Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserpermissionasproject__user_permission_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrouserpermissionasproject__user_permission_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroUserPermissionAsProjectArray, NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionasproject__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroUserPermissionAsProject = NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionasproject__', $strExpandAsArrayNodes);
 			}
 
 			return $objToReturn;
@@ -620,6 +640,22 @@
 					 * @return NarroTextContext[]
 					 */
 					return (array) $this->_objNarroTextContextAsProjectArray;
+
+				case '_NarroUserPermissionAsProject':
+					/**
+					 * Gets the value for the private _objNarroUserPermissionAsProject (Read-Only)
+					 * if set due to an expansion on the narro_user_permission.project_id reverse relationship
+					 * @return NarroUserPermission
+					 */
+					return $this->_objNarroUserPermissionAsProject;
+
+				case '_NarroUserPermissionAsProjectArray':
+					/**
+					 * Gets the value for the private _objNarroUserPermissionAsProjectArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_user_permission.project_id reverse relationship
+					 * @return NarroUserPermission[]
+					 */
+					return (array) $this->_objNarroUserPermissionAsProjectArray;
 
 				default:
 					try {
@@ -1001,6 +1037,156 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for NarroUserPermissionAsProject
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroUserPermissionsAsProject as an array of NarroUserPermission objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroUserPermission[]
+		*/ 
+		public function GetNarroUserPermissionAsProjectArray($objOptionalClauses = null) {
+			if ((is_null($this->intProjectId)))
+				return array();
+
+			try {
+				return NarroUserPermission::LoadArrayByProjectId($this->intProjectId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroUserPermissionsAsProject
+		 * @return int
+		*/ 
+		public function CountNarroUserPermissionsAsProject() {
+			if ((is_null($this->intProjectId)))
+				return 0;
+
+			return NarroUserPermission::CountByProjectId($this->intProjectId);
+		}
+
+		/**
+		 * Associates a NarroUserPermissionAsProject
+		 * @param NarroUserPermission $objNarroUserPermission
+		 * @return void
+		*/ 
+		public function AssociateNarroUserPermissionAsProject(NarroUserPermission $objNarroUserPermission) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserPermissionAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroUserPermission->UserPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserPermissionAsProject on this NarroProject with an unsaved NarroUserPermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_permission`
+				SET
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+				WHERE
+					`user_permission_id` = ' . $objDatabase->SqlVariable($objNarroUserPermission->UserPermissionId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroUserPermissionAsProject
+		 * @param NarroUserPermission $objNarroUserPermission
+		 * @return void
+		*/ 
+		public function UnassociateNarroUserPermissionAsProject(NarroUserPermission $objNarroUserPermission) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroUserPermission->UserPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsProject on this NarroProject with an unsaved NarroUserPermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_permission`
+				SET
+					`project_id` = null
+				WHERE
+					`user_permission_id` = ' . $objDatabase->SqlVariable($objNarroUserPermission->UserPermissionId) . ' AND
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroUserPermissionsAsProject
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroUserPermissionsAsProject() {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsProject on this unsaved NarroProject.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_permission`
+				SET
+					`project_id` = null
+				WHERE
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroUserPermissionAsProject
+		 * @param NarroUserPermission $objNarroUserPermission
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroUserPermissionAsProject(NarroUserPermission $objNarroUserPermission) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroUserPermission->UserPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsProject on this NarroProject with an unsaved NarroUserPermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_user_permission`
+				WHERE
+					`user_permission_id` = ' . $objDatabase->SqlVariable($objNarroUserPermission->UserPermissionId) . ' AND
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroUserPermissionsAsProject
+		 * @return void
+		*/ 
+		public function DeleteAllNarroUserPermissionsAsProject() {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsProject on this unsaved NarroProject.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_user_permission`
+				WHERE
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
 
 
 
@@ -1064,6 +1250,22 @@
 		 * @var NarroTextContext[] _objNarroTextContextAsProjectArray;
 		 */
 		private $_objNarroTextContextAsProjectArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single NarroUserPermissionAsProject object
+		 * (of type NarroUserPermission), if this NarroProject object was restored with
+		 * an expansion on the narro_user_permission association table.
+		 * @var NarroUserPermission _objNarroUserPermissionAsProject;
+		 */
+		private $_objNarroUserPermissionAsProject;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroUserPermissionAsProject objects
+		 * (of type NarroUserPermission[]), if this NarroProject object was restored with
+		 * an ExpandAsArray on the narro_user_permission association table.
+		 * @var NarroUserPermission[] _objNarroUserPermissionAsProjectArray;
+		 */
+		private $_objNarroUserPermissionAsProjectArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -1174,6 +1376,8 @@
 					return new QQReverseReferenceNodeNarroFile($this, 'narrofileasproject', 'reverse_reference', 'project_id');
 				case 'NarroTextContextAsProject':
 					return new QQReverseReferenceNodeNarroTextContext($this, 'narrotextcontextasproject', 'reverse_reference', 'project_id');
+				case 'NarroUserPermissionAsProject':
+					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionasproject', 'reverse_reference', 'project_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('project_id', 'integer', $this);
@@ -1204,6 +1408,8 @@
 					return new QQReverseReferenceNodeNarroFile($this, 'narrofileasproject', 'reverse_reference', 'project_id');
 				case 'NarroTextContextAsProject':
 					return new QQReverseReferenceNodeNarroTextContext($this, 'narrotextcontextasproject', 'reverse_reference', 'project_id');
+				case 'NarroUserPermissionAsProject':
+					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionasproject', 'reverse_reference', 'project_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('project_id', 'integer', $this);

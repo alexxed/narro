@@ -6,6 +6,12 @@
 		static public function NarroFileHeader() {
 			return new QQNodeNarroFileHeader('narro_file_header', null);
 		}
+		static public function NarroLanguage() {
+			return new QQNodeNarroLanguage('narro_language', null);
+		}
+		static public function NarroPermission() {
+			return new QQNodeNarroPermission('narro_permission', null);
+		}
 		static public function NarroProject() {
 			return new QQNodeNarroProject('narro_project', null);
 		}
@@ -29,6 +35,12 @@
 		}
 		static public function NarroTextSuggestion() {
 			return new QQNodeNarroTextSuggestion('narro_text_suggestion', null);
+		}
+		static public function NarroUser() {
+			return new QQNodeNarroUser('narro_user', null);
+		}
+		static public function NarroUserPermission() {
+			return new QQNodeNarroUserPermission('narro_user_permission', null);
 		}
 	}
 ?>

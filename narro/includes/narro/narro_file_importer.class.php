@@ -17,11 +17,11 @@
      */
 
     class NarroFileImporter {
-        public $blnLogOutput = true;
-        public $blnEchoOutput = true;
+        protected $blnLogOutput = true;
+        protected $blnEchoOutput = true;
 
         protected $hndLogFile;
-        public $strLogFile = 'importer.log';
+        protected $strLogFile = 'importer.log';
 
         protected $arrStatistics;
 
@@ -47,13 +47,17 @@
         public function Output($strText) {
 
             if ($this->blnEchoOutput)
-                error_log($strText);
+                echo $strText;
 
-            if ($this->blnLogOutput)
-                $this->OutputLog($strText);
+            if ($this->blnLogOutput) {
+                if ($this->strLogFile)
+                    $this->OutputLog($strText);
+                else
+                    error_log($strText);
+            }
         }
 
-        public function OutputLog($strText) {
+        public function OutputLog($intMessageType, $strText) {
 
             if (!$this->hndLogFile)
                 $this->hndLogFile = fopen($this->strLogFile, 'a+');
@@ -63,31 +67,45 @@
 
 
         /**
-         * @param bool $blnCheckEqual check if the translation is equal to original text.
+         * A translation here consists of the project, file, text, translation, context, plurals, validation, ignore equals
+         *
+         * @param integer $intProjectId
+         * @param NarroFile $objFile
+         * @param string $strOriginal the original text
+         * @param string $strTranslation the translated text from the import file (can be empty)
+         * @param string $strContext the context where the text/transaltion appears in the file
+         * @param string $intPluralForm if this is a plural, what plural form is it (0 singular, 1 plural form 1, and so on)
+         * @param bool $blnValidate validated the translation
+         * @param bool $blnCheckEqual check if the translation is equal to original text and don't import it if it is
          */
-        protected function AddTranslation($intProjectId, $objFile, $strOriginal, $strTranslation, $strContext, $intPluralForm, $blnValidate = false, $blnCheckEqual = false) {
+        protected function AddTranslation($intProjectId, NarroFile $objFile, $strOriginal, $strTranslation, $strContext, $intPluralForm, $blnValidate = false, $blnCheckEqual = false) {
             //$arrArgs = func_get_args();
             //$this->Output(__FUNCTION__ . var_export($arrArgs,true));
             //if ($blnCheckEqual && $strOriginal == $strTranslation)
                 //$strTranslation = '';
             //echo $objFile->FileName . '|' . $strContext . '|' . $strOriginal . '|' . $strTranslation . "\n";
             //return true;
-            $strOriginal = trim($strOriginal);
-            $strTranslation = trim(QApplication::ConvertToSedila($strTranslation));
-            $strContext = trim($strContext);
+
+            /**
+             * Avoid trimming the strings to preserve spaces; let the plugins handle eventual processing needs
+             */
+            $strOriginal = QApplication::$objPluginHandler->ProcessText($strOriginal);
+            $strTranslation = QApplication::$objPluginHandler->ProcessSuggestion($strTranslation);
+            $strContext = QApplication::$objPluginHandler->ProcessContext($strContext);
 
             if ($strOriginal == '') {
-                $this->OutputLog(sprintf('S-a sărit peste „%s” pentru că textul original „%s” era gol. Din „%s”', $strContext, $strOriginal, $objFile->FileName));
+                $this->Output(sprintf(QApplication::Translate(2, 'In file "%s", the context "%s" was skipped because the original text "%s" was empty.', $objFile->FileName, $strContext, $strOriginal)));
                 $this->arrStatistics['Skipped contexts']++;
                 $this->arrStatistics['Empty original texts']++;
                 return false;
             }
 
-            //$objNarroText = NarroText::QuerySingle(QQ::Equal(QQN::NarroText()->TextValue, mysql_real_escape_string($strOriginal)));
             /**
-             * fetch the text by its md5
+             * Fetch the text by its md5; we could fetch it by the full text but it would be slower
+             * @example $objNarroText = NarroText::QuerySingle(QQ::Equal(QQN::NarroText()->TextValue, mysql_real_escape_string($strOriginal)));
              */
             $objNarroText = NarroText::QuerySingle(QQ::Equal(QQN::NarroText()->TextValueMd5, md5($strOriginal)));
+
             if (!$objNarroText instanceof NarroText) {
                 $objNarroText = new NarroText();
                 $objNarroText->TextValue = $strOriginal;
@@ -95,25 +113,27 @@
                 $objNarroText->TextCharCount = strlen($strOriginal);
                 try {
                     $objNarroText->Save();
-                    //$this->OutputLog(sprintf('S-a adăugat textul „%s” din fișierul „%s”', $strOriginal, $objFile->FileName));
+                    $this->Output(sprintf(1, QApplication::Translate('Added text "%s" from the file "%s"'), $strOriginal, $objFile->FileName));
                     $this->arrStatistics['Imported texts']++;
                 } catch(Exception $objExc) {
-                    $this->Output(sprintf('Atenție, eroare la adăugarea „%s”: %s', $strOriginal, $objExc->getMessage()));
+                    $this->Output(sprintf(3, QApplication::Translate('Error while adding "%s": %s'), $strOriginal, $objExc->getMessage()));
                     $this->arrStatistics['Skipped texts']++;
                     $this->arrStatistics['Texts that had errors while adding']++;
-                    continue;
+                    /**
+                     * If there's no text, there's no context and no suggestion
+                     */
+                    return false;
                 }
             }
 
             /**
-             * fetch the context by fileid, textid and context string
-             * project id is not necessary since is unique and is tied to the file
+             * fetch the context by fileid, projectid, textid and context string
              */
             $objNarroContext = NarroTextContext::QuerySingle(
                                     QQ::AndCondition(
                                         QQ::Equal(QQN::NarroTextContext()->TextId, $objNarroText->TextId),
                                         /**
-                                         * Very important! IF you change the file structure, comment the following line
+                                         * If you change the file structure, and would like to reuse contexts, you might want to comment the following line
                                          */
                                         QQ::Equal(QQN::NarroTextContext()->FileId, $objFile->FileId),
                                         QQ::Equal(QQN::NarroTextContext()->ProjectId, $intProjectId),

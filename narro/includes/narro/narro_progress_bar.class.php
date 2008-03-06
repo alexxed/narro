@@ -53,7 +53,7 @@
             $strText .= sprintf('<div class="untranslated" style="left:%spx;width: %spx;"></div>', $intPercentTranslated + $intPercentFuzzy, 100 - $intPercentFuzzy - $intPercentTranslated);
 
             //$strText .= sprintf('<div style="height:100%%;width:250px;position:absolute;top:0px;left:110px">%d%% (%d/%d/%d)</div></div>', $intPercentTranslated, $this->intTranslated, $this->intFuzzy, $this->intTotal);
-            $strText .= sprintf('<div style="height:100%%;width:250px;position:absolute;top:0px;left:110px">%d%%</div></div>', $intPercentTranslated);
+            $strText .= sprintf('<div style="height:100%%;width:25px;position:absolute;top:0px;left:110px">%d%%</div></div>', $intPercentTranslated);
 
             return $strText;
         }

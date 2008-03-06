@@ -16,18 +16,30 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = QApplication::Translate('Project list');
+    $strPageTitle = QApplication::Translate('Login');
 
 
     require('includes/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
-        <h3><?php _t('Project list') ?></h3>
-        <p><?php _t('This is a list of projects that are being translated here. You can help too. Click on any project name to start translating.'); ?></p>
+        <h3><?php _t('Login') ?></h3>
+        <p><?php _t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>
         <br />
-
-        <?php $this->dtgNarroProject->Render() ?>
+        <?php $this->lblMessage->Render() ?>
+        <table>
+            <tr>
+                <td><?php _t('Username')?>:</td>
+                <td><?php $this->txtUsername->Render() ?></td>
+            </tr>
+            <tr>
+                <td><?php _t('Password')?>:</td>
+                <td><?php $this->txtPassword->Render() ?></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:right"><?php $this->btnLogin->Render() ?></td>
+            </tr>
+        </table>
 
     <?php $this->RenderEnd() ?>
 

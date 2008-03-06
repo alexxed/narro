@@ -15,20 +15,7 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-
-    $strPageTitle = QApplication::Translate('Project list');
-
-
-    require('includes/header.inc.php')
+    session_start();
+    session_destroy();
+    header('Location: narro_project_list.php');
 ?>
-
-    <?php $this->RenderBegin() ?>
-        <h3><?php _t('Project list') ?></h3>
-        <p><?php _t('This is a list of projects that are being translated here. You can help too. Click on any project name to start translating.'); ?></p>
-        <br />
-
-        <?php $this->dtgNarroProject->Render() ?>
-
-    <?php $this->RenderEnd() ?>
-
-<?php require('includes/footer.inc.php'); ?>

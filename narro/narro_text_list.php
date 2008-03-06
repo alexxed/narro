@@ -78,16 +78,10 @@
 
             // Setup DataGrid
             $this->dtgNarroTextContext = new QDataGrid($this);
-            $this->dtgNarroTextContext->CellSpacing = 0;
-            $this->dtgNarroTextContext->CellPadding = 4;
-            $this->dtgNarroTextContext->BorderStyle = QBorderStyle::Solid;
-            $this->dtgNarroTextContext->BorderWidth = 1;
-            $this->dtgNarroTextContext->GridLines = QGridLines::Both;
-            $this->dtgNarroTextContext->Width = '100%';
 
             // Datagrid Paginator
             $this->dtgNarroTextContext->Paginator = new QPaginator($this->dtgNarroTextContext);
-            $this->dtgNarroTextContext->ItemsPerPage = 20;
+            $this->dtgNarroTextContext->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
 
             $this->dtgNarroTextContext->PaginatorAlternate = new QPaginator($this->dtgNarroTextContext);
 
@@ -152,15 +146,23 @@
         }
 
         public function dtgNarroTextContext_OriginalText_Render(NarroTextContext $objNarroTextContext) {
-            if (!is_null($objNarroTextContext->Text))
-                return $objNarroTextContext->Text->TextValue;
+            if (!is_null($objNarroTextContext->Text)) {
+                $strText = QApplication::$objPluginHandler->DisplayText($objNarroTextContext->Text->TextValue);
+                if (!$strText)
+                    $strText = $objNarroTextContext->Text->TextValue;
+                return (strlen($strText)>100)?substr($strText, 0, 100) . '...':$strText;
+            }
             else
                 return null;
         }
 
         public function dtgNarroTextContext_Context_Render(NarroTextContext $objNarroTextContext) {
-            if (!is_null($objNarroTextContext->Context))
-                return $objNarroTextContext->Context;
+            if (!is_null($objNarroTextContext->Context)) {
+                $strContext = QApplication::$objPluginHandler->DisplayContext($objNarroTextContext->Context);
+                if (!$strContext)
+                    $strContext = $objNarroTextContext->Context;
+                return (strlen($strContext)>100)?substr($strContext, 0, 100) . '...':$strContext;
+            }
             else
                 return '<div width="100%" style="background:gray">&nbsp;</div>';
         }
@@ -172,18 +174,28 @@
             * if not and a user has made a suggestion, show it in green
             * if not, show the most voted suggestion
             */
-            if (!is_null($objNarroTextContext->ValidSuggestion))
-                return htmlentities($objNarroTextContext->ValidSuggestion->SuggestionValue, null, 'utf-8');
+            if (!is_null($objNarroTextContext->ValidSuggestion)) {
+                $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objNarroTextContext->ValidSuggestion->SuggestionValue);
+                if (!$strSuggestionValue)
+                    $strSuggestionValue = $objNarroTextContext->ValidSuggestion->SuggestionValue;
+                $strSuggestionValue = (strlen($strSuggestionValue)>100)?substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
+                return htmlentities($strSuggestionValue, null, 'utf-8');
+            }
             elseif (
-                $arrSuggestions =
-                         NarroTextSuggestion::QueryArray(
+                $objSuggestion =
+                         NarroTextSuggestion::QuerySingle(
                              QQ::AndCondition(
                                  QQ::Equal(QQN::NarroTextSuggestion()->TextId, $objNarroTextContext->TextId),
                                  QQ::Equal(QQN::NarroTextSuggestion()->UserId, $intUserId)
                              )
                          )
                    ) {
-                $strSuggestionValue = $arrSuggestions[0]->SuggestionValue;
+                $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
+                if (!$strSuggestionValue)
+                    $strSuggestionValue = $objSuggestion->SuggestionValue;
+
+                $strSuggestionValue = (strlen($strSuggestionValue)>100)?substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
+
                 return '<div style="color:green">' . htmlentities($strSuggestionValue, null, 'utf-8') . '</div>';
             }
             elseif (
@@ -204,6 +216,11 @@
                     }
                 }
 
+                $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
+                if (!$strSuggestionValue)
+                    $strSuggestionValue = $objSuggestion->SuggestionValue;
+
+                $strSuggestionValue = (strlen($strSuggestionValue)>100)?substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
                 return '<div style="color:blue">' . htmlentities($strSuggestionValue, null, 'utf-8') . '</div>';
             }
             else {

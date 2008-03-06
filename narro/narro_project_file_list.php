@@ -46,6 +46,7 @@
                 QApplication::Redirect('narro_project_list.php');
 
             $intParentId = QApplication::QueryString('pf');
+
             if ($intParentId)
                 $this->objParentFile = NarroFile::Load($intParentId);
 
@@ -65,20 +66,14 @@
 
             // Setup DataGrid
             $this->dtgNarroFile = new QDataGrid($this);
-            $this->dtgNarroFile->CellSpacing = 0;
-            $this->dtgNarroFile->CellPadding = 4;
-            $this->dtgNarroFile->BorderStyle = QBorderStyle::Solid;
-            $this->dtgNarroFile->BorderWidth = 1;
-            $this->dtgNarroFile->Width = '100%';
-            $this->dtgNarroFile->GridLines = QGridLines::Both;
-            //$this->dtgNarroFile->SortColumnIndex = 0;
 
             // Datagrid Paginator
             $this->dtgNarroFile->Paginator = new QPaginator($this->dtgNarroFile);
             $this->dtgNarroFile->ItemsPerPage = 20;
+            $this->dtgNarroFile->PaginatorAlternate = new QPaginator($this->dtgNarroFile);
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroFile->UseAjax = true;
+            $this->dtgNarroFile->UseAjax = false;
 
             // Specify the local databind method this datagrid will use
             $this->dtgNarroFile->SetDataBinder('dtgNarroFile_Bind');

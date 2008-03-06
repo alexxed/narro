@@ -162,7 +162,7 @@
             $this->pnlOriginalText->ToolTip = QApplication::Translate('Original text');
             $this->pnlOriginalText->FontBold = true;
             $this->pnlOriginalText->DisplayStyle = QDisplayStyle::Inline;
-            //$this->pnlOriginalText->AddAction(new QChangeEvent(), new QJavascriptAction(sprintf("var sTitle=document.getElementById('%s');if (sTitle.innerHTML) document.title='%s „' + ((sTitle.innerHTML.length>30)?sTitle.innerHTML.slice(0,3) + '...':sTitle.innerHTML) + '”';", $this->pnlOriginalText->ControlId, (user_access('narro suggest'))?'Traduceţi ':'Vedeţi sugestii pentru ')));
+            //$this->pnlOriginalText->AddAction(new QChangeEvent(), new QJavascriptAction(sprintf("var sTitle=document.getElementById('%s');if (sTitle.innerHTML) document.title='%s „' + ((sTitle.innerHTML.length>30)?sTitle.innerHTML.slice(0,3) + '...':sTitle.innerHTML) + '”';", $this->pnlOriginalText->ControlId, (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId))?'Traduceţi ':'Vedeţi sugestii pentru ')));
 
         }
 
@@ -258,7 +258,7 @@
 
             $strText = htmlspecialchars($this->objNarroTextContext->Text->TextValue,null,'utf-8');
             $strPageTitle =
-                sprintf((user_access('narro suggest'))?QApplication::Translate('Translate "%s"'):QApplication::Translate('See suggestions for "%s"'),
+                sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId))?QApplication::Translate('Translate "%s"'):QApplication::Translate('See suggestions for "%s"'),
                 (strlen($this->objNarroTextContext->Text->TextValue)>30)?substr($strText, 0, 30) . '...':$strText);
 
             $this->pnlNavigator->Text .=  ' -> ' . $strPageTitle;
@@ -287,14 +287,14 @@
             $this->txtSuggestionValue = new QTextBox($this);
             $this->txtSuggestionValue->Text = '';
             //$this->txtSuggestionValue->BorderStyle = QBorderStyle::None;
-            $this->txtSuggestionValue->BackColor = 'lightgreen';
+            $this->txtSuggestionValue->CssClass = 'green3dbg';
             $this->txtSuggestionValue->Width = '100%';
             $this->txtSuggestionValue->Height = 85;
             $this->txtSuggestionValue->Required = true;
             $this->txtSuggestionValue->TextMode = QTextMode::MultiLine;
             $this->txtSuggestionValue->TabIndex = 1;
             $this->txtSuggestionValue->CrossScripting = QCrossScripting::Allow;
-            //$this->txtSuggestionValue->Display = user_access('narro suggest');
+            //$this->txtSuggestionValue->Display = QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId);
             //$this->txtSuggestionValue->AddAction(new QKeyUpEvent(), new QJavaScriptAction(sprintf("document.getElementById('%s').style.display=(this.value!='')?'inline':'none';document.getElementById('%s_div').style.display=(this.value!='')?'block':'none'", $this->btnSave->ControlId, $this->txtSuggestionComment->ControlId)));
         }
 
@@ -310,7 +310,7 @@
             $strOrigText = $this->objNarroTextContext->Text;
             //$this->txtSuggestionComment->MaxLength = strlen($strOrigText) + ceil(20 * strlen($strOrigText) / 100 );
             $this->txtSuggestionComment->TabIndex = 2;
-            $this->txtSuggestionComment->Display = user_access('narro suggest');
+            $this->txtSuggestionComment->Display = QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId);
         }
 
         // Setup btnKeepUntranslated
@@ -327,7 +327,7 @@
             else
                 $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QServerAction('btnKeepUntranslated_Click'));
             $this->btnKeepUntranslated->TabIndex = 5;
-            $this->btnKeepUntranslated->Display = user_access('narro validate');
+            $this->btnKeepUntranslated->Display = QApplication::$objUser->hasPermission('Can validate', $this->objNarroTextContext->ProjectId);
         }
 
         // Setup btnSave
@@ -341,7 +341,7 @@
             //$this->btnSave->PrimaryButton = true;
             $this->btnSave->CausesValidation = true;
             $this->btnSave->TabIndex = 3;
-            $this->btnSave->Display = user_access('narro suggest');
+            $this->btnSave->Display = QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId);
             //$this->btnSave->DisplayStyle = QDisplayStyle::None;
         }
 
@@ -356,7 +356,7 @@
             $this->btnSaveIgnore->CausesValidation = true;
             $this->btnSaveIgnore->TabIndex = 3;
             $this->btnSaveIgnore->Visible = false;
-            $this->btnSaveIgnore->Display = user_access('narro suggest');
+            $this->btnSaveIgnore->Display = QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId);
         }
 
         // Setup btnSaveValidate
@@ -370,7 +370,7 @@
             $this->btnSaveValidate->CausesValidation = true;
             $this->btnSaveValidate->TabIndex = 7;
             $this->btnSaveValidate->Visible = true;
-            $this->btnSaveValidate->Display = user_access('narro validate');
+            $this->btnSaveValidate->Display = QApplication::$objUser->hasPermission('Can validate', $this->objNarroTextContext->ProjectId);
         }
 
         // Setup btnNext
@@ -561,8 +561,11 @@
 
         protected function Spellcheck() {
             if ($this->chkIgnoreSpellcheck->Checked) return $this->ClearSpellCheck();
+            $strSuggestionValue = QApplication::$objPluginHandler->ProcessSuggestion($this->txtSuggestionValue->Text);
+            if (!$strSuggestionValue)
+                $strSuggestionValue = $this->txtSuggestionValue->Text;
 
-            $arrTextSuggestions = QApplication::GetSpellSuggestions(QApplication::ConvertToSedila($this->txtSuggestionValue->Text));
+            $arrTextSuggestions = QApplication::GetSpellSuggestions($strSuggestionValue);
             $strSpellcheckText = '';
 
             foreach($arrTextSuggestions as $strWord=>$arrSuggestions) {
@@ -627,14 +630,18 @@
 
             $blnValidate = $this->chkValidate->Checked;
 
-            if (!user_access('narro suggest'))
+            if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId))
                 return false;
 
             $objSuggestion = new NarroTextSuggestion();
             $objSuggestion->UserId = $intUserId;
             $objSuggestion->TextId = $this->objNarroTextContext->TextId;
-            $objSuggestion->SuggestionValue = QApplication::ConvertToSedila($this->txtSuggestionValue->Text);
-            $objSuggestion->SuggestionValueMd5 = md5(QApplication::ConvertToSedila($this->txtSuggestionValue->Text));
+            $strSuggestionValue = QApplication::$objPluginHandler->ProcessSuggestion($this->txtSuggestionValue->Text);
+            if (!$strSuggestionValue)
+                $strSuggestionValue = $this->txtSuggestionValue->Text;
+
+            $objSuggestion->SuggestionValue = $strSuggestionValue;
+            $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
             try {
                 $objSuggestion->Save();
             } catch (QMySqliDatabaseException $objExc) {
@@ -657,7 +664,7 @@
                         if (count($arrNarroTextContext)) {
                             foreach($arrNarroTextContext as $objNarroTextContext) {
                                 $objNarroTextContext->HasSuggestion = 1;
-                                if (user_access('narro validate') && $blnValidate && $this->objNarroTextContext->ContextId == $objNarroTextContext->ContextId)
+                                if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroTextContext->ProjectId) && $blnValidate && $this->objNarroTextContext->ContextId == $objNarroTextContext->ContextId)
                                     $objNarroTextContext->ValidSuggestionId = $objSuggestion->SuggestionId;
                                 $objNarroTextContext->Save();
                             }
@@ -667,7 +674,7 @@
             }
 
             $this->objNarroTextContext->HasSuggestion = 1;
-            if (user_access('narro validate') && $blnValidate && $this->objNarroTextContext->ValidSuggestionId != $objSuggestion->SuggestionId) {
+            if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroTextContext->ProjectId) && $blnValidate && $this->objNarroTextContext->ValidSuggestionId != $objSuggestion->SuggestionId) {
                 $this->objNarroTextContext->ValidSuggestionId = $objSuggestion->SuggestionId;
                 $this->objNarroTextContext->Save();
             }
@@ -847,7 +854,7 @@
         }
 
         public function btnValidate_Click($strFormId, $strControlId, $strParameter) {
-            if (!user_access('narro validate'))
+            if (!QApplication::$objUser->hasPermission('Can validate', $this->objNarroTextContext->ProjectId))
               return false;
 
             if ($strParameter != $this->objNarroTextContext->ValidSuggestionId) {

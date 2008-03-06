@@ -57,14 +57,6 @@
             // Setup DataGrid
             $this->dtgSuggestions = new QDataGrid($this);
             $this->dtgSuggestions->ShowHeader = false;
-            $this->dtgSuggestions->CellSpacing = 0;
-            $this->dtgSuggestions->CellPadding = 4;
-            $this->dtgSuggestions->GridLines = QGridLines::Both;
-            $this->dtgSuggestions->BorderWidth = 1;
-            $this->dtgSuggestions->Width = '100%';
-            $this->dtgSuggestions->BorderStyle = QBorderStyle::Dotted;
-            $this->dtgSuggestions->SetCustomStyle('margin', '5px 0px');
-
 
             // Datagrid Paginator
             //$this->dtgSuggestions->Paginator = new QPaginator($this->dtgSuggestions);
@@ -79,7 +71,7 @@
             $this->dtgSuggestions->AddColumn($this->colSuggestion);
 
             $this->dtgSuggestions->AddColumn($this->colVote);
-            if (user_access('narro vote'))
+            if (QApplication::$objUser->hasPermission('Can vote'))
                 $this->dtgSuggestions->AddColumn($this->colActions);
 
 
@@ -105,9 +97,12 @@
 
         public function dtgSuggestions_colSuggestion_Render(NarroTextSuggestion $objNarroTextSuggestion) {
             $intUserId = 0;
+            $strSuggestionValue = QApplication::$objPluginHandler->ProcessSuggestion($objNarroTextSuggestion->SuggestionValue);
+            if (!$strSuggestionValue)
+                $strSuggestionValue = $objNarroTextSuggestion->SuggestionValue;
 
-            $arrWordSuggestions = QApplication::GetSpellSuggestions(QApplication::ConvertToSedila($objNarroTextSuggestion->SuggestionValue));
-            $strSuggestionValue = htmlentities($objNarroTextSuggestion->SuggestionValue, null, 'utf-8');
+            $arrWordSuggestions = QApplication::GetSpellSuggestions($strSuggestionValue);
+            $strSuggestionValue = htmlentities($strSuggestionValue, null, 'utf-8');
 
             foreach($arrWordSuggestions as $strWord=>$arrSuggestion) {
                 $strSuggestionValue = str_replace($strWord, sprintf(QApplication::Translate('<span style="color:red" title="Misspelled. Suggestions: %s">%s</span>'), addslashes(join(',', $arrSuggestion)), $strWord), $strSuggestionValue);
@@ -118,7 +113,7 @@
             else
                 $strCellValue = $strSuggestionValue;
 
-            if ((user_access('administrator') || $objNarroTextSuggestion->UserId == $intUserId) && $this->intEditSuggestionId == $objNarroTextSuggestion->SuggestionId) {
+            if ((QApplication::$objUser->hasPermission('Can edit any suggestion', $this->objNarroTextContext->ProjectId) || $objNarroTextSuggestion->UserId == $intUserId) && $this->intEditSuggestionId == $objNarroTextSuggestion->SuggestionId) {
                 $strControlId = 'txtEditSuggestion' . $objNarroTextSuggestion->SuggestionId;
                 $txtEditSuggestion = $this->objForm->GetControl($strControlId);
                 if (!$txtEditSuggestion) {
@@ -245,13 +240,13 @@
             $btnValidate->ActionParameter = $objNarroTextSuggestion->SuggestionId;
 
             $strText = '';
-            if (user_access('narro vote'))
+            if (QApplication::$objUser->hasPermission('Can vote', $this->objNarroTextContext->ProjectId))
                 $strText .= '&nbsp;' . $btnVote->Render(false);
-            if (user_access('narro administrator') || $objNarroTextSuggestion->UserId == $intUserId)
+            if (QApplication::$objUser->hasPermission('Can edit any suggestion', $this->objNarroTextContext->ProjectId) || $objNarroTextSuggestion->UserId == $intUserId)
                 $strText .= '&nbsp;' . $btnEdit->Render(false);
-            if (user_access('narro delete') || $objNarroTextSuggestion->UserId == $intUserId)
+            if (QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroTextContext->ProjectId) || $objNarroTextSuggestion->UserId == $intUserId)
                 $strText .= '&nbsp;' . $btnDelete->Render(false);
-            if (user_access('narro validate'))
+            if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroTextContext->ProjectId))
                 $strText .= '&nbsp;' . $btnValidate->Render(false);
 
             return $strText;
@@ -276,7 +271,7 @@
 
                 $objSuggestion = NarroTextSuggestion::Load($strParameter);
 
-                if (!user_access('narro delete') && $objSuggestion->UserId != $intUserId)
+                if (!QApplication::$objUser->hasPermission('Can delete', $this->objNarroTextContext->ProjectId) && $objSuggestion->UserId != $intUserId)
                   return false;
 
 
@@ -297,7 +292,7 @@
         public function btnVote_Click($strFormId, $strControlId, $strParameter) {
             $intUserId = 0;
 
-            if (!user_access('narro vote'))
+            if (!QApplication::$objUser->hasPermission('Can vote', $this->objNarroTextContext->ProjectId))
               return false;
 
             $arrSuggestion = NarroSuggestionVote::QueryArray(
@@ -332,7 +327,7 @@
         public function btnEdit_Click($strFormId, $strControlId, $strParameter) {
             $intUserId = 0;
 
-            if (!user_access('narro administrator') && $objNarroTextSuggestion->UserId != $intUserId)
+            if (!QApplication::$objUser->hasPermission('Can edit any suggestion', $this->objNarroTextContext->ProjectId) && $objNarroTextSuggestion->UserId != $intUserId)
               return false;
 
             $btnEdit = $this->objForm->GetControl($strControlId);
@@ -347,8 +342,12 @@
                     $txtControlId = str_replace('btnEditSuggestion', 'txtEditSuggestion', $strControlId);
                     $txtControl = $this->objForm->GetControl($txtControlId);
                     if ($txtControl) {
-                        $objSuggestion->SuggestionValue = QApplication::ConvertToSedila($txtControl->Text);
-                        $objSuggestion->SuggestionValueMd5 = md5(QApplication::ConvertToSedila($txtControl->Text));
+                        $strSuggestionValue = QApplication::$objPluginHandler->ProcessSuggestion($txtControl->Text);
+                        if (!$strSuggestionValue)
+                            $strSuggestionValue = $txtControl->Text;
+
+                        $objSuggestion->SuggestionValue = $strSuggestionValue;
+                        $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
                         try {
                             $objSuggestion->Save();
                             $this->lblMessage->Text = QApplication::Translate('Your changes were saved succesfully.');
