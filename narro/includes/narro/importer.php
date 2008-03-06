@@ -21,15 +21,9 @@
         exit();
     }
 
-    include_once './includes/bootstrap.inc';
-    drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+    require_once('includes/prepend.inc.php');
 
     include_once(dirname(__FILE__) . '/narro_file_importer.class.php');
-
-    if (!defined('__INCLUDES__'))
-        define('__INCLUDES__', realpath(dirname(__FILE__) . '/../../../../includes/qcodo/includes'));
-    set_include_path(get_include_path() . PATH_SEPARATOR . __INCLUDES__);
-    _qdrupal_bootstrap();
 
     if (in_array('--import-mozilla', $argv)) {
 
@@ -83,9 +77,21 @@
 
         include_once(dirname(__FILE__) . '/narro_ooo_file_importer.class.php');
         $objNarroImporter = new NarroOooFileImporter();
-        $intProjectId = $argv[array_search('--project_id', $argv)+1];
-        $strTemplateFile = str_replace('"','', $argv[array_search('--template', $argv)+1]);
-        $objNarroImporter->ImportSdfFile($intProjectId, $strTemplateFile);
+        if (array_search('--project', $argv))
+            $intProjectId = $argv[array_search('--project', $argv)+1];
+        if (array_search('--validate', $argv))
+            $blnValidate = true;
+        if (array_search('--check-equal', $argv))
+            $blnCheckEqual = true;
+        if (array_search('--only-suggestions', $argv))
+            $blnOnlySuggestions = true;
+        if (array_search('--source-lang', $argv))
+            $strSourceLang = $argv[array_search('--source-lang', $argv)+1];
+        if (array_search('--target-lang', $argv))
+            $strTargetLang = $argv[array_search('--target-lang', $argv)+1];
+        if (array_search('--template', $argv))
+            $strTemplateFile = str_replace('"','', $argv[array_search('--template', $argv)+1]);
+        $objNarroImporter->ImportSdfFile($intProjectId, $strSourceLang, $strTargetLang, $strTemplateFile, $blnCheckEqual, $blnValidate , $blnOnlySuggestions);
 
     }
     elseif (in_array('--export-mozilla', $argv)) {

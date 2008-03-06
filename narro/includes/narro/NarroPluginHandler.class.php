@@ -57,9 +57,10 @@
 
 
         public function __call($strMethod, $arrParameters) {
+            $mixResult = $arrParameters[0];
             foreach($this->arrPlugins as $objPlugin) {
                 if (method_exists($objPlugin, $strMethod)) {
-                    $mixResult = call_user_func_array( array($objPlugin, $strMethod), $arrParameters);
+                    $mixResult = call_user_func_array( array($objPlugin, $strMethod), array($mixResult));
 
                     if ($objPlugin->Errors) {
                         $this->arrPluginErrors[$objPlugin->Name] = $objPlugin->Errors;
@@ -70,7 +71,7 @@
                     }
                 }
                 else
-                    return false;
+                    return $mixResult;
             }
         }
     }

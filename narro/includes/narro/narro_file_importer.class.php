@@ -17,11 +17,16 @@
      */
 
     class NarroFileImporter {
+        /**
+         * the user id used for the suggestions stored, defaults to 1, anonymous user
+         */
+        protected $intUserId = 1;
+        protected $intLanguageId = 1;
         protected $blnLogOutput = true;
         protected $blnEchoOutput = true;
 
         protected $hndLogFile;
-        protected $strLogFile = 'importer.log';
+        protected $strLogFile;
 
         protected $arrStatistics;
 
@@ -31,27 +36,16 @@
 
         protected function stopTimer() {
             $this->arrStatistics['End time'] = time();
-
-            if ($this->arrStatistics['Time passed'] > 3600) {
-                $this->arrStatistics['elapsed_time_string'] = floor($this->arrStatistics['Time passed']/3600) . 'h, ' . floor(($this->arrStatistics['Time passed']%3600) / 60) . 'm';
-            }
-            elseif ($this->arrStatistics['Time passed'] > 60) {
-                $this->arrStatistics['elapsed_time_string'] = floor($this->arrStatistics['Start time'] / 60) . 'm, ' . floor($this->arrStatistics['Time passed']%60) . 's';
-            }
-            else {
-                $this->arrStatistics['elapsed_time_string'] = $this->arrStatistics['Start time'] . 's';
-            }
-
         }
 
-        public function Output($strText) {
+        public function Output($intMessageType, $strText) {
 
             if ($this->blnEchoOutput)
                 echo $strText;
 
             if ($this->blnLogOutput) {
                 if ($this->strLogFile)
-                    $this->OutputLog($strText);
+                    $this->OutputLog($intMessageType, $strText);
                 else
                     error_log($strText);
             }
@@ -78,13 +72,9 @@
          * @param bool $blnValidate validated the translation
          * @param bool $blnCheckEqual check if the translation is equal to original text and don't import it if it is
          */
-        protected function AddTranslation($intProjectId, NarroFile $objFile, $strOriginal, $strTranslation, $strContext, $intPluralForm, $blnValidate = false, $blnCheckEqual = false) {
+        protected function AddTranslation($intProjectId, NarroFile $objFile, $strOriginal, $strTranslation, $strContext, $intPluralForm, $blnCheckEqual = false, $blnValidate = false, $blnOnlySuggestions = false) {
             //$arrArgs = func_get_args();
-            //$this->Output(__FUNCTION__ . var_export($arrArgs,true));
-            //if ($blnCheckEqual && $strOriginal == $strTranslation)
-                //$strTranslation = '';
-            //echo $objFile->FileName . '|' . $strContext . '|' . $strOriginal . '|' . $strTranslation . "\n";
-            //return true;
+            //$this->Output(1, __FUNCTION__ . var_export($arrArgs,true));
 
             /**
              * Avoid trimming the strings to preserve spaces; let the plugins handle eventual processing needs
@@ -92,10 +82,19 @@
             $strOriginal = QApplication::$objPluginHandler->ProcessText($strOriginal);
             $strTranslation = QApplication::$objPluginHandler->ProcessSuggestion($strTranslation);
             $strContext = QApplication::$objPluginHandler->ProcessContext($strContext);
+            if ($strContext == '') {
+                $this->Output(2, sprintf(QApplication::Translate('In file "%s", the context "%s" was skipped because it was empty.'), $objFile->FileName, $strContext));
+                $this->arrStatistics['Skipped contexts']++;
+                $this->arrStatistics['Skipped suggestions']++;
+                $this->arrStatistics['Skipped texts']++;
+                return false;
+            }
 
             if ($strOriginal == '') {
-                $this->Output(sprintf(QApplication::Translate(2, 'In file "%s", the context "%s" was skipped because the original text "%s" was empty.', $objFile->FileName, $strContext, $strOriginal)));
+                $this->Output(2, sprintf(QApplication::Translate('In file "%s", the context "%s" was skipped because the original text "%s" was empty.'), $objFile->FileName, $strContext, $strOriginal));
                 $this->arrStatistics['Skipped contexts']++;
+                $this->arrStatistics['Skipped suggestions']++;
+                $this->arrStatistics['Skipped texts']++;
                 $this->arrStatistics['Empty original texts']++;
                 return false;
             }
@@ -107,16 +106,19 @@
             $objNarroText = NarroText::QuerySingle(QQ::Equal(QQN::NarroText()->TextValueMd5, md5($strOriginal)));
 
             if (!$objNarroText instanceof NarroText) {
+                if ($blnOnlySuggestions) return false;
                 $objNarroText = new NarroText();
                 $objNarroText->TextValue = $strOriginal;
                 $objNarroText->TextValueMd5 = md5($strOriginal);
                 $objNarroText->TextCharCount = strlen($strOriginal);
                 try {
                     $objNarroText->Save();
-                    $this->Output(sprintf(1, QApplication::Translate('Added text "%s" from the file "%s"'), $strOriginal, $objFile->FileName));
+                    $this->Output(1, sprintf(QApplication::Translate('Added text "%s" from the file "%s"'), $strOriginal, $objFile->FileName));
                     $this->arrStatistics['Imported texts']++;
                 } catch(Exception $objExc) {
-                    $this->Output(sprintf(3, QApplication::Translate('Error while adding "%s": %s'), $strOriginal, $objExc->getMessage()));
+                    $this->Output(3, sprintf(QApplication::Translate('Error while adding "%s": %s'), $strOriginal, $objExc->getMessage()));
+                    $this->arrStatistics['Skipped contexts']++;
+                    $this->arrStatistics['Skipped suggestions']++;
                     $this->arrStatistics['Skipped texts']++;
                     $this->arrStatistics['Texts that had errors while adding']++;
                     /**
@@ -142,45 +144,52 @@
                                 );
 
             if (!$objNarroContext instanceof NarroTextContext) {
+                if ($blnOnlySuggestions) return false;
                 $objNarroContext = new NarroTextContext();
                 $objNarroContext->TextId = $objNarroText->TextId;
                 $objNarroContext->ProjectId = $intProjectId;
                 $objNarroContext->Context = $strContext;
                 $objNarroContext->Translatable = 1;
-                $objNarroContext->IsFuzzy = 0;
-                $this->OutputLog(sprintf('S-a adăugat contextul „%s” din fișierul „%s”', $strContext, $objFile->FileName));
+                $this->Output(1, sprintf(QApplication::Translate('Added the context "%s" from the file "%s"'), $strContext, $objFile->FileName));
                 $this->arrStatistics['Imported contexts']++;
             }
             else {
-                $this->arrStatistics['Skipped contexts']++;
+                $this->arrStatistics['Reused contexts']++;
             }
 
+            /**
+             * this lies outside the if/else if reusing contexts is activated, so if a context was moved in another file, we'll just update the file_id
+             */
             $objNarroContext->FileId = $objFile->FileId;
 
+            /**
+             * if a translation is not empty and equal checking is required and missed, go ahead with the suggestion
+             */
             if ($strTranslation != '' && !($blnCheckEqual && strlen($strOriginal)>1 && $strOriginal == $strTranslation)) {
 
                 /**
-                 * See if a suggesstion already exists
+                 * See if a suggesstion already exists, fetch it by its md5 and text_id
                  */
                 $objNarroSuggestion = NarroTextSuggestion::QuerySingle(
                                             QQ::AndCondition(
                                                 QQ::Equal(QQN::NarroTextSuggestion()->TextId, $objNarroText->TextId),
-                                                QQ::Equal(QQN::NarroTextSuggestion()->SuggestionValue, $strTranslation),
                                                 QQ::Equal(QQN::NarroTextSuggestion()->SuggestionValueMd5, md5($strTranslation))
                                             )
                 );
 
                 if (!$objNarroSuggestion instanceof NarroTextSuggestion) {
                     $objNarroSuggestion = new NarroTextSuggestion();
-                    $objNarroSuggestion->UserId = 9;
+                    $objNarroSuggestion->UserId = $this->intUserId;
+                    $objNarroSuggestion->LanguageId = $this->intLanguageId;
                     $objNarroSuggestion->TextId = $objNarroText->TextId;
                     $objNarroSuggestion->SuggestionValue = $strTranslation;
                     $objNarroSuggestion->SuggestionValueMd5 = md5($strTranslation);
+                    $objNarroSuggestion->SuggestionCharCount = strlen($strTranslation);
                     $objNarroSuggestion->Save();
                     $this->arrStatistics['Imported suggestions']++;
                 }
                 else {
-                    $this->arrStatistics['Unchanged suggestions']++;
+                    $this->arrStatistics['Reused suggestions']++;
                 }
 
                 if ($blnValidate) {
@@ -190,7 +199,7 @@
             }
             else {
                 if ($strTranslation != '') {
-                    $this->OutputLog(sprintf('S-a sărit peste „%s” pentru că „%s” are aceaşi valoare. Din „%s”.', $strOriginal, $strTranslation, $objFile->FileName));
+                    $this->Output(2, sprintf(QApplication::Translate('Skipped "%s" because "%s" has the same value. From "%s".'), $strOriginal, $strTranslation, $objFile->FileName));
                     $this->arrStatistics['Skipped suggestions']++;
                     $this->arrStatistics['Suggestions that kept the original text']++;
                 }
@@ -202,8 +211,10 @@
                 }
             }
 
-            $intSuggestionCnt = NarroTextSuggestion::CountByTextId($objNarroText->TextId);
-            $objNarroContext->HasSuggestion = ($intSuggestionCnt && $intSuggestionCnt>0)?1:0;
+            if ($objNarroContext->HasSuggestion != 1) {
+                $intSuggestionCnt = NarroTextSuggestion::CountByTextId($objNarroText->TextId);
+                $objNarroContext->HasSuggestion = ($intSuggestionCnt && $intSuggestionCnt>0)?1:0;
+            }
 
             if ($objNarroContext instanceof NarroTextContext) {
                 try {
@@ -216,7 +227,7 @@
                     }
                     $objNarroContext->Save();
                 } catch(Exception $objExc) {
-                    $this->Output(sprintf('Atenție, eroare la adăugarea contextului „%s”: %s', $strContext, $objExc->getMessage()));
+                    $this->Output(3, sprintf(QApplication::Translate('Error while setting context "%s" to active: %s'), $strContext, $objExc->getMessage()));
                     $this->intSkippedContextsCount++;
                 }
             }
@@ -226,8 +237,10 @@
             if (!is_null($intPluralForm)) {
                 $objNarroPlural = NarroTextContextPlural::QuerySingle(QQ::Equal(QQN::NarroTextContextPlural()->ContextId, $objNarroContext->ContextId));
 
-                if (!$objNarroPlural instanceof NarroTextContextPlural)
+                if (!$objNarroPlural instanceof NarroTextContextPlural) {
+                    if ($blnOnlySuggestions) return false;
                     $objNarroPlural = new NarroTextContextPlural();
+                }
 
                 $objNarroPlural->ContextId = $objNarroContext->ContextId;
                 $objNarroPlural->PluralForm = $intPluralForm;
