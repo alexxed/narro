@@ -240,7 +240,12 @@
     else {
         QApplication::$CountryCode = 'us';
         QApplication::$LanguageCode = QApplication::$objUser->getPreferenceValueByName('Language');
-        QI18n::Initialize();
+        try {
+            QI18n::Initialize();
+        } catch (Exception $objEx) {
+            QApplication::$LanguageCode = 'en';
+            QI18n::Initialize();
+        }
     }
 
 ?>
