@@ -1,0 +1,576 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-11-03 20:36+1000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Launchpad-Export-Date: 2007-11-09 13:45+0000\n"
+"X-Generator: Narro (build Unknown)\n"
+
+#: /assets/php/_core/error_page.php
+msgid "An error occured in the application you were using. A detailed report was sent to developers."
+msgstr ""
+
+#: /assets/php/_core/error_page.php
+msgid "Click <a href=\"%s\">here</a> to start over."
+msgstr ""
+
+#: /includes/header.inc.php
+msgid "<i>Logged in as <a href=\"%s\" style=\"color:green;font-weight:bold\">%s</span></i>"
+msgstr ""
+
+#: /includes/header.inc.php, /narro_register.php, /templates/narro_register.tpl.php
+msgid "Register"
+msgstr ""
+
+#: /includes/header.inc.php, /narro_login.php, /templates/narro_login.tpl.php
+msgid "Login"
+msgstr ""
+
+#: /includes/header.inc.php
+msgid "Preferences"
+msgstr ""
+
+#: /includes/header.inc.php, /templates/narro_project_list.tpl.php
+msgid "Project list"
+msgstr ""
+
+#: /includes/header.inc.php
+msgid "Manage users"
+msgstr ""
+
+#: /includes/header.inc.php
+msgid "Logout"
+msgstr ""
+
+#: /includes/narro/narro_file_importer.class.php
+msgid "Added text \"%s\" from the file \"%s\""
+msgstr ""
+
+#: /includes/narro/narro_file_importer.class.php
+msgid "Error while adding \"%s\": %s"
+msgstr ""
+
+#: /includes/narro/narro_progress_bar.class.php
+msgid "No texts"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "Other suggestions"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "Votes"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php, /narro_project_list.php, /narro_text_list.php
+msgid "Actions"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "Others have suggested:"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "<span style=\"color:red\" title=\"Misspelled. Suggestions: %s\">%s</span>"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "no votes"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "Edit"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php, /includes/qcodo/qform/QFileAsset.class.php
+msgid "Delete"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php, /narro_file_text_list.php, /narro_project_text_list.php
+msgid "Vote"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "Cancel validation"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php, /templates/narro_text_context_suggest.tpl.php
+msgid "Validate"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "Suggestion succesfully deleted."
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "Thank you for your vote. You can change it anytime by voting another suggestion."
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php, /narro_text_context_suggest.php, /narro_user_preferences.php
+msgid "Save"
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "Your changes were saved succesfully."
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "The text you are trying to save already exists."
+msgstr ""
+
+#: /includes/narro/narro_suggestion_list_panel.class.php
+msgid "The suggestion is marked as valid for the following contexts: %s"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "about %s years"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "a year"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "about %s months"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "a month"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "about %s days"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "a day"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "about %s hours"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "an hour"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "%s minutes"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "a minute"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "%s seconds"
+msgstr ""
+
+#: /includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "a second"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QCalendar.class.php, /includes/qcodo/qform/QListBox.class.php
+msgid "Reset"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QDataGridBase.class.php
+msgid "<b>Results:</b> No %s found."
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QDataGridBase.class.php
+msgid "<b>Results:</b> 1 %s found."
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QDataGridBase.class.php
+msgid "<b>Results:</b> %s %s found."
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QDataGridBase.class.php
+msgid "<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s."
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgid " is required"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QFileAssetBase.class.php, /includes/qcodo/_core/qform/QListBoxBase.class.php, /includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "Required"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgid "Must be a JPG, PNG or GIF"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgid "Must be a PDF"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgid "Must be a valid document (Image, PDF, etc.)"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QFloatTextBox.class.php
+msgid "Invalid Float"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QFloatTextBox.class.php, /includes/qcodo/_core/qform/QIntegerTextBox.class.php
+msgid "Value must be less than %s"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QFloatTextBox.class.php, /includes/qcodo/_core/qform/QIntegerTextBox.class.php
+msgid "Value must be greater than %s"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QIntegerTextBox.class.php
+msgid "Invalid Integer"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QListBoxBase.class.php, /includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "%s is required"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QPaginatedControl.class.php
+msgid "item"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QPaginatedControl.class.php
+msgid "items"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "%s must have at least %s characters"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "Must have at least %s characters"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "%s must have at most %s characters"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "Must have at most %s characters"
+msgstr ""
+
+#: /includes/qcodo/_core/qform/QWriteBox.class.php
+msgid "Tags &lt;b&gt; &lt;u&gt; &lt;i&gt; &lt;br&gt; &lt;code&gt; and &lt;http://...&gt; are allowed.  Use ** at the beginning of any line for a bulleted list."
+msgstr ""
+
+#: /includes/qcodo/qform/QFileAsset.class.php
+msgid "Upload"
+msgstr ""
+
+#: /includes/qcodo/qform/QFileAsset.class.php, /narro_user_preferences.php
+msgid "Cancel"
+msgstr ""
+
+#: /includes/qcodo/qform/QPaginator.class.php, /narro_text_context_suggest.php
+msgid "Previous"
+msgstr ""
+
+#: /includes/qcodo/qform/QPaginator.class.php, /narro_text_context_suggest.php
+msgid "Next"
+msgstr ""
+
+#: /narro_file_text_list.php
+msgid "Suggest / Vote"
+msgstr ""
+
+#: /narro_file_text_list.php, /narro_project_text_list.php
+msgid "Suggest"
+msgstr ""
+
+#: /narro_file_text_list.php, /narro_project_text_list.php
+msgid "Details"
+msgstr ""
+
+#: /narro_login.php
+msgid "Bad username or password"
+msgstr ""
+
+#: /narro_project_file_list.php
+msgid "File name"
+msgstr ""
+
+#: /narro_project_file_list.php, /narro_project_list.php
+msgid "Progress"
+msgstr ""
+
+#: /narro_project_list.php
+msgid "Project name"
+msgstr ""
+
+#: /narro_project_list.php
+msgid "Import"
+msgstr ""
+
+#: /narro_project_list.php
+msgid "Export"
+msgstr ""
+
+#: /narro_project_text_list.php
+msgid "Suggest/Vote"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Other suggestions so far"
+msgstr ""
+
+#: /narro_text_context_suggest.php, /narro_text_list.php
+msgid "Original text"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Details about the place where the text is used"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Block"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Unblock"
+msgstr ""
+
+#: /narro_text_context_suggest.php, /templates/narro_file_text_list.tpl.php, /templates/narro_project_file_list.tpl.php, /templates/narro_project_text_list.tpl.php
+msgid "Projects"
+msgstr ""
+
+#: /narro_text_context_suggest.php, /templates/narro_file_text_list.tpl.php, /templates/narro_project_text_list.tpl.php
+msgid "Files"
+msgstr ""
+
+#: /narro_text_context_suggest.php, /narro_text_list.php
+msgid "Untranslated texts"
+msgstr ""
+
+#: /narro_text_context_suggest.php, /narro_text_list.php
+msgid "Validated texts"
+msgstr ""
+
+#: /narro_text_context_suggest.php, /narro_text_list.php
+msgid "Texts that require validation"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Search in original texts for \"%s\""
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Search in suggestions for \"%s\""
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Search in contexts for \"%s\""
+msgstr ""
+
+#: /narro_text_context_suggest.php, /templates/narro_text_context_suggest.tpl.php
+msgid "Translate \"%s\""
+msgstr ""
+
+#: /narro_text_context_suggest.php, /templates/narro_text_context_suggest.tpl.php
+msgid "See suggestions for \"%s\""
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Suggestion comment (optional):"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Ignore and save"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Save and validate"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "100 forward"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "100 back"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "The suggestion is identical to the text. If you think the text needs no translation, move on."
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "<span style=\"color:red\">You translated or forgot some variables that should have been left as they were. <br /> These are: %s</span><br /> If you think this is a mistake, check \"%s\" and then press \"%s\"<br />If you wish to correct and check again, correct the text and press \"%s\" again."
+msgstr ""
+
+#: /narro_text_context_suggest.php, /templates/narro_text_context_suggest.tpl.php
+msgid "Ignore spellchecking"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "\n                                <span style=\"color:red\">\n                                The original text does not end with \"%s\".</span><br />\n                                If you think this is a mistake, check \"%s\" and then press \"%s\"<br />If you wish to correct and check again, correct the text and press \"%s\" again."
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "\n                                <span style=\"color:red\">\n                                The original text ends with \"%s\", but your suggestion ends in \"%s\".</span><br />\n                                If you think this is a mistake, check \"%s\" and then press \"%s\"<br />If you wish to correct and check again, correct the text and press \"%s\" again."
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "is mispelled"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "Maybe you meant"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "You seem to have a few spellchecking errors:"
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "If you think this is a mistake, you can still save the suggestion by checking \"%s\" and pressing \"%s\"."
+msgstr ""
+
+#: /narro_text_context_suggest.php
+msgid "If you want to correct and check again, please correct and press \"%s\""
+msgstr ""
+
+#: /narro_text_list.php
+msgid "Context"
+msgstr ""
+
+#: /narro_text_list.php
+msgid "Translated text"
+msgstr ""
+
+#: /narro_text_list.php
+msgid "All texts"
+msgstr ""
+
+#: /narro_text_list.php
+msgid "original texts"
+msgstr ""
+
+#: /narro_text_list.php
+msgid "translations"
+msgstr ""
+
+#: /narro_text_list.php
+msgid "contexts"
+msgstr ""
+
+#: /narro_text_list.php, /templates/narro_file_text_list.tpl.php, /templates/narro_project_text_list.tpl.php
+msgid "Search"
+msgstr ""
+
+#: /narro_user_preferences.php
+msgid "Click <a href=\"%s\">here</a> to return to the page you were."
+msgstr ""
+
+#: /narro_user_preferences.php
+msgid "Your preferences were saved successfuly."
+msgstr ""
+
+#: /narro_user_preferences.php
+msgid "An error occured while trying to save your preferences."
+msgstr ""
+
+#: /templates/narro_file_text_list.tpl.php
+msgid "Texts from the file \"%s\""
+msgstr ""
+
+#: /templates/narro_file_text_list.tpl.php, /templates/narro_project_text_list.tpl.php
+msgid "Show"
+msgstr ""
+
+#: /templates/narro_login.tpl.php
+msgid "Please login so everyone else knows who is adding those great suggestions that you will add."
+msgstr ""
+
+#: /templates/narro_login.tpl.php, /templates/narro_register.tpl.php
+msgid "Username"
+msgstr ""
+
+#: /templates/narro_login.tpl.php, /templates/narro_register.tpl.php
+msgid "Password"
+msgstr ""
+
+#: /templates/narro_project_file_list.tpl.php
+msgid "%s :: File list"
+msgstr ""
+
+#: /templates/narro_project_file_list.tpl.php
+msgid "%s :: %s :: File list"
+msgstr ""
+
+#: /templates/narro_project_file_list.tpl.php
+msgid "Show hierarchy"
+msgstr ""
+
+#: /templates/narro_project_file_list.tpl.php
+msgid "Show folders"
+msgstr ""
+
+#: /templates/narro_project_list.tpl.php
+msgid "This is a list of projects that are being translated here. You can help too. Click on any project name to start translating."
+msgstr ""
+
+#: /templates/narro_project_text_list.tpl.php
+msgid "Texts from the project \"%s\""
+msgstr ""
+
+#: /templates/narro_register.tpl.php
+msgid "Here are a few benefits for a registered user"
+msgstr ""
+
+#: /templates/narro_register.tpl.php
+msgid "Be famous for your suggestions. Everyone will see that you added that cool suggestion."
+msgstr ""
+
+#: /templates/narro_register.tpl.php
+msgid "Vote for your favourite suggestion."
+msgstr ""
+
+#: /templates/narro_register.tpl.php
+msgid "Set your preferences and maintain your user profile."
+msgstr ""
+
+#: /templates/narro_register.tpl.php
+msgid "This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name."
+msgstr ""
+
+#: /templates/narro_register.tpl.php
+msgid "Email"
+msgstr ""
+
+#: /templates/narro_register.tpl.php
+msgid "This is used for password recovery and opt-in notifications."
+msgstr ""
+
+#: /templates/narro_text_context_suggest.tpl.php
+msgid "Text to translate"
+msgstr ""
+
+#: /templates/narro_text_context_suggest.tpl.php
+msgid "Your suggestion"
+msgstr ""
+
+#: /templates/narro_text_context_suggest.tpl.php
+msgid "After, go to the next text"
+msgstr ""
+
+#: /templates/narro_user_preferences.tpl.php
+msgid "Preferences for %s"
+msgstr ""
+
+#: /templates/narro_user_preferences.tpl.php
+msgid "Here you can set your preferences."
+msgstr ""
+
