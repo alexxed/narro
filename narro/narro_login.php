@@ -23,6 +23,7 @@
         protected $txtUsername;
         protected $txtPassword;
         protected $btnLogin;
+        protected $btnRecoverPassword;
 
         protected function Form_Create() {
             $this->lblMessage = new QLabel($this);
@@ -32,12 +33,21 @@
             $this->txtPassword->TextMode = QTextMode::Password;
             $this->btnLogin = new QButton($this);
             $this->btnLogin->Text = QApplication::Translate('Login');
+            $this->btnLogin->PrimaryButton = true;
             $this->btnLogin->AddAction(new QClickEvent(), new QServerAction('btnLogin_Click'));
+            $this->btnRecoverPassword = new QButton($this);
+            $this->btnRecoverPassword->Text = QApplication::Translate('Lost password or username');
+            $this->btnRecoverPassword->AddAction(new QClickEvent(), new QServerAction('btnRecoverPassword_Click'));
+
 
         }
 
+        protected function btnRecoverPassword_Click($strFormId, $strControlId, $strParameter) {
+            QApplication::Redirect('narro_recover_password.php');
+        }
+
         protected function btnLogin_Click($strFormId, $strControlId, $strParameter) {
-            if ($objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, $this->txtPassword->Text)) {
+            if ($objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text))) {
                 $_SESSION['objUser'] = $objUser;
                 QApplication::$objUser = $objUser;
                 QApplication::Redirect('narro_project_list.php');

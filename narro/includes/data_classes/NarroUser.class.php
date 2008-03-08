@@ -16,6 +16,7 @@
     class NarroUser extends NarroUserGen {
         protected $arrPermissions;
         public $arrPreferences;
+        const ANONYMOUS_USER_ID = 0;
         /**
         * Default "to string" handler
         * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -40,7 +41,7 @@
             $objUser = NarroUser::QuerySingle(
                         QQ::AndCondition(
                             QQ::Equal(QQN::NarroUser()->Username, $strUsername),
-                            QQ::Equal(QQN::NarroUser()->Password, md5($strPassword))
+                            QQ::Equal(QQN::NarroUser()->Password, $strPassword)
                         )
             );
             if (!$objUser instanceof NarroUser)
@@ -55,8 +56,8 @@
         }
 
         public static function LoadAnonymousUser() {
-            $objUser = NarroUser::LoadByUserId(0);
-            $arrUserPermissions = NarroUserPermission::LoadArrayByUserId(0);
+            $objUser = NarroUser::LoadByUserId(self::ANONYMOUS_USER_ID);
+            $arrUserPermissions = NarroUserPermission::LoadArrayByUserId(self::ANONYMOUS_USER_ID);
             foreach($arrUserPermissions as $objUserPermission) {
                 $objPermission = NarroPermission::Load($objUserPermission->PermissionId);
                 $objUser->arrPermissions[$objPermission->PermissionName] = $objUserPermission;

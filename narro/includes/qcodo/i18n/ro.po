@@ -1,320 +1,427 @@
-# Qcodo Distributed Language File
-# for Romanian (RO)
-# Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# Alexandru Szasz <alexxed@gmail.com>, 2007.
-# , fuzzy
-#
-#
-# msgid ""
-# msgstr ""
-# "Project-Id-Version: qcodo HEAD\n"
-# "Report-Msgid-Bugs-To: \n"
-# "POT-Creation-Date: 2007-08-20 09:29-0700\n"
-# "PO-Revision-Date: 2007-08-20 22:21+0300\n"
-# "Last-Translator: Alexandru Szasz <alexxed@gmail.com>\n"
-# "Language-Team: Romanian <mozilla-ro@google.com>\n"
-# "MIME-Version: 1.0\n"
-# "Content-Type: text/plain; charset=UTF-8\n"
-# "Content-Transfer-Encoding: 8bit\n"
-# "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\n"
+msgid "An error occured in the application you were using. A detailed report was sent to developers."
+msgstr "A apărut o eroare în aplicaţia pe care o foloseaţi. Un raport detaliat către dezvoltatori."
 
-
-
-# For QTextBoxBase controls
-msgid "%s is required"
-msgstr "%s trebuie completat"
-
-msgid "Required"
-msgstr "Necesar"
-
-msgid "%s must have at least %s characters"
-msgstr "%s trebuie să aibă cel puţin %s caractere"
-
-msgid "Must have at least %s characters"
-msgstr "Trebuie să aibă cel puţin %s caractere"
-
-
-# For QWriteBox controls
-msgid ""
-"Tags &lt;b&gt; &lt;u&gt; &lt;i&gt; &lt;br&gt; &lt;code&gt; and &lt;http://...&gt; are allowed.  "
-"Use ** at the beginning of any line for a bulleted list."
+msgid "Click <a href=\"%s\">here</a> to start over."
 msgstr ""
-"Sunt permise etichetele &lt;b&gt; &lt;u&gt; &lt;i&gt; &lt;br&gt; &lt;code&gt; şi &lt;http://...&gt;.  "
-"Folosiţi ** la începutul oricărei linii pentru o listă cu buline."
-
-
-# For QPaginatedControl controls
-msgid "item"
-msgstr "rezultat"
-
-msgid "items"
-msgstr "rezultate"
-
-
-# For QListBox and QCalendar controls
-msgid "Reset"
-msgstr "Resetează"
-
-
-# For ListBoxes in Generated Forms
-msgid "- Select One -"
-msgstr "- Selectaţi ceva -"
-
-
-# For QIntegerTextBox and QFloatTextBox controls
-msgid "Invalid Integer"
-msgstr "Număr întreg invalid"
-
-msgid "Invalid Float"
-msgstr "Număr zecimal invalid"
-
-msgid "Value must be less than %s"
-msgstr "Valoarea trebuie să fie mai mică de %s"
-
-msgid "Value must be greater than %s"
-msgstr "Valoarea trebuie să fie mai mare de %s"
-
-
-# For QDataGrid controls
-msgid "<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s."
-msgstr "<b>Rezultate:</b>&nbsp;sunt afişate %sle de la %s la %s din totalul de %s."
-
-msgid "<b>Results:</b> No %s found."
-msgstr "<b>Rezultate:</b> nu s-au găsit %s."
-
-msgid "<b>Results:</b> 1 %s found."
-msgid_plural "<b>Results:</b> %s %s found."
-msgstr[0] "<b>Rezultate:</b> s-a găsit 1 %s."
-msgstr[1] "<b>Rezultate:</b> s-au găsit %s %s."
-#msgstr[2] "<b>Rezultate:</b> s-au găsit %s %s."
-
-# For QPaginator controls
-msgid "Previous"
-msgstr "Înapoi"
-
-msgid "Next"
-msgstr "Înainte"
-
-
-# For the List FormDraft Include template
-msgid "List All"
-msgstr "List All"
-
-msgid "Create a New"
-msgstr "Create a New"
-
-msgid "Go to \"Form Drafts\""
-msgstr "Go to \"Form Drafts\""
-
-
-# For the Edit FormBase class template
-msgid "Create"
-msgstr "Creează"
-
-msgid "Edit"
-msgstr "Editează"
-
-msgid "Save"
-msgstr "Salvează"
-
-msgid "Cancel"
-msgstr "Renunţă"
-
-msgid "Delete"
-msgstr "Şterge"
-
-msgid "Are you SURE you want to DELETE this %s?"
-msgstr "Are you SURE you want to DELETE this %s?"
-
-
-# For the form_drafts/index.php page
-msgid "List of Form Drafts"
-msgstr "List of Form Drafts"
-
-msgid "View List"
-msgstr "View List"
-
-msgid "Create New"
-msgstr "Create New"
-
-# Narro texts
-msgid "Original text"
-msgstr "Text original"
-
-msgid "Translated text"
-msgstr "Text tradus"
-
-msgid "Actions"
-msgstr "Acţiuni"
-
-msgid "Search"
-msgstr "Caută"
-
-msgid "Projects"
-msgstr "Proiecte"
-
-msgid "Files"
-msgstr "Fişiere"
-
-msgid "Project list"
-msgstr "Lista proiectelor"
-
-msgid "x-small"
-msgstr "Foarte mic"
-
-msgid "small"
-msgstr "mic"
-
-msgid "medium"
-msgstr "mediu"
-
-msgid "large"
-msgstr "mare"
-
-msgid "x-large"
-msgstr "foarte mare"
-
-msgid "Language"
-msgstr "Limba"
-
-msgid "Font size"
-msgstr "Mărimea fontului"
-
-msgid "Preferences"
-msgstr "Preferinţe"
-
-msgid "Logout"
-msgstr "Deconectare"
-
-msgid "Login"
-msgstr "Autentificare"
-
-msgid "Register"
-msgstr "Înregistrare"
-
-msgid "Items per page"
-msgstr "Înregistrări pe pagină"
-
-msgid "Cedilla or comma"
-msgstr "Sedilă sau virgulă"
-
-msgid "cedilla"
-msgstr "sedilă"
-
-msgid "comma"
-msgstr "virgulă"
-
-msgid "Select wether you want to see s and t with comma or cedilla undernieth"
-msgstr "Alegeţi ce caractere doriţi să vedeți, s şi t cu virgulă sau cu sedilă"
-
-msgid "The application font size"
-msgstr "Mărimea fontului folosit pentru afişare"
-
-msgid "How many items are displayed per page"
-msgstr "Câte elemente sunt afişate pe o pagină"
-
-msgid "Username"
-msgstr "Nume de utilizator"
-
-msgid "Password"
-msgstr "Parolă"
-
-msgid "Please login so everyone else knows who is adding those great suggestions that you will add."
-msgstr "Vă rugăm să vă autentificaţi pentru a face cunoscut faptul că dumneavoastră adăugaţi sugestiile."
-
-msgid "Project name"
-msgstr "Numele proiectului"
-
-msgid "Progress"
-msgstr "Progres"
 
 msgid "<i>Logged in as <a href=\"%s\" style=\"color:green;font-weight:bold\">%s</span></i>"
-msgstr "<i>Autentificat ca <a href=\"%s\" style=\"color:green;font-weight:bold\">%s</span></i>"
+msgstr ""
 
-msgid "Text to translate"
-msgstr "Text de tradus"
+msgid "Register"
+msgstr ""
 
-msgid "Your suggestion"
-msgstr "Sugestia dumneavoastră"
+msgid "Login"
+msgstr ""
 
-msgid "100 back"
-msgstr "100 înapoi"
+msgid "Preferences"
+msgstr ""
 
-msgid "100 forward"
-msgstr "100 înainte"
+msgid "Project list"
+msgstr ""
 
-msgid "After, go to the next text"
-msgstr "După, mergi la textul următor"
+msgid "Manage users"
+msgstr ""
 
-msgid "Ignore spellchecking"
-msgstr "Ignoră ortografia"
+msgid "Logout"
+msgstr ""
 
-msgid "Show"
-msgstr "Arată"
+msgid "Added text \"%s\" from the file \"%s\""
+msgstr ""
 
-msgid "Untranslated texts"
-msgstr "Texte netraduse"
+msgid "Error while adding \"%s\": %s"
+msgstr ""
 
-msgid "All texts"
-msgstr "Toate textele"
+msgid "No texts"
+msgstr ""
 
-msgid "Validated texts"
-msgstr "Texte validate"
+msgid "Other suggestions"
+msgstr ""
 
-msgid "Texts that require validation"
-msgstr "Texte ce trebuie validate"
+msgid "Votes"
+msgstr ""
 
-msgid "original texts"
-msgstr "texte originale"
+msgid "Actions"
+msgstr ""
 
-msgid "translations"
-msgstr "traduceri"
+msgid "Others have suggested:"
+msgstr ""
 
-msgid "Suggest/Vote"
-msgstr "Sugerează/Votează"
+msgid "<span style=\"color:red\" title=\"Misspelled. Suggestions: %s\">%s</span>"
+msgstr ""
 
-msgid "Suggest"
-msgstr "Sugerează"
+msgid "no votes"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
 
 msgid "Vote"
-msgstr "Votează"
+msgstr ""
+
+msgid "Cancel validation"
+msgstr ""
+
+msgid "Validate"
+msgstr ""
+
+msgid "Suggestion succesfully deleted."
+msgstr ""
+
+msgid "Thank you for your vote. You can change it anytime by voting another suggestion."
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Your changes were saved succesfully."
+msgstr ""
+
+msgid "The text you are trying to save already exists."
+msgstr ""
+
+msgid "The suggestion is marked as valid for the following contexts: %s"
+msgstr ""
+
+msgid "about %s years"
+msgstr ""
+
+msgid "a year"
+msgstr ""
+
+msgid "about %s months"
+msgstr ""
+
+msgid "a month"
+msgstr ""
+
+msgid "about %s days"
+msgstr ""
+
+msgid "a day"
+msgstr ""
+
+msgid "about %s hours"
+msgstr ""
+
+msgid "an hour"
+msgstr ""
+
+msgid "%s minutes"
+msgstr ""
+
+msgid "a minute"
+msgstr ""
+
+msgid "%s seconds"
+msgstr ""
+
+msgid "a second"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "<b>Results:</b> No %s found."
+msgstr ""
+
+msgid "<b>Results:</b> 1 %s found."
+msgstr ""
+
+msgid "<b>Results:</b> %s %s found."
+msgstr ""
+
+msgid "<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s."
+msgstr ""
+
+msgid " is required"
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Must be a JPG, PNG or GIF"
+msgstr ""
+
+msgid "Must be a PDF"
+msgstr ""
+
+msgid "Must be a valid document (Image, PDF, etc.)"
+msgstr ""
+
+msgid "Invalid Float"
+msgstr ""
+
+msgid "Value must be less than %s"
+msgstr ""
+
+msgid "Value must be greater than %s"
+msgstr ""
+
+msgid "Invalid Integer"
+msgstr ""
+
+msgid "%s is required"
+msgstr ""
+
+msgid "item"
+msgstr ""
+
+msgid "items"
+msgstr ""
+
+msgid "%s must have at least %s characters"
+msgstr ""
+
+msgid "Must have at least %s characters"
+msgstr ""
+
+msgid "%s must have at most %s characters"
+msgstr ""
+
+msgid "Must have at most %s characters"
+msgstr ""
+
+msgid "Tags &lt;b&gt; &lt;u&gt; &lt;i&gt; &lt;br&gt; &lt;code&gt; and &lt;http://...&gt; are allowed.  Use ** at the beginning of any line for a bulleted list."
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Suggest / Vote"
+msgstr ""
+
+msgid "Suggest"
+msgstr ""
 
 msgid "Details"
-msgstr "Detalii"
+msgstr ""
 
-msgid "Translate \"%s\""
-msgstr "Traduceţi „%s”"
+msgid "Bad username or password"
+msgstr ""
 
 msgid "File name"
-msgstr "Numele fişierului"
+msgstr ""
 
-msgid "Show hierarchy"
-msgstr "Arată ierarhic"
+msgid "Progress"
+msgstr ""
 
-msgid "Show folders"
-msgstr "Arată dosarele"
+msgid "Project name"
+msgstr ""
 
-msgid "Here you can set your preferences."
-msgstr "Aici vă puteţi seta preferinţele."
+msgid "Import"
+msgstr ""
 
-msgid "Here are a few benefits for a registered user"
-msgstr "Iată câteva beneficii ale unui utilizator înregistrat"
+msgid "Export"
+msgstr ""
 
-msgid "Be famous for your suggestions. Everyone will see that you added that cool suggestion."
-msgstr "Efortul vă este recunoscut. Oricine poate vedea că sunteţi autorul unei sugestii."
+msgid "Suggest/Vote"
+msgstr ""
 
-msgid "Vote for your favourite suggestion."
-msgstr "Votaţi pentru sugestia favorită."
+msgid "Other suggestions so far"
+msgstr ""
 
-msgid "Set your preferences and maintain your user profile."
-msgstr "Setaţi-vă preferinţele şi menţineţi profilul dumneavoastră."
+msgid "Original text"
+msgstr ""
 
-msgid "This is a list of projects that are being translated here. You can help too. Click on any project name to start translating."
-msgstr "Aceasta este o listă de proiecte care sunt traduse aici. Puteţi ajuta. Clic pe orice nume de proiect pentru a începe traducerea."
+msgid "Details about the place where the text is used"
+msgstr ""
+
+msgid "Block"
+msgstr ""
+
+msgid "Unblock"
+msgstr ""
+
+msgid "Projects"
+msgstr ""
+
+msgid "Files"
+msgstr ""
+
+msgid "Untranslated texts"
+msgstr ""
+
+msgid "Validated texts"
+msgstr ""
+
+msgid "Texts that require validation"
+msgstr ""
+
+msgid "Search in original texts for \"%s\""
+msgstr ""
+
+msgid "Search in suggestions for \"%s\""
+msgstr ""
+
+msgid "Search in contexts for \"%s\""
+msgstr ""
+
+msgid "Translate \"%s\""
+msgstr ""
+
+msgid "See suggestions for \"%s\""
+msgstr ""
+
+msgid "Suggestion comment (optional):"
+msgstr ""
+
+msgid "Ignore and save"
+msgstr ""
+
+msgid "Save and validate"
+msgstr ""
+
+msgid "100 forward"
+msgstr ""
+
+msgid "100 back"
+msgstr ""
+
+msgid "The suggestion is identical to the text. If you think the text needs no translation, move on."
+msgstr ""
+
+msgid "<span style=\"color:red\">You translated or forgot some variables that should have been left as they were. <br /> These are: %s</span><br /> If you think this is a mistake, check \"%s\" and then press \"%s\"<br />If you wish to correct and check again, correct the text and press \"%s\" again."
+msgstr ""
+
+msgid "Ignore spellchecking"
+msgstr ""
+
+msgid ""
+"\n"
+"                                <span style=\"color:red\">\n"
+"                                The original text does not end with \"%s\".</span><br />\n"
+"                                If you think this is a mistake, check \"%s\" and then press \"%s\"<br />If you wish to correct and check again, correct the text and press \"%s\" again."
+msgstr ""
+
+msgid ""
+"\n"
+"                                <span style=\"color:red\">\n"
+"                                The original text ends with \"%s\", but your suggestion ends in \"%s\".</span><br />\n"
+"                                If you think this is a mistake, check \"%s\" and then press \"%s\"<br />If you wish to correct and check again, correct the text and press \"%s\" again."
+msgstr ""
+
+msgid "is mispelled"
+msgstr ""
+
+msgid "Maybe you meant"
+msgstr ""
+
+msgid "You seem to have a few spellchecking errors:"
+msgstr ""
+
+msgid "If you think this is a mistake, you can still save the suggestion by checking \"%s\" and pressing \"%s\"."
+msgstr ""
+
+msgid "If you want to correct and check again, please correct and press \"%s\""
+msgstr ""
+
+msgid "Context"
+msgstr ""
+
+msgid "Translated text"
+msgstr ""
+
+msgid "All texts"
+msgstr ""
+
+msgid "original texts"
+msgstr ""
+
+msgid "translations"
+msgstr ""
+
+msgid "contexts"
+msgstr ""
+
+msgid "Search"
+msgstr ""
 
 msgid "Click <a href=\"%s\">here</a> to return to the page you were."
-msgstr "Clic <a href=\"%s\">aici</a> pentru a reveni la pagina care eraţi."
+msgstr ""
 
+msgid "Your preferences were saved successfuly."
+msgstr ""
 
+msgid "An error occured while trying to save your preferences."
+msgstr ""
 
+msgid "Texts from the file \"%s\""
+msgstr ""
+
+msgid "Show"
+msgstr ""
+
+msgid "Please login so everyone else knows who is adding those great suggestions that you will add."
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "%s :: File list"
+msgstr ""
+
+msgid "%s :: %s :: File list"
+msgstr ""
+
+msgid "Show hierarchy"
+msgstr ""
+
+msgid "Show folders"
+msgstr ""
+
+msgid "This is a list of projects that are being translated here. You can help too. Click on any project name to start translating."
+msgstr ""
+
+msgid "Texts from the project \"%s\""
+msgstr ""
+
+msgid "Here are a few benefits for a registered user"
+msgstr ""
+
+msgid "Be famous for your suggestions. Everyone will see that you added that cool suggestion."
+msgstr ""
+
+msgid "Vote for your favourite suggestion."
+msgstr ""
+
+msgid "Set your preferences and maintain your user profile."
+msgstr ""
+
+msgid "This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name."
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "This is used for password recovery and opt-in notifications."
+msgstr ""
+
+msgid "Text to translate"
+msgstr ""
+
+msgid "Your suggestion"
+msgstr ""
+
+msgid "After, go to the next text"
+msgstr ""
+
+msgid "Preferences for %s"
+msgstr ""
+
+msgid "Here you can set your preferences."
+msgstr ""

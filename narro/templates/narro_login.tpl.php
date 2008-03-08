@@ -37,7 +37,7 @@
                 <td><?php $this->txtPassword->Render() ?></td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align:right"><?php $this->btnLogin->Render() ?></td>
+                <td colspan="2" style="text-align:right"><?php $this->btnRecoverPassword->Render();?> <?php $this->btnLogin->Render() ?></td>
             </tr>
         </table>
 

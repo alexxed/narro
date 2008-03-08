@@ -51,7 +51,7 @@
             $objUser->UserId = $objMaxUser[0]->UserId + 1;
             $objUser->Username = $this->txtUsername->Text;
             $objUser->Email = $this->txtEmail->Text;
-            $objUser->Password = $this->txtPassword->Text;
+            $objUser->Password = md5($this->txtPassword->Text);
 
             try {
                 $objUser->Save();
@@ -60,6 +60,21 @@
                 $this->lblMessage->Text = QApplication::Translate("Seems like the username or email is already in use.") . $objEx->getMessage();
                 return false;
             }
+
+            /**
+             * set up default permissions
+             */
+            foreach(array(1, 2, 3, 4, 5 ,6) as $intPermissionId) {
+                $objUserPermission = new NarroUserPermission();
+                $objUserPermission->PermissionId = $intPermissionId;
+                $objUserPermission->UserId = $objUser->UserId;
+                $objUserPermission->Save();
+            }
+
+            $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text));
+
+            if (!$objUser instanceof NarroUser)
+                QApplication::Redirect('narro_login.php');
 
             $_SESSION['objUser'] = $objUser;
             QApplication::$objUser = $objUser;

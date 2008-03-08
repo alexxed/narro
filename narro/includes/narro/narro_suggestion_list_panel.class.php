@@ -279,7 +279,7 @@
                     $objSuggestion->Delete();
                 }
                 catch (Exception $objEx) {
-                    $this->lblMessage->Text = QApplication::Translate('You can\'t delete the suggestion because it already has votes or comments.');
+                    $this->lblMessage->Text = QApplication::Translate('You cannot delete the suggestion because it is validate or it has votes or comments.');
                     $this->MarkAsModified();
                     return false;
                 }
@@ -367,7 +367,7 @@
             if ($arrCtx = NarroTextContext::LoadArrayByValidSuggestionId($strSuggestionId)) {
                 foreach($arrCtx as $objContext) {
                     if ($objContext->ContextId != $this->objNarroTextContext->ContextId)
-                        $arrTexts[sprintf('<a target="_blank" href="'.url('qdrupal/narro_text_context_suggest.php','p=%d&c=%d&f=%d&tf=%d&s=%s').'">%s</a>',
+                        $arrTexts[sprintf('<a target="_blank" href="narro_text_context_suggest.php?p=%d&c=%d&f=%d&tf=%d&s=%s">%s</a>',
                             QApplication::QueryString('p'),
                             $objContext->ContextId,
                             QApplication::QueryString('f'),
@@ -376,7 +376,7 @@
                             $objContext->ContextId
                             )] = 1;
                 }
-                if (count(array_keys($arrTexts))) {
+                if (isset($arrTexts) && count(array_keys($arrTexts))) {
                     $this->lblMessage->Text = sprintf(QApplication::Translate('The suggestion is marked as valid for the following contexts: %s'), join(', ', array_keys($arrTexts)));
                     $this->MarkAsModified();
                     return true;

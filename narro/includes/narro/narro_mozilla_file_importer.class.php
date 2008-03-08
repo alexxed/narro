@@ -727,7 +727,7 @@
                 $this->OutputLog(sprintf('Nu se poate şterge fişierul „%s”', $strTranslatedFile));
             }
 
-            if (in_array($objFile->FileId, array(488, 489, 490)) && in_array($objFile->FileName, array('custom.properties', 'mui.properties', 'override.properties'))) {
+            if (in_array($objFile->FileName, array('custom.properties', 'mui.properties', 'override.properties', 'crashreporter.ini'))) {
                 $strTranslateContents = QApplication::ConvertToSedila($strTranslateContents);
             }
 

@@ -75,6 +75,13 @@
             return $this->ConvertToSedilla($strSuggestion);
         }
 
+        public function ProcessContext($strContext) {
+            if (!preg_match('/^helpcontent/', $strContext))
+                return $strContext;
+            else
+                return '';
+        }
+
         /////////////////////////
         // Public Properties: GET
         /////////////////////////

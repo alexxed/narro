@@ -635,6 +635,7 @@
 
             $objSuggestion = new NarroTextSuggestion();
             $objSuggestion->UserId = $intUserId;
+            $objSuggestion->LanguageId = 1;
             $objSuggestion->TextId = $this->objNarroTextContext->TextId;
             $strSuggestionValue = QApplication::$objPluginHandler->ProcessSuggestion($this->txtSuggestionValue->Text);
             if (!$strSuggestionValue)
@@ -642,6 +643,8 @@
 
             $objSuggestion->SuggestionValue = $strSuggestionValue;
             $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
+            $objSuggestion->SuggestionCharCount = strlen($strSuggestionValue);
+
             try {
                 $objSuggestion->Save();
             } catch (QMySqliDatabaseException $objExc) {

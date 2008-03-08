@@ -72,7 +72,7 @@
             if (!defined('PSPELL_FAST'))
                 return self::GetSpellSuggestionsWithAspell($strText);
 
-            if (!$pspell_config = pspell_config_create("ro", null, null, 'utf-8'))
+            if (!$pspell_config = pspell_config_create(QApplication::$objUser->getPreferenceValueByName('Spellcheck language'), null, null, 'utf-8'))
                 return self::GetSpellSuggestionsWithAspell($strText);
 
             if (!pspell_config_data_dir($pspell_config, realpath(dirname(__FILE__)) . "/../data/dictionaries/"))
@@ -120,9 +120,10 @@
             $arrResult = array();
 
             $strCleanText = iconv('utf-8', 'iso8859-2', $strCleanText);
-            exec('echo "'.$strCleanText.'" | aspell --lang=ro --dict-dir=/date/www/html/naro/includes/narro/dictionaries -a', $arr, $ret);
+            exec('echo "'.$strCleanText.'" | aspell --lang='.QApplication::$objUser->getPreferenceValueByName('Spellcheck language').' --dict-dir='.__DOCROOT__ . __SUBDIRECTORY__ .'/data/dictionaries -a', $arr, $ret);
             if ($ret != 0)
-                return self::GetSpellSuggestionsWithSoap($strText);
+                return false;
+                //return self::GetSpellSuggestionsWithSoap($strText);
             foreach($arr as $strWord) {
                 if (strpos($strWord, '&') === 0) {
                     preg_match('/&\s+([^\s]+)\s+[^:]+:(.*)/', $strWord, $arrMatches);
@@ -206,6 +207,7 @@
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
     QApplication::RegisterPreference('Language', 'option', 'The preferred language for the application interface', 'en', array('ro', 'en'));
+    QApplication::RegisterPreference('Spellcheck language', 'option', 'The language used for spellchecking', 'en-US', array('ro', 'en-US'));
 
     if (isset($_SESSION['objUser']) && $_SESSION['objUser'] instanceof NarroUser)
         QApplication::$objUser = $_SESSION['objUser'];
@@ -232,7 +234,7 @@
             QApplication::$LanguageCode = $_SESSION['language_code'];
     }
 
-    QCache::$CachePath = __DOCROOT__ . '/narro/data/cache';
+    QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
 
     // Initialize I18n if QApplication::$LanguageCode is set
     if (QApplication::$LanguageCode)
