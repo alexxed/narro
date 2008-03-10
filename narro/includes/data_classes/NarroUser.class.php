@@ -35,6 +35,7 @@
 
         public function setPreferenceValueByName($strName, $strValue) {
             if ($strName == 'Language') {
+                $this->arrPreferences['Language'] = $strValue;
                 $objLanguage = NarroLanguage::LoadByLanguageCode($this->arrPreferences['Language']);
 
                 if ($objLanguage instanceof NarroLanguage) {
