@@ -35,7 +35,7 @@
             <?php $this->btnSearch->Render(); ?>
         </div>
         <br />
-        <?php $this->dtgNarroTextContext->Render() ?>
+        <?php $this->dtgNarroContextInfo->Render() ?>
 
     <?php $this->RenderEnd() ?>
 

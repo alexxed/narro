@@ -29,9 +29,56 @@
 
         include_once(dirname(__FILE__) . '/narro_mozilla_file_importer.class.php');
         $objNarroImporter = new NarroMozillaFileImporter();
-        $intProjectId = $argv[array_search('--project_id', $argv)+1];
-        $strArchiveFile = str_replace('"','', $argv[array_search('--archive', $argv)+1]);
-        $objNarroImporter->ImportProjectArchive($intProjectId, $strArchiveFile);
+        $objNarroImporter->EchoOutput = false;
+
+        if (array_search('--minloglevel', $argv))
+            $objNarroImporter->MinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
+
+        if (array_search('--project', $argv) !== false)
+            $intProjectId = $argv[array_search('--project', $argv)+1];
+
+        if (array_search('--lang', $argv) !== false)
+            $strTargetLanguage = $argv[array_search('--lang', $argv)+1];
+
+        if (array_search('--user', $argv) !== false)
+            $intUserId = $argv[array_search('--user', $argv)+1];
+
+        $objUser = NarroUser::Load($intUserId);
+        if (!$objUser instanceof NarroUser) {
+            $objNarroImporter->Output(2, sprintf(__t('User id=%s does not exist in the database, will try to use the anonymous user.'), $intUserId));
+            $objUser = NarroUser::Load(NarroUser::ANONYMOUS_USER_ID);
+            if (!$objUser instanceof NarroUser) {
+                $objNarroImporter->Output(3, sprintf(__t('The anonymous user id=%s does not exist in the database.'), $intUserId));
+                return false;
+            }
+        }
+
+        $objProject = NarroProject::Load($intProjectId);
+        if (!$objProject instanceof NarroProject) {
+            $objNarroImporter->Output(3, sprintf(__t('Project with id=%s does not exist in the database.'), $intProjectId));
+            return false;
+        }
+
+        $strArchiveFile = str_replace('"','', $argv[$argc-1]);
+
+        if (!file_exists($strArchiveFile)) {
+            $objNarroImporter->Output(3, sprintf(__t('File "%s" does not exist.'), $strArchiveFile));
+            return false;
+        }
+
+        $objLanguage = NarroLanguage::LoadByLanguageCode($strTargetLanguage);
+        if (!$objLanguage instanceof NarroLanguage) {
+            $objNarroImporter->Output(3, sprintf(__t('Language %s does not exist in the database.'), $strTargetLanguage));
+            return false;
+        }
+
+        $objNarroImporter->Language = $objLanguage;
+        $objNarroImporter->Project = $objProject;
+        $objNarroImporter->User = $objUser;
+
+        $objNarroImporter->ImportProjectArchive($strArchiveFile);
+
+        $objNarroImporter->Output(2, var_export($objNarroImporter->Statistics, true));
 
      }
     elseif (in_array('--import-po', $argv)) {
@@ -46,14 +93,14 @@
     elseif (in_array('--delete-project-files', $argv)) {
         $intProjectId = $argv[array_search('--project_id', $argv)+1];
 
-        $strQuery = sprintf("UPDATE `narro_text_context` SET valid_suggestion_id=NULL, popular_suggestion_id=NULL WHERE project_id=%d", $intProjectId);
+        $strQuery = sprintf("UPDATE `narro_context` SET valid_suggestion_id=NULL, popular_suggestion_id=NULL WHERE project_id=%d", $intProjectId);
 
         if (!$objResult = db_query($strQuery)) {
             error_log( __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery );
             return false;
         }
 
-        $strQuery = sprintf("DELETE FROM `narro_text_context` WHERE project_id=%d", $intProjectId);
+        $strQuery = sprintf("DELETE FROM `narro_context` WHERE project_id=%d", $intProjectId);
 
         if (!$objResult = db_query($strQuery)) {
             error_log( __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery );
@@ -79,6 +126,8 @@
         $objNarroImporter = new NarroOooFileImporter();
         if (array_search('--project', $argv))
             $intProjectId = $argv[array_search('--project', $argv)+1];
+        if (array_search('--minloglevel', $argv))
+            $objNarroImporter->MinLogLevel = $argv[array_search('--loglevel', $argv)+1];
         if (array_search('--validate', $argv))
             $blnValidate = true;
         if (array_search('--check-equal', $argv))

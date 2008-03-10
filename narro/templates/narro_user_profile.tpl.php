@@ -26,8 +26,8 @@
         <h1><?php echo $user->name ?></h1>
         <br /><br /><br />
         <?php
-            $intSuggestionCount = NarroTextSuggestion::CountByUserId($this->objUser->uid);
-            $strQuery = sprintf("SELECT COUNT(DISTINCT c.valid_suggestion_id) as cnt FROM narro_text_context c, narro_text_suggestion s WHERE c.valid_suggestion_id=s.suggestion_id AND s.user_id=%d", $this->objUser->uid);
+            $intSuggestionCount = NarroSuggestion::CountByUserId($this->objUser->uid);
+            $strQuery = sprintf("SELECT COUNT(DISTINCT c.valid_suggestion_id) as cnt FROM narro_context c, narro_suggestion s WHERE c.valid_suggestion_id=s.suggestion_id AND s.user_id=%d", $this->objUser->uid);
 
             if ($objResult = db_query($strQuery)) {
                 if ($arrDbRow = db_fetch_array($objResult)) {

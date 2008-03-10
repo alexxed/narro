@@ -272,6 +272,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`user_id` AS ' . $strAliasPrefix . 'user_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`permission_id` AS ' . $strAliasPrefix . 'permission_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`project_id` AS ' . $strAliasPrefix . 'project_id`');
+			$objBuilder->AddSelectItem($strTableName . '.`language_id` AS ' . $strAliasPrefix . 'language_id`');
 		}
 
 
@@ -303,6 +304,7 @@
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
 			$objToReturn->intPermissionId = $objDbRow->GetColumn($strAliasPrefix . 'permission_id', 'Integer');
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasPrefix . 'project_id', 'Integer');
+			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasPrefix . 'language_id', 'Integer');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -327,6 +329,10 @@
 			// Check for Project Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'project_id__project_id')))
 				$objToReturn->objProject = NarroProject::InstantiateDbRow($objDbRow, $strAliasPrefix . 'project_id__', $strExpandAsArrayNodes);
+
+			// Check for Language Early Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'language_id__language_id')))
+				$objToReturn->objLanguage = NarroLanguage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'language_id__', $strExpandAsArrayNodes);
 
 
 
@@ -379,6 +385,26 @@
 		public static function LoadByUserPermissionId($intUserPermissionId) {
 			return NarroUserPermission::QuerySingle(
 				QQ::Equal(QQN::NarroUserPermission()->UserPermissionId, $intUserPermissionId)
+			);
+		}
+			
+		/**
+		 * Load a single NarroUserPermission object,
+		 * by UserId, PermissionId, ProjectId, LanguageId Index(es)
+		 * @param integer $intUserId
+		 * @param integer $intPermissionId
+		 * @param integer $intProjectId
+		 * @param integer $intLanguageId
+		 * @return NarroUserPermission
+		*/
+		public static function LoadByUserIdPermissionIdProjectIdLanguageId($intUserId, $intPermissionId, $intProjectId, $intLanguageId) {
+			return NarroUserPermission::QuerySingle(
+				QQ::AndCondition(
+				QQ::Equal(QQN::NarroUserPermission()->UserId, $intUserId),
+				QQ::Equal(QQN::NarroUserPermission()->PermissionId, $intPermissionId),
+				QQ::Equal(QQN::NarroUserPermission()->ProjectId, $intProjectId),
+				QQ::Equal(QQN::NarroUserPermission()->LanguageId, $intLanguageId)
+				)
 			);
 		}
 			
@@ -477,6 +503,38 @@
 				QQ::Equal(QQN::NarroUserPermission()->ProjectId, $intProjectId)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroUserPermission objects,
+		 * by LanguageId Index(es)
+		 * @param integer $intLanguageId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroUserPermission[]
+		*/
+		public static function LoadArrayByLanguageId($intLanguageId, $objOptionalClauses = null) {
+			// Call NarroUserPermission::QueryArray to perform the LoadArrayByLanguageId query
+			try {
+				return NarroUserPermission::QueryArray(
+					QQ::Equal(QQN::NarroUserPermission()->LanguageId, $intLanguageId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroUserPermissions
+		 * by LanguageId Index(es)
+		 * @param integer $intLanguageId
+		 * @return int
+		*/
+		public static function CountByLanguageId($intLanguageId) {
+			// Call NarroUserPermission::QueryCount to perform the CountByLanguageId query
+			return NarroUserPermission::QueryCount(
+				QQ::Equal(QQN::NarroUserPermission()->LanguageId, $intLanguageId)
+			);
+		}
 
 
 
@@ -509,11 +567,13 @@
 						INSERT INTO `narro_user_permission` (
 							`user_id`,
 							`permission_id`,
-							`project_id`
+							`project_id`,
+							`language_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
 							' . $objDatabase->SqlVariable($this->intPermissionId) . ',
-							' . $objDatabase->SqlVariable($this->intProjectId) . '
+							' . $objDatabase->SqlVariable($this->intProjectId) . ',
+							' . $objDatabase->SqlVariable($this->intLanguageId) . '
 						)
 					');
 
@@ -531,7 +591,8 @@
 						SET
 							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
 							`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId) . ',
-							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
+							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 						WHERE
 							`user_permission_id` = ' . $objDatabase->SqlVariable($this->intUserPermissionId) . '
 					');
@@ -643,6 +704,13 @@
 					 */
 					return $this->intProjectId;
 
+				case 'LanguageId':
+					/**
+					 * Gets the value for intLanguageId 
+					 * @return integer
+					 */
+					return $this->intLanguageId;
+
 
 				///////////////////
 				// Member Objects
@@ -684,6 +752,20 @@
 						if ((!$this->objProject) && (!is_null($this->intProjectId)))
 							$this->objProject = NarroProject::Load($this->intProjectId);
 						return $this->objProject;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Language':
+					/**
+					 * Gets the value for the NarroLanguage object referenced by intLanguageId 
+					 * @return NarroLanguage
+					 */
+					try {
+						if ((!$this->objLanguage) && (!is_null($this->intLanguageId)))
+							$this->objLanguage = NarroLanguage::Load($this->intLanguageId);
+						return $this->objLanguage;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -755,6 +837,20 @@
 					try {
 						$this->objProject = null;
 						return ($this->intProjectId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'LanguageId':
+					/**
+					 * Sets the value for intLanguageId 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						$this->objLanguage = null;
+						return ($this->intLanguageId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -860,6 +956,38 @@
 					}
 					break;
 
+				case 'Language':
+					/**
+					 * Sets the value for the NarroLanguage object referenced by intLanguageId 
+					 * @param NarroLanguage $mixValue
+					 * @return NarroLanguage
+					 */
+					if (is_null($mixValue)) {
+						$this->intLanguageId = null;
+						$this->objLanguage = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a NarroLanguage object
+						try {
+							$mixValue = QType::Cast($mixValue, 'NarroLanguage');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED NarroLanguage object
+						if (is_null($mixValue->LanguageId))
+							throw new QCallerException('Unable to set an unsaved Language for this NarroUserPermission');
+
+						// Update Local Member Variables
+						$this->objLanguage = $mixValue;
+						$this->intLanguageId = $mixValue->LanguageId;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				default:
 					try {
 						return parent::__set($strName, $mixValue);
@@ -927,6 +1055,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_user_permission.language_id
+		 * @var integer intLanguageId
+		 */
+		protected $intLanguageId;
+		const LanguageIdDefault = null;
+
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -977,6 +1113,16 @@
 		 */
 		protected $objProject;
 
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column narro_user_permission.language_id.
+		 *
+		 * NOTE: Always use the Language property getter to correctly retrieve this NarroLanguage object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var NarroLanguage objLanguage
+		 */
+		protected $objLanguage;
+
 
 
 
@@ -992,6 +1138,7 @@
 			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="Permission" type="xsd1:NarroPermission"/>';
 			$strToReturn .= '<element name="Project" type="xsd1:NarroProject"/>';
+			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1003,6 +1150,7 @@
 				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroPermission::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroProject::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroLanguage::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1028,6 +1176,9 @@
 			if ((property_exists($objSoapObject, 'Project')) &&
 				($objSoapObject->Project))
 				$objToReturn->Project = NarroProject::GetObjectFromSoapObject($objSoapObject->Project);
+			if ((property_exists($objSoapObject, 'Language')) &&
+				($objSoapObject->Language))
+				$objToReturn->Language = NarroLanguage::GetObjectFromSoapObject($objSoapObject->Language);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1058,6 +1209,10 @@
 				$objObject->objProject = NarroProject::GetSoapObjectFromObject($objObject->objProject, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intProjectId = null;
+			if ($objObject->objLanguage)
+				$objObject->objLanguage = NarroLanguage::GetSoapObjectFromObject($objObject->objLanguage, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intLanguageId = null;
 			return $objObject;
 		}
 	}
@@ -1090,6 +1245,10 @@
 					return new QQNode('project_id', 'integer', $this);
 				case 'Project':
 					return new QQNodeNarroProject('project_id', 'integer', $this);
+				case 'LanguageId':
+					return new QQNode('language_id', 'integer', $this);
+				case 'Language':
+					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('user_permission_id', 'integer', $this);
@@ -1124,6 +1283,10 @@
 					return new QQNode('project_id', 'integer', $this);
 				case 'Project':
 					return new QQNodeNarroProject('project_id', 'integer', $this);
+				case 'LanguageId':
+					return new QQNode('language_id', 'integer', $this);
+				case 'Language':
+					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('user_permission_id', 'integer', $this);

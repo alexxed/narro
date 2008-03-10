@@ -1,5 +1,20 @@
 <?php
 	class QQN {
+		static public function NarroContext() {
+			return new QQNodeNarroContext('narro_context', null);
+		}
+		static public function NarroContextComment() {
+			return new QQNodeNarroContextComment('narro_context_comment', null);
+		}
+		static public function NarroContextInfo() {
+			return new QQNodeNarroContextInfo('narro_context_info', null);
+		}
+		static public function NarroContextPlural() {
+			return new QQNodeNarroContextPlural('narro_context_plural', null);
+		}
+		static public function NarroContextPluralInfo() {
+			return new QQNodeNarroContextPluralInfo('narro_context_plural_info', null);
+		}
 		static public function NarroFile() {
 			return new QQNodeNarroFile('narro_file', null);
 		}
@@ -15,6 +30,9 @@
 		static public function NarroProject() {
 			return new QQNodeNarroProject('narro_project', null);
 		}
+		static public function NarroSuggestion() {
+			return new QQNodeNarroSuggestion('narro_suggestion', null);
+		}
 		static public function NarroSuggestionComment() {
 			return new QQNodeNarroSuggestionComment('narro_suggestion_comment', null);
 		}
@@ -23,18 +41,6 @@
 		}
 		static public function NarroText() {
 			return new QQNodeNarroText('narro_text', null);
-		}
-		static public function NarroTextContext() {
-			return new QQNodeNarroTextContext('narro_text_context', null);
-		}
-		static public function NarroTextContextComment() {
-			return new QQNodeNarroTextContextComment('narro_text_context_comment', null);
-		}
-		static public function NarroTextContextPlural() {
-			return new QQNodeNarroTextContextPlural('narro_text_context_plural', null);
-		}
-		static public function NarroTextSuggestion() {
-			return new QQNodeNarroTextSuggestion('narro_text_suggestion', null);
 		}
 		static public function NarroUser() {
 			return new QQNodeNarroUser('narro_user', null);

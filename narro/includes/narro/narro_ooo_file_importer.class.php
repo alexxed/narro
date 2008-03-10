@@ -42,7 +42,7 @@
             /**
              * Pentru început, se iau doar textele care au sugestii valide
              */
-            $strQuery = sprintf("SELECT `suggestion_value`, `text_value`, `context` FROM `narro_text_context` c, narro_text_suggestion s, narro_text t WHERE c.active=1 AND c.text_id=t.text_id AND c.valid_suggestion_id=s.suggestion_id AND c.project_id=%d", $intProjectId);
+            $strQuery = sprintf("SELECT `suggestion_value`, `text_value`, `context` FROM `narro_context` c, narro_suggestion s, narro_text t WHERE c.active=1 AND c.text_id=t.text_id AND c.valid_suggestion_id=s.suggestion_id AND c.project_id=%d", $intProjectId);
 
             if (!$objDbResult = $objDatabase->Query($strQuery)) {
                 $this->Output(3, __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery);
@@ -73,7 +73,7 @@
              * @todo Schimbă astfel încât să se ia sugestia cea mai votată
              */
 
-//            $strQuery = sprintf("SELECT `suggestion_value`, `text_value`, `context` FROM `narro_text_context` c, narro_text_suggestion s, narro_text t WHERE c.valid_suggestion_id IS NULL AND c.text_id=t.text_id AND c.text_id=s.text_id AND c.project_id=%d ORDER BY c.context_id ASC, s.suggestion_id ASC", $intProjectId);
+//            $strQuery = sprintf("SELECT `suggestion_value`, `text_value`, `context` FROM `narro_context` c, narro_suggestion s, narro_text t WHERE c.valid_suggestion_id IS NULL AND c.text_id=t.text_id AND c.text_id=s.text_id AND c.project_id=%d ORDER BY c.context_id ASC, s.suggestion_id ASC", $intProjectId);
 //
 //            if (!$objResult = db_query($strQuery)) {
 //                $this->Output(3,  __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery );
@@ -178,7 +178,7 @@
 
             $this->intTotalToProcess = count(file($strTemplateFile));
 
-            $objDatabase->NonQuery(sprintf("UPDATE `narro_text_context` SET `active` = 0 WHERE project_id=%d", $intProjectId));
+            $objDatabase->NonQuery(sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d", $intProjectId));
             $objDatabase->NonQuery(sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $intProjectId));
 
             $intSkippedTexts = 0;

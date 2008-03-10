@@ -28,13 +28,21 @@
     </head>
     <body>
         <div id="header">
+            <?php
+                echo
+                    sprintf(
+                        QApplication::Translate('<i>Translating in: %s</i>'),
+                        QApplication::$objUser->Language->LanguageName
+                    ) . ' | ';
+            ?>
             <?php if (QApplication::$objUser->UserId > 0) {
                 echo
                     sprintf(
-                        QApplication::Translate('<i>Logged in as <a href="%s" style="color:green;font-weight:bold">%s</span></i>'),
+                        QApplication::Translate('<i>Logged in as <a href="%s" style="color:green;font-weight:bold">%s</a></i>'),
                         'narro_user_profile.php',
                         QApplication::$objUser->Username
-                    ) . ' | ';
+                    ) . ' | '
+                    ;
             } else { ?>
                 <a href="narro_register.php"><?php _t('Register') ?></a> |
                 <a href="narro_login.php"><?php _t('Login') ?></a> |

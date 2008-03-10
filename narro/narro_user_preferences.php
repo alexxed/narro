@@ -34,7 +34,7 @@
                 throw $objExc;
             }
 
-            if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !='')
+            if (isset($_SERVER['HTTP_REFERER']) && !strstr($_SERVER['HTTP_REFERER'], basename(__FILE__)) && $_SERVER['HTTP_REFERER'] !='')
                 $this->txtPreviousUrl = $_SERVER['HTTP_REFERER'];
 
             $this->lblMessage = new QLabel($this);
@@ -76,9 +76,16 @@
                     case 'option':
                             $lstOption = new QListBox($this);
                             $lstOption->Name = $strName;
-                            foreach($arrPref['values'] as $strValue) {
-                                $lstOption->AddItem(QApplication::Translate($strValue), $strValue, ($strValue == QApplication::$objUser->getPreferenceValueByName($strName)));
+                            if ($strName == 'Language') {
+                                $arrLanguages = NarroLanguage::LoadAll(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
+                                foreach($arrLanguages as $objLanguage) {
+                                    $lstOption->AddItem(QApplication::Translate($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == QApplication::$objUser->getPreferenceValueByName($strName)));
+                                }
                             }
+                            else
+                                foreach($arrPref['values'] as $strValue) {
+                                    $lstOption->AddItem(QApplication::Translate($strValue), $strValue, ($strValue == QApplication::$objUser->getPreferenceValueByName($strName)));
+                                }
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', QApplication::Translate($strName), $lstOption->RenderWithError(false), QApplication::Translate($arrPref['description']));
                             $this->arrControls[$strName] = $lstOption;
                             break;
@@ -95,18 +102,19 @@
             foreach($this->arrControls as $strName=>$objControl) {
                 switch(QApplication::$arrPreferences[$strName]['type']) {
                     case 'number':
-                            QApplication::$objUser->arrPreferences[$strName] = $objControl->Text;
+                            QApplication::$objUser->setPreferenceValueByName($strName, $objControl->Text);
                             break;
                     case 'text':
-                            QApplication::$objUser->arrPreferences[$strName] = $objControl->Text;
+                            QApplication::$objUser->setPreferenceValueByName($strName,  $objControl->Text);
                             break;
                     case 'option':
-                            QApplication::$objUser->arrPreferences[$strName] = $objControl->SelectedValue;
+                            QApplication::$objUser->setPreferenceValueByName($strName, $objControl->SelectedValue);
                             break;
                 }
             }
 
-            QApplication::$objUser->Data = serialize(QApplication::$objUser->arrPreferences);
+            QApplication::$objUser->Data = serialize(QApplication::$objUser->Preferences);
+
             $_SESSION['objUser'] = QApplication::$objUser;
 
             /**

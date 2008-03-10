@@ -271,6 +271,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`comment_id` AS ' . $strAliasPrefix . 'comment_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_id` AS ' . $strAliasPrefix . 'suggestion_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`user_id` AS ' . $strAliasPrefix . 'user_id`');
+			$objBuilder->AddSelectItem($strTableName . '.`language_id` AS ' . $strAliasPrefix . 'language_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`comment_text` AS ' . $strAliasPrefix . 'comment_text`');
 		}
 
@@ -302,6 +303,7 @@
 			$objToReturn->intCommentId = $objDbRow->GetColumn($strAliasPrefix . 'comment_id', 'Integer');
 			$objToReturn->intSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_id', 'Integer');
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
+			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasPrefix . 'language_id', 'Integer');
 			$objToReturn->strCommentText = $objDbRow->GetColumn($strAliasPrefix . 'comment_text', 'Blob');
 
 			// Instantiate Virtual Attributes
@@ -318,11 +320,15 @@
 
 			// Check for Suggestion Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'suggestion_id__suggestion_id')))
-				$objToReturn->objSuggestion = NarroTextSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'suggestion_id__', $strExpandAsArrayNodes);
+				$objToReturn->objSuggestion = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'suggestion_id__', $strExpandAsArrayNodes);
 
 			// Check for User Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'user_id__user_id')))
 				$objToReturn->objUser = NarroUser::InstantiateDbRow($objDbRow, $strAliasPrefix . 'user_id__', $strExpandAsArrayNodes);
+
+			// Check for Language Early Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'language_id__language_id')))
+				$objToReturn->objLanguage = NarroLanguage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'language_id__', $strExpandAsArrayNodes);
 
 
 
@@ -441,6 +447,38 @@
 				QQ::Equal(QQN::NarroSuggestionComment()->UserId, $intUserId)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroSuggestionComment objects,
+		 * by LanguageId Index(es)
+		 * @param integer $intLanguageId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroSuggestionComment[]
+		*/
+		public static function LoadArrayByLanguageId($intLanguageId, $objOptionalClauses = null) {
+			// Call NarroSuggestionComment::QueryArray to perform the LoadArrayByLanguageId query
+			try {
+				return NarroSuggestionComment::QueryArray(
+					QQ::Equal(QQN::NarroSuggestionComment()->LanguageId, $intLanguageId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroSuggestionComments
+		 * by LanguageId Index(es)
+		 * @param integer $intLanguageId
+		 * @return int
+		*/
+		public static function CountByLanguageId($intLanguageId) {
+			// Call NarroSuggestionComment::QueryCount to perform the CountByLanguageId query
+			return NarroSuggestionComment::QueryCount(
+				QQ::Equal(QQN::NarroSuggestionComment()->LanguageId, $intLanguageId)
+			);
+		}
 
 
 
@@ -473,10 +511,12 @@
 						INSERT INTO `narro_suggestion_comment` (
 							`suggestion_id`,
 							`user_id`,
+							`language_id`,
 							`comment_text`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
+							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							' . $objDatabase->SqlVariable($this->strCommentText) . '
 						)
 					');
@@ -495,6 +535,7 @@
 						SET
 							`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
 							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
+							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							`comment_text` = ' . $objDatabase->SqlVariable($this->strCommentText) . '
 						WHERE
 							`comment_id` = ' . $objDatabase->SqlVariable($this->intCommentId) . '
@@ -600,6 +641,13 @@
 					 */
 					return $this->intUserId;
 
+				case 'LanguageId':
+					/**
+					 * Gets the value for intLanguageId (Not Null)
+					 * @return integer
+					 */
+					return $this->intLanguageId;
+
 				case 'CommentText':
 					/**
 					 * Gets the value for strCommentText (Not Null)
@@ -613,12 +661,12 @@
 				///////////////////
 				case 'Suggestion':
 					/**
-					 * Gets the value for the NarroTextSuggestion object referenced by intSuggestionId (Not Null)
-					 * @return NarroTextSuggestion
+					 * Gets the value for the NarroSuggestion object referenced by intSuggestionId (Not Null)
+					 * @return NarroSuggestion
 					 */
 					try {
 						if ((!$this->objSuggestion) && (!is_null($this->intSuggestionId)))
-							$this->objSuggestion = NarroTextSuggestion::Load($this->intSuggestionId);
+							$this->objSuggestion = NarroSuggestion::Load($this->intSuggestionId);
 						return $this->objSuggestion;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
@@ -634,6 +682,20 @@
 						if ((!$this->objUser) && (!is_null($this->intUserId)))
 							$this->objUser = NarroUser::Load($this->intUserId);
 						return $this->objUser;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Language':
+					/**
+					 * Gets the value for the NarroLanguage object referenced by intLanguageId (Not Null)
+					 * @return NarroLanguage
+					 */
+					try {
+						if ((!$this->objLanguage) && (!is_null($this->intLanguageId)))
+							$this->objLanguage = NarroLanguage::Load($this->intLanguageId);
+						return $this->objLanguage;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -696,6 +758,20 @@
 						throw $objExc;
 					}
 
+				case 'LanguageId':
+					/**
+					 * Sets the value for intLanguageId (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						$this->objLanguage = null;
+						return ($this->intLanguageId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'CommentText':
 					/**
 					 * Sets the value for strCommentText (Not Null)
@@ -715,24 +791,24 @@
 				///////////////////
 				case 'Suggestion':
 					/**
-					 * Sets the value for the NarroTextSuggestion object referenced by intSuggestionId (Not Null)
-					 * @param NarroTextSuggestion $mixValue
-					 * @return NarroTextSuggestion
+					 * Sets the value for the NarroSuggestion object referenced by intSuggestionId (Not Null)
+					 * @param NarroSuggestion $mixValue
+					 * @return NarroSuggestion
 					 */
 					if (is_null($mixValue)) {
 						$this->intSuggestionId = null;
 						$this->objSuggestion = null;
 						return null;
 					} else {
-						// Make sure $mixValue actually is a NarroTextSuggestion object
+						// Make sure $mixValue actually is a NarroSuggestion object
 						try {
-							$mixValue = QType::Cast($mixValue, 'NarroTextSuggestion');
+							$mixValue = QType::Cast($mixValue, 'NarroSuggestion');
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
 						} 
 
-						// Make sure $mixValue is a SAVED NarroTextSuggestion object
+						// Make sure $mixValue is a SAVED NarroSuggestion object
 						if (is_null($mixValue->SuggestionId))
 							throw new QCallerException('Unable to set an unsaved Suggestion for this NarroSuggestionComment');
 
@@ -771,6 +847,38 @@
 						// Update Local Member Variables
 						$this->objUser = $mixValue;
 						$this->intUserId = $mixValue->UserId;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'Language':
+					/**
+					 * Sets the value for the NarroLanguage object referenced by intLanguageId (Not Null)
+					 * @param NarroLanguage $mixValue
+					 * @return NarroLanguage
+					 */
+					if (is_null($mixValue)) {
+						$this->intLanguageId = null;
+						$this->objLanguage = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a NarroLanguage object
+						try {
+							$mixValue = QType::Cast($mixValue, 'NarroLanguage');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED NarroLanguage object
+						if (is_null($mixValue->LanguageId))
+							throw new QCallerException('Unable to set an unsaved Language for this NarroSuggestionComment');
+
+						// Update Local Member Variables
+						$this->objLanguage = $mixValue;
+						$this->intLanguageId = $mixValue->LanguageId;
 
 						// Return $mixValue
 						return $mixValue;
@@ -836,6 +944,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_suggestion_comment.language_id
+		 * @var integer intLanguageId
+		 */
+		protected $intLanguageId;
+		const LanguageIdDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_suggestion_comment.comment_text
 		 * @var string strCommentText
 		 */
@@ -868,9 +984,9 @@
 		 * Protected member variable that contains the object pointed by the reference
 		 * in the database column narro_suggestion_comment.suggestion_id.
 		 *
-		 * NOTE: Always use the Suggestion property getter to correctly retrieve this NarroTextSuggestion object.
+		 * NOTE: Always use the Suggestion property getter to correctly retrieve this NarroSuggestion object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var NarroTextSuggestion objSuggestion
+		 * @var NarroSuggestion objSuggestion
 		 */
 		protected $objSuggestion;
 
@@ -884,6 +1000,16 @@
 		 */
 		protected $objUser;
 
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column narro_suggestion_comment.language_id.
+		 *
+		 * NOTE: Always use the Language property getter to correctly retrieve this NarroLanguage object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var NarroLanguage objLanguage
+		 */
+		protected $objLanguage;
+
 
 
 
@@ -896,8 +1022,9 @@
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="NarroSuggestionComment"><sequence>';
 			$strToReturn .= '<element name="CommentId" type="xsd:int"/>';
-			$strToReturn .= '<element name="Suggestion" type="xsd1:NarroTextSuggestion"/>';
+			$strToReturn .= '<element name="Suggestion" type="xsd1:NarroSuggestion"/>';
 			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
+			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
 			$strToReturn .= '<element name="CommentText" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -907,8 +1034,9 @@
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
 			if (!array_key_exists('NarroSuggestionComment', $strComplexTypeArray)) {
 				$strComplexTypeArray['NarroSuggestionComment'] = NarroSuggestionComment::GetSoapComplexTypeXml();
-				NarroTextSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroLanguage::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -927,10 +1055,13 @@
 				$objToReturn->intCommentId = $objSoapObject->CommentId;
 			if ((property_exists($objSoapObject, 'Suggestion')) &&
 				($objSoapObject->Suggestion))
-				$objToReturn->Suggestion = NarroTextSuggestion::GetObjectFromSoapObject($objSoapObject->Suggestion);
+				$objToReturn->Suggestion = NarroSuggestion::GetObjectFromSoapObject($objSoapObject->Suggestion);
 			if ((property_exists($objSoapObject, 'User')) &&
 				($objSoapObject->User))
 				$objToReturn->User = NarroUser::GetObjectFromSoapObject($objSoapObject->User);
+			if ((property_exists($objSoapObject, 'Language')) &&
+				($objSoapObject->Language))
+				$objToReturn->Language = NarroLanguage::GetObjectFromSoapObject($objSoapObject->Language);
 			if (property_exists($objSoapObject, 'CommentText'))
 				$objToReturn->strCommentText = $objSoapObject->CommentText;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -952,13 +1083,17 @@
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
 			if ($objObject->objSuggestion)
-				$objObject->objSuggestion = NarroTextSuggestion::GetSoapObjectFromObject($objObject->objSuggestion, false);
+				$objObject->objSuggestion = NarroSuggestion::GetSoapObjectFromObject($objObject->objSuggestion, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intSuggestionId = null;
 			if ($objObject->objUser)
 				$objObject->objUser = NarroUser::GetSoapObjectFromObject($objObject->objUser, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intUserId = null;
+			if ($objObject->objLanguage)
+				$objObject->objLanguage = NarroLanguage::GetSoapObjectFromObject($objObject->objLanguage, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intLanguageId = null;
 			return $objObject;
 		}
 	}
@@ -982,11 +1117,15 @@
 				case 'SuggestionId':
 					return new QQNode('suggestion_id', 'integer', $this);
 				case 'Suggestion':
-					return new QQNodeNarroTextSuggestion('suggestion_id', 'integer', $this);
+					return new QQNodeNarroSuggestion('suggestion_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
 				case 'User':
 					return new QQNodeNarroUser('user_id', 'integer', $this);
+				case 'LanguageId':
+					return new QQNode('language_id', 'integer', $this);
+				case 'Language':
+					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'string', $this);
 
@@ -1014,11 +1153,15 @@
 				case 'SuggestionId':
 					return new QQNode('suggestion_id', 'integer', $this);
 				case 'Suggestion':
-					return new QQNodeNarroTextSuggestion('suggestion_id', 'integer', $this);
+					return new QQNodeNarroSuggestion('suggestion_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
 				case 'User':
 					return new QQNodeNarroUser('user_id', 'integer', $this);
+				case 'LanguageId':
+					return new QQNode('language_id', 'integer', $this);
+				case 'Language':
+					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'string', $this);
 

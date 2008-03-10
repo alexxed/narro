@@ -56,10 +56,7 @@
 
             $this->dtgNarroProject->AddColumn($this->colProjectName);
             $this->dtgNarroProject->AddColumn($this->colPercentTranslated);
-
-            if (QApplication::$objUser->hasPermission('Can import') || QApplication::$objUser->hasPermission('Can export') ) {
-                $this->dtgNarroProject->AddColumn($this->colActions);
-            }
+            $this->dtgNarroProject->AddColumn($this->colActions);
 
         }
 
@@ -68,7 +65,7 @@
 
             $objDatabase = QApplication::$Database[1];
 
-            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_text_context` c WHERE c.project_id=%d AND c.active=1', $objNarroProject->ProjectId);
+            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c WHERE c.project_id=%d AND c.active=1', $objNarroProject->ProjectId);
 
             // Perform the Query
             $objDbResult = $objDatabase->Query($strQuery);
@@ -77,7 +74,7 @@
                 $mixRow = $objDbResult->FetchArray();
                 $intTotalTexts = $mixRow['cnt'];
 
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_text_context` c WHERE c.project_id = %d AND c.valid_suggestion_id IS NULL AND c.has_suggestion=1 AND c.active=1', $objNarroProject->ProjectId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId);
 
                 // Perform the Query
                 $objDbResult = $objDatabase->Query($strQuery);
@@ -87,7 +84,7 @@
                     $intTranslatedTexts = $mixRow['cnt'];
                 }
 
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_text_context` c WHERE c.project_id = %d AND c.valid_suggestion_id IS NOT NULL AND c.active=1', $objNarroProject->ProjectId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId);
                 // Perform the Query
                 $objDbResult = $objDatabase->Query($strQuery);
 
@@ -110,7 +107,7 @@
         }
 
         public function dtgNarroProject_ProjectNameColumn_Render(NarroProject $objNarroProject) {
-            return sprintf('<a href="narro_text_context_suggest.php?p=%s&tf=2&st=1&s=">%s</a>',
+            return sprintf('<a href="narro_context_suggest.php?p=%s&tf=2&st=1&s=">%s</a>',
                 $objNarroProject->ProjectId,
                 $objNarroProject->ProjectName
             );
@@ -118,11 +115,11 @@
 
         public function dtgNarroProject_Actions_Render(NarroProject $objNarroProject) {
             $strOutput = '';
-            if (QApplication::$objUser->hasPermission('Can import')) {
+            if (QApplication::$objUser->hasPermission('Can import', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) {
                 $strOutput .= sprintf(' <a href="narro_project_import.php?p=%d&pn=%s">%s</a>', $objNarroProject->ProjectId, $objNarroProject->ProjectName, QApplication::Translate('Import'));
             }
 
-            if (QApplication::$objUser->hasPermission('Can export')) {
+            if (QApplication::$objUser->hasPermission('Can export', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) {
                 $strOutput .= sprintf(' <a href="narro_project_export.php?p=%d&pn=%s">%s</a>', $objNarroProject->ProjectId, $objNarroProject->ProjectName, QApplication::Translate('Export'));
             }
 

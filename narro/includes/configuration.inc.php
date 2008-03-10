@@ -139,6 +139,9 @@
             define ('__IMAGE_ASSETS__', __SUBDIRECTORY__ . '/assets/images');
             define ('__PHP_ASSETS__', __SUBDIRECTORY__ . '/assets/php');
 
+            define('__DICTIONARY_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/dictionaries');
+            define('__TMP_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/tmp');
+            define('__IMPORT_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/import');
 
 
             /* Database Connection SerialArrays
@@ -172,10 +175,10 @@
                 'encoding' => 'UTF8',
                 'server' => 'localhost',
                 'port' => null,
-                'database' => 'alexxed_narro',
-                'username' => 'alex',
+                'database' => 'narro',
+                'username' => 'narro',
                 'password' => '',
-                'profiling' => false)));
+                'profiling' => true)));
 
             // Additional Database Connection Strings can be defined here (e.g. for connection #2, #3, #4, #5, etc.)
 //			define('DB_CONNECTION_2', serialize(array('adapter'=>'SqlServer', 'server'=>'localhost', 'port'=>null, 'database'=>'qcodo', 'username'=>'root', 'password'=>'', 'profiling'=>false)));

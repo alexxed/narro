@@ -46,44 +46,61 @@
         ////////////////////////////
 
         public static function GetSpellSuggestions($strText) {
-            return QApplication::GetSpellSuggestionsWithPspell($strText);
-        }
-
-        public static function GetSpellSuggestionsWithPspell($strText) {
-            $strCleanText = str_replace(array('\n', '.', '\\', '!', '?'), array(' ', ' ', ' ', ' ', ' '), $strText);
+            $strCleanText = mb_ereg_replace('[\\n\.\\\!\?]+', ' ', $strText);
             $strCleanText = strip_tags($strCleanText);
             /**
              * mozilla entitites: &xxx;
              */
-            $strCleanText = preg_replace('/&[a-zA-Z\-0-9]+\;/', ' ' , $strCleanText);
+            $strCleanText = mb_ereg_replace('&[a-zA-Z\-0-9]+\;', ' ' , $strCleanText);
             /**
-            * keyboard shortcuts
-            */
-            $strCleanText = preg_replace('/[~&]/', '' , $strCleanText);
-            /**
-            * openoffice entities: %xxx %%xxx %%%xxx #xxx and so on
+             * keyboard shortcuts
              */
-            $strCleanText = preg_replace('/[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}/i', ' ', $strCleanText);
+            $strCleanText = mb_ereg_replace('[~&]', '' , $strCleanText);
+            /**
+             * openoffice entities: %xxx %%xxx %%%xxx #xxx and so on
+             */
+            $strCleanText = mb_ereg_replace('[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}', ' ', $strCleanText);
 
-            $strCleanText = preg_replace('/[^a-z\-\.!;ăîşţĂÎŞŢșȘțȚ]+/i', ' ', $strCleanText);
-            $arrCleanText = preg_split('/\s+/', $strCleanText);
-            $arrSuggestions = array();
+            /**
+             * some characters that mess with the spellchecking
+             */
+            $strCleanText = mb_ereg_replace('[\(\)]+', ' ', $strCleanText);
 
-            if (!defined('PSPELL_FAST'))
-                return self::GetSpellSuggestionsWithAspell($strText);
+            $strSpellLang = QApplication::$objUser->getPreferenceValueByName('Language');
 
-            if (!$pspell_config = pspell_config_create(QApplication::$objUser->getPreferenceValueByName('Spellcheck language'), null, null, 'utf-8'))
-                return self::GetSpellSuggestionsWithAspell($strText);
+            return QApplication::GetSpellSuggestionsWithPspell($strCleanText, $strSpellLang);
+        }
 
-            if (!pspell_config_data_dir($pspell_config, realpath(dirname(__FILE__)) . "/../data/dictionaries/"))
-                return self::GetSpellSuggestionsWithAspell($strText);
+        public static function GetSpellSuggestionsWithPspell($strText, $strSpellLang) {
 
-            if (!pspell_config_dict_dir($pspell_config, realpath(dirname(__FILE__)) . "/../data/dictionaries/"))
-                return self::GetSpellSuggestionsWithAspell($strText);
 
-            if (!$pspell_link = pspell_new_config($pspell_config)) {
-                return self::GetSpellSuggestionsWithAspell($strText);
+            if (file_exists(__DICTIONARY_PATH__ . '/' . $strSpellLang . '.dat')) {
+                $strDictPath = realpath(dirname(__FILE__)) . "/../data/dictionaries/";
+                if (!defined('PSPELL_FAST'))
+                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
+
+                if (!$pspell_config = pspell_config_create($strSpellLang, null, null, 'utf-8'))
+                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
+                if (!pspell_config_data_dir($pspell_config, $strDictPath))
+                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
+
+                if (!pspell_config_dict_dir($pspell_config, $strDictPath))
+                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
+
+                if (!$pspell_link = pspell_new_config($pspell_config)) {
+                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
+                }
             }
+            else
+                if (file_exists('/usr/lib/aspell-0.60/' . $strSpellLang . '.dat')) {
+                    $strDictPath = '/usr/lib/aspell-0.60/';
+                    $pspell_link = pspell_new($strSpellLang, null, null, 'utf-8');
+                }
+                else
+                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
+
+            $arrSuggestions = array();
+            $arrCleanText = mb_split('\s+', $strText);
 
             foreach($arrCleanText as $strCleanText) {
 
@@ -98,39 +115,38 @@
             return $arrSuggestions;
         }
 
-        public static function GetSpellSuggestionsWithAspell($strText) {
-            $strCleanText = str_replace(array('\n', '.', '\\', '!', '?'), array(' ', ' ', ' ', ' ', ' '), $strText);
-            $strCleanText = strip_tags($strCleanText);
-            /**
-             * mozilla entitites: &xxx;
-             */
-            $strCleanText = preg_replace('/&[a-zA-Z\-0-9]+\;/', ' ' , $strCleanText);
-            /**
-             * keyboard shortcuts
-             */
-            $strCleanText = preg_replace('/[~&]/', '' , $strCleanText);
-            /**
-             * openoffice entities: %xxx %%xxx %%%xxx #xxx and so on
-             */
-            $strCleanText = preg_replace('/[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}/i', ' ', $strCleanText);
+        public static function GetSpellSuggestionsWithHunspell($strText, $strSpellLang) {
+            error_log(var_export(func_get_args(),true));
 
-            $strCleanText = preg_replace('/[^a-z\-\.!;ăîşţĂÎŞŢșȘțȚ]+/i', ' ', $strCleanText);
-            $arrCleanText = preg_split('/\s+/', $strCleanText);
-
+            $arrCleanText = mb_split('\s+', $strText);
             $arrResult = array();
 
-            $strCleanText = iconv('utf-8', 'iso8859-2', $strCleanText);
-            exec('echo "'.$strCleanText.'" | aspell --lang='.QApplication::$objUser->getPreferenceValueByName('Spellcheck language').' --dict-dir='.__DOCROOT__ . __SUBDIRECTORY__ .'/data/dictionaries -a', $arr, $ret);
-            if ($ret != 0)
+            $hndFile = fopen(__TMP_PATH__ .'/spell-' . md5($strText), 'w');
+
+            fwrite($hndFile, $strText);
+            fclose($hndFile);
+            chmod(__TMP_PATH__ .'/spell-' . md5($strText), 0777);
+
+            $strCommand = sprintf('/usr/bin/hunspell -i utf-8 -a -d %s -a %s',__DICTIONARY_PATH__ . '/' . $strSpellLang, __TMP_PATH__ .'/spell-' . md5($strText));
+
+            if (file_exists(__DICTIONARY_PATH__ . '/' . $strSpellLang . '.aff'))
+                $strCmdOutput = system($strCommand, $intRet);
+            else
                 return false;
-                //return self::GetSpellSuggestionsWithSoap($strText);
-            foreach($arr as $strWord) {
+
+            if ($strCmdOutput == '') {
+                return false;
+            }
+
+            $arrLines = mb_split('\n', $strCmdOutput);
+
+            foreach($arrLines as $strWord) {
                 if (strpos($strWord, '&') === 0) {
                     preg_match('/&\s+([^\s]+)\s+[^:]+:(.*)/', $strWord, $arrMatches);
-                    $strMisspelledWord = iconv('iso8859-2', 'utf-8', $arrMatches[1]);
-                    $strSuggestions = iconv('iso8859-2', 'utf-8', $arrMatches[2]);
-                    $strSuggestions = str_replace(' ', '', $strSuggestions);
-                    $arrSuggestions = split(',', $strSuggestions);
+
+                    $strMisspelledWord = $arrMatches[1];
+                    $strSuggestions = $arrMatches[2];
+                    $arrSuggestions = mb_split('\,', $strSuggestions);
                     array_slice($arrSuggestions, 0, 3);
                     if (in_array($strMisspelledWord, $arrSuggestions))
                         continue;
@@ -138,28 +154,8 @@
                     $arrResult[$strMisspelledWord] = array_slice($arrResult[$strMisspelledWord], 0, 3);
                 }
             }
+
             return $arrResult;
-        }
-
-        public static function GetSpellSuggestionsWithSoap($strText) {
-            $strWsdlUrl = sprintf('%s?wsdl', 'http://89.137.64.115/~alexxed/pspell.php');
-            try {
-                $objClient = new SoapClient($strWsdlUrl);
-            }
-            catch (SoapFault $objFault) {
-                return array();
-            }
-            try {
-                $arrSuggestions = unserialize($objClient->GetSpellSuggestions($strText));
-            }
-            catch (SoapFault $objFault) {
-                return array();
-            }
-
-            if (!is_array($arrSuggestions))
-                return array();
-            else
-                return $arrSuggestions;
         }
 
         public static function RegisterPreference($strName, $strType = 'text', $strDescription = '', $strDefaultValue = '', $arrValues = array()) {
@@ -171,6 +167,9 @@
         }
     }
 
+    function __t($strText) {
+        return QApplication::Translate($strText);
+    }
 
     ///////////////////////
     // Setup Error Handling
@@ -206,17 +205,16 @@
 
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
-    QApplication::RegisterPreference('Language', 'option', 'The preferred language for the application interface', 'en', array('ro', 'en'));
-    QApplication::RegisterPreference('Spellcheck language', 'option', 'The language used for spellchecking', 'en-US', array('ro', 'en-US'));
+    QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'ro', array('ro', 'fr', 'es-ES'));
 
     if (isset($_SESSION['objUser']) && $_SESSION['objUser'] instanceof NarroUser)
         QApplication::$objUser = $_SESSION['objUser'];
     else
         QApplication::$objUser = NarroUser::LoadAnonymousUser();
+
     if (!QApplication::$objUser instanceof NarroUser)
         // @todo add handling here
         throw Exception('Could not create an instance of NarroUser');
-
 
     //////////////////////////////////////////////
     // Setup Internationalization and Localization (if applicable)
@@ -227,27 +225,15 @@
     // * etc.
     // TODO: options to do this are left to the developer
     //////////////////////////////////////////////
-    if (isset($_SESSION)) {
-        if (array_key_exists('country_code', $_SESSION))
-            QApplication::$CountryCode = $_SESSION['country_code'];
-        if (array_key_exists('language_code', $_SESSION))
-            QApplication::$LanguageCode = $_SESSION['language_code'];
-    }
+    QApplication::$LanguageCode = QApplication::$objUser->Language->LanguageCode;
 
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
 
-    // Initialize I18n if QApplication::$LanguageCode is set
-    if (QApplication::$LanguageCode)
+    try {
         QI18n::Initialize();
-    else {
-        QApplication::$CountryCode = 'us';
-        QApplication::$LanguageCode = QApplication::$objUser->getPreferenceValueByName('Language');
-        try {
-            QI18n::Initialize();
-        } catch (Exception $objEx) {
-            QApplication::$LanguageCode = 'en';
-            QI18n::Initialize();
-        }
+    } catch (Exception $objEx) {
+        QApplication::$LanguageCode = 'en';
+        QI18n::Initialize();
     }
 
 ?>

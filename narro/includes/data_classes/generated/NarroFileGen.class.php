@@ -308,6 +308,18 @@
 					$strAliasPrefix = 'narro_file__';
 
 
+				if ((array_key_exists($strAliasPrefix . 'narrocontextasfile__context_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextasfile__context_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextAsFileArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroContextAsFileArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasfile__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroContextAsFileArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroContextAsFileArray, NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasfile__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
 				if ((array_key_exists($strAliasPrefix . 'childnarrofile__file_id', $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'childnarrofile__file_id')))) {
 					if ($intPreviousChildItemCount = count($objPreviousItem->_objChildNarroFileArray)) {
@@ -317,18 +329,6 @@
 							array_push($objPreviousItem->_objChildNarroFileArray, $objChildItem);
 					} else
 						array_push($objPreviousItem->_objChildNarroFileArray, NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childnarrofile__', $strExpandAsArrayNodes));
-					$blnExpandedViaArray = true;
-				}
-
-				if ((array_key_exists($strAliasPrefix . 'narrotextcontextasfile__context_id', $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcontextasfile__context_id')))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroTextContextAsFileArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objNarroTextContextAsFileArray[$intPreviousChildItemCount - 1];
-						$objChildItem = NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextasfile__', $strExpandAsArrayNodes, $objPreviousChildItem);
-						if ($objChildItem)
-							array_push($objPreviousItem->_objNarroTextContextAsFileArray, $objChildItem);
-					} else
-						array_push($objPreviousItem->_objNarroTextContextAsFileArray, NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextasfile__', $strExpandAsArrayNodes));
 					$blnExpandedViaArray = true;
 				}
 
@@ -350,7 +350,7 @@
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasPrefix . 'project_id', 'Integer');
 			$objToReturn->strEncoding = $objDbRow->GetColumn($strAliasPrefix . 'encoding', 'VarChar');
 			$objToReturn->intContextCount = $objDbRow->GetColumn($strAliasPrefix . 'context_count', 'Integer');
-			$objToReturn->intActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Integer');
+			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -385,20 +385,20 @@
 
 
 
+			// Check for NarroContextAsFile Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextasfile__context_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrocontextasfile__context_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroContextAsFileArray, NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasfile__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroContextAsFile = NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasfile__', $strExpandAsArrayNodes);
+			}
+
 			// Check for ChildNarroFile Virtual Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'childnarrofile__file_id'))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'childnarrofile__file_id', $strExpandAsArrayNodes)))
 					array_push($objToReturn->_objChildNarroFileArray, NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childnarrofile__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objChildNarroFile = NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childnarrofile__', $strExpandAsArrayNodes);
-			}
-
-			// Check for NarroTextContextAsFile Virtual Binding
-			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcontextasfile__context_id'))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrotextcontextasfile__context_id', $strExpandAsArrayNodes)))
-					array_push($objToReturn->_objNarroTextContextAsFileArray, NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextasfile__', $strExpandAsArrayNodes));
-				else
-					$objToReturn->_objNarroTextContextAsFile = NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextasfile__', $strExpandAsArrayNodes);
 			}
 
 			return $objToReturn;
@@ -607,7 +607,7 @@
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							' . $objDatabase->SqlVariable($this->strEncoding) . ',
 							' . $objDatabase->SqlVariable($this->intContextCount) . ',
-							' . $objDatabase->SqlVariable($this->intActive) . '
+							' . $objDatabase->SqlVariable($this->blnActive) . '
 						)
 					');
 
@@ -629,7 +629,7 @@
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding) . ',
 							`context_count` = ' . $objDatabase->SqlVariable($this->intContextCount) . ',
-							`active` = ' . $objDatabase->SqlVariable($this->intActive) . '
+							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . '
 						WHERE
 							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
 					');
@@ -786,17 +786,17 @@
 
 				case 'ContextCount':
 					/**
-					 * Gets the value for intContextCount (Not Null)
+					 * Gets the value for intContextCount 
 					 * @return integer
 					 */
 					return $this->intContextCount;
 
 				case 'Active':
 					/**
-					 * Gets the value for intActive (Not Null)
-					 * @return integer
+					 * Gets the value for blnActive (Not Null)
+					 * @return boolean
 					 */
-					return $this->intActive;
+					return $this->blnActive;
 
 
 				///////////////////
@@ -856,6 +856,22 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
+				case '_NarroContextAsFile':
+					/**
+					 * Gets the value for the private _objNarroContextAsFile (Read-Only)
+					 * if set due to an expansion on the narro_context.file_id reverse relationship
+					 * @return NarroContext
+					 */
+					return $this->_objNarroContextAsFile;
+
+				case '_NarroContextAsFileArray':
+					/**
+					 * Gets the value for the private _objNarroContextAsFileArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_context.file_id reverse relationship
+					 * @return NarroContext[]
+					 */
+					return (array) $this->_objNarroContextAsFileArray;
+
 				case '_ChildNarroFile':
 					/**
 					 * Gets the value for the private _objChildNarroFile (Read-Only)
@@ -871,22 +887,6 @@
 					 * @return NarroFile[]
 					 */
 					return (array) $this->_objChildNarroFileArray;
-
-				case '_NarroTextContextAsFile':
-					/**
-					 * Gets the value for the private _objNarroTextContextAsFile (Read-Only)
-					 * if set due to an expansion on the narro_text_context.file_id reverse relationship
-					 * @return NarroTextContext
-					 */
-					return $this->_objNarroTextContextAsFile;
-
-				case '_NarroTextContextAsFileArray':
-					/**
-					 * Gets the value for the private _objNarroTextContextAsFileArray (Read-Only)
-					 * if set due to an ExpandAsArray on the narro_text_context.file_id reverse relationship
-					 * @return NarroTextContext[]
-					 */
-					return (array) $this->_objNarroTextContextAsFileArray;
 
 				default:
 					try {
@@ -980,7 +980,7 @@
 
 				case 'ContextCount':
 					/**
-					 * Sets the value for intContextCount (Not Null)
+					 * Sets the value for intContextCount 
 					 * @param integer $mixValue
 					 * @return integer
 					 */
@@ -993,12 +993,12 @@
 
 				case 'Active':
 					/**
-					 * Sets the value for intActive (Not Null)
-					 * @param integer $mixValue
-					 * @return integer
+					 * Sets the value for blnActive (Not Null)
+					 * @param boolean $mixValue
+					 * @return boolean
 					 */
 					try {
-						return ($this->intActive = QType::Cast($mixValue, QType::Integer));
+						return ($this->blnActive = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1137,6 +1137,156 @@
 		///////////////////////////////
 		// ASSOCIATED OBJECTS
 		///////////////////////////////
+
+			
+		
+		// Related Objects' Methods for NarroContextAsFile
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroContextsAsFile as an array of NarroContext objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroContext[]
+		*/ 
+		public function GetNarroContextAsFileArray($objOptionalClauses = null) {
+			if ((is_null($this->intFileId)))
+				return array();
+
+			try {
+				return NarroContext::LoadArrayByFileId($this->intFileId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroContextsAsFile
+		 * @return int
+		*/ 
+		public function CountNarroContextsAsFile() {
+			if ((is_null($this->intFileId)))
+				return 0;
+
+			return NarroContext::CountByFileId($this->intFileId);
+		}
+
+		/**
+		 * Associates a NarroContextAsFile
+		 * @param NarroContext $objNarroContext
+		 * @return void
+		*/ 
+		public function AssociateNarroContextAsFile(NarroContext $objNarroContext) {
+			if ((is_null($this->intFileId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextAsFile on this unsaved NarroFile.');
+			if ((is_null($objNarroContext->ContextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextAsFile on this NarroFile with an unsaved NarroContext.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroFile::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context`
+				SET
+					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
+				WHERE
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroContextAsFile
+		 * @param NarroContext $objNarroContext
+		 * @return void
+		*/ 
+		public function UnassociateNarroContextAsFile(NarroContext $objNarroContext) {
+			if ((is_null($this->intFileId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsFile on this unsaved NarroFile.');
+			if ((is_null($objNarroContext->ContextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsFile on this NarroFile with an unsaved NarroContext.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroFile::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context`
+				SET
+					`file_id` = null
+				WHERE
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . ' AND
+					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroContextsAsFile
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroContextsAsFile() {
+			if ((is_null($this->intFileId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsFile on this unsaved NarroFile.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroFile::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context`
+				SET
+					`file_id` = null
+				WHERE
+					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroContextAsFile
+		 * @param NarroContext $objNarroContext
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroContextAsFile(NarroContext $objNarroContext) {
+			if ((is_null($this->intFileId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsFile on this unsaved NarroFile.');
+			if ((is_null($objNarroContext->ContextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsFile on this NarroFile with an unsaved NarroContext.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroFile::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_context`
+				WHERE
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . ' AND
+					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroContextsAsFile
+		 * @return void
+		*/ 
+		public function DeleteAllNarroContextsAsFile() {
+			if ((is_null($this->intFileId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsFile on this unsaved NarroFile.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroFile::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_context`
+				WHERE
+					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
+			');
+		}
 
 			
 		
@@ -1288,156 +1438,6 @@
 			');
 		}
 
-			
-		
-		// Related Objects' Methods for NarroTextContextAsFile
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated NarroTextContextsAsFile as an array of NarroTextContext objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextContext[]
-		*/ 
-		public function GetNarroTextContextAsFileArray($objOptionalClauses = null) {
-			if ((is_null($this->intFileId)))
-				return array();
-
-			try {
-				return NarroTextContext::LoadArrayByFileId($this->intFileId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated NarroTextContextsAsFile
-		 * @return int
-		*/ 
-		public function CountNarroTextContextsAsFile() {
-			if ((is_null($this->intFileId)))
-				return 0;
-
-			return NarroTextContext::CountByFileId($this->intFileId);
-		}
-
-		/**
-		 * Associates a NarroTextContextAsFile
-		 * @param NarroTextContext $objNarroTextContext
-		 * @return void
-		*/ 
-		public function AssociateNarroTextContextAsFile(NarroTextContext $objNarroTextContext) {
-			if ((is_null($this->intFileId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextContextAsFile on this unsaved NarroFile.');
-			if ((is_null($objNarroTextContext->ContextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextContextAsFile on this NarroFile with an unsaved NarroTextContext.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroFile::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_text_context`
-				SET
-					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
-				WHERE
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroTextContext->ContextId) . '
-			');
-		}
-
-		/**
-		 * Unassociates a NarroTextContextAsFile
-		 * @param NarroTextContext $objNarroTextContext
-		 * @return void
-		*/ 
-		public function UnassociateNarroTextContextAsFile(NarroTextContext $objNarroTextContext) {
-			if ((is_null($this->intFileId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsFile on this unsaved NarroFile.');
-			if ((is_null($objNarroTextContext->ContextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsFile on this NarroFile with an unsaved NarroTextContext.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroFile::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_text_context`
-				SET
-					`file_id` = null
-				WHERE
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroTextContext->ContextId) . ' AND
-					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all NarroTextContextsAsFile
-		 * @return void
-		*/ 
-		public function UnassociateAllNarroTextContextsAsFile() {
-			if ((is_null($this->intFileId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsFile on this unsaved NarroFile.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroFile::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_text_context`
-				SET
-					`file_id` = null
-				WHERE
-					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated NarroTextContextAsFile
-		 * @param NarroTextContext $objNarroTextContext
-		 * @return void
-		*/ 
-		public function DeleteAssociatedNarroTextContextAsFile(NarroTextContext $objNarroTextContext) {
-			if ((is_null($this->intFileId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsFile on this unsaved NarroFile.');
-			if ((is_null($objNarroTextContext->ContextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsFile on this NarroFile with an unsaved NarroTextContext.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroFile::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_text_context`
-				WHERE
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroTextContext->ContextId) . ' AND
-					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated NarroTextContextsAsFile
-		 * @return void
-		*/ 
-		public function DeleteAllNarroTextContextsAsFile() {
-			if ((is_null($this->intFileId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsFile on this unsaved NarroFile.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroFile::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_text_context`
-				WHERE
-					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
-			');
-		}
-
 
 
 
@@ -1505,11 +1505,27 @@
 
 		/**
 		 * Protected member variable that maps to the database column narro_file.active
-		 * @var integer intActive
+		 * @var boolean blnActive
 		 */
-		protected $intActive;
+		protected $blnActive;
 		const ActiveDefault = null;
 
+
+		/**
+		 * Private member variable that stores a reference to a single NarroContextAsFile object
+		 * (of type NarroContext), if this NarroFile object was restored with
+		 * an expansion on the narro_context association table.
+		 * @var NarroContext _objNarroContextAsFile;
+		 */
+		private $_objNarroContextAsFile;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroContextAsFile objects
+		 * (of type NarroContext[]), if this NarroFile object was restored with
+		 * an ExpandAsArray on the narro_context association table.
+		 * @var NarroContext[] _objNarroContextAsFileArray;
+		 */
+		private $_objNarroContextAsFileArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single ChildNarroFile object
@@ -1526,22 +1542,6 @@
 		 * @var NarroFile[] _objChildNarroFileArray;
 		 */
 		private $_objChildNarroFileArray = array();
-
-		/**
-		 * Private member variable that stores a reference to a single NarroTextContextAsFile object
-		 * (of type NarroTextContext), if this NarroFile object was restored with
-		 * an expansion on the narro_text_context association table.
-		 * @var NarroTextContext _objNarroTextContextAsFile;
-		 */
-		private $_objNarroTextContextAsFile;
-
-		/**
-		 * Private member variable that stores a reference to an array of NarroTextContextAsFile objects
-		 * (of type NarroTextContext[]), if this NarroFile object was restored with
-		 * an ExpandAsArray on the narro_text_context association table.
-		 * @var NarroTextContext[] _objNarroTextContextAsFileArray;
-		 */
-		private $_objNarroTextContextAsFileArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -1620,7 +1620,7 @@
 			$strToReturn .= '<element name="Project" type="xsd1:NarroProject"/>';
 			$strToReturn .= '<element name="Encoding" type="xsd:string"/>';
 			$strToReturn .= '<element name="ContextCount" type="xsd:int"/>';
-			$strToReturn .= '<element name="Active" type="xsd:int"/>';
+			$strToReturn .= '<element name="Active" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1662,7 +1662,7 @@
 			if (property_exists($objSoapObject, 'ContextCount'))
 				$objToReturn->intContextCount = $objSoapObject->ContextCount;
 			if (property_exists($objSoapObject, 'Active'))
-				$objToReturn->intActive = $objSoapObject->Active;
+				$objToReturn->blnActive = $objSoapObject->Active;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1726,13 +1726,13 @@
 				case 'ContextCount':
 					return new QQNode('context_count', 'integer', $this);
 				case 'Active':
-					return new QQNode('active', 'integer', $this);
+					return new QQNode('active', 'boolean', $this);
+				case 'NarroContextAsFile':
+					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasfile', 'reverse_reference', 'file_id');
 				case 'ChildNarroFile':
 					return new QQReverseReferenceNodeNarroFile($this, 'childnarrofile', 'reverse_reference', 'parent_id');
 				case 'NarroFileHeader':
 					return new QQReverseReferenceNodeNarroFileHeader($this, 'narrofileheader', 'reverse_reference', 'file_id');
-				case 'NarroTextContextAsFile':
-					return new QQReverseReferenceNodeNarroTextContext($this, 'narrotextcontextasfile', 'reverse_reference', 'file_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('file_id', 'integer', $this);
@@ -1772,13 +1772,13 @@
 				case 'ContextCount':
 					return new QQNode('context_count', 'integer', $this);
 				case 'Active':
-					return new QQNode('active', 'integer', $this);
+					return new QQNode('active', 'boolean', $this);
+				case 'NarroContextAsFile':
+					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasfile', 'reverse_reference', 'file_id');
 				case 'ChildNarroFile':
 					return new QQReverseReferenceNodeNarroFile($this, 'childnarrofile', 'reverse_reference', 'parent_id');
 				case 'NarroFileHeader':
 					return new QQReverseReferenceNodeNarroFileHeader($this, 'narrofileheader', 'reverse_reference', 'file_id');
-				case 'NarroTextContextAsFile':
-					return new QQReverseReferenceNodeNarroTextContext($this, 'narrotextcontextasfile', 'reverse_reference', 'file_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('file_id', 'integer', $this);

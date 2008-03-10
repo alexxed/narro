@@ -49,7 +49,7 @@
                 $objExtraCondition = QQ::All();
 
             if (!is_object($objSortInfo))
-                $objSortInfo = QQ::OrderBy(array(QQN::NarroTextContext()->ContextId, false));
+                $objSortInfo = QQ::OrderBy(array(QQN::NarroContext()->ContextId, false));
 
             if (!is_object($objLimitInfo))
                 $objLimitInfo = QQ::LimitInfo(20, 0);

@@ -1,48 +1,48 @@
 <?php
 	/**
-	 * The abstract NarroTextContextCommentGen class defined here is
+	 * The abstract NarroContextCommentGen class defined here is
 	 * code-generated and contains all the basic CRUD-type functionality as well as
 	 * basic methods to handle relationships and index-based loading.
 	 *
-	 * To use, you should use the NarroTextContextComment subclass which
-	 * extends this NarroTextContextCommentGen class.
+	 * To use, you should use the NarroContextComment subclass which
+	 * extends this NarroContextCommentGen class.
 	 *
 	 * Because subsequent re-code generations will overwrite any changes to this
 	 * file, you should leave this file unaltered to prevent yourself from losing
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
-	 * in the NarroTextContextComment class.
+	 * in the NarroContextComment class.
 	 * 
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * 
 	 */
-	class NarroTextContextCommentGen extends QBaseClass {
+	class NarroContextCommentGen extends QBaseClass {
 		///////////////////////////////
 		// COMMON LOAD METHODS
 		///////////////////////////////
 
 		/**
-		 * Load a NarroTextContextComment from PK Info
+		 * Load a NarroContextComment from PK Info
 		 * @param integer $intCommentId
-		 * @return NarroTextContextComment
+		 * @return NarroContextComment
 		 */
 		public static function Load($intCommentId) {
 			// Use QuerySingle to Perform the Query
-			return NarroTextContextComment::QuerySingle(
-				QQ::Equal(QQN::NarroTextContextComment()->CommentId, $intCommentId)
+			return NarroContextComment::QuerySingle(
+				QQ::Equal(QQN::NarroContextComment()->CommentId, $intCommentId)
 			);
 		}
 
 		/**
-		 * Load all NarroTextContextComments
+		 * Load all NarroContextComments
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextContextComment[]
+		 * @return NarroContextComment[]
 		 */
 		public static function LoadAll($objOptionalClauses = null) {
-			// Call NarroTextContextComment::QueryArray to perform the LoadAll query
+			// Call NarroContextComment::QueryArray to perform the LoadAll query
 			try {
-				return NarroTextContextComment::QueryArray(QQ::All(), $objOptionalClauses);
+				return NarroContextComment::QueryArray(QQ::All(), $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -50,12 +50,12 @@
 		}
 
 		/**
-		 * Count all NarroTextContextComments
+		 * Count all NarroContextComments
 		 * @return int
 		 */
 		public static function CountAll() {
-			// Call NarroTextContextComment::QueryCount to perform the CountAll query
-			return NarroTextContextComment::QueryCount(QQ::All());
+			// Call NarroContextComment::QueryCount to perform the CountAll query
+			return NarroContextComment::QueryCount(QQ::All());
 		}
 
 
@@ -84,12 +84,12 @@
 		 */
 		protected static function BuildQueryStatement(&$objQueryBuilder, QQCondition $objConditions, $objOptionalClauses, $mixParameterArray, $blnCountOnly) {
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroContextComment::GetDatabase();
 
-			// Create/Build out the QueryBuilder object with NarroTextContextComment-specific SELET and FROM fields
-			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_text_context_comment');
-			NarroTextContextComment::GetSelectFields($objQueryBuilder);
-			$objQueryBuilder->AddFromItem('`narro_text_context_comment` AS `narro_text_context_comment`');
+			// Create/Build out the QueryBuilder object with NarroContextComment-specific SELET and FROM fields
+			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_context_comment');
+			NarroContextComment::GetSelectFields($objQueryBuilder);
+			$objQueryBuilder->AddFromItem('`narro_context_comment` AS `narro_context_comment`');
 
 			// Set "CountOnly" option (if applicable)
 			if ($blnCountOnly)
@@ -128,39 +128,39 @@
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a single NarroTextContextComment object.
+		 * Static Qcodo Query method to query for a single NarroContextComment object.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClausees additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return NarroTextContextComment the queried object
+		 * @return NarroContextComment the queried object
 		 */
 		public static function QuerySingle(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = NarroTextContextComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = NarroContextComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
 
-			// Perform the Query, Get the First Row, and Instantiate a new NarroTextContextComment object
+			// Perform the Query, Get the First Row, and Instantiate a new NarroContextComment object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return NarroTextContextComment::InstantiateDbRow($objDbResult->GetNextRow());
+			return NarroContextComment::InstantiateDbRow($objDbResult->GetNextRow());
 		}
 
 		/**
-		 * Static Qcodo Query method to query for an array of NarroTextContextComment objects.
+		 * Static Qcodo Query method to query for an array of NarroContextComment objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClausees additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return NarroTextContextComment[] the queried objects as an array
+		 * @return NarroContextComment[] the queried objects as an array
 		 */
 		public static function QueryArray(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = NarroTextContextComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = NarroContextComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -168,11 +168,11 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return NarroTextContextComment::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes);
+			return NarroContextComment::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes);
 		}
 
 		/**
-		 * Static Qcodo Query method to query for a count of NarroTextContextComment objects.
+		 * Static Qcodo Query method to query for a count of NarroContextComment objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClausees additional optional QQClause objects for this query
@@ -182,7 +182,7 @@
 		public static function QueryCount(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = NarroTextContextComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
+				$strQuery = NarroContextComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -213,15 +213,15 @@
 
 /*		public static function QueryArrayCached($strConditions, $mixParameterArray = null) {
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroContextComment::GetDatabase();
 
 			// Lookup the QCache for This Query Statement
-			$objCache = new QCache('query', 'narro_text_context_comment_' . serialize($strConditions));
+			$objCache = new QCache('query', 'narro_context_comment_' . serialize($strConditions));
 			if (!($strQuery = $objCache->GetData())) {
-				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with NarroTextContextComment-specific fields
+				// Not Found -- Go ahead and Create/Build out a new QueryBuilder object with NarroContextComment-specific fields
 				$objQueryBuilder = new QQueryBuilder($objDatabase);
-				NarroTextContextComment::GetSelectFields($objQueryBuilder);
-				NarroTextContextComment::GetFromFields($objQueryBuilder);
+				NarroContextComment::GetSelectFields($objQueryBuilder);
+				NarroContextComment::GetFromFields($objQueryBuilder);
 
 				// Ensure the Passed-in Conditions is a string
 				try {
@@ -251,11 +251,11 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objDatabase->Query($strQuery);
-			return NarroTextContextComment::InstantiateDbResult($objDbResult);
+			return NarroContextComment::InstantiateDbResult($objDbResult);
 		}*/
 
 		/**
-		 * Updates a QQueryBuilder with the SELECT fields for this NarroTextContextComment
+		 * Updates a QQueryBuilder with the SELECT fields for this NarroContextComment
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
@@ -264,13 +264,14 @@
 				$strTableName = '`' . $strPrefix . '`';
 				$strAliasPrefix = '`' . $strPrefix . '__';
 			} else {
-				$strTableName = '`narro_text_context_comment`';
+				$strTableName = '`narro_context_comment`';
 				$strAliasPrefix = '`';
 			}
 
 			$objBuilder->AddSelectItem($strTableName . '.`comment_id` AS ' . $strAliasPrefix . 'comment_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`context_id` AS ' . $strAliasPrefix . 'context_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`user_id` AS ' . $strAliasPrefix . 'user_id`');
+			$objBuilder->AddSelectItem($strTableName . '.`language_id` AS ' . $strAliasPrefix . 'language_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`comment_text` AS ' . $strAliasPrefix . 'comment_text`');
 		}
 
@@ -281,13 +282,13 @@
 		///////////////////////////////
 
 		/**
-		 * Instantiate a NarroTextContextComment from a Database Row.
+		 * Instantiate a NarroContextComment from a Database Row.
 		 * Takes in an optional strAliasPrefix, used in case another Object::InstantiateDbRow
-		 * is calling this NarroTextContextComment::InstantiateDbRow in order to perform
+		 * is calling this NarroContextComment::InstantiateDbRow in order to perform
 		 * early binding on referenced objects.
 		 * @param DatabaseRowBase $objDbRow
 		 * @param string $strAliasPrefix
-		 * @return NarroTextContextComment
+		 * @return NarroContextComment
 		*/
 		public static function InstantiateDbRow($objDbRow, $strAliasPrefix = null, $strExpandAsArrayNodes = null, $objPreviousItem = null) {
 			// If blank row, return null
@@ -295,14 +296,14 @@
 				return null;
 
 
-			// Create a new instance of the NarroTextContextComment object
-			$objToReturn = new NarroTextContextComment();
+			// Create a new instance of the NarroContextComment object
+			$objToReturn = new NarroContextComment();
 			$objToReturn->__blnRestored = true;
 
 			$objToReturn->intCommentId = $objDbRow->GetColumn($strAliasPrefix . 'comment_id', 'Integer');
-			$objToReturn->__intCommentId = $objDbRow->GetColumn($strAliasPrefix . 'comment_id', 'Integer');
 			$objToReturn->intContextId = $objDbRow->GetColumn($strAliasPrefix . 'context_id', 'Integer');
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
+			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasPrefix . 'language_id', 'Integer');
 			$objToReturn->strCommentText = $objDbRow->GetColumn($strAliasPrefix . 'comment_text', 'Blob');
 
 			// Instantiate Virtual Attributes
@@ -315,15 +316,19 @@
 
 			// Prepare to Check for Early/Virtual Binding
 			if (!$strAliasPrefix)
-				$strAliasPrefix = 'narro_text_context_comment__';
+				$strAliasPrefix = 'narro_context_comment__';
 
 			// Check for Context Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'context_id__context_id')))
-				$objToReturn->objContext = NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'context_id__', $strExpandAsArrayNodes);
+				$objToReturn->objContext = NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'context_id__', $strExpandAsArrayNodes);
 
 			// Check for User Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'user_id__user_id')))
 				$objToReturn->objUser = NarroUser::InstantiateDbRow($objDbRow, $strAliasPrefix . 'user_id__', $strExpandAsArrayNodes);
+
+			// Check for Language Early Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'language_id__language_id')))
+				$objToReturn->objLanguage = NarroLanguage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'language_id__', $strExpandAsArrayNodes);
 
 
 
@@ -332,9 +337,9 @@
 		}
 
 		/**
-		 * Instantiate an array of NarroTextContextComments from a Database Result
+		 * Instantiate an array of NarroContextComments from a Database Result
 		 * @param DatabaseResultBase $objDbResult
-		 * @return NarroTextContextComment[]
+		 * @return NarroContextComment[]
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null) {
 			$objToReturn = array();
@@ -347,7 +352,7 @@
 			if ($strExpandAsArrayNodes) {
 				$objLastRowItem = null;
 				while ($objDbRow = $objDbResult->GetNextRow()) {
-					$objItem = NarroTextContextComment::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem);
+					$objItem = NarroContextComment::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, $objLastRowItem);
 					if ($objItem) {
 						array_push($objToReturn, $objItem);
 						$objLastRowItem = $objItem;
@@ -355,7 +360,7 @@
 				}
 			} else {
 				while ($objDbRow = $objDbResult->GetNextRow())
-					array_push($objToReturn, NarroTextContextComment::InstantiateDbRow($objDbRow));
+					array_push($objToReturn, NarroContextComment::InstantiateDbRow($objDbRow));
 			}
 
 			return $objToReturn;
@@ -368,29 +373,29 @@
 		///////////////////////////////////////////////////
 			
 		/**
-		 * Load a single NarroTextContextComment object,
+		 * Load a single NarroContextComment object,
 		 * by CommentId Index(es)
 		 * @param integer $intCommentId
-		 * @return NarroTextContextComment
+		 * @return NarroContextComment
 		*/
 		public static function LoadByCommentId($intCommentId) {
-			return NarroTextContextComment::QuerySingle(
-				QQ::Equal(QQN::NarroTextContextComment()->CommentId, $intCommentId)
+			return NarroContextComment::QuerySingle(
+				QQ::Equal(QQN::NarroContextComment()->CommentId, $intCommentId)
 			);
 		}
 			
 		/**
-		 * Load an array of NarroTextContextComment objects,
+		 * Load an array of NarroContextComment objects,
 		 * by ContextId Index(es)
 		 * @param integer $intContextId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextContextComment[]
+		 * @return NarroContextComment[]
 		*/
 		public static function LoadArrayByContextId($intContextId, $objOptionalClauses = null) {
-			// Call NarroTextContextComment::QueryArray to perform the LoadArrayByContextId query
+			// Call NarroContextComment::QueryArray to perform the LoadArrayByContextId query
 			try {
-				return NarroTextContextComment::QueryArray(
-					QQ::Equal(QQN::NarroTextContextComment()->ContextId, $intContextId),
+				return NarroContextComment::QueryArray(
+					QQ::Equal(QQN::NarroContextComment()->ContextId, $intContextId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -399,30 +404,30 @@
 		}
 
 		/**
-		 * Count NarroTextContextComments
+		 * Count NarroContextComments
 		 * by ContextId Index(es)
 		 * @param integer $intContextId
 		 * @return int
 		*/
 		public static function CountByContextId($intContextId) {
-			// Call NarroTextContextComment::QueryCount to perform the CountByContextId query
-			return NarroTextContextComment::QueryCount(
-				QQ::Equal(QQN::NarroTextContextComment()->ContextId, $intContextId)
+			// Call NarroContextComment::QueryCount to perform the CountByContextId query
+			return NarroContextComment::QueryCount(
+				QQ::Equal(QQN::NarroContextComment()->ContextId, $intContextId)
 			);
 		}
 			
 		/**
-		 * Load an array of NarroTextContextComment objects,
+		 * Load an array of NarroContextComment objects,
 		 * by UserId Index(es)
 		 * @param integer $intUserId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextContextComment[]
+		 * @return NarroContextComment[]
 		*/
 		public static function LoadArrayByUserId($intUserId, $objOptionalClauses = null) {
-			// Call NarroTextContextComment::QueryArray to perform the LoadArrayByUserId query
+			// Call NarroContextComment::QueryArray to perform the LoadArrayByUserId query
 			try {
-				return NarroTextContextComment::QueryArray(
-					QQ::Equal(QQN::NarroTextContextComment()->UserId, $intUserId),
+				return NarroContextComment::QueryArray(
+					QQ::Equal(QQN::NarroContextComment()->UserId, $intUserId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -431,15 +436,47 @@
 		}
 
 		/**
-		 * Count NarroTextContextComments
+		 * Count NarroContextComments
 		 * by UserId Index(es)
 		 * @param integer $intUserId
 		 * @return int
 		*/
 		public static function CountByUserId($intUserId) {
-			// Call NarroTextContextComment::QueryCount to perform the CountByUserId query
-			return NarroTextContextComment::QueryCount(
-				QQ::Equal(QQN::NarroTextContextComment()->UserId, $intUserId)
+			// Call NarroContextComment::QueryCount to perform the CountByUserId query
+			return NarroContextComment::QueryCount(
+				QQ::Equal(QQN::NarroContextComment()->UserId, $intUserId)
+			);
+		}
+			
+		/**
+		 * Load an array of NarroContextComment objects,
+		 * by LanguageId Index(es)
+		 * @param integer $intLanguageId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroContextComment[]
+		*/
+		public static function LoadArrayByLanguageId($intLanguageId, $objOptionalClauses = null) {
+			// Call NarroContextComment::QueryArray to perform the LoadArrayByLanguageId query
+			try {
+				return NarroContextComment::QueryArray(
+					QQ::Equal(QQN::NarroContextComment()->LanguageId, $intLanguageId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroContextComments
+		 * by LanguageId Index(es)
+		 * @param integer $intLanguageId
+		 * @return int
+		*/
+		public static function CountByLanguageId($intLanguageId) {
+			// Call NarroContextComment::QueryCount to perform the CountByLanguageId query
+			return NarroContextComment::QueryCount(
+				QQ::Equal(QQN::NarroContextComment()->LanguageId, $intLanguageId)
 			);
 		}
 
@@ -456,14 +493,14 @@
 		//////////////////
 
 		/**
-		 * Save this NarroTextContextComment
+		 * Save this NarroContextComment
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
-		 * @return void
+		 * @return int
 		*/
 		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroContextComment::GetDatabase();
 
 			$mixToReturn = null;
 
@@ -471,20 +508,21 @@
 				if ((!$this->__blnRestored) || ($blnForceInsert)) {
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
-						INSERT INTO `narro_text_context_comment` (
-							`comment_id`,
+						INSERT INTO `narro_context_comment` (
 							`context_id`,
 							`user_id`,
+							`language_id`,
 							`comment_text`
 						) VALUES (
-							' . $objDatabase->SqlVariable($this->intCommentId) . ',
 							' . $objDatabase->SqlVariable($this->intContextId) . ',
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
+							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							' . $objDatabase->SqlVariable($this->strCommentText) . '
 						)
 					');
 
-
+					// Update Identity column and return its value
+					$mixToReturn = $this->intCommentId = $objDatabase->InsertId('narro_context_comment', 'comment_id');
 				} else {
 					// Perform an UPDATE query
 
@@ -493,14 +531,14 @@
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
-							`narro_text_context_comment`
+							`narro_context_comment`
 						SET
-							`comment_id` = ' . $objDatabase->SqlVariable($this->intCommentId) . ',
 							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ',
 							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
+							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							`comment_text` = ' . $objDatabase->SqlVariable($this->strCommentText) . '
 						WHERE
-							`comment_id` = ' . $objDatabase->SqlVariable($this->__intCommentId) . '
+							`comment_id` = ' . $objDatabase->SqlVariable($this->intCommentId) . '
 					');
 				}
 
@@ -511,7 +549,6 @@
 
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
-			$this->__intCommentId = $this->intCommentId;
 
 
 			// Return 
@@ -519,50 +556,50 @@
 		}
 
 				/**
-		 * Delete this NarroTextContextComment
+		 * Delete this NarroContextComment
 		 * @return void
 		*/
 		public function Delete() {
 			if ((is_null($this->intCommentId)))
-				throw new QUndefinedPrimaryKeyException('Cannot delete this NarroTextContextComment with an unset primary key.');
+				throw new QUndefinedPrimaryKeyException('Cannot delete this NarroContextComment with an unset primary key.');
 
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroContextComment::GetDatabase();
 
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`narro_text_context_comment`
+					`narro_context_comment`
 				WHERE
 					`comment_id` = ' . $objDatabase->SqlVariable($this->intCommentId) . '');
 		}
 
 		/**
-		 * Delete all NarroTextContextComments
+		 * Delete all NarroContextComments
 		 * @return void
 		*/
 		public static function DeleteAll() {
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroContextComment::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`narro_text_context_comment`');
+					`narro_context_comment`');
 		}
 
 		/**
-		 * Truncate narro_text_context_comment table
+		 * Truncate narro_context_comment table
 		 * @return void
 		*/
 		public static function Truncate() {
 			// Get the Database Object for this Class
-			$objDatabase = NarroTextContextComment::GetDatabase();
+			$objDatabase = NarroContextComment::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
-				TRUNCATE `narro_text_context_comment`');
+				TRUNCATE `narro_context_comment`');
 		}
 
 
@@ -585,7 +622,7 @@
 				///////////////////
 				case 'CommentId':
 					/**
-					 * Gets the value for intCommentId (PK)
+					 * Gets the value for intCommentId (Read-Only PK)
 					 * @return integer
 					 */
 					return $this->intCommentId;
@@ -604,6 +641,13 @@
 					 */
 					return $this->intUserId;
 
+				case 'LanguageId':
+					/**
+					 * Gets the value for intLanguageId (Not Null)
+					 * @return integer
+					 */
+					return $this->intLanguageId;
+
 				case 'CommentText':
 					/**
 					 * Gets the value for strCommentText (Not Null)
@@ -617,12 +661,12 @@
 				///////////////////
 				case 'Context':
 					/**
-					 * Gets the value for the NarroTextContext object referenced by intContextId (Not Null)
-					 * @return NarroTextContext
+					 * Gets the value for the NarroContext object referenced by intContextId (Not Null)
+					 * @return NarroContext
 					 */
 					try {
 						if ((!$this->objContext) && (!is_null($this->intContextId)))
-							$this->objContext = NarroTextContext::Load($this->intContextId);
+							$this->objContext = NarroContext::Load($this->intContextId);
 						return $this->objContext;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
@@ -638,6 +682,20 @@
 						if ((!$this->objUser) && (!is_null($this->intUserId)))
 							$this->objUser = NarroUser::Load($this->intUserId);
 						return $this->objUser;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Language':
+					/**
+					 * Gets the value for the NarroLanguage object referenced by intLanguageId (Not Null)
+					 * @return NarroLanguage
+					 */
+					try {
+						if ((!$this->objLanguage) && (!is_null($this->intLanguageId)))
+							$this->objLanguage = NarroLanguage::Load($this->intLanguageId);
+						return $this->objLanguage;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -672,19 +730,6 @@
 				///////////////////
 				// Member Variables
 				///////////////////
-				case 'CommentId':
-					/**
-					 * Sets the value for intCommentId (PK)
-					 * @param integer $mixValue
-					 * @return integer
-					 */
-					try {
-						return ($this->intCommentId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'ContextId':
 					/**
 					 * Sets the value for intContextId (Not Null)
@@ -713,6 +758,20 @@
 						throw $objExc;
 					}
 
+				case 'LanguageId':
+					/**
+					 * Sets the value for intLanguageId (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						$this->objLanguage = null;
+						return ($this->intLanguageId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'CommentText':
 					/**
 					 * Sets the value for strCommentText (Not Null)
@@ -732,26 +791,26 @@
 				///////////////////
 				case 'Context':
 					/**
-					 * Sets the value for the NarroTextContext object referenced by intContextId (Not Null)
-					 * @param NarroTextContext $mixValue
-					 * @return NarroTextContext
+					 * Sets the value for the NarroContext object referenced by intContextId (Not Null)
+					 * @param NarroContext $mixValue
+					 * @return NarroContext
 					 */
 					if (is_null($mixValue)) {
 						$this->intContextId = null;
 						$this->objContext = null;
 						return null;
 					} else {
-						// Make sure $mixValue actually is a NarroTextContext object
+						// Make sure $mixValue actually is a NarroContext object
 						try {
-							$mixValue = QType::Cast($mixValue, 'NarroTextContext');
+							$mixValue = QType::Cast($mixValue, 'NarroContext');
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
 						} 
 
-						// Make sure $mixValue is a SAVED NarroTextContext object
+						// Make sure $mixValue is a SAVED NarroContext object
 						if (is_null($mixValue->ContextId))
-							throw new QCallerException('Unable to set an unsaved Context for this NarroTextContextComment');
+							throw new QCallerException('Unable to set an unsaved Context for this NarroContextComment');
 
 						// Update Local Member Variables
 						$this->objContext = $mixValue;
@@ -783,11 +842,43 @@
 
 						// Make sure $mixValue is a SAVED NarroUser object
 						if (is_null($mixValue->UserId))
-							throw new QCallerException('Unable to set an unsaved User for this NarroTextContextComment');
+							throw new QCallerException('Unable to set an unsaved User for this NarroContextComment');
 
 						// Update Local Member Variables
 						$this->objUser = $mixValue;
 						$this->intUserId = $mixValue->UserId;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'Language':
+					/**
+					 * Sets the value for the NarroLanguage object referenced by intLanguageId (Not Null)
+					 * @param NarroLanguage $mixValue
+					 * @return NarroLanguage
+					 */
+					if (is_null($mixValue)) {
+						$this->intLanguageId = null;
+						$this->objLanguage = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a NarroLanguage object
+						try {
+							$mixValue = QType::Cast($mixValue, 'NarroLanguage');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED NarroLanguage object
+						if (is_null($mixValue->LanguageId))
+							throw new QCallerException('Unable to set an unsaved Language for this NarroContextComment');
+
+						// Update Local Member Variables
+						$this->objLanguage = $mixValue;
+						$this->intLanguageId = $mixValue->LanguageId;
 
 						// Return $mixValue
 						return $mixValue;
@@ -829,7 +920,7 @@
 		///////////////////////////////////////////////////////////////////////
 		
 		/**
-		 * Protected member variable that maps to the database PK column narro_text_context_comment.comment_id
+		 * Protected member variable that maps to the database PK Identity column narro_context_comment.comment_id
 		 * @var integer intCommentId
 		 */
 		protected $intCommentId;
@@ -837,14 +928,7 @@
 
 
 		/**
-		 * Protected internal member variable that stores the original version of the PK column value (if restored)
-		 * Used by Save() to update a PK column during UPDATE
-		 * @var integer __intCommentId;
-		 */
-		protected $__intCommentId;
-
-		/**
-		 * Protected member variable that maps to the database column narro_text_context_comment.context_id
+		 * Protected member variable that maps to the database column narro_context_comment.context_id
 		 * @var integer intContextId
 		 */
 		protected $intContextId;
@@ -852,7 +936,7 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_text_context_comment.user_id
+		 * Protected member variable that maps to the database column narro_context_comment.user_id
 		 * @var integer intUserId
 		 */
 		protected $intUserId;
@@ -860,7 +944,15 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_text_context_comment.comment_text
+		 * Protected member variable that maps to the database column narro_context_comment.language_id
+		 * @var integer intLanguageId
+		 */
+		protected $intLanguageId;
+		const LanguageIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_context_comment.comment_text
 		 * @var string strCommentText
 		 */
 		protected $strCommentText;
@@ -890,23 +982,33 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column narro_text_context_comment.context_id.
+		 * in the database column narro_context_comment.context_id.
 		 *
-		 * NOTE: Always use the Context property getter to correctly retrieve this NarroTextContext object.
+		 * NOTE: Always use the Context property getter to correctly retrieve this NarroContext object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var NarroTextContext objContext
+		 * @var NarroContext objContext
 		 */
 		protected $objContext;
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column narro_text_context_comment.user_id.
+		 * in the database column narro_context_comment.user_id.
 		 *
 		 * NOTE: Always use the User property getter to correctly retrieve this NarroUser object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
 		 * @var NarroUser objUser
 		 */
 		protected $objUser;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column narro_context_comment.language_id.
+		 *
+		 * NOTE: Always use the Language property getter to correctly retrieve this NarroLanguage object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var NarroLanguage objLanguage
+		 */
+		protected $objLanguage;
 
 
 
@@ -918,10 +1020,11 @@
 		////////////////////////////////////////
 
 		public static function GetSoapComplexTypeXml() {
-			$strToReturn = '<complexType name="NarroTextContextComment"><sequence>';
+			$strToReturn = '<complexType name="NarroContextComment"><sequence>';
 			$strToReturn .= '<element name="CommentId" type="xsd:int"/>';
-			$strToReturn .= '<element name="Context" type="xsd1:NarroTextContext"/>';
+			$strToReturn .= '<element name="Context" type="xsd1:NarroContext"/>';
 			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
+			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
 			$strToReturn .= '<element name="CommentText" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -929,10 +1032,11 @@
 		}
 
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
-			if (!array_key_exists('NarroTextContextComment', $strComplexTypeArray)) {
-				$strComplexTypeArray['NarroTextContextComment'] = NarroTextContextComment::GetSoapComplexTypeXml();
-				NarroTextContext::AlterSoapComplexTypeArray($strComplexTypeArray);
+			if (!array_key_exists('NarroContextComment', $strComplexTypeArray)) {
+				$strComplexTypeArray['NarroContextComment'] = NarroContextComment::GetSoapComplexTypeXml();
+				NarroContext::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroLanguage::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -940,21 +1044,24 @@
 			$objArrayToReturn = array();
 
 			foreach ($objSoapArray as $objSoapObject)
-				array_push($objArrayToReturn, NarroTextContextComment::GetObjectFromSoapObject($objSoapObject));
+				array_push($objArrayToReturn, NarroContextComment::GetObjectFromSoapObject($objSoapObject));
 
 			return $objArrayToReturn;
 		}
 
 		public static function GetObjectFromSoapObject($objSoapObject) {
-			$objToReturn = new NarroTextContextComment();
+			$objToReturn = new NarroContextComment();
 			if (property_exists($objSoapObject, 'CommentId'))
 				$objToReturn->intCommentId = $objSoapObject->CommentId;
 			if ((property_exists($objSoapObject, 'Context')) &&
 				($objSoapObject->Context))
-				$objToReturn->Context = NarroTextContext::GetObjectFromSoapObject($objSoapObject->Context);
+				$objToReturn->Context = NarroContext::GetObjectFromSoapObject($objSoapObject->Context);
 			if ((property_exists($objSoapObject, 'User')) &&
 				($objSoapObject->User))
 				$objToReturn->User = NarroUser::GetObjectFromSoapObject($objSoapObject->User);
+			if ((property_exists($objSoapObject, 'Language')) &&
+				($objSoapObject->Language))
+				$objToReturn->Language = NarroLanguage::GetObjectFromSoapObject($objSoapObject->Language);
 			if (property_exists($objSoapObject, 'CommentText'))
 				$objToReturn->strCommentText = $objSoapObject->CommentText;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -969,20 +1076,24 @@
 			$objArrayToReturn = array();
 
 			foreach ($objArray as $objObject)
-				array_push($objArrayToReturn, NarroTextContextComment::GetSoapObjectFromObject($objObject, true));
+				array_push($objArrayToReturn, NarroContextComment::GetSoapObjectFromObject($objObject, true));
 
 			return unserialize(serialize($objArrayToReturn));
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
 			if ($objObject->objContext)
-				$objObject->objContext = NarroTextContext::GetSoapObjectFromObject($objObject->objContext, false);
+				$objObject->objContext = NarroContext::GetSoapObjectFromObject($objObject->objContext, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intContextId = null;
 			if ($objObject->objUser)
 				$objObject->objUser = NarroUser::GetSoapObjectFromObject($objObject->objUser, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intUserId = null;
+			if ($objObject->objLanguage)
+				$objObject->objLanguage = NarroLanguage::GetSoapObjectFromObject($objObject->objLanguage, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intLanguageId = null;
 			return $objObject;
 		}
 	}
@@ -995,10 +1106,10 @@
 	// ADDITIONAL CLASSES for QCODO QUERY
 	/////////////////////////////////////
 
-	class QQNodeNarroTextContextComment extends QQNode {
-		protected $strTableName = 'narro_text_context_comment';
+	class QQNodeNarroContextComment extends QQNode {
+		protected $strTableName = 'narro_context_comment';
 		protected $strPrimaryKey = 'comment_id';
-		protected $strClassName = 'NarroTextContextComment';
+		protected $strClassName = 'NarroContextComment';
 		public function __get($strName) {
 			switch ($strName) {
 				case 'CommentId':
@@ -1006,11 +1117,15 @@
 				case 'ContextId':
 					return new QQNode('context_id', 'integer', $this);
 				case 'Context':
-					return new QQNodeNarroTextContext('context_id', 'integer', $this);
+					return new QQNodeNarroContext('context_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
 				case 'User':
 					return new QQNodeNarroUser('user_id', 'integer', $this);
+				case 'LanguageId':
+					return new QQNode('language_id', 'integer', $this);
+				case 'Language':
+					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'string', $this);
 
@@ -1027,10 +1142,10 @@
 		}
 	}
 
-	class QQReverseReferenceNodeNarroTextContextComment extends QQReverseReferenceNode {
-		protected $strTableName = 'narro_text_context_comment';
+	class QQReverseReferenceNodeNarroContextComment extends QQReverseReferenceNode {
+		protected $strTableName = 'narro_context_comment';
 		protected $strPrimaryKey = 'comment_id';
-		protected $strClassName = 'NarroTextContextComment';
+		protected $strClassName = 'NarroContextComment';
 		public function __get($strName) {
 			switch ($strName) {
 				case 'CommentId':
@@ -1038,11 +1153,15 @@
 				case 'ContextId':
 					return new QQNode('context_id', 'integer', $this);
 				case 'Context':
-					return new QQNodeNarroTextContext('context_id', 'integer', $this);
+					return new QQNodeNarroContext('context_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
 				case 'User':
 					return new QQNodeNarroUser('user_id', 'integer', $this);
+				case 'LanguageId':
+					return new QQNode('language_id', 'integer', $this);
+				case 'Language':
+					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'string', $this);
 

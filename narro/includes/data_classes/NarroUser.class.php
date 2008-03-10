@@ -15,8 +15,11 @@
     */
     class NarroUser extends NarroUserGen {
         protected $arrPermissions;
-        public $arrPreferences;
+        protected $arrPreferences;
+        protected $objLanguage;
+
         const ANONYMOUS_USER_ID = 0;
+        const ANONYMOUS_LANGUAGE_ID = 1;
         /**
         * Default "to string" handler
         * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -28,6 +31,21 @@
         */
         public function __toString() {
             return sprintf('NarroUser Object %s',  $this->intUserId);
+        }
+
+        public function setPreferenceValueByName($strName, $strValue) {
+            if ($strName == 'Language') {
+                $objLanguage = NarroLanguage::LoadByLanguageCode($this->arrPreferences['Language']);
+
+                if ($objLanguage instanceof NarroLanguage) {
+                    $this->Language = $objLanguage;
+                }
+                else {
+                    $this->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                }
+            }
+
+            $this->arrPreferences[$strName] = $strValue;
         }
 
         public function getPreferenceValueByName($strName) {
@@ -51,7 +69,22 @@
                 $objPermission = NarroPermission::Load($objUserPermission->PermissionId);
                 $objUser->arrPermissions[$objPermission->PermissionName] = $objUserPermission;
             }
+
             $objUser->arrPreferences = unserialize($objUser->Data);
+
+            if (isset($objUser->arrPreferences['Language'])) {
+                $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->arrPreferences['Language']);
+
+                if ($objLanguage instanceof NarroLanguage) {
+                    $objUser->Language = $objLanguage;
+                }
+                else {
+                    $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                }
+            }
+            else
+                $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+
             return $objUser;
         }
 
@@ -64,14 +97,33 @@
             }
 
             $objUser->arrPreferences = unserialize($objUser->Data);
+
+            if (isset($objUser->arrPreferences['Language'])) {
+                $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->arrPreferences['Language']);
+
+                if ($objLanguage instanceof NarroLanguage) {
+                    $objUser->Language = $objLanguage;
+                }
+                else {
+                    $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                }
+            }
+            else
+                $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+
             return $objUser;
         }
 
-        public function hasPermission($strPermissionName, $intProjectId = null) {
+        public function hasPermission($strPermissionName, $intProjectId = null, $intLanguageId = null) {
             if ($intProjectId) {
                 if (isset($this->arrPermissions[$strPermissionName])) {
                     $objUserPermission = $this->arrPermissions[$strPermissionName];
-                    if ( $objUserPermission instanceof NarroUserPermission && ( $objUserPermission->ProjectId == $intProjectId || is_null($objUserPermission->ProjectId) ))
+                    if
+                    (
+                        $objUserPermission instanceof NarroUserPermission &&
+                        ( $objUserPermission->ProjectId == $intProjectId || is_null($objUserPermission->ProjectId) ) &&
+                        ( $objUserPermission->LanguageId == $intLanguageId || is_null($objUserPermission->LanguageId) )
+                    )
                         return true;
                     else
                         return false;
@@ -155,16 +207,11 @@
 
 
 
-        // Override or Create New Properties and Variables
-        // For performance reasons, these variables and __set and __get override methods
-        // are commented out.  But if you wish to implement or override any
-        // of the data generated properties, please feel free to uncomment them.
-/*
-        protected $strSomeNewProperty;
-
         public function __get($strName) {
             switch ($strName) {
-                case 'SomeNewProperty': return $this->strSomeNewProperty;
+                case 'Language': return $this->objLanguage;
+                case 'Preferences': return $this->arrPreferences;
+                case 'Permissions': return $this->arrPermissions;
 
                 default:
                     try {
@@ -175,17 +222,16 @@
                     }
             }
         }
-*/
 
         public function __set($strName, $mixValue) {
             switch ($strName) {
-                case 'Preferences':
-                    try {
-                        return ($this->arrPreferences = $mixValue);
-                    } catch (QInvalidCastException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
+                case "Language":
+                    if ($mixValue instanceof NarroLanguage)
+                        $this->objLanguage = $mixValue;
+                    else
+                        throw new Exception(__t('Language should be set with an instance of NarroLanguage'));
+
+                    break;
 
                 default:
                     try {

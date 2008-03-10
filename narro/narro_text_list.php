@@ -19,7 +19,7 @@
     require_once('includes/prepend.inc.php');
 
     class NarroTextListForm extends QForm {
-        protected $dtgNarroTextContext;
+        protected $dtgNarroContextInfo;
 
         // DataGrid Columns
         protected $colContext;
@@ -50,52 +50,52 @@
             // Setup DataGrid Columns
             $this->colContext = new QDataGridColumn(
                 QApplication::Translate('Context'),
-                '<?= $_FORM->dtgNarroTextContext_Context_Render($_ITEM); ?>',
+                '<?= $_FORM->dtgNarroContextInfo_Context_Render($_ITEM); ?>',
                 array(
-                    'OrderByClause' => QQ::OrderBy(QQN::NarroTextContext()->Context),
-                    'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroTextContext()->Context, false)
+                    'OrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Context),
+                    'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Context, false)
                 )
             );
             $this->colContext->BackColor = 'lightgreen';
             $this->colOriginalText = new QDataGridColumn(
                 QApplication::Translate('Original text'),
-                '<?= $_FORM->dtgNarroTextContext_OriginalText_Render($_ITEM); ?>',
+                '<?= $_FORM->dtgNarroContextInfo_OriginalText_Render($_ITEM); ?>',
                 array(
-                    'OrderByClause' => QQ::OrderBy(QQN::NarroTextContext()->Text->TextValue),
-                    'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroTextContext()->Text->TextValue, false)
+                    'OrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->TextValue),
+                    'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->TextValue, false)
                 )
             );
             $this->colTranslatedText = new QDataGridColumn(
                 QApplication::Translate('Translated text'),
-                '<?= $_FORM->dtgNarroTextContext_TranslatedText_Render($_ITEM); ?>'
+                '<?= $_FORM->dtgNarroContextInfo_TranslatedText_Render($_ITEM); ?>'
             );
             $this->colTranslatedText->HtmlEntities = false;
             $this->colActions = new QDataGridColumn(
                 QApplication::Translate('Actions'),
-                '<?= $_FORM->dtgNarroTextContext_Actions_Render($_ITEM); ?>'
+                '<?= $_FORM->dtgNarroContextInfo_Actions_Render($_ITEM); ?>'
             );
             $this->colActions->HtmlEntities = false;
 
             // Setup DataGrid
-            $this->dtgNarroTextContext = new QDataGrid($this);
+            $this->dtgNarroContextInfo = new QDataGrid($this);
 
             // Datagrid Paginator
-            $this->dtgNarroTextContext->Paginator = new QPaginator($this->dtgNarroTextContext);
-            $this->dtgNarroTextContext->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroContextInfo->Paginator = new QPaginator($this->dtgNarroContextInfo);
+            $this->dtgNarroContextInfo->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
 
-            $this->dtgNarroTextContext->PaginatorAlternate = new QPaginator($this->dtgNarroTextContext);
+            $this->dtgNarroContextInfo->PaginatorAlternate = new QPaginator($this->dtgNarroContextInfo);
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroTextContext->UseAjax = true;
+            $this->dtgNarroContextInfo->UseAjax = true;
 
             // Specify the local databind method this datagrid will use
-            $this->dtgNarroTextContext->SetDataBinder('dtgNarroTextContext_Bind');
+            $this->dtgNarroContextInfo->SetDataBinder('dtgNarroContextInfo_Bind');
 
             if (QApplication::QueryString('st') == 3)
-                $this->dtgNarroTextContext->AddColumn($this->colContext);
-            $this->dtgNarroTextContext->AddColumn($this->colOriginalText);
-            $this->dtgNarroTextContext->AddColumn($this->colTranslatedText);
-            $this->dtgNarroTextContext->AddColumn($this->colActions);
+                $this->dtgNarroContextInfo->AddColumn($this->colContext);
+            $this->dtgNarroContextInfo->AddColumn($this->colOriginalText);
+            $this->dtgNarroContextInfo->AddColumn($this->colTranslatedText);
+            $this->dtgNarroContextInfo->AddColumn($this->colActions);
 
             $this->lstTextFilter = new QListBox($this);
             $this->lstTextFilter->AddItem(QApplication::Translate('All texts'), self::SHOW_ALL_TEXTS, true);
@@ -145,48 +145,48 @@
             $this->lblMessage->Visible = false;
         }
 
-        public function dtgNarroTextContext_OriginalText_Render(NarroTextContext $objNarroTextContext) {
-            if (!is_null($objNarroTextContext->Text)) {
-                $strText = QApplication::$objPluginHandler->DisplayText($objNarroTextContext->Text->TextValue);
+        public function dtgNarroContextInfo_OriginalText_Render(NarroContextInfo $objNarroContextInfo) {
+            if (!is_null($objNarroContextInfo->Context->Text)) {
+                $strText = QApplication::$objPluginHandler->DisplayText($objNarroContextInfo->Context->Text->TextValue);
                 if (!$strText)
-                    $strText = $objNarroTextContext->Text->TextValue;
+                    $strText = $objNarroContextInfo->Context->Text->TextValue;
                 return (strlen($strText)>100)?substr($strText, 0, 100) . '...':$strText;
             }
             else
                 return null;
         }
 
-        public function dtgNarroTextContext_Context_Render(NarroTextContext $objNarroTextContext) {
-            if (!is_null($objNarroTextContext->Context)) {
-                $strContext = QApplication::$objPluginHandler->DisplayContext($objNarroTextContext->Context);
+        public function dtgNarroContextInfo_Context_Render(NarroContextInfo $objNarroContextInfo) {
+            if (!is_null($objNarroContextInfo->Context->Context)) {
+                $strContext = QApplication::$objPluginHandler->DisplayContext($objNarroContextInfo->Context->Context);
                 if (!$strContext)
-                    $strContext = $objNarroTextContext->Context;
+                    $strContext = $objNarroContextInfo->Context->Context;
                 return (strlen($strContext)>100)?substr($strContext, 0, 100) . '...':$strContext;
             }
             else
                 return '<div width="100%" style="background:gray">&nbsp;</div>';
         }
 
-        public function dtgNarroTextContext_TranslatedText_Render(NarroTextContext $objNarroTextContext) {
-            $intUserId = 0;
+        public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
             /**
             * if there is a valid suggestion, show it
             * if not and a user has made a suggestion, show it in green
             * if not, show the most voted suggestion
             */
-            if (!is_null($objNarroTextContext->ValidSuggestion)) {
-                $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objNarroTextContext->ValidSuggestion->SuggestionValue);
+            if (!is_null($objNarroContextInfo->ValidSuggestion)) {
+                $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objNarroContextInfo->ValidSuggestion->SuggestionValue);
                 if (!$strSuggestionValue)
-                    $strSuggestionValue = $objNarroTextContext->ValidSuggestion->SuggestionValue;
+                    $strSuggestionValue = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
                 $strSuggestionValue = (strlen($strSuggestionValue)>100)?substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
                 return htmlentities($strSuggestionValue, null, 'utf-8');
             }
             elseif (
                 $objSuggestion =
-                         NarroTextSuggestion::QuerySingle(
+                         NarroSuggestion::QuerySingle(
                              QQ::AndCondition(
-                                 QQ::Equal(QQN::NarroTextSuggestion()->TextId, $objNarroTextContext->TextId),
-                                 QQ::Equal(QQN::NarroTextSuggestion()->UserId, $intUserId)
+                                 QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId),
+                                 QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId),
+                                 QQ::Equal(QQN::NarroSuggestion()->UserId, QApplication::$objUser->UserId)
                              )
                          )
                    ) {
@@ -200,9 +200,10 @@
             }
             elseif (
                 $arrSuggestions =
-                        NarroTextSuggestion::QueryArray(
+                        NarroSuggestion::QueryArray(
                             QQ::AndCondition(
-                                QQ::Equal(QQN::NarroTextSuggestion()->TextId, $objNarroTextContext->TextId)
+                                QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId),
+                                QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId)
                             )
                         )
                    ) {

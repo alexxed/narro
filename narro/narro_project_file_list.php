@@ -97,7 +97,7 @@
 
                 $objDatabase = QApplication::$Database[1];
 
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_text_context` c WHERE c.project_id=%d AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, $objNarroFile->FileId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c WHERE c.project_id=%d AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, $objNarroFile->FileId);
 
                 // Perform the Query
                 $objDbResult = $objDatabase->Query($strQuery);
@@ -106,7 +106,7 @@
                     $mixRow = $objDbResult->FetchArray();
                     $intTotalTexts = $mixRow['cnt'];
 
-                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_text_context` c WHERE c.project_id = %d AND c.valid_suggestion_id IS NULL AND c.has_suggestion=1 AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, $objNarroFile->FileId);
+                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId, $objNarroFile->FileId);
 
                     // Perform the Query
                     $objDbResult = $objDatabase->Query($strQuery);
@@ -116,7 +116,7 @@
                         $intTranslatedTexts = $mixRow['cnt'];
                     }
 
-                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_text_context` c WHERE c.project_id = %d AND c.valid_suggestion_id IS NOT NULL AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, $objNarroFile->FileId);
+                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId, $objNarroFile->FileId);
                     // Perform the Query
                     $objDbResult = $objDatabase->Query($strQuery);
 
@@ -128,6 +128,7 @@
                     $objProgressBar = $this->GetControl('progressbar' . $objNarroFile->FileId);
                     if (!$objProgressBar instanceof NarroTranslationProgressBar)
                         $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroFile, 'progressbar' . $objNarroFile->FileId);
+
                     $objProgressBar->Total = $intTotalTexts;
                     $objProgressBar->Translated = $intValidatedTexts;
                     $objProgressBar->Fuzzy = $intTranslatedTexts;

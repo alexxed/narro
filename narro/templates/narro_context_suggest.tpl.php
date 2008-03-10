@@ -16,8 +16,8 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId))?QApplication::Translate('Translate "%s"'):QApplication::Translate('See suggestions for "%s"'),
-        (strlen($this->objNarroTextContext->Text->TextValue)>30)?substr($this->objNarroTextContext->Text->TextValue, 0, 30) . '...':$this->objNarroTextContext->Text->TextValue);
+    $strPageTitle = sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?QApplication::Translate('Translate "%s"'):QApplication::Translate('See suggestions for "%s"'),
+        (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?substr($this->objNarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->objNarroContextInfo->Context->Text->TextValue);
 
     require('includes/header.inc.php')
 ?>
@@ -41,7 +41,7 @@
         <br />
         <?php $this->pnlSuggestionList->Render(); ?>
         <br />
-        <?php if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroTextContext->ProjectId)) { ?>
+        <?php if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
             <?php _t('Your suggestion'); ?>:
             <br />
             <?php $this->pnlSpellcheckText->Render(); ?>
@@ -58,7 +58,7 @@
                 <?php $this->chkGoToNext->Render() ?> <label for="<?php echo $this->chkGoToNext->ControlId ?>"><?php _t('After, go to the next text') ?></label>
                 <br />
                 <?php $this->chkIgnoreSpellcheck->Render() ?> <label for="<?php echo $this->chkIgnoreSpellcheck->ControlId ?>"><?php _t('Ignore spellchecking') ?></label>
-                <?php if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroTextContext->ProjectId)) { ?>
+                <?php if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
                     <br />
                     <?php $this->chkValidate->Render() ?> <label for="<?php echo $this->chkValidate->ControlId ?>"><?php _t('Validate') ?></label>
                 <?php } ?>

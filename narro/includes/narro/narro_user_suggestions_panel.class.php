@@ -34,8 +34,8 @@
 
             $this->intUserId = $intUserId;
 
-            $this->colSuggestion = new QDataGridColumn('Sugestie', '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroTextSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroTextSuggestion()->SuggestionValue, false)));
-            $this->colText = new QDataGridColumn('Text în engleză', '<?= $_CONTROL->ParentControl->dtgSuggestions_colText_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroTextSuggestion()->Text->TextValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroTextSuggestion()->Text->TextValue, false)));
+            $this->colSuggestion = new QDataGridColumn('Sugestie', '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
+            $this->colText = new QDataGridColumn('Text în engleză', '<?= $_CONTROL->ParentControl->dtgSuggestions_colText_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Text->TextValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Text->TextValue, false)));
 
             // Setup DataGrid
             $this->dtgSuggestions = new QDataGrid($this);
@@ -57,17 +57,17 @@
             $this->dtgSuggestions->AddColumn($this->colSuggestion);
         }
 
-        public function dtgSuggestions_colSuggestion_Render( NarroTextSuggestion $objNarroTextSuggestion ) {
-            return $objNarroTextSuggestion->SuggestionValue;
+        public function dtgSuggestions_colSuggestion_Render( NarroSuggestion $objNarroSuggestion ) {
+            return $objNarroSuggestion->SuggestionValue;
         }
 
-        public function dtgSuggestions_colText_Render( NarroTextSuggestion $objNarroTextSuggestion ) {
-            return $objNarroTextSuggestion->Text->TextValue;
+        public function dtgSuggestions_colText_Render( NarroSuggestion $objNarroSuggestion ) {
+            return $objNarroSuggestion->Text->TextValue;
         }
 
         public function dtgSuggestions_Bind() {
             // Get Total Count b/c of Pagination
-            //$this->dtgSuggestions->TotalItemCount = NarroTextSuggestion::CountByTextId($this->objNarroTextContext->TextId);
+            //$this->dtgSuggestions->TotalItemCount = NarroSuggestion::CountByTextId($this->objNarroContext->TextId);
 
             $objClauses = array();
             if ($objClause = $this->dtgSuggestions->OrderByClause)
@@ -79,8 +79,8 @@
             else
                 array_push($objClauses, QQ::LimitInfo($this->dtgSuggestions->ItemsPerPage));
 
-            $this->dtgSuggestions->TotalItemCount = NarroTextSuggestion::CountByUserId($this->intUserId);
-            $this->dtgSuggestions->DataSource = NarroTextSuggestion::LoadArrayByUserId($this->intUserId, $objClauses);
+            $this->dtgSuggestions->TotalItemCount = NarroSuggestion::CountByUserId($this->intUserId);
+            $this->dtgSuggestions->DataSource = NarroSuggestion::LoadArrayByUserId($this->intUserId, $objClauses);
         }
 
         protected function GetControlHtml() {

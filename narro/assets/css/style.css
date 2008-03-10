@@ -25,9 +25,9 @@
 .item_label { font: 12px 'Verdana','Arial','Helvetica','Sans-Serif'; padding-bottom: 4px; }
 .item_label_disabled { font: 12px 'Verdana','Arial','Helvetica','Sans-Serif'; padding-bottom: 4px; color: #999999; }
 
-.button { font: 10px 'Verdana','Arial','Helvetica','Sans-Serif'; font-weight: bold; }
-.listbox { font: 12px 'Verdana','Arial','Helvetica','Sans-Serif'; width: 250px; }
-.textbox { font: 12px 'Verdana','Arial','Helvetica','Sans-Serif'; width: 250px; }
+.button { font-weight: bold; }
+.listbox { width: 250px; }
+.textbox { width: 250px; }
 
 .paginator_inactive_step { font-weight: bold; color: #aaaaaa; }
 .paginator_active_step { font-weight: bold; color: #000000; text-decoration: none; }
@@ -35,7 +35,7 @@
 .paginator_selected_page { font-weight: bold; background-color: #ddccff; padding: 0px 3px 0px 3px; border: 1px; border-style: solid; }
 
 .dashboard_top {width: 854px; margin-left: 170px; color: #000066; font: 30px 'Verdana','Arial','Helvetica','Sans-Serif'; font-weight: bold; height: 40px;}
-.dashboard_pane {float: left; font-size: 10px; width: 160px;}
+.dashboard_pane {float: left; width: 160px;}
 .dashboard_left {float: left; background-color: #eeeeff; width: 400px; height: 500px; margin-left: 10px; border-width: 1px; border-style: solid; border-color: black; padding: 10px; overflow: auto;}
 .dashboard_right {float: left; background-color: #eeeeff; width: 400px; height: 500px; margin-left: 10px; border-width: 1px; border-style: solid; border-color: black; padding: 10px; overflow: auto;}
 
@@ -132,7 +132,6 @@ tr.datagrid_odd {
 }
 
 tbody th.datagrid_row,td.datagrid_row {
-    font-size: 0.8em;
     line-height: 1.4em;
     font-family: Arial, Helvetica, sans-serif;
     color: #777777;

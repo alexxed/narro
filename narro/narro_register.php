@@ -78,7 +78,7 @@
 
             $_SESSION['objUser'] = $objUser;
             QApplication::$objUser = $objUser;
-            QApplication::Redirect('narro_project_list.php');
+            QApplication::Redirect('narro_user_preferences.php');
         }
     }
 

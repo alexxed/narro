@@ -303,6 +303,18 @@
 					$strAliasPrefix = 'narro_project__';
 
 
+				if ((array_key_exists($strAliasPrefix . 'narrocontextasproject__context_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextasproject__context_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextAsProjectArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroContextAsProjectArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasproject__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroContextAsProjectArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroContextAsProjectArray, NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasproject__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
 				if ((array_key_exists($strAliasPrefix . 'narrofileasproject__file_id', $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrofileasproject__file_id')))) {
 					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroFileAsProjectArray)) {
@@ -312,18 +324,6 @@
 							array_push($objPreviousItem->_objNarroFileAsProjectArray, $objChildItem);
 					} else
 						array_push($objPreviousItem->_objNarroFileAsProjectArray, NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileasproject__', $strExpandAsArrayNodes));
-					$blnExpandedViaArray = true;
-				}
-
-				if ((array_key_exists($strAliasPrefix . 'narrotextcontextasproject__context_id', $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcontextasproject__context_id')))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroTextContextAsProjectArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objNarroTextContextAsProjectArray[$intPreviousChildItemCount - 1];
-						$objChildItem = NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextasproject__', $strExpandAsArrayNodes, $objPreviousChildItem);
-						if ($objChildItem)
-							array_push($objPreviousItem->_objNarroTextContextAsProjectArray, $objChildItem);
-					} else
-						array_push($objPreviousItem->_objNarroTextContextAsProjectArray, NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextasproject__', $strExpandAsArrayNodes));
 					$blnExpandedViaArray = true;
 				}
 
@@ -369,20 +369,20 @@
 
 
 
+			// Check for NarroContextAsProject Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextasproject__context_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrocontextasproject__context_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroContextAsProjectArray, NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasproject__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroContextAsProject = NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasproject__', $strExpandAsArrayNodes);
+			}
+
 			// Check for NarroFileAsProject Virtual Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrofileasproject__file_id'))) {
 				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrofileasproject__file_id', $strExpandAsArrayNodes)))
 					array_push($objToReturn->_objNarroFileAsProjectArray, NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileasproject__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objNarroFileAsProject = NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileasproject__', $strExpandAsArrayNodes);
-			}
-
-			// Check for NarroTextContextAsProject Virtual Binding
-			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcontextasproject__context_id'))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrotextcontextasproject__context_id', $strExpandAsArrayNodes)))
-					array_push($objToReturn->_objNarroTextContextAsProjectArray, NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextasproject__', $strExpandAsArrayNodes));
-				else
-					$objToReturn->_objNarroTextContextAsProject = NarroTextContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcontextasproject__', $strExpandAsArrayNodes);
 			}
 
 			// Check for NarroUserPermissionAsProject Virtual Binding
@@ -441,6 +441,18 @@
 		public static function LoadByProjectId($intProjectId) {
 			return NarroProject::QuerySingle(
 				QQ::Equal(QQN::NarroProject()->ProjectId, $intProjectId)
+			);
+		}
+			
+		/**
+		 * Load a single NarroProject object,
+		 * by ProjectName Index(es)
+		 * @param string $strProjectName
+		 * @return NarroProject
+		*/
+		public static function LoadByProjectName($strProjectName) {
+			return NarroProject::QuerySingle(
+				QQ::Equal(QQN::NarroProject()->ProjectName, $strProjectName)
 			);
 		}
 
@@ -587,7 +599,7 @@
 
 				case 'ProjectName':
 					/**
-					 * Gets the value for strProjectName (Not Null)
+					 * Gets the value for strProjectName (Unique)
 					 * @return string
 					 */
 					return $this->strProjectName;
@@ -609,6 +621,22 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
+				case '_NarroContextAsProject':
+					/**
+					 * Gets the value for the private _objNarroContextAsProject (Read-Only)
+					 * if set due to an expansion on the narro_context.project_id reverse relationship
+					 * @return NarroContext
+					 */
+					return $this->_objNarroContextAsProject;
+
+				case '_NarroContextAsProjectArray':
+					/**
+					 * Gets the value for the private _objNarroContextAsProjectArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_context.project_id reverse relationship
+					 * @return NarroContext[]
+					 */
+					return (array) $this->_objNarroContextAsProjectArray;
+
 				case '_NarroFileAsProject':
 					/**
 					 * Gets the value for the private _objNarroFileAsProject (Read-Only)
@@ -624,22 +652,6 @@
 					 * @return NarroFile[]
 					 */
 					return (array) $this->_objNarroFileAsProjectArray;
-
-				case '_NarroTextContextAsProject':
-					/**
-					 * Gets the value for the private _objNarroTextContextAsProject (Read-Only)
-					 * if set due to an expansion on the narro_text_context.project_id reverse relationship
-					 * @return NarroTextContext
-					 */
-					return $this->_objNarroTextContextAsProject;
-
-				case '_NarroTextContextAsProjectArray':
-					/**
-					 * Gets the value for the private _objNarroTextContextAsProjectArray (Read-Only)
-					 * if set due to an ExpandAsArray on the narro_text_context.project_id reverse relationship
-					 * @return NarroTextContext[]
-					 */
-					return (array) $this->_objNarroTextContextAsProjectArray;
 
 				case '_NarroUserPermissionAsProject':
 					/**
@@ -682,7 +694,7 @@
 				///////////////////
 				case 'ProjectName':
 					/**
-					 * Sets the value for strProjectName (Not Null)
+					 * Sets the value for strProjectName (Unique)
 					 * @param string $mixValue
 					 * @return string
 					 */
@@ -736,6 +748,156 @@
 		///////////////////////////////
 		// ASSOCIATED OBJECTS
 		///////////////////////////////
+
+			
+		
+		// Related Objects' Methods for NarroContextAsProject
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroContextsAsProject as an array of NarroContext objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroContext[]
+		*/ 
+		public function GetNarroContextAsProjectArray($objOptionalClauses = null) {
+			if ((is_null($this->intProjectId)))
+				return array();
+
+			try {
+				return NarroContext::LoadArrayByProjectId($this->intProjectId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroContextsAsProject
+		 * @return int
+		*/ 
+		public function CountNarroContextsAsProject() {
+			if ((is_null($this->intProjectId)))
+				return 0;
+
+			return NarroContext::CountByProjectId($this->intProjectId);
+		}
+
+		/**
+		 * Associates a NarroContextAsProject
+		 * @param NarroContext $objNarroContext
+		 * @return void
+		*/ 
+		public function AssociateNarroContextAsProject(NarroContext $objNarroContext) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroContext->ContextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextAsProject on this NarroProject with an unsaved NarroContext.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context`
+				SET
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+				WHERE
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroContextAsProject
+		 * @param NarroContext $objNarroContext
+		 * @return void
+		*/ 
+		public function UnassociateNarroContextAsProject(NarroContext $objNarroContext) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroContext->ContextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsProject on this NarroProject with an unsaved NarroContext.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context`
+				SET
+					`project_id` = null
+				WHERE
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . ' AND
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroContextsAsProject
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroContextsAsProject() {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsProject on this unsaved NarroProject.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context`
+				SET
+					`project_id` = null
+				WHERE
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroContextAsProject
+		 * @param NarroContext $objNarroContext
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroContextAsProject(NarroContext $objNarroContext) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroContext->ContextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsProject on this NarroProject with an unsaved NarroContext.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_context`
+				WHERE
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . ' AND
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroContextsAsProject
+		 * @return void
+		*/ 
+		public function DeleteAllNarroContextsAsProject() {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsProject on this unsaved NarroProject.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_context`
+				WHERE
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
 
 			
 		
@@ -882,156 +1044,6 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_file`
-				WHERE
-					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
-			');
-		}
-
-			
-		
-		// Related Objects' Methods for NarroTextContextAsProject
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated NarroTextContextsAsProject as an array of NarroTextContext objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextContext[]
-		*/ 
-		public function GetNarroTextContextAsProjectArray($objOptionalClauses = null) {
-			if ((is_null($this->intProjectId)))
-				return array();
-
-			try {
-				return NarroTextContext::LoadArrayByProjectId($this->intProjectId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated NarroTextContextsAsProject
-		 * @return int
-		*/ 
-		public function CountNarroTextContextsAsProject() {
-			if ((is_null($this->intProjectId)))
-				return 0;
-
-			return NarroTextContext::CountByProjectId($this->intProjectId);
-		}
-
-		/**
-		 * Associates a NarroTextContextAsProject
-		 * @param NarroTextContext $objNarroTextContext
-		 * @return void
-		*/ 
-		public function AssociateNarroTextContextAsProject(NarroTextContext $objNarroTextContext) {
-			if ((is_null($this->intProjectId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextContextAsProject on this unsaved NarroProject.');
-			if ((is_null($objNarroTextContext->ContextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextContextAsProject on this NarroProject with an unsaved NarroTextContext.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroProject::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_text_context`
-				SET
-					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
-				WHERE
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroTextContext->ContextId) . '
-			');
-		}
-
-		/**
-		 * Unassociates a NarroTextContextAsProject
-		 * @param NarroTextContext $objNarroTextContext
-		 * @return void
-		*/ 
-		public function UnassociateNarroTextContextAsProject(NarroTextContext $objNarroTextContext) {
-			if ((is_null($this->intProjectId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsProject on this unsaved NarroProject.');
-			if ((is_null($objNarroTextContext->ContextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsProject on this NarroProject with an unsaved NarroTextContext.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroProject::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_text_context`
-				SET
-					`project_id` = null
-				WHERE
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroTextContext->ContextId) . ' AND
-					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all NarroTextContextsAsProject
-		 * @return void
-		*/ 
-		public function UnassociateAllNarroTextContextsAsProject() {
-			if ((is_null($this->intProjectId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsProject on this unsaved NarroProject.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroProject::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_text_context`
-				SET
-					`project_id` = null
-				WHERE
-					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated NarroTextContextAsProject
-		 * @param NarroTextContext $objNarroTextContext
-		 * @return void
-		*/ 
-		public function DeleteAssociatedNarroTextContextAsProject(NarroTextContext $objNarroTextContext) {
-			if ((is_null($this->intProjectId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsProject on this unsaved NarroProject.');
-			if ((is_null($objNarroTextContext->ContextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsProject on this NarroProject with an unsaved NarroTextContext.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroProject::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_text_context`
-				WHERE
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroTextContext->ContextId) . ' AND
-					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated NarroTextContextsAsProject
-		 * @return void
-		*/ 
-		public function DeleteAllNarroTextContextsAsProject() {
-			if ((is_null($this->intProjectId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextContextAsProject on this unsaved NarroProject.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroProject::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_text_context`
 				WHERE
 					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
 			');
@@ -1220,6 +1232,22 @@
 
 
 		/**
+		 * Private member variable that stores a reference to a single NarroContextAsProject object
+		 * (of type NarroContext), if this NarroProject object was restored with
+		 * an expansion on the narro_context association table.
+		 * @var NarroContext _objNarroContextAsProject;
+		 */
+		private $_objNarroContextAsProject;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroContextAsProject objects
+		 * (of type NarroContext[]), if this NarroProject object was restored with
+		 * an ExpandAsArray on the narro_context association table.
+		 * @var NarroContext[] _objNarroContextAsProjectArray;
+		 */
+		private $_objNarroContextAsProjectArray = array();
+
+		/**
 		 * Private member variable that stores a reference to a single NarroFileAsProject object
 		 * (of type NarroFile), if this NarroProject object was restored with
 		 * an expansion on the narro_file association table.
@@ -1234,22 +1262,6 @@
 		 * @var NarroFile[] _objNarroFileAsProjectArray;
 		 */
 		private $_objNarroFileAsProjectArray = array();
-
-		/**
-		 * Private member variable that stores a reference to a single NarroTextContextAsProject object
-		 * (of type NarroTextContext), if this NarroProject object was restored with
-		 * an expansion on the narro_text_context association table.
-		 * @var NarroTextContext _objNarroTextContextAsProject;
-		 */
-		private $_objNarroTextContextAsProject;
-
-		/**
-		 * Private member variable that stores a reference to an array of NarroTextContextAsProject objects
-		 * (of type NarroTextContext[]), if this NarroProject object was restored with
-		 * an ExpandAsArray on the narro_text_context association table.
-		 * @var NarroTextContext[] _objNarroTextContextAsProjectArray;
-		 */
-		private $_objNarroTextContextAsProjectArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single NarroUserPermissionAsProject object
@@ -1372,10 +1384,10 @@
 					return new QQNode('project_name', 'string', $this);
 				case 'Active':
 					return new QQNode('active', 'integer', $this);
+				case 'NarroContextAsProject':
+					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasproject', 'reverse_reference', 'project_id');
 				case 'NarroFileAsProject':
 					return new QQReverseReferenceNodeNarroFile($this, 'narrofileasproject', 'reverse_reference', 'project_id');
-				case 'NarroTextContextAsProject':
-					return new QQReverseReferenceNodeNarroTextContext($this, 'narrotextcontextasproject', 'reverse_reference', 'project_id');
 				case 'NarroUserPermissionAsProject':
 					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionasproject', 'reverse_reference', 'project_id');
 
@@ -1404,10 +1416,10 @@
 					return new QQNode('project_name', 'string', $this);
 				case 'Active':
 					return new QQNode('active', 'integer', $this);
+				case 'NarroContextAsProject':
+					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasproject', 'reverse_reference', 'project_id');
 				case 'NarroFileAsProject':
 					return new QQReverseReferenceNodeNarroFile($this, 'narrofileasproject', 'reverse_reference', 'project_id');
-				case 'NarroTextContextAsProject':
-					return new QQReverseReferenceNodeNarroTextContext($this, 'narrotextcontextasproject', 'reverse_reference', 'project_id');
 				case 'NarroUserPermissionAsProject':
 					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionasproject', 'reverse_reference', 'project_id');
 

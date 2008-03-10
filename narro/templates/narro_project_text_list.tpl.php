@@ -40,8 +40,8 @@
             <?php $this->btnSearch->Render(); ?>
         </div>
         <br />
-        <?php $this->dtgNarroTextContext->Render() ?>
-        <?php QApplication::ExecuteJavaScript("if (location.hash) qc.pA('NarroProjectTextListForm', '" . $this->dtgNarroTextContext->Paginator->ControlId . "', 'QClickEvent', location.hash.replace('#', ''), '');"); ?>
+        <?php $this->dtgNarroContextInfo->Render() ?>
+        <?php QApplication::ExecuteJavaScript("if (location.hash) qc.pA('NarroProjectTextListForm', '" . $this->dtgNarroContextInfo->Paginator->ControlId . "', 'QClickEvent', location.hash.replace('#', ''), '');"); ?>
     <?php $this->RenderEnd() ?>
 
 <?php require('includes/footer.inc.php'); ?>

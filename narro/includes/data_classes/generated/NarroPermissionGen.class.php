@@ -401,6 +401,18 @@
 				QQ::Equal(QQN::NarroPermission()->PermissionId, $intPermissionId)
 			);
 		}
+			
+		/**
+		 * Load a single NarroPermission object,
+		 * by PermissionName Index(es)
+		 * @param string $strPermissionName
+		 * @return NarroPermission
+		*/
+		public static function LoadByPermissionName($strPermissionName) {
+			return NarroPermission::QuerySingle(
+				QQ::Equal(QQN::NarroPermission()->PermissionName, $strPermissionName)
+			);
+		}
 
 
 
@@ -542,7 +554,7 @@
 
 				case 'PermissionName':
 					/**
-					 * Gets the value for strPermissionName (Not Null)
+					 * Gets the value for strPermissionName (Unique)
 					 * @return string
 					 */
 					return $this->strPermissionName;
@@ -598,7 +610,7 @@
 				///////////////////
 				case 'PermissionName':
 					/**
-					 * Sets the value for strPermissionName (Not Null)
+					 * Sets the value for strPermissionName (Unique)
 					 * @param string $mixValue
 					 * @return string
 					 */

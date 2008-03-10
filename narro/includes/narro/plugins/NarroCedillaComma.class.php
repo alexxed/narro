@@ -64,15 +64,15 @@
         }
 
         public function ProcessSuggestion($strSuggestion) {
-            return $this->ConvertToSedilla($strSuggestion);
+            return $this->ConvertToComma($strSuggestion);
         }
 
         public function ProcessSuggestionComment($strSuggestionComment) {
-            return $this->ConvertToSedilla($strSuggestionComment);
+            return $this->ConvertToComma($strSuggestionComment);
         }
 
         public function ProcessContextComment($strContextComment) {
-            return $this->ConvertToSedilla($strSuggestion);
+            return $this->ConvertToComma($strSuggestion);
         }
 
         public function ProcessContext($strContext) {

@@ -42,7 +42,7 @@
                 $strWorkPath = $this->strImportDirectory . '/' . $intProjectId;
             }
 
-            $strQuery = sprintf("UPDATE `narro_text_context` SET `active` = 0 WHERE project_id=%d", $intProjectId);
+            $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d", $intProjectId);
 
             if (!$objResult = db_query($strQuery)) {
                 $this->Output( __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery );

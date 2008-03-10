@@ -270,6 +270,8 @@
 
 			$objBuilder->AddSelectItem($strTableName . '.`language_id` AS ' . $strAliasPrefix . 'language_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`language_name` AS ' . $strAliasPrefix . 'language_name`');
+			$objBuilder->AddSelectItem($strTableName . '.`language_code` AS ' . $strAliasPrefix . 'language_code`');
+			$objBuilder->AddSelectItem($strTableName . '.`encoding` AS ' . $strAliasPrefix . 'encoding`');
 		}
 
 
@@ -302,15 +304,75 @@
 					$strAliasPrefix = 'narro_language__';
 
 
-				if ((array_key_exists($strAliasPrefix . 'narrotextsuggestionaslanguage__suggestion_id', $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextsuggestionaslanguage__suggestion_id')))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroTextSuggestionAsLanguageArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objNarroTextSuggestionAsLanguageArray[$intPreviousChildItemCount - 1];
-						$objChildItem = NarroTextSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextsuggestionaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItem);
+				if ((array_key_exists($strAliasPrefix . 'narrocontextcommentaslanguage__comment_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextcommentaslanguage__comment_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextCommentAsLanguageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroContextCommentAsLanguageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItem);
 						if ($objChildItem)
-							array_push($objPreviousItem->_objNarroTextSuggestionAsLanguageArray, $objChildItem);
+							array_push($objPreviousItem->_objNarroContextCommentAsLanguageArray, $objChildItem);
 					} else
-						array_push($objPreviousItem->_objNarroTextSuggestionAsLanguageArray, NarroTextSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextsuggestionaslanguage__', $strExpandAsArrayNodes));
+						array_push($objPreviousItem->_objNarroContextCommentAsLanguageArray, NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
+				if ((array_key_exists($strAliasPrefix . 'narrocontextinfoaslanguage__context_info_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextinfoaslanguage__context_info_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextInfoAsLanguageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroContextInfoAsLanguageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroContextInfoAsLanguageArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroContextInfoAsLanguageArray, NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaslanguage__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
+				if ((array_key_exists($strAliasPrefix . 'narrocontextpluralinfoaslanguage__plural_info_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextpluralinfoaslanguage__plural_info_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextPluralInfoAsLanguageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroContextPluralInfoAsLanguageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroContextPluralInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextpluralinfoaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroContextPluralInfoAsLanguageArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroContextPluralInfoAsLanguageArray, NarroContextPluralInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextpluralinfoaslanguage__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
+				if ((array_key_exists($strAliasPrefix . 'narrosuggestionaslanguage__suggestion_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrosuggestionaslanguage__suggestion_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroSuggestionAsLanguageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroSuggestionAsLanguageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroSuggestionAsLanguageArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroSuggestionAsLanguageArray, NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionaslanguage__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
+				if ((array_key_exists($strAliasPrefix . 'narrosuggestioncommentaslanguage__comment_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrosuggestioncommentaslanguage__comment_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroSuggestionCommentAsLanguageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroSuggestionCommentAsLanguageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroSuggestionCommentAsLanguageArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroSuggestionCommentAsLanguageArray, NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentaslanguage__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
+				if ((array_key_exists($strAliasPrefix . 'narrouserpermissionaslanguage__user_permission_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserpermissionaslanguage__user_permission_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserPermissionAsLanguageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroUserPermissionAsLanguageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroUserPermissionAsLanguageArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroUserPermissionAsLanguageArray, NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionaslanguage__', $strExpandAsArrayNodes));
 					$blnExpandedViaArray = true;
 				}
 
@@ -327,6 +389,8 @@
 
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasPrefix . 'language_id', 'Integer');
 			$objToReturn->strLanguageName = $objDbRow->GetColumn($strAliasPrefix . 'language_name', 'VarChar');
+			$objToReturn->strLanguageCode = $objDbRow->GetColumn($strAliasPrefix . 'language_code', 'VarChar');
+			$objToReturn->strEncoding = $objDbRow->GetColumn($strAliasPrefix . 'encoding', 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -343,12 +407,52 @@
 
 
 
-			// Check for NarroTextSuggestionAsLanguage Virtual Binding
-			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextsuggestionaslanguage__suggestion_id'))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrotextsuggestionaslanguage__suggestion_id', $strExpandAsArrayNodes)))
-					array_push($objToReturn->_objNarroTextSuggestionAsLanguageArray, NarroTextSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextsuggestionaslanguage__', $strExpandAsArrayNodes));
+			// Check for NarroContextCommentAsLanguage Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextcommentaslanguage__comment_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrocontextcommentaslanguage__comment_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroContextCommentAsLanguageArray, NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes));
 				else
-					$objToReturn->_objNarroTextSuggestionAsLanguage = NarroTextSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextsuggestionaslanguage__', $strExpandAsArrayNodes);
+					$objToReturn->_objNarroContextCommentAsLanguage = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroContextInfoAsLanguage Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextinfoaslanguage__context_info_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrocontextinfoaslanguage__context_info_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroContextInfoAsLanguageArray, NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaslanguage__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroContextInfoAsLanguage = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaslanguage__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroContextPluralInfoAsLanguage Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextpluralinfoaslanguage__plural_info_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrocontextpluralinfoaslanguage__plural_info_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroContextPluralInfoAsLanguageArray, NarroContextPluralInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextpluralinfoaslanguage__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroContextPluralInfoAsLanguage = NarroContextPluralInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextpluralinfoaslanguage__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroSuggestionAsLanguage Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrosuggestionaslanguage__suggestion_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrosuggestionaslanguage__suggestion_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroSuggestionAsLanguageArray, NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionaslanguage__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroSuggestionAsLanguage = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionaslanguage__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroSuggestionCommentAsLanguage Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrosuggestioncommentaslanguage__comment_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrosuggestioncommentaslanguage__comment_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroSuggestionCommentAsLanguageArray, NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentaslanguage__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroSuggestionCommentAsLanguage = NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentaslanguage__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroUserPermissionAsLanguage Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserpermissionaslanguage__user_permission_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrouserpermissionaslanguage__user_permission_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroUserPermissionAsLanguageArray, NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionaslanguage__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroUserPermissionAsLanguage = NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionaslanguage__', $strExpandAsArrayNodes);
 			}
 
 			return $objToReturn;
@@ -413,6 +517,18 @@
 				QQ::Equal(QQN::NarroLanguage()->LanguageName, $strLanguageName)
 			);
 		}
+			
+		/**
+		 * Load a single NarroLanguage object,
+		 * by LanguageCode Index(es)
+		 * @param string $strLanguageCode
+		 * @return NarroLanguage
+		*/
+		public static function LoadByLanguageCode($strLanguageCode) {
+			return NarroLanguage::QuerySingle(
+				QQ::Equal(QQN::NarroLanguage()->LanguageCode, $strLanguageCode)
+			);
+		}
 
 
 
@@ -443,9 +559,13 @@
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
 						INSERT INTO `narro_language` (
-							`language_name`
+							`language_name`,
+							`language_code`,
+							`encoding`
 						) VALUES (
-							' . $objDatabase->SqlVariable($this->strLanguageName) . '
+							' . $objDatabase->SqlVariable($this->strLanguageName) . ',
+							' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
+							' . $objDatabase->SqlVariable($this->strEncoding) . '
 						)
 					');
 
@@ -461,7 +581,9 @@
 						UPDATE
 							`narro_language`
 						SET
-							`language_name` = ' . $objDatabase->SqlVariable($this->strLanguageName) . '
+							`language_name` = ' . $objDatabase->SqlVariable($this->strLanguageName) . ',
+							`language_code` = ' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
+							`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding) . '
 						WHERE
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 					');
@@ -559,6 +681,20 @@
 					 */
 					return $this->strLanguageName;
 
+				case 'LanguageCode':
+					/**
+					 * Gets the value for strLanguageCode (Unique)
+					 * @return string
+					 */
+					return $this->strLanguageCode;
+
+				case 'Encoding':
+					/**
+					 * Gets the value for strEncoding (Not Null)
+					 * @return string
+					 */
+					return $this->strEncoding;
+
 
 				///////////////////
 				// Member Objects
@@ -569,21 +705,101 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_NarroTextSuggestionAsLanguage':
+				case '_NarroContextCommentAsLanguage':
 					/**
-					 * Gets the value for the private _objNarroTextSuggestionAsLanguage (Read-Only)
-					 * if set due to an expansion on the narro_text_suggestion.language_id reverse relationship
-					 * @return NarroTextSuggestion
+					 * Gets the value for the private _objNarroContextCommentAsLanguage (Read-Only)
+					 * if set due to an expansion on the narro_context_comment.language_id reverse relationship
+					 * @return NarroContextComment
 					 */
-					return $this->_objNarroTextSuggestionAsLanguage;
+					return $this->_objNarroContextCommentAsLanguage;
 
-				case '_NarroTextSuggestionAsLanguageArray':
+				case '_NarroContextCommentAsLanguageArray':
 					/**
-					 * Gets the value for the private _objNarroTextSuggestionAsLanguageArray (Read-Only)
-					 * if set due to an ExpandAsArray on the narro_text_suggestion.language_id reverse relationship
-					 * @return NarroTextSuggestion[]
+					 * Gets the value for the private _objNarroContextCommentAsLanguageArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_context_comment.language_id reverse relationship
+					 * @return NarroContextComment[]
 					 */
-					return (array) $this->_objNarroTextSuggestionAsLanguageArray;
+					return (array) $this->_objNarroContextCommentAsLanguageArray;
+
+				case '_NarroContextInfoAsLanguage':
+					/**
+					 * Gets the value for the private _objNarroContextInfoAsLanguage (Read-Only)
+					 * if set due to an expansion on the narro_context_info.language_id reverse relationship
+					 * @return NarroContextInfo
+					 */
+					return $this->_objNarroContextInfoAsLanguage;
+
+				case '_NarroContextInfoAsLanguageArray':
+					/**
+					 * Gets the value for the private _objNarroContextInfoAsLanguageArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_context_info.language_id reverse relationship
+					 * @return NarroContextInfo[]
+					 */
+					return (array) $this->_objNarroContextInfoAsLanguageArray;
+
+				case '_NarroContextPluralInfoAsLanguage':
+					/**
+					 * Gets the value for the private _objNarroContextPluralInfoAsLanguage (Read-Only)
+					 * if set due to an expansion on the narro_context_plural_info.language_id reverse relationship
+					 * @return NarroContextPluralInfo
+					 */
+					return $this->_objNarroContextPluralInfoAsLanguage;
+
+				case '_NarroContextPluralInfoAsLanguageArray':
+					/**
+					 * Gets the value for the private _objNarroContextPluralInfoAsLanguageArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_context_plural_info.language_id reverse relationship
+					 * @return NarroContextPluralInfo[]
+					 */
+					return (array) $this->_objNarroContextPluralInfoAsLanguageArray;
+
+				case '_NarroSuggestionAsLanguage':
+					/**
+					 * Gets the value for the private _objNarroSuggestionAsLanguage (Read-Only)
+					 * if set due to an expansion on the narro_suggestion.language_id reverse relationship
+					 * @return NarroSuggestion
+					 */
+					return $this->_objNarroSuggestionAsLanguage;
+
+				case '_NarroSuggestionAsLanguageArray':
+					/**
+					 * Gets the value for the private _objNarroSuggestionAsLanguageArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_suggestion.language_id reverse relationship
+					 * @return NarroSuggestion[]
+					 */
+					return (array) $this->_objNarroSuggestionAsLanguageArray;
+
+				case '_NarroSuggestionCommentAsLanguage':
+					/**
+					 * Gets the value for the private _objNarroSuggestionCommentAsLanguage (Read-Only)
+					 * if set due to an expansion on the narro_suggestion_comment.language_id reverse relationship
+					 * @return NarroSuggestionComment
+					 */
+					return $this->_objNarroSuggestionCommentAsLanguage;
+
+				case '_NarroSuggestionCommentAsLanguageArray':
+					/**
+					 * Gets the value for the private _objNarroSuggestionCommentAsLanguageArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_suggestion_comment.language_id reverse relationship
+					 * @return NarroSuggestionComment[]
+					 */
+					return (array) $this->_objNarroSuggestionCommentAsLanguageArray;
+
+				case '_NarroUserPermissionAsLanguage':
+					/**
+					 * Gets the value for the private _objNarroUserPermissionAsLanguage (Read-Only)
+					 * if set due to an expansion on the narro_user_permission.language_id reverse relationship
+					 * @return NarroUserPermission
+					 */
+					return $this->_objNarroUserPermissionAsLanguage;
+
+				case '_NarroUserPermissionAsLanguageArray':
+					/**
+					 * Gets the value for the private _objNarroUserPermissionAsLanguageArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_user_permission.language_id reverse relationship
+					 * @return NarroUserPermission[]
+					 */
+					return (array) $this->_objNarroUserPermissionAsLanguageArray;
 
 				default:
 					try {
@@ -616,6 +832,32 @@
 					 */
 					try {
 						return ($this->strLanguageName = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'LanguageCode':
+					/**
+					 * Sets the value for strLanguageCode (Unique)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strLanguageCode = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Encoding':
+					/**
+					 * Sets the value for strEncoding (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strEncoding = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -654,20 +896,20 @@
 
 			
 		
-		// Related Objects' Methods for NarroTextSuggestionAsLanguage
+		// Related Objects' Methods for NarroContextCommentAsLanguage
 		//-------------------------------------------------------------------
 
 		/**
-		 * Gets all associated NarroTextSuggestionsAsLanguage as an array of NarroTextSuggestion objects
+		 * Gets all associated NarroContextCommentsAsLanguage as an array of NarroContextComment objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextSuggestion[]
+		 * @return NarroContextComment[]
 		*/ 
-		public function GetNarroTextSuggestionAsLanguageArray($objOptionalClauses = null) {
+		public function GetNarroContextCommentAsLanguageArray($objOptionalClauses = null) {
 			if ((is_null($this->intLanguageId)))
 				return array();
 
 			try {
-				return NarroTextSuggestion::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
+				return NarroContextComment::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -675,26 +917,26 @@
 		}
 
 		/**
-		 * Counts all associated NarroTextSuggestionsAsLanguage
+		 * Counts all associated NarroContextCommentsAsLanguage
 		 * @return int
 		*/ 
-		public function CountNarroTextSuggestionsAsLanguage() {
+		public function CountNarroContextCommentsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				return 0;
 
-			return NarroTextSuggestion::CountByLanguageId($this->intLanguageId);
+			return NarroContextComment::CountByLanguageId($this->intLanguageId);
 		}
 
 		/**
-		 * Associates a NarroTextSuggestionAsLanguage
-		 * @param NarroTextSuggestion $objNarroTextSuggestion
+		 * Associates a NarroContextCommentAsLanguage
+		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
 		*/ 
-		public function AssociateNarroTextSuggestionAsLanguage(NarroTextSuggestion $objNarroTextSuggestion) {
+		public function AssociateNarroContextCommentAsLanguage(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextSuggestionAsLanguage on this unsaved NarroLanguage.');
-			if ((is_null($objNarroTextSuggestion->SuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextSuggestionAsLanguage on this NarroLanguage with an unsaved NarroTextSuggestion.');
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroContextComment->CommentId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextCommentAsLanguage on this NarroLanguage with an unsaved NarroContextComment.');
 
 			// Get the Database Object for this Class
 			$objDatabase = NarroLanguage::GetDatabase();
@@ -702,24 +944,24 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
-					`narro_text_suggestion`
+					`narro_context_comment`
 				SET
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroTextSuggestion->SuggestionId) . '
+					`comment_id` = ' . $objDatabase->SqlVariable($objNarroContextComment->CommentId) . '
 			');
 		}
 
 		/**
-		 * Unassociates a NarroTextSuggestionAsLanguage
-		 * @param NarroTextSuggestion $objNarroTextSuggestion
+		 * Unassociates a NarroContextCommentAsLanguage
+		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
 		*/ 
-		public function UnassociateNarroTextSuggestionAsLanguage(NarroTextSuggestion $objNarroTextSuggestion) {
+		public function UnassociateNarroContextCommentAsLanguage(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextSuggestionAsLanguage on this unsaved NarroLanguage.');
-			if ((is_null($objNarroTextSuggestion->SuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextSuggestionAsLanguage on this NarroLanguage with an unsaved NarroTextSuggestion.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroContextComment->CommentId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this NarroLanguage with an unsaved NarroContextComment.');
 
 			// Get the Database Object for this Class
 			$objDatabase = NarroLanguage::GetDatabase();
@@ -727,47 +969,47 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				UPDATE
-					`narro_text_suggestion`
-				SET
-					`language_id` = null
-				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroTextSuggestion->SuggestionId) . ' AND
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all NarroTextSuggestionsAsLanguage
-		 * @return void
-		*/ 
-		public function UnassociateAllNarroTextSuggestionsAsLanguage() {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextSuggestionAsLanguage on this unsaved NarroLanguage.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_text_suggestion`
+					`narro_context_comment`
 				SET
 					`language_id` = null
 				WHERE
+					`comment_id` = ' . $objDatabase->SqlVariable($objNarroContextComment->CommentId) . ' AND
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 			');
 		}
 
 		/**
-		 * Deletes an associated NarroTextSuggestionAsLanguage
-		 * @param NarroTextSuggestion $objNarroTextSuggestion
+		 * Unassociates all NarroContextCommentsAsLanguage
 		 * @return void
 		*/ 
-		public function DeleteAssociatedNarroTextSuggestionAsLanguage(NarroTextSuggestion $objNarroTextSuggestion) {
+		public function UnassociateAllNarroContextCommentsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextSuggestionAsLanguage on this unsaved NarroLanguage.');
-			if ((is_null($objNarroTextSuggestion->SuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextSuggestionAsLanguage on this NarroLanguage with an unsaved NarroTextSuggestion.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context_comment`
+				SET
+					`language_id` = null
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroContextCommentAsLanguage
+		 * @param NarroContextComment $objNarroContextComment
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroContextCommentAsLanguage(NarroContextComment $objNarroContextComment) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroContextComment->CommentId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this NarroLanguage with an unsaved NarroContextComment.');
 
 			// Get the Database Object for this Class
 			$objDatabase = NarroLanguage::GetDatabase();
@@ -775,20 +1017,20 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`narro_text_suggestion`
+					`narro_context_comment`
 				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroTextSuggestion->SuggestionId) . ' AND
+					`comment_id` = ' . $objDatabase->SqlVariable($objNarroContextComment->CommentId) . ' AND
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 			');
 		}
 
 		/**
-		 * Deletes all associated NarroTextSuggestionsAsLanguage
+		 * Deletes all associated NarroContextCommentsAsLanguage
 		 * @return void
 		*/ 
-		public function DeleteAllNarroTextSuggestionsAsLanguage() {
+		public function DeleteAllNarroContextCommentsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextSuggestionAsLanguage on this unsaved NarroLanguage.');
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
 
 			// Get the Database Object for this Class
 			$objDatabase = NarroLanguage::GetDatabase();
@@ -796,7 +1038,757 @@
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`narro_text_suggestion`
+					`narro_context_comment`
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for NarroContextInfoAsLanguage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroContextInfosAsLanguage as an array of NarroContextInfo objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroContextInfo[]
+		*/ 
+		public function GetNarroContextInfoAsLanguageArray($objOptionalClauses = null) {
+			if ((is_null($this->intLanguageId)))
+				return array();
+
+			try {
+				return NarroContextInfo::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroContextInfosAsLanguage
+		 * @return int
+		*/ 
+		public function CountNarroContextInfosAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				return 0;
+
+			return NarroContextInfo::CountByLanguageId($this->intLanguageId);
+		}
+
+		/**
+		 * Associates a NarroContextInfoAsLanguage
+		 * @param NarroContextInfo $objNarroContextInfo
+		 * @return void
+		*/ 
+		public function AssociateNarroContextInfoAsLanguage(NarroContextInfo $objNarroContextInfo) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextInfoAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroContextInfo->ContextInfoId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextInfoAsLanguage on this NarroLanguage with an unsaved NarroContextInfo.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context_info`
+				SET
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+				WHERE
+					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroContextInfoAsLanguage
+		 * @param NarroContextInfo $objNarroContextInfo
+		 * @return void
+		*/ 
+		public function UnassociateNarroContextInfoAsLanguage(NarroContextInfo $objNarroContextInfo) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroContextInfo->ContextInfoId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsLanguage on this NarroLanguage with an unsaved NarroContextInfo.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context_info`
+				SET
+					`language_id` = null
+				WHERE
+					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroContextInfosAsLanguage
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroContextInfosAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context_info`
+				SET
+					`language_id` = null
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroContextInfoAsLanguage
+		 * @param NarroContextInfo $objNarroContextInfo
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroContextInfoAsLanguage(NarroContextInfo $objNarroContextInfo) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroContextInfo->ContextInfoId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsLanguage on this NarroLanguage with an unsaved NarroContextInfo.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_context_info`
+				WHERE
+					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroContextInfosAsLanguage
+		 * @return void
+		*/ 
+		public function DeleteAllNarroContextInfosAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_context_info`
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for NarroContextPluralInfoAsLanguage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroContextPluralInfosAsLanguage as an array of NarroContextPluralInfo objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroContextPluralInfo[]
+		*/ 
+		public function GetNarroContextPluralInfoAsLanguageArray($objOptionalClauses = null) {
+			if ((is_null($this->intLanguageId)))
+				return array();
+
+			try {
+				return NarroContextPluralInfo::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroContextPluralInfosAsLanguage
+		 * @return int
+		*/ 
+		public function CountNarroContextPluralInfosAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				return 0;
+
+			return NarroContextPluralInfo::CountByLanguageId($this->intLanguageId);
+		}
+
+		/**
+		 * Associates a NarroContextPluralInfoAsLanguage
+		 * @param NarroContextPluralInfo $objNarroContextPluralInfo
+		 * @return void
+		*/ 
+		public function AssociateNarroContextPluralInfoAsLanguage(NarroContextPluralInfo $objNarroContextPluralInfo) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextPluralInfoAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroContextPluralInfo->PluralInfoId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextPluralInfoAsLanguage on this NarroLanguage with an unsaved NarroContextPluralInfo.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context_plural_info`
+				SET
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+				WHERE
+					`plural_info_id` = ' . $objDatabase->SqlVariable($objNarroContextPluralInfo->PluralInfoId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroContextPluralInfoAsLanguage
+		 * @param NarroContextPluralInfo $objNarroContextPluralInfo
+		 * @return void
+		*/ 
+		public function UnassociateNarroContextPluralInfoAsLanguage(NarroContextPluralInfo $objNarroContextPluralInfo) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralInfoAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroContextPluralInfo->PluralInfoId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralInfoAsLanguage on this NarroLanguage with an unsaved NarroContextPluralInfo.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context_plural_info`
+				SET
+					`language_id` = null
+				WHERE
+					`plural_info_id` = ' . $objDatabase->SqlVariable($objNarroContextPluralInfo->PluralInfoId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroContextPluralInfosAsLanguage
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroContextPluralInfosAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralInfoAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_context_plural_info`
+				SET
+					`language_id` = null
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroContextPluralInfoAsLanguage
+		 * @param NarroContextPluralInfo $objNarroContextPluralInfo
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroContextPluralInfoAsLanguage(NarroContextPluralInfo $objNarroContextPluralInfo) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralInfoAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroContextPluralInfo->PluralInfoId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralInfoAsLanguage on this NarroLanguage with an unsaved NarroContextPluralInfo.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_context_plural_info`
+				WHERE
+					`plural_info_id` = ' . $objDatabase->SqlVariable($objNarroContextPluralInfo->PluralInfoId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroContextPluralInfosAsLanguage
+		 * @return void
+		*/ 
+		public function DeleteAllNarroContextPluralInfosAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralInfoAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_context_plural_info`
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for NarroSuggestionAsLanguage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroSuggestionsAsLanguage as an array of NarroSuggestion objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroSuggestion[]
+		*/ 
+		public function GetNarroSuggestionAsLanguageArray($objOptionalClauses = null) {
+			if ((is_null($this->intLanguageId)))
+				return array();
+
+			try {
+				return NarroSuggestion::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroSuggestionsAsLanguage
+		 * @return int
+		*/ 
+		public function CountNarroSuggestionsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				return 0;
+
+			return NarroSuggestion::CountByLanguageId($this->intLanguageId);
+		}
+
+		/**
+		 * Associates a NarroSuggestionAsLanguage
+		 * @param NarroSuggestion $objNarroSuggestion
+		 * @return void
+		*/ 
+		public function AssociateNarroSuggestionAsLanguage(NarroSuggestion $objNarroSuggestion) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroSuggestion->SuggestionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionAsLanguage on this NarroLanguage with an unsaved NarroSuggestion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_suggestion`
+				SET
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+				WHERE
+					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestion->SuggestionId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroSuggestionAsLanguage
+		 * @param NarroSuggestion $objNarroSuggestion
+		 * @return void
+		*/ 
+		public function UnassociateNarroSuggestionAsLanguage(NarroSuggestion $objNarroSuggestion) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroSuggestion->SuggestionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsLanguage on this NarroLanguage with an unsaved NarroSuggestion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_suggestion`
+				SET
+					`language_id` = null
+				WHERE
+					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestion->SuggestionId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroSuggestionsAsLanguage
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroSuggestionsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_suggestion`
+				SET
+					`language_id` = null
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroSuggestionAsLanguage
+		 * @param NarroSuggestion $objNarroSuggestion
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroSuggestionAsLanguage(NarroSuggestion $objNarroSuggestion) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroSuggestion->SuggestionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsLanguage on this NarroLanguage with an unsaved NarroSuggestion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_suggestion`
+				WHERE
+					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestion->SuggestionId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroSuggestionsAsLanguage
+		 * @return void
+		*/ 
+		public function DeleteAllNarroSuggestionsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_suggestion`
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for NarroSuggestionCommentAsLanguage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroSuggestionCommentsAsLanguage as an array of NarroSuggestionComment objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroSuggestionComment[]
+		*/ 
+		public function GetNarroSuggestionCommentAsLanguageArray($objOptionalClauses = null) {
+			if ((is_null($this->intLanguageId)))
+				return array();
+
+			try {
+				return NarroSuggestionComment::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroSuggestionCommentsAsLanguage
+		 * @return int
+		*/ 
+		public function CountNarroSuggestionCommentsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				return 0;
+
+			return NarroSuggestionComment::CountByLanguageId($this->intLanguageId);
+		}
+
+		/**
+		 * Associates a NarroSuggestionCommentAsLanguage
+		 * @param NarroSuggestionComment $objNarroSuggestionComment
+		 * @return void
+		*/ 
+		public function AssociateNarroSuggestionCommentAsLanguage(NarroSuggestionComment $objNarroSuggestionComment) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionCommentAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroSuggestionComment->CommentId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionCommentAsLanguage on this NarroLanguage with an unsaved NarroSuggestionComment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_suggestion_comment`
+				SET
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+				WHERE
+					`comment_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionComment->CommentId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroSuggestionCommentAsLanguage
+		 * @param NarroSuggestionComment $objNarroSuggestionComment
+		 * @return void
+		*/ 
+		public function UnassociateNarroSuggestionCommentAsLanguage(NarroSuggestionComment $objNarroSuggestionComment) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroSuggestionComment->CommentId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsLanguage on this NarroLanguage with an unsaved NarroSuggestionComment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_suggestion_comment`
+				SET
+					`language_id` = null
+				WHERE
+					`comment_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionComment->CommentId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroSuggestionCommentsAsLanguage
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroSuggestionCommentsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_suggestion_comment`
+				SET
+					`language_id` = null
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroSuggestionCommentAsLanguage
+		 * @param NarroSuggestionComment $objNarroSuggestionComment
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroSuggestionCommentAsLanguage(NarroSuggestionComment $objNarroSuggestionComment) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroSuggestionComment->CommentId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsLanguage on this NarroLanguage with an unsaved NarroSuggestionComment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_suggestion_comment`
+				WHERE
+					`comment_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionComment->CommentId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroSuggestionCommentsAsLanguage
+		 * @return void
+		*/ 
+		public function DeleteAllNarroSuggestionCommentsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_suggestion_comment`
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for NarroUserPermissionAsLanguage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroUserPermissionsAsLanguage as an array of NarroUserPermission objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroUserPermission[]
+		*/ 
+		public function GetNarroUserPermissionAsLanguageArray($objOptionalClauses = null) {
+			if ((is_null($this->intLanguageId)))
+				return array();
+
+			try {
+				return NarroUserPermission::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroUserPermissionsAsLanguage
+		 * @return int
+		*/ 
+		public function CountNarroUserPermissionsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				return 0;
+
+			return NarroUserPermission::CountByLanguageId($this->intLanguageId);
+		}
+
+		/**
+		 * Associates a NarroUserPermissionAsLanguage
+		 * @param NarroUserPermission $objNarroUserPermission
+		 * @return void
+		*/ 
+		public function AssociateNarroUserPermissionAsLanguage(NarroUserPermission $objNarroUserPermission) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserPermissionAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroUserPermission->UserPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserPermissionAsLanguage on this NarroLanguage with an unsaved NarroUserPermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_permission`
+				SET
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+				WHERE
+					`user_permission_id` = ' . $objDatabase->SqlVariable($objNarroUserPermission->UserPermissionId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroUserPermissionAsLanguage
+		 * @param NarroUserPermission $objNarroUserPermission
+		 * @return void
+		*/ 
+		public function UnassociateNarroUserPermissionAsLanguage(NarroUserPermission $objNarroUserPermission) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroUserPermission->UserPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this NarroLanguage with an unsaved NarroUserPermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_permission`
+				SET
+					`language_id` = null
+				WHERE
+					`user_permission_id` = ' . $objDatabase->SqlVariable($objNarroUserPermission->UserPermissionId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroUserPermissionsAsLanguage
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroUserPermissionsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_permission`
+				SET
+					`language_id` = null
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroUserPermissionAsLanguage
+		 * @param NarroUserPermission $objNarroUserPermission
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroUserPermissionAsLanguage(NarroUserPermission $objNarroUserPermission) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroUserPermission->UserPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this NarroLanguage with an unsaved NarroUserPermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_user_permission`
+				WHERE
+					`user_permission_id` = ' . $objDatabase->SqlVariable($objNarroUserPermission->UserPermissionId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroUserPermissionsAsLanguage
+		 * @return void
+		*/ 
+		public function DeleteAllNarroUserPermissionsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_user_permission`
 				WHERE
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 			');
@@ -827,20 +1819,118 @@
 
 
 		/**
-		 * Private member variable that stores a reference to a single NarroTextSuggestionAsLanguage object
-		 * (of type NarroTextSuggestion), if this NarroLanguage object was restored with
-		 * an expansion on the narro_text_suggestion association table.
-		 * @var NarroTextSuggestion _objNarroTextSuggestionAsLanguage;
+		 * Protected member variable that maps to the database column narro_language.language_code
+		 * @var string strLanguageCode
 		 */
-		private $_objNarroTextSuggestionAsLanguage;
+		protected $strLanguageCode;
+		const LanguageCodeMaxLength = 6;
+		const LanguageCodeDefault = null;
+
 
 		/**
-		 * Private member variable that stores a reference to an array of NarroTextSuggestionAsLanguage objects
-		 * (of type NarroTextSuggestion[]), if this NarroLanguage object was restored with
-		 * an ExpandAsArray on the narro_text_suggestion association table.
-		 * @var NarroTextSuggestion[] _objNarroTextSuggestionAsLanguageArray;
+		 * Protected member variable that maps to the database column narro_language.encoding
+		 * @var string strEncoding
 		 */
-		private $_objNarroTextSuggestionAsLanguageArray = array();
+		protected $strEncoding;
+		const EncodingMaxLength = 10;
+		const EncodingDefault = null;
+
+
+		/**
+		 * Private member variable that stores a reference to a single NarroContextCommentAsLanguage object
+		 * (of type NarroContextComment), if this NarroLanguage object was restored with
+		 * an expansion on the narro_context_comment association table.
+		 * @var NarroContextComment _objNarroContextCommentAsLanguage;
+		 */
+		private $_objNarroContextCommentAsLanguage;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroContextCommentAsLanguage objects
+		 * (of type NarroContextComment[]), if this NarroLanguage object was restored with
+		 * an ExpandAsArray on the narro_context_comment association table.
+		 * @var NarroContextComment[] _objNarroContextCommentAsLanguageArray;
+		 */
+		private $_objNarroContextCommentAsLanguageArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single NarroContextInfoAsLanguage object
+		 * (of type NarroContextInfo), if this NarroLanguage object was restored with
+		 * an expansion on the narro_context_info association table.
+		 * @var NarroContextInfo _objNarroContextInfoAsLanguage;
+		 */
+		private $_objNarroContextInfoAsLanguage;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroContextInfoAsLanguage objects
+		 * (of type NarroContextInfo[]), if this NarroLanguage object was restored with
+		 * an ExpandAsArray on the narro_context_info association table.
+		 * @var NarroContextInfo[] _objNarroContextInfoAsLanguageArray;
+		 */
+		private $_objNarroContextInfoAsLanguageArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single NarroContextPluralInfoAsLanguage object
+		 * (of type NarroContextPluralInfo), if this NarroLanguage object was restored with
+		 * an expansion on the narro_context_plural_info association table.
+		 * @var NarroContextPluralInfo _objNarroContextPluralInfoAsLanguage;
+		 */
+		private $_objNarroContextPluralInfoAsLanguage;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroContextPluralInfoAsLanguage objects
+		 * (of type NarroContextPluralInfo[]), if this NarroLanguage object was restored with
+		 * an ExpandAsArray on the narro_context_plural_info association table.
+		 * @var NarroContextPluralInfo[] _objNarroContextPluralInfoAsLanguageArray;
+		 */
+		private $_objNarroContextPluralInfoAsLanguageArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single NarroSuggestionAsLanguage object
+		 * (of type NarroSuggestion), if this NarroLanguage object was restored with
+		 * an expansion on the narro_suggestion association table.
+		 * @var NarroSuggestion _objNarroSuggestionAsLanguage;
+		 */
+		private $_objNarroSuggestionAsLanguage;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroSuggestionAsLanguage objects
+		 * (of type NarroSuggestion[]), if this NarroLanguage object was restored with
+		 * an ExpandAsArray on the narro_suggestion association table.
+		 * @var NarroSuggestion[] _objNarroSuggestionAsLanguageArray;
+		 */
+		private $_objNarroSuggestionAsLanguageArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single NarroSuggestionCommentAsLanguage object
+		 * (of type NarroSuggestionComment), if this NarroLanguage object was restored with
+		 * an expansion on the narro_suggestion_comment association table.
+		 * @var NarroSuggestionComment _objNarroSuggestionCommentAsLanguage;
+		 */
+		private $_objNarroSuggestionCommentAsLanguage;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroSuggestionCommentAsLanguage objects
+		 * (of type NarroSuggestionComment[]), if this NarroLanguage object was restored with
+		 * an ExpandAsArray on the narro_suggestion_comment association table.
+		 * @var NarroSuggestionComment[] _objNarroSuggestionCommentAsLanguageArray;
+		 */
+		private $_objNarroSuggestionCommentAsLanguageArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single NarroUserPermissionAsLanguage object
+		 * (of type NarroUserPermission), if this NarroLanguage object was restored with
+		 * an expansion on the narro_user_permission association table.
+		 * @var NarroUserPermission _objNarroUserPermissionAsLanguage;
+		 */
+		private $_objNarroUserPermissionAsLanguage;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroUserPermissionAsLanguage objects
+		 * (of type NarroUserPermission[]), if this NarroLanguage object was restored with
+		 * an ExpandAsArray on the narro_user_permission association table.
+		 * @var NarroUserPermission[] _objNarroUserPermissionAsLanguageArray;
+		 */
+		private $_objNarroUserPermissionAsLanguageArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -876,6 +1966,8 @@
 			$strToReturn = '<complexType name="NarroLanguage"><sequence>';
 			$strToReturn .= '<element name="LanguageId" type="xsd:int"/>';
 			$strToReturn .= '<element name="LanguageName" type="xsd:string"/>';
+			$strToReturn .= '<element name="LanguageCode" type="xsd:string"/>';
+			$strToReturn .= '<element name="Encoding" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -902,6 +1994,10 @@
 				$objToReturn->intLanguageId = $objSoapObject->LanguageId;
 			if (property_exists($objSoapObject, 'LanguageName'))
 				$objToReturn->strLanguageName = $objSoapObject->LanguageName;
+			if (property_exists($objSoapObject, 'LanguageCode'))
+				$objToReturn->strLanguageCode = $objSoapObject->LanguageCode;
+			if (property_exists($objSoapObject, 'Encoding'))
+				$objToReturn->strEncoding = $objSoapObject->Encoding;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -942,8 +2038,22 @@
 					return new QQNode('language_id', 'integer', $this);
 				case 'LanguageName':
 					return new QQNode('language_name', 'string', $this);
-				case 'NarroTextSuggestionAsLanguage':
-					return new QQReverseReferenceNodeNarroTextSuggestion($this, 'narrotextsuggestionaslanguage', 'reverse_reference', 'language_id');
+				case 'LanguageCode':
+					return new QQNode('language_code', 'string', $this);
+				case 'Encoding':
+					return new QQNode('encoding', 'string', $this);
+				case 'NarroContextCommentAsLanguage':
+					return new QQReverseReferenceNodeNarroContextComment($this, 'narrocontextcommentaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroContextInfoAsLanguage':
+					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroContextPluralInfoAsLanguage':
+					return new QQReverseReferenceNodeNarroContextPluralInfo($this, 'narrocontextpluralinfoaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroSuggestionAsLanguage':
+					return new QQReverseReferenceNodeNarroSuggestion($this, 'narrosuggestionaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroSuggestionCommentAsLanguage':
+					return new QQReverseReferenceNodeNarroSuggestionComment($this, 'narrosuggestioncommentaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroUserPermissionAsLanguage':
+					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionaslanguage', 'reverse_reference', 'language_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('language_id', 'integer', $this);
@@ -968,8 +2078,22 @@
 					return new QQNode('language_id', 'integer', $this);
 				case 'LanguageName':
 					return new QQNode('language_name', 'string', $this);
-				case 'NarroTextSuggestionAsLanguage':
-					return new QQReverseReferenceNodeNarroTextSuggestion($this, 'narrotextsuggestionaslanguage', 'reverse_reference', 'language_id');
+				case 'LanguageCode':
+					return new QQNode('language_code', 'string', $this);
+				case 'Encoding':
+					return new QQNode('encoding', 'string', $this);
+				case 'NarroContextCommentAsLanguage':
+					return new QQReverseReferenceNodeNarroContextComment($this, 'narrocontextcommentaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroContextInfoAsLanguage':
+					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroContextPluralInfoAsLanguage':
+					return new QQReverseReferenceNodeNarroContextPluralInfo($this, 'narrocontextpluralinfoaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroSuggestionAsLanguage':
+					return new QQReverseReferenceNodeNarroSuggestion($this, 'narrosuggestionaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroSuggestionCommentAsLanguage':
+					return new QQReverseReferenceNodeNarroSuggestionComment($this, 'narrosuggestioncommentaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroUserPermissionAsLanguage':
+					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionaslanguage', 'reverse_reference', 'language_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('language_id', 'integer', $this);

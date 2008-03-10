@@ -327,7 +327,7 @@
 
 			// Check for Suggestion Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'suggestion_id__suggestion_id')))
-				$objToReturn->objSuggestion = NarroTextSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'suggestion_id__', $strExpandAsArrayNodes);
+				$objToReturn->objSuggestion = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'suggestion_id__', $strExpandAsArrayNodes);
 
 			// Check for Text Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'text_id__text_id')))
@@ -673,12 +673,12 @@
 				///////////////////
 				case 'Suggestion':
 					/**
-					 * Gets the value for the NarroTextSuggestion object referenced by intSuggestionId (PK)
-					 * @return NarroTextSuggestion
+					 * Gets the value for the NarroSuggestion object referenced by intSuggestionId (PK)
+					 * @return NarroSuggestion
 					 */
 					try {
 						if ((!$this->objSuggestion) && (!is_null($this->intSuggestionId)))
-							$this->objSuggestion = NarroTextSuggestion::Load($this->intSuggestionId);
+							$this->objSuggestion = NarroSuggestion::Load($this->intSuggestionId);
 						return $this->objSuggestion;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
@@ -803,24 +803,24 @@
 				///////////////////
 				case 'Suggestion':
 					/**
-					 * Sets the value for the NarroTextSuggestion object referenced by intSuggestionId (PK)
-					 * @param NarroTextSuggestion $mixValue
-					 * @return NarroTextSuggestion
+					 * Sets the value for the NarroSuggestion object referenced by intSuggestionId (PK)
+					 * @param NarroSuggestion $mixValue
+					 * @return NarroSuggestion
 					 */
 					if (is_null($mixValue)) {
 						$this->intSuggestionId = null;
 						$this->objSuggestion = null;
 						return null;
 					} else {
-						// Make sure $mixValue actually is a NarroTextSuggestion object
+						// Make sure $mixValue actually is a NarroSuggestion object
 						try {
-							$mixValue = QType::Cast($mixValue, 'NarroTextSuggestion');
+							$mixValue = QType::Cast($mixValue, 'NarroSuggestion');
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
 						} 
 
-						// Make sure $mixValue is a SAVED NarroTextSuggestion object
+						// Make sure $mixValue is a SAVED NarroSuggestion object
 						if (is_null($mixValue->SuggestionId))
 							throw new QCallerException('Unable to set an unsaved Suggestion for this NarroSuggestionVote');
 
@@ -1009,9 +1009,9 @@
 		 * Protected member variable that contains the object pointed by the reference
 		 * in the database column narro_suggestion_vote.suggestion_id.
 		 *
-		 * NOTE: Always use the Suggestion property getter to correctly retrieve this NarroTextSuggestion object.
+		 * NOTE: Always use the Suggestion property getter to correctly retrieve this NarroSuggestion object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var NarroTextSuggestion objSuggestion
+		 * @var NarroSuggestion objSuggestion
 		 */
 		protected $objSuggestion;
 
@@ -1046,7 +1046,7 @@
 
 		public static function GetSoapComplexTypeXml() {
 			$strToReturn = '<complexType name="NarroSuggestionVote"><sequence>';
-			$strToReturn .= '<element name="Suggestion" type="xsd1:NarroTextSuggestion"/>';
+			$strToReturn .= '<element name="Suggestion" type="xsd1:NarroSuggestion"/>';
 			$strToReturn .= '<element name="Text" type="xsd1:NarroText"/>';
 			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="VoteValue" type="xsd:int"/>';
@@ -1058,7 +1058,7 @@
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
 			if (!array_key_exists('NarroSuggestionVote', $strComplexTypeArray)) {
 				$strComplexTypeArray['NarroSuggestionVote'] = NarroSuggestionVote::GetSoapComplexTypeXml();
-				NarroTextSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroText::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
@@ -1077,7 +1077,7 @@
 			$objToReturn = new NarroSuggestionVote();
 			if ((property_exists($objSoapObject, 'Suggestion')) &&
 				($objSoapObject->Suggestion))
-				$objToReturn->Suggestion = NarroTextSuggestion::GetObjectFromSoapObject($objSoapObject->Suggestion);
+				$objToReturn->Suggestion = NarroSuggestion::GetObjectFromSoapObject($objSoapObject->Suggestion);
 			if ((property_exists($objSoapObject, 'Text')) &&
 				($objSoapObject->Text))
 				$objToReturn->Text = NarroText::GetObjectFromSoapObject($objSoapObject->Text);
@@ -1105,7 +1105,7 @@
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
 			if ($objObject->objSuggestion)
-				$objObject->objSuggestion = NarroTextSuggestion::GetSoapObjectFromObject($objObject->objSuggestion, false);
+				$objObject->objSuggestion = NarroSuggestion::GetSoapObjectFromObject($objObject->objSuggestion, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intSuggestionId = null;
 			if ($objObject->objText)
@@ -1137,7 +1137,7 @@
 				case 'SuggestionId':
 					return new QQNode('suggestion_id', 'integer', $this);
 				case 'Suggestion':
-					return new QQNodeNarroTextSuggestion('suggestion_id', 'integer', $this);
+					return new QQNodeNarroSuggestion('suggestion_id', 'integer', $this);
 				case 'TextId':
 					return new QQNode('text_id', 'integer', $this);
 				case 'Text':
@@ -1150,7 +1150,7 @@
 					return new QQNode('vote_value', 'integer', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNodeNarroTextSuggestion('suggestion_id', 'integer', $this);
+					return new QQNodeNarroSuggestion('suggestion_id', 'integer', $this);
 				default:
 					try {
 						return parent::__get($strName);
@@ -1171,7 +1171,7 @@
 				case 'SuggestionId':
 					return new QQNode('suggestion_id', 'integer', $this);
 				case 'Suggestion':
-					return new QQNodeNarroTextSuggestion('suggestion_id', 'integer', $this);
+					return new QQNodeNarroSuggestion('suggestion_id', 'integer', $this);
 				case 'TextId':
 					return new QQNode('text_id', 'integer', $this);
 				case 'Text':
@@ -1184,7 +1184,7 @@
 					return new QQNode('vote_value', 'integer', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNodeNarroTextSuggestion('suggestion_id', 'integer', $this);
+					return new QQNodeNarroSuggestion('suggestion_id', 'integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

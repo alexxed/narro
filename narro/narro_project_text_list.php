@@ -45,19 +45,19 @@
                 QApplication::Redirect('narro_project_list.php');
         }
 
-        public function dtgNarroTextContext_Actions_Render(NarroTextContext $objNarroTextContext) {
-            if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId) && QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId) )
+        public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo) {
+            if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId) && QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId) )
                 $strText = QApplication::Translate('Suggest/Vote');
-            elseif (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId))
+            elseif (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
                 $strText = QApplication::Translate('Suggest');
-            elseif (QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId))
+            elseif (QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
                 $strText = QApplication::Translate('Vote');
             else
                 $strText = QApplication::Translate('Details');
 
-            return sprintf('<a href="narro_text_context_suggest.php?p=%d&c=%d&tf=%d&st=%d&s=%s">%s</a>',
+            return sprintf('<a href="narro_context_suggest.php?p=%d&c=%d&tf=%d&st=%d&s=%s">%s</a>',
                         $this->objNarroProject->ProjectId,
-                        $objNarroTextContext->ContextId,
+                        $objNarroContextInfo->Context->ContextId,
                         $this->lstTextFilter->SelectedValue,
                         $this->lstSearchType->SelectedValue,
                         $this->txtSearch->Text,
@@ -74,33 +74,33 @@
         }
 
 
-        protected function dtgNarroTextContext_Bind() {
+        protected function dtgNarroContextInfo_Bind() {
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
             $objCommonCondition = QQ::AndCondition(
-                QQ::Equal(QQN::NarroTextContext()->ProjectId, $this->objNarroProject->ProjectId),
-                QQ::Equal(QQN::NarroTextContext()->Active, 1)/*,
-                QQ::Equal(QQN::NarroTextContext()->Translatable, 1)*/
+                QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
+                QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId),
+                QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
 
             // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
             switch($this->lstSearchType->SelectedValue) {
                 case NarroTextListForm::SEARCH_TEXTS:
-                    $this->dtgNarroTextContext->TotalItemCount = NarroTextContext::CountByTextValue(
+                    $this->dtgNarroContextInfo->TotalItemCount = NarroContextInfo::CountByTextValue(
                         $this->txtSearch->Text,
                         $this->lstTextFilter->SelectedValue,
                         $objCommonCondition
                     );
                     break;
                 case NarroTextListForm::SEARCH_SUGGESTIONS:
-                    $this->dtgNarroTextContext->TotalItemCount = NarroTextContext::CountBySuggestionValue(
+                    $this->dtgNarroContextInfo->TotalItemCount = NarroContextInfo::CountBySuggestionValue(
                         $this->txtSearch->Text,
                         $this->lstTextFilter->SelectedValue,
                         $objCommonCondition
                     );
                     break;
                 case NarroTextListForm::SEARCH_CONTEXTS:
-                    $this->dtgNarroTextContext->TotalItemCount = NarroTextContext::CountByContext(
+                    $this->dtgNarroContextInfo->TotalItemCount = NarroContextInfo::CountByContext(
                         $this->txtSearch->Text,
                         $this->lstTextFilter->SelectedValue,
                         $objCommonCondition
@@ -113,42 +113,42 @@
 
             // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
             // the OrderByClause to the $objClauses array
-            if ($objClause = $this->dtgNarroTextContext->OrderByClause)
+            if ($objClause = $this->dtgNarroContextInfo->OrderByClause)
                 array_push($objClauses, $objClause);
 
             // Add the LimitClause information, as well
-            if ($objClause = $this->dtgNarroTextContext->LimitClause)
+            if ($objClause = $this->dtgNarroContextInfo->LimitClause)
                 array_push($objClauses, $objClause);
             else
-                array_push($objClauses, QQ::LimitInfo($this->dtgNarroTextContext->ItemsPerPage));
+                array_push($objClauses, QQ::LimitInfo($this->dtgNarroContextInfo->ItemsPerPage));
 
-            // Set the DataSource to be the array of all NarroTextContext objects, given the clauses above
+            // Set the DataSource to be the array of all NarroContextInfo objects, given the clauses above
             switch($this->lstSearchType->SelectedValue) {
                 case NarroTextListForm::SEARCH_TEXTS:
-                    $this->dtgNarroTextContext->DataSource = NarroTextContext::LoadArrayByTextValue(
+                    $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayByTextValue(
                         $this->txtSearch->Text,
                         $this->lstTextFilter->SelectedValue,
-                        $this->dtgNarroTextContext->LimitClause,
-                        $this->dtgNarroTextContext->OrderByClause,
+                        $this->dtgNarroContextInfo->LimitClause,
+                        $this->dtgNarroContextInfo->OrderByClause,
                         $objCommonCondition
                     );
                     break;
                 case NarroTextListForm::SEARCH_SUGGESTIONS:
-                    $this->dtgNarroTextContext->DataSource = NarroTextContext::LoadArrayBySuggestionValue(
+                    $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayBySuggestionValue(
                         $this->txtSearch->Text,
                         $this->lstTextFilter->SelectedValue,
-                        $this->dtgNarroTextContext->LimitClause,
-                        $this->dtgNarroTextContext->OrderByClause,
+                        $this->dtgNarroContextInfo->LimitClause,
+                        $this->dtgNarroContextInfo->OrderByClause,
                         $objCommonCondition
                     );
                     break;
 
                 case NarroTextListForm::SEARCH_CONTEXTS:
-                    $this->dtgNarroTextContext->DataSource = NarroTextContext::LoadArrayByContext(
+                    $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayByContext(
                         $this->txtSearch->Text,
                         $this->lstTextFilter->SelectedValue,
-                        $this->dtgNarroTextContext->LimitClause,
-                        $this->dtgNarroTextContext->OrderByClause,
+                        $this->dtgNarroContextInfo->LimitClause,
+                        $this->dtgNarroContextInfo->OrderByClause,
                         $objCommonCondition
                     );
                     break;
