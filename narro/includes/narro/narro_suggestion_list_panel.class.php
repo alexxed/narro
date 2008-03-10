@@ -119,7 +119,10 @@
             if (!$strSuggestionValue)
                 $strSuggestionValue = $objNarroSuggestion->SuggestionValue;
 
-            $arrWordSuggestions = QApplication::GetSpellSuggestions($objNarroSuggestion->SuggestionValue);
+            if ($objNarroSuggestion->LanguageId == QApplication::$objUser->Language->LanguageId)
+                $arrWordSuggestions = QApplication::GetSpellSuggestions($objNarroSuggestion->SuggestionValue);
+            else
+                $arrWordSuggestions = array();
 
             $strSuggestionValue = htmlentities($strSuggestionValue, null, 'utf-8');
 
