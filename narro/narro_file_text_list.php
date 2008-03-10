@@ -70,6 +70,7 @@
 
             $objCommonCondition = QQ::AndCondition(
                 QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objNarroFile->FileId),
+                QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId),
                 QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
 
