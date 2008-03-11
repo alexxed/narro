@@ -116,7 +116,6 @@
         }
 
         public static function GetSpellSuggestionsWithHunspell($strText, $strSpellLang) {
-            error_log(var_export(func_get_args(),true));
 
             $arrCleanText = mb_split('\s+', $strText);
             $arrResult = array();
