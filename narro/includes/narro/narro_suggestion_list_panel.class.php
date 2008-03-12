@@ -22,6 +22,8 @@
 
         public $lblMessage;
 
+        protected $lblSuggestions;
+
         protected $dtgSuggestions;
 
         protected $colSuggestion;
@@ -46,6 +48,8 @@
             $this->lblMessage->ForeColor = 'green';
             $this->lblMessage->HtmlEntities = false;
             $this->lblMessage->DisplayStyle = QDisplayStyle::Block;
+
+            $this->lblSuggestions = new QLabel($this);
 
             $this->chkShowAllLanguages = new QCheckBox($this);
             $this->chkShowAllLanguages->Text = __t('Show suggestions from all languages');
@@ -96,9 +100,17 @@
         }
 
         public function GetControlHtml() {
+            if ($this->dtgSuggestions->TotalItemCount) {
+                $this->lblSuggestions->Text = QApplication::Translate('Others have suggested:');
+                $this->dtgSuggestions->Visible = true;
+            }
+            else {
+                $this->lblSuggestions->Text = QApplication::Translate('No suggestions yet.');
+                $this->dtgSuggestions->Visible = false;
+            }
 
             $this->strText =
-                ((count($this->dtgSuggestions->DataSource))?QApplication::Translate('Others have suggested:') . '<br />' : QApplication::Translate('No suggestions yet.')) .
+                $this->lblSuggestions->Render(false) . '<br />' .
                 $this->dtgSuggestions->Render(false) . '<br />' .
                 '<div style="text-align:right;width:100%">' . $this->chkShowAllLanguages->Render(false) . '</div>';
             $this->strText .= $this->lblMessage->Render(false);
