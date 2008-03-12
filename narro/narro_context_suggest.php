@@ -662,6 +662,7 @@
 
             $objExtraCondition = QQ::AndCondition(
                                     QQ::LessThan(QQN::NarroContextInfo()->ContextId, $this->objNarroContextInfo->ContextId),
+                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId),
                                     $objFilterCodition,
                                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
@@ -696,6 +697,7 @@
 
             $objExtraCondition = QQ::AndCondition(
                                     QQ::GreaterThan(QQN::NarroContextInfo()->ContextId, $this->objNarroContextInfo->ContextId),
+                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId),
                                     $objFilterCodition,
                                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
@@ -731,6 +733,7 @@
 
             $objExtraCondition = QQ::AndCondition(
                                     QQ::GreaterThan(QQN::NarroContextInfo()->ContextId, $this->objNarroContextInfo->ContextId  + 100),
+                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId),
                                     $objFilterCodition,
                                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
@@ -765,6 +768,7 @@
 
             $objExtraCondition = QQ::AndCondition(
                                     QQ::LessThan(QQN::NarroContextInfo()->ContextId, $this->objNarroContextInfo->ContextId - 100),
+                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId),
                                     $objFilterCodition,
                                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
