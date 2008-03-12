@@ -80,6 +80,7 @@
 
                 $objExtraCondition = QQ::AndCondition(
                     QQ::GreaterThan(QQN::NarroContextInfo()->ContextId, 1),
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId),
                     $objFilterCodition,
                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
                 );
