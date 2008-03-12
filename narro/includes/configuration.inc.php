@@ -62,7 +62,7 @@
         'database' => 'narro',
         'username' => 'narro',
         'password' => '',
-        'profiling' => true)));
+        'profiling' => false)));
 
     // (For PHP > v5.1) Setup the default timezone (if not already specified in php.ini)
     if ((function_exists('date_default_timezone_set')) && (!ini_get('date.timezone')))
