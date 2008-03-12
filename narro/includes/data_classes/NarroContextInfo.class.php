@@ -95,7 +95,16 @@
                     $arrContexts = self::LoadArrayByContext($strSearchText, $intFilter, QQ::LimitInfo(1, 0), $objSortInfo, $objExtraCondition);
                     break;
                 default:
-                    $arrContexts = self::QueryArray($objExtraCondition, array(QQ::LimitInfo(1, 0), $objSortInfo));
+                    if ($intFilter == NarroTextListForm::SHOW_UNTRANSLATED_TEXTS)
+                        $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0));
+                    elseif ($intFilter == NarroTextListForm::SHOW_VALIDATED_TEXTS)
+                        $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId));
+                    elseif ($intFilter == NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION)
+                        $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
+                    else
+                        $objFilterCondition = $objExtraCondition;
+
+                    $arrContexts = self::QueryArray($objFilterCondition, array(QQ::LimitInfo(1, 0), $objSortInfo));
             }
 
             if (count($arrContexts) && $arrContexts[0] instanceof NarroContextInfo)
