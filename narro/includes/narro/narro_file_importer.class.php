@@ -84,7 +84,7 @@
          */
         protected function AddTranslation(NarroFile $objFile, $strOriginal, $strTranslation, $strContext, $intPluralForm = null) {
             //$arrArgs = func_get_args();
-            //$this->Output(1, __FUNCTION__ . var_export($arrArgs,true));
+            //$this->Output(1, __FUNCTION__ . var_export(array($objFile->FileName, $strOriginal, $strTranslation, $strContext, $intPluralForm),true));
 
             /**
              * Avoid trimming the strings to preserve spaces; let the plugins handle eventual processing needs
@@ -235,7 +235,8 @@
                 }
             }
 
-            if ($objContextInfo->HasSuggestions != 1) {
+            //$objContextInfo->HasSuggestions = (int) $objNarroSuggestion;
+            if ($objContextInfo->HasSuggestions == 0) {
                 $intSuggestionCnt = NarroSuggestion::QueryCount(
                                         QQ::AndCondition(
                                             QQ::Equal(
@@ -263,19 +264,21 @@
             }
 
             if ($objContextInfo instanceof NarroContextInfo) {
+                if (!is_null($intPluralForm)) {
+                    $objContextInfo->HasPlural = 1;
+                }
+                else {
+                    $objContextInfo->HasPlural = 0;
+                }
+
                 try {
-                    if (!is_null($intPluralForm)) {
-                        $objContextInfo->HasPlural = 1;
-                    }
-                    else {
-                        $objContextInfo->HasPlural = 0;
-                    }
                     $objContextInfo->Save();
                 } catch(Exception $objExc) {
                     $this->Output(3, sprintf(__t('Error while saving context info for context %s: %s'), $strContext, $objExc->getMessage()));
                     $this->arrStatistics['Skipped context infos']++;
                 }
             }
+
 
 
             /**
