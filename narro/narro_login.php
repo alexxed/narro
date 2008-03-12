@@ -32,11 +32,11 @@
             $this->txtPassword = new QTextBox($this);
             $this->txtPassword->TextMode = QTextMode::Password;
             $this->btnLogin = new QButton($this);
-            $this->btnLogin->Text = QApplication::Translate('Login');
+            $this->btnLogin->Text = t('Login');
             $this->btnLogin->PrimaryButton = true;
             $this->btnLogin->AddAction(new QClickEvent(), new QServerAction('btnLogin_Click'));
             $this->btnRecoverPassword = new QButton($this);
-            $this->btnRecoverPassword->Text = QApplication::Translate('Lost password or username');
+            $this->btnRecoverPassword->Text = t('Lost password or username');
             $this->btnRecoverPassword->AddAction(new QClickEvent(), new QServerAction('btnRecoverPassword_Click'));
 
 
@@ -54,7 +54,7 @@
             }
             else {
                 $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = QApplication::Translate('Bad username or password');
+                $this->lblMessage->Text = t('Bad username or password');
             }
         }
     }

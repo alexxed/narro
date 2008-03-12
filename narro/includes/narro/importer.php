@@ -45,32 +45,34 @@
 
         $objUser = NarroUser::Load($intUserId);
         if (!$objUser instanceof NarroUser) {
-            $objNarroImporter->Output(2, sprintf(__t('User id=%s does not exist in the database, will try to use the anonymous user.'), $intUserId));
+            $objNarroImporter->Output(2, sprintf(t('User id=%s does not exist in the database, will try to use the anonymous user.'), $intUserId));
             $objUser = NarroUser::Load(NarroUser::ANONYMOUS_USER_ID);
             if (!$objUser instanceof NarroUser) {
-                $objNarroImporter->Output(3, sprintf(__t('The anonymous user id=%s does not exist in the database.'), $intUserId));
+                $objNarroImporter->Output(3, sprintf(t('The anonymous user id=%s does not exist in the database.'), $intUserId));
                 return false;
             }
         }
 
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
-            $objNarroImporter->Output(3, sprintf(__t('Project with id=%s does not exist in the database.'), $intProjectId));
+            $objNarroImporter->Output(3, sprintf(t('Project with id=%s does not exist in the database.'), $intProjectId));
             return false;
         }
 
         $strArchiveFile = str_replace('"','', $argv[$argc-1]);
 
         if (!file_exists($strArchiveFile)) {
-            $objNarroImporter->Output(3, sprintf(__t('File "%s" does not exist.'), $strArchiveFile));
+            $objNarroImporter->Output(3, sprintf(t('File "%s" does not exist.'), $strArchiveFile));
             return false;
         }
 
         $objLanguage = NarroLanguage::LoadByLanguageCode($strTargetLanguage);
         if (!$objLanguage instanceof NarroLanguage) {
-            $objNarroImporter->Output(3, sprintf(__t('Language %s does not exist in the database.'), $strTargetLanguage));
+            $objNarroImporter->Output(3, sprintf(t('Language %s does not exist in the database.'), $strTargetLanguage));
             return false;
         }
+
+        $objNarroImporter->Output(2, sprintf(t('Target language is %s'), $strTargetLanguage));
 
         $objNarroImporter->Language = $objLanguage;
         $objNarroImporter->Project = $objProject;
@@ -79,6 +81,7 @@
         $objNarroImporter->ImportProjectArchive($strArchiveFile);
 
         $objNarroImporter->Output(2, var_export($objNarroImporter->Statistics, true));
+        $objNarroImporter->Output(2, sprintf(t('Import took %d seconds'), $objNarroImporter->Statistics['End time'] - $objNarroImporter->Statistics['Start time']));
 
      }
     elseif (in_array('--import-po', $argv)) {

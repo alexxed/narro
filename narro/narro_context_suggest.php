@@ -132,7 +132,7 @@
             $this->txtSuggestionValue_Create();
 
             $this->pnlSuggestionList = new NarroSuggestionListPanel($this);
-            $this->pnlSuggestionList->ToolTip = QApplication::Translate('Other suggestions so far');
+            $this->pnlSuggestionList->ToolTip = t('Other suggestions so far');
 
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->ForeColor = 'green';
@@ -157,7 +157,7 @@
         // Create and Setup pnlOriginalText
         protected function pnlOriginalText_Create() {
             $this->pnlOriginalText = new QPanel($this);
-            $this->pnlOriginalText->ToolTip = QApplication::Translate('Original text');
+            $this->pnlOriginalText->ToolTip = t('Original text');
             $this->pnlOriginalText->FontBold = true;
             $this->pnlOriginalText->DisplayStyle = QDisplayStyle::Inline;
             //$this->pnlOriginalText->AddAction(new QChangeEvent(), new QJavascriptAction(sprintf("var sTitle=document.getElementById('%s');if (sTitle.innerHTML) document.title='%s „' + ((sTitle.innerHTML.length>30)?sTitle.innerHTML.slice(0,3) + '...':sTitle.innerHTML) + '”';", $this->pnlOriginalText->ControlId, (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?'Traduceţi ':'Vedeţi sugestii pentru ')));
@@ -167,7 +167,7 @@
         // Create and Setup pnlContext
         protected function pnlContext_Create() {
             $this->pnlContext = new QPanel($this);
-            $this->pnlContext->ToolTip = QApplication::Translate('Details about the place where the text is used');
+            $this->pnlContext->ToolTip = t('Details about the place where the text is used');
         }
 
         // Update values from objNarroContextInfo
@@ -189,7 +189,7 @@
 
         protected function UpdateNavigator() {
             $this->pnlNavigator->Text =
-            sprintf('<a href="%s">'.QApplication::Translate('Projects').'</a>', 'narro_project_list.php') .
+            sprintf('<a href="%s">'.t('Projects').'</a>', 'narro_project_list.php') .
             sprintf(' -> <a href="%s">%s</a>',
                 'narro_project_text_list.php?' . sprintf('p=%d&tf=%d&st=%d&s=%s',
                     $this->objNarroContextInfo->Context->File->Project->ProjectId,
@@ -199,7 +199,7 @@
                 ),
                 $this->objNarroContextInfo->Context->File->Project->ProjectName
                 ) .
-            sprintf(' -> <a href="%s">'.QApplication::Translate('Files').'</a>',
+            sprintf(' -> <a href="%s">'.t('Files').'</a>',
                 'narro_project_file_list.php?' . sprintf('p=%d&tf=%d',
                     $this->objNarroContextInfo->Context->File->Project->ProjectId,
                     $this->intTextFilter
@@ -218,13 +218,13 @@
             $strFilter = '';
             switch ($this->intTextFilter) {
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS:
-                        $this->pnlNavigator->Text .= ' -> ' . QApplication::Translate('Untranslated texts');
+                        $this->pnlNavigator->Text .= ' -> ' . t('Untranslated texts');
                         break;
                 case NarroTextListForm::SHOW_VALIDATED_TEXTS:
-                        $this->pnlNavigator->Text .= ' -> ' . QApplication::Translate('Validated texts');
+                        $this->pnlNavigator->Text .= ' -> ' . t('Validated texts');
                         break;
                 case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION:
-                        $this->pnlNavigator->Text .= ' -> ' . QApplication::Translate('Texts that require validation');
+                        $this->pnlNavigator->Text .= ' -> ' . t('Texts that require validation');
                         break;
                 default:
 
@@ -233,13 +233,13 @@
             if ($this->strSearchText != ''){
                 switch ($this->intSearchType) {
                     case NarroTextListForm::SEARCH_TEXTS:
-                        $this->pnlNavigator->Text .= ' -> ' . sprintf(QApplication::Translate('Search in original texts for "%s"'), $this->strSearchText);
+                        $this->pnlNavigator->Text .= ' -> ' . sprintf(t('Search in original texts for "%s"'), $this->strSearchText);
                         break;
                     case NarroTextListForm::SEARCH_SUGGESTIONS:
-                        $this->pnlNavigator->Text .= ' -> ' . sprintf(QApplication::Translate('Search in suggestions for "%s"'), $this->strSearchText);
+                        $this->pnlNavigator->Text .= ' -> ' . sprintf(t('Search in suggestions for "%s"'), $this->strSearchText);
                         break;
                     case NarroTextListForm::SEARCH_CONTEXTS:
-                        $this->pnlNavigator->Text .= ' -> ' . sprintf(QApplication::Translate('Search in contexts for "%s"'), $this->strSearchText);
+                        $this->pnlNavigator->Text .= ' -> ' . sprintf(t('Search in contexts for "%s"'), $this->strSearchText);
                         break;
                     default:
                 }
@@ -250,7 +250,7 @@
 
             $strText = htmlspecialchars($this->objNarroContextInfo->Context->Text->TextValue,null,'utf-8');
             $strPageTitle =
-                sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?QApplication::Translate('Translate "%s"'):QApplication::Translate('See suggestions for "%s"'),
+                sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
                 (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?substr($strText, 0, 30) . '...':$strText);
 
             $this->pnlNavigator->Text .=  ' -> ' . $strPageTitle;
@@ -295,7 +295,7 @@
             $this->txtSuggestionComment = new QTextBox($this);
             $this->txtSuggestionComment->TextMode = QTextMode::MultiLine;
             //$this->txtSuggestionComment->BorderStyle = QBorderStyle::None;
-            $this->txtSuggestionComment->Name = QApplication::Translate('Suggestion comment (optional):');
+            $this->txtSuggestionComment->Name = t('Suggestion comment (optional):');
             $this->txtSuggestionComment->Width = 465;
             $this->txtSuggestionComment->Height = 85;
             $this->txtSuggestionComment->Text = '';
@@ -308,7 +308,7 @@
         // Setup btnSave
         protected function btnSave_Create() {
             $this->btnSave = new QButton($this);
-            $this->btnSave->Text = QApplication::Translate('Save');
+            $this->btnSave->Text = t('Save');
             if (QApplication::$blnUseAjax)
                 $this->btnSave->AddAction(new QClickEvent(), new QAjaxAction('btnSave_Click'));
             else
@@ -323,7 +323,7 @@
         // Setup btnSaveIgnore
         protected function btnSaveIgnore_Create() {
             $this->btnSaveIgnore = new QButton($this);
-            $this->btnSaveIgnore->Text = QApplication::Translate('Ignore and save');
+            $this->btnSaveIgnore->Text = t('Ignore and save');
             if (QApplication::$blnUseAjax)
                 $this->btnSaveIgnore->AddAction(new QClickEvent(), new QAjaxAction('btnSaveIgnore_Click'));
             else
@@ -337,7 +337,7 @@
         // Setup btnSaveValidate
         protected function btnSaveValidate_Create() {
             $this->btnSaveValidate = new QButton($this);
-            $this->btnSaveValidate->Text = QApplication::Translate('Save and validate');
+            $this->btnSaveValidate->Text = t('Save and validate');
             if (QApplication::$blnUseAjax)
                 $this->btnSaveValidate->AddAction(new QClickEvent(), new QAjaxAction('btnSaveValidate_Click'));
             else
@@ -351,7 +351,7 @@
         // Setup btnNext
         protected function btnNext_Create() {
             $this->btnNext = new QButton($this);
-            $this->btnNext->Text = QApplication::Translate('Next');
+            $this->btnNext->Text = t('Next');
 
             if (QApplication::$blnUseAjax)
                 $this->btnNext->AddAction(new QClickEvent(), new QAjaxAction('btnNext_Click'));
@@ -365,7 +365,7 @@
         // Setup btnNext100
         protected function btnNext100_Create() {
             $this->btnNext100 = new QButton($this);
-            $this->btnNext100->Text = QApplication::Translate('100 forward');
+            $this->btnNext100->Text = t('100 forward');
 
             if (QApplication::$blnUseAjax)
                 $this->btnNext100->AddAction(new QClickEvent(), new QAjaxAction('btnNext100_Click'));
@@ -378,7 +378,7 @@
         // Setup btnPrevious100
         protected function btnPrevious100_Create() {
             $this->btnPrevious100 = new QButton($this);
-            $this->btnPrevious100->Text = QApplication::Translate('100 back');
+            $this->btnPrevious100->Text = t('100 back');
             if (QApplication::$blnUseAjax)
                 $this->btnPrevious100->AddAction(new QClickEvent(), new QAjaxAction('btnPrevious100_Click'));
             else
@@ -391,7 +391,7 @@
         // Setup btnPrevious
         protected function btnPrevious_Create() {
             $this->btnPrevious = new QButton($this);
-            $this->btnPrevious->Text = QApplication::Translate('Previous');
+            $this->btnPrevious->Text = t('Previous');
             if (QApplication::$blnUseAjax)
                 $this->btnPrevious->AddAction(new QClickEvent(), new QAjaxAction('btnPrevious_Click'));
             else
@@ -405,7 +405,7 @@
             if ($this->txtSuggestionValue->Text == $this->objNarroContextInfo->Context->Text->TextValue) {
                 $this->pnlSpellcheckText->Text =
                         '<span style="color:red">' .
-                        QApplication::Translate('The suggestion is identical to the text. If you think the text needs no translation, move on.') .
+                        t('The suggestion is identical to the text. If you think the text needs no translation, move on.') .
                         '</span>';
                 $this->pnlSpellcheckText->Visible = true;
                 return false;
@@ -437,15 +437,15 @@
                 foreach($arrMatches[0] as $strMatch)
                     if (strpos($this->txtSuggestionValue->Text, trim($strMatch)) === false)
                         $arrDiff[] = htmlspecialchars(trim($strMatch), null, 'utf-8');
-                if ($arrDiff) {
+                if (isset($arrDiff) && $arrDiff) {
                     $this->pnlSpellcheckText->Text =
                         sprintf(
-                            QApplication::Translate(
+                            t(
                                 '<span style="color:red">You translated or forgot some variables that should have been left as they were. <br /> These are: %s</span><br /> If you think this is a mistake, check "%s" and then press "%s"<br />If you wish to correct and check again, correct the text and press "%s" again.'),
                             join(', ', $arrDiff),
-                            QApplication::Translate('Ignore spellchecking'),
-                            QApplication::Translate('Save'),
-                            QApplication::Translate('Save')
+                            t('Ignore spellchecking'),
+                            t('Save'),
+                            t('Save')
                         );
                     $this->pnlSpellcheckText->Visible = true;
                     return false;
@@ -458,15 +458,15 @@
             if (isset($arrOriginalTextMatches[0]) && !isset($arrSuggestionMatches[0])) {
                     $this->pnlSpellcheckText->Text =
                         sprintf(
-                            QApplication::Translate('
+                            t('
                                 <span style="color:red">
                                 Did you forget the ending "%s"?</span><br />
                                 If you think you didn\'t, check "%s" and press "%s".<br />If you wish to correct and check again, correct the text and press "%s" again.'
                             ),
                         $arrOriginalTextMatches[0],
-                        QApplication::Translate('Ignore spellchecking'),
-                        QApplication::Translate('Save'),
-                        QApplication::Translate('Save')
+                        t('Ignore spellchecking'),
+                        t('Save'),
+                        t('Save')
 
                         );
                     $this->pnlSpellcheckText->Visible = true;
@@ -475,15 +475,15 @@
             elseif (!isset($arrOriginalTextMatches[0]) && isset($arrSuggestionMatches[0])) {
                     $this->pnlSpellcheckText->Text =
                         sprintf(
-                            QApplication::Translate('
+                            t('
                                 <span style="color:red">
                                 The original text does not end with "%s".</span><br />
                                 If you think this is a mistake, check "%s" and then press "%s"<br />If you wish to correct and check again, correct the text and press "%s" again.'
                             ),
                             $arrSuggestionMatches[0],
-                            QApplication::Translate('Ignore spellchecking'),
-                            QApplication::Translate('Save'),
-                            QApplication::Translate('Save')
+                            t('Ignore spellchecking'),
+                            t('Save'),
+                            t('Save')
                         );
                     $this->pnlSpellcheckText->Visible = true;
                     return false;
@@ -492,16 +492,16 @@
             elseif (isset($arrOriginalTextMatches[0]) && isset($arrSuggestionMatches[0]) && $arrOriginalTextMatches[0] != $arrSuggestionMatches[0]) {
                     $this->pnlSpellcheckText->Text =
                         sprintf(
-                            QApplication::Translate('
+                            t('
                                 <span style="color:red">
                                 The original text ends with "%s", but your suggestion ends in "%s".</span><br />
                                 If you think this is a mistake, check "%s" and then press "%s"<br />If you wish to correct and check again, correct the text and press "%s" again.'
                             ),
                             $arrOriginalTextMatches[0],
                             $arrSuggestionMatches[0],
-                            QApplication::Translate('Ignore spellchecking'),
-                            QApplication::Translate('Save'),
-                            QApplication::Translate('Save')
+                            t('Ignore spellchecking'),
+                            t('Save'),
+                            t('Save')
                         );
                     $this->pnlSpellcheckText->Visible = true;
                     return false;
@@ -519,7 +519,7 @@
                         'Se pare că aţi folosit ghilimele englezeşti. <br />
                         <span style="color:green">Vă rugăm să folosiţi ghilimele româneşti reprezentate prin simbolurile „ (99 jos) şi ” (99 sus). <br />Dacă nu le puteţi introduce de la tastatură, le puteţi introduce cu un clic pe ele de sub textul sugestiei.</span></span><br />' .
                         'Iată textul corectat cu ghilimele româneşti:' .
-                        '<div style="border:1px dotted green;padding:5px; margin:5px;">' . $strCorrectedText . '</div>' .
+                        '<div style="border:1px dotted green;padding:5px; margin:5px;">' . htmlspecialchars($strCorrectedText, null, 'utf-8') . '</div>' .
                         'Dacă credeţi că este o greşeală, puteţi salva totuşi sugestia bifând „Ignoră ortografia” şi apoi apăsând „Salvează”<br />Dacă doriţi să corectaţi şi să verificaţi din nou, corectaţi şi apăsaţi „Salvează”';
                     $this->pnlSpellcheckText->Visible = true;
                     return false;
@@ -546,10 +546,10 @@
             if (is_array($arrTextSuggestions))
                 foreach($arrTextSuggestions as $strWord=>$arrSuggestions) {
 
-                    $strSpellcheckText .= '<b>' . $strWord . '</b> ' . QApplication::Translate('is mispelled') . '<br />';
+                    $strSpellcheckText .= '<b>' . $strWord . '</b> ' . t('is mispelled') . '<br />';
 
                     if (count($arrSuggestions)) {
-                        $strSpellcheckText .= ' ' . QApplication::Translate('Maybe you meant') . ' <b>';
+                        $strSpellcheckText .= ' ' . t('Maybe you meant') . ' <b>';
                         $strSpellcheckText .= join(', ', $arrSuggestions) . '</b>';
                     }
 
@@ -557,8 +557,8 @@
                 }
 
             if ($strSpellcheckText != '') {
-                $this->pnlSpellcheckText->Text = QApplication::Translate('You seem to have a few spellchecking errors:'). '<br /><div style="margin-left:15px;color:red;padding:5px;border:1px dotted black">' .
-                                                    $strSpellcheckText. '</div><br /> '. sprintf(QApplication::Translate('If you think this is a mistake, you can still save the suggestion by checking "%s" and pressing "%s".'), QApplication::Translate('Ignore spellchecking'), QApplication::Translate('Save')) . '<br />' . sprintf(QApplication::Translate('If you want to correct and check again, please correct and press "%s"'), QApplication::Translate('Save'));
+                $this->pnlSpellcheckText->Text = t('You seem to have a few spellchecking errors:'). '<br /><div style="margin-left:15px;color:red;padding:5px;border:1px dotted black">' .
+                                                    $strSpellcheckText. '</div><br /> '. sprintf(t('If you think this is a mistake, you can still save the suggestion by checking "%s" and pressing "%s".'), t('Ignore spellchecking'), t('Save')) . '<br />' . sprintf(t('If you want to correct and check again, please correct and press "%s"'), t('Save'));
                 $this->pnlSpellcheckText->Visible = true;
                 return false;
             }

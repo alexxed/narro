@@ -247,7 +247,7 @@
                     if ($mixValue instanceof NarroLanguage)
                         $this->objLanguage = $mixValue;
                     else
-                        throw new Exception(__t('Language should be set with an instance of NarroLanguage'));
+                        throw new Exception(t('Language should be set with an instance of NarroLanguage'));
 
                     break;
 

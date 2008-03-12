@@ -25,7 +25,7 @@
             parent::Form_Create();
             switch($this->lstSearchType->SelectedValue) {
                 case NarroTextListForm::SEARCH_SUGGESTIONS:
-                    $this->SetMessage(QApplication::Translate('Note that, since you\'re searching suggestions, you won\'t see the texts without suggestions.'));
+                    $this->SetMessage(t('Note that, since you\'re searching suggestions, you won\'t see the texts without suggestions.'));
                     break;
             }
 
@@ -47,13 +47,13 @@
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo) {
             if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId) && QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId) )
-                $strText = QApplication::Translate('Suggest/Vote');
+                $strText = t('Suggest/Vote');
             elseif (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
-                $strText = QApplication::Translate('Suggest');
+                $strText = t('Suggest');
             elseif (QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
-                $strText = QApplication::Translate('Vote');
+                $strText = t('Vote');
             else
-                $strText = QApplication::Translate('Details');
+                $strText = t('Details');
 
             return sprintf('<a href="narro_context_suggest.php?p=%d&c=%d&tf=%d&st=%d&s=%s">%s</a>',
                         $this->objNarroProject->ProjectId,

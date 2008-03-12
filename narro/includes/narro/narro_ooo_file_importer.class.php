@@ -172,7 +172,7 @@
             $hndFile = fopen($strTemplateFile, 'r');
 
             if (!$hndFile) {
-                $this->Output(3, sprintf(QApplication::Translate('Cannot open input file "%s" for reading.'), $strTemplateFile));
+                $this->Output(3, sprintf(t('Cannot open input file "%s" for reading.'), $strTemplateFile));
                 return false;
             }
 
@@ -199,7 +199,7 @@
                 $strLangCode = $arrColumn[9];
 
                 if (!$strTranslationLang && $strLangCode != $strTemplateLang) {
-                    $this->Output(2, sprintf(QApplication::Translate('Skipped line "%s" because the language code found "%s" does not match the one passed in the arguments, "%s"'), $strFileLine, $strLangCode, $strTemplateLang));
+                    $this->Output(2, sprintf(t('Skipped line "%s" because the language code found "%s" does not match the one passed in the arguments, "%s"'), $strFileLine, $strLangCode, $strTemplateLang));
                     continue;
                 }
 
@@ -218,7 +218,7 @@
                         $strTranslationLang == $arrTranslatedColumn[9] )
                         $strTranslation = $arrTranslatedColumn[10];
                     else {
-                        $this->Output(2, sprintf(QApplication::Translate('Original line and translation line do not match. Here is the condition checked: "%s". Skipping.'), $arrColumn[0] .'=='.  $arrTranslatedColumn[0] . " && " .
+                        $this->Output(2, sprintf(t('Original line and translation line do not match. Here is the condition checked: "%s". Skipping.'), $arrColumn[0] .'=='.  $arrTranslatedColumn[0] . " && " .
                         $arrColumn[1] .'=='.  $arrTranslatedColumn[1] . " && " .
                         $arrColumn[3] .'=='.  $arrTranslatedColumn[3] . " && " .
                         $arrColumn[4] .'=='.  $arrTranslatedColumn[4] . " && " .

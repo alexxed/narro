@@ -16,13 +16,13 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(QApplication::Translate('Preferences for %s'), QApplication::$objUser->Username);
+    $strPageTitle = sprintf(t('Preferences for %s'), QApplication::$objUser->Username);
 
     require('includes/header.inc.php');
 ?>
 
     <?php $this->RenderBegin() ?>
-        <p><?php _t('Here you can set your preferences.');?></p>
+        <p><?php echo t('Here you can set your preferences.');?></p>
         <?php $this->pnlPreferences->Render() ?>
     <?php $this->RenderEnd() ?>
 

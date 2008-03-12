@@ -16,24 +16,24 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = QApplication::Translate('Login');
+    $strPageTitle = t('Login');
 
 
     require('includes/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
-        <h3><?php _t('Login') ?></h3>
-        <p><?php _t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>
+        <h3><?php echo t('Login') ?></h3>
+        <p><?php echo t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>
         <br />
         <?php $this->lblMessage->Render() ?>
         <table>
             <tr>
-                <td><?php _t('Username')?>:</td>
+                <td><?php echo t('Username')?>:</td>
                 <td><?php $this->txtUsername->Render() ?></td>
             </tr>
             <tr>
-                <td><?php _t('Password')?>:</td>
+                <td><?php echo t('Password')?>:</td>
                 <td><?php $this->txtPassword->Render() ?></td>
             </tr>
             <tr>

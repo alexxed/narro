@@ -29,7 +29,7 @@
 
         protected function GetControlHtml() {
             if ($this->intTotal == 0) {
-                return QApplication::Translate('No texts');
+                return t('No texts');
             }
 
             $intPercentTranslated = 0;

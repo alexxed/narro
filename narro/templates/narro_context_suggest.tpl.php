@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?QApplication::Translate('Translate "%s"'):QApplication::Translate('See suggestions for "%s"'),
+    $strPageTitle = sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
         (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?substr($this->objNarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->objNarroContextInfo->Context->Text->TextValue);
 
     require('includes/header.inc.php')
@@ -31,7 +31,7 @@
         </div>
         <br class="item_divider" />
 
-        <?php _t('Text to translate'); ?>:
+        <?php echo t('Text to translate'); ?>:
         <div class="green3dbg" style="border:1px dotted #DDDDDD;padding:5px;" title="Textul original">
             <?php $this->pnlOriginalText->Render(); ?>
         </div>
@@ -42,7 +42,7 @@
         <?php $this->pnlSuggestionList->Render(); ?>
         <br />
         <?php if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
-            <?php _t('Your suggestion'); ?>:
+            <?php echo t('Your suggestion'); ?>:
             <br />
             <?php $this->pnlSpellcheckText->Render(); ?>
 
@@ -55,12 +55,12 @@
             <td width="40%" valign="top" style="padding-left:0px;border:0px">
                 <?php $this->btnSave->Render() ?>
                 <br />
-                <?php $this->chkGoToNext->Render() ?> <label for="<?php echo $this->chkGoToNext->ControlId ?>"><?php _t('After, go to the next text') ?></label>
+                <?php $this->chkGoToNext->Render() ?> <label for="<?php echo $this->chkGoToNext->ControlId ?>"><?php echo t('After, go to the next text') ?></label>
                 <br />
-                <?php $this->chkIgnoreSpellcheck->Render() ?> <label for="<?php echo $this->chkIgnoreSpellcheck->ControlId ?>"><?php _t('Ignore spellchecking') ?></label>
+                <?php $this->chkIgnoreSpellcheck->Render() ?> <label for="<?php echo $this->chkIgnoreSpellcheck->ControlId ?>"><?php echo t('Ignore spellchecking') ?></label>
                 <?php if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
                     <br />
-                    <?php $this->chkValidate->Render() ?> <label for="<?php echo $this->chkValidate->ControlId ?>"><?php _t('Validate') ?></label>
+                    <?php $this->chkValidate->Render() ?> <label for="<?php echo $this->chkValidate->ControlId ?>"><?php echo t('Validate') ?></label>
                 <?php } ?>
             </td>
             </tr>

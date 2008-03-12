@@ -37,13 +37,13 @@
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo) {
             if (QApplication::$objUser->hasPermission('Can suggest', $objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && QApplication::$objUser->hasPermission('Can vote', $objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
-                $strText = QApplication::Translate('Suggest / Vote');
+                $strText = t('Suggest / Vote');
             elseif (QApplication::$objUser->hasPermission('Can suggest', $objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
-                $strText = QApplication::Translate('Suggest');
+                $strText = t('Suggest');
             elseif (QApplication::$objUser->hasPermission('Can vote', $objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
-                $strText = QApplication::Translate('Vote');
+                $strText = t('Vote');
             else
-                $strText = QApplication::Translate('Details');
+                $strText = t('Details');
 
             return sprintf('<a href="narro_context_suggest.php?p=%d&f=%d&c=%d&tf=%d&st=%d&s=%s">%s</a>',
                         $this->objNarroFile->Project->ProjectId,

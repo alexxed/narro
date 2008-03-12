@@ -31,29 +31,29 @@
             <?php
                 echo
                     sprintf(
-                        QApplication::Translate('<i>Translating in: %s</i>'),
+                        t('<i>Translating in: %s</i>'),
                         QApplication::$objUser->Language->LanguageName
                     ) . ' | ';
             ?>
             <?php if (QApplication::$objUser->UserId > 0) {
                 echo
                     sprintf(
-                        QApplication::Translate('<i>Logged in as <a href="%s" style="color:green;font-weight:bold">%s</a></i>'),
+                        t('<i>Logged in as <a href="%s" style="color:green;font-weight:bold">%s</a></i>'),
                         'narro_user_profile.php',
                         QApplication::$objUser->Username
                     ) . ' | '
                     ;
             } else { ?>
-                <a href="narro_register.php"><?php _t('Register') ?></a> |
-                <a href="narro_login.php"><?php _t('Login') ?></a> |
+                <a href="narro_register.php"><?php echo t('Register') ?></a> |
+                <a href="narro_login.php"><?php echo t('Login') ?></a> |
             <?php } ?>
-            <a href="narro_user_preferences.php"><?php _t('Preferences') ?></a> |
-            <a href="narro_project_list.php"><?php _t('Project list') ?></a>
+            <a href="narro_user_preferences.php"><?php echo t('Preferences') ?></a> |
+            <a href="narro_project_list.php"><?php echo t('Project list') ?></a>
             <?php if (QApplication::$objUser->hasPermission('Can manage users')) { ?>
-            | <a href="narro_user_list.php"><?php _t('Manage users') ?></a>
+            | <a href="narro_user_list.php"><?php echo t('Manage users') ?></a>
             <?php } ?>
             <?php if (QApplication::$objUser->UserId > 0) { ?>
-                | <a href="narro_logout.php"><?php _t('Logout') ?></a>
+                | <a href="narro_logout.php"><?php echo t('Logout') ?></a>
             <?php } ?>
 
         </div>

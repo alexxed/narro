@@ -56,10 +56,10 @@
             $this->SetupNarroProject();
 
             // Setup DataGrid Columns
-            $this->colFileName = new QDataGridColumn(QApplication::Translate('File name'), '<?= $_FORM->dtgNarroFile_FileNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName, false)));
+            $this->colFileName = new QDataGridColumn(t('File name'), '<?= $_FORM->dtgNarroFile_FileNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName, false)));
             $this->colFileName->HtmlEntities = false;
 
-            $this->colPercentTranslated = new QDataGridColumn(QApplication::Translate('Progress'), '<?= $_FORM->dtgNarroFile_PercentTranslated_Render($_ITEM); ?>');
+            $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroFile_PercentTranslated_Render($_ITEM); ?>');
             $this->colPercentTranslated->HtmlEntities = false;
             $this->colPercentTranslated->Width = 160;
 

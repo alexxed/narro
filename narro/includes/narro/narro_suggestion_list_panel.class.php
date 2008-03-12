@@ -52,7 +52,7 @@
             $this->lblSuggestions = new QLabel($this);
 
             $this->chkShowAllLanguages = new QCheckBox($this);
-            $this->chkShowAllLanguages->Text = __t('Show suggestions from all languages');
+            $this->chkShowAllLanguages->Text = t('Show suggestions from all languages');
             if (QApplication::$blnUseAjax)
                 $this->chkShowAllLanguages->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgSuggestions_Bind'));
             else
@@ -60,18 +60,18 @@
 
 
             // Setup DataGrid Columns
-            $this->colSuggestion = new QDataGridColumn(QApplication::Translate('Other suggestions'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
+            $this->colSuggestion = new QDataGridColumn(t('Other suggestions'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
             $this->colSuggestion->HtmlEntities = false;
 
             /**
-            $this->colAuthor = new QDataGridColumn(QApplication::Translate('Author'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colAuthor_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId, false)));
+            $this->colAuthor = new QDataGridColumn(t('Author'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colAuthor_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId, false)));
             $this->colAuthor->HtmlEntities = false;
             */
 
-            $this->colVote = new QDataGridColumn(QApplication::Translate('Votes'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colVote_Render($_ITEM); ?>');
+            $this->colVote = new QDataGridColumn(t('Votes'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colVote_Render($_ITEM); ?>');
             $this->colVote->HtmlEntities = false;
             //$this->colVote->Width = 30;
-            $this->colActions = new QDataGridColumn(QApplication::Translate('Actions'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colActions_Render($_ITEM); ?>');
+            $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colActions_Render($_ITEM); ?>');
             $this->colActions->HtmlEntities = false;
             //$this->colActions->Width = 100;
 
@@ -101,11 +101,11 @@
 
         public function GetControlHtml() {
             if ($this->dtgSuggestions->TotalItemCount) {
-                $this->lblSuggestions->Text = QApplication::Translate('Others have suggested:');
+                $this->lblSuggestions->Text = t('Others have suggested:');
                 $this->dtgSuggestions->Visible = true;
             }
             else {
-                $this->lblSuggestions->Text = QApplication::Translate('No suggestions yet.');
+                $this->lblSuggestions->Text = t('No suggestions yet.');
                 $this->dtgSuggestions->Visible = false;
             }
 
@@ -140,7 +140,7 @@
 
             if (is_array($arrWordSuggestions))
             foreach($arrWordSuggestions as $strWord=>$arrSuggestion) {
-                $strSuggestionValue = str_replace($strWord, sprintf(QApplication::Translate('<span style="color:red" title="Misspelled. Suggestions: %s">%s</span>'), addslashes(join(',', $arrSuggestion)), $strWord), $strSuggestionValue);
+                $strSuggestionValue = str_replace($strWord, sprintf(t('<span style="color:red" title="Misspelled. Suggestions: %s">%s</span>'), addslashes(join(',', $arrSuggestion)), $strWord), $strSuggestionValue);
             }
 
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId)
@@ -197,9 +197,9 @@
         public function dtgSuggestions_colVote_Render(NarroSuggestion $objNarroSuggestion) {
             $intVoteCount = NarroSuggestionVote::QueryCount(QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $objNarroSuggestion->SuggestionId));
             if ($intVoteCount)
-                return QApplication::Translate(sprintf('%s votes', $intVoteCount));
+                return t(sprintf('%s votes', $intVoteCount));
             else
-                return QApplication::Translate('no votes');
+                return t('no votes');
         }
 
         public function dtgSuggestions_colAuthor_Render( NarroSuggestion $objNarroSuggestion ) {
@@ -220,7 +220,7 @@
             }
 
             if ($objNarroSuggestion->SuggestionId != $this->intEditSuggestionId)
-                $btnEdit->Text = QApplication::Translate('Edit');
+                $btnEdit->Text = t('Edit');
 
             $btnEdit->ActionParameter = $objNarroSuggestion->SuggestionId;
 
@@ -229,7 +229,7 @@
             $btnDelete = $this->objForm->GetControl($strControlId);
             if (!$btnDelete) {
                 $btnDelete = new QButton($this->dtgSuggestions, $strControlId);
-                $btnDelete->Text = QApplication::Translate('Delete');
+                $btnDelete->Text = t('Delete');
                 if (QApplication::$blnUseAjax)
                     $btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
                 else
@@ -244,7 +244,7 @@
             $btnVote = $this->objForm->GetControl($strControlId);
             if (!$btnVote) {
                 $btnVote = new QButton($this->dtgSuggestions, $strControlId);
-                $btnVote->Text = QApplication::Translate('Vote');
+                $btnVote->Text = t('Vote');
                 if (QApplication::$blnUseAjax)
                     $btnVote->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
                 else
@@ -267,10 +267,10 @@
                 );
             }
             if ($this->objNarroContextInfo->ValidSuggestionId == $objNarroSuggestion->SuggestionId) {
-                $btnValidate->Text = QApplication::Translate('Cancel validation');
+                $btnValidate->Text = t('Cancel validation');
             }
             else {
-                $btnValidate->Text = QApplication::Translate('Validate');
+                $btnValidate->Text = t('Validate');
             }
 
             $btnValidate->ActionParameter = $objNarroSuggestion->SuggestionId;
@@ -336,11 +336,11 @@
                     $objSuggestion->Delete();
                 }
                 catch (Exception $objEx) {
-                    $this->lblMessage->Text = QApplication::Translate('You cannot delete the suggestion because it is validate or it has votes or comments.');
+                    $this->lblMessage->Text = t('You cannot delete the suggestion because it is validate or it has votes or comments.');
                     $this->MarkAsModified();
                     return false;
                 }
-                $this->lblMessage->Text = QApplication::Translate('Suggestion succesfully deleted.');
+                $this->lblMessage->Text = t('Suggestion succesfully deleted.');
                 $this->MarkAsModified();
             }
 
@@ -375,7 +375,7 @@
 
             $objNarroSuggestionVote->Save();
 
-            $this->lblMessage->Text = QApplication::Translate('Thank you for your vote. You can change it anytime by voting another suggestion.');
+            $this->lblMessage->Text = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
             $this->MarkAsModified();
 
         }
@@ -386,8 +386,8 @@
               return false;
 
             $btnEdit = $this->objForm->GetControl($strControlId);
-            if ($btnEdit->Text == QApplication::Translate('Edit')) {
-                $btnEdit->Text = QApplication::Translate('Save');
+            if ($btnEdit->Text == t('Edit')) {
+                $btnEdit->Text = t('Save');
                 $this->intEditSuggestionId = $strParameter;
             }
             else {
@@ -405,11 +405,11 @@
                         $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
                         try {
                             $objSuggestion->Save();
-                            $this->lblMessage->Text = QApplication::Translate('Your changes were saved succesfully.');
-                            $btnEdit->Text = QApplication::Translate('Edit');
+                            $this->lblMessage->Text = t('Your changes were saved succesfully.');
+                            $btnEdit->Text = t('Edit');
                             $this->intEditSuggestionId = null;
                         } catch (QMySqliDatabaseException $objExc) {
-                            $this->lblMessage->Text = QApplication::Translate('The text you are trying to save already exists.');
+                            $this->lblMessage->Text = t('The text you are trying to save already exists.');
                         }
                     }
                 }
@@ -432,7 +432,7 @@
                             )] = 1;
                 }
                 if (isset($arrTexts) && count(array_keys($arrTexts))) {
-                    $this->lblMessage->Text = sprintf(QApplication::Translate('The suggestion is marked as valid for the following contexts: %s'), join(', ', array_keys($arrTexts)));
+                    $this->lblMessage->Text = sprintf(t('The suggestion is marked as valid for the following contexts: %s'), join(', ', array_keys($arrTexts)));
                     $this->MarkAsModified();
                     return true;
                 }

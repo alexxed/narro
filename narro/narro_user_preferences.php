@@ -40,12 +40,12 @@
             $this->lblMessage = new QLabel($this);
 
             $this->btnSave = new QButton($this);
-            $this->btnSave->Text = QApplication::Translate('Save');
+            $this->btnSave->Text = t('Save');
             $this->btnSave->PrimaryButton = true;
             $this->btnSave->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnSave_Click'));
 
             $this->btnCancel = new QButton($this);
-            $this->btnCancel->Text = QApplication::Translate('Cancel');
+            $this->btnCancel->Text = t('Cancel');
             $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
 
         }
@@ -63,14 +63,14 @@
                             $txtNumber->MaxLength = 3;
                             $txtNumber->Width = 50;
                             $txtNumber->Text = QApplication::$objUser->getPreferenceValueByName($strName);
-                            $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', QApplication::Translate($strName), $txtNumber->RenderWithError(false), QApplication::Translate($arrPref['description']));
+                            $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtNumber->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $txtNumber;
                             break;
                     case 'text':
                             $txtTextPref = new QTextBox($this);
                             $txtTextPref->Name = $strName;
                             $txtTextPref->Text = QApplication::$objUser->getPreferenceValueByName($strName);
-                            $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', QApplication::Translate($strName), $txtTextPref->RenderWithError(false), QApplication::Translate($arrPref['description']));
+                            $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $txtTextPref;
                             break;
                     case 'option':
@@ -79,14 +79,14 @@
                             if ($strName == 'Language') {
                                 $arrLanguages = NarroLanguage::LoadAll(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
                                 foreach($arrLanguages as $objLanguage) {
-                                    $lstOption->AddItem(QApplication::Translate($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == QApplication::$objUser->getPreferenceValueByName($strName)));
+                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == QApplication::$objUser->getPreferenceValueByName($strName)));
                                 }
                             }
                             else
                                 foreach($arrPref['values'] as $strValue) {
-                                    $lstOption->AddItem(QApplication::Translate($strValue), $strValue, ($strValue == QApplication::$objUser->getPreferenceValueByName($strName)));
+                                    $lstOption->AddItem(t($strValue), $strValue, ($strValue == QApplication::$objUser->getPreferenceValueByName($strName)));
                                 }
-                            $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', QApplication::Translate($strName), $lstOption->RenderWithError(false), QApplication::Translate($arrPref['description']));
+                            $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $lstOption->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $lstOption;
                             break;
                 }
@@ -94,7 +94,7 @@
 
             $strOutput .= '<tr><td colspan="3" style="text-align:right">' . $this->btnCancel->Render(false) . ' ' . $this->btnSave->Render(false) . '</td></tr></table>';
             if ($this->txtPreviousUrl)
-                $strOutput .= '<p>' . sprintf(QApplication::Translate('Click <a href="%s">here</a> to return to the page you were.'), $this->txtPreviousUrl) . '</p>';
+                $strOutput .= '<p>' . sprintf(t('Click <a href="%s">here</a> to return to the page you were.'), $this->txtPreviousUrl) . '</p>';
             return $strOutput;
         }
 
@@ -125,10 +125,10 @@
 
             try {
                 QApplication::$objUser->Save();
-                $this->lblMessage->Text = QApplication::Translate('Your preferences were saved successfuly.');
+                $this->lblMessage->Text = t('Your preferences were saved successfuly.');
                 $this->lblMessage->ForeColor = 'green';
             } catch( Exception $objEx) {
-                $this->lblMessage->Text = QApplication::Translate('An error occured while trying to save your preferences.');
+                $this->lblMessage->Text = t('An error occured while trying to save your preferences.');
                 $this->lblMessage->ForeColor = 'red';
             }
         }

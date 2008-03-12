@@ -271,6 +271,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`language_id` AS ' . $strAliasPrefix . 'language_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`language_name` AS ' . $strAliasPrefix . 'language_name`');
 			$objBuilder->AddSelectItem($strTableName . '.`language_code` AS ' . $strAliasPrefix . 'language_code`');
+			$objBuilder->AddSelectItem($strTableName . '.`country_code` AS ' . $strAliasPrefix . 'country_code`');
 			$objBuilder->AddSelectItem($strTableName . '.`encoding` AS ' . $strAliasPrefix . 'encoding`');
 		}
 
@@ -390,6 +391,7 @@
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasPrefix . 'language_id', 'Integer');
 			$objToReturn->strLanguageName = $objDbRow->GetColumn($strAliasPrefix . 'language_name', 'VarChar');
 			$objToReturn->strLanguageCode = $objDbRow->GetColumn($strAliasPrefix . 'language_code', 'VarChar');
+			$objToReturn->strCountryCode = $objDbRow->GetColumn($strAliasPrefix . 'country_code', 'VarChar');
 			$objToReturn->strEncoding = $objDbRow->GetColumn($strAliasPrefix . 'encoding', 'VarChar');
 
 			// Instantiate Virtual Attributes
@@ -561,10 +563,12 @@
 						INSERT INTO `narro_language` (
 							`language_name`,
 							`language_code`,
+							`country_code`,
 							`encoding`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strLanguageName) . ',
 							' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
+							' . $objDatabase->SqlVariable($this->strCountryCode) . ',
 							' . $objDatabase->SqlVariable($this->strEncoding) . '
 						)
 					');
@@ -583,6 +587,7 @@
 						SET
 							`language_name` = ' . $objDatabase->SqlVariable($this->strLanguageName) . ',
 							`language_code` = ' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
+							`country_code` = ' . $objDatabase->SqlVariable($this->strCountryCode) . ',
 							`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding) . '
 						WHERE
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
@@ -687,6 +692,13 @@
 					 * @return string
 					 */
 					return $this->strLanguageCode;
+
+				case 'CountryCode':
+					/**
+					 * Gets the value for strCountryCode (Not Null)
+					 * @return string
+					 */
+					return $this->strCountryCode;
 
 				case 'Encoding':
 					/**
@@ -845,6 +857,19 @@
 					 */
 					try {
 						return ($this->strLanguageCode = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CountryCode':
+					/**
+					 * Sets the value for strCountryCode (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCountryCode = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1828,6 +1853,15 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_language.country_code
+		 * @var string strCountryCode
+		 */
+		protected $strCountryCode;
+		const CountryCodeMaxLength = 6;
+		const CountryCodeDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_language.encoding
 		 * @var string strEncoding
 		 */
@@ -1967,6 +2001,7 @@
 			$strToReturn .= '<element name="LanguageId" type="xsd:int"/>';
 			$strToReturn .= '<element name="LanguageName" type="xsd:string"/>';
 			$strToReturn .= '<element name="LanguageCode" type="xsd:string"/>';
+			$strToReturn .= '<element name="CountryCode" type="xsd:string"/>';
 			$strToReturn .= '<element name="Encoding" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -1996,6 +2031,8 @@
 				$objToReturn->strLanguageName = $objSoapObject->LanguageName;
 			if (property_exists($objSoapObject, 'LanguageCode'))
 				$objToReturn->strLanguageCode = $objSoapObject->LanguageCode;
+			if (property_exists($objSoapObject, 'CountryCode'))
+				$objToReturn->strCountryCode = $objSoapObject->CountryCode;
 			if (property_exists($objSoapObject, 'Encoding'))
 				$objToReturn->strEncoding = $objSoapObject->Encoding;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -2040,6 +2077,8 @@
 					return new QQNode('language_name', 'string', $this);
 				case 'LanguageCode':
 					return new QQNode('language_code', 'string', $this);
+				case 'CountryCode':
+					return new QQNode('country_code', 'string', $this);
 				case 'Encoding':
 					return new QQNode('encoding', 'string', $this);
 				case 'NarroContextCommentAsLanguage':
@@ -2080,6 +2119,8 @@
 					return new QQNode('language_name', 'string', $this);
 				case 'LanguageCode':
 					return new QQNode('language_code', 'string', $this);
+				case 'CountryCode':
+					return new QQNode('country_code', 'string', $this);
 				case 'Encoding':
 					return new QQNode('encoding', 'string', $this);
 				case 'NarroContextCommentAsLanguage':

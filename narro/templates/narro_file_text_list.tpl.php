@@ -16,22 +16,22 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(QApplication::Translate('Texts from the file "%s"'), $this->objNarroFile->FileName);
+    $strPageTitle = sprintf(t('Texts from the file "%s"'), $this->objNarroFile->FileName);
     require('includes/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
         <div>
         <?php echo
-        '<a href="narro_project_list.php">'.QApplication::Translate('Projects').'</a>' .
+        '<a href="narro_project_list.php">'.t('Projects').'</a>' .
         ' -> <a href="narro_project_text_list.php?p=' . $this->objNarroFile->Project->ProjectId.'">'.$this->objNarroFile->Project->ProjectName.'</a>' .
-        ' -> <a href="narro_project_file_list.php?p=' . $this->objNarroFile->Project->ProjectId . '">'.QApplication::Translate('Files').'</a>' .
+        ' -> <a href="narro_project_file_list.php?p=' . $this->objNarroFile->Project->ProjectId . '">'.t('Files').'</a>' .
         (($this->objNarroFile->ParentId)? ' -> <a href="narro_project_file_list.php?' . sprintf('p=%d&pf=%d', $this->objNarroFile->Project->ProjectId, $this->objNarroFile->ParentId).'"> .. </a>':'') .
         ' -> ' . $this->objNarroFile->FileName; ?>
         </div>
         <br />
         <div style="text-align:right">
-            <?php _t('Show') ?>: <?php $this->lstTextFilter->Render() ?> &nbsp;&nbsp;&nbsp;<?php _t('Search') ?>: <?php $this->txtSearch->Render(); $this->lstSearchType->Render(); ?>&nbsp;
+            <?php echo t('Show') ?>: <?php $this->lstTextFilter->Render() ?> &nbsp;&nbsp;&nbsp;<?php echo t('Search') ?>: <?php $this->txtSearch->Render(); $this->lstSearchType->Render(); ?>&nbsp;
             <?php $this->btnSearch->Render(); ?>
         </div>
         <br />

@@ -33,7 +33,7 @@
             $this->txtPassword = new QTextBox($this);
             $this->txtPassword->TextMode = QTextMode::Password;
             $this->btnRegister = new QButton($this);
-            $this->btnRegister->Text = QApplication::Translate('Register');
+            $this->btnRegister->Text = t('Register');
             $this->btnRegister->AddAction(new QClickEvent(), new QServerAction('btnRegister_Click'));
 
         }
@@ -41,7 +41,7 @@
         protected function btnRegister_Click($strFormId, $strControlId, $strParameter) {
             if (!trim($this->txtUsername->Text) || !trim($this->txtPassword->Text) || !trim($this->txtEmail->Text)) {
                 $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = QApplication::Translate("It's just three fields, don't leave one empty please.");
+                $this->lblMessage->Text = t("It's just three fields, don't leave one empty please.");
                 return false;
             }
 
@@ -57,7 +57,7 @@
                 $objUser->Save();
             } catch(Exception $objEx) {
                 $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = QApplication::Translate("Seems like the username or email is already in use.") . $objEx->getMessage();
+                $this->lblMessage->Text = t("Seems like the username or email is already in use.") . $objEx->getMessage();
                 return false;
             }
 

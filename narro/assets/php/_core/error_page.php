@@ -136,9 +136,9 @@
 
     QEmailServer::Send($objEmailMessage);
     ob_clean();
-    echo QApplication::Translate('An error occured in the application you were using. A detailed report was sent to developers.');
+    echo t('An error occured in the application you were using. A detailed report was sent to developers.');
     echo '<br />';
-    echo sprintf(QApplication::Translate('Click <a href="%s">here</a> to start over.'), 'narro_project_list.php');
+    echo sprintf(t('Click <a href="%s">here</a> to start over.'), 'narro_project_list.php');
 }
 else {
 ?>

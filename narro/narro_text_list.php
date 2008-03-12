@@ -49,7 +49,7 @@
 
             // Setup DataGrid Columns
             $this->colContext = new QDataGridColumn(
-                QApplication::Translate('Context'),
+                t('Context'),
                 '<?= $_FORM->dtgNarroContextInfo_Context_Render($_ITEM); ?>',
                 array(
                     'OrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Context),
@@ -58,7 +58,7 @@
             );
             $this->colContext->BackColor = 'lightgreen';
             $this->colOriginalText = new QDataGridColumn(
-                QApplication::Translate('Original text'),
+                t('Original text'),
                 '<?= $_FORM->dtgNarroContextInfo_OriginalText_Render($_ITEM); ?>',
                 array(
                     'OrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->TextValue),
@@ -66,12 +66,12 @@
                 )
             );
             $this->colTranslatedText = new QDataGridColumn(
-                QApplication::Translate('Translated text'),
+                t('Translated text'),
                 '<?= $_FORM->dtgNarroContextInfo_TranslatedText_Render($_ITEM); ?>'
             );
             $this->colTranslatedText->HtmlEntities = false;
             $this->colActions = new QDataGridColumn(
-                QApplication::Translate('Actions'),
+                t('Actions'),
                 '<?= $_FORM->dtgNarroContextInfo_Actions_Render($_ITEM); ?>'
             );
             $this->colActions->HtmlEntities = false;
@@ -98,10 +98,10 @@
             $this->dtgNarroContextInfo->AddColumn($this->colActions);
 
             $this->lstTextFilter = new QListBox($this);
-            $this->lstTextFilter->AddItem(QApplication::Translate('All texts'), self::SHOW_ALL_TEXTS, true);
-            $this->lstTextFilter->AddItem(QApplication::Translate('Untranslated texts'), self::SHOW_UNTRANSLATED_TEXTS);
-            $this->lstTextFilter->AddItem(QApplication::Translate('Validated texts'), self::SHOW_VALIDATED_TEXTS);
-            $this->lstTextFilter->AddItem(QApplication::Translate('Texts that require validation'), self::SHOW_TEXTS_THAT_REQUIRE_VALIDATION);
+            $this->lstTextFilter->AddItem(t('All texts'), self::SHOW_ALL_TEXTS, true);
+            $this->lstTextFilter->AddItem(t('Untranslated texts'), self::SHOW_UNTRANSLATED_TEXTS);
+            $this->lstTextFilter->AddItem(t('Validated texts'), self::SHOW_VALIDATED_TEXTS);
+            $this->lstTextFilter->AddItem(t('Texts that require validation'), self::SHOW_TEXTS_THAT_REQUIRE_VALIDATION);
             if (QApplication::QueryString('tf') > 0)
                 $this->lstTextFilter->SelectedValue = QApplication::QueryString('tf');
             $this->lstTextFilter->AddAction(new QChangeEvent(), new QServerAction('lstTextFilter_Change'));
@@ -110,14 +110,14 @@
             $this->txtSearch->Text = QApplication::QueryString('s');
 
             $this->lstSearchType = new QListBox($this);
-            $this->lstSearchType->AddItem(QApplication::Translate('original texts'), self::SEARCH_TEXTS, true);
-            $this->lstSearchType->AddItem(QApplication::Translate('translations'), self::SEARCH_SUGGESTIONS);
-            $this->lstSearchType->AddItem(QApplication::Translate('contexts'), self::SEARCH_CONTEXTS);
+            $this->lstSearchType->AddItem(t('original texts'), self::SEARCH_TEXTS, true);
+            $this->lstSearchType->AddItem(t('translations'), self::SEARCH_SUGGESTIONS);
+            $this->lstSearchType->AddItem(t('contexts'), self::SEARCH_CONTEXTS);
             if (QApplication::QueryString('st') > 0)
                 $this->lstSearchType->SelectedValue = QApplication::QueryString('st');
 
             $this->btnSearch = new QButton($this);
-            $this->btnSearch->Text = QApplication::Translate('Search');
+            $this->btnSearch->Text = t('Search');
             $this->btnSearch->AddAction(new QClickEvent(), new QServerAction('btnSearch_Click'));
 
             $this->lblMessage = new QLabel($this);

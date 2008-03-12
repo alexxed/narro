@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(QApplication::Translate('Texts from the project "%s"'), $this->objNarroProject->ProjectName);
+    $strPageTitle = sprintf(t('Texts from the project "%s"'), $this->objNarroProject->ProjectName);
 
     require('includes/header.inc.php')
 ?>
@@ -24,18 +24,18 @@
     <?php $this->RenderBegin() ?>
         <div>
         <?php echo
-        '<a href="narro_project_list.php">'.QApplication::Translate('Projects').'</a>' .
+        '<a href="narro_project_list.php">'.t('Projects').'</a>' .
         ' -> <a href="narro_project_text_list.php?p=' . $this->objNarroProject->ProjectId . '">' . $this->objNarroProject->ProjectName.'</a>' .
-        ' -> <a href="narro_project_file_list.php?p=' . $this->objNarroProject->ProjectId . '">'.QApplication::Translate('Files').'</a>';
+        ' -> <a href="narro_project_file_list.php?p=' . $this->objNarroProject->ProjectId . '">'.t('Files').'</a>';
         ?>
         </div>
         <br />
         <?php $this->lblMessage->Render(); ?>
         <br />
         <div style="text-align:right">
-            <?php _t('Show') ?>: <?php $this->lstTextFilter->Render() ?>
+            <?php echo t('Show') ?>: <?php $this->lstTextFilter->Render() ?>
             &nbsp;&nbsp;&nbsp;
-            <?php _t('Search') ?>: <?php $this->txtSearch->Render();?>&nbsp;
+            <?php echo t('Search') ?>: <?php $this->txtSearch->Render();?>&nbsp;
             <?php $this->lstSearchType->Render();?>&nbsp;
             <?php $this->btnSearch->Render(); ?>
         </div>

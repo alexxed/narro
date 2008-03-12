@@ -16,24 +16,24 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = QApplication::Translate('Recover password');
+    $strPageTitle = t('Recover password');
 
 
     require('includes/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
-        <h3><?php _t('Recover password') ?></h3>
-        <p><?php _t('If you remember your username or email address, we can send you a link at the email address you registered with to change your password.'); ?></p>
+        <h3><?php echo t('Recover password') ?></h3>
+        <p><?php echo t('If you remember your username or email address, we can send you a link at the email address you registered with to change your password.'); ?></p>
         <br />
         <?php $this->lblMessage->Render() ?>
         <table>
             <tr>
-                <td><?php _t('Username')?>:</td>
+                <td><?php echo t('Username')?>:</td>
                 <td><?php $this->txtUsername->Render() ?></td>
             </tr>
             <tr>
-                <td><?php _t('Email')?>:</td>
+                <td><?php echo t('Email')?>:</td>
                 <td><?php $this->txtEmail->Render() ?></td>
             </tr>
             <tr>

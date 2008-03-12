@@ -409,42 +409,6 @@
 		}
 			
 		/**
-		 * Load a single NarroContextInfo object,
-		 * by ContextId, LanguageId, ValidSuggestionId Index(es)
-		 * @param integer $intContextId
-		 * @param integer $intLanguageId
-		 * @param integer $intValidSuggestionId
-		 * @return NarroContextInfo
-		*/
-		public static function LoadByContextIdLanguageIdValidSuggestionId($intContextId, $intLanguageId, $intValidSuggestionId) {
-			return NarroContextInfo::QuerySingle(
-				QQ::AndCondition(
-				QQ::Equal(QQN::NarroContextInfo()->ContextId, $intContextId),
-				QQ::Equal(QQN::NarroContextInfo()->LanguageId, $intLanguageId),
-				QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, $intValidSuggestionId)
-				)
-			);
-		}
-			
-		/**
-		 * Load a single NarroContextInfo object,
-		 * by ContextId, LanguageId, PopularSuggestionId Index(es)
-		 * @param integer $intContextId
-		 * @param integer $intLanguageId
-		 * @param integer $intPopularSuggestionId
-		 * @return NarroContextInfo
-		*/
-		public static function LoadByContextIdLanguageIdPopularSuggestionId($intContextId, $intLanguageId, $intPopularSuggestionId) {
-			return NarroContextInfo::QuerySingle(
-				QQ::AndCondition(
-				QQ::Equal(QQN::NarroContextInfo()->ContextId, $intContextId),
-				QQ::Equal(QQN::NarroContextInfo()->LanguageId, $intLanguageId),
-				QQ::Equal(QQN::NarroContextInfo()->PopularSuggestionId, $intPopularSuggestionId)
-				)
-			);
-		}
-			
-		/**
 		 * Load an array of NarroContextInfo objects,
 		 * by ContextId Index(es)
 		 * @param integer $intContextId

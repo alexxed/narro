@@ -16,9 +16,9 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(QApplication::Translate('%s :: File list'), $this->objNarroProject->ProjectName);
+    $strPageTitle = sprintf(t('%s :: File list'), $this->objNarroProject->ProjectName);
     if (QApplication::QueryString('pf')>0)
-        $strPageTitle = sprintf(QApplication::Translate('%s :: %s :: File list'), $this->objNarroProject->ProjectName, $this->objParentFile->FileName);
+        $strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objNarroProject->ProjectName, $this->objParentFile->FileName);
 
     require('includes/header.inc.php')
 ?>
@@ -28,7 +28,7 @@
             <div style="text-align:left">
             <?php
                 echo
-                    '<a href="narro_project_list.php">' . QApplication::Translate('Projects') . '</a>' .
+                    '<a href="narro_project_list.php">' . t('Projects') . '</a>' .
                     ' -> ' .
                     '<a href="narro_project_text_list.php?p=' . $this->objNarroProject->ProjectId.'">'.$this->objNarroProject->ProjectName.'</a>';
                 if ($this->objParentFile)
@@ -40,9 +40,9 @@
             ?>
             </div>
             <div style="text-align:right;">
-                <?php $this->chkShowHierarchy->Render();?> <label for="<?php echo $this->chkShowHierarchy->ControlId; ?>"><?php _t('Show hierarchy') ?></label>
+                <?php $this->chkShowHierarchy->Render();?> <label for="<?php echo $this->chkShowHierarchy->ControlId; ?>"><?php echo t('Show hierarchy') ?></label>
                 &nbsp;&nbsp;&nbsp;
-                <?php $this->chkShowFolders->Render();?>  <label for="<?php echo $this->chkShowFolders->ControlId; ?>"><?php _t('Show folders') ?></label>
+                <?php $this->chkShowFolders->Render();?>  <label for="<?php echo $this->chkShowFolders->ControlId; ?>"><?php echo t('Show folders') ?></label>
             </div>
             <br />
         </div>

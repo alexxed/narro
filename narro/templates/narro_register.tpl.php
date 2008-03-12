@@ -16,38 +16,38 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = QApplication::Translate('Register');
+    $strPageTitle = t('Register');
 
 
     require('includes/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
-        <h3><?php _t('Register') ?></h3>
-        <p><?php _t('Here are a few benefits for a registered user'); ?>:</p>
+        <h3><?php echo t('Register') ?></h3>
+        <p><?php echo t('Here are a few benefits for a registered user'); ?>:</p>
         <ul>
-            <li><?php _t('Be famous for your suggestions. Everyone will see that you added that cool suggestion.') ?></li>
-            <li><?php _t('Vote for your favourite suggestion.') ?></li>
-            <li><?php _t('Set your preferences and maintain your user profile.') ?></li>
+            <li><?php echo t('Be famous for your suggestions. Everyone will see that you added that cool suggestion.') ?></li>
+            <li><?php echo t('Vote for your favourite suggestion.') ?></li>
+            <li><?php echo t('Set your preferences and maintain your user profile.') ?></li>
         </ul>
 
         <br />
         <?php $this->lblMessage->Render() ?>
         <table>
             <tr>
-                <td><?php _t('Username') ?>:</td>
+                <td><?php echo t('Username') ?>:</td>
                 <td><?php $this->txtUsername->Render() ?></td>
-                <td><?php _t('This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name.') ?></td>
+                <td><?php echo t('This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name.') ?></td>
             </tr>
             <tr>
-                <td><?php _t('Password') ?>:</td>
+                <td><?php echo t('Password') ?>:</td>
                 <td><?php $this->txtPassword->Render() ?></td>
-                <td><?php _t('Alright, you don\'t have to type it twice, but please type it carefully.') ?></td>
+                <td><?php echo t('Alright, you don\'t have to type it twice, but please type it carefully.') ?></td>
             </tr>
             <tr>
-                <td><?php _t('Email') ?>:</td>
+                <td><?php echo t('Email') ?>:</td>
                 <td><?php $this->txtEmail->Render() ?></td>
-                <td><?php _t('This is used for password recovery and opt-in notifications.') ?></td>
+                <td><?php echo t('This is used for password recovery and opt-in notifications.') ?></td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align:left"><?php $this->btnRegister->Render() ?></td>

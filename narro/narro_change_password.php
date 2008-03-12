@@ -45,7 +45,7 @@
             $this->txtPassword->TextMode = QTextMode::Password;
             $this->btnChangePassword = new QButton($this);
             $this->btnChangePassword->PrimaryButton = true;
-            $this->btnChangePassword->Text = QApplication::Translate('Change password');
+            $this->btnChangePassword->Text = t('Change password');
             $this->btnChangePassword->AddAction(new QClickEvent(), new QServerAction('btnChangePassword_Click'));
 
         }
@@ -57,12 +57,12 @@
                 QApplication::$objUser->Save();
             } catch (Exception $objEx) {
                 $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = QApplication::Translate('Failed to change the password.');
+                $this->lblMessage->Text = t('Failed to change the password.');
             }
 
             $_SESSION['objUser'] = QApplication::$objUser;
             $this->lblMessage->ForeColor = 'green';
-            $this->lblMessage->Text = QApplication::Translate('Password changed succesfully.');
+            $this->lblMessage->Text = t('Password changed succesfully.');
 
         }
     }

@@ -20,25 +20,25 @@
 
         public function ImportProjectArchive($strFile) {
 
-            $this->Output(1, sprintf(QApplication::Translate('Starting import for the project %s from the file %s'), $this->objProject->ProjectName, $strFile));
+            $this->Output(1, sprintf(t('Starting import for the project %s from the file %s'), $this->objProject->ProjectName, $strFile));
             $this->startTimer();
 
             /**
              * work with tar.bz2 archives
              */
             if (preg_match('/\.tar.bz2$/', $strFile)) {
-                $this->Output(1, sprintf(__t('Got an archive, processing file "%s"'), $strFile));
+                $this->Output(1, sprintf(t('Got an archive, processing file "%s"'), $strFile));
                 $strWorkPath = sprintf('%s/%s/%s', __IMPORT_PATH__, $this->objUser->UserId, $this->objProject->ProjectName);
                 $strUserPath = sprintf('%s/%s', __IMPORT_PATH__, $this->objUser->UserId);
                 if (!file_exists($strUserPath)) {
                     if (!mkdir($strUserPath)) {
-                        $this->Output(3, sprintf(__t('Could not create import directory "%s" for the user "%s"'), $strUserPath, $this->objUser->Username));
+                        $this->Output(3, sprintf(t('Could not create import directory "%s" for the user "%s"'), $strUserPath, $this->objUser->Username));
                         return false;
                     }
                 }
 
                 if (!file_exists($strWorkPath) && !mkdir($strWorkPath)) {
-                    $this->Output(3, sprintf(__t('Could not create import directory "%s" for the project "%s"'), $strWorkPath, $this->objProject->ProjectName));
+                    $this->Output(3, sprintf(t('Could not create import directory "%s" for the project "%s"'), $strWorkPath, $this->objProject->ProjectName));
                     return false;
                 }
 
@@ -59,7 +59,7 @@
                  */
                 exec(sprintf('tar jxf %s', $strFile), $arrOutput, $retVal);
                 if ($retVal != 0) {
-                    $this->Output(3, sprintf(__t('Error untaring: %s'), join("\n", $arrOutput)));
+                    $this->Output(3, sprintf(t('Error untaring: %s'), join("\n", $arrOutput)));
                     return false;
                 }
 
@@ -81,13 +81,13 @@
             $arrFiles = $this->ListDir($strDirectory . '/en-US');
             $intTotalFilesToProcess = count($arrFiles);
 
-            $this->Output(1, sprintf(QApplication::Translate('Starting to process %d files using directory %s'), $intTotalFilesToProcess, $strDirectory));
+            $this->Output(1, sprintf(t('Starting to process %d files using directory %s'), $intTotalFilesToProcess, $strDirectory));
 
             $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
-                $this->Output(3, sprintf(__t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                $this->Output(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
                 return false;
             }
 
@@ -95,7 +95,7 @@
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
-                $this->Output(3, sprintf(__t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                $this->Output(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
                 return false;
             }
 
@@ -166,7 +166,7 @@
                             $objFile->ContextCount = 0;
                             $objFile->Active = 1;
                             $objFile->Save();
-                            $this->Output(1, sprintf(QApplication::Translate('Added folder "%s" from "%s"'), $strDir, $strPath));
+                            $this->Output(1, sprintf(t('Added folder "%s" from "%s"'), $strDir, $strPath));
                             $this->arrStatistics['Imported folders']++;
                         }
                         $arrDirectories[$strPath] = $objFile->FileId;
@@ -207,26 +207,30 @@
                     $objFile->Active = 1;
                     $objFile->Encoding = 'UTF-8';
                     $objFile->Save();
-                    $this->Output(1, sprintf(QApplication::Translate('Added file "%s" from "%s"'), $strFileName, $strPath));
+                    $this->Output(1, sprintf(t('Added file "%s" from "%s"'), $strFileName, $strPath));
                     $this->arrStatistics['Imported files']++;
                 }
 
-                $strTranslatedFileToImport = str_replace($strDirectory . '/en-US', $strDirectory . '/' . $this->objLanguage->LanguageCode, $strFileToImport);
-//error_log('str_replace(' . $strDirectory . '/en-US' . ', ' . $strDirectory . '/' . $this->objLanguage->LanguageCode . ', ' .$strFileToImport);
+                $strTranslatedFileToImport = str_replace($strDirectory . '/en-US', $strDirectory . '/' . str_replace('_', '-', $this->objLanguage->LanguageCode), $strFileToImport);
+
+                $intTime = time();
                 if (file_exists($strTranslatedFileToImport))
                     $this->ImportFile($objFile, $strFileToImport, $strTranslatedFileToImport);
                 else {
                     // it's ok, equal strings won't be imported
                     $this->ImportFile($objFile, $strFileToImport);
                 }
+                $intElapsedTime = time() - $intTime;
+                $this->Output(1, sprintf(t('Processed file "%s" in %d seconds, %d files left'), str_replace($strDirectory . '/en-US', '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo)));
 
                 if ($intFileNo % 10 === 0)
-                    $this->Output(1, sprintf(QApplication::Translate("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
+                    $this->Output(1, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
             }
 
         }
 
         public function ImportFile ($objFile, $strTemplateFile, $strTranslatedFile = false) {
+
             if (!$objFile instanceof NarroFile)
                 return false;
 
@@ -242,6 +246,8 @@
         }
 
         public function ImportPropertiesFile($objFile, $strTemplateFile, $strTranslatedFile) {
+            $intTime = time();
+
             if ($strTranslatedFile)
                 $strFileContents = file_get_contents($strTranslatedFile);
             $strTemplateContents = file_get_contents($strTemplateFile);
@@ -259,30 +265,38 @@
                 if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches))
                     $arrTranslation[$arrMatches[1]] = trim($arrMatches[2]);
                 elseif (trim($strLine) != '' && $strLine[0] != '#')
-                    $this->Output(2, sprintf(__t('Skipped line "%s" from translation "%s".'), $strLine, $objFile->FileName));
+                    $this->Output(2, sprintf(t('Skipped line "%s" from translation "%s".'), $strLine, $objFile->FileName));
             }
 
             foreach($arrTemplateContents as $intPos=>$strLine) {
                 if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches))
                     $arrTemplate[$arrMatches[1]] = trim($arrMatches[2]);
                 elseif (trim($strLine) != '' && $strLine[0] != '#')
-                    $this->Output(2, sprintf(__t('Skipped line "%s" from template "%s".'), $strLine, $objFile->FileName));
+                    $this->Output(2, sprintf(t('Skipped line "%s" from template "%s".'), $strLine, $objFile->FileName));
             }
 
             $arrTemplate = $this->CheckForAccessKeysMozilla($arrTemplate);
 
             $arrTranslation = $this->CheckForAccessKeysMozilla($arrTranslation);
 
+            $intElapsedTime = time() - $intTime;
+            if ($intElapsedTime > 0)
+                $this->Output(1, sprintf(t('Ini/Properties file %s preprocessing took %d seconds.'), $objFile->FileName, $intElapsedTime));
+
+            $this->Output(1, sprintf(t('Found %d contexts in file %s.'), count($arrTemplate), $objFile->FileName));
+
             if (is_array($arrTemplate))
                 foreach($arrTemplate as $strKey=>$strVal) {
                     $this->AddTranslation($objFile, $strVal, $arrTranslation[$strKey], $strKey);
                 }
             else
-                $this->Output(2, sprintf(__t('Found a empty template (%s)'), $strTemplateFile));
+                $this->Output(2, sprintf(t('Found a empty template (%s)'), $strTemplateFile));
 
         }
 
         public function ImportDtdFile($objFile, $strTemplateFile, $strTranslatedFile) {
+            $intTime = time();
+
             if ($strTranslatedFile)
                 $strFileContents = file_get_contents($strTranslatedFile);
             $strTemplateContents = file_get_contents($strTemplateFile);
@@ -307,6 +321,12 @@
             $arrTemplate = $this->CheckForAccessKeysMozilla($arrTemplate);
 
             $arrTranslation = $this->CheckForAccessKeysMozilla($arrTranslation);
+
+            $intElapsedTime = time() - $intTime;
+            if ($intElapsedTime > 0)
+                $this->Output(1, sprintf(t('DTD file %s preprocessing took %d seconds.'), $objFile->FileName, $intElapsedTime));
+
+            $this->Output(1, sprintf(t('Found %d contexts in file %s.'), count($arrTemplate), $objFile->FileName));
 
             foreach($arrTemplate as $strKey=>$strVal) {
                 $this->AddTranslation($objFile, $strVal, $arrTranslation[$strKey], $strKey);
@@ -732,6 +752,7 @@
         protected function CheckForAccessKeysMozilla($arrData) {
             if (is_array($arrData))
             foreach($arrData as $strKey=>$strVal) {
+                if (strstr($strKey, 'accesskey'))
                 if (preg_match('/([A-Z0-9a-z\.\_\-]+)([\.\-\_]{1,1})accesskey$/s', $strKey, $arrMatches)) {
                     if (isset($arrData[$arrMatches[1] . $arrMatches[2] . 'label']))
                         $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'label';
@@ -763,29 +784,5 @@
             return $arrData;
 
         }
-
-        protected function ListDir($start_dir='.') {
-
-            $files = array();
-            if (is_dir($start_dir)) {
-                $fh = opendir($start_dir);
-                while (($file = readdir($fh)) !== false) {
-                    // loop through the files, skipping . and .., and recursing if necessary
-                    if (strcmp($file, '.')==0 || strcmp($file, '..')==0) continue;
-                        $filepath = $start_dir . '/' . $file;
-                    if ( is_dir($filepath) )
-                        $files = array_merge($files, $this->ListDir($filepath));
-                    else
-                        array_push($files, $filepath);
-                }
-                    closedir($fh);
-            } else {
-                // false if the function was called with an invalid non-directory argument
-                $files = false;
-            }
-            return $files;
-        }
-
-
     }
 ?>

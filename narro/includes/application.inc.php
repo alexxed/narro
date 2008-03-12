@@ -46,7 +46,7 @@
         ////////////////////////////
 
         public static function GetSpellSuggestions($strText) {
-            $strCleanText = mb_ereg_replace('[\\n\.\\\!\?]+', ' ', $strText);
+            $strCleanText = mb_ereg_replace('[\\n\.:;\\\!\?]+', ' ', $strText);
             $strCleanText = strip_tags($strCleanText);
             /**
              * mozilla entitites: &xxx;
@@ -164,10 +164,54 @@
         public static function RegisterFormat($strName, $strPluginName) {
             self::$arrFileFormats[$strName] = $strPluginName;
         }
+
+        public static function Translate($strText) {
+            return t($strText);
+        }
     }
 
-    function __t($strText) {
-        return QApplication::Translate($strText);
+    function t($strText) {
+       /**
+        * if not and a user has made a suggestion, show it in green
+        * if not, show the most voted suggestion
+        * @todo add caching please
+        */
+        if (
+            $objSuggestion =
+                     NarroSuggestion::QuerySingle(
+                         QQ::AndCondition(
+                             QQ::Equal(QQN::NarroSuggestion()->Text->TextValueMd5, md5($strText)),
+                             QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId),
+                             QQ::Equal(QQN::NarroSuggestion()->UserId, QApplication::$objUser->UserId)
+                         )
+                     )
+               ) {
+            $strSuggestionValue = $objSuggestion->SuggestionValue;
+        }
+        elseif (
+            $arrSuggestions =
+                    NarroSuggestion::QueryArray(
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroSuggestion()->Text->TextValueMd5, md5($strText)),
+                            QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId)
+                        )
+                    )
+               ) {
+            $intVoteCnt = 0;
+            $strSuggestionValue = $arrSuggestions[0]->SuggestionValue;
+            foreach($arrSuggestions as $objSuggestion) {
+                $intSuggVotCnt = NarroSuggestionVote::QueryCount(QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $objSuggestion->SuggestionId));
+                if ($intSuggVotCnt > $intVoteCnt) {
+                    $intVoteCnt = $intSuggVotCnt;
+                    $strSuggestionValue = $objSuggestion->SuggestionValue;
+                }
+            }
+        }
+        else {
+            $strSuggestionValue = $strText;
+        }
+
+        return $strSuggestionValue;
     }
 
     ///////////////////////
@@ -215,18 +259,10 @@
         // @todo add handling here
         throw Exception('Could not create an instance of NarroUser');
 
-    //////////////////////////////////////////////
-    // Setup Internationalization and Localization (if applicable)
-    // Note, this is where you would implement code to do Language Setting discovery, as well, for example:
-    // * Checking against $_GET['language_code']
-    // * checking against session (example provided below)
-    // * Checking the URL
-    // * etc.
-    // TODO: options to do this are left to the developer
-    //////////////////////////////////////////////
     QApplication::$LanguageCode = QApplication::$objUser->Language->LanguageCode;
-
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
+    QForm::$FormStateHandler = 'QFileFormStateHandler';
+    QFileFormStateHandler::$StatePath = __TMP_PATH__ . '/qform_states/';
 
     try {
         QI18n::Initialize();
@@ -234,5 +270,4 @@
         QApplication::$LanguageCode = 'en';
         QI18n::Initialize();
     }
-
 ?>

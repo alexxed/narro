@@ -30,7 +30,7 @@
             $this->txtUsername = new QTextBox($this);
             $this->txtEmail = new QTextBox($this);
             $this->btnRecoverPassword = new QButton($this);
-            $this->btnRecoverPassword->Text = QApplication::Translate('Proceed');
+            $this->btnRecoverPassword->Text = t('Proceed');
             $this->btnRecoverPassword->PrimaryButton = true;
             $this->btnRecoverPassword->AddAction(new QClickEvent(), new QServerAction('btnRecoverPassword_Click'));
 
@@ -43,7 +43,7 @@
                 $objUser = NarroUser::QuerySingle(QQ::Equal(QQN::NarroUser()->Email, $this->txtEmail->Text));
             else {
                 $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = QApplication::Translate('Please enter a username or email to continue.');
+                $this->lblMessage->Text = t('Please enter a username or email to continue.');
                 return false;
             }
 
@@ -51,8 +51,8 @@
                 $objEmailMessage = new QEmailMessage();
                 $objEmailMessage->From = ADMIN_EMAIL_ADDRESS;
                 $objEmailMessage->To = $objUser->Email;
-                $objEmailMessage->Subject = sprintf(QApplication::Translate('Password recovery for "%s" on "%s"'), $objUser->Username, $_SERVER['HTTP_HOST']);
-                $objEmailMessage->Body = sprintf(QApplication::Translate(
+                $objEmailMessage->Subject = sprintf(t('Password recovery for "%s" on "%s"'), $objUser->Username, $_SERVER['HTTP_HOST']);
+                $objEmailMessage->Body = sprintf(t(
                     'Somebody, probably you, requested a password recovery for "%s" on "%s".' . "\n\n" .
                     'To change your password, please follow this link: %s'),
                     $objUser->Username,
@@ -65,17 +65,17 @@
                     QEmailServer::Send($objEmailMessage);
                 } catch (Exception $objEx) {
                     $this->lblMessage->ForeColor = 'red';
-                    $this->lblMessage->Text = QApplication::Translate('Failed to send email. This may be a server issue. Please try again later.');
+                    $this->lblMessage->Text = t('Failed to send email. This may be a server issue. Please try again later.');
                     return false;
                 }
 
             }
             else {
                 $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = QApplication::Translate('Bad username or/and email');
+                $this->lblMessage->Text = t('Bad username or/and email');
             }
             $this->lblMessage->ForeColor = 'green';
-            $this->lblMessage->Text = QApplication::Translate('You should have a new email message with instructions. Check your spam/bulk directory too.');
+            $this->lblMessage->Text = t('You should have a new email message with instructions. Check your spam/bulk directory too.');
 
         }
     }

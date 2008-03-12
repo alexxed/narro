@@ -36,6 +36,18 @@
         protected $blnValidate = true;
         protected $blnOnlySuggestions = false;
 
+        public function __construct() {
+            $this->arrStatistics['Imported files'] = 0;
+            $this->arrStatistics['Imported folders'] = 0;
+            $this->arrStatistics['Kept folders'] = 0;
+            $this->arrStatistics['Kept files'] = 0;
+            $this->arrStatistics['Imported texts'] = 0;
+            $this->arrStatistics['Imported contexts'] = 0;
+            $this->arrStatistics['Imported suggestions'] = 0;
+            $this->arrStatistics['Reused contexts'] = 0;
+            $this->arrStatistics['Texts without suggestions'] = 0;
+        }
+
 
         protected function startTimer() {
             $this->arrStatistics['Start time'] = time();
@@ -93,7 +105,7 @@
             $strTranslation = QApplication::$objPluginHandler->ProcessSuggestion($strTranslation);
             $strContext = QApplication::$objPluginHandler->ProcessContext($strContext);
             if ($strContext == '') {
-                $this->Output(2, sprintf(QApplication::Translate('In file "%s", the context "%s" was skipped because it was empty.'), $objFile->FileName, $strContext));
+                $this->Output(2, sprintf(t('In file "%s", the context "%s" was skipped because it was empty.'), $objFile->FileName, $strContext));
                 $this->arrStatistics['Skipped contexts']++;
                 $this->arrStatistics['Skipped suggestions']++;
                 $this->arrStatistics['Skipped texts']++;
@@ -101,7 +113,7 @@
             }
 
             if ($strOriginal == '') {
-                $this->Output(2, sprintf(QApplication::Translate('In file "%s", the context "%s" was skipped because the original text "%s" was empty.'), $objFile->FileName, $strContext, $strOriginal));
+                $this->Output(2, sprintf(t('In file "%s", the context "%s" was skipped because the original text "%s" was empty.'), $objFile->FileName, $strContext, $strOriginal));
                 $this->arrStatistics['Skipped contexts']++;
                 $this->arrStatistics['Skipped suggestions']++;
                 $this->arrStatistics['Skipped texts']++;
@@ -123,10 +135,10 @@
                 $objNarroText->TextCharCount = mb_strlen($strOriginal);
                 try {
                     $objNarroText->Save();
-                    $this->Output(1, sprintf(QApplication::Translate('Added text "%s" from the file "%s"'), $strOriginal, $objFile->FileName));
+                    $this->Output(1, sprintf(t('Added text "%s" from the file "%s"'), $strOriginal, $objFile->FileName));
                     $this->arrStatistics['Imported texts']++;
                 } catch(Exception $objExc) {
-                    $this->Output(3, sprintf(QApplication::Translate('Error while adding "%s": %s'), $strOriginal, $objExc->getMessage()));
+                    $this->Output(3, sprintf(t('Error while adding "%s": %s'), $strOriginal, $objExc->getMessage()));
                     $this->arrStatistics['Skipped contexts']++;
                     $this->arrStatistics['Skipped suggestions']++;
                     $this->arrStatistics['Skipped texts']++;
@@ -164,7 +176,7 @@
                 $objNarroContext->FileId = $objFile->FileId;
                 $objNarroContext->Active = 1;
                 $objNarroContext->Save();
-                $this->Output(1, sprintf(QApplication::Translate('Added the context "%s" from the file "%s"'), $strContext, $objFile->FileName));
+                $this->Output(1, sprintf(t('Added the context "%s" from the file "%s"'), $strContext, $objFile->FileName));
                 $this->arrStatistics['Imported contexts']++;
             }
             else {
@@ -223,7 +235,7 @@
             }
             else {
                 if ($strTranslation != '') {
-                    $this->Output(1, sprintf(QApplication::Translate('Skipped "%s" because "%s" has the same value. From "%s".'), $strOriginal, $strTranslation, $objFile->FileName));
+                    $this->Output(1, sprintf(t('Skipped "%s" because "%s" has the same value. From "%s".'), $strOriginal, $strTranslation, $objFile->FileName));
                     $this->arrStatistics['Skipped suggestions']++;
                     $this->arrStatistics['Suggestions that kept the original text']++;
                 }
@@ -258,7 +270,7 @@
                     $objNarroContext->Active = 1;
                     $objNarroContext->Save();
                 } catch(Exception $objExc) {
-                    $this->Output(3, sprintf(__t('Error while setting context "%s" to active: %s'), $strContext, $objExc->getMessage()));
+                    $this->Output(3, sprintf(t('Error while setting context "%s" to active: %s'), $strContext, $objExc->getMessage()));
                     $this->arrStatistics['Skipped contexts']++;
                 }
             }
@@ -274,7 +286,7 @@
                 try {
                     $objContextInfo->Save();
                 } catch(Exception $objExc) {
-                    $this->Output(3, sprintf(__t('Error while saving context info for context %s: %s'), $strContext, $objExc->getMessage()));
+                    $this->Output(3, sprintf(t('Error while saving context info for context %s: %s'), $strContext, $objExc->getMessage()));
                     $this->arrStatistics['Skipped context infos']++;
                 }
             }
@@ -301,6 +313,28 @@
             }
 
             return true;
+        }
+
+        protected function ListDir($start_dir='.') {
+
+            $files = array();
+            if (is_dir($start_dir)) {
+                $fh = opendir($start_dir);
+                while (($file = readdir($fh)) !== false) {
+                    // loop through the files, skipping . and .., and recursing if necessary
+                    if (strcmp($file, '.')==0 || strcmp($file, '..')==0) continue;
+                        $filepath = $start_dir . '/' . $file;
+                    if ( is_dir($filepath) )
+                        $files = array_merge($files, $this->ListDir($filepath));
+                    else
+                        array_push($files, $filepath);
+                }
+                    closedir($fh);
+            } else {
+                // false if the function was called with an invalid non-directory argument
+                $files = false;
+            }
+            return $files;
         }
 
         /////////////////////////
@@ -334,7 +368,7 @@
                     if ($mixValue instanceof NarroUser)
                         $this->objUser = $mixValue;
                     else
-                        throw new Exception(__t('User should be set with an instance of NarroUser'));
+                        throw new Exception(t('User should be set with an instance of NarroUser'));
 
                     break;
 
@@ -342,7 +376,7 @@
                     if ($mixValue instanceof NarroProject)
                         $this->objProject = $mixValue;
                     else
-                        throw new Exception(__t('Project should be set with an instance of NarroProject'));
+                        throw new Exception(t('Project should be set with an instance of NarroProject'));
 
                     break;
 
@@ -350,7 +384,7 @@
                     if ($mixValue instanceof NarroLanguage)
                         $this->objLanguage = $mixValue;
                     else
-                        throw new Exception(__t('Language should be set with an instance of NarroLanguage'));
+                        throw new Exception(t('Language should be set with an instance of NarroLanguage'));
 
                     break;
 

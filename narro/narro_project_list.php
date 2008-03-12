@@ -30,14 +30,14 @@
 
         protected function Form_Create() {
             // Setup DataGrid Columns
-            $this->colProjectName = new QDataGridColumn(QApplication::Translate('Project name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
+            $this->colProjectName = new QDataGridColumn(t('Project name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
             $this->colProjectName->HtmlEntities = false;
 
-            $this->colPercentTranslated = new QDataGridColumn(QApplication::Translate('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>');
+            $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>');
             $this->colPercentTranslated->HtmlEntities = false;
             $this->colPercentTranslated->Width = 160;
 
-            $this->colActions = new QDataGridColumn(QApplication::Translate('Actions'), '<?= $_FORM->dtgNarroProject_Actions_Render($_ITEM) ?>');
+            $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_FORM->dtgNarroProject_Actions_Render($_ITEM) ?>');
             $this->colActions->HtmlEntities = false;
             $this->colActions->Width = 160;
 
@@ -116,11 +116,11 @@
         public function dtgNarroProject_Actions_Render(NarroProject $objNarroProject) {
             $strOutput = '';
             if (QApplication::$objUser->hasPermission('Can import', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) {
-                $strOutput .= sprintf(' <a href="narro_project_import.php?p=%d&pn=%s">%s</a>', $objNarroProject->ProjectId, $objNarroProject->ProjectName, QApplication::Translate('Import'));
+                $strOutput .= sprintf(' <a href="narro_project_import.php?p=%d&pn=%s">%s</a>', $objNarroProject->ProjectId, $objNarroProject->ProjectName, t('Import'));
             }
 
             if (QApplication::$objUser->hasPermission('Can export', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) {
-                $strOutput .= sprintf(' <a href="narro_project_export.php?p=%d&pn=%s">%s</a>', $objNarroProject->ProjectId, $objNarroProject->ProjectName, QApplication::Translate('Export'));
+                $strOutput .= sprintf(' <a href="narro_project_export.php?p=%d&pn=%s">%s</a>', $objNarroProject->ProjectId, $objNarroProject->ProjectName, t('Export'));
             }
 
             return $strOutput;

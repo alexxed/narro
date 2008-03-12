@@ -16,20 +16,20 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = QApplication::Translate('Change password');
+    $strPageTitle = t('Change password');
 
 
     require('includes/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
-        <h3><?php _t('Change password') ?></h3>
-        <p><?php _t('Here you can change your password. Just type the new password and hit the button.'); ?></p>
+        <h3><?php echo t('Change password') ?></h3>
+        <p><?php echo t('Here you can change your password. Just type the new password and hit the button.'); ?></p>
         <br />
         <?php $this->lblMessage->Render() ?>
         <table>
             <tr>
-                <td><?php _t('Password')?>:</td>
+                <td><?php echo t('Password')?>:</td>
                 <td><?php $this->txtPassword->Render() ?></td>
             </tr>
             <tr>
