@@ -90,8 +90,8 @@
 
             $objUser->arrPreferences = unserialize($objUser->Data);
 
-            if (isset($objUser->arrPreferences['Language'])) {
-                $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->arrPreferences['Language']);
+            if (isset($objUser->Preferences['Language'])) {
+                $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->Preferences['Language']);
 
                 if ($objLanguage instanceof NarroLanguage) {
                     $objUser->Language = $objLanguage;
@@ -116,8 +116,8 @@
 
             $objUser->arrPreferences = unserialize($objUser->Data);
 
-            if (isset($objUser->arrPreferences['Language'])) {
-                $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->arrPreferences['Language']);
+            if (isset($objUser->Preferences['Language'])) {
+                $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->Preferences['Language']);
 
                 if ($objLanguage instanceof NarroLanguage) {
                     $objUser->Language = $objLanguage;
