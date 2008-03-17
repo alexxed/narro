@@ -210,7 +210,7 @@
                 $intVoteCnt = 0;
                 $strSuggestionValue = $arrSuggestions[0]->SuggestionValue;
                 foreach($arrSuggestions as $objSuggestion) {
-                    $intSuggVotCnt = NarroSuggestionVote::QueryCount(QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $objSuggestion->SuggestionId));
+                    $intSuggVotCnt = NarroSuggestionVote::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $objNarroContextInfo->ContextId), QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $objSuggestion->SuggestionId)));
                     if ($intSuggVotCnt > $intVoteCnt) {
                         $intVoteCnt = $intSuggVotCnt;
                         $strSuggestionValue = $objSuggestion->SuggestionValue;
