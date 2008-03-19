@@ -18,13 +18,15 @@
 
     class NarroPluginHandler {
         protected $arrPluginErrors;
+        protected $arrPluginReturnValues;
         protected $arrPlugins;
         protected $arrKnownMethods = array(
-            'ProcessSuggestion',
-            'ProcessText',
-            'ProcessContext',
-            'ProcessSuggestionComment',
-            'ProcessContextComment',
+            'SaveSuggestion',
+            'SaveText',
+            'SaveContext',
+            'SaveSuggestionComment',
+            'SaveContextComment',
+            'DeleteSuggestion',
             'ValidateSuggestion',
             'ValidateSuggestionComment',
             'ValidateContextComment',
@@ -32,7 +34,8 @@
             'DisplayText',
             'DisplayContext',
             'DisplaySuggestionComment',
-            'DisplayContextComment'
+            'DisplayContextComment',
+            'VoteSuggestion'
         );
 
         public function __construct($strPluginFolder) {
@@ -57,21 +60,48 @@
 
 
         public function __call($strMethod, $arrParameters) {
-            $mixResult = $arrParameters[0];
             foreach($this->arrPlugins as $objPlugin) {
                 if (method_exists($objPlugin, $strMethod)) {
-                    $mixResult = call_user_func_array( array($objPlugin, $strMethod), array($mixResult));
+                    $this->arrPluginReturnValues[$objPlugin->Name] = call_user_func_array(array($objPlugin, $strMethod), $arrParameters);
+                    if ($this->arrPluginReturnValues[$objPlugin->Name] !== false) {
+                        if (is_array($arrParameters))
+                            $arrParameters = $this->arrPluginReturnValues[$objPlugin->Name];
+                        else
+                            $arrParameters = array($this->arrPluginReturnValues[$objPlugin->Name]);
+                    }
 
                     if ($objPlugin->Errors) {
                         $this->arrPluginErrors[$objPlugin->Name] = $objPlugin->Errors;
                         return false;
                     }
                     else {
-                        return $mixResult;
+                        if (!is_array($arrParameters)) return $arrParameters;
+
+                        switch((count($arrParameters))) {
+                            case 0: return false;
+                            case 1: return $arrParameters[0];
+                            default: return $arrParameters;
+                        }
                     }
                 }
                 else
-                    return $mixResult;
+                    switch((count($arrParameters))) {
+                        case 0: return false;
+                        case 1: return $arrParameters[0];
+                        default: return $arrParameters;
+                    }
+            }
+        }
+
+        /////////////////////////
+        // Public Properties: GET
+        /////////////////////////
+        public function __get($strName) {
+            switch ($strName) {
+                case "PluginErrors": return $this->arrPluginErrors;
+                case "Error": return QType::Cast(count($this->arrPluginErrors), QType::Boolean);
+                default:
+                    throw new QUndefinedPropertyException("GET", __CLASS__, $strName);
             }
         }
     }

@@ -223,7 +223,7 @@
                                 $strText
                             );
 
-                            $this->AddTranslation($objFile, $strText, false, 'File: "' . str_replace(__DOCROOT__ . __SUBDIRECTORY__ . '/', '', $strFileName) . "\"\nMatch number: " . $intMatchNo);
+                            $this->AddTranslation($objFile, $strText, false, sprintf('Used somewhere in the file "%s"', str_replace(__DOCROOT__ . __SUBDIRECTORY__ . '/', '', $strFileName)));
                         }
                     }
                 }

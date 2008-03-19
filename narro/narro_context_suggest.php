@@ -173,6 +173,13 @@
         // Update values from objNarroContextInfo
         protected function UpdateData() {
             $this->pnlOriginalText->Text = htmlspecialchars($this->objNarroContextInfo->Context->Text->TextValue,null,'utf-8');
+            if (!is_null($this->objNarroContextInfo->TextAccessKey))
+                $this->pnlOriginalText->Text = preg_replace(
+                    '/' . $this->objNarroContextInfo->TextAccessKey . '/',
+                    '<u>' . $this->objNarroContextInfo->TextAccessKey . '</u>',
+                    $this->pnlOriginalText->Text,
+                    1
+                );
             $this->pnlContext->Text = nl2br(htmlspecialchars($this->objNarroContextInfo->Context->Context,null,'utf-8'));
             $this->pnlSuggestionList->NarroContextInfo = $this->objNarroContextInfo;
             //$this->txtSuggestionComment->Text = '';
@@ -536,8 +543,10 @@
 
         protected function Spellcheck() {
             if ($this->chkIgnoreSpellcheck->Checked) return $this->ClearSpellCheck();
-            $strSuggestionValue = QApplication::$objPluginHandler->ProcessSuggestion($this->txtSuggestionValue->Text);
-            if (!$strSuggestionValue)
+            $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+            if (is_array($arrResult) && isset($arrResult[1]))
+                $strSuggestionValue = $arrResult[1];
+            else
                 $strSuggestionValue = $this->txtSuggestionValue->Text;
 
             $arrTextSuggestions = QApplication::GetSpellSuggestions($strSuggestionValue);
@@ -574,7 +583,12 @@
         }
 
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            if ($this->EntitityCheck() && $this->Spellcheck())
+            if (!QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text)) {
+                $this->lblMessage->ForeColor = 'red';
+                $this->lblMessage->Text = 'A plugin did not validate your entry.';
+            }
+
+            if (!QApplication::$objPluginHandler->Error && $this->EntitityCheck() && $this->Spellcheck())
                 $this->SaveSuggestion();
         }
 
@@ -594,8 +608,11 @@
             $objSuggestion->UserId = QApplication::$objUser->UserId;
             $objSuggestion->LanguageId = QApplication::$objUser->Language->LanguageId;
             $objSuggestion->TextId = $this->objNarroContextInfo->Context->TextId;
-            $strSuggestionValue = QApplication::$objPluginHandler->ProcessSuggestion($this->txtSuggestionValue->Text);
-            if (!$strSuggestionValue)
+
+            $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+            if (is_array($arrResult) && isset($arrResult[1]))
+                $strSuggestionValue = $arrResult[1];
+            else
                 $strSuggestionValue = $this->txtSuggestionValue->Text;
 
             $objSuggestion->SuggestionValue = $strSuggestionValue;
@@ -647,7 +664,7 @@
                 $objSuggestionComment->Save();
             }
             if ($this->chkGoToNext->Checked) {
-                $this->btnNext_Click();
+                $this->btnNext_Click($this->FormId, null, null);
             }
             elseif(QApplication::$blnUseAjax)
                 $this->UpdateData();
@@ -827,10 +844,24 @@
             $this->pnlSuggestionList->MarkAsModified();
 
             if ($this->chkGoToNext->Checked ) {
-                $this->btnNext_Click();
+                $this->btnNext_Click($strFormId, $strControlId, $strParameter);
             }
 
         }
+
+        public function lstAccessKey_Change($strFormId, $strControlId, $strParameter) {
+            if (!QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+              return false;
+
+            $this->objNarroContextInfo->SuggestionAccessKey = $this->GetControl($strControlId)->SelectedValue;
+            $this->objNarroContextInfo->Save();
+
+            $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
+            $this->pnlSuggestionList->MarkAsModified();
+
+        }
+
+
 
     }
 

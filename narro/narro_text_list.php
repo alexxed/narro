@@ -65,6 +65,8 @@
                     'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->TextValue, false)
                 )
             );
+            $this->colOriginalText->HtmlEntities = false;
+
             $this->colTranslatedText = new QDataGridColumn(
                 t('Translated text'),
                 '<?= $_FORM->dtgNarroContextInfo_TranslatedText_Render($_ITEM); ?>'
@@ -148,6 +150,10 @@
         public function dtgNarroContextInfo_OriginalText_Render(NarroContextInfo $objNarroContextInfo) {
             if (!is_null($objNarroContextInfo->Context->Text)) {
                 $strText = QApplication::$objPluginHandler->DisplayText($objNarroContextInfo->Context->Text->TextValue);
+
+                if ($objNarroContextInfo->TextAccessKey)
+                    $strText = preg_replace('/' . $objNarroContextInfo->TextAccessKey . '/', '<u>' . $objNarroContextInfo->TextAccessKey . '</u>', $strText, 1);
+
                 if (!$strText)
                     $strText = $objNarroContextInfo->Context->Text->TextValue;
                 return (strlen($strText)>100)?substr($strText, 0, 100) . '...':$strText;
@@ -177,8 +183,14 @@
                 $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objNarroContextInfo->ValidSuggestion->SuggestionValue);
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
+
+
                 $strSuggestionValue = (strlen($strSuggestionValue)>100)?substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
-                return htmlentities($strSuggestionValue, null, 'utf-8');
+                $strSuggestionValue = htmlentities($strSuggestionValue, null, 'utf-8');
+                if ($objNarroContextInfo->SuggestionAccessKey)
+                    $strSuggestionValue = preg_replace('/' . $objNarroContextInfo->SuggestionAccessKey . '/', '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $strSuggestionValue, 1);
+
+                return $strSuggestionValue;
             }
             elseif (
                 $objSuggestion =

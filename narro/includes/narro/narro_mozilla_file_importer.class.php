@@ -28,14 +28,7 @@
              */
             if (preg_match('/\.tar.bz2$/', $strFile)) {
                 $this->Output(1, sprintf(t('Got an archive, processing file "%s"'), $strFile));
-                $strWorkPath = sprintf('%s/%s/%s', __IMPORT_PATH__, $this->objUser->UserId, $this->objProject->ProjectName);
-                $strUserPath = sprintf('%s/%s', __IMPORT_PATH__, $this->objUser->UserId);
-                if (!file_exists($strUserPath)) {
-                    if (!mkdir($strUserPath)) {
-                        $this->Output(3, sprintf(t('Could not create import directory "%s" for the user "%s"'), $strUserPath, $this->objUser->Username));
-                        return false;
-                    }
-                }
+                $strWorkPath = sprintf('%s/%d', __IMPORT_PATH__, $this->objProject->ProjectId);
 
                 if (!file_exists($strWorkPath) && !mkdir($strWorkPath)) {
                     $this->Output(3, sprintf(t('Could not create import directory "%s" for the project "%s"'), $strWorkPath, $this->objProject->ProjectName));
@@ -224,7 +217,7 @@
                 $this->Output(1, sprintf(t('Processed file "%s" in %d seconds, %d files left'), str_replace($strDirectory . '/en-US', '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo)));
 
                 if ($intFileNo % 10 === 0)
-                    $this->Output(1, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
+                    $this->Output(2, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
             }
 
         }
@@ -239,6 +232,8 @@
                         return $this->ImportDtdFile($objFile, $strTemplateFile, $strTranslatedFile);
                 case NarroFileType::IniProperties:
                         return $this->ImportPropertiesFile($objFile, $strTemplateFile, $strTranslatedFile);
+                case NarroFileType::IncMozilla:
+                        return $this->ImportIncMozillaFile($objFile, $strTemplateFile, $strTranslatedFile);
                 default:
                         return false;
             }
@@ -249,35 +244,40 @@
             $intTime = time();
 
             if ($strTranslatedFile)
-                $strFileContents = file_get_contents($strTranslatedFile);
+                $strTranslatedFileContents = file_get_contents($strTranslatedFile);
+            else
+                $strTranslatedFileContents = file_get_contents($strTemplateFile);
+
             $strTemplateContents = file_get_contents($strTemplateFile);
 
-            if (!$strFileContents || !$strTemplateContents)
+            if (!$strTranslatedFileContents || !$strTemplateContents)
                 return false;
 
-            $strFileContents = str_replace("\\\n", '\\n', $strFileContents);
+            $strTranslatedFileContents = str_replace("\\\n", '\\n', $strTranslatedFileContents);
             $strTemplateContents = str_replace("\\\n", '\\\n', $strTemplateContents);
 
-            $arrFileContents = split("\n", $strFileContents);
+            $arrFileContents = split("\n", $strTranslatedFileContents);
             $arrTemplateContents = split("\n", $strTemplateContents);
 
             foreach($arrFileContents as $intPos=>$strLine) {
                 if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches))
-                    $arrTranslation[$arrMatches[1]] = trim($arrMatches[2]);
-                elseif (trim($strLine) != '' && $strLine[0] != '#')
-                    $this->Output(2, sprintf(t('Skipped line "%s" from translation "%s".'), $strLine, $objFile->FileName));
+                    $arrTranslation[trim($arrMatches[1])] = trim($arrMatches[2]);
             }
 
+            $strContext = '';
             foreach($arrTemplateContents as $intPos=>$strLine) {
-                if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches))
-                    $arrTemplate[$arrMatches[1]] = trim($arrMatches[2]);
-                elseif (trim($strLine) != '' && $strLine[0] != '#')
-                    $this->Output(2, sprintf(t('Skipped line "%s" from template "%s".'), $strLine, $objFile->FileName));
+                if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches)) {
+                    $arrTemplate[trim($arrMatches[1])] = trim($arrMatches[2]);
+                    $arrTemplateComments[trim($arrMatches[1])] = $strContext;
+                    $strContext = '';
+                }
+                elseif (strlen($strLine) > 2)
+                    $strContext .= $strLine . "\n";
             }
 
-            $arrTemplate = $this->CheckForAccessKeysMozilla($arrTemplate);
+            list($arrTemplate, $arrTemplateAccKeys) = $this->GetAccessKeys($arrTemplate);
 
-            $arrTranslation = $this->CheckForAccessKeysMozilla($arrTranslation);
+            list($arrTranslation, $arrTranslationAccKeys) = $this->GetAccessKeys($arrTranslation);
 
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
@@ -287,7 +287,83 @@
 
             if (is_array($arrTemplate))
                 foreach($arrTemplate as $strKey=>$strVal) {
-                    $this->AddTranslation($objFile, $strVal, $arrTranslation[$strKey], $strKey);
+                    $this->AddTranslation(
+                                $objFile,
+                                $strVal,
+                                isset($arrTemplateAccKeys[$strKey])?$arrTemplateAccKeys[$strKey]:null,
+                                $arrTranslation[$strKey],
+                                isset($arrTranslationAccKeys[$strKey])?$arrTranslationAccKeys[$strKey]:null,
+                                trim($strKey),
+                                null,
+                                $arrTemplateComments[$strKey]
+                    );
+                }
+            else
+                $this->Output(2, sprintf(t('Found a empty template (%s)'), $strTemplateFile));
+
+        }
+
+        public function ImportIncMozillaFile($objFile, $strTemplateFile, $strTranslatedFile) {
+            $intTime = time();
+
+            if ($strTranslatedFile)
+                $strTranslatedFileContents = file_get_contents($strTranslatedFile);
+            else
+                $strTranslatedFileContents = file_get_contents($strTemplateFile);
+
+            $strTemplateContents = file_get_contents($strTemplateFile);
+
+            if (!$strTranslatedFileContents || !$strTemplateContents)
+                return false;
+
+            $arrFileContents = split("\n", $strTranslatedFileContents);
+            $arrTemplateContents = split("\n", $strTemplateContents);
+
+            foreach($arrFileContents as $intPos=>$strLine) {
+                if (preg_match('/^#define\s+([^\s]+)\s+(.+)$/s', trim($strLine), $arrMatches)) {
+                    $arrTranslation[trim($arrMatches[1])] = trim($arrMatches[2]);
+                    if (preg_match('/&([a-zA-Z])/', trim($arrMatches[2]), $arrKeyMatches)) {
+                        $arrTranslationAccKeys[trim($arrMatches[1])] = $arrKeyMatches[1];
+                        $arrTranslation[trim($arrMatches[1])] = str_replace('&' . $arrKeyMatches[1], $arrKeyMatches[1], trim($arrMatches[2]));
+                    }
+
+                }
+            }
+
+            $strContext = '';
+            foreach($arrTemplateContents as $intPos=>$strLine) {
+                if (preg_match('/^#define\s+([^\s]+)\s+(.+)$/s', trim($strLine), $arrMatches)) {
+                    $arrTemplate[trim($arrMatches[1])] = trim($arrMatches[2]);
+                    $arrTemplateComments[trim($arrMatches[1])] = $strContext;
+                    if (preg_match('/&([a-zA-Z])/', trim($arrMatches[2]), $arrKeyMatches)) {
+                        $arrTemplateAccKeys[trim($arrMatches[1])] = $arrKeyMatches[1];
+                        $arrTemplate[trim($arrMatches[1])] = str_replace('&' . $arrKeyMatches[1], $arrKeyMatches[1], trim($arrMatches[2]));
+                    }
+
+                    $strContext = '';
+                }
+                elseif (strlen($strLine) > 2)
+                    $strContext .= $strLine . "\n";
+            }
+
+            $intElapsedTime = time() - $intTime;
+            if ($intElapsedTime > 0)
+                $this->Output(1, sprintf(t('Inc file %s preprocessing took %d seconds.'), $objFile->FileName, $intElapsedTime));
+
+            $this->Output(1, sprintf(t('Found %d contexts in file %s.'), count($arrTemplate), $objFile->FileName));
+
+            if (is_array($arrTemplate))
+                foreach($arrTemplate as $strKey=>$strVal) {
+                    $this->AddTranslation(
+                                $objFile,
+                                $strVal,
+                                isset($arrTemplateAccKeys[$strKey])?$arrTemplateAccKeys[$strKey]:null,
+                                $arrTranslation[$strKey],
+                                isset($arrTranslationAccKeys[$strKey])?$arrTranslationAccKeys[$strKey]:null,
+                                trim($strKey),
+                                null,
+                                $arrTemplateComments[$strKey]
+                    );
                 }
             else
                 $this->Output(2, sprintf(t('Found a empty template (%s)'), $strTemplateFile));
@@ -297,132 +373,213 @@
         public function ImportDtdFile($objFile, $strTemplateFile, $strTranslatedFile) {
             $intTime = time();
 
-            if ($strTranslatedFile)
-                $strFileContents = file_get_contents($strTranslatedFile);
+            $strEntitiesAndCommentsRegex = '/<!--\s*(.+)\s*-->\s+<!ENTITY\s+([^\s]+)\s+"([^"]+)"\s?>\s*|<!ENTITY\s+([^\s]+)\s+"([^"]*)"\s?>\s*|<!--\s*(.+)\s*-->\s+<!ENTITY\s+([^\s]+)\s+\'([^\']+)\'\s?>\s*|<!ENTITY\s+([^\s]+)\s+\'([^\']*)\'\s?>\s*/m';
+            $strEntitiesRegex = '/<!ENTITY\s+([^\s]+)\s+"([^"]*)"\s?>\s*|<!ENTITY\s+([^\s]+)\s+\'([^\']*)\'\s?>\s*/m';
+
+            /**
+             * If a translation file exists, process it so the suggestions in it are imported
+             */
+            if ($strTranslatedFile) {
+                $strTranslatedFileContents = file_get_contents($strTranslatedFile);
+                if ($strTranslatedFileContents) {
+                    /**
+                     * Fetch all entities, we don't care about comments in the translation file
+                     */
+                    if (preg_match_all($strEntitiesRegex, $strTranslatedFileContents, $arrMatches)) {
+                        foreach($arrMatches[1] as $intPos=>$strContextKey) {
+                            if (trim($arrMatches[2][$intPos]) != '')
+                                $arrTranslation[$arrMatches[1][$intPos]] = $arrMatches[2][$intPos];
+                            else
+                                $arrTranslation[$arrMatches[3][$intPos]] = $arrMatches[4][$intPos];
+                        }
+                        list($arrTranslation, $arrTranslationAccKeys) = $this->GetAccessKeys($arrTranslation);
+
+                    }
+                    else {
+                        $this->Output(2, sprintf(t('No entities found in translation file %s'), $strTranslatedFile));
+                    }
+                }
+                else
+                    $this->Output(2, sprintf(t('Failed to open file %s'), $strTranslatedFile));
+            }
+            else
+                $strTranslatedFileContents = false;
+
+            /**
+             * Process template with original texts, contexts and context comments
+             */
             $strTemplateContents = file_get_contents($strTemplateFile);
 
-            if (!$strFileContents || !$strTemplateContents)
-                return false;
+            if ($strTemplateContents) {
+                /**
+                 * Fetch all entities and eventual comments before them
+                 */
+                if (preg_match_all($strEntitiesAndCommentsRegex, $strTemplateContents, $arrTemplateMatches)) {
+                    /**
+                     * Do a second match only for entities to make sure that comments matching didn't do something unexpected
+                     */
+                    if (preg_match_all($strEntitiesRegex, $strTemplateContents, $arrCheckMatches)) {
+                        /**
+                         * Build an array with context as keys and original texts as value
+                         */
+                        foreach($arrTemplateMatches[1] as $intPos=>$strContextKey) {
+                            if (trim($arrTemplateMatches[2][$intPos]) != '') {
+                                $arrTemplate[$arrTemplateMatches[2][$intPos]] = $arrTemplateMatches[3][$intPos];
+                                $arrTemplateComments[$arrTemplateMatches[2][$intPos]] = $arrTemplateMatches[1][$intPos];
+                            }
+                            elseif (trim($arrTemplateMatches[4][$intPos]) != '')
+                                $arrTemplate[$arrTemplateMatches[4][$intPos]] = $arrTemplateMatches[5][$intPos];
+                            elseif (trim($arrTemplateMatches[7][$intPos]) != '') {
+                                $arrTemplate[$arrTemplateMatches[7][$intPos]] = $arrTemplateMatches[8][$intPos];
+                                $arrTemplateComments[$arrTemplateMatches[7][$intPos]] = $arrTemplateMatches[6][$intPos];
+                            }
+                            elseif (trim($arrTemplateMatches[9][$intPos]) != '')
+                                $arrTemplate[$arrTemplateMatches[9][$intPos]] = $arrTemplateMatches[10][$intPos];
 
-            if (!preg_match_all('/^<!ENTITY\s+([^\s]+)\s+"([^"]+)"\s?>\s*/m', $strFileContents, $arrMatches))
-                return false;
+                        }
 
-            if (!preg_match_all('/^<!ENTITY\s+([^\s]+)\s+"([^"]+)"\s?>\s*/m', $strTemplateContents, $arrTemplateMatches))
-                return false;
+                        /**
+                         * add po style access keys instead of keeping separate entries for access keys
+                         */
 
-            foreach($arrMatches[1] as $intPos=>$strVal) {
-                $arrTranslation[$strVal] = $arrMatches[2][$intPos];
+                        list($arrTemplate, $arrTemplateKeys) = $this->GetAccessKeys($arrTemplate);
+
+
+
+                        $intElapsedTime = time() - $intTime;
+                        if ($intElapsedTime > 0)
+                            $this->Output(1, sprintf(t('DTD file %s processing took %d seconds.'), $objFile->FileName, $intElapsedTime));
+
+                        $this->Output(1, sprintf(t('Found %d contexts in file %s.'), count($arrTemplate), $objFile->FileName));
+
+                        foreach($arrTemplate as $strContextKey=>$strOriginalText) {
+                            if (isset($arrTranslation) && isset($arrTranslation[$strContextKey]))
+                                $strTranslation = $arrTranslation[$strContextKey];
+                            else
+                                $strTranslation = false;
+
+                            if (isset($arrTemplateComments) && isset($arrTemplateComments[$strContextKey]))
+                                $strContextComment = $arrTemplateComments;
+                            else
+                                $strContextComment = null;
+
+                            $this->AddTranslation(
+                                        $objFile,
+                                        $strOriginalText,
+                                        isset($arrTemplateKeys[$strContextKey])?$arrTemplateKeys[$strContextKey]:null,
+                                        $strTranslation,
+                                        isset($arrTranslationAccKeys[$strContextKey])?$arrTranslationAccKeys[$strContextKey]:null,
+                                        trim($strContextKey),
+                                        null,
+                                        $strContextComment[$strContextKey]
+                            );
+                        }
+                    }
+                    elseif (count($arrCheckMatches[0]) != count($arrTemplateMatches[0]))
+                        $this->Output(3, sprintf(t('Error on matching expressions in file %s'), $strTemplateFile));
+                    else
+                        $this->Output(2, sprintf(t('No entities found in file %s'), $strTemplateFile));
+                }
+                else
+                    $this->Output(2, sprintf(t('No entities found in template file %s'), $strTemplateFile));
             }
-
-            foreach($arrTemplateMatches[1] as $intPos=>$strVal) {
-                $arrTemplate[$strVal] = $arrTemplateMatches[2][$intPos];
-            }
-
-            $arrTemplate = $this->CheckForAccessKeysMozilla($arrTemplate);
-
-            $arrTranslation = $this->CheckForAccessKeysMozilla($arrTranslation);
-
-            $intElapsedTime = time() - $intTime;
-            if ($intElapsedTime > 0)
-                $this->Output(1, sprintf(t('DTD file %s preprocessing took %d seconds.'), $objFile->FileName, $intElapsedTime));
-
-            $this->Output(1, sprintf(t('Found %d contexts in file %s.'), count($arrTemplate), $objFile->FileName));
-
-            foreach($arrTemplate as $strKey=>$strVal) {
-                $this->AddTranslation($objFile, $strVal, $arrTranslation[$strKey], $strKey);
-            }
-
+            else
+                return false;
         }
 
-        public function ExportProjectArchive($strFile) {
-            $this->Output("Începe exportul pentru proiectul " . $this->objProject->ProjectId . " din " . $strFile);
+        public function ExportProjectArchive($strFile = null) {
+            if ($strFile)
+                $this->Output(1, sprintf(t('Starting export for the project %s using as template the file %s'), $this->objProject->ProjectName, $strFile));
+            else
+                $this->Output(1, sprintf(t('Starting export for the project %s using as template a previous import'), $this->objProject->ProjectName));
+
             $this->startTimer();
-            $this->intImportedFilesCount = 0;
-            $this->intImportedSuggestionsCount = 0;
-            $this->intImportedValidationsCount = 0;
-            $this->intImportedTextsCount = 0;
-            $this->intImportedContextsCount = 0;
 
             /**
              * work with tar.bz2 archives
              */
-            if (preg_match('/\.tar.bz2$/', $strFile)) {
-                /**
-                 * set up a working path in the temporary directory
-                 */
-                $this->Output("Se caută un director valid de lucru ...");
-                if (file_exists($this->strImportDirectory . '/' . $this->objProject->ProjectId)) {
-                    $i=0;
-                    while(file_exists($this->strImportDirectory . '/' . $this->objProject->ProjectId . '-' . $i))
-                        $i++;
-                    $strWorkPath = $this->strImportDirectory . '/' . $this->objProject->ProjectId . '-' . $i;
-                }
-                else {
-                    $strWorkPath = $this->strImportDirectory . '/' . $this->objProject->ProjectId;
-                }
+            if ($strFile && preg_match('/\.tar.bz2$/', $strFile)) {
+                $this->Output(1, sprintf(t('Got an archive, processing file "%s"'), $strFile));
+                $strWorkPath = sprintf('%s/%d/%d', __IMPORT_PATH__, $this->objProject->ProjectId, QApplication::$objUser->UserId);
 
-
-                $this->Output("Începe procesarea fişierului " . $strFile);
-                if (!mkdir($strWorkPath)) {
-                    $this->OutputLog('Nu se poate crea directorul „' . self::$ImportDirectory . '/' . $this->objProject->ProjectId . '”');
+                if (!file_exists($strWorkPath) && !mkdir($strWorkPath)) {
+                    $this->Output(3, sprintf(t('Could not create directory "%s" for the project "%s"'), $strWorkPath, $this->objProject->ProjectName));
                     return false;
                 }
-                /*
-                 * save current directory
-                 */
-                $strCurDir = getcwd();
-                /**
-                 * change to working directory
-                 */
-                chdir($strWorkPath);
+
+                exec('rm -rf ' . $strWorkPath . '/*');
+
                 /**
                  * extract the files
                  */
-                exec('tar jxf ' . $strFile, $arrOutput, $retVal);
+                exec(sprintf('tar jxf %s', $strFile), $arrOutput, $retVal);
                 if ($retVal != 0) {
-                    $this->OutputLog('Eroare la dezarhivare: ' . join("\n", $arrOutput));
+                    $this->Output(3, sprintf(t('Error untaring: %s'), join("\n", $arrOutput)));
                     return false;
                 }
-            }
-            else {
-                $strWorkPath = $strFile . '/l10n';
-                $strCurDir = getcwd();
-                chdir($strWorkPath);
-            }
 
-            if (!file_exists('en-US') || !file_exists('ro')) {
-                throw new Exception('Arhiva trebuie să conţină două directoare en-US şi ro în care să se găsească modelele, respectiv traducerea în română.');
-                return false;
+                $this->ExportFromDirectory($strWorkPath);
             }
+            elseif (file_exists($strFile) && is_dir($strFile))
+                $this->ExportFromDirectory($strFile);
+            else
+                $this->ExportFromDirectory(sprintf('%s/%d', __IMPORT_PATH__, $this->objProject->ProjectId));
+
+            $this->stopTimer();
+        }
+
+        public function ExportFromDirectory($strDirectory) {
+            if (!chdir($strDirectory))
+                throw new Exception(sprintf(t('Could not change to directory "%s"'), $strDirectory));
+
+            if (!file_exists('en-US'))
+                throw new Exception(sprintf(t('The directory "%s" should contain a directory named en-US to be used as a template for exporting.'), $strDirectory));
 
             /**
              * get the file list with complete paths
              * the file list is retrieved from en-US
              */
-            $arrFiles = self::ListDir($strWorkPath . '/en-US');
+            $arrFiles = $this->ListDir($strDirectory . '/en-US');
             $intTotalFilesToProcess = count($arrFiles);
-            $this->Output("Începe procesarea a " . $intTotalFilesToProcess . " fişiere");
+            $this->Output(1, sprintf(t('Starting to process %d files'), $intTotalFilesToProcess));
+
             $arrDirectories = array();
-            foreach($arrFiles as $intFileNo=>$strFileToImport) {
-                $arrFileParts = split('/', str_replace($strWorkPath . '/en-US', '', $strFileToImport));
+
+            foreach($arrFiles as $intFileNo=>$strFileToExport) {
+                $arrFileParts = split('/', str_replace($strDirectory . '/en-US', '', $strFileToExport));
                 $strFileName = $arrFileParts[count($arrFileParts)-1];
                 unset($arrFileParts[count($arrFileParts)-1]);
                 unset($arrFileParts[0]);
 
                 $strPath = '';
                 $intParentId = 0;
+                $arrDirectories = array();
+
                 foreach($arrFileParts as $intPos=>$strDir) {
                     $strPath = $strPath . '/' . $strDir;
+
                     if (!isset($arrDirectories[$strPath])) {
                         if ($intParentId)
-                            $arrFile = NarroFile::QueryArray(QQ::AndCondition(QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId), QQ::Equal(QQN::NarroFile()->FileName, $strDir), QQ::Equal(QQN::NarroFile()->ParentId, $intParentId)));
+                            $objFile = NarroFile::QuerySingle(
+                                QQ::AndCondition(
+                                    QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
+                                    QQ::Equal(QQN::NarroFile()->FileName, $strDir),
+                                    QQ::Equal(QQN::NarroFile()->TypeId, NarroFileType::Dosar),
+                                    QQ::Equal(QQN::NarroFile()->ParentId, $intParentId)
+                                )
+                            );
                         else
-                            $arrFile = NarroFile::QueryArray(QQ::AndCondition(QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId), QQ::Equal(QQN::NarroFile()->FileName, $strDir), QQ::IsNull(QQN::NarroFile()->ParentId)));
+                            $objFile = NarroFile::QuerySingle(
+                                    QQ::AndCondition(
+                                        QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
+                                        QQ::Equal(QQN::NarroFile()->FileName, $strDir),
+                                        QQ::Equal(QQN::NarroFile()->TypeId, NarroFileType::Dosar),
+                                        QQ::IsNull(QQN::NarroFile()->ParentId)
+                                    )
+                            );
 
-                        if (isset($arrFile[0]) && $arrFile[0] instanceof NarroFile) {
-                            $objFile = $arrFile[0];
-                        }
-                        else {
+                        if (!$objFile instanceof NarroFile) {
+                            $this->Output(2, sprintf(t('Could not find folder "%s" with parent id "%d" in the database.'), $strDir, $intParentId));
                             continue;
                         }
 
@@ -431,9 +588,6 @@
                     $intParentId = $arrDirectories[$strPath];
                 }
 
-                /**
-                 * import the file
-                 */
                 if (!$intFileType = $this->GetFileType($strFileName))
                     continue;
 
@@ -443,24 +597,24 @@
                     continue;
                 }
 
-                $strTranslatedFileToImport = str_replace($strWorkPath . '/en-US', $strWorkPath . '/ro', $strFileToImport);
-                $this->OutputLog(sprintf('Începe exportul fișierului „%s”, „%s”', $objFile->FileName, $strFileToImport));
+                $strTranslatedFileToExport = str_replace($strDirectory . '/en-US', $strDirectory . '/' . QApplication::$objUser->Language->LanguageCode, $strFileToExport);
 
-                if (file_exists($strTranslatedFileToImport))
-                    $this->ExportFile($this->objProject->ProjectId, $objFile, $strFileToImport, $strTranslatedFileToImport);
-                else {
-                    copy($strFileToImport, $strTranslatedFileToImport);
-                    $this->ExportFile($this->objProject->ProjectId, $objFile, $strFileToImport);
-                }
+                if (!file_exists(dirname($strTranslatedFileToExport)))
+                    mkdir(dirname($strTranslatedFileToExport), 0777, true);
+
+                $this->Output(1, sprintf(t('Exporting file "%s" using template "%s"'), $objFile->FileName, $strTranslatedFileToExport));
+
+                $this->ExportFile($objFile, $strFileToExport, $strTranslatedFileToExport);
+                $this->arrStatistics['Exported files']++;
 
                 if ($intFileNo % 10 === 0)
-                    $this->Output("Progres: " . ceil(($intFileNo*100)/$intTotalFilesToProcess) . "%");
+                    $this->Output(2, "Progres: " . ceil(($intFileNo*100)/$intTotalFilesToProcess) . "%");
             }
 
             $this->stopTimer();
         }
 
-        public function ExportFile ($objFile, $strTemplateFile, $strTranslatedFile = false) {
+        public function ExportFile ($objFile, $strTemplateFile, $strTranslatedFile) {
             if (!$objFile instanceof NarroFile)
                 return false;
 
@@ -469,6 +623,8 @@
                         return $this->ExportDtdFile($objFile, $strTemplateFile, $strTranslatedFile);
                 case NarroFileType::IniProperties:
                         return $this->ExportPropertiesFile($objFile, $strTemplateFile, $strTranslatedFile);
+                case NarroFileType::IncMozilla:
+                        return $this->ExportIncMozillaFile($objFile, $strTemplateFile, $strTranslatedFile);
                 default:
                         return false;
             }
@@ -487,101 +643,173 @@
 
             foreach($arrTemplateContents as $intPos=>$strLine) {
                 if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches)) {
-                    $arrTemplate[$arrMatches[1]] = trim($arrMatches[2]);
-                    $arrTemplateLines[$arrMatches[1]] = $arrMatches[0];
+                    $arrTemplate[trim($arrMatches[1])] = trim($arrMatches[2]);
+                    $arrTemplateLines[trim($arrMatches[1])] = $arrMatches[0];
                 }
                 elseif (trim($strLine) != '' && $strLine[0] != '#')
-                    $this->Output(sprintf('S-a sărit peste linia „%s” din „%s” din model.', $strLine, $objFile->FileName));
-            }
-
-            $arrTranslationObjects = NarroContext::LoadArrayByFileId($objFile->FileId);
-            foreach($arrTranslationObjects as $objNarroContext) {
-                if ($objNarroContext->ValidSuggestionId > 0)
-                    $arrTranslation[$objNarroContext->Context] = $objNarroContext->ValidSuggestion->SuggestionValue;
+                    $this->Output(1, sprintf(t('Skipped line "%s" from the template "%s".'), $strLine, $objFile->FileName));
             }
 
             $strTranslateContents = '';
 
-            foreach($arrTemplate as $strKey=>$strOriginalText) {
-                if (trim($strKey) == '') continue;
+            if (count($arrTemplate) < 1) return false;
 
-                if (preg_match('/([A-Z0-9a-z\.\_\-]+)([\.\-\_]{1,1})accesskey$/s', $strKey, $arrMatches)) {
-                    if (isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'label']))
-                        $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'label';
-                    elseif (isset($arrTranslation[$arrMatches[1]]))
-                        $strMatchedKey = $arrMatches[1];
-                    else {
-                        $this->OutputLog(sprintf('%s. „%s” pare a fi o tastă rapidă, dar nu s-a găsit nici „%s” nici „%s”', $objFile->FileName, $strKey, $arrMatches[1] . $arrMatches[2] . 'label', $arrMatches[1]));
-                        continue;
-                    }
-                    if ($strMatchedKey && isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey'])) {
-                        $this->OutputLog(sprintf('%s. S-a găsit tasta rapidă „%s” pentru „%s” („%s”) ca şi cheie separată.', $objFile->FileName, $arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey'], $arrTranslation[$strMatchedKey], $arrTemplate[$strMatchedKey]));
-                        //die();
-                    }
-                    elseif ($strMatchedKey) {
-                        $strStrippedText = preg_replace('/\&[a-zA-Z]\;/', ' ', $arrTranslation[$strMatchedKey]);
-                        $intPos = strpos($strStrippedText, '&');
-                        if ($intPos !== false) {
-                            $arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey'] = $strStrippedText[$intPos + 1];
-                            $intPos = strpos($arrTranslation[$strMatchedKey], '&' .  $strStrippedText[$intPos + 1]);
-                            if ($intPos !== false) {
-                                $arrTranslation[$strMatchedKey] = substr($arrTranslation[$strMatchedKey], 0, $intPos) . substr($arrTranslation[$strMatchedKey], $intPos + 1);
-                                //$this->Output(sprintf('S-a găsit tasta rapidă „%s” pentru „%s” („%s”)', $strStrippedText[$intPos + 1], $arrTranslation[$strMatchedKey], $arrTemplate[$strMatchedKey]));
-                            }
-                            else {
-                                $this->Output(sprintf('%s. S-a găsit tasta rapidă „%s” pentru „%s” („%s”), dar nu s-a găsit „%s” în textul tradus.', $objFile->FileName, $strStrippedText[$intPos + 1], $arrTranslation[$strMatchedKey], $arrTemplate[$strMatchedKey], '&' .  $strStrippedText[$intPos + 1]));
-                                $this->Output(print_r($arrTranslation,true));
-                                $this->Output(print_r($arrTemplate,true));
-                                die();
-                            }
-                        }
-                        else {
-                            $this->OutputLog(sprintf('%s. Nu s-a găsit tasta rapidă pentru „%s” („%s”). S-a căutat „&” în „%s” (textul tradus fără entităţi). Se va lua prima literă din text', $objFile->FileName, $arrTranslation[$strMatchedKey], $arrTemplate[$strMatchedKey], $strStrippedText));
-                            $arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey'] = $strStrippedText[0];
-                        }
-
-                    }
-                    else
-                        unset($strMatchedKey);
-                }
-            }
+            $arrTranslation = $this->GetTranslations($objFile, $arrTemplate);
 
             $strTranslateContents = $strTemplateContents;
 
             foreach($arrTemplate as $strKey=>$strOriginalText) {
 
                 if (isset($arrTranslation[$strKey])) {
-                    //$strTranslateContents .= sprintf('%s=%s' . "\n", $strKey, QApplication::ConvertToComma($arrTranslation[$strKey]));
+
+                    $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $objFile, $this->objProject);
+
+                    if
+                    (
+                        trim($arrResult[1]) != '' &&
+                        $arrResult[0] == $strOriginalText &&
+                        $arrResult[2] == $strKey &&
+                        $arrResult[3] == $objFile &&
+                        $arrResult[4] == $this->objProject
+                    ) {
+
+                        $arrTranslation[$strKey] = $arrResult[1];
+                    }
+                    else
+                        $this->Output(2, sprintf(t('A plugin returned an unexpected result while processing the suggestion "%s": %s'), $arrTranslation[$strKey], var_export($arrResult, true)));
+
                     if (preg_match('/[A-Z0-9a-z\.\_\-]+(\s*=\s*)/', $arrTemplateLines[$strKey], $arrMiddleMatches)) {
                         $strGlue = $arrMiddleMatches[1];
                     }
                     else {
-                        $this->OutputLog(sprintf('Glue faield: „%s”', $arrTemplateLines[$strKey]));
+                        $this->Output(2, sprintf(t('Glue faield: "%s"'), $arrTemplateLines[$strKey]));
                         $strGlue = '=';
                     }
 
                     if (strstr($strTranslateContents, $strKey . $strGlue . $strOriginalText))
-                        $strTranslateContents = str_replace($strKey . $strGlue . $strOriginalText, $strKey . $strGlue . QApplication::ConvertToComma($arrTranslation[$strKey]), $strTranslateContents);
+                        $strTranslateContents = str_replace($strKey . $strGlue . $strOriginalText, $strKey . $strGlue . $arrTranslation[$strKey], $strTranslateContents);
                     else
-                        $this->OutputLog(sprintf('Atenție! În fișierul „%s”, nu se găsește „%s”', $objFile->FileName, $strKey . $strGlue . $strOriginalText));
+                        $this->Output(2, sprintf(t('Can\'t find "%s" in the file "%s"'), $strKey . $strGlue . $strOriginalText, $objFile->FileName));
 
                 }
-                else{
-                    $this->OutputLog(sprintf('%s. Nu s-a găsit cheia „%s” în traducere („%s”). Se va folosi textul din engleză.', $objFile->FileName, $strKey, $strOriginalText));
-                    //$strTranslateContents .= sprintf('%s=%s' . "\n", $strKey, $strOriginalText);
+                else {
+                    $this->Output(1, sprintf(t('Couldn\'t find the key "%s" in the translations, using the original text.'), $strKey, $objFile->FileName));
+                    $this->arrStatistics['Texts kept as original']++;
                 }
             }
-            if (!unlink($strTranslatedFile)) {
-                $this->OutputLog(sprintf('Nu se poate şterge fişierul „%s”', $strTranslatedFile));
-            }
 
-            if (in_array($objFile->FileName, array('custom.properties', 'mui.properties', 'override.properties', 'crashreporter.ini'))) {
-                $strTranslateContents = QApplication::ConvertToSedila($strTranslateContents);
+            if (file_exists($strTranslatedFile) && !unlink($strTranslatedFile)) {
+                $this->Output(2, sprintf(t('Can\'t delete the file "%s"'), $strTranslatedFile));
             }
-
             if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
-                $this->OutputLog(sprintf('Nu se poate scrie în fişierul „%s”', $strTranslatedFile));
+                $this->Output(2, sprintf(t('Can\'t write to file "%s"'), $strTranslatedFile));
             }
+
+
+        }
+
+        public function ExportIncMozillaFile($objFile, $strTemplateFile, $strTranslatedFile) {
+            $strTemplateContents = file_get_contents($strTemplateFile);
+
+            if (!$strTemplateContents)
+                return false;
+
+            $arrTemplateContents = split("\n", $strTemplateContents);
+
+            foreach($arrTemplateContents as $intPos=>$strLine) {
+                if (preg_match('/^#define\s+([^\s]+)\s+(.+)$/s', trim($strLine), $arrMatches)) {
+                    $arrTemplate[trim($arrMatches[1])] = trim($arrMatches[2]);
+                    $arrTemplateLines[trim($arrMatches[1])] = $arrMatches[0];
+                }
+                elseif (trim($strLine) != '' && $strLine[0] != '#')
+                    $this->Output(1, sprintf(t('Skipped line "%s" from the template "%s".'), $strLine, $objFile->FileName));
+            }
+
+            $strTranslateContents = '';
+
+            if (count($arrTemplate) < 1) return false;
+
+            $arrTranslationObjects = NarroContextInfo::QueryArray(QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $objFile->FileId));
+
+            foreach($arrTranslationObjects as $objNarroContextInfo) {
+                if ($objNarroContextInfo->ValidSuggestionId > 0) {
+                    $arrTranslation[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
+                    if ($objNarroContextInfo->TextAccessKey) {
+                        if ($objNarroContextInfo->SuggestionAccessKey)
+                            $strAccessKey = $objNarroContextInfo->SuggestionAccessKey;
+                        else {
+                            if (preg_match('/[a-zA-Z]/', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches)) {
+                                $strAccessKey = $arrMatches[0];
+                                $this->Output(2, sprintf(t('No access key found for context %s, text %s, using "%s"'), $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches[0]));
+                                $this->arrStatistics['Texts with no access key set, but fixed']++;
+                            }
+                            else {
+                                $this->Output(2, sprintf(t('No access key found for context %s, text %s and could not find a valid letter to use, dropping translation.'), $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue));
+                                unset($arrTranslation[$objNarroContextInfo->Context->Context]);
+                                $this->arrStatistics['Texts without acceptable access keys']++;
+                                $this->arrStatistics['Texts kept as original']++;
+                            }
+
+                        }
+
+                        $arrTranslation[$objNarroContextInfo->Context->Context] = preg_replace('/' . $strAccessKey . '/', '&' . $strAccessKey, $arrTranslation[$objNarroContextInfo->Context->Context] , 1);
+                        error_log($objNarroContextInfo->Context->Context . ':' . $strAccessKey . ':' . $arrTranslation[$objNarroContextInfo->Context->Context]);
+
+                        $this->arrStatistics['Texts that have access keys']++;
+                    }
+                    else
+                        $this->arrStatistics['Texts that don\'t have access keys']++;
+                }
+                else {
+                    $this->Output(1, sprintf(t('In file "%s", the context "%s" does not have a valid suggestion.'), $objFile->FileName, $objNarroContextInfo->Context->Context));
+                    $this->arrStatistics['Texts without valid suggestions']++;
+                    $this->arrStatistics['Texts kept as original']++;
+                }
+            }
+
+
+            $strTranslateContents = $strTemplateContents;
+
+            foreach($arrTemplate as $strKey=>$strOriginalText) {
+
+                if (isset($arrTranslation[$strKey])) {
+
+                    $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $objFile, $this->objProject);
+
+                    if
+                    (
+                        trim($arrResult[1]) != '' &&
+                        $arrResult[0] == $strOriginalText &&
+                        $arrResult[2] == $strKey &&
+                        $arrResult[3] == $objFile &&
+                        $arrResult[4] == $this->objProject
+                    ) {
+
+                        $arrTranslation[$strKey] = $arrResult[1];
+                    }
+                    else
+                        $this->Output(2, sprintf(t('A plugin returned an unexpected result while processing the suggestion "%s": %s'), $arrTranslation[$strKey], var_export($arrResult, true)));
+
+                    if (strstr($strTranslateContents, sprintf('#define %s %s', $strKey, $strOriginalText)))
+                        $strTranslateContents = str_replace(sprintf('#define %s %s', $strKey, $strOriginalText), sprintf('#define %s %s', $strKey, $arrTranslation[$strKey]), $strTranslateContents);
+                    else
+                        $this->Output(2, sprintf(t('Can\'t find "%s" in the file "%s"'), $strKey . $strGlue . $strOriginalText, $objFile->FileName));
+
+                }
+                else {
+                    $this->Output(1, sprintf(t('Couldn\'t find the key "%s" in the translations, using the original text.'), $strKey, $objFile->FileName));
+                    $this->arrStatistics['Texts kept as original']++;
+                }
+            }
+
+            if (file_exists($strTranslatedFile) && !unlink($strTranslatedFile)) {
+                $this->Output(2, sprintf(t('Can\'t delete the file "%s"'), $strTranslatedFile));
+            }
+            if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
+                $this->Output(2, sprintf(t('Can\'t write to file "%s"'), $strTranslatedFile));
+            }
+
+
         }
 
         public function ExportDtdFile($objFile, $strTemplateFile, $strTranslatedFile) {
@@ -598,134 +826,47 @@
                 $arrTemplateLines[$strVal] = $arrTemplateMatches[0][$intPos];
             }
 
-            $arrTranslationObjects = NarroContext::LoadArrayByFileId($objFile->FileId);
-            foreach($arrTranslationObjects as $objNarroContext) {
-                if ($objNarroContext->ValidSuggestionId > 0)
-                    $arrTranslation[$objNarroContext->Context] = $objNarroContext->ValidSuggestion->SuggestionValue;
-                else
-                    $this->Output(2, sprintf('%s. Contextul „%s” nu are o sugestie validată.', $objFile->FileName, $objNarroContext->Context));
-            }
-
             $strTranslateContents = '';
 
-            foreach($arrTemplate as $strKey=>$strOriginalText) {
-                if (trim($strKey) == '') continue;
-
-                if (preg_match('/([A-Z0-9a-z\.\_\-]+)([\.\-\_]{1,1})accesskey$/s', $strKey, $arrMatches)) {
-                    if (isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'label']))
-                        $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'label';
-                    elseif (isset($arrTranslation[$arrMatches[1]]))
-                        $strMatchedKey = $arrMatches[1];
-                    else {
-                        $this->Output(2, sprintf('%s. „%s” pare a fi o tastă rapidă, dar nu s-a găsit nici „%s” nici „%s”', $objFile->FileName, $strKey, $arrMatches[1] . $arrMatches[2] . 'label', $arrMatches[1]));
-                        continue;
-                    }
-
-                    if ($strMatchedKey && isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey'])) {
-                        $this->Output(2, sprintf('%s. S-a găsit tasta rapidă „%s” pentru „%s” („%s”) ca şi cheie separată.', $objFile->FileName, $arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey'], $arrTranslation[$strMatchedKey], $arrTemplate[$strMatchedKey]));
-                        //die();
-                    }
-
-                    elseif ($strMatchedKey) {
-                        $strStrippedText = preg_replace('/\&[a-zA-Z]+\;/', ' ', $arrTranslation[$strMatchedKey]);
-                        if (preg_match('/\&\s/', $strStrippedText)) {
-                            $this->Output(2, sprintf('%s. Textul „%s” are caracterul & urmat de un spaţiu, lucru nepermis. Se va folosi textul din engleză: „%s”.', $objFile->FileName, $strStrippedText, $arrTemplate[$strMatchedKey]));
-                            $arrTranslation[$strMatchedKey] = $arrTemplate[$strMatchedKey];
-                        }
-
-                        if (!preg_match_all('/&[a-zA-Z0-9-]/', $strStrippedText, $arrKeyMatches)) {
-
-                            mb_regex_encoding("UTF-8");
-                            $arrKeyMatches = array();
-
-                            mb_ereg_search_init($strStrippedText, '\&[ăîâşţĂÎÂŞŢ]');
-                            $r = mb_ereg_search();
-
-                            if(!$r) {
-                                $this->OutputLog(2, sprintf('%s. Nu s-a găsit tasta rapidă pentru „%s” („%s”). S-a căutat „&” în „%s” (textul tradus fără entităţi). Se va lua prima literă din text (%s)', $objFile->FileName, $arrTranslation[$strMatchedKey], $arrTemplate[$strMatchedKey], $strStrippedText, mb_substr($strStrippedText, 0, 1)));
-                                $arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey'] = mb_substr($strStrippedText, 0, 1);
-                            }
-                            else
-                            {
-                                $r = mb_ereg_search_getregs(); //get first result
-                                do
-                                {
-                                    $arrKeyMatches[0][] = $r[0];
-                                    $r = mb_ereg_search_regs();//get next result
-                                }
-                                while($r);
-                            }
-
-                            if (isset($arrKeyMatches[0]) && isset($arrKeyMatches[0][0])) {
-                                $this->Output(2, sprintf('%s. Atenţie: tasta rapidă pentru „%s” este o diacritică: „%s”.', $objFile->FileName, $strStrippedText, $arrKeyMatches[0][0]));
-                            }
-                            else {
-                                if (strstr($strStrippedText, '&'))
-                                    $this->Output(2, sprintf('%s. În textul „%s” există un caracter & dar nu a fost prins de expresia regulată.', $objFile->FileName, $strStrippedText));
-                            }
-                        }
-
-                        if (!isset($arrKeyMatches[0]) || count($arrKeyMatches[0]) == 0) {
-                            $this->OutputLog(2, sprintf('%s. Nu s-a găsit tasta rapidă pentru „%s” („%s”). S-a căutat „&” în „%s” (textul tradus fără entităţi). Se va lua prima literă din text (%s)', $objFile->FileName, $arrTranslation[$strMatchedKey], $arrTemplate[$strMatchedKey], $strStrippedText, mb_substr($strStrippedText, 0, 1)));
-                            $arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey'] = mb_substr($strStrippedText, 0, 1);
-                        }
-                        elseif (count($arrKeyMatches[0]) > 1) {
-                            $this->OutputLog(2, sprintf('%s. În textul „%s” s-a găsit & de mai multe ori: „%s”. Se va lua prima literă din text (%s)', $objFile->FileName, $strStrippedText, join(',', $arrKeyMatches[0]), mb_substr($strStrippedText, 0, 1)));
-                            $arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey'] = mb_substr($strStrippedText, 0, 1);
-                        }
-                        else {
-                            $strAccessKey = str_replace('&', '', $arrKeyMatches[0][0]);
-                            $arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey'] = $strAccessKey;
-                            $intPos = strpos($arrTranslation[$strMatchedKey], '&' .  $strAccessKey);
-                            if ($intPos !== false) {
-                                $arrTranslation[$strMatchedKey] = substr($arrTranslation[$strMatchedKey], 0, $intPos) . substr($arrTranslation[$strMatchedKey], $intPos + 1);
-                                $this->OutputLog(1, sprintf('S-a găsit tasta rapidă „%s” pentru „%s” („%s”)', $strAccessKey, $arrTranslation[$strMatchedKey], $arrTemplate[$strMatchedKey]));
-                            }
-                            else {
-                                $this->Output(2, sprintf('%s. S-a găsit tasta rapidă „%s” pentru „%s” („%s”), dar nu s-a găsit „%s” în textul tradus.', $objFile->FileName, $strAccessKey, $arrTranslation[$strMatchedKey], $arrTemplate[$strMatchedKey], '&' .  $strAccessKey));
-                                $this->Output(print_r($arrTranslation,true));
-                                $this->Output(print_r($arrTemplate,true));
-                                $this->Output(print_r($arrKeyMatches,true));
-                                die();
-                            }
-                        }
-                    }
-                    else {
-                        if ($strMatchedKey)
-                            $this->OutputLog(2, sprintf('%s. „%s” pare a fi o tastă rapidă, dar „%s”=„%s”', $objFile->FileName, $strKey, '$arrTranslation[' . $arrMatches[1] . $arrMatches[2] . 'accesskey' . ']', var_export(isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'accesskey']),true)));
-                        else
-                            $this->OutputLog(2, sprintf('%s. „%s” pare a fi o tastă rapidă, dar nu s-a găsit a cui este', $objFile->FileName, $strKey));
-                        unset($strMatchedKey);
-                    }
-
-                }
-            }
+            $arrTranslation = $this->GetTranslations($objFile, $arrTemplate);
 
             foreach($arrTemplate as $strKey=>$strOriginalText) {
                 if (isset($arrTranslation[$strKey])) {
-                    if (trim(QApplication::ConvertToComma($arrTranslation[$strKey]))) {
-                        $strTranslatedLine = str_replace('"' . $arrTemplate[$strKey] . '"', '"' . QApplication::ConvertToComma($arrTranslation[$strKey]) . '"', $arrTemplateLines[$strKey]);
+                    $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $objFile, $this->objProject);
+                    if
+                    (
+                        trim($arrResult[1]) != '' &&
+                        $arrResult[0] == $strOriginalText &&
+                        $arrResult[2] == $strKey &&
+                        $arrResult[3] == $objFile &&
+                        $arrResult[4] == $this->objProject
+                    ) {
 
-                        if ($strTranslatedLine)
-                            $strTemplateContents = str_replace($arrTemplateLines[$strKey], $strTranslatedLine, $strTemplateContents);
-                        else {
-                            $this->OutputLog(3, sprintf('%s. A eșuat înlocuirea „%s”', 'str_replace("' . $arrTemplate[$strKey] . '"' . ', "' . QApplication::ConvertToComma($arrTranslation[$strKey]) . '", ' . $arrTemplateLines[$strKey] . ');'));
-                        }
+                        $arrTranslation[$strKey] = $arrResult[1];
                     }
                     else
-                        $this->OutputLog(2, sprintf('%s. Traducerea pentru cheia „%s” pare a fi goală: „%s”', $objFile->FileName, $strKey, $arrTranslation[$strKey]));
+                        $this->Output(2, sprintf(t('A plugin returned an unexpected result while processing the suggestion "%s": %s'), $arrTranslation[$strKey], print_r($arrResult, true)));
+
+                    $strTranslatedLine = str_replace('"' . $arrTemplate[$strKey] . '"', '"' . $arrTranslation[$strKey] . '"', $arrTemplateLines[$strKey]);
+
+                    if ($strTranslatedLine)
+                        $strTemplateContents = str_replace($arrTemplateLines[$strKey], $strTranslatedLine, $strTemplateContents);
+                    else
+                        $this->Output(3, sprintf('In file "%s", failed to replace "%s"', 'str_replace("' . $arrTemplate[$strKey] . '"' . ', "' . $arrTranslation[$strKey] . '", ' . $arrTemplateLines[$strKey] . ');'));
                 }
-                else
-                    $this->OutputLog(1, sprintf('%s. Nu s-a găsit cheia „%s” în traducere („%s”). Se va folosi textul din engleză.', $objFile->FileName, $strKey, $strOriginalText));
+                else {
+                    $this->Output(1, sprintf('Couldn\'t find the key "%s" in the translations for "%s" from the file "%s". Using the original text.', $strKey, $strOriginalText, $objFile->FileName));
+                    $this->arrStatistics['Texts kept as original']++;
+                }
             }
 
             $strTranslateContents = $strTemplateContents;
 
-            if (!unlink($strTranslatedFile)) {
-                $this->OutputLog(sprintf('Nu se poate şterge fişierul „%s”', $strTranslatedFile));
+            if (file_exists($strTranslatedFile) && !unlink($strTranslatedFile)) {
+                $this->Output(2, sprintf(t('Can\'t delete the file "%s"'), $strTranslatedFile));
             }
             if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
-                $this->OutputLog(sprintf('Nu se poate scrie în fişierul „%s”', $strTranslatedFile));
+                $this->Output(2, sprintf(t('Can\'t write to file "%s"'), $strTranslatedFile));
             }
         }
 
@@ -743,46 +884,160 @@
                         return NarroFileType::IniProperties;
                 case 'ini':
                         return NarroFileType::IniProperties;
+                case 'inc':
+                        return NarroFileType::IncMozilla;
 
                 default:
                         return false;
             }
         }
 
-        protected function CheckForAccessKeysMozilla($arrData) {
-            if (is_array($arrData))
-            foreach($arrData as $strKey=>$strVal) {
-                if (strstr($strKey, 'accesskey'))
-                if (preg_match('/([A-Z0-9a-z\.\_\-]+)([\.\-\_]{1,1})accesskey$/s', $strKey, $arrMatches)) {
-                    if (isset($arrData[$arrMatches[1] . $arrMatches[2] . 'label']))
-                        $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'label';
-                    elseif (isset($arrData[$arrMatches[1]]))
-                        $strMatchedKey = $arrMatches[1];
-                    else
-                        continue;
+        /**
+         * This function looks for accesskey entries and creates po style texts, e.g. &File
+         * @param array $arrTexts an array with context as keys and texts as values
+         */
+        protected function GetAccessKeys($arrTexts) {
 
-                    if ($strMatchedKey) {
+            if (is_array($arrTexts))
+                foreach($arrTexts as $strAccCtx=>$strAccKey) {
+                    if (stristr($strAccCtx, 'accesskey')) {
+                        /**
+                         * if this is an accesskey, look for the label
+                         * until now the following label and accesskeys are matched:
+                         *
+                         * ctx.label / ctx.acesskey
+                         * ctxLabel / ctxAccesskey
+                         * ctx / ctx.accesskey
+                         *
+                         * and so on
+                         */
+                        $arrMatches = array();
+                        $strLabelCtx = false;
+                        $strNewAcc = false;
 
-                        if (strpos( $arrData[$strMatchedKey], $strVal) !== false)
-                            $strNewVal = $strVal;
-                        elseif (strpos( $arrData[$strMatchedKey], strtolower($strVal)) !== false)
-                            $strNewVal = strtolower($strVal);
-                        elseif (strpos( $arrData[$strMatchedKey], strtoupper($strVal)) !== false)
-                            $strNewVal = strtoupper($strVal);
+                        if (preg_match('/([A-Z0-9a-z\.\_\-]+)([\.\-\_]a|[\.\-\_]{0,1}A)ccesskey$/s', $strAccCtx, $arrMatches)) {
+                            $arrMatches[2] = str_replace('a', '', $arrMatches[2]);
 
-                        if ($strNewVal) {
-                            $arrData[$strMatchedKey] = preg_replace('/' . preg_quote($strNewVal) . '/', '&' . $strNewVal, $arrData[$strMatchedKey], 1);
-                            unset($arrData[$strKey]);
-                            unset($strNewVal);
+                            if (isset($arrTexts[$arrMatches[1] . $arrMatches[2] . 'label']))
+                                $strLabelCtx = $arrMatches[1] . $arrMatches[2] . 'label';
+                            elseif (isset($arrTexts[$arrMatches[1] . $arrMatches[2] . 'title']))
+                                $strLabelCtx = $arrMatches[1] . $arrMatches[2] . 'title';
+                            elseif (isset($arrTexts[$arrMatches[1] . 'Label']))
+                                $strLabelCtx = $arrMatches[1] . 'Label';
+                            elseif (isset($arrTexts[$arrMatches[1]]))
+                                $strLabelCtx = $arrMatches[1];
+                            else {
+                                $strLabelCtx = '';
+                                $this->Output(2, sprintf(t('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).'), $strAccKey, $strAccCtx, $arrMatches[1]));
+                                continue;
+                            }
+
+                            if ($strLabelCtx) {
+                                /**
+                                 * search for the accesskey in the label
+                                 */
+                                $intPos = stripos( $arrTexts[$strLabelCtx], $strAccKey);
+                                if ($intPos !== false)
+                                    $strNewAcc = $arrTexts[$strLabelCtx][$intPos];
+                                else {
+                                    $this->Output(2, sprintf(t('Found access key %s does not exist in the label %s, using the first letter as accesskey'), $strAccKey, $arrTexts[$strLabelCtx]));
+                                    $strNewAcc = $arrTexts[$strLabelCtx][0];
+                                }
+
+                                //$arrTexts[$strLabelCtx] = preg_replace('/' . preg_quote($strNewAcc) . '/', '&' . $strNewAcc, $arrTexts[$strLabelCtx], 1);
+                                $arrAccKey[$strLabelCtx] = $strNewAcc;
+                                unset($arrTexts[$strAccCtx]);
+                            }
+                            else
+                                continue;
                         }
                     }
+                    else
+                        continue;
+                }
 
-                    unset($strMatchedLabel);
-                    unset($strMatchedKey);
+            return array($arrTexts, $arrAccKey);
+
+
+        }
+
+        /**
+         * This function does the opposite of GetAccessKeys
+         * @param array $arrTemplate an array with context as keys and original texts as values
+         * @param array $arrTranslation an array with context as keys and translations as values
+         * @return array $arrTranslation an array with context as keys and translations as values
+         */
+        protected function GetTranslations($objFile, $arrTemplate) {
+            $arrTranslationObjects = NarroContextInfo::QueryArray(QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $objFile->FileId));
+
+            foreach($arrTranslationObjects as $objNarroContextInfo) {
+                if ($objNarroContextInfo->ValidSuggestionId > 0) {
+                    $arrTranslation[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
+                    if ($objNarroContextInfo->TextAccessKey) {
+                        if ($objNarroContextInfo->SuggestionAccessKey)
+                            $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->SuggestionAccessKey;
+                        else {
+                            if (preg_match('/[a-zA-Z]/', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches)) {
+                                $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $arrMatches[0];
+                                $this->Output(2, sprintf(t('No access key found for context %s, text %s, using "%s"'), $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches[0]));
+                                $this->arrStatistics['Texts with no access key set, but fixed']++;
+                            }
+                            else {
+                                $this->Output(2, sprintf(t('No access key found for context %s, text %s and could not find a valid letter to use, dropping translation.'), $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue));
+                                unset($arrTranslation[$objNarroContextInfo->Context->Context]);
+                                $this->arrStatistics['Texts without acceptable access keys']++;
+                                $this->arrStatistics['Texts kept as original']++;
+                            }
+
+                        }
+                        $this->arrStatistics['Texts that have access keys']++;
+                    }
+                    else
+                        $this->arrStatistics['Texts that don\'t have access keys']++;
+                }
+                else {
+                    $this->Output(1, sprintf(t('In file "%s", the context "%s" does not have a valid suggestion.'), $objFile->FileName, $objNarroContextInfo->Context->Context));
+                    $this->arrStatistics['Texts without valid suggestions']++;
+                    $this->arrStatistics['Texts kept as original']++;
                 }
             }
-            return $arrData;
 
+            foreach($arrTemplate as $strKey=>$strOriginalText) {
+                if (trim($strKey) == '') continue;
+
+                /**
+                 * if this is an accesskey, look for the label
+                 * until now the following label and accesskeys are matched:
+                 *
+                 * ctx.label / ctx.acesskey
+                 * ctxLabel / ctxAccesskey
+                 * ctx / ctx.accesskey
+                 *
+                 * and so on
+                 */
+                if (preg_match('/([A-Z0-9a-z\.\_\-]+)([\.\-\_]a|[\.\-\_]{0,1}A)ccesskey$/s', $strKey, $arrMatches)) {
+                    $arrMatches[2] = str_replace('a', '', $arrMatches[2]);
+                    if (isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'label']))
+                        $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'label';
+                    elseif (isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'title']))
+                        $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'title';
+                    elseif (isset($arrTranslation[$arrMatches[1] . 'Label']))
+                        $strMatchedKey = $arrMatches[1] . 'Label';
+                    elseif (isset($arrTranslation[$arrMatches[1]]))
+                        $strMatchedKey = $arrMatches[1];
+                    else {
+                        $this->arrStatistics['Orphan translation access keys']++;
+                        continue;
+                    }
+
+                    $arrTranslation[$strKey] = $arrTranslationKeys[$strMatchedKey];
+                }
+            }
+
+            $this->arrStatistics['Contexts to export'] += count($arrTemplate);
+            $this->arrStatistics['Exported contexts'] += count($arrTranslation);
+
+            return $arrTranslation;
         }
     }
 ?>

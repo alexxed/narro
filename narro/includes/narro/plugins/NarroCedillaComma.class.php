@@ -15,10 +15,11 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    class NarroCedillaComma {
-        protected $arrErrors;
+    class NarroCedillaComma extends NarroPlugin {
 
         public function __construct() {
+            parent::__construct();
+            $this->strName = t('Cedill/Comma issue solver');
             QApplication::RegisterPreference('Cedilla or comma', 'option', 'Select wether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
         }
 
@@ -63,33 +64,23 @@
             return $this->Convert($strSuggestion);
         }
 
-        public function ProcessSuggestion($strSuggestion) {
-            return $this->ConvertToComma($strSuggestion);
+        public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+            return array($strOriginal, $this->ConvertToComma($strSuggestion), $strContext, $objFile, $objProject);
         }
 
-        public function ProcessSuggestionComment($strSuggestionComment) {
+        public function ExportSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+            if (in_array($objFile->FileName, array('custom.properties', 'mui.properties', 'override.properties', 'crashreporter.ini')))
+                return array($strOriginal, $this->ConvertToSedilla($strSuggestion), $strContext, $objFile, $objProject);
+            else
+                return array($strOriginal, $this->ConvertToComma($strSuggestion), $strContext, $objFile, $objProject);
+        }
+
+        public function SaveSuggestionComment($strSuggestionComment) {
             return $this->ConvertToComma($strSuggestionComment);
         }
 
-        public function ProcessContextComment($strContextComment) {
-            return $this->ConvertToComma($strSuggestion);
-        }
-
-        /////////////////////////
-        // Public Properties: GET
-        /////////////////////////
-        public function __get($strName) {
-            switch ($strName) {
-                case "Errors": return $this->arrErrors;
-
-                default:
-                    try {
-                        return parent::__get($strName);
-                    } catch (QCallerException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
-            }
+        public function SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $objFile, $objProject) {
+            return array($strOriginal, $strTranslation, $strContext, $this->ConvertToComma($strComment), $objFile, $objProject);
         }
     }
 ?>

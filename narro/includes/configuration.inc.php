@@ -73,5 +73,6 @@
     // Define the Filepath for the error page (path MUST be relative from the DOCROOT)
     define('ERROR_PAGE_PATH', __PHP_ASSETS__ . '/_core/error_page.php');
 
-    set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/narro');
+    set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/narro' . PATH_SEPARATOR . __INCLUDES__);
+
 ?>

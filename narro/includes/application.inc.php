@@ -22,6 +22,7 @@
         public static $objPluginHandler;
         public static $arrPreferences;
         public static $arrFormats;
+        public static $Cache;
 
         /**
         * This is called by the PHP5 Autoloader.  This method overrides the
@@ -46,7 +47,7 @@
         ////////////////////////////
 
         public static function GetSpellSuggestions($strText) {
-            $strCleanText = mb_ereg_replace('[\\n\.:;\\\!\?]+', ' ', $strText);
+            $strCleanText = mb_ereg_replace('[\\n\.,:;\\\!\?0-9]+', ' ', $strText);
             $strCleanText = strip_tags($strCleanText);
             /**
              * mozilla entitites: &xxx;
@@ -166,52 +167,15 @@
         }
 
         public static function Translate($strText) {
-            return t($strText);
+            if (class_exists('NarroSelfTranslate'))
+                return NarroSelfTranslate::Translate($strText);
+            else
+                return $strText;
         }
     }
 
     function t($strText) {
-       /**
-        * if not and a user has made a suggestion, show it in green
-        * if not, show the most voted suggestion
-        * @todo add caching please
-        */
-        if (
-            $objSuggestion =
-                     NarroSuggestion::QuerySingle(
-                         QQ::AndCondition(
-                             QQ::Equal(QQN::NarroSuggestion()->Text->TextValueMd5, md5($strText)),
-                             QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId),
-                             QQ::Equal(QQN::NarroSuggestion()->UserId, QApplication::$objUser->UserId)
-                         )
-                     )
-               ) {
-            $strSuggestionValue = $objSuggestion->SuggestionValue;
-        }
-        elseif (
-            $arrSuggestions =
-                    NarroSuggestion::QueryArray(
-                        QQ::AndCondition(
-                            QQ::Equal(QQN::NarroSuggestion()->Text->TextValueMd5, md5($strText)),
-                            QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId)
-                        )
-                    )
-               ) {
-            $intVoteCnt = 0;
-            $strSuggestionValue = $arrSuggestions[0]->SuggestionValue;
-            foreach($arrSuggestions as $objSuggestion) {
-                $intSuggVotCnt = NarroSuggestionVote::QueryCount(QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $objSuggestion->SuggestionId));
-                if ($intSuggVotCnt > $intVoteCnt) {
-                    $intVoteCnt = $intSuggVotCnt;
-                    $strSuggestionValue = $objSuggestion->SuggestionValue;
-                }
-            }
-        }
-        else {
-            $strSuggestionValue = $strText;
-        }
-
-        return $strSuggestionValue;
+        return QApplication::Translate($strText);
     }
 
     ///////////////////////
@@ -243,9 +207,6 @@
     /////////////////////////////
     session_start();
 
-
-    QApplication::$objPluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
-
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
     QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'ro', array('ro', 'fr', 'es-ES'));
@@ -260,9 +221,6 @@
         throw Exception('Could not create an instance of NarroUser');
 
     QApplication::$LanguageCode = QApplication::$objUser->Language->LanguageCode;
-    QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
-    QForm::$FormStateHandler = 'QFileFormStateHandler';
-    QFileFormStateHandler::$StatePath = __TMP_PATH__ . '/qform_states/';
 
     try {
         QI18n::Initialize();
@@ -270,4 +228,23 @@
         QApplication::$LanguageCode = 'en';
         QI18n::Initialize();
     }
+
+    QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
+    QForm::$FormStateHandler = 'QFileFormStateHandler';
+    QFileFormStateHandler::$StatePath = __TMP_PATH__ . '/qform_states/';
+
+    require_once __INCLUDES__ . '/Zend/Cache.php';
+
+    $frontendOptions = array(
+        'lifetime' => null, // cache forever
+        'automatic_serialization' => true
+    );
+
+    $backendOptions = array(
+        'cache_dir' => QCache::$CachePath . '/zend'
+    );
+
+    QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
+
+    QApplication::$objPluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
 ?>

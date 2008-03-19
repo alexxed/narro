@@ -26,8 +26,8 @@
 .item_label_disabled { font: 12px 'Verdana','Arial','Helvetica','Sans-Serif'; padding-bottom: 4px; color: #999999; }
 
 .button { font-weight: bold; }
-.listbox { width: 250px; }
-.textbox { width: 250px; }
+.listbox {  }
+.textbox {  }
 
 .paginator_inactive_step { font-weight: bold; color: #aaaaaa; }
 .paginator_active_step { font-weight: bold; color: #000000; text-decoration: none; }
