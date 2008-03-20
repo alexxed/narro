@@ -24,8 +24,9 @@
 		const DtdMozilla = 4;
 		const IniProperties = 5;
 		const Php = 6;
+		const IncMozilla = 7;
 
-		const MaxId = 6;
+		const MaxId = 7;
 
 		public static $NameArray = array(
 			1 => 'PoGettext',
@@ -33,7 +34,8 @@
 			3 => 'Dosar',
 			4 => 'DtdMozilla',
 			5 => 'IniProperties',
-			6 => 'Php');
+			6 => 'Php',
+			7 => 'IncMozilla');
 
 		public static $TokenArray = array(
 			1 => 'PoGettext',
@@ -41,7 +43,8 @@
 			3 => 'Dosar',
 			4 => 'DtdMozilla',
 			5 => 'IniProperties',
-			6 => 'Php');
+			6 => 'Php',
+			7 => 'IncMozilla');
 
 		public static function ToString($intNarroFileTypeId) {
 			switch ($intNarroFileTypeId) {
@@ -51,6 +54,7 @@
 				case 4: return 'DtdMozilla';
 				case 5: return 'IniProperties';
 				case 6: return 'Php';
+				case 7: return 'IncMozilla';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroFileTypeId: %s', $intNarroFileTypeId));
 			}
@@ -64,6 +68,7 @@
 				case 4: return 'DtdMozilla';
 				case 5: return 'IniProperties';
 				case 6: return 'Php';
+				case 7: return 'IncMozilla';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroFileTypeId: %s', $intNarroFileTypeId));
 			}

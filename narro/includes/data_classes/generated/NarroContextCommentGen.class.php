@@ -273,6 +273,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`user_id` AS ' . $strAliasPrefix . 'user_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`language_id` AS ' . $strAliasPrefix . 'language_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`comment_text` AS ' . $strAliasPrefix . 'comment_text`');
+			$objBuilder->AddSelectItem($strTableName . '.`comment_text_md5` AS ' . $strAliasPrefix . 'comment_text_md5`');
 		}
 
 
@@ -305,6 +306,7 @@
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasPrefix . 'language_id', 'Integer');
 			$objToReturn->strCommentText = $objDbRow->GetColumn($strAliasPrefix . 'comment_text', 'Blob');
+			$objToReturn->strCommentTextMd5 = $objDbRow->GetColumn($strAliasPrefix . 'comment_text_md5', 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -381,6 +383,24 @@
 		public static function LoadByCommentId($intCommentId) {
 			return NarroContextComment::QuerySingle(
 				QQ::Equal(QQN::NarroContextComment()->CommentId, $intCommentId)
+			);
+		}
+			
+		/**
+		 * Load a single NarroContextComment object,
+		 * by ContextId, LanguageId, CommentTextMd5 Index(es)
+		 * @param integer $intContextId
+		 * @param integer $intLanguageId
+		 * @param string $strCommentTextMd5
+		 * @return NarroContextComment
+		*/
+		public static function LoadByContextIdLanguageIdCommentTextMd5($intContextId, $intLanguageId, $strCommentTextMd5) {
+			return NarroContextComment::QuerySingle(
+				QQ::AndCondition(
+				QQ::Equal(QQN::NarroContextComment()->ContextId, $intContextId),
+				QQ::Equal(QQN::NarroContextComment()->LanguageId, $intLanguageId),
+				QQ::Equal(QQN::NarroContextComment()->CommentTextMd5, $strCommentTextMd5)
+				)
 			);
 		}
 			
@@ -512,12 +532,14 @@
 							`context_id`,
 							`user_id`,
 							`language_id`,
-							`comment_text`
+							`comment_text`,
+							`comment_text_md5`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intContextId) . ',
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
-							' . $objDatabase->SqlVariable($this->strCommentText) . '
+							' . $objDatabase->SqlVariable($this->strCommentText) . ',
+							' . $objDatabase->SqlVariable($this->strCommentTextMd5) . '
 						)
 					');
 
@@ -536,7 +558,8 @@
 							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ',
 							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
-							`comment_text` = ' . $objDatabase->SqlVariable($this->strCommentText) . '
+							`comment_text` = ' . $objDatabase->SqlVariable($this->strCommentText) . ',
+							`comment_text_md5` = ' . $objDatabase->SqlVariable($this->strCommentTextMd5) . '
 						WHERE
 							`comment_id` = ' . $objDatabase->SqlVariable($this->intCommentId) . '
 					');
@@ -654,6 +677,13 @@
 					 * @return string
 					 */
 					return $this->strCommentText;
+
+				case 'CommentTextMd5':
+					/**
+					 * Gets the value for strCommentTextMd5 (Not Null)
+					 * @return string
+					 */
+					return $this->strCommentTextMd5;
 
 
 				///////////////////
@@ -780,6 +810,19 @@
 					 */
 					try {
 						return ($this->strCommentText = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CommentTextMd5':
+					/**
+					 * Sets the value for strCommentTextMd5 (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCommentTextMd5 = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -960,6 +1003,15 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_context_comment.comment_text_md5
+		 * @var string strCommentTextMd5
+		 */
+		protected $strCommentTextMd5;
+		const CommentTextMd5MaxLength = 128;
+		const CommentTextMd5Default = null;
+
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -1026,6 +1078,7 @@
 			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
 			$strToReturn .= '<element name="CommentText" type="xsd:string"/>';
+			$strToReturn .= '<element name="CommentTextMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1064,6 +1117,8 @@
 				$objToReturn->Language = NarroLanguage::GetObjectFromSoapObject($objSoapObject->Language);
 			if (property_exists($objSoapObject, 'CommentText'))
 				$objToReturn->strCommentText = $objSoapObject->CommentText;
+			if (property_exists($objSoapObject, 'CommentTextMd5'))
+				$objToReturn->strCommentTextMd5 = $objSoapObject->CommentTextMd5;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1128,6 +1183,8 @@
 					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'string', $this);
+				case 'CommentTextMd5':
+					return new QQNode('comment_text_md5', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('comment_id', 'integer', $this);
@@ -1164,6 +1221,8 @@
 					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'string', $this);
+				case 'CommentTextMd5':
+					return new QQNode('comment_text_md5', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('comment_id', 'integer', $this);

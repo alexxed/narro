@@ -275,6 +275,9 @@
 			$objBuilder->AddSelectItem($strTableName . '.`popular_suggestion_id` AS ' . $strAliasPrefix . 'popular_suggestion_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`has_suggestions` AS ' . $strAliasPrefix . 'has_suggestions`');
 			$objBuilder->AddSelectItem($strTableName . '.`has_plural` AS ' . $strAliasPrefix . 'has_plural`');
+			$objBuilder->AddSelectItem($strTableName . '.`has_comments` AS ' . $strAliasPrefix . 'has_comments`');
+			$objBuilder->AddSelectItem($strTableName . '.`text_access_key` AS ' . $strAliasPrefix . 'text_access_key`');
+			$objBuilder->AddSelectItem($strTableName . '.`suggestion_access_key` AS ' . $strAliasPrefix . 'suggestion_access_key`');
 		}
 
 
@@ -309,6 +312,9 @@
 			$objToReturn->intPopularSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'popular_suggestion_id', 'Integer');
 			$objToReturn->blnHasSuggestions = $objDbRow->GetColumn($strAliasPrefix . 'has_suggestions', 'Bit');
 			$objToReturn->blnHasPlural = $objDbRow->GetColumn($strAliasPrefix . 'has_plural', 'Bit');
+			$objToReturn->blnHasComments = $objDbRow->GetColumn($strAliasPrefix . 'has_comments', 'Bit');
+			$objToReturn->strTextAccessKey = $objDbRow->GetColumn($strAliasPrefix . 'text_access_key', 'VarChar');
+			$objToReturn->strSuggestionAccessKey = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_access_key', 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -570,14 +576,20 @@
 							`valid_suggestion_id`,
 							`popular_suggestion_id`,
 							`has_suggestions`,
-							`has_plural`
+							`has_plural`,
+							`has_comments`,
+							`text_access_key`,
+							`suggestion_access_key`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intContextId) . ',
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
-							' . $objDatabase->SqlVariable($this->blnHasPlural) . '
+							' . $objDatabase->SqlVariable($this->blnHasPlural) . ',
+							' . $objDatabase->SqlVariable($this->blnHasComments) . ',
+							' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
+							' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . '
 						)
 					');
 
@@ -598,7 +610,10 @@
 							`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
 							`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
 							`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
-							`has_plural` = ' . $objDatabase->SqlVariable($this->blnHasPlural) . '
+							`has_plural` = ' . $objDatabase->SqlVariable($this->blnHasPlural) . ',
+							`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments) . ',
+							`text_access_key` = ' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
+							`suggestion_access_key` = ' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . '
 						WHERE
 							`context_info_id` = ' . $objDatabase->SqlVariable($this->intContextInfoId) . '
 					');
@@ -730,6 +745,27 @@
 					 * @return boolean
 					 */
 					return $this->blnHasPlural;
+
+				case 'HasComments':
+					/**
+					 * Gets the value for blnHasComments (Not Null)
+					 * @return boolean
+					 */
+					return $this->blnHasComments;
+
+				case 'TextAccessKey':
+					/**
+					 * Gets the value for strTextAccessKey 
+					 * @return string
+					 */
+					return $this->strTextAccessKey;
+
+				case 'SuggestionAccessKey':
+					/**
+					 * Gets the value for strSuggestionAccessKey 
+					 * @return string
+					 */
+					return $this->strSuggestionAccessKey;
 
 
 				///////////////////
@@ -897,6 +933,45 @@
 					 */
 					try {
 						return ($this->blnHasPlural = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'HasComments':
+					/**
+					 * Sets the value for blnHasComments (Not Null)
+					 * @param boolean $mixValue
+					 * @return boolean
+					 */
+					try {
+						return ($this->blnHasComments = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'TextAccessKey':
+					/**
+					 * Sets the value for strTextAccessKey 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strTextAccessKey = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'SuggestionAccessKey':
+					/**
+					 * Sets the value for strSuggestionAccessKey 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strSuggestionAccessKey = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1125,6 +1200,32 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_context_info.has_comments
+		 * @var boolean blnHasComments
+		 */
+		protected $blnHasComments;
+		const HasCommentsDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_context_info.text_access_key
+		 * @var string strTextAccessKey
+		 */
+		protected $strTextAccessKey;
+		const TextAccessKeyMaxLength = 2;
+		const TextAccessKeyDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_context_info.suggestion_access_key
+		 * @var string strSuggestionAccessKey
+		 */
+		protected $strSuggestionAccessKey;
+		const SuggestionAccessKeyMaxLength = 2;
+		const SuggestionAccessKeyDefault = null;
+
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -1203,6 +1304,9 @@
 			$strToReturn .= '<element name="PopularSuggestion" type="xsd1:NarroSuggestion"/>';
 			$strToReturn .= '<element name="HasSuggestions" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="HasPlural" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="HasComments" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="TextAccessKey" type="xsd:string"/>';
+			$strToReturn .= '<element name="SuggestionAccessKey" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1247,6 +1351,12 @@
 				$objToReturn->blnHasSuggestions = $objSoapObject->HasSuggestions;
 			if (property_exists($objSoapObject, 'HasPlural'))
 				$objToReturn->blnHasPlural = $objSoapObject->HasPlural;
+			if (property_exists($objSoapObject, 'HasComments'))
+				$objToReturn->blnHasComments = $objSoapObject->HasComments;
+			if (property_exists($objSoapObject, 'TextAccessKey'))
+				$objToReturn->strTextAccessKey = $objSoapObject->TextAccessKey;
+			if (property_exists($objSoapObject, 'SuggestionAccessKey'))
+				$objToReturn->strSuggestionAccessKey = $objSoapObject->SuggestionAccessKey;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1321,6 +1431,12 @@
 					return new QQNode('has_suggestions', 'boolean', $this);
 				case 'HasPlural':
 					return new QQNode('has_plural', 'boolean', $this);
+				case 'HasComments':
+					return new QQNode('has_comments', 'boolean', $this);
+				case 'TextAccessKey':
+					return new QQNode('text_access_key', 'string', $this);
+				case 'SuggestionAccessKey':
+					return new QQNode('suggestion_access_key', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('context_info_id', 'integer', $this);
@@ -1363,6 +1479,12 @@
 					return new QQNode('has_suggestions', 'boolean', $this);
 				case 'HasPlural':
 					return new QQNode('has_plural', 'boolean', $this);
+				case 'HasComments':
+					return new QQNode('has_comments', 'boolean', $this);
+				case 'TextAccessKey':
+					return new QQNode('text_access_key', 'string', $this);
+				case 'SuggestionAccessKey':
+					return new QQNode('suggestion_access_key', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('context_info_id', 'integer', $this);

@@ -1301,7 +1301,7 @@
 		public function AssociateNarroSuggestionVoteAsText(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intTextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionVoteAsText on this unsaved NarroText.');
-			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
+			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionVoteAsText on this NarroText with an unsaved NarroSuggestionVote.');
 
 			// Get the Database Object for this Class
@@ -1315,6 +1315,7 @@
 					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
 					`text_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->TextId) . ' AND
 					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . '
 			');
@@ -1328,7 +1329,7 @@
 		public function UnassociateNarroSuggestionVoteAsText(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intTextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsText on this unsaved NarroText.');
-			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
+			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsText on this NarroText with an unsaved NarroSuggestionVote.');
 
 			// Get the Database Object for this Class
@@ -1342,6 +1343,7 @@
 					`text_id` = null
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
 					`text_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->TextId) . ' AND
 					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . ' AND
 					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
@@ -1378,7 +1380,7 @@
 		public function DeleteAssociatedNarroSuggestionVoteAsText(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intTextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsText on this unsaved NarroText.');
-			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
+			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsText on this NarroText with an unsaved NarroSuggestionVote.');
 
 			// Get the Database Object for this Class
@@ -1390,6 +1392,7 @@
 					`narro_suggestion_vote`
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
 					`text_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->TextId) . ' AND
 					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . ' AND
 					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
