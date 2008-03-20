@@ -61,18 +61,18 @@
         }
 
         public function DisplayContextComment($strContextComment) {
-            return $this->Convert($strSuggestion);
+            return $this->Convert($strContextComment);
         }
 
         public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
-            return array($strOriginal, $this->ConvertToComma($strSuggestion), $strContext, $objFile, $objProject);
+            return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
         }
 
         public function ExportSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
             if (in_array($objFile->FileName, array('custom.properties', 'mui.properties', 'override.properties', 'crashreporter.ini')))
-                return array($strOriginal, $this->ConvertToSedilla($strSuggestion), $strContext, $objFile, $objProject);
+                return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
             else
-                return array($strOriginal, $this->ConvertToComma($strSuggestion), $strContext, $objFile, $objProject);
+                return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
         }
 
         public function SaveSuggestionComment($strSuggestionComment) {
