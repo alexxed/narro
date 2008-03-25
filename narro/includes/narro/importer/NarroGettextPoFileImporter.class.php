@@ -16,11 +16,11 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    class NarroPoImporter extends NarroFileImporter {
+    class NarroGettextPoFileImporter extends NarroFileImporter {
         protected $strImportDirectory = '/tmp';
 
         public function ImportProjectArchive($intProjectId, $strFile, $blnValidate = true, $blnCheckEqual = true) {
-            $this->Output("Începe importul pentru proiectul " . $intProjectId . " din " . $strFile);
+            NarroLog::LogMessage("Începe importul pentru proiectul " . $intProjectId . " din " . $strFile);
             $this->startTimer();
             $this->intImportedFilesCount = 0;
             $this->intImportedSuggestionsCount = 0;
@@ -31,7 +31,7 @@
             /**
              * set up a working path in the temporary directory
              */
-            $this->Output("Se caută un director valid de lucru ...");
+            NarroLog::LogMessage("Se caută un director valid de lucru ...");
             if (file_exists($this->strImportDirectory . '/' . $intProjectId)) {
                 $i=0;
                 while(file_exists($this->strImportDirectory . '/' . $intProjectId . '-' . $i))
@@ -45,14 +45,14 @@
             $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d", $intProjectId);
 
             if (!$objResult = db_query($strQuery)) {
-                $this->Output( __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery );
+                NarroLog::LogMessage( __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery );
                 return false;
             }
 
             $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $intProjectId);
 
             if (!$objResult = db_query($strQuery)) {
-                $this->Output( __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery );
+                NarroLog::LogMessage( __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery );
                 return false;
             }
 
@@ -60,9 +60,9 @@
              * work with tar.bz2 archives
              */
             if (preg_match('/\.tar.bz2$/', $strFile)) {
-                $this->Output("Începe procesarea fişierului " . $strFile);
+                NarroLog::LogMessage("Începe procesarea fişierului " . $strFile);
                 if (!mkdir($strWorkPath)) {
-                    $this->Output('Nu se poate crea directorul „' .$strWorkPath . '”');
+                    NarroLog::LogMessage('Nu se poate crea directorul „' .$strWorkPath . '”');
                     return false;
                 }
                 /*
@@ -78,7 +78,7 @@
                  */
                 exec('tar jxf ' . $strFile, $arrOutput, $retVal);
                 if ($retVal != 0) {
-                    $this->Output('Eroare la dezarhivare: ' . join("\n", $arrOutput));
+                    NarroLog::LogMessage('Eroare la dezarhivare: ' . join("\n", $arrOutput));
                     return false;
                 }
 
@@ -87,7 +87,7 @@
                  */
                 $arrFiles = $this->ListDir($strWorkPath);
                 $intTotalFilesToProcess = count($arrFiles);
-                $this->Output("Începe procesarea a " . $intTotalFilesToProcess . " fişiere");
+                NarroLog::LogMessage("Începe procesarea a " . $intTotalFilesToProcess . " fişiere");
 
                 $arrDirectories = array();
                 foreach($arrFiles as $intFileNo=>$strFileToImport) {
@@ -124,7 +124,7 @@
                                 $objFile->ProjectId = $intProjectId;
                                 $objFile->Active = 1;
                                 $objFile->Save();
-                                $this->OutputLog(sprintf('S-a adăugat dosarul „%s” din „%s”', $strDir, $strPath));
+                                NarroLog::LogMessageLog(sprintf('S-a adăugat dosarul „%s” din „%s”', $strDir, $strPath));
                                 $this->intImportedFilesCount++;
                             }
 
@@ -167,14 +167,14 @@
                         $objFile->Active = 1;
                         $objFile->Encoding = 'UTF-8';
                         $objFile->Save();
-                        $this->OutputLog(sprintf('S-a adăugat fișierul „%s” din „%s”', $strFileName, $strPath));
+                        NarroLog::LogMessageLog(sprintf('S-a adăugat fișierul „%s” din „%s”', $strFileName, $strPath));
                         $this->intImportedFilesCount++;
                     }
 
                     $this->ImportFile($intProjectId, $objFile, $strFileToImport, $blnValidate, $blnCheckEqual);
 
                     if ($intFileNo % 10 === 0)
-                        $this->Output("Progres: " . ceil(($intFileNo*100)/$intTotalFilesToProcess) . "%");
+                        NarroLog::LogMessage("Progres: " . ceil(($intFileNo*100)/$intTotalFilesToProcess) . "%");
                 }
 
                 if (isset($i))
@@ -182,13 +182,13 @@
                 else
                     exec('rm -rf ' . $this->strImportDirectory . '/' . $intProjectId, $arrOutput, $retVal);
                 if ($retVal != 0) {
-                    $this->Output('Eroare la curăţarea directorului după import: ' . join("\n", $arrOutput));
+                    NarroLog::LogMessage('Eroare la curăţarea directorului după import: ' . join("\n", $arrOutput));
                     return false;
                 }
             }
             $this->stopTimer();
-            $this->Output("Procesarea proiectului cu id „" . $intProjectId . "” s-a încheiat.");
-            var_export($this->arrStatistics);
+            NarroLog::LogMessage("Procesarea proiectului cu id „" . $intProjectId . "” s-a încheiat.");
+            var_export(NarroImportStatistics::$arrStatistics);
         }
 
         protected function ListDir($start_dir='.') {
@@ -488,7 +488,7 @@
                 }
             }
             else {
-                $this->Output('Cannot open file: ' . $strFileToImport );
+                NarroLog::LogMessage('Cannot open file: ' . $strFileToImport );
             }
         }
     }

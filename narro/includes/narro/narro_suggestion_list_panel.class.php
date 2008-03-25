@@ -62,6 +62,7 @@
             // Setup DataGrid Columns
             $this->colSuggestion = new QDataGridColumn(t('Other suggestions'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
             $this->colSuggestion->HtmlEntities = false;
+            $this->colSuggestion->CssClass = QApplication::$objUser->Language->TextDirection;
 
             /**
             $this->colAuthor = new QDataGridColumn(t('Author'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colAuthor_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId, false)));
@@ -138,13 +139,41 @@
 
             $strSuggestionValue = htmlentities($strSuggestionValue, null, 'utf-8');
 
-            if ($this->objNarroContextInfo->TextAccessKey && preg_match_all('/[a-zA-Z]/', $objNarroSuggestion->SuggestionValue, $arrKeys)) {
+            if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->TextAccessKey) {
+                /**
+                 * @todo clean this please
+                 */
+                $strSuggestionChars = mb_ereg_replace('[\s\\n\.,:;\\\!\?0-9]+', '', $strSuggestionValue);
+                $strSuggestionChars = strip_tags($strSuggestionChars);
+                /**
+                 * mozilla entitites: &xxx;
+                 */
+                $strSuggestionChars = mb_ereg_replace('&[a-zA-Z\-0-9]+\;', '' , $strSuggestionChars);
+                /**
+                 * keyboard shortcuts
+                 */
+                $strSuggestionChars = mb_ereg_replace('[~&]', '' , $strSuggestionChars);
+                /**
+                 * openoffice entities: %xxx %%xxx %%%xxx #xxx and so on
+                 */
+                $strSuggestionChars = mb_ereg_replace('[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}', '', $strSuggestionChars);
+
+                /**
+                 * some characters that mess with the spellchecking
+                 */
+                $strSuggestionChars = mb_ereg_replace('[\(\)]+', '', $strSuggestionChars);
+
+                $arrAccKeys = array();
+                for($i=0; $i<mb_strlen($strSuggestionChars);$i++) {
+                    if (!in_array(mb_substr($strSuggestionChars, $i, 1), $arrAccKeys))
+                        $arrAccKeys[] = mb_substr($strSuggestionChars, $i, 1);
+                }
+
                 $strControlId = 'lstAccessKey' . $objNarroSuggestion->SuggestionId;
                 $lstAccessKey = $this->objForm->GetControl($strControlId);
                 if (!$lstAccessKey) {
                     $lstAccessKey = new QListBox($this->dtgSuggestions, $strControlId);
-                    $arrKeys[0] = array_unique($arrKeys[0]);
-                    foreach($arrKeys[0] as $strKey) {
+                    foreach($arrAccKeys as $strKey) {
                         $lstAccessKey->AddItem($strKey, $strKey, $this->objNarroContextInfo->SuggestionAccessKey == $strKey);
                     }
                     //foreach
@@ -154,12 +183,17 @@
                         $lstAccessKey->AddAction(new QChangeEvent(), new QServerAction('lstAccessKey_Change')
                     );
                 }
-            }
 
-            if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $this->objNarroContextInfo->SuggestionAccessKey && $objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId)
-                $strSuggestionValue = preg_replace('/' . $this->objNarroContextInfo->SuggestionAccessKey . '/', $lstAccessKey->Render(false), $strSuggestionValue, 1);
-            elseif ($this->objNarroContextInfo->SuggestionAccessKey && $objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId)
-                $strSuggestionValue = preg_replace('/' . $this->objNarroContextInfo->SuggestionAccessKey . '/', '<u>' . $this->objNarroContextInfo->SuggestionAccessKey . '</u>', $strSuggestionValue, 1);
+                if ($this->objNarroContextInfo->SuggestionAccessKey != '')
+                    $intAccPos = mb_stripos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
+                else
+                    $intAccPos = 0;
+
+                if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+                    $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $lstAccessKey->Render(false) . mb_substr($strSuggestionValue, $intAccPos + 1);
+                else
+                    $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . '<u>' . mb_substr($strSuggestionValue, $intAccPos, 1) . '</u>' . mb_substr($strSuggestionValue, $intAccPos + 1);
+            }
 
             if (is_array($arrWordSuggestions))
             foreach($arrWordSuggestions as $strWord=>$arrSuggestion) {

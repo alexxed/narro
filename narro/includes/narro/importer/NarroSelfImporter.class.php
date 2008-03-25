@@ -15,8 +15,10 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    require('../prepend.inc.php');
-    require_once(dirname(__FILE__) . '/narro_file_importer.class.php');
+    require(dirname(__FILE__) . '/../../prepend.inc.php');
+    require_once('NarroFileImporter.class.php');
+    require_once('NarroImportStatistics.class.php');
+    require_once('NarroLog.class.php');
 
     class NarroSelfFileImporter extends NarroFileImporter {
 
@@ -30,13 +32,13 @@
 
             $intTotalFilesToProcess = count($arrFiles);
 
-            $this->Output(1, sprintf(t('Starting to process %d files using directory %s'), $intTotalFilesToProcess, $strDirectory));
+            NarroLog::LogMessage(1, sprintf(t('Starting to process files using directory %s'), $intTotalFilesToProcess, $strDirectory));
 
             $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
-                $this->Output(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                NarroLog::LogMessage(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
                 return false;
             }
 
@@ -44,7 +46,7 @@
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
-                $this->Output(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                NarroLog::LogMessage(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
                 return false;
             }
 
@@ -130,7 +132,7 @@
                         }
 
                         if ($objFile instanceof NarroFile) {
-                            $this->arrStatistics['Kept folders']++;
+                            NarroImportStatistics::$arrStatistics['Kept folders']++;
                             $objFile->Active = 1;
                             $objFile->ContextCount = 0;
                             $objFile->Save();
@@ -142,15 +144,15 @@
                             $objFile = new NarroFile();
                             $objFile->FileName = $strDir;
                             $objFile->Encoding = 'UTF-8';
-                            $objFile->TypeId = NarroFileType::Dosar;
+                            $objFile->TypeId = NarroFileType::Folder;
                             if ($intParentId)
                                 $objFile->ParentId = $intParentId;
                             $objFile->ProjectId = $this->objProject->ProjectId;
                             $objFile->ContextCount = 0;
                             $objFile->Active = 1;
                             $objFile->Save();
-                            $this->Output(1, sprintf(t('Added folder "%s" from "%s"'), $strDir, $strPath));
-                            $this->arrStatistics['Imported folders']++;
+                            NarroLog::LogMessage(1, sprintf(t('Added folder "%s" from "%s"'), $strDir, $strPath));
+                            NarroImportStatistics::$arrStatistics['Imported folders']++;
                         }
                         $arrDirectories[$strPath] = $objFile->FileId;
                     }
@@ -167,9 +169,9 @@
 
                 if ($objFile instanceof NarroFile) {
                     $objFile->Active = 1;
-                    $objFile->TypeId = NarroFileType::Php;
+                    $objFile->TypeId = NarroFileType::Narro;
                     $objFile->Save();
-                    $this->arrStatistics['Kept files']++;
+                    NarroImportStatistics::$arrStatistics['Kept files']++;
                 }
                 else {
                     /**
@@ -177,24 +179,24 @@
                      */
                     $objFile = new NarroFile();
                     $objFile->FileName = $strFileName;
-                    $objFile->TypeId = NarroFileType::Php;
+                    $objFile->TypeId = NarroFileType::Narro;
                     if ($intParentId)
                         $objFile->ParentId = $intParentId;
                     $objFile->ProjectId = $this->objProject->ProjectId;
                     $objFile->Active = 1;
                     $objFile->Encoding = 'UTF-8';
                     $objFile->Save();
-                    $this->Output(1, sprintf(t('Added file "%s" from "%s"'), $strFileName, $strPath));
-                    $this->arrStatistics['Imported files']++;
+                    NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), $strFileName, $strPath));
+                    NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
 
                 $intTime = time();
                 $this->ImportFile($objFile, $strFileToImport);
                 $intElapsedTime = time() - $intTime;
-                $this->Output(1, sprintf(t('Processed file "%s" in %d seconds, %d files left'), str_replace($strDirectory, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intCurFile)));
+                NarroLog::LogMessage(1, sprintf(t('Processed file "%s" in %d seconds, %d files left'), str_replace($strDirectory, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intCurFile)));
 
                 if ($intFileNo % 10 === 0)
-                    $this->Output(1, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
+                    NarroLog::LogMessage(1, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
             }
         }
 
@@ -223,16 +225,48 @@
                                 $strText
                             );
 
-                            $this->AddTranslation($objFile, $strText, false, sprintf('Used somewhere in the file "%s"', str_replace(__DOCROOT__ . __SUBDIRECTORY__ . '/', '', $strFileName)));
+                            $this->AddTranslation(
+                                $objFile,
+                                $strText, null,
+                                false, null,
+                                sprintf('Used somewhere in the file "%s"', str_replace(__DOCROOT__ . __SUBDIRECTORY__ . '/', '', $strFileName))
+                            );
                         }
                     }
                 }
             }
         }
+
+        protected function ListDir($strDir='.') {
+
+            $arrFiles = array();
+            if (is_dir($strDir)) {
+                $hndFile = opendir($strDir);
+                while (($strFile = readdir($hndFile)) !== false) {
+                    // loop through the files, skipping . and .., and recursing if necessary
+                    if (strcmp($strFile, '.')==0 || strcmp($strFile, '..')==0) continue;
+
+                    $strFilePath = $strDir . '/' . $strFile;
+
+                    if ( is_dir($strFilePath) )
+                        $arrFiles = array_merge($arrFiles, $this->ListDir($strFilePath));
+                    else
+                        array_push($arrFiles, $strFilePath);
+                }
+                closedir($hndFile);
+            } else {
+                // false if the function was called with an invalid non-directory argument
+                $arrFiles = false;
+            }
+            return $arrFiles;
+        }
     }
 
     $objNarroImporter = new NarroSelfFileImporter();
-    $objNarroImporter->Language = NarroLanguage::LoadByLanguageCode('ro');
     $objNarroImporter->Project = NarroProject::LoadByProjectName('Narro');
-    $objNarroImporter->Import();
+    foreach(NarroLanguage::LoadAll() as $objLanguage) {
+        $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
+        $objNarroImporter->TargetLanguage = $objLanguage;
+        $objNarroImporter->Import();
+    }
 ?>
