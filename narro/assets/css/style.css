@@ -160,3 +160,11 @@ td.datagrid_footer {
     color: #FFFFFF;
     height: 30px;
 }
+
+.ltr {
+    direction: ltr;
+}
+
+.rtl {
+    direction: rtl;
+}
