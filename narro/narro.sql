@@ -1,30 +1,29 @@
-/*
-;
-; Narro is an application that allows online software translation and maintenance.
-; Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
-; http://code.google.com/p/narro/
-;
-; This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
-; License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any
-; later version.
-;
-; This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-; implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-; more details.
-;
-; You should have received a copy of the GNU General Public License along with this program; if not, write to the
-; Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-;
-*/
-
+/**
+ * Narro is an application that allows online software translation and maintenance.
+ * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+ * http://code.google.com/p/narro/
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any
+ * later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+ * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ */
 DROP INDEX language_name ON narro_language;
 DROP INDEX language_code ON narro_language;
 DROP INDEX permission_name ON narro_permission;
-DROP INDEX project_name ON narro_project;
+DROP INDEX project_type ON narro_project_type;
 DROP INDEX string_value_md5 ON narro_text;
 DROP INDEX username ON narro_user;
 DROP INDEX email ON narro_user;
 DROP INDEX UQ_qdrupal_narro_file_type_1 ON narro_file_type;
+DROP INDEX project_name ON narro_project;
+DROP INDEX project_type ON narro_project;
 DROP INDEX file_name ON narro_file;
 DROP INDEX type_id ON narro_file;
 DROP INDEX project_id ON narro_file;
@@ -34,12 +33,11 @@ DROP INDEX file_id ON narro_context;
 DROP INDEX project_id ON narro_context;
 DROP INDEX context_id ON narro_context_plural;
 DROP INDEX text_id ON narro_context_plural;
-DROP INDEX unique_text_suggestion ON narro_suggestion;
+DROP INDEX text_id_2 ON narro_suggestion;
 DROP INDEX user_id ON narro_suggestion;
 DROP INDEX text_id ON narro_suggestion;
 DROP INDEX language_id ON narro_suggestion;
-DROP INDEX text_id_2 ON narro_suggestion;
-DROP INDEX context_id_4 ON narro_context_info;
+DROP INDEX context_id_2 ON narro_context_info;
 DROP INDEX context_id ON narro_context_info;
 DROP INDEX language_id ON narro_context_info;
 DROP INDEX suggestion_id ON narro_context_info;
@@ -58,11 +56,13 @@ DROP INDEX suggestion_id ON narro_suggestion_vote;
 DROP INDEX text_id ON narro_suggestion_vote;
 DROP INDEX suggestion_id_2 ON narro_suggestion_vote;
 DROP INDEX user_id ON narro_suggestion_vote;
+DROP INDEX context_id ON narro_suggestion_vote;
 DROP INDEX user_id_2 ON narro_user_permission;
 DROP INDEX user_id ON narro_user_permission;
 DROP INDEX permission_id ON narro_user_permission;
 DROP INDEX project_id ON narro_user_permission;
 DROP INDEX language_id ON narro_user_permission;
+DROP INDEX context_id_2 ON narro_context_comment;
 DROP INDEX context_id ON narro_context_comment;
 DROP INDEX user_id ON narro_context_comment;
 DROP INDEX language_id ON narro_context_comment;
@@ -78,10 +78,11 @@ DROP TABLE IF EXISTS narro_suggestion;
 DROP TABLE IF EXISTS narro_context_plural;
 DROP TABLE IF EXISTS narro_context;
 DROP TABLE IF EXISTS narro_file;
+DROP TABLE IF EXISTS narro_project;
 DROP TABLE IF EXISTS narro_file_type;
 DROP TABLE IF EXISTS narro_user;
 DROP TABLE IF EXISTS narro_text;
-DROP TABLE IF EXISTS narro_project;
+DROP TABLE IF EXISTS narro_project_type;
 DROP TABLE IF EXISTS narro_permission;
 DROP TABLE IF EXISTS narro_language;
 
@@ -89,7 +90,9 @@ CREATE TABLE narro_language (
        language_id INT(10) NOT NULL AUTO_INCREMENT
      , language_name VARCHAR(128) NOT NULL
      , language_code VARCHAR(6) NOT NULL
+     , country_code VARCHAR(6) NOT NULL
      , encoding VARCHAR(10) NOT NULL
+     , text_direction VARCHAR(3) NOT NULL DEFAULT 'ltr'
 );
 CREATE UNIQUE INDEX language_name ON narro_language (language_name ASC);
 CREATE UNIQUE INDEX language_code ON narro_language (language_code ASC);
@@ -100,12 +103,11 @@ CREATE TABLE narro_permission (
 );
 CREATE UNIQUE INDEX permission_name ON narro_permission (permission_name ASC);
 
-CREATE TABLE narro_project (
-       project_id INT(10) NOT NULL AUTO_INCREMENT
-     , project_name VARCHAR(255) NOT NULL
-     , active TINYINT(3) NOT NULL DEFAULT 1
+CREATE TABLE narro_project_type (
+       project_type_id SMALLINT(5) NOT NULL AUTO_INCREMENT
+     , project_type VARCHAR(64) NOT NULL
 );
-CREATE UNIQUE INDEX project_name ON narro_project (project_name ASC);
+CREATE UNIQUE INDEX project_type ON narro_project_type (project_type ASC);
 
 CREATE TABLE narro_text (
        text_id BIGINT(20) NOT NULL AUTO_INCREMENT
@@ -130,6 +132,14 @@ CREATE TABLE narro_file_type (
      , file_type VARCHAR(32) NOT NULL
 );
 CREATE UNIQUE INDEX UQ_qdrupal_narro_file_type_1 ON narro_file_type (file_type ASC);
+
+CREATE TABLE narro_project (
+       project_id INT(10) NOT NULL AUTO_INCREMENT
+     , project_name VARCHAR(255) NOT NULL
+     , project_type SMALLINT(5) NOT NULL
+     , active TINYINT(3) NOT NULL DEFAULT 1
+);
+CREATE UNIQUE INDEX project_name ON narro_project (project_name ASC);
 
 CREATE TABLE narro_file (
        file_id INT(10) NOT NULL AUTO_INCREMENT
@@ -169,8 +179,7 @@ CREATE TABLE narro_suggestion (
      , suggestion_value_md5 VARCHAR(128) NOT NULL
      , suggestion_char_count INT(10) NOT NULL
 );
-CREATE UNIQUE INDEX unique_text_suggestion ON narro_suggestion (text_id ASC, suggestion_value_md5 ASC, language_id ASC);
-CREATE INDEX text_id_2 ON narro_suggestion (text_id ASC, language_id ASC);
+CREATE UNIQUE INDEX text_id_2 ON narro_suggestion (text_id ASC, language_id ASC, suggestion_value_md5 ASC);
 
 CREATE TABLE narro_context_info (
        context_info_id BIGINT(20) NOT NULL AUTO_INCREMENT
@@ -180,8 +189,11 @@ CREATE TABLE narro_context_info (
      , popular_suggestion_id BIGINT(20)
      , has_suggestions BIT(1) NOT NULL DEFAULT 0
      , has_plural BIT(1) NOT NULL DEFAULT 0
+     , has_comments BIT(1) NOT NULL DEFAULT 0
+     , text_access_key VARCHAR(2)
+     , suggestion_access_key VARCHAR(2)
 );
-CREATE UNIQUE INDEX context_id_4 ON narro_context_info (context_id ASC, language_id ASC);
+CREATE UNIQUE INDEX context_id_2 ON narro_context_info (context_id ASC, language_id ASC);
 
 CREATE TABLE narro_context_plural_info (
        plural_info_id BIGINT(20) NOT NULL AUTO_INCREMENT
@@ -210,11 +222,12 @@ CREATE TABLE narro_suggestion_comment (
 
 CREATE TABLE narro_suggestion_vote (
        suggestion_id BIGINT(20) NOT NULL
+     , context_id BIGINT(20) NOT NULL
      , text_id BIGINT(20) NOT NULL
      , user_id INT(10) NOT NULL
      , vote_value TINYINT(3) NOT NULL
 );
-CREATE UNIQUE INDEX suggestion_id ON narro_suggestion_vote (suggestion_id ASC, text_id ASC, user_id ASC);
+CREATE UNIQUE INDEX suggestion_id ON narro_suggestion_vote (suggestion_id ASC, text_id ASC, user_id ASC, context_id ASC);
 
 CREATE TABLE narro_user_permission (
        user_permission_id INT(10) NOT NULL AUTO_INCREMENT
@@ -231,7 +244,9 @@ CREATE TABLE narro_context_comment (
      , user_id INT(11) NOT NULL
      , language_id INT(10) NOT NULL
      , comment_text TEXT NOT NULL
+     , comment_text_md5 VARCHAR(128) NOT NULL
 );
+CREATE UNIQUE INDEX context_id_2 ON narro_context_comment (context_id ASC, language_id ASC, comment_text_md5 ASC);
 
 ALTER TABLE narro_language
   ADD CONSTRAINT PK_NARRO_LANGUAGE_PRIMARY
@@ -241,9 +256,9 @@ ALTER TABLE narro_permission
   ADD CONSTRAINT PK_NARRO_PERMISSION_PRIMARY
       PRIMARY KEY (permission_id);
 
-ALTER TABLE narro_project
-  ADD CONSTRAINT PK_NARRO_PROJECT_PRIMARY
-      PRIMARY KEY (project_id);
+ALTER TABLE narro_project_type
+  ADD CONSTRAINT PK_NARRO_PROJECT_TYPE_PRIMARY
+      PRIMARY KEY (project_type_id);
 
 ALTER TABLE narro_text
   ADD CONSTRAINT PK_NARRO_TEXT_PRIMARY
@@ -256,6 +271,10 @@ ALTER TABLE narro_user
 ALTER TABLE narro_file_type
   ADD CONSTRAINT PK_NARRO_FILE_TYPE_PRIMARY
       PRIMARY KEY (file_type_id);
+
+ALTER TABLE narro_project
+  ADD CONSTRAINT PK_NARRO_PROJECT_PRIMARY
+      PRIMARY KEY (project_id);
 
 ALTER TABLE narro_file
   ADD CONSTRAINT PK_NARRO_FILE_PRIMARY
@@ -297,24 +316,31 @@ ALTER TABLE narro_context_comment
   ADD CONSTRAINT PK_NARRO_CONTEXT_COMMENT_PRIMARY
       PRIMARY KEY (comment_id);
 
-ALTER TABLE narro_file
-  ADD CONSTRAINT narro_file_ibfk_1
-      FOREIGN KEY (parent_id)
-      REFERENCES narro_file (file_id)
+ALTER TABLE narro_project
+  ADD CONSTRAINT narro_project_ibfk_1
+      FOREIGN KEY (project_type)
+      REFERENCES narro_project_type (project_type_id)
    ON DELETE NO ACTION
    ON UPDATE NO ACTION;
 
 ALTER TABLE narro_file
-  ADD CONSTRAINT narro_file_ibfk_2
-      FOREIGN KEY (type_id)
-      REFERENCES narro_file_type (file_type_id)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION;
-
-ALTER TABLE narro_file
-  ADD CONSTRAINT narro_file_ibfk_3
+  ADD CONSTRAINT narro_file_ibfk_10
       FOREIGN KEY (project_id)
       REFERENCES narro_project (project_id)
+   ON DELETE NO ACTION
+   ON UPDATE NO ACTION;
+
+ALTER TABLE narro_file
+  ADD CONSTRAINT narro_file_ibfk_4
+      FOREIGN KEY (parent_id)
+      REFERENCES narro_file (file_id)
+   ON DELETE CASCADE
+   ON UPDATE CASCADE;
+
+ALTER TABLE narro_file
+  ADD CONSTRAINT narro_file_ibfk_9
+      FOREIGN KEY (type_id)
+      REFERENCES narro_file_type (file_type_id)
    ON DELETE NO ACTION
    ON UPDATE NO ACTION;
 
@@ -375,32 +401,32 @@ ALTER TABLE narro_suggestion
    ON UPDATE NO ACTION;
 
 ALTER TABLE narro_context_info
-  ADD CONSTRAINT narro_context_info_ibfk_3
+  ADD CONSTRAINT narro_context_info_ibfk_10
+      FOREIGN KEY (popular_suggestion_id)
+      REFERENCES narro_suggestion (suggestion_id)
+   ON DELETE SET NULL
+   ON UPDATE SET NULL;
+
+ALTER TABLE narro_context_info
+  ADD CONSTRAINT narro_context_info_ibfk_7
       FOREIGN KEY (context_id)
       REFERENCES narro_context (context_id)
    ON DELETE NO ACTION
    ON UPDATE NO ACTION;
 
 ALTER TABLE narro_context_info
-  ADD CONSTRAINT narro_context_info_ibfk_4
+  ADD CONSTRAINT narro_context_info_ibfk_8
       FOREIGN KEY (language_id)
       REFERENCES narro_language (language_id)
    ON DELETE NO ACTION
    ON UPDATE NO ACTION;
 
 ALTER TABLE narro_context_info
-  ADD CONSTRAINT narro_context_info_ibfk_5
+  ADD CONSTRAINT narro_context_info_ibfk_9
       FOREIGN KEY (valid_suggestion_id)
       REFERENCES narro_suggestion (suggestion_id)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION;
-
-ALTER TABLE narro_context_info
-  ADD CONSTRAINT narro_context_info_ibfk_6
-      FOREIGN KEY (popular_suggestion_id)
-      REFERENCES narro_suggestion (suggestion_id)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION;
+   ON DELETE SET NULL
+   ON UPDATE SET NULL;
 
 ALTER TABLE narro_context_plural_info
   ADD CONSTRAINT narro_context_plural_info_ibfk_1
@@ -459,25 +485,32 @@ ALTER TABLE narro_suggestion_comment
    ON UPDATE NO ACTION;
 
 ALTER TABLE narro_suggestion_vote
-  ADD CONSTRAINT narro_suggestion_vote_ibfk_3
+  ADD CONSTRAINT narro_suggestion_vote_ibfk_10
       FOREIGN KEY (suggestion_id)
       REFERENCES narro_suggestion (suggestion_id)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION;
+   ON DELETE CASCADE
+   ON UPDATE CASCADE;
 
 ALTER TABLE narro_suggestion_vote
-  ADD CONSTRAINT narro_suggestion_vote_ibfk_4
+  ADD CONSTRAINT narro_suggestion_vote_ibfk_7
+      FOREIGN KEY (context_id)
+      REFERENCES narro_context (context_id)
+   ON DELETE CASCADE
+   ON UPDATE CASCADE;
+
+ALTER TABLE narro_suggestion_vote
+  ADD CONSTRAINT narro_suggestion_vote_ibfk_8
       FOREIGN KEY (text_id)
       REFERENCES narro_text (text_id)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION;
+   ON DELETE CASCADE
+   ON UPDATE CASCADE;
 
 ALTER TABLE narro_suggestion_vote
-  ADD CONSTRAINT narro_suggestion_vote_ibfk_5
+  ADD CONSTRAINT narro_suggestion_vote_ibfk_9
       FOREIGN KEY (user_id)
       REFERENCES narro_user (user_id)
-   ON DELETE NO ACTION
-   ON UPDATE NO ACTION;
+   ON DELETE CASCADE
+   ON UPDATE CASCADE;
 
 ALTER TABLE narro_user_permission
   ADD CONSTRAINT narro_user_permission_ibfk_12
