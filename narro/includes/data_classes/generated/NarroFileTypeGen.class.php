@@ -18,43 +18,43 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class NarroFileTypeGen extends QBaseClass {
-		const PoGettext = 1;
-		const SdfOpenOffice = 2;
-		const Dosar = 3;
-		const DtdMozilla = 4;
-		const IniProperties = 5;
-		const Php = 6;
-		const IncMozilla = 7;
+		const GettextPo = 1;
+		const OpenOfficeSdf = 2;
+		const Folder = 3;
+		const MozillaDtd = 4;
+		const MozillaIni = 5;
+		const Narro = 6;
+		const MozillaInc = 7;
 
 		const MaxId = 7;
 
 		public static $NameArray = array(
-			1 => 'PoGettext',
-			2 => 'SdfOpenOffice',
-			3 => 'Dosar',
-			4 => 'DtdMozilla',
-			5 => 'IniProperties',
-			6 => 'Php',
-			7 => 'IncMozilla');
+			1 => 'GettextPo',
+			2 => 'OpenOfficeSdf',
+			3 => 'Folder',
+			4 => 'MozillaDtd',
+			5 => 'MozillaIni',
+			6 => 'Narro',
+			7 => 'MozillaInc');
 
 		public static $TokenArray = array(
-			1 => 'PoGettext',
-			2 => 'SdfOpenOffice',
-			3 => 'Dosar',
-			4 => 'DtdMozilla',
-			5 => 'IniProperties',
-			6 => 'Php',
-			7 => 'IncMozilla');
+			1 => 'GettextPo',
+			2 => 'OpenOfficeSdf',
+			3 => 'Folder',
+			4 => 'MozillaDtd',
+			5 => 'MozillaIni',
+			6 => 'Narro',
+			7 => 'MozillaInc');
 
 		public static function ToString($intNarroFileTypeId) {
 			switch ($intNarroFileTypeId) {
-				case 1: return 'PoGettext';
-				case 2: return 'SdfOpenOffice';
-				case 3: return 'Dosar';
-				case 4: return 'DtdMozilla';
-				case 5: return 'IniProperties';
-				case 6: return 'Php';
-				case 7: return 'IncMozilla';
+				case 1: return 'GettextPo';
+				case 2: return 'OpenOfficeSdf';
+				case 3: return 'Folder';
+				case 4: return 'MozillaDtd';
+				case 5: return 'MozillaIni';
+				case 6: return 'Narro';
+				case 7: return 'MozillaInc';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroFileTypeId: %s', $intNarroFileTypeId));
 			}
@@ -62,13 +62,13 @@
 
 		public static function ToToken($intNarroFileTypeId) {
 			switch ($intNarroFileTypeId) {
-				case 1: return 'PoGettext';
-				case 2: return 'SdfOpenOffice';
-				case 3: return 'Dosar';
-				case 4: return 'DtdMozilla';
-				case 5: return 'IniProperties';
-				case 6: return 'Php';
-				case 7: return 'IncMozilla';
+				case 1: return 'GettextPo';
+				case 2: return 'OpenOfficeSdf';
+				case 3: return 'Folder';
+				case 4: return 'MozillaDtd';
+				case 5: return 'MozillaIni';
+				case 6: return 'Narro';
+				case 7: return 'MozillaInc';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroFileTypeId: %s', $intNarroFileTypeId));
 			}

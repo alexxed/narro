@@ -270,6 +270,7 @@
 
 			$objBuilder->AddSelectItem($strTableName . '.`project_id` AS ' . $strAliasPrefix . 'project_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`project_name` AS ' . $strAliasPrefix . 'project_name`');
+			$objBuilder->AddSelectItem($strTableName . '.`project_type` AS ' . $strAliasPrefix . 'project_type`');
 			$objBuilder->AddSelectItem($strTableName . '.`active` AS ' . $strAliasPrefix . 'active`');
 		}
 
@@ -352,6 +353,7 @@
 
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasPrefix . 'project_id', 'Integer');
 			$objToReturn->strProjectName = $objDbRow->GetColumn($strAliasPrefix . 'project_name', 'VarChar');
+			$objToReturn->intProjectType = $objDbRow->GetColumn($strAliasPrefix . 'project_type', 'Integer');
 			$objToReturn->intActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Integer');
 
 			// Instantiate Virtual Attributes
@@ -455,6 +457,38 @@
 				QQ::Equal(QQN::NarroProject()->ProjectName, $strProjectName)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroProject objects,
+		 * by ProjectType Index(es)
+		 * @param integer $intProjectType
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroProject[]
+		*/
+		public static function LoadArrayByProjectType($intProjectType, $objOptionalClauses = null) {
+			// Call NarroProject::QueryArray to perform the LoadArrayByProjectType query
+			try {
+				return NarroProject::QueryArray(
+					QQ::Equal(QQN::NarroProject()->ProjectType, $intProjectType),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroProjects
+		 * by ProjectType Index(es)
+		 * @param integer $intProjectType
+		 * @return int
+		*/
+		public static function CountByProjectType($intProjectType) {
+			// Call NarroProject::QueryCount to perform the CountByProjectType query
+			return NarroProject::QueryCount(
+				QQ::Equal(QQN::NarroProject()->ProjectType, $intProjectType)
+			);
+		}
 
 
 
@@ -486,9 +520,11 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `narro_project` (
 							`project_name`,
+							`project_type`,
 							`active`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strProjectName) . ',
+							' . $objDatabase->SqlVariable($this->intProjectType) . ',
 							' . $objDatabase->SqlVariable($this->intActive) . '
 						)
 					');
@@ -506,6 +542,7 @@
 							`narro_project`
 						SET
 							`project_name` = ' . $objDatabase->SqlVariable($this->strProjectName) . ',
+							`project_type` = ' . $objDatabase->SqlVariable($this->intProjectType) . ',
 							`active` = ' . $objDatabase->SqlVariable($this->intActive) . '
 						WHERE
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
@@ -604,6 +641,13 @@
 					 */
 					return $this->strProjectName;
 
+				case 'ProjectType':
+					/**
+					 * Gets the value for intProjectType (Not Null)
+					 * @return integer
+					 */
+					return $this->intProjectType;
+
 				case 'Active':
 					/**
 					 * Gets the value for intActive (Not Null)
@@ -700,6 +744,19 @@
 					 */
 					try {
 						return ($this->strProjectName = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ProjectType':
+					/**
+					 * Sets the value for intProjectType (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intProjectType = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1224,6 +1281,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_project.project_type
+		 * @var integer intProjectType
+		 */
+		protected $intProjectType;
+		const ProjectTypeDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_project.active
 		 * @var integer intActive
 		 */
@@ -1313,6 +1378,7 @@
 			$strToReturn = '<complexType name="NarroProject"><sequence>';
 			$strToReturn .= '<element name="ProjectId" type="xsd:int"/>';
 			$strToReturn .= '<element name="ProjectName" type="xsd:string"/>';
+			$strToReturn .= '<element name="ProjectType" type="xsd:int"/>';
 			$strToReturn .= '<element name="Active" type="xsd:int"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -1340,6 +1406,8 @@
 				$objToReturn->intProjectId = $objSoapObject->ProjectId;
 			if (property_exists($objSoapObject, 'ProjectName'))
 				$objToReturn->strProjectName = $objSoapObject->ProjectName;
+			if (property_exists($objSoapObject, 'ProjectType'))
+				$objToReturn->intProjectType = $objSoapObject->ProjectType;
 			if (property_exists($objSoapObject, 'Active'))
 				$objToReturn->intActive = $objSoapObject->Active;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -1382,6 +1450,8 @@
 					return new QQNode('project_id', 'integer', $this);
 				case 'ProjectName':
 					return new QQNode('project_name', 'string', $this);
+				case 'ProjectType':
+					return new QQNode('project_type', 'integer', $this);
 				case 'Active':
 					return new QQNode('active', 'integer', $this);
 				case 'NarroContextAsProject':
@@ -1414,6 +1484,8 @@
 					return new QQNode('project_id', 'integer', $this);
 				case 'ProjectName':
 					return new QQNode('project_name', 'string', $this);
+				case 'ProjectType':
+					return new QQNode('project_type', 'integer', $this);
 				case 'Active':
 					return new QQNode('active', 'integer', $this);
 				case 'NarroContextAsProject':
