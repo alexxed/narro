@@ -33,7 +33,7 @@
 
         public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
             if ($objProject->ProjectId == self::NARRO_PROJECT_ID)
-                self::UpdateTranslation($strText, $strSuggestion);
+                self::UpdateTranslation($strTranslation, $strTranslation);
 
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
