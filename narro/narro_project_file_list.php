@@ -36,7 +36,7 @@
             // Lookup Object PK information from Query String (if applicable)
             // Set mode to Edit or New depending on what's found
             $intProjectId = QApplication::QueryString('p');
-            if ($intProjectId) {
+            if ($intProjectId > 0) {
                 $this->objNarroProject = NarroProject::Load(($intProjectId));
 
                 if (!$this->objNarroProject)
@@ -92,7 +92,7 @@
         }
 
         public function dtgNarroFile_PercentTranslated_Render(NarroFile $objNarroFile) {
-            if ($objNarroFile->TypeId != NarroFileType::Dosar) {
+            if ($objNarroFile->TypeId != NarroFileType::Folder) {
                 $sOutput = '';
 
                 $objDatabase = QApplication::$Database[1];
@@ -144,7 +144,7 @@
         }
 
         public function dtgNarroFile_FileNameColumn_Render(NarroFile $objNarroFile) {
-            if ($objNarroFile->TypeId != NarroFileType::Dosar)
+            if ($objNarroFile->TypeId != NarroFileType::Folder)
                 return sprintf('<a href="narro_file_text_list.php?p=%d&f=%s">%s</a>',
                     $this->objNarroProject->ProjectId,
                     $objNarroFile->FileId,
@@ -171,19 +171,19 @@
                 if ($this->chkShowFolders->Checked)
                     $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount($objCommonCondition);
                 else
-                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Dosar) ));
+                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder) ));
             }
             elseif ($this->objParentFile) {
                 if ($this->chkShowFolders->Checked)
                     $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, QQ::Equal(QQN::NarroFile()->ParentId, $this->objParentFile->FileId)));
                 else
-                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, QQ::Equal(QQN::NarroFile()->ParentId, $this->objParentFile->FileId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Dosar)));
+                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, QQ::Equal(QQN::NarroFile()->ParentId, $this->objParentFile->FileId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder)));
             }
             else {
                 if ($this->chkShowFolders->Checked)
                     $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, QQ::IsNull(QQN::NarroFile()->ParentId)));
                 else
-                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, QQ::IsNull(QQN::NarroFile()->ParentId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Dosar)));
+                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, QQ::IsNull(QQN::NarroFile()->ParentId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder)));
             }
 
             // Setup the $objClauses Array
@@ -203,19 +203,19 @@
                 if ($this->chkShowFolders->Checked)
                     $this->dtgNarroFile->DataSource = NarroFile::QueryArray($objCommonCondition, $objClauses);
                 else
-                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Dosar) ), $objClauses);
+                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder) ), $objClauses);
             }
             elseif ($this->objParentFile) {
                 if ($this->chkShowFolders->Checked)
                     $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::Equal(QQN::NarroFile()->ParentId, $this->objParentFile->FileId)), $objClauses);
                 else
-                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::Equal(QQN::NarroFile()->ParentId, $this->objParentFile->FileId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Dosar)), $objClauses);
+                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::Equal(QQN::NarroFile()->ParentId, $this->objParentFile->FileId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder)), $objClauses);
             }
             else {
                 if ($this->chkShowFolders->Checked)
                     $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::IsNull(QQN::NarroFile()->ParentId)), $objClauses);
                 else
-                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::IsNull(QQN::NarroFile()->ParentId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Dosar)), $objClauses);
+                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::IsNull(QQN::NarroFile()->ParentId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder)), $objClauses);
             }
 
         }

@@ -25,14 +25,15 @@
         protected function SetupNarroObject() {
             // Lookup Object PK information from Query String (if applicable)
             $intFileId = QApplication::QueryString('f');
+            $intProjectId = QApplication::QueryString('p');
             if (($intFileId)) {
                 $this->objNarroFile = NarroFile::Load(($intFileId));
 
                 if (!$this->objNarroFile)
-                    QApplication::Redirect('narro_project_file_list.php?p=' . $this->objNarroFile->Project->ProjectId);
+                    QApplication::Redirect('narro_project_file_list.php?p=' . $intProjectId);
 
             } else
-                QApplication::Redirect('narro_project_file_list.php?p=' . $this->objNarroFile->Project->ProjectId);
+                QApplication::Redirect('narro_project_file_list.php?p=' . $intProjectId);
         }
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo) {

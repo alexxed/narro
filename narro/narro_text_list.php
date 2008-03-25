@@ -72,6 +72,7 @@
                 '<?= $_FORM->dtgNarroContextInfo_TranslatedText_Render($_ITEM); ?>'
             );
             $this->colTranslatedText->HtmlEntities = false;
+            $this->colTranslatedText->CssClass = QApplication::$objUser->Language->TextDirection;
             $this->colActions = new QDataGridColumn(
                 t('Actions'),
                 '<?= $_FORM->dtgNarroContextInfo_Actions_Render($_ITEM); ?>'
@@ -151,12 +152,16 @@
             if (!is_null($objNarroContextInfo->Context->Text)) {
                 $strText = QApplication::$objPluginHandler->DisplayText($objNarroContextInfo->Context->Text->TextValue);
 
+                if (!$strText)
+                    $strText = $objNarroContextInfo->Context->Text->TextValue;
+                $strText = (strlen($strText)>100)?substr($strText, 0, 100) . '...':$strText;
+
+                $strText = htmlentities($strText, null, 'utf-8');
+
                 if ($objNarroContextInfo->TextAccessKey)
                     $strText = preg_replace('/' . $objNarroContextInfo->TextAccessKey . '/', '<u>' . $objNarroContextInfo->TextAccessKey . '</u>', $strText, 1);
 
-                if (!$strText)
-                    $strText = $objNarroContextInfo->Context->Text->TextValue;
-                return (strlen($strText)>100)?substr($strText, 0, 100) . '...':$strText;
+                return $strText;
             }
             else
                 return null;
@@ -186,7 +191,9 @@
 
 
                 $strSuggestionValue = (strlen($strSuggestionValue)>100)?substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
+
                 $strSuggestionValue = htmlentities($strSuggestionValue, null, 'utf-8');
+
                 if ($objNarroContextInfo->SuggestionAccessKey)
                     $strSuggestionValue = preg_replace('/' . $objNarroContextInfo->SuggestionAccessKey . '/', '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $strSuggestionValue, 1);
 
