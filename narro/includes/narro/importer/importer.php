@@ -98,8 +98,8 @@
 
         $objNarroImporter->ImportProjectArchive($strArchiveFile);
 
-        NarroLog::LogMessage(2, var_export($objNarroImporter->Statistics, true));
-        NarroLog::LogMessage(3, sprintf(t('Import took %d seconds'), $objNarroImporter->Statistics['End time'] - $objNarroImporter->Statistics['Start time']));
+        NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
+        NarroLog::LogMessage(3, sprintf(t('Import took %d seconds'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
 
      }
      elseif (in_array('--export-mozilla', $argv)) {
@@ -166,8 +166,8 @@
 
         $objNarroImporter->ExportProjectArchive($strArchiveFile);
 
-        NarroLog::LogMessage(2, var_export($objNarroImporter->Statistics, true));
-        NarroLog::LogMessage(2, sprintf(t('Export took %d seconds'), $objNarroImporter->Statistics['End time'] - $objNarroImporter->Statistics['Start time']));
+        NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
+        NarroLog::LogMessage(2, sprintf(t('Export took %d seconds'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
 
      }
 

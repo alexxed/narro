@@ -637,10 +637,10 @@
             $arrNarroText = NarroText::QueryArray(QQ::Equal(QQN::NarroText()->TextValue, $this->objNarroContextInfo->Context->Text->TextValue));
             if (count($arrNarroText)) {
                 foreach($arrNarroText as $objNarroText) {
-                    $arrNarroContextInfo = NarroContextInfo::QueryArray(QQ::AndCondition(QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId), QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $objNarroText->TextId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0)));
+                    $arrNarroContextInfo = NarroContextInfo::QueryArray(QQ::AndCondition(QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId), QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $objNarroText->TextId), QQ::Equal(QQN::NarroContextInfo()->Context->Text->HasSuggestions, 0)));
                         if (count($arrNarroContextInfo)) {
                             foreach($arrNarroContextInfo as $objNarroContextInfo) {
-                                $objNarroContextInfo->HasSuggestions = 1;
+                                
                                 if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $blnValidate && $this->objNarroContextInfo->ContextId == $objNarroContext->ContextId)
                                     $objNarroContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
                                 $objNarroContextInfo->Save();
@@ -649,8 +649,10 @@
 
                 }
             }
-
-            $this->objNarroContextInfo->HasSuggestions = 1;
+            
+            $this->objNarroContextInfo->Context->Text->HasSuggestions = 1;
+            $this->objNarroContextInfo->Context->Text->Save();
+            
             if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $blnValidate && $this->objNarroContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
                 $this->objNarroContextInfo->Save();

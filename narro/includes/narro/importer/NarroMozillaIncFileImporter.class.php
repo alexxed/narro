@@ -141,7 +141,7 @@
                         NarroImportStatistics::$arrStatistics['Texts that have access keys']++;
                     }
                     else
-                        NarroImportStatistics::$arrStatistics['Texts that don\'t have access keys']++;
+                        NarroImportStatistics::$arrStatistics["Texts that don't have access keys"]++;
                 }
                 else {
                     NarroLog::LogMessage(1, sprintf(t('In file "%s", the context "%s" does not have a valid suggestion.'), $objFile->FileName, $objNarroContextInfo->Context->Context));

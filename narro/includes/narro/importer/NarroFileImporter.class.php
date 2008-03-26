@@ -198,6 +198,7 @@
                 $objNarroText->TextValue = $strOriginal;
                 $objNarroText->TextValueMd5 = md5($strOriginal);
                 $objNarroText->TextCharCount = mb_strlen($strOriginal);
+                $objNarroText->HasSuggestions = 0;
 
                 try {
                     $objNarroText->Save();
@@ -263,7 +264,6 @@
                 $objContextInfo = new NarroContextInfo();
                 $objContextInfo->ContextId = $objNarroContext->ContextId;
                 $objContextInfo->LanguageId = $this->objTargetLanguage->LanguageId;
-                $objContextInfo->HasSuggestions = 0;
                 $objContextInfo->HasComments = 0;
                 $objContextInfo->HasPlural = 0;
                 $blnContextInfoChanged = true;
@@ -355,11 +355,6 @@
                     $objNarroSuggestion->SuggestionValueMd5 = md5($strTranslation);
                     $objNarroSuggestion->SuggestionCharCount = mb_strlen($strTranslation);
                     $objNarroSuggestion->Save();
-                    /**
-                     * update the HasSuggestions if it was 0 and we added a suggestion
-                     */
-                    if ($objContextInfo->HasSuggestions == 0 && $objNarroSuggestion instanceof NarroSuggestion )
-                        $objContextInfo->HasSuggestions = 1;
 
                     NarroImportStatistics::$arrStatistics['Imported suggestions']++;
                 }
@@ -374,7 +369,7 @@
                 }
             }
 
-            if ($objContextInfo->HasSuggestions == 0) {
+            if ($objNarroText->HasSuggestions == 0) {
                 $intSuggestionCnt = NarroSuggestion::QueryCount(
                                         QQ::AndCondition(
                                             QQ::Equal(
@@ -389,8 +384,8 @@
                 );
 
                 if ($intSuggestionCnt > 0) {
-                    $blnContextInfoChanged = true;
-                    $objContextInfo->HasSuggestions = 1;
+                    $objNarroText->HasSuggestions = 1;
+                    $objNarroText->Save();
                 }
             }
 

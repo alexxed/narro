@@ -26,14 +26,18 @@
     foreach(
         array
         (
-            'Texts that don\'t have access keys',
+            "Texts that don't have access keys",
             'Contexts to export',
             'Exported contexts',
             'Exported files',
             'Texts that have access keys',
             'Texts kept as original',
             'Orphan translation access keys',
-            'Texts without valid suggestions'
+            'Texts without valid suggestions',
+            'Skipped suggestions',
+            'Skipped contexts',
+            'Skipped texts',
+            'Texts that had errors while adding'
 
         )
         as $strPropertyName)

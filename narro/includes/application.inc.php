@@ -209,7 +209,7 @@
 
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
-    QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'ro', array('ro', 'fr', 'es-ES'));
+    QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'en_US', array('en_US'));
 
     if (isset($_SESSION['objUser']) && $_SESSION['objUser'] instanceof NarroUser)
         QApplication::$objUser = $_SESSION['objUser'];
@@ -221,13 +221,6 @@
         throw Exception('Could not create an instance of NarroUser');
 
     QApplication::$LanguageCode = QApplication::$objUser->Language->LanguageCode;
-
-    try {
-        QI18n::Initialize();
-    } catch (Exception $objEx) {
-        QApplication::$LanguageCode = 'en';
-        QI18n::Initialize();
-    }
 
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
     QForm::$FormStateHandler = 'QFileFormStateHandler';

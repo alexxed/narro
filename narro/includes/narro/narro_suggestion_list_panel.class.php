@@ -396,14 +396,9 @@
                 $objSuggestion->Delete();
 
                 if (NarroSuggestion::QueryCount(QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId)) == 0) {
-                    $arrCtx = NarroContextInfo::QueryArray(QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $this->objNarroContextInfo->Context->TextId));
 
-                    foreach($arrCtx as $objContext) {
-                        $objContext->HasSuggestions = 0;
-                        $objContext->Save();
-                    }
-
-                    $this->objNarroContextInfo->HasSuggestions = 0;
+                    $objSuggestion->Text->HasSuggestions = 0;
+                    $objSuggestion->Text->Save();
                 }
 
                 $this->lblMessage->Text = t('Suggestion succesfully deleted.');

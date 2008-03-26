@@ -36,7 +36,7 @@
         protected $objLanguage;
 
         const ANONYMOUS_USER_ID = 0;
-        const ANONYMOUS_LANGUAGE_ID = 1;
+        const ANONYMOUS_LANGUAGE_ID = 58;
         /**
         * Default "to string" handler
         * Allows pages to _p()/echo()/print() this object, and to define the default
