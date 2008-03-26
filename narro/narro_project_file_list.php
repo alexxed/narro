@@ -106,7 +106,7 @@
                     $mixRow = $objDbResult->FetchArray();
                     $intTotalTexts = $mixRow['cnt'];
 
-                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_text t WHERE c.context_id=ci.context_id AND c.text_id=t.text_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND t.has_suggestions=1 AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId, $objNarroFile->FileId);
+                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId, $objNarroFile->FileId);
 
                     // Perform the Query
                     $objDbResult = $objDatabase->Query($strQuery);

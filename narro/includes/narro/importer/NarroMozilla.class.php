@@ -21,6 +21,7 @@
          * @param array $arrTexts an array with context as keys and texts as values
          */
         public static function GetAccessKeys($arrTexts) {
+            $arrAccKey = array();
 
             if (is_array($arrTexts))
                 foreach($arrTexts as $strAccCtx=>$strAccKey) {

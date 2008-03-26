@@ -37,8 +37,21 @@
             'Skipped suggestions',
             'Skipped contexts',
             'Skipped texts',
-            'Texts that had errors while adding'
-
+            'Texts that had errors while adding',
+            'Imported files',
+            'Imported folders',
+            'Kept folders',
+            'Kept files',
+            'Imported texts',
+            'Imported contexts',
+            'Imported suggestions',
+            'Reused contexts',
+            'Texts without suggestions',
+            'Skipped contexts',
+            'Suggestions that kept the original text',
+            'Validated suggestions',
+            'Reused suggestions',
+            'Empty original texts'
         )
         as $strPropertyName)
         NarroImportStatistics::$arrStatistics[$strPropertyName] = 0;

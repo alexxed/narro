@@ -273,7 +273,6 @@
 			$objBuilder->AddSelectItem($strTableName . '.`language_id` AS ' . $strAliasPrefix . 'language_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`valid_suggestion_id` AS ' . $strAliasPrefix . 'valid_suggestion_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`popular_suggestion_id` AS ' . $strAliasPrefix . 'popular_suggestion_id`');
-			$objBuilder->AddSelectItem($strTableName . '.`has_suggestions` AS ' . $strAliasPrefix . 'has_suggestions`');
 		}
 
 
@@ -306,7 +305,6 @@
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasPrefix . 'language_id', 'Integer');
 			$objToReturn->intValidSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'valid_suggestion_id', 'Integer');
 			$objToReturn->intPopularSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'popular_suggestion_id', 'Integer');
-			$objToReturn->blnHasSuggestions = $objDbRow->GetColumn($strAliasPrefix . 'has_suggestions', 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -602,14 +600,12 @@
 							`plural_id`,
 							`language_id`,
 							`valid_suggestion_id`,
-							`popular_suggestion_id`,
-							`has_suggestions`
+							`popular_suggestion_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intPluralId) . ',
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
-							' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
-							' . $objDatabase->SqlVariable($this->blnHasSuggestions) . '
+							' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . '
 						)
 					');
 
@@ -628,8 +624,7 @@
 							`plural_id` = ' . $objDatabase->SqlVariable($this->intPluralId) . ',
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
-							`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
-							`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions) . '
+							`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . '
 						WHERE
 							`plural_info_id` = ' . $objDatabase->SqlVariable($this->intPluralInfoId) . '
 					');
@@ -747,13 +742,6 @@
 					 * @return integer
 					 */
 					return $this->intPopularSuggestionId;
-
-				case 'HasSuggestions':
-					/**
-					 * Gets the value for blnHasSuggestions (Not Null)
-					 * @return boolean
-					 */
-					return $this->blnHasSuggestions;
 
 
 				///////////////////
@@ -895,19 +883,6 @@
 					try {
 						$this->objPopularSuggestion = null;
 						return ($this->intPopularSuggestionId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'HasSuggestions':
-					/**
-					 * Sets the value for blnHasSuggestions (Not Null)
-					 * @param boolean $mixValue
-					 * @return boolean
-					 */
-					try {
-						return ($this->blnHasSuggestions = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1120,14 +1095,6 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_context_plural_info.has_suggestions
-		 * @var boolean blnHasSuggestions
-		 */
-		protected $blnHasSuggestions;
-		const HasSuggestionsDefault = null;
-
-
-		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -1204,7 +1171,6 @@
 			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
 			$strToReturn .= '<element name="ValidSuggestion" type="xsd1:NarroSuggestion"/>';
 			$strToReturn .= '<element name="PopularSuggestion" type="xsd1:NarroSuggestion"/>';
-			$strToReturn .= '<element name="HasSuggestions" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1245,8 +1211,6 @@
 			if ((property_exists($objSoapObject, 'PopularSuggestion')) &&
 				($objSoapObject->PopularSuggestion))
 				$objToReturn->PopularSuggestion = NarroSuggestion::GetObjectFromSoapObject($objSoapObject->PopularSuggestion);
-			if (property_exists($objSoapObject, 'HasSuggestions'))
-				$objToReturn->blnHasSuggestions = $objSoapObject->HasSuggestions;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1317,8 +1281,6 @@
 					return new QQNode('popular_suggestion_id', 'integer', $this);
 				case 'PopularSuggestion':
 					return new QQNodeNarroSuggestion('popular_suggestion_id', 'integer', $this);
-				case 'HasSuggestions':
-					return new QQNode('has_suggestions', 'boolean', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('plural_info_id', 'integer', $this);
@@ -1357,8 +1319,6 @@
 					return new QQNode('popular_suggestion_id', 'integer', $this);
 				case 'PopularSuggestion':
 					return new QQNodeNarroSuggestion('popular_suggestion_id', 'integer', $this);
-				case 'HasSuggestions':
-					return new QQNode('has_suggestions', 'boolean', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('plural_info_id', 'integer', $this);

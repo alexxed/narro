@@ -39,7 +39,7 @@
 
             $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_FORM->dtgNarroProject_Actions_Render($_ITEM) ?>');
             $this->colActions->HtmlEntities = false;
-            $this->colActions->Width = 160;
+            $this->colActions->Width = 300;
 
             // Setup DataGrid
             $this->dtgNarroProject = new QDataGrid($this);
@@ -74,7 +74,7 @@
                 $mixRow = $objDbResult->FetchArray();
                 $intTotalTexts = $mixRow['cnt'];
 
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci, narro_text t WHERE c.context_id=ci.context_id AND c.text_id=t.text_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND t.has_suggestions=1 AND c.active=1', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId);
 
                 // Perform the Query
                 $objDbResult = $objDatabase->Query($strQuery);
@@ -117,13 +117,21 @@
             $strOutput = '';
             //if (QApplication::$objUser->hasPermission('Can export', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) {
             if (QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID && $objNarroProject->ProjectType == NarroProjectType::Mozilla) {
+                if (!$btnExportButton = $this->GetControl('exportbut' . $objNarroProject->ProjectId)) {
+                    $btnExportButton = new QButton($this->dtgNarroProject, 'exportbut' . $objNarroProject->ProjectId);
+                    $btnExportButton->Text = t('Export');
+                    $btnExportButton->AddAction(new QClickEvent(), new QServerAction('btnExportButton_Click'));
+                    $btnExportButton->ActionParameter = $objNarroProject->ProjectId;
+                }
 
-                $btnExportButton = new QButton($this->dtgNarroProject, 'exportbut' . $objNarroProject->ProjectId);
-                $btnExportButton->Text = t('Export');
-                $btnExportButton->AddAction(new QClickEvent(), new QServerAction('btnExportButton_Click'));
-                $btnExportButton->ActionParameter = $objNarroProject->ProjectId;
+                if (!$btnImportButton = $this->GetControl('importbut' . $objNarroProject->ProjectId)) {
+                    $btnImportButton = new QButton($this->dtgNarroProject, 'importbut' . $objNarroProject->ProjectId);
+                    $btnImportButton->Text = t('Import');
+                    $btnImportButton->AddAction(new QClickEvent(), new QServerAction('btnImportButton_Click'));
+                    $btnImportButton->ActionParameter = $objNarroProject->ProjectId;
+                }
 
-                $strOutput .= $btnExportButton->Render(false);
+                $strOutput .= $btnImportButton->Render(false) . ' ' . $btnExportButton->Render(false);
             }
 
             return $strOutput;
@@ -151,7 +159,48 @@
             $this->dtgNarroProject->DataSource = NarroProject::LoadAll($objClauses);
         }
 
+        public function btnImportButton_Click($strFormId, $strControlId, $strParameter) {
+            $objControl = $this->GetControl($strControlId);
+            $objControl->Enabled = false;
+            $objControl->Text = t('Wait...');
+            require_once('NarroProjectImporter.class.php');
+            require_once('NarroFileImporter.class.php');
+            require_once('NarroMozillaIncFileImporter.class.php');
+            require_once('NarroMozillaDtdFileImporter.class.php');
+            require_once('NarroMozillaIniFileImporter.class.php');
+            require_once('NarroImportStatistics.class.php');
+            require_once('NarroLog.class.php');
+            require_once('NarroMozilla.class.php');
+
+            $objNarroImporter = new NarroProjectImporter();
+            $objNarroImporter->CheckEqual = true;
+
+            NarroLog::$blnEchoOutput = false;
+            NarroLog::$intMinLogLevel = 3;
+
+            $objNarroImporter->TargetLanguage = QApplication::$objUser->Language;
+
+            $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
+            if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
+                NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), 'en_US'));
+                return false;
+            }
+            $objNarroImporter->SourceLanguage->LanguageCode = 'en-US';
+
+            $objNarroImporter->Project = NarroProject::Load($strParameter);
+            $objNarroImporter->User = QApplication::$objUser;
+            $objNarroImporter->EchoOutput = false;
+
+            $objNarroImporter->ImportProjectArchive(sprintf('%s/%d', __IMPORT_PATH__, $objNarroImporter->Project->ProjectId));
+            $this->dtgNarroProject_Bind();
+            $objControl->Enabled = true;
+            $objControl->Text = t('Import');
+        }
+
         public function btnExportButton_Click($strFormId, $strControlId, $strParameter) {
+            $objControl = $this->GetControl($strControlId);
+            $objControl->Enabled = false;
+            $objControl->Text = t('Wait...');
             require_once('NarroProjectImporter.class.php');
             require_once('NarroFileImporter.class.php');
             require_once('NarroMozillaIncFileImporter.class.php');
@@ -174,8 +223,11 @@
 
             $objNarroImporter->Project = NarroProject::Load($strParameter);
             $objNarroImporter->User = QApplication::$objUser;
+            $objNarroImporter->EchoOutput = false;
 
             $objNarroImporter->ExportProjectArchive();
+            $objControl->Enabled = true;
+            $objControl->Text = t('Import');
             QApplication::Redirect(sprintf('%s/%d/%s-%s.tar.bz2', str_replace(__DOCROOT__, '', __IMPORT_PATH__) , $objNarroImporter->Project->ProjectId, $objNarroImporter->Project->ProjectName, $objNarroImporter->TargetLanguage->LanguageCode));
 
         }

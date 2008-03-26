@@ -272,7 +272,6 @@
 			$objBuilder->AddSelectItem($strTableName . '.`text_value` AS ' . $strAliasPrefix . 'text_value`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_value_md5` AS ' . $strAliasPrefix . 'text_value_md5`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_char_count` AS ' . $strAliasPrefix . 'text_char_count`');
-			$objBuilder->AddSelectItem($strTableName . '.`has_suggestions` AS ' . $strAliasPrefix . 'has_suggestions`');
 		}
 
 
@@ -368,7 +367,6 @@
 			$objToReturn->strTextValue = $objDbRow->GetColumn($strAliasPrefix . 'text_value', 'Blob');
 			$objToReturn->strTextValueMd5 = $objDbRow->GetColumn($strAliasPrefix . 'text_value_md5', 'VarChar');
 			$objToReturn->intTextCharCount = $objDbRow->GetColumn($strAliasPrefix . 'text_char_count', 'Integer');
-			$objToReturn->blnHasSuggestions = $objDbRow->GetColumn($strAliasPrefix . 'has_suggestions', 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -511,13 +509,11 @@
 						INSERT INTO `narro_text` (
 							`text_value`,
 							`text_value_md5`,
-							`text_char_count`,
-							`has_suggestions`
+							`text_char_count`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							' . $objDatabase->SqlVariable($this->strTextValueMd5) . ',
-							' . $objDatabase->SqlVariable($this->intTextCharCount) . ',
-							' . $objDatabase->SqlVariable($this->blnHasSuggestions) . '
+							' . $objDatabase->SqlVariable($this->intTextCharCount) . '
 						)
 					');
 
@@ -535,8 +531,7 @@
 						SET
 							`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							`text_value_md5` = ' . $objDatabase->SqlVariable($this->strTextValueMd5) . ',
-							`text_char_count` = ' . $objDatabase->SqlVariable($this->intTextCharCount) . ',
-							`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions) . '
+							`text_char_count` = ' . $objDatabase->SqlVariable($this->intTextCharCount) . '
 						WHERE
 							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
 					');
@@ -647,13 +642,6 @@
 					 * @return integer
 					 */
 					return $this->intTextCharCount;
-
-				case 'HasSuggestions':
-					/**
-					 * Gets the value for blnHasSuggestions (Not Null)
-					 * @return boolean
-					 */
-					return $this->blnHasSuggestions;
 
 
 				///////////////////
@@ -786,19 +774,6 @@
 					 */
 					try {
 						return ($this->intTextCharCount = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'HasSuggestions':
-					/**
-					 * Sets the value for blnHasSuggestions (Not Null)
-					 * @param boolean $mixValue
-					 * @return boolean
-					 */
-					try {
-						return ($this->blnHasSuggestions = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1485,14 +1460,6 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_text.has_suggestions
-		 * @var boolean blnHasSuggestions
-		 */
-		protected $blnHasSuggestions;
-		const HasSuggestionsDefault = null;
-
-
-		/**
 		 * Private member variable that stores a reference to a single NarroContextAsText object
 		 * (of type NarroContext), if this NarroText object was restored with
 		 * an expansion on the narro_context association table.
@@ -1592,7 +1559,6 @@
 			$strToReturn .= '<element name="TextValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="TextValueMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="TextCharCount" type="xsd:int"/>';
-			$strToReturn .= '<element name="HasSuggestions" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1623,8 +1589,6 @@
 				$objToReturn->strTextValueMd5 = $objSoapObject->TextValueMd5;
 			if (property_exists($objSoapObject, 'TextCharCount'))
 				$objToReturn->intTextCharCount = $objSoapObject->TextCharCount;
-			if (property_exists($objSoapObject, 'HasSuggestions'))
-				$objToReturn->blnHasSuggestions = $objSoapObject->HasSuggestions;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1669,8 +1633,6 @@
 					return new QQNode('text_value_md5', 'string', $this);
 				case 'TextCharCount':
 					return new QQNode('text_char_count', 'integer', $this);
-				case 'HasSuggestions':
-					return new QQNode('has_suggestions', 'boolean', $this);
 				case 'NarroContextAsText':
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextastext', 'reverse_reference', 'text_id');
 				case 'NarroContextPluralAsText':
@@ -1707,8 +1669,6 @@
 					return new QQNode('text_value_md5', 'string', $this);
 				case 'TextCharCount':
 					return new QQNode('text_char_count', 'integer', $this);
-				case 'HasSuggestions':
-					return new QQNode('has_suggestions', 'boolean', $this);
 				case 'NarroContextAsText':
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextastext', 'reverse_reference', 'text_id');
 				case 'NarroContextPluralAsText':

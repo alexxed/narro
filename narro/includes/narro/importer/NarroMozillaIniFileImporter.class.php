@@ -37,12 +37,14 @@
             $arrFileContents = split("\n", $strTranslatedFileContents);
             $arrTemplateContents = split("\n", $strTemplateContents);
 
+            $arrTranslation = array();
             foreach($arrFileContents as $intPos=>$strLine) {
                 if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches))
                     $arrTranslation[trim($arrMatches[1])] = trim($arrMatches[2]);
             }
 
             $strContext = '';
+            $arrTemplate = array();
             foreach($arrTemplateContents as $intPos=>$strLine) {
                 if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches)) {
                     $arrTemplate[trim($arrMatches[1])] = trim($arrMatches[2]);
@@ -69,11 +71,11 @@
                                 $objFile,
                                 $strVal,
                                 isset($arrTemplateAccKeys[$strKey])?$arrTemplateAccKeys[$strKey]:null,
-                                $arrTranslation[$strKey],
+                                isset($arrTranslation[$strKey])?$arrTranslation[$strKey]:null,
                                 isset($arrTranslationAccKeys[$strKey])?$arrTranslationAccKeys[$strKey]:null,
                                 trim($strKey),
                                 null,
-                                $arrTemplateComments[$strKey]
+                                isset($arrTemplateComments[$strKey])?$arrTemplateComments[$strKey]:null
                     );
                 }
             else

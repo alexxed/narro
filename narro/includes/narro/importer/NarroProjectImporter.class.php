@@ -33,7 +33,6 @@
          * the project object that is imported
          */
         protected $objProject;
-
         /**
          * whether to check if the suggestion value is the same as the original text
          * if it's true, the suggestions that are the same as the original text are not imported
@@ -47,6 +46,14 @@
          * whether to import only suggestions, that is don't add anything else than suggestions
          */
         protected $blnOnlySuggestions = false;
+        /**
+         * whether to make files inactive before import
+         */
+        protected $blnDeactivateFiles = false;
+        /**
+         * whether to make contexts inactive before import
+         */
+        protected $blnDeactivateContexts = false;
 
         public function ImportProjectArchive($strFile) {
 
@@ -105,20 +112,24 @@
 
             NarroLog::LogMessage(1, sprintf(t('Starting to process %d files using directory %s'), $intTotalFilesToProcess, $strDirectory));
 
-            $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
-            try {
-                $objDatabase->NonQuery($strQuery);
-            }catch (Exception $objEx) {
-                NarroLog::LogMessage(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-                return false;
+            if ($this->blnDeactivateFiles) {
+                $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
+                try {
+                    $objDatabase->NonQuery($strQuery);
+                }catch (Exception $objEx) {
+                    NarroLog::LogMessage(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                    return false;
+                }
             }
 
-            $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
-            try {
-                $objDatabase->NonQuery($strQuery);
-            }catch (Exception $objEx) {
-                NarroLog::LogMessage(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-                return false;
+            if ($this->blnDeactivateContexts) {
+                $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
+                try {
+                    $objDatabase->NonQuery($strQuery);
+                }catch (Exception $objEx) {
+                    NarroLog::LogMessage(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                    return false;
+                }
             }
 
             $arrDirectories = array();

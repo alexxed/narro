@@ -49,16 +49,6 @@
         protected $blnOnlySuggestions = false;
 
         public function __construct($objImporter = null) {
-            NarroImportStatistics::$arrStatistics['Imported files'] = 0;
-            NarroImportStatistics::$arrStatistics['Imported folders'] = 0;
-            NarroImportStatistics::$arrStatistics['Kept folders'] = 0;
-            NarroImportStatistics::$arrStatistics['Kept files'] = 0;
-            NarroImportStatistics::$arrStatistics['Imported texts'] = 0;
-            NarroImportStatistics::$arrStatistics['Imported contexts'] = 0;
-            NarroImportStatistics::$arrStatistics['Imported suggestions'] = 0;
-            NarroImportStatistics::$arrStatistics['Reused contexts'] = 0;
-            NarroImportStatistics::$arrStatistics['Texts without suggestions'] = 0;
-            NarroImportStatistics::$arrStatistics['Skipped contexts'] = 0;
 
             if ($objImporter instanceof NarroProjectImporter) {
                 $this->objUser = $objImporter->User;
@@ -198,7 +188,6 @@
                 $objNarroText->TextValue = $strOriginal;
                 $objNarroText->TextValueMd5 = md5($strOriginal);
                 $objNarroText->TextCharCount = mb_strlen($strOriginal);
-                $objNarroText->HasSuggestions = 0;
 
                 try {
                     $objNarroText->Save();
@@ -264,6 +253,7 @@
                 $objContextInfo = new NarroContextInfo();
                 $objContextInfo->ContextId = $objNarroContext->ContextId;
                 $objContextInfo->LanguageId = $this->objTargetLanguage->LanguageId;
+                $objContextInfo->HasSuggestions = 0;
                 $objContextInfo->HasComments = 0;
                 $objContextInfo->HasPlural = 0;
                 $blnContextInfoChanged = true;
@@ -355,6 +345,11 @@
                     $objNarroSuggestion->SuggestionValueMd5 = md5($strTranslation);
                     $objNarroSuggestion->SuggestionCharCount = mb_strlen($strTranslation);
                     $objNarroSuggestion->Save();
+                    /**
+                     * update the HasSuggestions if it was 0 and we added a suggestion
+                     */
+                    if ($objContextInfo->HasSuggestions == 0 && $objNarroSuggestion instanceof NarroSuggestion )
+                        $objContextInfo->HasSuggestions = 1;
 
                     NarroImportStatistics::$arrStatistics['Imported suggestions']++;
                 }
@@ -369,7 +364,7 @@
                 }
             }
 
-            if ($objNarroText->HasSuggestions == 0) {
+            if ($objContextInfo->HasSuggestions == 0) {
                 $intSuggestionCnt = NarroSuggestion::QueryCount(
                                         QQ::AndCondition(
                                             QQ::Equal(
@@ -384,8 +379,8 @@
                 );
 
                 if ($intSuggestionCnt > 0) {
-                    $objNarroText->HasSuggestions = 1;
-                    $objNarroText->Save();
+                    $blnContextInfoChanged = true;
+                    $objContextInfo->HasSuggestions = 1;
                 }
             }
 
