@@ -93,6 +93,7 @@
         NarroLog::LogMessage(3, sprintf(t('Source language is %s'), $objNarroImporter->SourceLanguage->LanguageCode));
 
         $objNarroImporter->SourceLanguage->LanguageCode = 'en-US';
+        $objNarroImporter->TargetLanguage->LanguageCode = str_replace('_', '-', $objNarroImporter->TargetLanguage->LanguageCode);
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
 

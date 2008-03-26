@@ -407,6 +407,8 @@
             }
 
             chdir($strDirectory);
+            if (file_exists(sprintf('%s-%s.tar.bz2', $this->objProject->ProjectName, $this->objTargetLanguage->LanguageCode)))
+                unlink(sprintf('%s-%s.tar.bz2', $this->objProject->ProjectName, $this->objTargetLanguage->LanguageCode));
             exec(sprintf('tar cjvf "%s-%s.tar.bz2" %s/* %s/*', $this->objProject->ProjectName, $this->objTargetLanguage->LanguageCode, $this->objSourceLanguage->LanguageCode, $this->objTargetLanguage->LanguageCode));
             NarroLog::LogMessage(2, sprintf('"%s/%s-%s.tar.bz2" created.', $strDirectory, $this->objProject->ProjectName, $this->objTargetLanguage->LanguageCode));
 
