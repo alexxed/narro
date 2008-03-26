@@ -258,7 +258,7 @@
             $strText = htmlspecialchars($this->objNarroContextInfo->Context->Text->TextValue,null,'utf-8');
             $strPageTitle =
                 sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
-                (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?substr($strText, 0, 30) . '...':$strText);
+                (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($strText, 0, 30) . '...':$strText);
 
             $this->pnlNavigator->Text .=  ' -> ' . $strPageTitle;
             $this->pnlNavigator->MarkAsModified();

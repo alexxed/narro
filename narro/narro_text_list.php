@@ -190,12 +190,10 @@
                     $strSuggestionValue = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
 
 
-                $strSuggestionValue = (strlen($strSuggestionValue)>100)?substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
-
-                $strSuggestionValue = htmlentities($strSuggestionValue, null, 'utf-8');
+                $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
 
                 if ($objNarroContextInfo->SuggestionAccessKey)
-                    $strSuggestionValue = preg_replace('/' . $objNarroContextInfo->SuggestionAccessKey . '/', '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $strSuggestionValue, 1);
+                    $strSuggestionValue = mb_ereg_replace($objNarroContextInfo->SuggestionAccessKey, '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $strSuggestionValue, 1);
 
                 return $strSuggestionValue;
             }
@@ -213,7 +211,7 @@
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objSuggestion->SuggestionValue;
 
-                $strSuggestionValue = (strlen($strSuggestionValue)>100)?substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
+                $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
 
                 return '<div style="color:green">' . htmlentities($strSuggestionValue, null, 'utf-8') . '</div>';
             }
@@ -240,7 +238,7 @@
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objSuggestion->SuggestionValue;
 
-                $strSuggestionValue = (strlen($strSuggestionValue)>100)?substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
+                $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
                 return '<div style="color:blue">' . htmlentities($strSuggestionValue, null, 'utf-8') . '</div>';
             }
             else {
