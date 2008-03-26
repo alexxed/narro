@@ -380,6 +380,20 @@
 
                 if ($intSuggestionCnt > 0) {
                     $blnContextInfoChanged = true;
+
+                    $arrContextInfo = NarroContextInfo::QueryArray(
+                            QQ::AndCondition(
+                                QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $objNarroText->TextId),
+                                QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId),
+                                QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0)
+                            )
+                    );
+
+                    foreach($arrContextInfo as $objOneContextInfo) {
+                        $objOneContextInfo->HasSuggestions = 1;
+                        $objOneContextInfo->Save();
+                    }
+
                     $objContextInfo->HasSuggestions = 1;
                 }
             }
