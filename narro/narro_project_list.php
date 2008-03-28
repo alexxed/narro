@@ -32,21 +32,20 @@
             // Setup DataGrid Columns
             $this->colProjectName = new QDataGridColumn(t('Project name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
             $this->colProjectName->HtmlEntities = false;
+            $this->colProjectName->Width = '40%';
 
             $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>');
             $this->colPercentTranslated->HtmlEntities = false;
-            $this->colPercentTranslated->Width = 160;
 
             $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_FORM->dtgNarroProject_Actions_Render($_ITEM) ?>');
             $this->colActions->HtmlEntities = false;
-            $this->colActions->Width = 300;
 
             // Setup DataGrid
             $this->dtgNarroProject = new QDataGrid($this);
 
             // Datagrid Paginator
             $this->dtgNarroProject->Paginator = new QPaginator($this->dtgNarroProject);
-            $this->dtgNarroProject->ItemsPerPage = 20;
+            $this->dtgNarroProject->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgNarroProject->UseAjax = false;
@@ -65,7 +64,7 @@
 
             $objDatabase = QApplication::$Database[1];
 
-            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c WHERE c.project_id=%d AND c.active=1', $objNarroProject->ProjectId);
+            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND c.active=1', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId);
 
             // Perform the Query
             $objDbResult = $objDatabase->Query($strQuery);
@@ -118,20 +117,25 @@
             //if (QApplication::$objUser->hasPermission('Can export', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) {
             if (QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID && $objNarroProject->ProjectType == NarroProjectType::Mozilla) {
                 if (!$btnExportButton = $this->GetControl('exportbut' . $objNarroProject->ProjectId)) {
-                    $btnExportButton = new QButton($this->dtgNarroProject, 'exportbut' . $objNarroProject->ProjectId);
+                    $btnExportButton = new QLinkButton($this->dtgNarroProject, 'exportbut' . $objNarroProject->ProjectId);
                     $btnExportButton->Text = t('Export');
                     $btnExportButton->AddAction(new QClickEvent(), new QServerAction('btnExportButton_Click'));
                     $btnExportButton->ActionParameter = $objNarroProject->ProjectId;
                 }
 
                 if (!$btnImportButton = $this->GetControl('importbut' . $objNarroProject->ProjectId)) {
-                    $btnImportButton = new QButton($this->dtgNarroProject, 'importbut' . $objNarroProject->ProjectId);
+                    $btnImportButton = new QLinkButton($this->dtgNarroProject, 'importbut' . $objNarroProject->ProjectId);
                     $btnImportButton->Text = t('Import');
                     $btnImportButton->AddAction(new QClickEvent(), new QServerAction('btnImportButton_Click'));
                     $btnImportButton->ActionParameter = $objNarroProject->ProjectId;
                 }
 
-                $strOutput .= $btnImportButton->Render(false) . ' ' . $btnExportButton->Render(false);
+                $strOutput .= 
+                    sprintf('<a href="narro_project_text_list.php?p=%d">%s</a> | ', $objNarroProject->ProjectId, t('Texts')) .
+                    sprintf('<a href="narro_project_file_list.php?p=%d">%s</a> | ', $objNarroProject->ProjectId, t('Files')) .
+                    sprintf('<a href="narro_project_language_list.php?p=%d">%s</a> | ', $objNarroProject->ProjectId, t('Languages')) . 
+                    $btnImportButton->Render(false) . ' | ' . 
+                    $btnExportButton->Render(false);
             }
 
             return $strOutput;
