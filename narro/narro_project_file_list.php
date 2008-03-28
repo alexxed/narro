@@ -69,9 +69,10 @@
 
             // Datagrid Paginator
             $this->dtgNarroFile->Paginator = new QPaginator($this->dtgNarroFile);
-            $this->dtgNarroFile->ItemsPerPage = 20;
+            $this->dtgNarroFile->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
             $this->dtgNarroFile->PaginatorAlternate = new QPaginator($this->dtgNarroFile);
-
+            $this->dtgNarroFile->SortColumnIndex = 0;
+            
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgNarroFile->UseAjax = false;
 
