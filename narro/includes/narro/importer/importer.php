@@ -31,13 +31,17 @@
     require_once(dirname(__FILE__) . '/NarroOpenOfficeSdfFileImporter.class.php');
     require_once(dirname(__FILE__) . '/NarroImportStatistics.class.php');
     require_once(dirname(__FILE__) . '/NarroLog.class.php');
+    require_once(dirname(__FILE__) . '/NarroRss.class.php');
     require_once(dirname(__FILE__) . '/NarroMozilla.class.php');
 
     if (in_array('--import-mozilla', $argv)) {
 
         $objNarroImporter = new NarroProjectImporter();
+
         NarroLog::$blnEchoOutput = false;
+
         $objNarroImporter->CheckEqual = true;
+        $objNarroImporter->Validate = true;
 
         if (array_search('--minloglevel', $argv))
             NarroLog::$intMinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
@@ -80,6 +84,8 @@
             return false;
         }
 
+        QApplication::$objUser->Language = $objLanguage;
+
         NarroLog::LogMessage(3, sprintf(t('Target language is %s'), $strTargetLanguage));
 
         $objNarroImporter->TargetLanguage = $objLanguage;
@@ -102,11 +108,14 @@
         NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
         NarroLog::LogMessage(3, sprintf(t('Import took %d seconds'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
 
+        NarroRss::Save($objNarroImporter->Project, $objNarroImporter->TargetLanguage);
+
      }
      elseif (in_array('--export-mozilla', $argv)) {
 
         $objNarroImporter = new NarroProjectImporter();
         NarroLog::$blnEchoOutput = false;
+        NarroLog::$strLogFile = 'exporter.log';
 
         if (array_search('--minloglevel', $argv))
             $objNarroImporter->MinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
@@ -148,6 +157,8 @@
             NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), $strTargetLanguage));
             return false;
         }
+
+        QApplication::$objUser->Language = $objLanguage;
 
         NarroLog::LogMessage(2, sprintf(t('Target language is %s'), $strTargetLanguage));
 
