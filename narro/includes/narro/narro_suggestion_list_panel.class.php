@@ -131,10 +131,11 @@
             $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objNarroSuggestion->SuggestionValue);
             if (!$strSuggestionValue)
                 $strSuggestionValue = $objNarroSuggestion->SuggestionValue;
-
+/**
+ * @todo Fix please. There are problems with html code.
             if ($objNarroSuggestion->LanguageId == QApplication::$objUser->Language->LanguageId)
                 $arrWordSuggestions = QApplication::GetSpellSuggestions($objNarroSuggestion->SuggestionValue);
-            else
+            else*/
                 $arrWordSuggestions = array();
 
             $strSuggestionValue = htmlentities($strSuggestionValue, null, 'utf-8');
@@ -388,7 +389,7 @@
 
                 $objSuggestion = NarroSuggestion::Load($strParameter);
 
-                QApplication::$objPluginHandler->DeleteSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $objSuggestion->SuggestionValue);
+                QApplication::$objPluginHandler->DeleteSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $objSuggestion->SuggestionValue, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
 
                 if (!QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && ($objSuggestion->UserId != QApplication::$objUser->UserId || QApplication::$objUser->UserId == NarroUser::ANONYMOUS_USER_ID ))
                   return false;
@@ -418,7 +419,7 @@
               return false;
 
             $objSuggestion = NarroSuggestion::Load($strParameter);
-            QApplication::$objPluginHandler->VoteSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $objSuggestion->SuggestionValue);
+            QApplication::$objPluginHandler->VoteSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $objSuggestion->SuggestionValue, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
 
             $arrSuggestion = NarroSuggestionVote::QueryArray(
                 QQ::AndCondition(
@@ -468,8 +469,10 @@
                     $txtControlId = str_replace('btnEditSuggestion', 'txtEditSuggestion', $strControlId);
                     $txtControl = $this->objForm->GetControl($txtControlId);
                     if ($txtControl) {
-                        $strSuggestionValue = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $txtControl->Text);
-                        if (!$strSuggestionValue)
+                        $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $txtControl->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+                        if (is_array($arrResult) && isset($arrResult[1]))
+                            $strSuggestionValue = $arrResult[1];
+                        else
                             $strSuggestionValue = $txtControl->Text;
 
                         $objSuggestion->SuggestionValue = $strSuggestionValue;
