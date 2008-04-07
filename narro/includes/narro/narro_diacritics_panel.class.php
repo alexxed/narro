@@ -29,40 +29,24 @@
                 throw $objExc;
             }
 
-            $this->SetCustomStyle('title', 'Diacritice şi semne de punctuaţie româneşti');
+            $this->SetCustomStyle('title', t('Special characters that might not be on your keyboard'));
         }
 
         public function GetControlHtml() {
-            $this->strText =
-                $this->GetLabelHtml('ă') .
-                $this->GetLabelHtml('î') .
-                $this->GetLabelHtml('â') .
-                $this->GetLabelHtml('ş') .
-                $this->GetLabelHtml('ţ') .
-                $this->GetLabelHtml('Ă') .
-                $this->GetLabelHtml('Î') .
-                $this->GetLabelHtml('Â') .
-                $this->GetLabelHtml('Ş') .
-                $this->GetLabelHtml('Ţ') .
-                $this->GetLabelHtml('„') .
-                $this->GetLabelHtml('”');
+            $this->strText = '';
+            for($i=0; $i<mb_strlen(QApplication::$objUser->getPreferenceValueByName('Special characters')); $i++) {
+                $objLabel = new QLabel($this);
+                $objLabel->Text = mb_substr(QApplication::$objUser->getPreferenceValueByName('Special characters'), $i, 1);
+                $objLabel->FontSize = 20;
+                $objLabel->Padding = 3;
+                $objLabel->AddAction(new QMouseOverEvent(), new QJavaScriptAction("this.style.backgroundColor='red'; this.style.color='white'; this.style.cursor='crosshair'"));
+                $objLabel->AddAction(new QMouseOutEvent(), new QJavaScriptAction("this.style.backgroundColor=''; this.style.color='black'; this.style.cursor='normal'"));
+                $objLabel->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf("qc.getControl('%s').value += '%s'; qc.getControl('%s').focus();", $this->strTextareaControlId, $objLabel->Text, $this->strTextareaControlId)));
+                
+                $this->strText .= $objLabel->Render(false);
+            }
 
             return $this->strText;
         }
-
-        protected function GetLabelHtml($strText) {
-            $objLabel = new QLabel($this);
-            $objLabel->Text = $strText;
-            $objLabel->FontSize = 20;
-            $objLabel->Padding = 3;
-            $objLabel->AddAction(new QMouseOverEvent(), new QJavaScriptAction("this.style.backgroundColor='red'; this.style.color='white'; this.style.cursor='crosshair'"));
-            $objLabel->AddAction(new QMouseOutEvent(), new QJavaScriptAction("this.style.backgroundColor=''; this.style.color='black'; this.style.cursor='normal'"));
-            $objLabel->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf("qc.getControl('%s').value += '%s'; qc.getControl('%s').focus();", $this->strTextareaControlId, $strText, $this->strTextareaControlId)));
-
-            return $objLabel->Render(false);
-        }
-
-
-
     }
 ?>
