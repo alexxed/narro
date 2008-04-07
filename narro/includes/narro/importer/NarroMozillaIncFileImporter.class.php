@@ -178,6 +178,11 @@
                     else
                         NarroLog::LogMessage(2, sprintf(t('Can\'t find "%s" in the file "%s"'), $strKey . $strGlue . $strOriginalText, $objFile->FileName));
 
+                    if (strstr($arrTranslation[$strKey], "\n")) {
+                        NarroLog::LogMessage(2, sprintf(t('Skpping translation "%s" because it has a newline in it'), $arrTranslation[$strKey]));
+                        continue;
+                    }
+
                 }
                 else {
                     NarroLog::LogMessage(1, sprintf(t('Couldn\'t find the key "%s" in the translations, using the original text.'), $strKey, $objFile->FileName));
@@ -192,6 +197,7 @@
                 NarroLog::LogMessage(2, sprintf(t('Can\'t write to file "%s"'), $strTranslatedFile));
             }
 
+            chmod($strTranslatedFile, 0666);
 
         }
 

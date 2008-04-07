@@ -49,11 +49,11 @@
         /**
          * whether to make files inactive before import
          */
-        protected $blnDeactivateFiles = false;
+        protected $blnDeactivateFiles = true;
         /**
          * whether to make contexts inactive before import
          */
-        protected $blnDeactivateContexts = false;
+        protected $blnDeactivateContexts = true;
 
         public function ImportProjectArchive($strFile) {
 
@@ -65,7 +65,7 @@
              */
             if (preg_match('/\.tar.bz2$/', $strFile)) {
                 NarroLog::LogMessage(1, sprintf(t('Got an archive, processing file "%s"'), $strFile));
-                $strWorkPath = sprintf('%s/%d', __IMPORT_PATH__, $this->objProject->ProjectId);
+                $strWorkPath = sprintf('%s/%d', __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__, $this->objProject->ProjectId);
 
                 if (!file_exists($strWorkPath) && !mkdir($strWorkPath)) {
                     NarroLog::LogMessage(3, sprintf(t('Could not create import directory "%s" for the project "%s"'), $strWorkPath, $this->objProject->ProjectName));
@@ -95,14 +95,41 @@
 
                 $this->ImportFromDirectory($strWorkPath);
             }
-            else
+            elseif(is_dir($strFile))
                 $this->ImportFromDirectory($strFile);
+            else
+                NarroLog::LogMessage(3, sprintf(t('"%s" is not a tar.bz2 archive nor an existing directory.'), $strFile));
 
             $this->stopTimer();
         }
 
         public function ImportFromDirectory($strDirectory) {
+
             $objDatabase = QApplication::$Database[1];
+
+            NarroLog::$strLogFile = $strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.log';
+
+            if (file_exists($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.pid'))
+                throw new Exception(sprintf(t('An export process is already running in the directory "%s" with pid %d'), $strDirectory, file_get_contents($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.pid')));
+
+            if (file_exists($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.status'))
+                throw new Exception(sprintf(t('An import process is already running in the directory "%s" although no pid is recorded. Status is: "%s"'), $strDirectory, file_get_contents($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.status')));
+
+
+            $hndPidFile = fopen($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.pid', 'w');
+
+            if (!$hndPidFile)
+                throw new Exception(sprintf(t('Cannot create %s in %s.'), 'import.pid', $strDirectory . '/' . $this->objTargetLanguage->LanguageCode));
+
+            $hndStatusFile = fopen($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.status', 'w');
+            if (!$hndStatusFile)
+                throw new Exception(sprintf(t('Cannot create %s in %s.'), 'import.status', $strDirectory . '/' . $this->objTargetLanguage->LanguageCode));
+
+            fputs($hndPidFile, getmypid());
+            fclose($hndPidFile);
+
+            fputs($hndStatusFile, '0');
+
 
             /**
              * get the file list with complete paths
@@ -244,7 +271,7 @@
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
 
-                $strTranslatedFileToImport = str_replace($strDirectory . '/' . $this->objSourceLanguage->LanguageCode, $strDirectory . '/' . str_replace('_', '-', $this->objTargetLanguage->LanguageCode), $strFileToImport);
+                $strTranslatedFileToImport = str_replace($strDirectory . '/' . str_replace('_', '-', $this->objSourceLanguage->LanguageCode), $strDirectory . '/' . str_replace('_', '-', $this->objTargetLanguage->LanguageCode), $strFileToImport);
 
                 $intTime = time();
                 if (file_exists($strTranslatedFileToImport))
@@ -256,9 +283,21 @@
                 $intElapsedTime = time() - $intTime;
                 NarroLog::LogMessage(1, sprintf(t('Processed file "%s" in %d seconds, %d files left'), str_replace($strDirectory . '/' . $this->objSourceLanguage->LanguageCode, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo)));
 
-                if ($intFileNo % 10 === 0)
+                ftruncate($hndStatusFile, 0);
+                fputs($hndStatusFile, (int) ceil(($intFileNo*100)/$intTotalFilesToProcess));
+
+                if ($intFileNo % 10 === 0) {
                     NarroLog::LogMessage(3, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
+                }
             }
+
+            fclose($hndStatusFile);
+
+            if (file_exists($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.pid'))
+                unlink($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.pid');
+            if (file_exists($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.status'))
+                unlink($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.status');
+
 
         }
 
@@ -302,7 +341,7 @@
              */
             if ($strFile && preg_match('/\.tar.bz2$/', $strFile)) {
                 NarroLog::LogMessage(1, sprintf(t('Got an archive, processing file "%s"'), $strFile));
-                $strWorkPath = sprintf('%s/%d/%d', __IMPORT_PATH__, $this->objProject->ProjectId, QApplication::$objUser->UserId);
+                $strWorkPath = sprintf('%s/%d/%d', __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__, $this->objProject->ProjectId, QApplication::$objUser->UserId);
 
                 if (!file_exists($strWorkPath) && !mkdir($strWorkPath)) {
                     NarroLog::LogMessage(3, sprintf(t('Could not create directory "%s" for the project "%s"'), $strWorkPath, $this->objProject->ProjectName));
@@ -324,11 +363,11 @@
             }
             /**
              * this would help if we export in the same directory where we import from
+            */
             elseif (file_exists($strFile) && is_dir($strFile))
                 $this->ExportFromDirectory($strFile);
-            */
             else
-                $this->ExportFromDirectory(sprintf('%s/%d', __IMPORT_PATH__, $this->objProject->ProjectId));
+                $this->ExportFromDirectory(sprintf('%s/%d', __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__, $this->objProject->ProjectId));
 
             $this->stopTimer();
         }
@@ -339,6 +378,29 @@
 
             chdir($strDirectory);
 
+            NarroLog::$strLogFile = $strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/export.log';
+
+            if (file_exists($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/export.pid'))
+                throw new Exception(sprintf(t('An export process is already running in the directory "%s" with pid %d'), $strDirectory, file_get_contents($strDirectory . '/export.pid')));
+
+            if (file_exists($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/export.status'))
+                throw new Exception(sprintf(t('An export process is already running in the directory "%s" although no pid is recorded. Status is: "%s"'), file_get_contents($strDirectory . '/export.status')));
+
+
+            $hndPidFile = fopen($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/export.pid', 'w');
+
+            if (!$hndPidFile)
+                throw new Exception(sprintf(t('Cannot create %s in %s.'), 'export.pid', $strDirectory));
+
+            $hndStatusFile = fopen($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/export.status', 'w');
+            if (!$hndStatusFile)
+                throw new Exception(sprintf(t('Cannot create %s in %s.'), 'export.status', $strDirectory));
+
+            fputs($hndPidFile, getmypid());
+            fclose($hndPidFile);
+
+            fputs($hndStatusFile, '0');
+
             if (!file_exists($this->objSourceLanguage->LanguageCode))
                 throw new Exception(sprintf(t('The directory "%s" should contain a directory named %s to be used as a template for exporting.'), $strDirectory, $this->objSourceLanguage->LanguageCode));
 
@@ -347,6 +409,7 @@
              */
             $arrFiles = $this->ListDir($strDirectory . '/' . $this->objSourceLanguage->LanguageCode);
             $intTotalFilesToProcess = count($arrFiles);
+
             NarroLog::LogMessage(1, sprintf(t('Starting to process %d files'), $intTotalFilesToProcess));
 
             $arrDirectories = array();
@@ -403,7 +466,7 @@
                     continue;
                 }
 
-                $strTranslatedFileToExport = str_replace($strDirectory . '/' . $this->objSourceLanguage->LanguageCode, $strDirectory . '/' . QApplication::$objUser->Language->LanguageCode, $strFileToExport);
+                $strTranslatedFileToExport = str_replace($strDirectory . '/' . $this->objSourceLanguage->LanguageCode, $strDirectory . '/' . $this->objTargetLanguage->LanguageCode, $strFileToExport);
 
                 if (!file_exists(dirname($strTranslatedFileToExport)))
                     mkdir(dirname($strTranslatedFileToExport), 0777, true);
@@ -413,9 +476,20 @@
                 $this->ExportFile($objFile, $strFileToExport, $strTranslatedFileToExport);
                 NarroImportStatistics::$arrStatistics['Exported files']++;
 
-                if ($intFileNo % 10 === 0)
-                    NarroLog::LogMessage(2, "Progres: " . ceil(($intFileNo*100)/$intTotalFilesToProcess) . "%");
+                ftruncate($hndStatusFile, 0);
+                fputs($hndStatusFile, (int) ceil(($intFileNo*100)/$intTotalFilesToProcess));
+
+                if ($intFileNo % 10 === 0) {
+                    NarroLog::LogMessage(3, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
+                }
             }
+
+            fclose($hndStatusFile);
+
+            if (file_exists($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/export.pid'))
+                unlink($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/export.pid');
+            if (file_exists($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/export.status'))
+                unlink($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/export.status');
 
             chdir($strDirectory);
             if (file_exists(sprintf('%s-%s.tar.bz2', $this->objProject->ProjectName, $this->objTargetLanguage->LanguageCode)))

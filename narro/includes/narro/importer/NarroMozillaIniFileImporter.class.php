@@ -86,8 +86,10 @@
         public function ExportFile($objFile, $strTemplateFile, $strTranslatedFile) {
             $strTemplateContents = file_get_contents($strTemplateFile);
 
-            if (!$strTemplateContents)
+            if (!$strTemplateContents) {
+                NarroLog::LogMessage(3, t('Found an empty template'));
                 return false;
+            }
 
             $strTemplateContents = str_replace("\\\n", '\\\n', $strTemplateContents);
 
@@ -104,7 +106,10 @@
 
             $strTranslateContents = '';
 
-            if (!isset($arrTemplate) || count($arrTemplate) < 1) return false;
+            if (!isset($arrTemplate) || count($arrTemplate) < 1) {
+                NarroLog::LogMessage(3, t('Found an empty template'));
+                return false;
+            }
 
             $arrTranslation = NarroMozilla::GetTranslations($objFile, $arrTemplate);
 
@@ -138,6 +143,11 @@
                         $strGlue = '=';
                     }
 
+                    if (strstr($arrTranslation[$strKey], "\n")) {
+                        NarroLog::LogMessage(2, sprintf(t('Skpping translation "%s" because it has a newline in it'), $arrTranslation[$strKey]));
+                        continue;
+                    }
+
                     if (strstr($strTranslateContents, $strKey . $strGlue . $strOriginalText))
                         $strTranslateContents = str_replace($strKey . $strGlue . $strOriginalText, $strKey . $strGlue . $arrTranslation[$strKey], $strTranslateContents);
                     else
@@ -153,9 +163,12 @@
             if (file_exists($strTranslatedFile) && !unlink($strTranslatedFile)) {
                 NarroLog::LogMessage(2, sprintf(t('Can\'t delete the file "%s"'), $strTranslatedFile));
             }
+
             if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
                 NarroLog::LogMessage(2, sprintf(t('Can\'t write to file "%s"'), $strTranslatedFile));
             }
+
+            chmod($strTranslatedFile, 0666);
         }
     }
 ?>

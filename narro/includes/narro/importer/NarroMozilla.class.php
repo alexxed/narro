@@ -63,16 +63,18 @@
                                  */
                                 $intPos = mb_stripos( $arrTexts[$strLabelCtx], $strAccKey);
                                 if ($intPos !== false) {
-                                    $strNewAcc = $arrTexts[$strLabelCtx][$intPos];
+                                    $strNewAcc = mb_substr($arrTexts[$strLabelCtx], $intPos, 1);
                                     $arrAccKey[$strLabelCtx] = $strNewAcc;
                                     unset($arrTexts[$strAccCtx]);
                                 }
                                 else {
-                                    //NarroLog::LogMessage(2, sprintf(t('Found access key %s does not exist in the label %s, using the first letter as accesskey'), $strAccKey, $arrTexts[$strLabelCtx]));
-                                    //$strNewAcc = $arrTexts[$strLabelCtx][0];
-                                    NarroLog::LogMessage(2, sprintf(t('Found access key %s does not exist in the label %s, dropping translation'), $strAccKey, $arrTexts[$strLabelCtx]));
+                                    NarroLog::LogMessage(2, sprintf(t('Found access key %s does not exist in the label %s, using the first letter as accesskey'), $strAccKey, $arrTexts[$strLabelCtx]));
+                                    $strNewAcc = mb_substr($arrTexts[$strLabelCtx], 0, 1);
+                                    $arrAccKey[$strLabelCtx] = $strNewAcc;
                                     unset($arrTexts[$strAccCtx]);
-                                    unset($arrTexts[$strLabelCtx]);
+//                                    NarroLog::LogMessage(2, sprintf(t('Found access key %s does not exist in the label %s, dropping translation'), $strAccKey, $arrTexts[$strLabelCtx]));
+//                                    unset($arrTexts[$strAccCtx]);
+//                                    unset($arrTexts[$strLabelCtx]);
                                 }
                             }
                             else
@@ -165,8 +167,8 @@
                         NarroImportStatistics::$arrStatistics['Orphan translation access keys']++;
                         continue;
                     }
-
-                    $arrTranslation[$strKey] = $arrTranslationKeys[$strMatchedKey];
+                    if (isset($arrTranslationKeys[$strMatchedKey]))
+                        $arrTranslation[$strKey] = $arrTranslationKeys[$strMatchedKey];
                 }
             }
 

@@ -138,8 +138,10 @@
         public function ExportFile($objFile, $strTemplateFile, $strTranslatedFile) {
             $strTemplateContents = file_get_contents($strTemplateFile);
 
-            if (!$strTemplateContents)
+            if (!$strTemplateContents) {
+                NarroLog::LogMessage(3, t('Found an empty template'));
                 return false;
+            }
 
             if (!preg_match_all('/^<!ENTITY\s+([^\s]+)\s+"([^"]*)"\s?>\s*/ms', $strTemplateContents, $arrTemplateMatches))
                 return false;
@@ -188,9 +190,12 @@
             if (file_exists($strTranslatedFile) && !unlink($strTranslatedFile)) {
                 NarroLog::LogMessage(2, sprintf(t('Can\'t delete the file "%s"'), $strTranslatedFile));
             }
+
             if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
                 NarroLog::LogMessage(2, sprintf(t('Can\'t write to file "%s"'), $strTranslatedFile));
             }
+
+            chmod($strTranslatedFile, 0666);
         }
     }
 ?>
