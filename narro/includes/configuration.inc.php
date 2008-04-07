@@ -23,6 +23,7 @@
     define('ADMIN_EMAIL_ADDRESS', 'alexxed@gmail.com');
     define ('__DOCROOT__', realpath(dirname(__FILE__) . '/../..'));
     define ('__VIRTUAL_DIRECTORY__', '');
+    define ('__HTTP_URL__', 'http://localhost');
     define ('__SUBDIRECTORY__', '/narro');
     define ('__URL_REWRITE__', 'none');
     define ('__DEVTOOLS_CLI__', __DOCROOT__ . __SUBDIRECTORY__ . '/_devtools_cli');
@@ -52,7 +53,8 @@
 
     define('__DICTIONARY_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/dictionaries');
     define('__TMP_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/tmp');
-    define('__IMPORT_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/import');
+    define('__IMPORT_PATH__', '/data/import');
+    define('__RSS_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/rss');
 
     define('DB_CONNECTION_1', serialize(array(
         'adapter' => 'MySqli5',
