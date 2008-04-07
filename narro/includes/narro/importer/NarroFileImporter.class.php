@@ -51,6 +51,7 @@
         public function __construct($objImporter = null) {
 
             if ($objImporter instanceof NarroProjectImporter) {
+
                 $this->objUser = $objImporter->User;
                 $this->objSourceLanguage = $objImporter->SourceLanguage;
                 $this->objTargetLanguage = $objImporter->TargetLanguage;
@@ -229,6 +230,7 @@
                 $objNarroContext->TextId = $objNarroText->TextId;
                 $objNarroContext->ProjectId = $this->objProject->ProjectId;
                 $objNarroContext->Context = $strContext;
+                $objNarroContext->ContextMd5 = md5($strContext);
                 $objNarroContext->FileId = $objFile->FileId;
                 $objNarroContext->Active = 1;
                 $objNarroContext->Save();
