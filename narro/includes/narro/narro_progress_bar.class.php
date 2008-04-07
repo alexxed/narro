@@ -102,5 +102,27 @@
                     }
             }
         }
+
+        public function __get($strName) {
+                    switch ($strName) {
+                case "Total":
+                    return $this->intTotal;
+
+                case "Fuzzy":
+                    return $this->intFuzzy;
+
+                case "Translated":
+                    return $this->intTranslated;
+
+                default:
+                    try {
+                        return parent::__get($strName);
+                        break;
+                    } catch (QCallerException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+            }
+        }
     }
 ?>
