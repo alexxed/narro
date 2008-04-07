@@ -42,9 +42,6 @@
 		static public function NarroText() {
 			return new QQNodeNarroText('narro_text', null);
 		}
-		static public function NarroTextSuggestion() {
-			return new QQNodeNarroTextSuggestion('narro_text_suggestion', null);
-		}
 		static public function NarroUser() {
 			return new QQNodeNarroUser('narro_user', null);
 		}
