@@ -42,10 +42,9 @@
         <?php $this->pnlSuggestionList->Render(); ?>
         <br />
         <?php if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
-            <?php echo t('Your suggestion'); ?>:
+            <?php $this->pnlPluginMessages->Render(); ?>
             <br />
-            <?php $this->pnlSpellcheckText->Render(); ?>
-
+            <?php echo t('Your suggestion'); ?>:
             <table cellspacing="3" border="0" style="border-width:0px;border-collapse:separate;width:100%;margin:0px">
             <tr>
             <td width="60%" valign="top" style="padding-left:0px;border:0px">
@@ -53,15 +52,13 @@
                 <?php $this->pnlDiacritics->Render(); ?>
             </td>
             <td width="40%" valign="top" style="padding-left:0px;border:0px">
-                <?php $this->btnSave->Render() ?>
-                <br />
-                <?php $this->chkGoToNext->Render() ?> <label for="<?php echo $this->chkGoToNext->ControlId ?>"><?php echo t('After, go to the next text') ?></label>
-                <br />
-                <?php $this->chkIgnoreSpellcheck->Render() ?> <label for="<?php echo $this->chkIgnoreSpellcheck->ControlId ?>"><?php echo t('Ignore spellchecking') ?></label>
+                <?php $this->btnSave->Render() ?>&nbsp;<?php $this->btnSaveIgnore->Render() ?>
                 <?php if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
                     <br />
-                    <?php $this->chkValidate->Render() ?> <label for="<?php echo $this->chkValidate->ControlId ?>"><?php echo t('Validate') ?></label>
+                    <?php $this->btnSaveValidate->Render() ?>
                 <?php } ?>
+                <br />
+                <?php $this->chkGoToNext->Render() ?> <label for="<?php echo $this->chkGoToNext->ControlId ?>"><?php echo t('After, go to the next text') ?></label>
             </td>
             </tr>
             </table>
@@ -71,10 +68,14 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         <?php $this->btnPrevious->Render() ?>
         &nbsp;&nbsp;&nbsp;&nbsp;
+        <?php $this->lblProgress->Render(); ?>
+        &nbsp;&nbsp;&nbsp;&nbsp;
         <?php $this->btnNext->Render(); ?>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <?php $this->btnNext100->Render(); ?>
-
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <br />
+        <?php $this->pnlProgress->Render() ?>
         <?php $this->lblMessage->Render() ?>
 
         <?php if($this->txtSuggestionValue->Display) $this->txtSuggestionValue->Focus(); ?>
