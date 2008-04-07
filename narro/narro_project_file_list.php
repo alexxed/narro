@@ -72,7 +72,7 @@
             $this->dtgNarroFile->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
             $this->dtgNarroFile->PaginatorAlternate = new QPaginator($this->dtgNarroFile);
             $this->dtgNarroFile->SortColumnIndex = 0;
-            
+
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgNarroFile->UseAjax = false;
 
@@ -145,18 +145,32 @@
         }
 
         public function dtgNarroFile_FileNameColumn_Render(NarroFile $objNarroFile) {
-            if ($objNarroFile->TypeId != NarroFileType::Folder)
-                return sprintf('<a href="narro_file_text_list.php?p=%d&f=%s">%s</a>',
+            if ($objNarroFile->TypeId == NarroFileType::Folder)
+                return sprintf('<img src="%s" style="vertical-align:middle" /> <a href="narro_project_file_list.php?p=%d&pf=%d">%s</a>',
+                    __IMAGE_ASSETS__ . '/folder.png',
                     $this->objNarroProject->ProjectId,
                     $objNarroFile->FileId,
                     $objNarroFile->FileName
                 );
-            else
-                return sprintf('<a href="narro_project_file_list.php?p=%d&pf=%d">%s</a>',
+            else {
+                switch($objNarroFile->TypeId) {
+                    case NarroFileType::MozillaDtd:
+                            $strIcon = 'dtd_file.gif';
+                            break;
+                    case NarroFileType::MozillaInc:
+                            $strIcon = 'inc_file.gif';
+                            break;
+                    case NarroFileType::MozillaIni:
+                            $strIcon = 'ini_file.gif';
+                            break;
+                }
+                return sprintf('<img src="%s" style="vertical-align:middle" /> <a href="narro_file_text_list.php?p=%d&f=%d">%s</a>',
+                    __IMAGE_ASSETS__ . '/' . $strIcon,
                     $objNarroFile->ProjectId,
                     $objNarroFile->FileId,
                     $objNarroFile->FileName
                 );
+            }
         }
 
         protected function dtgNarroFile_Bind() {
