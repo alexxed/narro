@@ -27,7 +27,6 @@
         protected $colPercentTranslated;
         protected $colActions;
 
-
         protected function Form_Create() {
             // Setup DataGrid Columns
             $this->colProjectName = new QDataGridColumn(t('Project name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
@@ -116,26 +115,12 @@
             $strOutput = '';
             //if (QApplication::$objUser->hasPermission('Can export', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) {
             if (QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID && $objNarroProject->ProjectType == NarroProjectType::Mozilla) {
-                if (!$btnExportButton = $this->GetControl('exportbut' . $objNarroProject->ProjectId)) {
-                    $btnExportButton = new QLinkButton($this->dtgNarroProject, 'exportbut' . $objNarroProject->ProjectId);
-                    $btnExportButton->Text = t('Export');
-                    $btnExportButton->AddAction(new QClickEvent(), new QServerAction('btnExportButton_Click'));
-                    $btnExportButton->ActionParameter = $objNarroProject->ProjectId;
-                }
 
-                if (!$btnImportButton = $this->GetControl('importbut' . $objNarroProject->ProjectId)) {
-                    $btnImportButton = new QLinkButton($this->dtgNarroProject, 'importbut' . $objNarroProject->ProjectId);
-                    $btnImportButton->Text = t('Import');
-                    $btnImportButton->AddAction(new QClickEvent(), new QServerAction('btnImportButton_Click'));
-                    $btnImportButton->ActionParameter = $objNarroProject->ProjectId;
-                }
-
-                $strOutput .= 
+                $strOutput .=
                     sprintf('<a href="narro_project_text_list.php?p=%d">%s</a> | ', $objNarroProject->ProjectId, t('Texts')) .
                     sprintf('<a href="narro_project_file_list.php?p=%d">%s</a> | ', $objNarroProject->ProjectId, t('Files')) .
-                    sprintf('<a href="narro_project_language_list.php?p=%d">%s</a> | ', $objNarroProject->ProjectId, t('Languages')) . 
-                    $btnImportButton->Render(false) . ' | ' . 
-                    $btnExportButton->Render(false);
+                    sprintf('<a href="narro_project_language_list.php?p=%d">%s</a> | ', $objNarroProject->ProjectId, t('Languages')) .
+                    sprintf('<a href="narro_project_manage.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Manage'));
             }
 
             return $strOutput;
@@ -162,80 +147,6 @@
             // Set the DataSource to be the array of all NarroProject objects, given the clauses above
             $this->dtgNarroProject->DataSource = NarroProject::LoadAll($objClauses);
         }
-
-        public function btnImportButton_Click($strFormId, $strControlId, $strParameter) {
-            $objControl = $this->GetControl($strControlId);
-            $objControl->Enabled = false;
-            $objControl->Text = t('Wait...');
-            require_once('NarroProjectImporter.class.php');
-            require_once('NarroFileImporter.class.php');
-            require_once('NarroMozillaIncFileImporter.class.php');
-            require_once('NarroMozillaDtdFileImporter.class.php');
-            require_once('NarroMozillaIniFileImporter.class.php');
-            require_once('NarroImportStatistics.class.php');
-            require_once('NarroLog.class.php');
-            require_once('NarroMozilla.class.php');
-
-            $objNarroImporter = new NarroProjectImporter();
-            $objNarroImporter->CheckEqual = true;
-
-            NarroLog::$blnEchoOutput = false;
-            NarroLog::$intMinLogLevel = 3;
-
-            $objNarroImporter->TargetLanguage = QApplication::$objUser->Language;
-
-            $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
-            if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-                NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), 'en_US'));
-                return false;
-            }
-            $objNarroImporter->SourceLanguage->LanguageCode = 'en-US';
-
-            $objNarroImporter->Project = NarroProject::Load($strParameter);
-            $objNarroImporter->User = QApplication::$objUser;
-            $objNarroImporter->EchoOutput = false;
-
-            $objNarroImporter->ImportProjectArchive(sprintf('%s/%d', __IMPORT_PATH__, $objNarroImporter->Project->ProjectId));
-            $this->dtgNarroProject_Bind();
-            $objControl->Enabled = true;
-            $objControl->Text = t('Import');
-        }
-
-        public function btnExportButton_Click($strFormId, $strControlId, $strParameter) {
-            $objControl = $this->GetControl($strControlId);
-            $objControl->Enabled = false;
-            $objControl->Text = t('Wait...');
-            require_once('NarroProjectImporter.class.php');
-            require_once('NarroFileImporter.class.php');
-            require_once('NarroMozillaIncFileImporter.class.php');
-            require_once('NarroMozillaDtdFileImporter.class.php');
-            require_once('NarroMozillaIniFileImporter.class.php');
-            require_once('NarroImportStatistics.class.php');
-            require_once('NarroLog.class.php');
-            require_once('NarroMozilla.class.php');
-
-            $objNarroImporter = new NarroProjectImporter();
-
-            $objNarroImporter->TargetLanguage = QApplication::$objUser->Language;
-
-            $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
-            if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-                NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), 'en_US'));
-                return false;
-            }
-            $objNarroImporter->SourceLanguage->LanguageCode = 'en-US';
-
-            $objNarroImporter->Project = NarroProject::Load($strParameter);
-            $objNarroImporter->User = QApplication::$objUser;
-            $objNarroImporter->EchoOutput = false;
-
-            $objNarroImporter->ExportProjectArchive();
-            $objControl->Enabled = true;
-            $objControl->Text = t('Import');
-            QApplication::Redirect(sprintf('%s/%d/%s-%s.tar.bz2', str_replace(__DOCROOT__, '', __IMPORT_PATH__) , $objNarroImporter->Project->ProjectId, $objNarroImporter->Project->ProjectName, $objNarroImporter->TargetLanguage->LanguageCode));
-
-        }
-
     }
 
     NarroProjectListForm::Run('NarroProjectListForm', 'templates/narro_project_list.tpl.php');
