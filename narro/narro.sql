@@ -19,7 +19,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Gazdă: localhost
--- Timpul Generării: 26 Mar 2008 la 10:31 PM
+-- Timpul Generării: 07 Apr 2008 la 11:04 PM
 -- Versiune server: 5.0.51
 -- Versiune PHP: 5.2.5
 
@@ -40,12 +40,14 @@ CREATE TABLE `narro_context` (
   `text_id` bigint(20) unsigned NOT NULL,
   `project_id` int(10) unsigned NOT NULL,
   `context` text NOT NULL,
+  `context_md5` varchar(255) NOT NULL,
   `file_id` int(10) unsigned NOT NULL,
   `active` tinyint(1) unsigned NOT NULL default '1',
   PRIMARY KEY  (`context_id`),
   KEY `string_id` (`text_id`),
   KEY `file_id` (`file_id`),
-  KEY `project_id` (`project_id`)
+  KEY `project_id` (`project_id`),
+  KEY `context_md5` (`context_md5`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
@@ -319,7 +321,7 @@ CREATE TABLE `narro_permission` (
   `permission_name` varchar(128) NOT NULL,
   PRIMARY KEY  (`permission_id`),
   UNIQUE KEY `permission_name` (`permission_name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 --
 -- Export textul cu date pentru tabel `narro_permission`
@@ -327,9 +329,11 @@ CREATE TABLE `narro_permission` (
 
 INSERT INTO `narro_permission` VALUES(4, 'Can comment');
 INSERT INTO `narro_permission` VALUES(5, 'Can delete any suggestion');
+INSERT INTO `narro_permission` VALUES(11, 'Can delete project');
 INSERT INTO `narro_permission` VALUES(6, 'Can edit any suggestion');
 INSERT INTO `narro_permission` VALUES(9, 'Can export');
 INSERT INTO `narro_permission` VALUES(8, 'Can import');
+INSERT INTO `narro_permission` VALUES(10, 'Can manage project');
 INSERT INTO `narro_permission` VALUES(7, 'Can manage users');
 INSERT INTO `narro_permission` VALUES(1, 'Can suggest');
 INSERT INTO `narro_permission` VALUES(3, 'Can validate');
@@ -349,7 +353,7 @@ CREATE TABLE `narro_project` (
   PRIMARY KEY  (`project_id`),
   UNIQUE KEY `project_name` (`project_name`),
   KEY `project_type` (`project_type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 --
 -- Export textul cu date pentru tabel `narro_project`
@@ -471,7 +475,6 @@ CREATE TABLE `narro_text` (
 -- Export textul cu date pentru tabel `narro_text`
 --
 
-
 -- --------------------------------------------------------
 
 --
@@ -488,12 +491,6 @@ CREATE TABLE `narro_user` (
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Export textul cu date pentru tabel `narro_user`
---
-
-INSERT INTO `narro_user` VALUES(0, '', '0d107d09f5bbe40cade3de5c71e9e9b7', '', '');
 
 -- --------------------------------------------------------
 
@@ -513,7 +510,21 @@ CREATE TABLE `narro_user_permission` (
   KEY `permission_id` (`permission_id`),
   KEY `project_id` (`project_id`),
   KEY `language_id` (`language_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=48 ;
+
+--
+-- Constrângeri pentru tabelele din textul de export
+--
+
+--
+-- Constrângeri pentru tabel `narro_user_permission`
+--
+ALTER TABLE `narro_user_permission`
+  ADD CONSTRAINT `narro_user_permission_ibfk_12` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`),
+  ADD CONSTRAINT `narro_user_permission_ibfk_13` FOREIGN KEY (`permission_id`) REFERENCES `narro_permission` (`permission_id`),
+  ADD CONSTRAINT `narro_user_permission_ibfk_14` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`),
+  ADD CONSTRAINT `narro_user_permission_ibfk_15` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`);
+
 
 
 --
@@ -605,12 +616,3 @@ ALTER TABLE `narro_suggestion_vote`
   ADD CONSTRAINT `narro_suggestion_vote_ibfk_7` FOREIGN KEY (`context_id`) REFERENCES `narro_context` (`context_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `narro_suggestion_vote_ibfk_8` FOREIGN KEY (`text_id`) REFERENCES `narro_text` (`text_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `narro_suggestion_vote_ibfk_9` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constrângeri pentru tabel `narro_user_permission`
---
-ALTER TABLE `narro_user_permission`
-  ADD CONSTRAINT `narro_user_permission_ibfk_12` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`),
-  ADD CONSTRAINT `narro_user_permission_ibfk_13` FOREIGN KEY (`permission_id`) REFERENCES `narro_permission` (`permission_id`),
-  ADD CONSTRAINT `narro_user_permission_ibfk_14` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`),
-  ADD CONSTRAINT `narro_user_permission_ibfk_15` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`);
