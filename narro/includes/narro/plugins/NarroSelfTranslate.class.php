@@ -25,30 +25,30 @@
             $this->strName = t('Narro self translator');
         }
 
-        public function ValidateSuggestion($strText, $strSuggestion) {
-            self::UpdateTranslation($strText, $strSuggestion);
+        public function ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+            self::UpdateTranslation($strOriginal, $strTranslation);
 
-            return true;
+            return func_get_args();
         }
 
         public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
             if ($objProject->ProjectId == self::NARRO_PROJECT_ID)
-                self::UpdateTranslation($strTranslation, $strTranslation);
+                self::UpdateTranslation($strOriginal, $strTranslation);
 
-            return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
+            return func_get_args();
         }
 
-        public function DeleteSuggestion($strText, $strSuggestion) {
-            self::UpdateTranslation($strText, $strSuggestion);
+        public function DeleteSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+            self::UpdateTranslation($strOriginal, $strTranslation);
 
-            return true;
+            return func_get_args();
         }
 
 
-        public function VoteSuggestion($strText, $strSuggestion) {
-            self::UpdateTranslation($strText, $strSuggestion);
+        public function VoteSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+            self::UpdateTranslation($strOriginal, $strTranslation);
 
-            return true;
+            return func_get_args();
 
         }
 
@@ -113,6 +113,9 @@
                         }
                     }
                 }
+            }
+            else {
+                $arrTextSuggestions[md5($strText)] = $strText;
             }
 
             if (isset($arrUserSuggestions))

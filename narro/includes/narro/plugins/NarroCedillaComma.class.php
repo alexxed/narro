@@ -69,7 +69,19 @@
         }
 
         public function ExportSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
-            if (in_array($objFile->FileName, array('custom.properties', 'mui.properties', 'override.properties', 'crashreporter.ini')))
+            if (
+                in_array(
+                    $objFile->FileName,
+                    array(
+                        'custom.properties',
+                        'mui.properties',
+                        'override.properties',
+                        'crashreporter.ini',
+                        'installer.inc',
+                        'updater.ini',
+                    )
+                )
+            )
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
             else
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
