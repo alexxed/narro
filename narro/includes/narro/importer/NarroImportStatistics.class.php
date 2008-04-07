@@ -51,7 +51,8 @@
             'Suggestions that kept the original text',
             'Validated suggestions',
             'Reused suggestions',
-            'Empty original texts'
+            'Empty original texts',
+            'Texts with no access key set, but fixed'
         )
         as $strPropertyName)
         NarroImportStatistics::$arrStatistics[$strPropertyName] = 0;
