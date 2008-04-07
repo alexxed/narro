@@ -45,7 +45,7 @@
                 QApplication::Redirect('narro_project_list.php');
         }
 
-        public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo) {
+        public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {
             if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId) && QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId) )
                 $strText = t('Suggest/Vote');
             elseif (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
@@ -55,12 +55,14 @@
             else
                 $strText = t('Details');
 
-            return sprintf('<a href="narro_context_suggest.php?p=%d&c=%d&tf=%d&st=%d&s=%s">%s</a>',
+            return sprintf('<a href="narro_context_suggest.php?p=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d">%s</a>',
                         $this->objNarroProject->ProjectId,
                         $objNarroContextInfo->Context->ContextId,
                         $this->lstTextFilter->SelectedValue,
                         $this->lstSearchType->SelectedValue,
                         $this->txtSearch->Text,
+                        $intRowIndex + (($this->dtgNarroContextInfo->PageNumber - 1) * $this->dtgNarroContextInfo->ItemsPerPage),
+                        $this->dtgNarroContextInfo->TotalItemCount,
                         $strText
                    );
         }

@@ -75,7 +75,7 @@
             $this->colTranslatedText->CssClass = QApplication::$objUser->Language->TextDirection;
             $this->colActions = new QDataGridColumn(
                 t('Actions'),
-                '<?= $_FORM->dtgNarroContextInfo_Actions_Render($_ITEM); ?>'
+                '<?= $_FORM->dtgNarroContextInfo_Actions_Render($_ITEM, $_CONTROL->CurrentRowIndex + 1); ?>'
             );
             $this->colActions->HtmlEntities = false;
 
@@ -191,6 +191,8 @@
 
 
                 $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
+
+                $strSuggestionValue = htmlentities($strSuggestionValue, null, 'utf-8');
 
                 if ($objNarroContextInfo->SuggestionAccessKey)
                     $strSuggestionValue = mb_ereg_replace($objNarroContextInfo->SuggestionAccessKey, '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $strSuggestionValue, 1);
