@@ -47,7 +47,7 @@
 
             if (self::$blnLogOutput) {
                 if (self::$strLogFile)
-                    self::$OutputLog($intMessageType, $strText);
+                    self::OutputLog($intMessageType, $strText);
                 else
                     error_log($strText);
             }
@@ -56,7 +56,7 @@
         private static function OutputLog($intMessageType, $strText) {
 
             if (!self::$hndLogFile)
-                self::$hndLogFile = fopen(self::$strLogFile, 'a+');
+                self::$hndLogFile = fopen(self::$strLogFile, 'w');
 
             if (self::$hndLogFile)
                 fputs(self::$hndLogFile, $strText . "\n");
