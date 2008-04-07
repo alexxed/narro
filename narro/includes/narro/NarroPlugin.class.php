@@ -17,7 +17,7 @@
      */
     class NarroPlugin {
         protected $strName;
-        protected $arrErrors;
+        protected $arrErrors = array();
 
         public function __construct() {
             $this->strName = __CLASS__;
