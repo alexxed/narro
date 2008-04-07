@@ -15,15 +15,16 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-@CHARSET "UTF-8";
-
-.title { font: 30px 'Verdana','Arial','Helvetica','Sans-Serif'; font-weight: bold; margin-left: -2px;}
-.title_action { font: 12px 'Verdana','Arial','Helvetica','Sans-Serif'; font-weight: bold; margin-bottom: -4px; }
+body {
+    font-family:verdana,arial,tahoma,sans-serif;
+}
+.title { font-weight: bold; margin-left: -2px;}
+.title_action { font-weight: bold; margin-bottom: -4px; }
 .warning { color: #ff0000; }
-.instructions { font: 9px 'Arial','Helvetica','Sans-Serif'; font-style: italic; }
+.instructions { font-style: italic; color: #888888}
 .item_divider { line-height: 16px; }
-.item_label { font: 12px 'Verdana','Arial','Helvetica','Sans-Serif'; padding-bottom: 4px; }
-.item_label_disabled { font: 12px 'Verdana','Arial','Helvetica','Sans-Serif'; padding-bottom: 4px; color: #999999; }
+.item_label { padding-bottom: 4px; }
+.item_label_disabled { padding-bottom: 4px; color: #999999; }
 
 .button { font-weight: bold; }
 .listbox {  }
@@ -42,6 +43,10 @@
 .file_asset_dbox { border: 1px solid #1c4a8c; background-color: #fff; padding: 20px; width: 400px; overflow: auto; }
 .file_asset_dbox h1 { margin: 0; }
 .file_asset_dbox input { padding: 3px; margin-right: 5px; }
+
+.dotted_box { border:1px dotted black;}
+.dotted_box_title { display:block; background-color: lightgreen; font-weight:bold; padding:2px; }
+.dotted_box_content { padding:5px; }
 
 a:link, a:visited {
   color: #557D0C;
@@ -119,7 +124,6 @@ tr.datagrid_even {
     background: url(../images/bg_td1.jpg) repeat-x top;
 }
 tr.datagrid_odd {
-    /*background: #FFF8E8 url(../images/bg_td2.jpg) repeat-x;*/
     background: #FFFFFF url(../images/bg_td1.jpg) repeat-x;
 }
 
@@ -167,4 +171,16 @@ td.datagrid_footer {
 
 .rtl {
     direction: rtl;
+}
+
+.mispelled_word {
+    color: red;
+    background-color:white;
+    font-weight:bold;
+}
+
+.mispelled_suggestion {
+    color:green;
+    background-color:white;
+    font-weight:bold;
 }
