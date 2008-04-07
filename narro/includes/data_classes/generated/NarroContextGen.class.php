@@ -272,6 +272,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`text_id` AS ' . $strAliasPrefix . 'text_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`project_id` AS ' . $strAliasPrefix . 'project_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`context` AS ' . $strAliasPrefix . 'context`');
+			$objBuilder->AddSelectItem($strTableName . '.`context_md5` AS ' . $strAliasPrefix . 'context_md5`');
 			$objBuilder->AddSelectItem($strTableName . '.`file_id` AS ' . $strAliasPrefix . 'file_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`active` AS ' . $strAliasPrefix . 'active`');
 		}
@@ -369,6 +370,7 @@
 			$objToReturn->intTextId = $objDbRow->GetColumn($strAliasPrefix . 'text_id', 'Integer');
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasPrefix . 'project_id', 'Integer');
 			$objToReturn->strContext = $objDbRow->GetColumn($strAliasPrefix . 'context', 'Blob');
+			$objToReturn->strContextMd5 = $objDbRow->GetColumn($strAliasPrefix . 'context_md5', 'VarChar');
 			$objToReturn->intFileId = $objDbRow->GetColumn($strAliasPrefix . 'file_id', 'Integer');
 			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Bit');
 
@@ -577,6 +579,38 @@
 				QQ::Equal(QQN::NarroContext()->ProjectId, $intProjectId)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroContext objects,
+		 * by ContextMd5 Index(es)
+		 * @param string $strContextMd5
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroContext[]
+		*/
+		public static function LoadArrayByContextMd5($strContextMd5, $objOptionalClauses = null) {
+			// Call NarroContext::QueryArray to perform the LoadArrayByContextMd5 query
+			try {
+				return NarroContext::QueryArray(
+					QQ::Equal(QQN::NarroContext()->ContextMd5, $strContextMd5),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroContexts
+		 * by ContextMd5 Index(es)
+		 * @param string $strContextMd5
+		 * @return int
+		*/
+		public static function CountByContextMd5($strContextMd5) {
+			// Call NarroContext::QueryCount to perform the CountByContextMd5 query
+			return NarroContext::QueryCount(
+				QQ::Equal(QQN::NarroContext()->ContextMd5, $strContextMd5)
+			);
+		}
 
 
 
@@ -610,12 +644,14 @@
 							`text_id`,
 							`project_id`,
 							`context`,
+							`context_md5`,
 							`file_id`,
 							`active`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intTextId) . ',
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							' . $objDatabase->SqlVariable($this->strContext) . ',
+							' . $objDatabase->SqlVariable($this->strContextMd5) . ',
 							' . $objDatabase->SqlVariable($this->intFileId) . ',
 							' . $objDatabase->SqlVariable($this->blnActive) . '
 						)
@@ -636,6 +672,7 @@
 							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . ',
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							`context` = ' . $objDatabase->SqlVariable($this->strContext) . ',
+							`context_md5` = ' . $objDatabase->SqlVariable($this->strContextMd5) . ',
 							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . ',
 							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . '
 						WHERE
@@ -748,6 +785,13 @@
 					 * @return string
 					 */
 					return $this->strContext;
+
+				case 'ContextMd5':
+					/**
+					 * Gets the value for strContextMd5 (Not Null)
+					 * @return string
+					 */
+					return $this->strContextMd5;
 
 				case 'FileId':
 					/**
@@ -938,6 +982,19 @@
 					 */
 					try {
 						return ($this->strContext = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ContextMd5':
+					/**
+					 * Sets the value for strContextMd5 (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strContextMd5 = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1746,6 +1803,15 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_context.context_md5
+		 * @var string strContextMd5
+		 */
+		protected $strContextMd5;
+		const ContextMd5MaxLength = 255;
+		const ContextMd5Default = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_context.file_id
 		 * @var integer intFileId
 		 */
@@ -1891,6 +1957,7 @@
 			$strToReturn .= '<element name="Text" type="xsd1:NarroText"/>';
 			$strToReturn .= '<element name="Project" type="xsd1:NarroProject"/>';
 			$strToReturn .= '<element name="Context" type="xsd:string"/>';
+			$strToReturn .= '<element name="ContextMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="File" type="xsd1:NarroFile"/>';
 			$strToReturn .= '<element name="Active" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -1928,6 +1995,8 @@
 				$objToReturn->Project = NarroProject::GetObjectFromSoapObject($objSoapObject->Project);
 			if (property_exists($objSoapObject, 'Context'))
 				$objToReturn->strContext = $objSoapObject->Context;
+			if (property_exists($objSoapObject, 'ContextMd5'))
+				$objToReturn->strContextMd5 = $objSoapObject->ContextMd5;
 			if ((property_exists($objSoapObject, 'File')) &&
 				($objSoapObject->File))
 				$objToReturn->File = NarroFile::GetObjectFromSoapObject($objSoapObject->File);
@@ -1993,6 +2062,8 @@
 					return new QQNodeNarroProject('project_id', 'integer', $this);
 				case 'Context':
 					return new QQNode('context', 'string', $this);
+				case 'ContextMd5':
+					return new QQNode('context_md5', 'string', $this);
 				case 'FileId':
 					return new QQNode('file_id', 'integer', $this);
 				case 'File':
@@ -2039,6 +2110,8 @@
 					return new QQNodeNarroProject('project_id', 'integer', $this);
 				case 'Context':
 					return new QQNode('context', 'string', $this);
+				case 'ContextMd5':
+					return new QQNode('context_md5', 'string', $this);
 				case 'FileId':
 					return new QQNode('file_id', 'integer', $this);
 				case 'File':
