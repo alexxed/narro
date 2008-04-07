@@ -55,7 +55,8 @@
         }
 
         protected function RegisterPlugin($strPluginClass) {
-            $this->arrPlugins[] = new $strPluginClass();
+            if (!isset($this->arrPlugins[$strPluginClass]) || $this->arrPlugins[$strPluginClass] instanceof $strPluginClass)
+                $this->arrPlugins[$strPluginClass] = new $strPluginClass();
         }
 
 
@@ -72,25 +73,27 @@
 
                     if ($objPlugin->Errors) {
                         $this->arrPluginErrors[$objPlugin->Name] = $objPlugin->Errors;
-                        return false;
                     }
                     else {
                         if (!is_array($arrParameters)) return $arrParameters;
 
                         switch((count($arrParameters))) {
-                            case 0: return false;
-                            case 1: return $arrParameters[0];
-                            default: return $arrParameters;
+                            case 0: $mixReturn = false;
+                            case 1: $mixReturn = $arrParameters[0];
+                            default: $mixReturn = $arrParameters;
                         }
                     }
                 }
-                else
+                else {
                     switch((count($arrParameters))) {
-                        case 0: return false;
-                        case 1: return $arrParameters[0];
-                        default: return $arrParameters;
+                        case 0: $mixReturn = false;
+                        case 1: $mixReturn = $arrParameters[0];
+                        default: $mixReturn = $arrParameters;
                     }
+                }
             }
+
+            return $mixReturn;
         }
 
         /////////////////////////
