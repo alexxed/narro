@@ -19,6 +19,7 @@
     require_once('includes/prepend.inc.php');
     require_once('includes/narro/narro_suggestion_list_panel.class.php');
     require_once('includes/narro/narro_diacritics_panel.class.php');
+    require_once('includes/narro/narro_progress_bar.class.php');
 
     class NarroContextSuggestForm extends QForm {
 
@@ -26,14 +27,14 @@
 
         // Button Actions
         protected $btnSave;
+        protected $btnSaveValidate;
+        protected $btnSaveIgnore;
         protected $btnNext;
         protected $btnNext100;
         protected $btnPrevious100;
         protected $btnPrevious;
 
         protected $chkGoToNext;
-        protected $chkIgnoreSpellcheck;
-        protected $chkValidate;
 
         protected $objNarroContextInfo;
         protected $pnlOriginalText;
@@ -50,8 +51,15 @@
         protected $intSearchType;
         protected $strSearchText;
 
-        protected $pnlSpellcheckText;
+        protected $pnlPluginMessages;
         protected $pnlDiacritics;
+
+        protected $intCurrentContext;
+        protected $intContextsCount;
+        protected $pnlProgress;
+
+        protected $lblProgress;
+
 
         protected function SetupNarroContextInfo() {
 
@@ -63,6 +71,9 @@
             $this->intFileId = QApplication::QueryString('f');
             $this->intSearchType = QApplication::QueryString('st');
             $this->strSearchText = QApplication::QueryString('s');
+
+            $this->intCurrentContext = QApplication::QueryString('ci');
+            $this->intContextsCount = QApplication::QueryString('cc');
 
             if (!$this->intProjectId && !$this->intFileId) {
                 QApplication::Redirect('narro_project_list.php');
@@ -97,7 +108,7 @@
                     )
                 )
                 {
-                    $strCommonUrl = sprintf('p=%d&c=%d&tf=%d&st=%d&s=%s&is=%d&gn=%d', $this->intProjectId, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText, 0, 1);
+                    $strCommonUrl = sprintf('p=%d&c=%d&tf=%d&st=%d&s=%s&gn=%d', $this->intProjectId, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText, 1);
                     if ($this->intFileId)
                         QApplication::Redirect('narro_context_suggest.php?' . $strCommonUrl . sprintf( '&f=%d', $this->intFileId));
                     else
@@ -120,13 +131,15 @@
 
             // Create/Setup Button Action controls
             $this->btnSave_Create();
+            $this->btnSaveIgnore_Create();
+            $this->btnSaveValidate_Create();
+
             $this->btnNext_Create();
             $this->btnNext100_Create();
             $this->btnPrevious100_Create();
             $this->btnPrevious_Create();
-            $this->chkValidate_Create();
+
             $this->chkGoToNext_Create();
-            $this->chkIgnoreSpellcheck_Create();
 
             $this->pnlContext_Create();
             $this->txtSuggestionValue_Create();
@@ -136,13 +149,18 @@
 
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->ForeColor = 'green';
-            $this->pnlSpellcheckText = new QPanel($this);
-            $this->pnlSpellcheckText->BorderWidth = 0;
-            $this->pnlSpellcheckText->BorderStyle = QBorderStyle::None;
-            $this->pnlSpellcheckText->Visible = false;
-            $this->pnlSpellcheckText->SetCustomStyle('padding', '5px');
+            $this->pnlPluginMessages = new QPanel($this);
+            $this->pnlPluginMessages->BorderWidth = 0;
+            $this->pnlPluginMessages->BorderStyle = QBorderStyle::None;
+            $this->pnlPluginMessages->Visible = false;
+            $this->pnlPluginMessages->SetCustomStyle('padding', '5px');
 
             $this->pnlNavigator = new QPanel($this);
+
+            $this->pnlProgress = new QPanel($this);
+
+            $this->lblProgress = new QLabel($this);
+
             $this->UpdateNavigator();
 
             $this->UpdateData();
@@ -160,8 +178,6 @@
             $this->pnlOriginalText->ToolTip = t('Original text');
             $this->pnlOriginalText->FontBold = true;
             $this->pnlOriginalText->DisplayStyle = QDisplayStyle::Inline;
-            //$this->pnlOriginalText->AddAction(new QChangeEvent(), new QJavascriptAction(sprintf("var sTitle=document.getElementById('%s');if (sTitle.innerHTML) document.title='%s „' + ((sTitle.innerHTML.length>30)?sTitle.innerHTML.slice(0,3) + '...':sTitle.innerHTML) + '”';", $this->pnlOriginalText->ControlId, (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?'Traduceţi ':'Vedeţi sugestii pentru ')));
-
         }
 
         // Create and Setup pnlContext
@@ -180,17 +196,32 @@
                     $this->pnlOriginalText->Text,
                     1
                 );
+
             $this->pnlContext->Text = nl2br(htmlspecialchars($this->objNarroContextInfo->Context->Context,null,'utf-8'));
+
+            if
+            (
+                $arrContextComments =
+                NarroContextComment::QueryArray(
+                    QQ::AndCondition(
+                        QQ::Equal(QQN::NarroContextComment()->ContextId, $this->objNarroContextInfo->ContextId),
+                        QQ::Equal(QQN::NarroContextComment()->LanguageId, QApplication::$objUser->Language->LanguageId)
+                    )
+                )
+            ) {
+                foreach($arrContextComments as $objContextComment) {
+                    $this->pnlContext->Text .= '<br />' . nl2br(htmlspecialchars($objContextComment->CommentText,null,'utf-8'));
+                }
+            }
+
             $this->pnlSuggestionList->NarroContextInfo = $this->objNarroContextInfo;
             //$this->txtSuggestionComment->Text = '';
             $this->txtSuggestionValue->Text = '';
 
-            $this->chkIgnoreSpellcheck->Checked = false;
-            $this->chkValidate->Checked = false;
+            $this->pnlPluginMessages->Visible = false;
+            $this->btnSaveIgnore->Visible = false;
 
             $this->lblMessage->Text = '';
-
-            $this->ClearSpellCheck();
 
         }
 
@@ -262,23 +293,29 @@
 
             $this->pnlNavigator->Text .=  ' -> ' . $strPageTitle;
             $this->pnlNavigator->MarkAsModified();
+            if ($this->intContextsCount) {
+                $this->lblProgress->Text = sprintf('%d/%d', $this->intCurrentContext, $this->intContextsCount);
+                $this->pnlProgress->Text = sprintf(
+                    '
+                    <br />
+                    %s <br />
+                    <div class="graph" style="width:100%%">
+                    <div class="translated" style="width: %d%%;"></div>
+                    <div class="untranslated" style="left:%d%%;width: %d%%;"></div>
+                    </div>
+                    ',
+                    sprintf(t('You are now translating a batch of %d texts. The bar below shows your progress through this batch'), $this->intContextsCount),
+                    ceil(($this->intCurrentContext * 100)/$this->intContextsCount),
+                    ceil(($this->intCurrentContext * 100)/$this->intContextsCount),
+                    100 - ceil(($this->intCurrentContext * 100)/$this->intContextsCount)
+                );
+            }
         }
 
         // Create and Setup chkGoToNext
         protected function chkGoToNext_Create() {
             $this->chkGoToNext = new QCheckBox($this);
             $this->chkGoToNext->Checked = (bool) QApplication::QueryString('gn');
-        }
-
-        // Create and Setup chkValidate
-        protected function chkValidate_Create() {
-            $this->chkValidate = new QCheckBox($this);
-        }
-
-        // Create and Setup chkIgnoreSpellcheck
-        protected function chkIgnoreSpellcheck_Create() {
-            $this->chkIgnoreSpellcheck = new QCheckBox($this);
-            //$this->chkIgnoreSpellcheck->Checked = (bool) QApplication::QueryString('is');
         }
 
         // Create and Setup txtSuggestionValue
@@ -407,199 +444,44 @@
             $this->btnPrevious->TabIndex = 6;
         }
 
-        protected function EntitityCheck() {
-            /**
-            if ($this->txtSuggestionValue->Text == $this->objNarroContextInfo->Context->Text->TextValue) {
-                $this->pnlSpellcheckText->Text =
-                        '<span style="color:red">' .
-                        t('The suggestion is identical to the text. If you think the text needs no translation, move on.') .
-                        '</span>';
-                $this->pnlSpellcheckText->Visible = true;
-                return false;
-            }
-            */
-
-            if ($this->chkIgnoreSpellcheck->Checked) return $this->ClearSpellCheck();
-
-            $strOriginalText = $this->objNarroContextInfo->Context->Text->TextValue;
-
-            preg_match_all('/%[Ssd]/', $strOriginalText, $arrPoMatches);
-            preg_match_all('/[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}[\s\.\;$]/', $strOriginalText, $arrMatches);
-            preg_match_all('/&[a-zA-Z\-0-9]+\;/', $strOriginalText, $arrMoz1Matches);
-            preg_match_all('/\%[0-9]\$S/', $strOriginalText, $arrMoz2Matches);
-            if (is_array($arrPoMatches[0])) {
-                $arrMatches[0] = array_merge($arrMatches[0], $arrPoMatches[0]);
-                $arrMatches[0] = array_unique($arrMatches[0]);
-            }
-            if (is_array($arrMoz1Matches[0])) {
-                $arrMatches[0] = array_merge($arrMatches[0], $arrMoz1Matches[0]);
-                $arrMatches[0] = array_unique($arrMatches[0]);
-            }
-            if (is_array($arrMoz2Matches[0])) {
-                $arrMatches[0] = array_merge($arrMatches[0], $arrMoz2Matches[0]);
-                $arrMatches[0] = array_unique($arrMatches[0]);
-            }
-
-            if (isset($arrMatches[0]) && count($arrMatches[0])) {
-                foreach($arrMatches[0] as $strMatch)
-                    if (strpos($this->txtSuggestionValue->Text, trim($strMatch)) === false)
-                        $arrDiff[] = htmlspecialchars(trim($strMatch), null, 'utf-8');
-                if (isset($arrDiff) && $arrDiff) {
-                    $this->pnlSpellcheckText->Text =
-                        sprintf(
-                            t(
-                                '<span style="color:red">You translated or forgot some variables that should have been left as they were. <br /> These are: %s</span><br /> If you think this is a mistake, check "%s" and then press "%s"<br />If you wish to correct and check again, correct the text and press "%s" again.'),
-                            join(', ', $arrDiff),
-                            t('Ignore spellchecking'),
-                            t('Save'),
-                            t('Save')
-                        );
-                    $this->pnlSpellcheckText->Visible = true;
-                    return false;
+        protected function ShowPluginErrors() {
+            $this->pnlPluginMessages->Text = '';
+            if (QApplication::$objPluginHandler->Error) {
+                foreach(QApplication::$objPluginHandler->PluginErrors as $strPluginName=>$arrErors) {
+                    $this->pnlPluginMessages->Text .= $strPluginName . '<div style="padding-left:10px;border:1px dotted black;">' . join('<br />', $arrErors) . '</div><br />';
                 }
-            }
-
-            preg_match('/[\.\!\?\:]+$/', $strOriginalText, $arrOriginalTextMatches);
-            preg_match('/[\.\!\?\:]+$/', $this->txtSuggestionValue->Text, $arrSuggestionMatches);
-
-            if (isset($arrOriginalTextMatches[0]) && !isset($arrSuggestionMatches[0])) {
-                    $this->pnlSpellcheckText->Text =
-                        sprintf(
-                            t('
-                                <span style="color:red">
-                                Did you forget the ending "%s"?</span><br />
-                                If you think you didn\'t, check "%s" and press "%s".<br />If you wish to correct and check again, correct the text and press "%s" again.'
-                            ),
-                        $arrOriginalTextMatches[0],
-                        t('Ignore spellchecking'),
-                        t('Save'),
-                        t('Save')
-
-                        );
-                    $this->pnlSpellcheckText->Visible = true;
-                    return false;
-            }
-            elseif (!isset($arrOriginalTextMatches[0]) && isset($arrSuggestionMatches[0])) {
-                    $this->pnlSpellcheckText->Text =
-                        sprintf(
-                            t('
-                                <span style="color:red">
-                                The original text does not end with "%s".</span><br />
-                                If you think this is a mistake, check "%s" and then press "%s"<br />If you wish to correct and check again, correct the text and press "%s" again.'
-                            ),
-                            $arrSuggestionMatches[0],
-                            t('Ignore spellchecking'),
-                            t('Save'),
-                            t('Save')
-                        );
-                    $this->pnlSpellcheckText->Visible = true;
-                    return false;
-
-            }
-            elseif (isset($arrOriginalTextMatches[0]) && isset($arrSuggestionMatches[0]) && $arrOriginalTextMatches[0] != $arrSuggestionMatches[0]) {
-                    $this->pnlSpellcheckText->Text =
-                        sprintf(
-                            t('
-                                <span style="color:red">
-                                The original text ends with "%s", but your suggestion ends in "%s".</span><br />
-                                If you think this is a mistake, check "%s" and then press "%s"<br />If you wish to correct and check again, correct the text and press "%s" again.'
-                            ),
-                            $arrOriginalTextMatches[0],
-                            $arrSuggestionMatches[0],
-                            t('Ignore spellchecking'),
-                            t('Save'),
-                            t('Save')
-                        );
-                    $this->pnlSpellcheckText->Visible = true;
-                    return false;
-
-            }
-
-            if (preg_match_all('/[\'"]([^\'"]+)[\'"]/', $this->txtSuggestionValue->Text, $arrMatches)) {
-
-                    $strCorrectedText = $this->txtSuggestionValue->Text;
-                    foreach($arrMatches[0] as $intKey=>$strTextWithQuotes) {
-                        $strCorrectedText = str_replace($strTextWithQuotes, '„' . $arrMatches[1][$intKey] . '”', $strCorrectedText);
-                    }
-                    $this->pnlSpellcheckText->Text =
-                        '<span style="color:red">' .
-                        'Se pare că aţi folosit ghilimele englezeşti. <br />
-                        <span style="color:green">Vă rugăm să folosiţi ghilimele româneşti reprezentate prin simbolurile „ (99 jos) şi ” (99 sus). <br />Dacă nu le puteţi introduce de la tastatură, le puteţi introduce cu un clic pe ele de sub textul sugestiei.</span></span><br />' .
-                        'Iată textul corectat cu ghilimele româneşti:' .
-                        '<div style="border:1px dotted green;padding:5px; margin:5px;">' . htmlspecialchars($strCorrectedText, null, 'utf-8') . '</div>' .
-                        'Dacă credeţi că este o greşeală, puteţi salva totuşi sugestia bifând „Ignoră ortografia” şi apoi apăsând „Salvează”<br />Dacă doriţi să corectaţi şi să verificaţi din nou, corectaţi şi apăsaţi „Salvează”';
-                    $this->pnlSpellcheckText->Visible = true;
-                    return false;
-            }
-
-            return true;
-        }
-
-        protected function ClearSpellCheck() {
-            $this->pnlSpellcheckText->Visible = false;
-            $this->pnlSpellcheckText->Text = '';
-            return true;
-        }
-
-        protected function Spellcheck() {
-            if ($this->chkIgnoreSpellcheck->Checked) return $this->ClearSpellCheck();
-            $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
-            if (is_array($arrResult) && isset($arrResult[1]))
-                $strSuggestionValue = $arrResult[1];
-            else
-                $strSuggestionValue = $this->txtSuggestionValue->Text;
-
-            $arrTextSuggestions = QApplication::GetSpellSuggestions($strSuggestionValue);
-            $strSpellcheckText = '';
-
-            if (is_array($arrTextSuggestions))
-                foreach($arrTextSuggestions as $strWord=>$arrSuggestions) {
-
-                    $strSpellcheckText .= '<b>' . $strWord . '</b> ' . t('is mispelled') . '<br />';
-
-                    if (count($arrSuggestions)) {
-                        $strSpellcheckText .= ' ' . t('Maybe you meant') . ' <b>';
-                        $strSpellcheckText .= join(', ', $arrSuggestions) . '</b>';
-                    }
-
-                    $strSpellcheckText .= '<br />';
-                }
-
-            if ($strSpellcheckText != '') {
-                $this->pnlSpellcheckText->Text = t('You seem to have a few spellchecking errors:'). '<br /><div style="margin-left:15px;color:red;padding:5px;border:1px dotted black">' .
-                                                    $strSpellcheckText. '</div><br /> '. sprintf(t('If you think this is a mistake, you can still save the suggestion by checking "%s" and pressing "%s".'), t('Ignore spellchecking'), t('Save')) . '<br />' . sprintf(t('If you want to correct and check again, please correct and press "%s"'), t('Save'));
-                $this->pnlSpellcheckText->Visible = true;
-                return false;
+                $this->pnlPluginMessages->Visible = true;
+                $this->btnSaveIgnore->Visible = true;
             }
             else {
-                return $this->ClearSpellCheck();
+                $this->pnlPluginMessages->Visible = false;
+                $this->btnSaveIgnore->Visible = false;
             }
+
+            $this->pnlPluginMessages->MarkAsModified();
         }
 
         // Control ServerActions
         protected function btnSaveIgnore_Click($strFormId, $strControlId, $strParameter) {
-            $this->ClearSpellCheck();
             $this->SaveSuggestion();
         }
 
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text)) {
-                $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = 'A plugin did not validate your entry.';
-            }
-
-            if (!QApplication::$objPluginHandler->Error && $this->EntitityCheck() && $this->Spellcheck())
+            QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+            if (QApplication::$objPluginHandler->Error)
+                $this->ShowPluginErrors();
+            else
                 $this->SaveSuggestion();
         }
 
         protected function btnSaveValidate_Click($strFormId, $strControlId, $strParameter) {
-            if ($this->EntitityCheck() && $this->Spellcheck())
-                $this->SaveSuggestion();
+            if (!QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+              return false;
+
+            $this->SaveSuggestion(true);
         }
 
-        protected function SaveSuggestion() {
-
-            $blnValidate = $this->chkValidate->Checked;
+        protected function SaveSuggestion($blnValidate = false) {
 
             if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
                 return false;
@@ -628,7 +510,6 @@
                 else {
                     $this->btnNext_Click($this->FormId, null, null);
                     /**
-                    $this->pnlSuggestionList->lstSuggestion->SelectedValue = $objSuggestion->SuggestionId;
                     $this->pnlSuggestionList->btnVote_Click(0,0,0);
                     */
                 }
@@ -641,7 +522,7 @@
                         if (count($arrNarroContextInfo)) {
                             foreach($arrNarroContextInfo as $objNarroContextInfo) {
                                 $objNarroContextInfo->HasSuggestions = 1;
-                                if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $blnValidate && $this->objNarroContextInfo->ContextId == $objNarroContext->ContextId)
+                                if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $blnValidate && $this->objNarroContextInfo->ContextId == $objNarroContextInfo->ContextId)
                                     $objNarroContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
                                 $objNarroContextInfo->Save();
                             }
@@ -653,6 +534,14 @@
             $this->objNarroContextInfo->HasSuggestions = 1;
             if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $blnValidate && $this->objNarroContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
+
+                if (mb_stripos($strSuggestionValue, $this->objNarroContextInfo->TextAccessKey) === false)
+                    $this->objNarroContextInfo->SuggestionAccessKey = mb_substr($strSuggestionValue, 0, 1);
+                elseif (mb_strpos($strSuggestionValue, mb_strtoupper($this->objNarroContextInfo->TextAccessKey)) === false)
+                    $this->objNarroContextInfo->SuggestionAccessKey = mb_strtolower($this->objNarroContextInfo->TextAccessKey);
+                else
+                    $this->objNarroContextInfo->SuggestionAccessKey = mb_strtoupper($this->objNarroContextInfo->TextAccessKey);
+
                 $this->objNarroContextInfo->Save();
             }
 
@@ -697,13 +586,14 @@
                 )
             )
             {
-                $this->btnNext->Visible = true;
-                $this->btnNext100->Visible = true;
+                $this->btnNext->Enabled = true;
+                $this->btnNext100->Enabled = true;
+                $this->intCurrentContext -= 1;
                 $this->GoToContext($objContext);
             }
             else {
-                $this->btnPrevious->Visible = false;
-                $this->btnPrevious100->Visible = false;
+                $this->btnPrevious->Enabled = false;
+                $this->btnPrevious100->Enabled = false;
             }
         }
 
@@ -732,13 +622,14 @@
                 )
             )
             {
-                $this->btnPrevious->Visible = true;
-                $this->btnPrevious100->Visible = true;
+                $this->btnPrevious->Enabled = true;
+                $this->btnPrevious100->Enabled = true;
+                $this->intCurrentContext += 1;
                 $this->GoToContext($objContext);
             }
             else {
-                $this->btnNext->Visible = false;
-                $this->btnNext100->Visible = false;
+                $this->btnNext->Enabled = false;
+                $this->btnNext100->Enabled = false;
             }
 
         }
@@ -768,12 +659,14 @@
                 )
             )
             {
-                $this->btnPrevious->Visible = true;
-                $this->btnPrevious100->Visible = true;
+                $this->btnPrevious->Enabled = true;
+                $this->btnPrevious100->Enabled = true;
+                $this->intCurrentContext += 100;
                 $this->GoToContext($objContext);
+
             }
             else {
-                $this->btnNext100->Visible = false;
+                $this->btnNext100->Enabled = false;
             }
 
         }
@@ -803,12 +696,13 @@
                 )
             )
             {
-                $this->btnNext->Visible = true;
-                $this->btnNext100->Visible = true;
+                $this->btnNext->Enabled = true;
+                $this->btnNext100->Enabled = true;
+                $this->intCurrentContext -= 100;
                 $this->GoToContext($objContext);
             }
             else {
-                $this->btnPrevious100->Visible = false;
+                $this->btnPrevious100->Enabled = false;
             }
 
         }
@@ -839,6 +733,17 @@
             else {
                 $this->objNarroContextInfo->ValidSuggestionId = null;
             }
+
+            $objSuggestion = NarroSuggestion::Load($strParameter);
+            $strSuggestionValue = $objSuggestion->SuggestionValue;
+
+            if (mb_stripos($strSuggestionValue, $this->objNarroContextInfo->TextAccessKey) === false)
+                $this->objNarroContextInfo->SuggestionAccessKey = mb_substr($strSuggestionValue, 0, 1);
+            elseif (mb_strpos($strSuggestionValue, mb_strtoupper($this->objNarroContextInfo->TextAccessKey)) === false)
+                $this->objNarroContextInfo->SuggestionAccessKey = mb_strtolower($this->objNarroContextInfo->TextAccessKey);
+            else
+                $this->objNarroContextInfo->SuggestionAccessKey = mb_strtoupper($this->objNarroContextInfo->TextAccessKey);
+
             $this->objNarroContextInfo->Save();
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();
