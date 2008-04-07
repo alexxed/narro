@@ -46,118 +46,6 @@
         // Additional Static Methods
         ////////////////////////////
 
-        public static function GetSpellSuggestions($strText) {
-            $strCleanText = mb_ereg_replace('[\\n\.,:;\\\!\?0-9]+', ' ', $strText);
-            $strCleanText = strip_tags($strCleanText);
-            /**
-             * mozilla entitites: &xxx;
-             */
-            $strCleanText = mb_ereg_replace('&[a-zA-Z\-0-9]+\;', ' ' , $strCleanText);
-            /**
-             * keyboard shortcuts
-             */
-            $strCleanText = mb_ereg_replace('[~&]', '' , $strCleanText);
-            /**
-             * openoffice entities: %xxx %%xxx %%%xxx #xxx and so on
-             */
-            $strCleanText = mb_ereg_replace('[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}', ' ', $strCleanText);
-
-            /**
-             * some characters that mess with the spellchecking
-             */
-            $strCleanText = mb_ereg_replace('[\(\)]+', ' ', $strCleanText);
-
-            $strSpellLang = QApplication::$objUser->getPreferenceValueByName('Language');
-
-            return QApplication::GetSpellSuggestionsWithPspell($strCleanText, $strSpellLang);
-        }
-
-        public static function GetSpellSuggestionsWithPspell($strText, $strSpellLang) {
-
-
-            if (file_exists(__DICTIONARY_PATH__ . '/' . $strSpellLang . '.dat')) {
-                $strDictPath = realpath(dirname(__FILE__)) . "/../data/dictionaries/";
-                if (!defined('PSPELL_FAST'))
-                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
-
-                if (!$pspell_config = pspell_config_create($strSpellLang, null, null, 'utf-8'))
-                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
-                if (!pspell_config_data_dir($pspell_config, $strDictPath))
-                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
-
-                if (!pspell_config_dict_dir($pspell_config, $strDictPath))
-                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
-
-                if (!$pspell_link = pspell_new_config($pspell_config)) {
-                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
-                }
-            }
-            else
-                if (file_exists('/usr/lib/aspell-0.60/' . $strSpellLang . '.dat')) {
-                    $strDictPath = '/usr/lib/aspell-0.60/';
-                    $pspell_link = pspell_new($strSpellLang, null, null, 'utf-8');
-                }
-                else
-                    return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
-
-            $arrSuggestions = array();
-            $arrCleanText = mb_split('\s+', $strText);
-
-            foreach($arrCleanText as $strCleanText) {
-
-                if (!pspell_check($pspell_link, trim($strCleanText))) {
-                    $suggestions = pspell_suggest($pspell_link, trim($strCleanText));
-                    if (in_array($strCleanText, $suggestions))
-                        continue;
-                    $arrSuggestions[$strCleanText] = array_slice($suggestions, 0, 4);
-                }
-            }
-
-            return $arrSuggestions;
-        }
-
-        public static function GetSpellSuggestionsWithHunspell($strText, $strSpellLang) {
-
-            $arrCleanText = mb_split('\s+', $strText);
-            $arrResult = array();
-
-            $hndFile = fopen(__TMP_PATH__ .'/spell-' . md5($strText), 'w');
-
-            fwrite($hndFile, $strText);
-            fclose($hndFile);
-            chmod(__TMP_PATH__ .'/spell-' . md5($strText), 0777);
-
-            $strCommand = sprintf('/usr/bin/hunspell -i utf-8 -a -d %s -a %s',__DICTIONARY_PATH__ . '/' . $strSpellLang, __TMP_PATH__ .'/spell-' . md5($strText));
-
-            if (file_exists(__DICTIONARY_PATH__ . '/' . $strSpellLang . '.aff'))
-                $strCmdOutput = system($strCommand, $intRet);
-            else
-                return false;
-
-            if ($strCmdOutput == '') {
-                return false;
-            }
-
-            $arrLines = mb_split('\n', $strCmdOutput);
-
-            foreach($arrLines as $strWord) {
-                if (strpos($strWord, '&') === 0) {
-                    preg_match('/&\s+([^\s]+)\s+[^:]+:(.*)/', $strWord, $arrMatches);
-
-                    $strMisspelledWord = $arrMatches[1];
-                    $strSuggestions = $arrMatches[2];
-                    $arrSuggestions = mb_split('\,', $strSuggestions);
-                    array_slice($arrSuggestions, 0, 3);
-                    if (in_array($strMisspelledWord, $arrSuggestions))
-                        continue;
-                    $arrResult[$strMisspelledWord] = $arrSuggestions;
-                    $arrResult[$strMisspelledWord] = array_slice($arrResult[$strMisspelledWord], 0, 3);
-                }
-            }
-
-            return $arrResult;
-        }
-
         public static function RegisterPreference($strName, $strType = 'text', $strDescription = '', $strDefaultValue = '', $arrValues = array()) {
             self::$arrPreferences[$strName] = array('type'=> $strType, 'description'=>$strDescription, 'default'=>$strDefaultValue, 'values'=>$arrValues);
         }
@@ -210,6 +98,7 @@
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
     QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'en_US', array('en_US'));
+    QApplication::RegisterPreference('Special characters', 'text', 'Paste here the characters that you can not type in with your keyboard', '');
 
     if (isset($_SESSION['objUser']) && $_SESSION['objUser'] instanceof NarroUser)
         QApplication::$objUser = $_SESSION['objUser'];
