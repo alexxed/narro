@@ -467,7 +467,14 @@
         }
 
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+            $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+            if (is_array($arrResult) && isset($arrResult[1]))
+                $strSuggestionValue = $arrResult[1];
+            else
+                $strSuggestionValue = $this->txtSuggestionValue->Text;
+
+            QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $strSuggestionValue, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+
             if (QApplication::$objPluginHandler->Error)
                 $this->ShowPluginErrors();
             else
