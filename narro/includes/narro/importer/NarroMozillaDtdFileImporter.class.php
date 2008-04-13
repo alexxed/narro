@@ -118,7 +118,6 @@
                                         $strTranslation,
                                         isset($arrTranslationAccKeys[$strContextKey])?$arrTranslationAccKeys[$strContextKey]:null,
                                         trim($strContextKey),
-                                        null,
                                         $strContextComment[$strContextKey]
                             );
                         }

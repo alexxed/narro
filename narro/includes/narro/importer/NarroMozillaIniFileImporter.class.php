@@ -74,7 +74,6 @@
                                 isset($arrTranslation[$strKey])?$arrTranslation[$strKey]:null,
                                 isset($arrTranslationAccKeys[$strKey])?$arrTranslationAccKeys[$strKey]:null,
                                 trim($strKey),
-                                null,
                                 isset($arrTemplateComments[$strKey])?$arrTemplateComments[$strKey]:null
                     );
                 }

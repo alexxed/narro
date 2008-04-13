@@ -81,10 +81,9 @@
          * @param string $strTranslation the translated text from the import file (can be empty)
          * @param string $strOriginalAccKey access key for the translated text
          * @param string $strContext the context where the text/translation appears in the file
-         * @param string $intPluralForm if this is a plural, what plural form is it (0 singular, 1 plural form 1, and so on)
          * @param string $strComment a comment from the imported file
          */
-        protected function AddTranslation(NarroFile $objFile, $strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext, $intPluralForm = null, $strComment = null) {
+        protected function AddTranslation(NarroFile $objFile, $strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
             $blnContextInfoChanged = false;
             $blnContextChanged = false;
 
@@ -275,11 +274,6 @@
                 $objContextInfo->TextAccessKey = $strOriginalAccKey;;
             }
 
-            if ($objContextInfo->SuggestionAccessKey != $strTranslationAccKey) {
-                $blnContextInfoChanged = true;
-                $objContextInfo->SuggestionAccessKey = $strTranslationAccKey;
-            }
-
             if (!$this->blnOnlySuggestions && trim($strComment) != '') {
 
                 $objContextComment = NarroContextComment::QuerySingle(
@@ -364,6 +358,12 @@
                     $blnContextInfoChanged = true;
                     NarroImportStatistics::$arrStatistics['Validated suggestions']++;
                 }
+
+                if (!is_null($strTranslationAccKey) && $objContextInfo->SuggestionAccessKey != $strTranslationAccKey) {
+                    $blnContextInfoChanged = true;
+                    $objContextInfo->SuggestionAccessKey = $strTranslationAccKey;
+                }
+
             }
 
             if ($objContextInfo->HasSuggestions == 0) {
@@ -433,33 +433,10 @@
                 }
             }
 
+            $blnContextPluralChanged = false;
+            $blnContextPluralInfoChanged = false;
 
-
-
-            /**
-             * @todo update this piece to the new database structure
-             */
-            if (!is_null($intPluralForm)) {
-                $objNarroPlural = NarroContextPlural::QuerySingle(QQ::Equal(QQN::NarroContextPlural()->ContextId, $objNarroContext->ContextId));
-
-                if (!$objNarroPlural instanceof NarroContextPlural) {
-                    $objNarroPlural = new NarroContextPlural();
-                    $blnPluralChanged = true;
-                }
-
-                if ($objNarroPlural->ContextId != $objNarroContext->ContextId) {
-                    $objNarroPlural->ContextId = $objNarroContext->ContextId;
-                    $blnPluralChanged = true;
-                }
-
-                if ($objNarroPlural->PluralForm != $intPluralForm) {
-                    $objNarroPlural->PluralForm = $intPluralForm;
-                    $blnPluralChanged = true;
-                }
-
-                if ($blnPluralChanged)
-                    $objNarroPlural->Save();
-            }
+            NarroRss::AddContext($this->objProject, $objFile, $objNarroContext, $objNarroText, $objNarroSuggestion);
 
             return true;
         }

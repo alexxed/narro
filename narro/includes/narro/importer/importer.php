@@ -34,14 +34,16 @@
     require_once(dirname(__FILE__) . '/NarroRss.class.php');
     require_once(dirname(__FILE__) . '/NarroMozilla.class.php');
 
-    if (in_array('--import-mozilla', $argv)) {
+    if (in_array('--import', $argv)) {
 
         $objNarroImporter = new NarroProjectImporter();
 
         NarroLog::$blnEchoOutput = false;
 
-        $objNarroImporter->CheckEqual = true;
-        $objNarroImporter->Validate = true;
+        if (array_search('--check-equal', $argv))
+            $objNarroImporter->CheckEqual = true;
+        if (array_search('--validate', $argv))
+            $objNarroImporter->Validate = true;
 
         if (array_search('--minloglevel', $argv))
             NarroLog::$intMinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
@@ -49,8 +51,11 @@
         if (array_search('--project', $argv) !== false)
             $intProjectId = $argv[array_search('--project', $argv)+1];
 
-        if (array_search('--lang', $argv) !== false)
-            $strTargetLanguage = $argv[array_search('--lang', $argv)+1];
+        if (array_search('--source-lang', $argv) !== false)
+            $strSourceLanguage = $argv[array_search('--source-lang', $argv)+1];
+
+        if (array_search('--target-lang', $argv) !== false)
+            $strTargetLanguage = $argv[array_search('--target-lang', $argv)+1];
 
         if (array_search('--user', $argv) !== false)
             $intUserId = $argv[array_search('--user', $argv)+1];
@@ -86,22 +91,24 @@
 
         QApplication::$objUser->Language = $objLanguage;
 
-        NarroLog::LogMessage(3, sprintf(t('Target language is %s'), $strTargetLanguage));
-
         $objNarroImporter->TargetLanguage = $objLanguage;
 
-        $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
+        NarroLog::LogMessage(3, sprintf(t('Target language is %s'), $objNarroImporter->TargetLanguage->LanguageName));
+
+        $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
         if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-            NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), 'en_US'));
+            NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), $strSourceLanguage));
             return false;
         }
 
-        NarroLog::LogMessage(3, sprintf(t('Source language is %s'), $objNarroImporter->SourceLanguage->LanguageCode));
+        NarroLog::LogMessage(3, sprintf(t('Source language is %s'), $objNarroImporter->SourceLanguage->LanguageName));
 
-        $objNarroImporter->SourceLanguage->LanguageCode = 'en-US';
-        $objNarroImporter->TargetLanguage->LanguageCode = str_replace('_', '-', $objNarroImporter->TargetLanguage->LanguageCode);
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
+
+        if (in_array('--clean', $argv)) {
+            $objNarroImporter->CleanImportDirectory($strArchiveFile);
+        }
 
         $objNarroImporter->ImportProjectArchive($strArchiveFile);
 
@@ -111,11 +118,10 @@
         NarroRss::Save($objNarroImporter->Project, $objNarroImporter->TargetLanguage);
 
      }
-     elseif (in_array('--export-mozilla', $argv)) {
+     elseif (in_array('--export', $argv)) {
 
         $objNarroImporter = new NarroProjectImporter();
         NarroLog::$blnEchoOutput = false;
-        NarroLog::$strLogFile = 'exporter.log';
 
         if (array_search('--minloglevel', $argv))
             $objNarroImporter->MinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
@@ -123,11 +129,16 @@
         if (array_search('--project', $argv) !== false)
             $intProjectId = $argv[array_search('--project', $argv)+1];
 
-        if (array_search('--lang', $argv) !== false)
-            $strTargetLanguage = $argv[array_search('--lang', $argv)+1];
+        if (array_search('--source-lang', $argv) !== false)
+            $strSourceLanguage = $argv[array_search('--source-lang', $argv)+1];
+
+        if (array_search('--target-lang', $argv) !== false)
+            $strTargetLanguage = $argv[array_search('--target-lang', $argv)+1];
 
         if (array_search('--user', $argv) !== false)
             $intUserId = $argv[array_search('--user', $argv)+1];
+
+
 
         $objUser = NarroUser::Load($intUserId);
         if (!$objUser instanceof NarroUser) {
@@ -160,21 +171,24 @@
 
         QApplication::$objUser->Language = $objLanguage;
 
-        NarroLog::LogMessage(2, sprintf(t('Target language is %s'), $strTargetLanguage));
-
         $objNarroImporter->TargetLanguage = $objLanguage;
 
-        $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
+        NarroLog::LogMessage(3, sprintf(t('Target language is %s'), $objNarroImporter->TargetLanguage->LanguageName));
+
+        $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
         if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-            NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), 'en_US'));
+            NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), $strSourceLanguage));
             return false;
         }
-        $objNarroImporter->SourceLanguage->LanguageCode = 'en-US';
 
-        NarroLog::LogMessage(3, sprintf(t('Source language is %s'), $objNarroImporter->SourceLanguage->LanguageCode));
+        NarroLog::LogMessage(3, sprintf(t('Source language is %s'), $objNarroImporter->SourceLanguage->LanguageName));
 
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
+
+        if (in_array('--clean', $argv)) {
+            $objNarroImporter->CleanExportDirectory($strArchiveFile);
+        }
 
         $objNarroImporter->ExportProjectArchive($strArchiveFile);
 

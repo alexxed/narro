@@ -37,11 +37,11 @@
          * whether to check if the suggestion value is the same as the original text
          * if it's true, the suggestions that are the same as the original text are not imported
          */
-        protected $blnCheckEqual = true;
+        protected $blnCheckEqual;
         /**
          * whether to validate the imported suggestions
          */
-        protected $blnValidate = true;
+        protected $blnValidate;
         /**
          * whether to import only suggestions, that is don't add anything else than suggestions
          */
@@ -54,6 +54,26 @@
          * whether to make contexts inactive before import
          */
         protected $blnDeactivateContexts = true;
+
+        public function CleanImportDirectory($strDirectory) {
+            if (is_file($strDirectory))
+                $strDirectory = dirname($strDirectory);
+
+            if (file_exists($strDirectory  . '/import.pid'))
+                unlink($strDirectory  . '/import.pid');
+            if (file_exists($strDirectory  . '/import.status'))
+                unlink($strDirectory  . '/import.status');
+        }
+
+        public function CleanExportDirectory($strDirectory) {
+            if (is_file($strDirectory))
+                $strDirectory = dirname($strDirectory);
+
+            if (file_exists($strDirectory  . '/export.pid'))
+                unlink($strDirectory  . '/export.pid');
+            if (file_exists($strDirectory  . '/export.status'))
+                unlink($strDirectory  . '/export.status');
+        }
 
         public function ImportProjectArchive($strFile) {
 
@@ -97,10 +117,100 @@
             }
             elseif(is_dir($strFile))
                 $this->ImportFromDirectory($strFile);
+            elseif(is_file($strFile))
+                $this->ImportFromFile($strFile);
             else
                 NarroLog::LogMessage(3, sprintf(t('"%s" is not a tar.bz2 archive nor an existing directory.'), $strFile));
 
             $this->stopTimer();
+        }
+
+        public function ImportFromFile($strFile) {
+
+            $objDatabase = QApplication::$Database[1];
+
+            NarroLog::$strLogFile = dirname($strFile)  . '/import.log';
+
+            if (file_exists(dirname($strFile)  . '/import.pid'))
+                throw new Exception(sprintf(t('An export process is already running in the directory "%s" with pid %d'), dirname($strFile), file_get_contents(dirname($strFile)  . '/import.pid')));
+
+            if (file_exists(dirname($strFile)  . '/import.status'))
+                throw new Exception(sprintf(t('An import process is already running in the directory "%s" although no pid is recorded. Status is: "%s"'), dirname($strFile), file_get_contents(dirname($strFile)  . '/import.status')));
+
+
+            $hndPidFile = fopen(dirname($strFile)  . '/import.pid', 'w');
+
+            if (!$hndPidFile)
+                throw new Exception(sprintf(t('Cannot create %s in %s.'), 'import.pid', dirname($strFile)));
+
+            fputs($hndPidFile, getmypid());
+            fclose($hndPidFile);
+
+            if (!$intFileType = $this->GetFileType($strFile)) {
+                NarroLog::LogMessage(3, t('Unrecognizable file type.'));
+                return false;
+            }
+
+
+            $objFile = NarroFile::QuerySingle(
+                            QQ::AndCondition(
+                                QQ::Equal(
+                                    QQN::NarroFile()->ProjectId,
+                                    $this->objProject->ProjectId
+                                ),
+                                QQ::Equal(
+                                    QQN::NarroFile()->FileName,
+                                    basename($strFile)
+                                ),
+                                QQ::IsNull(
+                                    QQN::NarroFile()->ParentId
+                                )
+                            )
+            );
+
+            if (!$objFile instanceof NarroFile) {
+                /**
+                 * add the file
+                 */
+                $objFile = new NarroFile();
+                $objFile->FileName = basename($strFile);
+                $objFile->TypeId = $intFileType;
+                $objFile->ParentId = null;
+                $objFile->ProjectId = $this->objProject->ProjectId;
+                $objFile->ContextCount = 0;
+                $objFile->Encoding = 'UTF-8';
+                NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), basename($strFile), dirname($strFile)));
+                NarroImportStatistics::$arrStatistics['Imported files']++;
+            }
+
+            $objFile->Active = 1;
+            $objFile->Save();
+
+            if ($this->blnDeactivateFiles) {
+                $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
+                try {
+                    $objDatabase->NonQuery($strQuery);
+                }catch (Exception $objEx) {
+                    NarroLog::LogMessage(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                    return false;
+                }
+            }
+
+            if ($this->blnDeactivateContexts) {
+                $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
+                try {
+                    $objDatabase->NonQuery($strQuery);
+                }catch (Exception $objEx) {
+                    NarroLog::LogMessage(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                    return false;
+                }
+            }
+
+            chdir(dirname($strFile));
+            $this->ImportFile($objFile, $strFile);
+
+            if (file_exists(dirname($strFile)  . '/import.pid'))
+                unlink(dirname($strFile)  . '/import.pid');
         }
 
         public function ImportFromDirectory($strDirectory) {
@@ -366,10 +476,79 @@
             */
             elseif (file_exists($strFile) && is_dir($strFile))
                 $this->ExportFromDirectory($strFile);
+            elseif (is_file($strFile))
+                $this->ExportToFile($strFile);
             else
                 $this->ExportFromDirectory(sprintf('%s/%d', __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__, $this->objProject->ProjectId));
 
             $this->stopTimer();
+        }
+
+        public function ExportToFile($strFile) {
+            $strDirectory = dirname($strFile);
+
+            chdir($strDirectory);
+
+            NarroLog::$strLogFile = $strDirectory . '/export.log';
+
+            if (file_exists($strDirectory . '/export.pid'))
+                throw new Exception(sprintf(t('An export process is already running in the directory "%s" with pid %d'), $strDirectory, file_get_contents($strDirectory . '/export.pid')));
+
+            $hndPidFile = fopen($strDirectory . '/export.pid', 'w');
+
+            if (!$hndPidFile)
+                throw new Exception(sprintf(t('Cannot create %s in %s.'), 'export.pid', $strDirectory));
+
+            fputs($hndPidFile, getmypid());
+            fclose($hndPidFile);
+
+            $strTranslatedFileToExport = $strFile . '-' . $this->objTargetLanguage->LanguageCode;
+
+            NarroLog::LogMessage(1, sprintf(t('Exporting to "%s" using template "%s"'), $strTranslatedFileToExport, $strFile));
+
+            $objFile = NarroFile::QuerySingle(
+                            QQ::AndCondition(
+                                QQ::Equal(
+                                    QQN::NarroFile()->ProjectId,
+                                    $this->objProject->ProjectId
+                                ),
+                                QQ::Equal(
+                                    QQN::NarroFile()->FileName,
+                                    basename($strFile)
+                                ),
+                                QQ::IsNull(
+                                    QQN::NarroFile()->ParentId
+                                )
+                            )
+            );
+
+            if (!$objFile instanceof NarroFile) {
+                $objFile = NarroFile::QuerySingle(
+                            QQ::AndCondition(
+                                QQ::Equal(
+                                    QQN::NarroFile()->ProjectId,
+                                    $this->objProject->ProjectId
+                                ),
+                                QQ::IsNotNull(
+                                    QQN::NarroFile()->ParentId
+                                )
+                            )
+                );
+
+                if (!$objFile instanceof NarroFile) {
+                    NarroLog::LogMessage(3, t('There are no files in the database for this project.'));
+                    return false;
+                }
+            }
+
+
+            $this->ExportFile($objFile, $strFile, $strTranslatedFileToExport);
+
+            NarroImportStatistics::$arrStatistics['Exported files']++;
+
+            if (file_exists($strDirectory   . '/export.pid'))
+                unlink($strDirectory  . '/export.pid');
+
         }
 
         public function ExportFromDirectory($strDirectory) {

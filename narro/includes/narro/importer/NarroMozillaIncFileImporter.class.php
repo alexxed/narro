@@ -76,7 +76,6 @@
                                 $arrTranslation[$strKey],
                                 isset($arrTranslationAccKeys[$strKey])?$arrTranslationAccKeys[$strKey]:null,
                                 trim($strKey),
-                                null,
                                 $arrTemplateComments[$strKey]
                     );
                 }
