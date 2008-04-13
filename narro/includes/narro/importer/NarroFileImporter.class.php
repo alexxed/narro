@@ -413,17 +413,6 @@
                 }
             }
 
-            if (!is_null($intPluralForm)) {
-                if ($objContextInfo->HasPlural != 1) {
-                    $objContextInfo->HasPlural = 1;
-                    $blnContextInfoChanged = true;
-                }
-            }
-            elseif ($objContextInfo->HasPlural != 0) {
-                    $objContextInfo->HasPlural = 0;
-                    $blnContextInfoChanged = true;
-            }
-
             if ($blnContextInfoChanged) {
                 try {
                     $objContextInfo->Save();
@@ -436,7 +425,7 @@
             $blnContextPluralChanged = false;
             $blnContextPluralInfoChanged = false;
 
-            NarroRss::AddContext($this->objProject, $objFile, $objNarroContext, $objNarroText, $objNarroSuggestion);
+            //NarroRss::AddContext($this->objProject, $objFile, $objNarroContext, $objNarroText, $objNarroSuggestion);
 
             return true;
         }

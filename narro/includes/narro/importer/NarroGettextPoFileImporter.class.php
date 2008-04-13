@@ -643,8 +643,12 @@
             if (preg_match('/_(\w)/', $strText, $arrMatches)) {
                 return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), $arrMatches[1]);
             }
-            else
-                return array($strText, null);
+            else {
+                if (preg_match('/&(\w)/', $strText, $arrMatches))
+                    return array(NarroString::Replace('&' . $arrMatches[1], $arrMatches[1], $strText), $arrMatches[1]);
+                else
+                    return array($strText, null);
+            }
         }
 
         /**

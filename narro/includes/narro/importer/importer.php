@@ -40,10 +40,8 @@
 
         NarroLog::$blnEchoOutput = false;
 
-        if (array_search('--check-equal', $argv))
-            $objNarroImporter->CheckEqual = true;
-        if (array_search('--validate', $argv))
-            $objNarroImporter->Validate = true;
+        $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
+        $objNarroImporter->Validate = (bool) array_search('--validate', $argv);
 
         if (array_search('--minloglevel', $argv))
             NarroLog::$intMinLogLevel = $argv[array_search('--minloglevel', $argv)+1];

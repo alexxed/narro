@@ -270,6 +270,7 @@
             }
 
             $arrDirectories = array();
+            if (is_array($arrFiles))
             foreach($arrFiles as $intFileNo=>$strFileToImport) {
                 $arrFileParts = split('/', str_replace($strDirectory . '/' . $this->objSourceLanguage->LanguageCode, '', $strFileToImport));
                 $strFileName = $arrFileParts[count($arrFileParts)-1];
@@ -381,7 +382,7 @@
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
 
-                $strTranslatedFileToImport = str_replace($strDirectory . '/' . str_replace('_', '-', $this->objSourceLanguage->LanguageCode), $strDirectory . '/' . str_replace('_', '-', $this->objTargetLanguage->LanguageCode), $strFileToImport);
+                $strTranslatedFileToImport = str_replace($strDirectory . '/' . $this->objSourceLanguage->LanguageCode, $strDirectory . '/' . $this->objTargetLanguage->LanguageCode, $strFileToImport);
 
                 $intTime = time();
                 if (file_exists($strTranslatedFileToImport))
