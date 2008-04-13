@@ -192,10 +192,10 @@
 
                 $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
 
-                $strSuggestionValue = htmlentities($strSuggestionValue, null, 'utf-8');
+                $strSuggestionValue = NarroString::HtmlEntities($strSuggestionValue);
 
                 if ($objNarroContextInfo->SuggestionAccessKey)
-                    $strSuggestionValue = mb_ereg_replace($objNarroContextInfo->SuggestionAccessKey, '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $strSuggestionValue, 1);
+                    $strSuggestionValue = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $strSuggestionValue, 1);
 
                 return $strSuggestionValue;
             }
@@ -215,7 +215,7 @@
 
                 $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
 
-                return '<div style="color:green">' . htmlentities($strSuggestionValue, null, 'utf-8') . '</div>';
+                return '<div style="color:green">' . NarroString::HtmlEntities($strSuggestionValue) . '</div>';
             }
             elseif (
                 $arrSuggestions =
@@ -241,7 +241,7 @@
                     $strSuggestionValue = $objSuggestion->SuggestionValue;
 
                 $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
-                return '<div style="color:blue">' . htmlentities($strSuggestionValue, null, 'utf-8') . '</div>';
+                return '<div style="color:blue">' . NarroString::HtmlEntities($strSuggestionValue) . '</div>';
             }
             else {
                 return '<div width="100%" style="background:gray">&nbsp;</div>';
