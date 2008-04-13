@@ -163,6 +163,8 @@
                     case NarroFileType::MozillaIni:
                             $strIcon = 'ini_file.gif';
                             break;
+                    default:
+                            $strIcon = 'dtd_file.gif';
                 }
                 return sprintf('<img src="%s" style="vertical-align:middle" /> <a href="narro_file_text_list.php?p=%d&f=%d">%s</a>',
                     __IMAGE_ASSETS__ . '/' . $strIcon,
