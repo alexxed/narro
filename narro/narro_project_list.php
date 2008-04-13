@@ -146,17 +146,4 @@
     }
 
     NarroProjectListForm::Run('NarroProjectListForm', 'templates/narro_project_list.tpl.php');
-
-//    foreach(NarroUser::LoadAll() as $objUser) {
-//        if ($objUser->UserId == NarroUser::ANONYMOUS_USER_ID)
-//        continue;
-//        $objPerm = new NarroUserPermission();
-//        $objPerm->UserId = $objUser->UserId;
-//        $objPerm->PermissionId = 1;
-//        $objPerm->Save();
-//        $objPerm = new NarroUserPermission();
-//        $objPerm->UserId = $objUser->UserId;
-//        $objPerm->PermissionId = 2;
-//        $objPerm->Save();
-//    }
 ?>
