@@ -49,7 +49,7 @@
                 $strToReturn .= sprintf('<span%s>%s</span>', $strInactiveStepCssClass, $this->strLabelForPrevious);
             else {
                 $this->strActionParameter = $this->intPageNumber - 1;
-                $strToReturn .= sprintf('<a href="#p%d" %s%s>%s</a>',
+                $strToReturn .= sprintf('<a href="#%d" %s%s>%s</a>',
                     $this->strActionParameter, $this->GetActionAttributes(), $strActiveStepCssClass, $this->strLabelForPrevious);
             }
 
@@ -63,7 +63,7 @@
                         $strToReturn .= sprintf('&nbsp;<span%s>%s</span>&nbsp;', $strSelectedPageCssClass, $intIndex);
                     } else {
                         $this->strActionParameter = $intIndex;
-                        $strToReturn .= sprintf('&nbsp;<a href="#p%d" %s%s>%s</a>&nbsp;',
+                        $strToReturn .= sprintf('&nbsp;<a href="#%d" %s%s>%s</a>&nbsp;',
                             $this->strActionParameter, $this->GetActionAttributes(), $strPageCssClass, $intIndex);
                     }
                 }
@@ -135,7 +135,7 @@
                     $intPageStart = min($intMaximumStartOfBunch, $this->intPageNumber - $intLeftOfBunchCount);
 
                     $this->strActionParameter = 1;
-                    $strStartElipse = sprintf('&nbsp;<a href="#p1" %s%s>%s</a>&nbsp;',
+                    $strStartElipse = sprintf('&nbsp;<a href="#1" %s%s>%s</a>&nbsp;',
                         $this->GetActionAttributes(), $strPageCssClass, 1);
                     $strStartElipse .= '&nbsp;<b>...</b>&nbsp;';
                 }
@@ -216,5 +216,6 @@
                     break;
             }
         }
+
     }
 ?>
