@@ -131,14 +131,14 @@
             $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objNarroSuggestion->SuggestionValue);
             if (!$strSuggestionValue)
                 $strSuggestionValue = $objNarroSuggestion->SuggestionValue;
-/**
- * @todo Fix please. There are problems with html code.
+            /**
+             * @todo Fix please. There are problems with html code.
             if ($objNarroSuggestion->LanguageId == QApplication::$objUser->Language->LanguageId)
                 $arrWordSuggestions = QApplication::GetSpellSuggestions($objNarroSuggestion->SuggestionValue);
             else*/
                 $arrWordSuggestions = array();
 
-            $strSuggestionValue = htmlentities($strSuggestionValue, null, 'utf-8');
+            $strSuggestionValue = NarroString::HtmlEntities($strSuggestionValue);
 
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->TextAccessKey) {
                 /**
