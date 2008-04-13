@@ -112,16 +112,12 @@
         }
 
         public function dtgNarroProject_Actions_Render(NarroProject $objNarroProject) {
-            $strOutput = '';
-            //if (QApplication::$objUser->hasPermission('Can export', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) {
-            if (QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID && $objNarroProject->ProjectType == NarroProjectType::Mozilla) {
-
-                $strOutput .=
-                    sprintf('<a href="narro_project_text_list.php?p=%d">%s</a> | ', $objNarroProject->ProjectId, t('Texts')) .
-                    sprintf('<a href="narro_project_file_list.php?p=%d">%s</a> | ', $objNarroProject->ProjectId, t('Files')) .
-                    sprintf('<a href="narro_project_language_list.php?p=%d">%s</a> | ', $objNarroProject->ProjectId, t('Languages')) .
-                    sprintf('<a href="narro_project_manage.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Manage'));
-            }
+            $strOutput =
+                sprintf('<a href="narro_project_text_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Texts')) .
+                sprintf(' | <a href="narro_project_file_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Files')) .
+                sprintf(' | <a href="narro_project_language_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Languages'));
+                if (QApplication::$objUser->hasPermission('Can manage project', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                    sprintf(' | <a href="narro_project_manage.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Manage'));
 
             return $strOutput;
         }
@@ -150,4 +146,17 @@
     }
 
     NarroProjectListForm::Run('NarroProjectListForm', 'templates/narro_project_list.tpl.php');
+
+//    foreach(NarroUser::LoadAll() as $objUser) {
+//        if ($objUser->UserId == NarroUser::ANONYMOUS_USER_ID)
+//        continue;
+//        $objPerm = new NarroUserPermission();
+//        $objPerm->UserId = $objUser->UserId;
+//        $objPerm->PermissionId = 1;
+//        $objPerm->Save();
+//        $objPerm = new NarroUserPermission();
+//        $objPerm->UserId = $objUser->UserId;
+//        $objPerm->PermissionId = 2;
+//        $objPerm->Save();
+//    }
 ?>
