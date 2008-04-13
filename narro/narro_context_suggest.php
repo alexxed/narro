@@ -188,7 +188,7 @@
 
         // Update values from objNarroContextInfo
         protected function UpdateData() {
-            $this->pnlOriginalText->Text = htmlspecialchars($this->objNarroContextInfo->Context->Text->TextValue,null,'utf-8');
+            $this->pnlOriginalText->Text = NarroString::HtmlEntities($this->objNarroContextInfo->Context->Text->TextValue);
             if (!is_null($this->objNarroContextInfo->TextAccessKey))
                 $this->pnlOriginalText->Text = preg_replace(
                     '/' . $this->objNarroContextInfo->TextAccessKey . '/',
@@ -197,7 +197,7 @@
                     1
                 );
 
-            $this->pnlContext->Text = nl2br(htmlspecialchars($this->objNarroContextInfo->Context->Context,null,'utf-8'));
+            $this->pnlContext->Text = nl2br(NarroString::HtmlEntities($this->objNarroContextInfo->Context->Context));
 
             if
             (
@@ -210,7 +210,7 @@
                 )
             ) {
                 foreach($arrContextComments as $objContextComment) {
-                    $this->pnlContext->Text .= '<br />' . nl2br(htmlspecialchars($objContextComment->CommentText,null,'utf-8'));
+                    $this->pnlContext->Text .= '<br />' . nl2br(NarroString::HtmlEntities($objContextComment->CommentText));
                 }
             }
 
@@ -286,7 +286,7 @@
                 $strSearchType = '';
             }
 
-            $strText = htmlspecialchars($this->objNarroContextInfo->Context->Text->TextValue,null,'utf-8');
+            $strText = NarroString::HtmlEntities($this->objNarroContextInfo->Context->Text->TextValue);
             $strPageTitle =
                 sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
                 (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($strText, 0, 30) . '...':$strText);
