@@ -15,20 +15,15 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-
+    require_once('includes/prepend.inc.php');
     require_once('narro/narro_user_suggestions_panel.class.php');
     class NarroUserProfileForm extends QForm {
         protected $pnlUserSuggestions;
         protected $objUser;
 
         protected function Form_Create() {
-            $strQuery = sprintf("SELECT * FROM users WHERE uid=%d", QApplication::QueryString('user'));
-
-            if ($objResult = db_query($strQuery)) {
-                $this->objUser = db_fetch_object($objResult);
-            }
-
-            $this->pnlUserSuggestions = new NarroUserSuggestionsPanel($this->objUser->uid, $this);
+            $this->objUser = NarroUser::Load(QApplication::QueryString('u'));
+            $this->pnlUserSuggestions = new NarroUserSuggestionsPanel(QApplication::QueryString('u'), $this);
         }
 
 
