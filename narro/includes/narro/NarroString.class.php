@@ -19,12 +19,19 @@ class NarroString {
     }
 
     public static function Replace($strNeedle, $strReplacement, $strText, $intCount = null) {
+        if ($strText == '' || $strNeedle == '')
+            return $strText;
+            
         $intPos = mb_strpos($strText, $strNeedle, 0);
         $intCurrentResult = 0;
         while ($intPos !== false && ($intCount == null || $intCount > $intCurrentResult)) {
             $strText = mb_substr($strText, 0, $intPos) . $strReplacement . mb_substr($strText, $intPos + mb_strlen($strNeedle));
-            if ($intPos + mb_strlen($strNeedle) >= mb_strlen($strText))
+            
+            if ($intPos + mb_strlen($strNeedle) <= mb_strlen($strText))
                 $intPos = mb_strpos($strText, $strNeedle, $intPos + mb_strlen($strNeedle));
+            else
+                return $strText;
+                
             $intCurrentResult++;
         }
 
