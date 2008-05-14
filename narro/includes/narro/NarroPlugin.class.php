@@ -18,6 +18,7 @@
     class NarroPlugin {
         protected $strName;
         protected $arrErrors = array();
+        protected $blnEnable = true;
 
         public function __construct() {
             $this->strName = __CLASS__;
@@ -31,9 +32,11 @@
                 case "Errors": return $this->arrErrors;
                 case "Error": return QType::Cast(count($this->arrErrors), QType::Boolean);
                 case "Name": return $this->strName;
+                case "Enable": return $this->blnEnable;
                 default:
                     throw new QUndefinedPropertyException("GET", __CLASS__, $strName);
             }
         }
+
     }
 ?>

@@ -57,6 +57,8 @@
         protected function RegisterPlugin($strPluginClass) {
             if (!isset($this->arrPlugins[$strPluginClass]) || $this->arrPlugins[$strPluginClass] instanceof $strPluginClass)
                 $this->arrPlugins[$strPluginClass] = new $strPluginClass();
+                if (!$this->arrPlugins[$strPluginClass]->Enable)
+                    unset($this->arrPlugins[$strPluginClass]);
         }
 
 
