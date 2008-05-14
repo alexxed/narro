@@ -28,6 +28,8 @@
         <br />
 
         <?php $this->dtgNarroProject->Render() ?>
+        <p><?php echo t('Top 10 translators') ?>
+        <?php $this->pnlTopUsers->Render() ?>
 
     <?php $this->RenderEnd() ?>
 
