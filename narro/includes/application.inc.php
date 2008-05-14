@@ -99,6 +99,7 @@
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
     QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'en_US', array('en_US'));
     QApplication::RegisterPreference('Special characters', 'text', 'Paste here the characters that you can not type in with your keyboard', '');
+    QApplication::RegisterPreference('Theme', 'option', 'The theme used in the translation page', 'narro', array('Narro', 'KBabel'));
 
     if (isset($_SESSION['objUser']) && $_SESSION['objUser'] instanceof NarroUser)
         QApplication::$objUser = $_SESSION['objUser'];
@@ -112,7 +113,7 @@
     QApplication::$LanguageCode = QApplication::$objUser->Language->LanguageCode;
 
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
-    QForm::$FormStateHandler = 'QFileFormStateHandler';
+    QForm::$FormStateHandler = 'QSessionFormStateHandler';
     QFileFormStateHandler::$StatePath = __TMP_PATH__ . '/qform_states/';
 
     require_once __INCLUDES__ . '/Zend/Cache.php';
@@ -129,4 +130,14 @@
     QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
 
     QApplication::$objPluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
+
+    QApplicationBase::$ClassFile['NarroFileImporter'] = __INCLUDES__ . '/narro/importer/NarroFileImporter.class.php';
+    QApplicationBase::$ClassFile['NarroGettextPoFileImporter'] = __INCLUDES__ . '/narro/importer/NarroGettextPoFileImporter.class.php';
+    QApplicationBase::$ClassFile['NarroMozillaIniFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaIniFileImporter.class.php';
+    QApplicationBase::$ClassFile['NarroMozillaIncFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaIncFileImporter.class.php';
+    QApplicationBase::$ClassFile['NarroMozillaDtdFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaIniFileImporter.class.php';
+    QApplicationBase::$ClassFile['NarroMozilla'] = __INCLUDES__ . '/narro/importer/NarroMozilla.class.php';
+    QApplicationBase::$ClassFile['NarroImportStatistics'] = __INCLUDES__ . '/narro/importer/NarroImportStatistics.class.php';
+    QApplicationBase::$ClassFile['NarroLog'] = __INCLUDES__ . '/narro/importer/NarroLog.class.php';
+
 ?>
