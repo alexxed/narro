@@ -25,6 +25,7 @@
         // DataGrid Columns
         protected $colFileName;
         protected $colPercentTranslated;
+        protected $colActions;
 
         protected $objNarroProject;
         protected $objParentFile;
@@ -63,6 +64,8 @@
             $this->colPercentTranslated->HtmlEntities = false;
             $this->colPercentTranslated->Width = 160;
 
+            $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_FORM->dtgNarroFile_ActionsColumn_Render($_ITEM) ?>');
+            $this->colActions->HtmlEntities = false;
 
             // Setup DataGrid
             $this->dtgNarroFile = new QDataGrid($this);
@@ -81,6 +84,7 @@
 
             $this->dtgNarroFile->AddColumn($this->colFileName);
             $this->dtgNarroFile->AddColumn($this->colPercentTranslated);
+            $this->dtgNarroFile->AddColumn($this->colActions);
 
             $this->chkShowHierarchy = new QCheckBox($this);
             $this->chkShowHierarchy->Checked = true;
@@ -175,6 +179,43 @@
             }
         }
 
+        public function dtgNarroFile_ActionsColumn_Render(NarroFile $objNarroFile) {
+            if ($objNarroFile->TypeId == NarroFileType::Folder) {
+                return '';
+            }
+            else {
+                /**
+                 * @todo remove hard coded value en_US
+                 */
+                $strTemplateFile = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en_US' . $objNarroFile->FilePath;
+                if (!file_exists($strTemplateFile)) return '';
+
+                if (!$objExportButton = $this->GetControl('btnExport' . $objNarroFile->FileId)) {
+                    $objExportButton = new QButton($this, 'btnExport' . $objNarroFile->FileId);
+                    $objExportButton->Text = t('Export');
+                    $objExportButton->ActionParameter = $objNarroFile->FileId;
+                    $objExportButton->AddAction(new QClickEvent(), new QServerAction('btnExport_Click'));
+                    $objExportButton->Visible = QApplication::$objUser->hasPermission('Can export', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                }
+
+                if (!$objImportButton = $this->GetControl('btnImport' . $objNarroFile->FileId)) {
+                    $objImportButton = new QButton($this, 'btnImport' . $objNarroFile->FileId);
+                    $objImportButton->Text = t('Import');
+                    $objImportButton->ActionParameter = $objNarroFile->FileId;
+                    $objImportButton->AddAction(new QClickEvent(), new QServerAction('btnImport_Click'));
+                    $objImportButton->Visible = QApplication::$objUser->hasPermission('Can import', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                }
+
+                if (!$objImportFile = $this->GetControl('fileImport' . $objNarroFile->FileId)) {
+                    $objImportFile = new QFileControl($this, 'fileImport' . $objNarroFile->FileId);
+                    $objImportFile->Visible = QApplication::$objUser->hasPermission('Can import', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                }
+
+
+                return $objImportFile->Render(false) . $objImportButton->Render(false) . ' ' . $objExportButton->Render(false);
+            }
+        }
+
         protected function dtgNarroFile_Bind() {
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
@@ -244,6 +285,80 @@
                 $objNarroFile->Encoding = $objEncodingBox->TextValue;
                 $objNarroFile->Save();
             }
+        }
+
+        protected function btnExport_Click($strFormId, $strControlId, $strParameter) {
+            $objFile = NarroFile::Load($strParameter);
+
+            switch($objFile->TypeId) {
+                case NarroFileType::MozillaDtd:
+                    $objFileImporter = new NarroMozillaDtdFileImporter();
+                    break;
+                case NarroFileType::MozillaInc:
+                    $objFileImporter = new NarroMozillaIncFileImporter();
+                    break;
+                case NarroFileType::MozillaIni:
+                    $objFileImporter = new NarroMozillaIniFileImporter();
+                    break;
+                case NarroFileType::GettextPo:
+                    $objFileImporter = new NarroGettextPoFileImporter();
+                    break;
+                default:
+                    throw new Exception(sprintf(t('Tried to export an unknown file type: %d'), $strParameter));
+            }
+
+            $objFileImporter->User = QApplication::$objUser;
+            $objFileImporter->Project = $this->objNarroProject;
+            $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
+            $objFileImporter->TargetLanguage = QApplication::$objUser->Language;
+            $objFileImporter->CheckEqual = true;
+            $objFileImporter->OnlySuggestions = false;
+            $objFileImporter->Validate = QApplication::$objUser->hasPermission('Can validate', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+
+            $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
+
+            $objFileImporter->ExportFile($objFile, __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en_US' . $objFile->FilePath, $strTempFileName);
+            header(sprintf('Content-Disposition: attachment; filename="%s"', $objFile->FileName));
+            readfile($strTempFileName);
+            unlink($strTempFileName);
+            exit;
+        }
+
+        protected function btnImport_Click($strFormId, $strControlId, $strParameter) {
+            $objFileControl = $this->GetControl('fileImport' . $strParameter);
+            if (!$objFileControl instanceof QFileControl) return false;
+
+            $objFile = NarroFile::Load($strParameter);
+            if (!$objFile instanceof NarroFile) return false;
+
+            switch($objFile->TypeId) {
+                case NarroFileType::MozillaDtd:
+                    $objFileImporter = new NarroMozillaDtdFileImporter();
+                    break;
+                case NarroFileType::MozillaInc:
+                    $objFileImporter = new NarroMozillaIncFileImporter();
+                    break;
+                case NarroFileType::MozillaIni:
+                    $objFileImporter = new NarroMozillaIniFileImporter();
+                    break;
+                case NarroFileType::GettextPo:
+                    $objFileImporter = new NarroGettextPoFileImporter();
+                    break;
+                default:
+                    throw new Exception(sprintf(t('Tried to export an unknown file type: %d'), $strParameter));
+            }
+
+            $objFileImporter->User = QApplication::$objUser;
+            $objFileImporter->Project = $this->objNarroProject;
+            $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
+            $objFileImporter->TargetLanguage = QApplication::$objUser->Language;
+            $objFileImporter->CheckEqual = true;
+            $objFileImporter->OnlySuggestions = false;
+            $objFileImporter->Validate = QApplication::$objUser->hasPermission('Can validate', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+
+            $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
+
+            $objFileImporter->ImportFile($objFile, $objFileControl->File);
         }
 
     }
