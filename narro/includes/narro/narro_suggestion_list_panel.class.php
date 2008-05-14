@@ -64,10 +64,8 @@
             $this->colSuggestion->HtmlEntities = false;
             $this->colSuggestion->CssClass = QApplication::$objUser->Language->TextDirection;
 
-            /**
             $this->colAuthor = new QDataGridColumn(t('Author'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colAuthor_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId, false)));
             $this->colAuthor->HtmlEntities = false;
-            */
 
             $this->colVote = new QDataGridColumn(t('Votes'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colVote_Render($_ITEM); ?>');
             $this->colVote->HtmlEntities = false;
@@ -95,14 +93,14 @@
             $this->dtgSuggestions->SetDataBinder('dtgSuggestions_Bind', $this);
 
             $this->dtgSuggestions->AddColumn($this->colSuggestion);
-            //$this->dtgSuggestions->AddColumn($this->colAuthor);
+            $this->dtgSuggestions->AddColumn($this->colAuthor);
             $this->dtgSuggestions->AddColumn($this->colVote);
             $this->dtgSuggestions->AddColumn($this->colActions);
         }
 
         public function GetControlHtml() {
             if ($this->dtgSuggestions->TotalItemCount) {
-                $this->lblSuggestions->Text = t('Others have suggested:');
+                $this->lblSuggestions->Text = t('Other translations for this text:');
                 $this->dtgSuggestions->Visible = true;
             }
             else {
@@ -288,11 +286,13 @@
             if (!$btnDelete) {
                 $btnDelete = new QButton($this->dtgSuggestions, $strControlId);
                 $btnDelete->Text = t('Delete');
+                $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this suggestion?')));
                 if (QApplication::$blnUseAjax)
                     $btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
                 else
                     $btnDelete->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnDelete_Click')
                 );
+                
             }
 
             $btnDelete->ActionParameter = $objNarroSuggestion->SuggestionId;
@@ -344,7 +344,7 @@
             if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
                 $strText .= '&nbsp;' . $btnValidate->Render(false);
 
-            return $strText;
+            return '<div style="float:right">' . $strText . '</div>';
         }
 
         public function dtgSuggestions_Bind() {
@@ -453,9 +453,9 @@
         }
 
         public function btnEdit_Click($strFormId, $strControlId, $strParameter) {
-
-            if (!QApplication::$objUser->hasPermission('Can edit any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && ($objNarroSuggestion->UserId != QApplication::$objUser->UserId || QApplication::$objUser->UserId == NarroUser::ANONYMOUS_USER_ID ))
-              return false;
+            $objSuggestion = NarroSuggestion::Load($strParameter);
+            if (!QApplication::$objUser->hasPermission('Can edit any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && ($objSuggestion->UserId != QApplication::$objUser->UserId || QApplication::$objUser->UserId == NarroUser::ANONYMOUS_USER_ID ))
+                          return false;
 
             $btnEdit = $this->objForm->GetControl($strControlId);
             if ($btnEdit->Text == t('Edit')) {
@@ -465,7 +465,6 @@
             else {
                 // save
                 if (!$this->IsSuggestionUsed($strParameter)) {
-                    $objSuggestion = NarroSuggestion::Load($strParameter);
                     $txtControlId = str_replace('btnEditSuggestion', 'txtEditSuggestion', $strControlId);
                     $txtControl = $this->objForm->GetControl($txtControlId);
                     if ($txtControl) {
