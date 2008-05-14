@@ -25,6 +25,9 @@
         <?php } ?>
         <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/style.css" />
         <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/font-<?php echo QApplication::$objUser->getPreferenceValueByName('Font size') ?>.css" />
+        <?php if(QApplication::QueryString('p')) { ?>
+        <link rel="alternate" type="application/rss+xml" title="New texts for this project in the current language" href="/narro/rss.php?p=<?php echo QApplication::QueryString('p') ?>" />
+        <?php } ?>
     </head>
     <body>
         <div id="header">
@@ -39,7 +42,7 @@
                 echo
                     sprintf(
                         t('<i>Logged in as <a href="%s" style="color:green;font-weight:bold">%s</a></i>'),
-                        'narro_user_profile.php',
+                        'narro_user_profile.php?u=' . QApplication::$objUser->UserId,
                         QApplication::$objUser->Username
                     ) . ' | '
                     ;
