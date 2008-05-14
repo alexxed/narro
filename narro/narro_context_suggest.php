@@ -60,7 +60,6 @@
 
         protected $lblProgress;
 
-
         protected function SetupNarroContextInfo() {
 
             // Lookup Object PK information from Query String (if applicable)
@@ -158,6 +157,7 @@
             $this->pnlNavigator = new QPanel($this);
 
             $this->pnlProgress = new QPanel($this);
+            $this->pnlProgress->Display = QApplication::$objUser->hasPermission('Can suggest');
 
             $this->lblProgress = new QLabel($this);
 
@@ -189,7 +189,11 @@
         // Update values from objNarroContextInfo
         protected function UpdateData() {
             $this->pnlOriginalText->Text = NarroString::HtmlEntities($this->objNarroContextInfo->Context->Text->TextValue);
-            if (!is_null($this->objNarroContextInfo->TextAccessKey))
+            if
+            (
+                !is_null($this->objNarroContextInfo->TextAccessKey) &&
+                QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId)
+            )
                 $this->pnlOriginalText->Text = preg_replace(
                     '/' . $this->objNarroContextInfo->TextAccessKey . '/',
                     '<u>' . $this->objNarroContextInfo->TextAccessKey . '</u>',
@@ -220,6 +224,7 @@
 
             $this->pnlPluginMessages->Visible = false;
             $this->btnSaveIgnore->Visible = false;
+            $this->btnSaveValidate->Visible = true;
 
             $this->lblMessage->Text = '';
 
@@ -241,6 +246,11 @@
                 'narro_project_file_list.php?' . sprintf('p=%d&tf=%d',
                     $this->objNarroContextInfo->Context->File->Project->ProjectId,
                     $this->intTextFilter
+                )) .
+            sprintf(' -> <a href="%s">..</a>',
+                'narro_project_file_list.php?' . sprintf('p=%d&pf=%d',
+                    $this->objNarroContextInfo->Context->File->Project->ProjectId,
+                    $this->objNarroContextInfo->Context->File->ParentId
                 )) .
             sprintf(' -> <a href="%s">%s</a>',
                 'narro_file_text_list.php?' . sprintf('f=%d&tf=%d&st=%d&s=%s',
@@ -452,10 +462,12 @@
                 }
                 $this->pnlPluginMessages->Visible = true;
                 $this->btnSaveIgnore->Visible = true;
+                $this->btnSaveValidate->Visible = false;
             }
             else {
                 $this->pnlPluginMessages->Visible = false;
                 $this->btnSaveIgnore->Visible = false;
+                $this->btnSaveValidate->Visible = true;
             }
 
             $this->pnlPluginMessages->MarkAsModified();
@@ -773,9 +785,14 @@
 
         }
 
-
-
     }
 
-    NarroContextSuggestForm::Run('NarroContextSuggestForm', 'templates/narro_context_suggest.tpl.php');
+    switch(QApplication::$objUser->getPreferenceValueByName('Theme')) {
+        case 'KBabel' :
+            NarroContextSuggestForm::Run('NarroContextSuggestForm', 'templates/narro_context_suggest_kbabel.tpl.php');
+            break;
+        default :
+            NarroContextSuggestForm::Run('NarroContextSuggestForm', 'templates/narro_context_suggest.tpl.php');
+    }
+
 ?>
