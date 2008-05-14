@@ -16,34 +16,31 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = $this->objUser->name;
+    $strPageTitle = $this->objUser->Username;
 
     require('includes/header.inc.php');
 ?>
 
     <?php $this->RenderBegin() ?>
-        <img style="float:right; border:1px dotted black; padding:5px;" src="/<?php echo $this->objUser->picture ?>" />
-        <h1><?php echo $user->name ?></h1>
-        <br /><br /><br />
+        <h1><?php echo sprintf(t('%s\'s translations'), $this->objUser->Username); ?></h1>
         <?php
-            $intSuggestionCount = NarroSuggestion::CountByUserId($this->objUser->uid);
-            $strQuery = sprintf("SELECT COUNT(DISTINCT c.valid_suggestion_id) as cnt FROM narro_context c, narro_suggestion s WHERE c.valid_suggestion_id=s.suggestion_id AND s.user_id=%d", $this->objUser->uid);
-
-            if ($objResult = db_query($strQuery)) {
-                if ($arrDbRow = db_fetch_array($objResult)) {
-                    $intValidSuggestionCount = $arrDbRow['cnt'];
-                }
-            }
+            $intSuggestionCount = NarroSuggestion::CountByUserId($this->objUser->UserId);
+            $objDatabase = QApplication::$Database[1];
+            $intValidSuggestionCount = NarroContextInfo::QueryCount(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroContextInfo()->ValidSuggestion->UserId, $this->objUser->UserId),
+                    QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId)
+                )
+            );
 
             if ($intSuggestionCount && $intValidSuggestionCount) {
-        ?>
-                Dintr-un total de <?php echo $intSuggestionCount; ?> sugestii făcute de <b><?php echo $this->objUser->name; ?></b>,
-                <?php echo $intValidSuggestionCount; ?> au fost validate.<br />
-        <?php
+                echo sprintf(t('Out of a total of %d suggestions made by %s, %d were validated.'), $intSuggestionCount, $this->objUser->Username, $intValidSuggestionCount);
             }
+            echo '<br />';
+            echo sprintf(t('Here are the suggestions that %s made so far') . ':', $this->objUser->Username);
+            echo '<br /><br />';
+            $this->pnlUserSuggestions->Render();
         ?>
-        Sugestii făcute de <b><?php echo $this->objUser->name; ?></b>:
-        <?php $this->pnlUserSuggestions->Render() ?>
     <?php $this->RenderEnd() ?>
 
 <?php require('includes/footer.inc.php'); ?>
