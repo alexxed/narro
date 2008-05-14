@@ -23,7 +23,7 @@
         /*
          * whether to echo the output
          */
-        public static $blnEchoOutput = true;
+        public static $blnEchoOutput = false;
 
         /**
          * file handle for the log file
