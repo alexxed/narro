@@ -272,12 +272,16 @@
             $arrDirectories = array();
             if (is_array($arrFiles))
             foreach($arrFiles as $intFileNo=>$strFileToImport) {
-                $arrFileParts = split('/', str_replace($strDirectory . '/' . $this->objSourceLanguage->LanguageCode, '', $strFileToImport));
+                $strFilePath = str_replace($strDirectory . '/' . $this->objSourceLanguage->LanguageCode, '', $strFileToImport);
+                $arrFileParts = split('/', $strFilePath);
                 $strFileName = $arrFileParts[count($arrFileParts)-1];
 
                 unset($arrFileParts[count($arrFileParts)-1]);
                 unset($arrFileParts[0]);
 
+                /**
+                 * create directories
+                 */
                 $strPath = '';
                 $intParentId = 0;
                 foreach($arrFileParts as $intPos=>$strDir) {
@@ -321,6 +325,7 @@
                             NarroImportStatistics::$arrStatistics['Kept folders']++;
                             $objFile->Active = 1;
                             $objFile->ContextCount = 0;
+                            $objFile->FilePath = $strPath;
                             $objFile->Save();
                         }
                         else {
@@ -335,6 +340,7 @@
                                 $objFile->ParentId = $intParentId;
                             $objFile->ProjectId = $this->objProject->ProjectId;
                             $objFile->ContextCount = 0;
+                            $objFile->FilePath = $strPath;
                             $objFile->Active = 1;
                             $objFile->Save();
                             NarroLog::LogMessage(1, sprintf(t('Added folder "%s" from "%s"'), $strDir, $strPath));
@@ -362,6 +368,7 @@
                 if ($objFile instanceof NarroFile) {
                     $objFile->Active = 1;
                     $objFile->TypeId = $intFileType;
+                    $objFile->FilePath = $strFilePath;
                     $objFile->Save();
                     NarroImportStatistics::$arrStatistics['Kept files']++;
                 }
@@ -376,6 +383,7 @@
                         $objFile->ParentId = $intParentId;
                     $objFile->ProjectId = $this->objProject->ProjectId;
                     $objFile->Active = 1;
+                    $objFile->FilePath = $strFilePath;
                     $objFile->Encoding = 'UTF-8';
                     $objFile->Save();
                     NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), $strFileName, $strPath));
