@@ -64,7 +64,7 @@
             /**
              * set up default permissions
              */
-            foreach(array(1, 2, 3, 4, 9) as $intPermissionId) {
+            foreach(array(1, 2) as $intPermissionId) {
                 $objUserPermission = new NarroUserPermission();
                 $objUserPermission->PermissionId = $intPermissionId;
                 $objUserPermission->UserId = $objUser->UserId;
