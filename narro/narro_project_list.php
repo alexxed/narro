@@ -27,6 +27,8 @@
         protected $colPercentTranslated;
         protected $colActions;
 
+        protected $pnlTopUsers;
+
         protected function Form_Create() {
             // Setup DataGrid Columns
             $this->colProjectName = new QDataGridColumn(t('Project name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
@@ -55,6 +57,8 @@
             $this->dtgNarroProject->AddColumn($this->colProjectName);
             $this->dtgNarroProject->AddColumn($this->colPercentTranslated);
             $this->dtgNarroProject->AddColumn($this->colActions);
+
+            $this->pnlTopUsers = new NarroTopUsersPanel($this);
 
         }
 
