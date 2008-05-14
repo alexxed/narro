@@ -42,6 +42,7 @@
 
         $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
         $objNarroImporter->Validate = (bool) array_search('--validate', $argv);
+        $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
 
         if (array_search('--minloglevel', $argv))
             NarroLog::$intMinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
