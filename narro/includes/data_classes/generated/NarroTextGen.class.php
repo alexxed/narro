@@ -316,18 +316,6 @@
 					$blnExpandedViaArray = true;
 				}
 
-				if ((array_key_exists($strAliasPrefix . 'narrocontextpluralastext__plural_id', $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextpluralastext__plural_id')))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextPluralAsTextArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objNarroContextPluralAsTextArray[$intPreviousChildItemCount - 1];
-						$objChildItem = NarroContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextpluralastext__', $strExpandAsArrayNodes, $objPreviousChildItem);
-						if ($objChildItem)
-							array_push($objPreviousItem->_objNarroContextPluralAsTextArray, $objChildItem);
-					} else
-						array_push($objPreviousItem->_objNarroContextPluralAsTextArray, NarroContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextpluralastext__', $strExpandAsArrayNodes));
-					$blnExpandedViaArray = true;
-				}
-
 				if ((array_key_exists($strAliasPrefix . 'narrosuggestionastext__suggestion_id', $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrosuggestionastext__suggestion_id')))) {
 					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroSuggestionAsTextArray)) {
@@ -389,14 +377,6 @@
 					array_push($objToReturn->_objNarroContextAsTextArray, NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextastext__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objNarroContextAsText = NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextastext__', $strExpandAsArrayNodes);
-			}
-
-			// Check for NarroContextPluralAsText Virtual Binding
-			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrocontextpluralastext__plural_id'))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrocontextpluralastext__plural_id', $strExpandAsArrayNodes)))
-					array_push($objToReturn->_objNarroContextPluralAsTextArray, NarroContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextpluralastext__', $strExpandAsArrayNodes));
-				else
-					$objToReturn->_objNarroContextPluralAsText = NarroContextPlural::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextpluralastext__', $strExpandAsArrayNodes);
 			}
 
 			// Check for NarroSuggestionAsText Virtual Binding
@@ -669,22 +649,6 @@
 					 */
 					return (array) $this->_objNarroContextAsTextArray;
 
-				case '_NarroContextPluralAsText':
-					/**
-					 * Gets the value for the private _objNarroContextPluralAsText (Read-Only)
-					 * if set due to an expansion on the narro_context_plural.text_id reverse relationship
-					 * @return NarroContextPlural
-					 */
-					return $this->_objNarroContextPluralAsText;
-
-				case '_NarroContextPluralAsTextArray':
-					/**
-					 * Gets the value for the private _objNarroContextPluralAsTextArray (Read-Only)
-					 * if set due to an ExpandAsArray on the narro_context_plural.text_id reverse relationship
-					 * @return NarroContextPlural[]
-					 */
-					return (array) $this->_objNarroContextPluralAsTextArray;
-
 				case '_NarroSuggestionAsText':
 					/**
 					 * Gets the value for the private _objNarroSuggestionAsText (Read-Only)
@@ -955,156 +919,6 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_context`
-				WHERE
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
-			');
-		}
-
-			
-		
-		// Related Objects' Methods for NarroContextPluralAsText
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated NarroContextPluralsAsText as an array of NarroContextPlural objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroContextPlural[]
-		*/ 
-		public function GetNarroContextPluralAsTextArray($objOptionalClauses = null) {
-			if ((is_null($this->intTextId)))
-				return array();
-
-			try {
-				return NarroContextPlural::LoadArrayByTextId($this->intTextId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated NarroContextPluralsAsText
-		 * @return int
-		*/ 
-		public function CountNarroContextPluralsAsText() {
-			if ((is_null($this->intTextId)))
-				return 0;
-
-			return NarroContextPlural::CountByTextId($this->intTextId);
-		}
-
-		/**
-		 * Associates a NarroContextPluralAsText
-		 * @param NarroContextPlural $objNarroContextPlural
-		 * @return void
-		*/ 
-		public function AssociateNarroContextPluralAsText(NarroContextPlural $objNarroContextPlural) {
-			if ((is_null($this->intTextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextPluralAsText on this unsaved NarroText.');
-			if ((is_null($objNarroContextPlural->PluralId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextPluralAsText on this NarroText with an unsaved NarroContextPlural.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroText::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_context_plural`
-				SET
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
-				WHERE
-					`plural_id` = ' . $objDatabase->SqlVariable($objNarroContextPlural->PluralId) . '
-			');
-		}
-
-		/**
-		 * Unassociates a NarroContextPluralAsText
-		 * @param NarroContextPlural $objNarroContextPlural
-		 * @return void
-		*/ 
-		public function UnassociateNarroContextPluralAsText(NarroContextPlural $objNarroContextPlural) {
-			if ((is_null($this->intTextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralAsText on this unsaved NarroText.');
-			if ((is_null($objNarroContextPlural->PluralId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralAsText on this NarroText with an unsaved NarroContextPlural.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroText::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_context_plural`
-				SET
-					`text_id` = null
-				WHERE
-					`plural_id` = ' . $objDatabase->SqlVariable($objNarroContextPlural->PluralId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all NarroContextPluralsAsText
-		 * @return void
-		*/ 
-		public function UnassociateAllNarroContextPluralsAsText() {
-			if ((is_null($this->intTextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralAsText on this unsaved NarroText.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroText::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_context_plural`
-				SET
-					`text_id` = null
-				WHERE
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated NarroContextPluralAsText
-		 * @param NarroContextPlural $objNarroContextPlural
-		 * @return void
-		*/ 
-		public function DeleteAssociatedNarroContextPluralAsText(NarroContextPlural $objNarroContextPlural) {
-			if ((is_null($this->intTextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralAsText on this unsaved NarroText.');
-			if ((is_null($objNarroContextPlural->PluralId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralAsText on this NarroText with an unsaved NarroContextPlural.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroText::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_context_plural`
-				WHERE
-					`plural_id` = ' . $objDatabase->SqlVariable($objNarroContextPlural->PluralId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated NarroContextPluralsAsText
-		 * @return void
-		*/ 
-		public function DeleteAllNarroContextPluralsAsText() {
-			if ((is_null($this->intTextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextPluralAsText on this unsaved NarroText.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroText::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_context_plural`
 				WHERE
 					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
 			');
@@ -1476,22 +1290,6 @@
 		private $_objNarroContextAsTextArray = array();
 
 		/**
-		 * Private member variable that stores a reference to a single NarroContextPluralAsText object
-		 * (of type NarroContextPlural), if this NarroText object was restored with
-		 * an expansion on the narro_context_plural association table.
-		 * @var NarroContextPlural _objNarroContextPluralAsText;
-		 */
-		private $_objNarroContextPluralAsText;
-
-		/**
-		 * Private member variable that stores a reference to an array of NarroContextPluralAsText objects
-		 * (of type NarroContextPlural[]), if this NarroText object was restored with
-		 * an ExpandAsArray on the narro_context_plural association table.
-		 * @var NarroContextPlural[] _objNarroContextPluralAsTextArray;
-		 */
-		private $_objNarroContextPluralAsTextArray = array();
-
-		/**
 		 * Private member variable that stores a reference to a single NarroSuggestionAsText object
 		 * (of type NarroSuggestion), if this NarroText object was restored with
 		 * an expansion on the narro_suggestion association table.
@@ -1635,8 +1433,6 @@
 					return new QQNode('text_char_count', 'integer', $this);
 				case 'NarroContextAsText':
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextastext', 'reverse_reference', 'text_id');
-				case 'NarroContextPluralAsText':
-					return new QQReverseReferenceNodeNarroContextPlural($this, 'narrocontextpluralastext', 'reverse_reference', 'text_id');
 				case 'NarroSuggestionAsText':
 					return new QQReverseReferenceNodeNarroSuggestion($this, 'narrosuggestionastext', 'reverse_reference', 'text_id');
 				case 'NarroSuggestionVoteAsText':
@@ -1671,8 +1467,6 @@
 					return new QQNode('text_char_count', 'integer', $this);
 				case 'NarroContextAsText':
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextastext', 'reverse_reference', 'text_id');
-				case 'NarroContextPluralAsText':
-					return new QQReverseReferenceNodeNarroContextPlural($this, 'narrocontextpluralastext', 'reverse_reference', 'text_id');
 				case 'NarroSuggestionAsText':
 					return new QQReverseReferenceNodeNarroSuggestion($this, 'narrosuggestionastext', 'reverse_reference', 'text_id');
 				case 'NarroSuggestionVoteAsText':

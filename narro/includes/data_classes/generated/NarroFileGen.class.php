@@ -270,6 +270,7 @@
 
 			$objBuilder->AddSelectItem($strTableName . '.`file_id` AS ' . $strAliasPrefix . 'file_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`file_name` AS ' . $strAliasPrefix . 'file_name`');
+			$objBuilder->AddSelectItem($strTableName . '.`file_path` AS ' . $strAliasPrefix . 'file_path`');
 			$objBuilder->AddSelectItem($strTableName . '.`parent_id` AS ' . $strAliasPrefix . 'parent_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`type_id` AS ' . $strAliasPrefix . 'type_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`project_id` AS ' . $strAliasPrefix . 'project_id`');
@@ -345,6 +346,7 @@
 
 			$objToReturn->intFileId = $objDbRow->GetColumn($strAliasPrefix . 'file_id', 'Integer');
 			$objToReturn->strFileName = $objDbRow->GetColumn($strAliasPrefix . 'file_name', 'VarChar');
+			$objToReturn->strFilePath = $objDbRow->GetColumn($strAliasPrefix . 'file_path', 'VarChar');
 			$objToReturn->intParentId = $objDbRow->GetColumn($strAliasPrefix . 'parent_id', 'Integer');
 			$objToReturn->intTypeId = $objDbRow->GetColumn($strAliasPrefix . 'type_id', 'Integer');
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasPrefix . 'project_id', 'Integer');
@@ -594,6 +596,7 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `narro_file` (
 							`file_name`,
+							`file_path`,
 							`parent_id`,
 							`type_id`,
 							`project_id`,
@@ -602,6 +605,7 @@
 							`active`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strFileName) . ',
+							' . $objDatabase->SqlVariable($this->strFilePath) . ',
 							' . $objDatabase->SqlVariable($this->intParentId) . ',
 							' . $objDatabase->SqlVariable($this->intTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
@@ -624,6 +628,7 @@
 							`narro_file`
 						SET
 							`file_name` = ' . $objDatabase->SqlVariable($this->strFileName) . ',
+							`file_path` = ' . $objDatabase->SqlVariable($this->strFilePath) . ',
 							`parent_id` = ' . $objDatabase->SqlVariable($this->intParentId) . ',
 							`type_id` = ' . $objDatabase->SqlVariable($this->intTypeId) . ',
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
@@ -755,6 +760,13 @@
 					 * @return string
 					 */
 					return $this->strFileName;
+
+				case 'FilePath':
+					/**
+					 * Gets the value for strFilePath (Not Null)
+					 * @return string
+					 */
+					return $this->strFilePath;
 
 				case 'ParentId':
 					/**
@@ -919,6 +931,19 @@
 					 */
 					try {
 						return ($this->strFileName = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'FilePath':
+					/**
+					 * Sets the value for strFilePath (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strFilePath = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1463,6 +1488,15 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_file.file_path
+		 * @var string strFilePath
+		 */
+		protected $strFilePath;
+		const FilePathMaxLength = 255;
+		const FilePathDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_file.parent_id
 		 * @var integer intParentId
 		 */
@@ -1615,6 +1649,7 @@
 			$strToReturn = '<complexType name="NarroFile"><sequence>';
 			$strToReturn .= '<element name="FileId" type="xsd:int"/>';
 			$strToReturn .= '<element name="FileName" type="xsd:string"/>';
+			$strToReturn .= '<element name="FilePath" type="xsd:string"/>';
 			$strToReturn .= '<element name="Parent" type="xsd1:NarroFile"/>';
 			$strToReturn .= '<element name="TypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Project" type="xsd1:NarroProject"/>';
@@ -1649,6 +1684,8 @@
 				$objToReturn->intFileId = $objSoapObject->FileId;
 			if (property_exists($objSoapObject, 'FileName'))
 				$objToReturn->strFileName = $objSoapObject->FileName;
+			if (property_exists($objSoapObject, 'FilePath'))
+				$objToReturn->strFilePath = $objSoapObject->FilePath;
 			if ((property_exists($objSoapObject, 'Parent')) &&
 				($objSoapObject->Parent))
 				$objToReturn->Parent = NarroFile::GetObjectFromSoapObject($objSoapObject->Parent);
@@ -1711,6 +1748,8 @@
 					return new QQNode('file_id', 'integer', $this);
 				case 'FileName':
 					return new QQNode('file_name', 'string', $this);
+				case 'FilePath':
+					return new QQNode('file_path', 'string', $this);
 				case 'ParentId':
 					return new QQNode('parent_id', 'integer', $this);
 				case 'Parent':
@@ -1757,6 +1796,8 @@
 					return new QQNode('file_id', 'integer', $this);
 				case 'FileName':
 					return new QQNode('file_name', 'string', $this);
+				case 'FilePath':
+					return new QQNode('file_path', 'string', $this);
 				case 'ParentId':
 					return new QQNode('parent_id', 'integer', $this);
 				case 'Parent':

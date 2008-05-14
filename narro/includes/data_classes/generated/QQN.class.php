@@ -9,12 +9,6 @@
 		static public function NarroContextInfo() {
 			return new QQNodeNarroContextInfo('narro_context_info', null);
 		}
-		static public function NarroContextPlural() {
-			return new QQNodeNarroContextPlural('narro_context_plural', null);
-		}
-		static public function NarroContextPluralInfo() {
-			return new QQNodeNarroContextPluralInfo('narro_context_plural_info', null);
-		}
 		static public function NarroFile() {
 			return new QQNodeNarroFile('narro_file', null);
 		}
