@@ -37,6 +37,11 @@
                 <td><?php $this->txtPassword->Render() ?></td>
             </tr>
             <tr>
+                <td></td>
+                <td><?php $this->chkRememberLogin->Render() ?><label for="<? echo $this->chkRememberLogin->ControlId ?>"><?php echo t('Remember me')?></label></td>
+            </tr>
+
+            <tr>
                 <td colspan="2" style="text-align:right"><?php $this->btnRecoverPassword->Render();?> <?php $this->btnLogin->Render() ?></td>
             </tr>
         </table>
