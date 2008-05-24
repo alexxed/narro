@@ -211,8 +211,19 @@
                     $objImportFile->Visible = QApplication::$objUser->hasPermission('Can import', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
+                if (!$objExportFile = $this->GetControl('fileExport' . $objNarroFile->FileId)) {
+                    $objExportFile = new QFileControl($this, 'fileExport' . $objNarroFile->FileId);
+                    $objExportFile->Visible = QApplication::$objUser->hasPermission('Can export', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                }
 
-                return $objImportFile->Render(false) . $objImportButton->Render(false) . ' ' . $objExportButton->Render(false);
+                if (QApplication::$objUser->hasPermission('Can import', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId))
+                    $strImportAction = t('File to import') . ': ' . $objImportFile->Render(false) . $objImportButton->Render(false);
+
+                if (QApplication::$objUser->hasPermission('Can export', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId))
+                    $strExportAction = t('Model to use') . ': ' . $objExportFile->Render(false) . $objExportButton->Render(false);
+
+
+                return $strImportAction . '<br />' . $strExportAction;
             }
         }
 
@@ -283,12 +294,15 @@
             if ($objNarroFile instanceof NarroFile) {
                 $objEncodingBox = $this->GetControl('fileenc' . $strParameter);
                 $objNarroFile->Encoding = $objEncodingBox->TextValue;
+                $objNarroFile->Modified = date('Y-m-d H:i:s');
+                $objNarroFile->Created = date('Y-m-d H:i:s');
                 $objNarroFile->Save();
             }
         }
 
         protected function btnExport_Click($strFormId, $strControlId, $strParameter) {
             $objFile = NarroFile::Load($strParameter);
+            $objFileControl = $this->GetControl('fileExport' . $strParameter);
 
             switch($objFile->TypeId) {
                 case NarroFileType::MozillaDtd:
@@ -317,7 +331,13 @@
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
 
-            $objFileImporter->ExportFile($objFile, __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en_US' . $objFile->FilePath, $strTempFileName);
+            if ($objFileControl instanceof QFileControl && file_exists($objFileControl->File)) {
+                $objFileImporter->ExportFile($objFile, $objFileControl->File, $strTempFileName);
+                unlink($objFileControl->File);
+            }
+            else
+                $objFileImporter->ExportFile($objFile, __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en_US' . $objFile->FilePath, $strTempFileName);
+
             header(sprintf('Content-Disposition: attachment; filename="%s"', $objFile->FileName));
             readfile($strTempFileName);
             unlink($strTempFileName);
