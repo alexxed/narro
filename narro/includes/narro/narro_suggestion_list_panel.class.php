@@ -292,7 +292,7 @@
                 else
                     $btnDelete->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnDelete_Click')
                 );
-                
+
             }
 
             $btnDelete->ActionParameter = $objNarroSuggestion->SuggestionId;
@@ -401,6 +401,7 @@
 
                     foreach($arrCtx as $objContext) {
                         $objContext->HasSuggestions = 0;
+                        $objContext->Modified = date('Y-m-d H:i:s');
                         $objContext->Save();
                     }
 
@@ -442,9 +443,11 @@
                 $objNarroSuggestionVote->ContextId = $this->objNarroContextInfo->ContextId;
                 $objNarroSuggestionVote->TextId = $this->objNarroContextInfo->Context->TextId;
                 $objNarroSuggestionVote->UserId = QApplication::$objUser->UserId;
+                $objNarroSuggestionVote->Created = date('Y-m-d H:i:s');
                 $objNarroSuggestionVote->VoteValue = 1;
             }
 
+            $objNarroSuggestionVote->Modified = date('Y-m-d H:i:s');
             $objNarroSuggestionVote->Save();
 
             $this->lblMessage->Text = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
@@ -476,6 +479,7 @@
 
                         $objSuggestion->SuggestionValue = $strSuggestionValue;
                         $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
+                        $objSuggestion->Modified = date('Y-m-d H:i:s');
                         try {
                             $objSuggestion->Save();
                             $this->lblMessage->Text = t('Your changes were saved succesfully.');
