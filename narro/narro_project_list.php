@@ -63,7 +63,10 @@
         }
 
         public function dtgNarroProject_PercentTranslated_Render(NarroProject $objNarroProject) {
-            $sOutput = '';
+            $strOutput = QApplication::$Cache->load('project_progress_' . $objNarroProject->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
+
+            if ($strOutput && $strOutput != '')
+                return $strOutput;
 
             $objDatabase = QApplication::$Database[1];
 
@@ -102,9 +105,11 @@
                 $objProgressBar->Translated = $intValidatedTexts;
                 $objProgressBar->Fuzzy = $intTranslatedTexts;
 
-                $sOutput .= $objProgressBar->Render(false);
+                $strOutput .= $objProgressBar->Render(false);
             }
-            return $sOutput;
+
+            QApplication::$Cache->save($strOutput, 'project_progress_' . $objNarroProject->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
+            return $strOutput;
 
         }
 
