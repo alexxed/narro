@@ -179,8 +179,13 @@
                 $objFile->ProjectId = $this->objProject->ProjectId;
                 $objFile->ContextCount = 0;
                 $objFile->Encoding = 'UTF-8';
+                $objFile->Modified = date('Y-m-d H:i:s');
+                $objFile->Created = date('Y-m-d H:i:s');
                 NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), basename($strFile), dirname($strFile)));
                 NarroImportStatistics::$arrStatistics['Imported files']++;
+            }
+            else {
+                $objFile->Modified = date('Y-m-d H:i:s');
             }
 
             $objFile->Active = 1;
@@ -326,6 +331,7 @@
                             $objFile->Active = 1;
                             $objFile->ContextCount = 0;
                             $objFile->FilePath = $strPath;
+                            $objFile->Modified = date('Y-m-d H:i:s');
                             $objFile->Save();
                         }
                         else {
@@ -341,6 +347,8 @@
                             $objFile->ProjectId = $this->objProject->ProjectId;
                             $objFile->ContextCount = 0;
                             $objFile->FilePath = $strPath;
+                            $objFile->Modified = date('Y-m-d H:i:s');
+                            $objFile->Created = date('Y-m-d H:i:s');
                             $objFile->Active = 1;
                             $objFile->Save();
                             NarroLog::LogMessage(1, sprintf(t('Added folder "%s" from "%s"'), $strDir, $strPath));
@@ -369,6 +377,7 @@
                     $objFile->Active = 1;
                     $objFile->TypeId = $intFileType;
                     $objFile->FilePath = $strFilePath;
+                    $objFile->Modified = date('Y-m-d H:i:s');
                     $objFile->Save();
                     NarroImportStatistics::$arrStatistics['Kept files']++;
                 }
@@ -385,6 +394,8 @@
                     $objFile->Active = 1;
                     $objFile->FilePath = $strFilePath;
                     $objFile->Encoding = 'UTF-8';
+                    $objFile->Modified = date('Y-m-d H:i:s');
+                    $objFile->Created = date('Y-m-d H:i:s');
                     $objFile->Save();
                     NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), $strFileName, $strPath));
                     NarroImportStatistics::$arrStatistics['Imported files']++;

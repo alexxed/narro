@@ -206,13 +206,8 @@
                 return false;
             }
 
+            //@todo replace this with a command or something, this takes way too much memory
             $intTotalToProcess = count(file($strTemplateFile));
-
-            /**
-             * deactivate contexts and files
-             */
-            $objDatabase->NonQuery(sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d AND file_id=%d", $this->objProject->ProjectId, $objFile->FileId));
-            $objDatabase->NonQuery(sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d AND file_id=%d", $this->objProject->ProjectId, $objFile->FileId));
 
             /**
              * initialize status file
@@ -347,7 +342,7 @@
                             }
 
                             if (!$objFile instanceof NarroFile) {
-                                if ($blnOnlySuggestions)
+                                if ($this->blnOnlySuggestions)
                                     continue;
                                 $objFile = new NarroFile();
                                 $objFile->FileName = $strFileName;
@@ -361,6 +356,8 @@
                                 }
                                 $objFile->Active = 1;
                                 $objFile->Encoding = 'UTF-8';
+                                $objFile->Modified = date('Y-m-d H:i:s');
+                                $objFile->Created = date('Y-m-d H:i:s');
                                 $objFile->Save();
                                 NarroLog::LogMessage(1, sprintf(t('Added file "%s"'), $strFileName));
                                 NarroImportStatistics::$arrStatistics['Imported files']++;
@@ -371,6 +368,7 @@
                                     $objFile->TypeId = NarroFileType::OpenOfficeSdf;
                                 else
                                     $objFile->TypeId = NarroFileType::Folder;
+                                $objFile->Modified = date('Y-m-d H:i:s');
                                 $objFile->Save();
                             }
 
@@ -385,7 +383,7 @@
                     NarroLog::LogMessage(3, $arrColumn[1] . ' failed preg_match');
                 }
 
-                if (!$objFile instanceof NarroFile && $blnOnlySuggestions)
+                if (!$objFile instanceof NarroFile && $this->blnOnlySuggestions)
                     continue;
 
 

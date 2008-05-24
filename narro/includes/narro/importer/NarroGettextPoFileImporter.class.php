@@ -17,7 +17,10 @@
      */
 
     class NarroGettextPoFileImporter extends NarroFileImporter {
+        protected $objFile;
+
         public function ExportFile($objFile, $strTemplate, $strTranslatedFile = null) {
+            $this->objFile = $objFile;
             $hndExportFile = fopen($strTranslatedFile, 'w');
             if (!$hndExportFile) {
                 NarroLog::LogMessage(3, sprintf(t('Cannot create or write to "%s".'), $strTranslatedFile));
@@ -30,9 +33,10 @@
                 while (!feof($hndTemplate)) {
                     $strLine = fgets($hndTemplate, 8192);
 
-                    // echo "Processing " . $strLine . "<br />";
+                    NarroLog::LogMessage(1, 'Processing ' . $strLine );
+
                     if (strpos($strLine, '# ') === 0) {
-                        // echo 'Found translator comment. <br />';
+                        NarroLog::LogMessage(1, 'Found translator comment.');
                         $strTranslatorComment = $strLine;
                         while (!feof($hndTemplate)) {
                             $strLine = fgets($hndTemplate, 8192);
@@ -45,7 +49,7 @@
                     }
 
                     if (strpos($strLine, '#.') === 0) {
-                        // echo 'Found extracted comment. <br />';
+                        NarroLog::LogMessage(1, 'Found extracted comment.');
                         $strExtractedComment = $strLine;
                         while (!feof($hndTemplate)) {
                             $strLine = fgets($hndTemplate, 8192);
@@ -58,7 +62,7 @@
                     }
 
                     if (strpos($strLine, '#:') === 0) {
-                        // echo 'Found reference. <br />';
+                        NarroLog::LogMessage(1, 'Found reference.');
                         $strReference = $strLine;
                         while (!feof($hndTemplate)) {
                             $strLine = fgets($hndTemplate, 8192);
@@ -70,7 +74,7 @@
                     }
 
                     if (strpos($strLine, '#,') === 0) {
-                        // echo 'Found flag. <br />';
+                        NarroLog::LogMessage(1, 'Found flag.');
                         $strFlag = $strLine;
                         while (!feof($hndTemplate)) {
                             $strLine = fgets($hndTemplate, 8192);
@@ -82,7 +86,7 @@
                     }
 
                     if (strpos($strLine, '#| msgctxt') === 0) {
-                        // echo 'Found previous context. <br />';
+                        NarroLog::LogMessage(1, 'Found previous context.');
                         $strPreviousContext = $strLine;
                         while (!feof($hndTemplate)) {
                             $strLine = fgets($hndTemplate, 8192);
@@ -94,7 +98,7 @@
                     }
 
                     if (strpos($strLine, '#| msgid') === 0) {
-                        // echo 'Found previous translated string. <br />';
+                        NarroLog::LogMessage(1, 'Found previous translated string.');
                         $strPreviousUntranslated = $strLine;
                         while (!feof($hndTemplate)) {
                             $strLine = fgets($hndTemplate, 8192);
@@ -106,7 +110,7 @@
                     }
 
                     if (strpos($strLine, '#| msgid_plural') === 0) {
-                        // echo 'Found previous translated plural string. <br />';
+                        NarroLog::LogMessage(1, 'Found previous translated plural string.');
                         $strPreviousUntranslatedPlural = $strLine;
                         while (!feof($hndTemplate)) {
                             $strLine = fgets($hndTemplate, 8192);
@@ -118,7 +122,7 @@
                     }
 
                     if (strpos($strLine, 'msgctxt ') === 0) {
-                        // echo 'Found string. <br />';
+                        NarroLog::LogMessage(1, 'Found context.');
                         preg_match('/msgctxt\s+\"(.*)\"/', $strLine, $arrMatches);
                         $strMsgContext = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndTemplate)) {
@@ -145,7 +149,7 @@
                     }
 
                     if (strpos($strLine, 'msgid_plural') === 0) {
-                        // echo 'Found plural string. <br />';
+                        NarroLog::LogMessage(1, 'Found plural string.');
                         preg_match('/msgid_plural\s+\"(.*)\"/', $strLine, $arrMatches);
                         $strMsgPluralId = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndTemplate)) {
@@ -159,7 +163,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr ') === 0) {
-                        // echo 'Found translation. <br />';
+                        NarroLog::LogMessage(1, 'Found translation.');
                         preg_match('/msgstr\s+\"(.*)\"/', $strLine, $arrMatches);
                         $strMsgStr = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndTemplate)) {
@@ -173,7 +177,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[0]') === 0) {
-                        // echo 'Found translation plural 1. <br />';
+                        NarroLog::LogMessage(1, 'Found translation plural 1.');
                         preg_match('/msgstr\[0\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $strMsgStr0 = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndTemplate)) {
@@ -187,7 +191,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[1]') === 0) {
-                        // echo 'Found translation plural 2. <br />';
+                        NarroLog::LogMessage(1, 'Found translation plural 2.');
                         preg_match('/msgstr\[1\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $strMsgStr1 = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndTemplate)) {
@@ -201,7 +205,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[2]') === 0) {
-                        // echo 'Found translation plural 3. <br />';
+                        NarroLog::LogMessage(1, 'Found translation plural 3.');
                         preg_match('/msgstr\[2\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $strMsgStr2 = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndTemplate)) {
@@ -214,7 +218,7 @@
                         }
                     }
 
-                    if($strMsgId) {
+                    if(isset($strMsgId) && $strMsgId != '') {
                         /**
                         echo '$strTranslatorComment: ' . $strTranslatorComment . "<br />";
                         echo '$strExtractedComment: ' . $strExtractedComment . "<br />";
@@ -250,7 +254,8 @@
                             if (strlen(trim($strFlag)) < 4) $strFlag = null;
                         }
 
-                        $strContext = $strTranslatorComment . $strExtractedComment . $strReference . $strFlag . $strPreviousContext . $strPreviousUntranslated . $strPreviousUntranslatedPlural . $strMsgContext;
+                        $strContext = trim($strTranslatorComment . $strExtractedComment . $strReference . $strFlag . $strPreviousContext . $strPreviousUntranslated . $strPreviousUntranslatedPlural . $strMsgContext);
+                        NarroLog::LogMessage(1, 'Context is: ' . $strContext);
 
                         if (!is_null($strMsgId)) $strMsgId = str_replace('\"', '"', $strMsgId);
                         if (!is_null($strMsgStr)) $strMsgStr = str_replace('\"', '"', $strMsgStr);
@@ -261,14 +266,14 @@
                         if (!is_null($strMsgStr2)) $strMsgStr2 = str_replace('\"', '"', $strMsgStr2);
 
                         if (trim($strContext) == '') {
-                            $strContext = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $objFile->FileName, $strCurrentGroup);
+                            $strContext = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $this->objFile->FileName, $strCurrentGroup);
                         }
 
                         /**
                          * if it's not a plural, just add msgid and msgstr
                          */
                         if (is_null($strMsgPluralId)) {
-                                $strMsgStr = $this->GetTranslation($objFile, $strMsgId, $this->getAccessKey($strMsgId), $strMsgStr, $this->getAccessKey($strMsgStr), $strContext);
+                            $strMsgStr = $this->GetTranslation($this->stripAccessKey($strMsgId), $this->getAccessKey($strMsgId), $this->getAccessKeyPrefix($strMsgId), $this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), $strContext);
                         }
                         else {
                             /**
@@ -278,36 +283,46 @@
                              * the next ones (currently 2) are added with plural id, so in fact they will be tied to the same text
                              */
                             if (!is_null($strMsgStr0))
-                                $strMsgStr0 = $this->GetTranslation($objFile, $strMsgId, $this->getAccessKey($strMsgId), $strMsgStr0, $this->getAccessKey($strMsgStr0), $strContext . "\nThis text has plurals.", 0);
+                                $strMsgStr0 = $this->GetTranslation($this->stripAccessKey($strMsgId), $this->getAccessKey($strMsgId), $this->getAccessKeyPrefix($strMsgId), $this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), $strContext . "\nThis text has plurals.", 0);
                             if (!is_null($strMsgStr1))
-                                $strMsgStr1 = $this->GetTranslation($objFile, $strMsgPluralId, $this->getAccessKey($strMsgPluralId), $strMsgStr1, $this->getAccessKey($strMsgStr1), $strContext . "\nThis is plural form 1 for the text \"$strMsgId\".", 1);
+                                $strMsgStr1 = $this->GetTranslation($this->stripAccessKey($strMsgPluralId), $this->getAccessKey($strMsgPluralId), $this->getAccessKeyPrefix($strMsgPluralId), $this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), $strContext . "\nThis is plural form 1 for the text \"$strMsgId\".", 1);
                             if (!is_null($strMsgStr2))
-                                $strMsgStr2 = $this->GetTranslation($objFile, $strMsgPluralId, $this->getAccessKey($strMsgPluralId), $strMsgStr2, $this->getAccessKey($strMsgStr2), $strContext . "\nThis is plural form 2 for the text \"$strMsgId\".", 2);
+                                $strMsgStr2 = $this->GetTranslation($this->stripAccessKey($strMsgPluralId), $this->getAccessKey($strMsgPluralId), $this->getAccessKeyPrefix($strMsgPluralId), $this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), $strContext . "\nThis is plural form 2 for the text \"$strMsgId\".", 2);
                         }
                     }
 
                     if (!is_null($strTranslatorComment))
-                        fputs($hndExportFile, $strTranslatorComment . "\n");
+                        fputs($hndExportFile, $strTranslatorComment);
                     if (!is_null($strExtractedComment))
-                        fputs($hndExportFile, $strExtractedComment . "\n");
+                        fputs($hndExportFile, $strExtractedComment);
                     if (!is_null($strReference))
-                        fputs($hndExportFile, $strReference . "\n");
+                        fputs($hndExportFile, $strReference);
                     if (!is_null($strFlag))
-                        fputs($hndExportFile, $strFlag . "\n");
+                        fputs($hndExportFile, $strFlag);
                     if (!is_null($strPreviousContext))
-                        fputs($hndExportFile, $strPreviousContext . "\n");
+                        fputs($hndExportFile, $strPreviousContext);
                     if (!is_null($strPreviousUntranslated))
-                        fputs($hndExportFile, $strPreviousUntranslated . "\n");
+                        fputs($hndExportFile, $strPreviousUntranslated);
                     if (!is_null($strPreviousUntranslatedPlural))
-                        fputs($hndExportFile, $strPreviousUntranslatedPlural . "\n");
+                        fputs($hndExportFile, $strPreviousUntranslatedPlural);
                     if (!is_null($strMsgContext))
                         fputs($hndExportFile, sprintf('msgctxt "%s"' . "\n", str_replace('"', '\"', $strMsgContext)));
                     if (!is_null($strMsgId))
                         fputs($hndExportFile, sprintf('msgid "%s"' . "\n", str_replace('"', '\"', $strMsgId)));
                     if (!is_null($strMsgPluralId))
                         fputs($hndExportFile, sprintf('msgid_plural "%s"' . "\n", str_replace('"', '\"', $strMsgPluralId)));
+
                     if (!is_null($strMsgStr))
-                        fputs($hndExportFile, sprintf('msgstr "%s"' . "\n", str_replace('"', '\"', $strMsgStr)));
+                        if ($strMsgId == '') {
+                            /**
+                             * this must be the po header
+                             */
+                            $strPoHeader = sprintf("msgstr \"\"\n\"%s\"\n", str_replace('\n', "\\n\"\n\"", $strMsgStr));
+                            $strPoHeader = preg_replace('/\n""/', '', $strPoHeader);
+                            fputs($hndExportFile, $strPoHeader);
+                        }
+                        else
+                            fputs($hndExportFile, sprintf('msgstr "%s"' . "\n", str_replace('"', '\"', $strMsgStr)));
                     if (!is_null($strMsgStr0))
                         fputs($hndExportFile, sprintf('msgstr[0] "%s"' . "\n", str_replace('"', '\"', $strMsgStr0)));
                     if (!is_null($strMsgStr1))
@@ -316,6 +331,10 @@
                         fputs($hndExportFile, sprintf('msgstr[2] "%s"' . "\n", str_replace('"', '\"', $strMsgStr2)));
 
                     fputs($hndExportFile, "\n");
+
+                    if ($strMsgId == '') {
+                        fputs($hndExportFile, $strLine);
+                    }
 
                     $strTranslatorComment = null;
                     $strExtractedComment = null;
@@ -331,7 +350,6 @@
                     $strMsgStr0 = null;
                     $strMsgStr1 = null;
                     $strMsgStr2 = null;
-
                     $strCurrentGroup++;
                 }
             }
@@ -584,9 +602,7 @@
                          * if it's not a plural, just add msgid and msgstr
                          */
                         if (is_null($strMsgPluralId)) {
-                                list($strMsgId, $strMsgIdAccKey) = $this->getAccessKey($strMsgId);
-                                list($strMsgStr, $strMsgStrAccKey) = $this->getAccessKey($strMsgStr);
-                                $this->AddTranslation($objFile, $strMsgId, $strMsgIdAccKey, $strMsgStr, $strMsgStrAccKey, $strContext);
+                                $this->AddTranslation($objFile, $this->stripAccessKey($strMsgId), $this->getAccessKey($strMsgId), $this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), $strContext);
                         }
                         else {
                             /**
@@ -597,21 +613,15 @@
                              * @todo add unlimited plurals support
                              */
                             if (!is_null($strMsgStr0)) {
-                                list($strMsgId, $strMsgIdAccKey) = $this->getAccessKey($strMsgId);
-                                list($strMsgStr0, $strMsgStr0AccKey) = $this->getAccessKey($strMsgStr0);
-                                $this->AddTranslation($objFile, $strMsgId, $strMsgIdAccKey, $strMsgStr0, $strMsgStr0AccKey, $strContext . "\nThis text has plurals.");
+                                $this->AddTranslation($objFile, $this->stripAccessKey($strMsgId), $this->getAccessKey($strMsgPluralId), $this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), $strContext . "\nThis text has plurals.");
                             }
 
                             if (!is_null($strMsgStr1)) {
-                                list($strMsgId, $strMsgIdAccKey) = $this->getAccessKey($strMsgId);
-                                list($strMsgStr1, $strMsgStr1AccKey) = $this->getAccessKey($strMsgStr1);
-                                $this->AddTranslation($objFile, $strMsgPluralId, $strMsgIdAccKey, $strMsgStr1, $strMsgIdAccKey, $strContext . "\nThis is plural form 1 for the text \"$strMsgId\".");
+                                $this->AddTranslation($objFile, $this->stripAccessKey($strMsgPluralId), $this->getAccessKey($strMsgPluralId), $this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), $strContext . "\nThis is plural form 1 for the text \"$strMsgId\".");
                             }
 
                             if (!is_null($strMsgStr2)) {
-                                list($strMsgId, $strMsgIdAccKey) = $this->getAccessKey($strMsgId);
-                                list($strMsgStr2, $strMsgStr2AccKey) = $this->getAccessKey($strMsgStr2);
-                                $this->AddTranslation($objFile, $strMsgPluralId, $strMsgIdAccKey, $strMsgStr2, $strMsgStr2AccKey, $strContext . "\nThis is plural form 2 for the text \"$strMsgId\".");
+                                $this->AddTranslation($objFile, $this->stripAccessKey($strMsgPluralId), $this->getAccessKey($strMsgPluralId), $this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), $strContext . "\nThis is plural form 2 for the text \"$strMsgId\".");
                             }
                         }
                     }
@@ -639,22 +649,42 @@
             }
         }
 
-        protected function getAccessKey($strText) {
-            if (preg_match('/_(\w)/', $strText, $arrMatches)) {
-                return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), $arrMatches[1]);
+        private function getAccessKeyAndStrippedText($strText) {
+            $strCleanText = preg_replace('/<literal>.*<\/literal>/', '', $strText);
+            $strCleanText = strip_tags($strCleanText);
+            $strCleanText = html_entity_decode($strCleanText);
+            $strCleanText = preg_replace('/\$[a-z0-9A-Z_\-]+/', '', $strCleanText);
+
+            if (preg_match('/_(\w)/', $strCleanText, $arrMatches)) {
+                return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
             }
             else {
-                if (preg_match('/&(\w)/', $strText, $arrMatches))
-                    return array(NarroString::Replace('&' . $arrMatches[1], $arrMatches[1], $strText), $arrMatches[1]);
+                if (preg_match('/&(\w)/', $strCleanText, $arrMatches)) {
+                    return array(NarroString::Replace('&' . $arrMatches[1], $arrMatches[1], $strText), '&', $arrMatches[1]);
+                }
                 else
                     return array($strText, null);
             }
         }
 
+        protected function getAccessKey($strText) {
+            list($strStrippedText, $strAccKeyPrefix, $strAccKey) = $this->getAccessKeyAndStrippedText($strText);
+            return $strAccKey;
+        }
+
+        protected function stripAccessKey($strText) {
+            list($strStrippedText, $strAccKeyPrefix, $strAccKey) = $this->getAccessKeyAndStrippedText($strText);
+            return $strStrippedText;
+        }
+
+        protected function getAccessKeyPrefix($strText) {
+            list($strStrippedText, $strAccKeyPrefix, $strAccKey) = $this->getAccessKeyAndStrippedText($strText);
+            return $strAccKeyPrefix;
+        }
+
         /**
          * A translation here consists of the project, file, text, translation, context, plurals, validation, ignore equals
          *
-         * @param NarroFile $objFile
          * @param string $strOriginal the original text
          * @param string $strOriginalAccKey access key for the original text
          * @param string $strTranslation the translated text from the import file (can be empty)
@@ -665,28 +695,34 @@
          *
          * @return string valid suggestion
          */
-        protected function GetTranslation(NarroFile $objFile, $strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext, $intPluralForm = null, $strComment = null) {
+        protected function GetTranslation($strOriginal, $strOriginalAccKey = null, $strOriginalAccKeyPrefix = null, $strTranslation, $strTranslationAccKey = null, $strContext, $intPluralForm = null, $strComment = null) {
             $objNarroContextInfo = NarroContextInfo::QuerySingle(
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $objFile->FileId),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
                     QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5($strContext)),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId),
                     QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId)
                 )
             );
 
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
-                if (!is_null($strTranslationAccKey))
-                    return NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '_' . $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, 1);
+                if (!is_null($strOriginalAccKey) && !is_null($strOriginalAccKeyPrefix)) {
+                    /**
+                     * @todo don't export if there's no valid access key
+                     */
+                    $strTextWithAccKey = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, $strOriginalAccKeyPrefix . $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, 1);
+                    return $strTextWithAccKey;
+                }
                 else
                     return $objNarroContextInfo->ValidSuggestion->SuggestionValue;
             }
             else {
-                if (!is_null($strOriginalAccKey))
-                    return NarroString::Replace($strOriginalAccKey, '_' . $strOriginalAccKey, $strOriginal, 1);
-                else
-                    return $strOriginal;
+                /**
+                 * leave it untranslated
+                 */
+                return "";
             }
         }
     }
