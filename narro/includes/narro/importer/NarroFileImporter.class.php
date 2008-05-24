@@ -188,6 +188,8 @@
                 $objNarroText->TextValue = $strOriginal;
                 $objNarroText->TextValueMd5 = md5($strOriginal);
                 $objNarroText->TextCharCount = mb_strlen($strOriginal);
+                $objNarroText->Modified = date('Y-m-d H:i:s');
+                $objNarroText->Created = date('Y-m-d H:i:s');
 
                 try {
                     $objNarroText->Save();
@@ -232,6 +234,8 @@
                 $objNarroContext->ContextMd5 = md5($strContext);
                 $objNarroContext->FileId = $objFile->FileId;
                 $objNarroContext->Active = 1;
+                $objNarroContext->Modified = date('Y-m-d H:i:s');
+                $objNarroContext->Created = date('Y-m-d H:i:s');
                 $objNarroContext->Save();
 
                 NarroLog::LogMessage(1, sprintf(t('Added the context "%s" from the file "%s"'), $strContext, $objFile->FileName));
@@ -291,6 +295,8 @@
                     $objContextComment->LanguageId = $this->objTargetLanguage->LanguageId;
                     $objContextComment->CommentText = $strComment;
                     $objContextComment->CommentTextMd5 = md5($strComment);
+                    $objContextComment->Modified = date('Y-m-d H:i:s');
+                    $objContextComment->Created = date('Y-m-d H:i:s');
                     $objContextComment->Save();
                 }
 
@@ -340,6 +346,8 @@
                     $objNarroSuggestion->SuggestionValue = $strTranslation;
                     $objNarroSuggestion->SuggestionValueMd5 = md5($strTranslation);
                     $objNarroSuggestion->SuggestionCharCount = mb_strlen($strTranslation);
+                    $objNarroSuggestion->Modified = date('Y-m-d H:i:s');
+                    $objNarroSuggestion->Created = date('Y-m-d H:i:s');
                     $objNarroSuggestion->Save();
                     /**
                      * update the HasSuggestions if it was 0 and we added a suggestion
@@ -355,6 +363,7 @@
 
                 if ($this->blnValidate) {
                     $objContextInfo->ValidSuggestionId = $objNarroSuggestion->SuggestionId;
+                    $objContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
                     $blnContextInfoChanged = true;
                     NarroImportStatistics::$arrStatistics['Validated suggestions']++;
                 }
@@ -393,6 +402,7 @@
 
                     foreach($arrContextInfo as $objOneContextInfo) {
                         $objOneContextInfo->HasSuggestions = 1;
+                        $objOneContextInfo->Modified = date('Y-m-d H:i:s');
                         $objOneContextInfo->Save();
                     }
 
@@ -406,6 +416,7 @@
             if ($objNarroContext instanceof NarroContext) {
                 try {
                     $objNarroContext->Active = 1;
+                    $objNarroContext->Modified = date('Y-m-d H:i:s');
                     $objNarroContext->Save();
                 } catch(Exception $objExc) {
                     NarroLog::LogMessage(3, sprintf(t('Error while setting context "%s" to active: %s'), $strContext, $objExc->getMessage()));
@@ -414,6 +425,7 @@
             }
 
             if ($blnContextInfoChanged) {
+                $objContextInfo->Modified = date('Y-m-d H:i:s');
                 try {
                     $objContextInfo->Save();
                 } catch(Exception $objExc) {
