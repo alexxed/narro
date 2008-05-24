@@ -277,6 +277,8 @@
 			$objBuilder->AddSelectItem($strTableName . '.`encoding` AS ' . $strAliasPrefix . 'encoding`');
 			$objBuilder->AddSelectItem($strTableName . '.`context_count` AS ' . $strAliasPrefix . 'context_count`');
 			$objBuilder->AddSelectItem($strTableName . '.`active` AS ' . $strAliasPrefix . 'active`');
+			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
+			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
 		}
 
 
@@ -353,6 +355,8 @@
 			$objToReturn->strEncoding = $objDbRow->GetColumn($strAliasPrefix . 'encoding', 'VarChar');
 			$objToReturn->intContextCount = $objDbRow->GetColumn($strAliasPrefix . 'context_count', 'Integer');
 			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Bit');
+			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
+			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -602,7 +606,9 @@
 							`project_id`,
 							`encoding`,
 							`context_count`,
-							`active`
+							`active`,
+							`created`,
+							`modified`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strFileName) . ',
 							' . $objDatabase->SqlVariable($this->strFilePath) . ',
@@ -611,7 +617,9 @@
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							' . $objDatabase->SqlVariable($this->strEncoding) . ',
 							' . $objDatabase->SqlVariable($this->intContextCount) . ',
-							' . $objDatabase->SqlVariable($this->blnActive) . '
+							' . $objDatabase->SqlVariable($this->blnActive) . ',
+							' . $objDatabase->SqlVariable($this->strCreated) . ',
+							' . $objDatabase->SqlVariable($this->strModified) . '
 						)
 					');
 
@@ -634,7 +642,9 @@
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding) . ',
 							`context_count` = ' . $objDatabase->SqlVariable($this->intContextCount) . ',
-							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . '
+							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
 						WHERE
 							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
 					');
@@ -809,6 +819,20 @@
 					 * @return boolean
 					 */
 					return $this->blnActive;
+
+				case 'Created':
+					/**
+					 * Gets the value for strCreated (Not Null)
+					 * @return string
+					 */
+					return $this->strCreated;
+
+				case 'Modified':
+					/**
+					 * Gets the value for strModified (Not Null)
+					 * @return string
+					 */
+					return $this->strModified;
 
 
 				///////////////////
@@ -1024,6 +1048,32 @@
 					 */
 					try {
 						return ($this->blnActive = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Created':
+					/**
+					 * Sets the value for strCreated (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCreated = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Modified':
+					/**
+					 * Sets the value for strModified (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strModified = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1546,6 +1596,24 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_file.created
+		 * @var string strCreated
+		 */
+		protected $strCreated;
+		const CreatedMaxLength = 19;
+		const CreatedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_file.modified
+		 * @var string strModified
+		 */
+		protected $strModified;
+		const ModifiedMaxLength = 19;
+		const ModifiedDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single NarroContextAsFile object
 		 * (of type NarroContext), if this NarroFile object was restored with
 		 * an expansion on the narro_context association table.
@@ -1656,6 +1724,8 @@
 			$strToReturn .= '<element name="Encoding" type="xsd:string"/>';
 			$strToReturn .= '<element name="ContextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="Active" type="xsd:boolean"/>';
+			$strToReturn .= '<element name="Created" type="xsd:string"/>';
+			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1700,6 +1770,10 @@
 				$objToReturn->intContextCount = $objSoapObject->ContextCount;
 			if (property_exists($objSoapObject, 'Active'))
 				$objToReturn->blnActive = $objSoapObject->Active;
+			if (property_exists($objSoapObject, 'Created'))
+				$objToReturn->strCreated = $objSoapObject->Created;
+			if (property_exists($objSoapObject, 'Modified'))
+				$objToReturn->strModified = $objSoapObject->Modified;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1766,6 +1840,10 @@
 					return new QQNode('context_count', 'integer', $this);
 				case 'Active':
 					return new QQNode('active', 'boolean', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 				case 'NarroContextAsFile':
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasfile', 'reverse_reference', 'file_id');
 				case 'ChildNarroFile':
@@ -1814,6 +1892,10 @@
 					return new QQNode('context_count', 'integer', $this);
 				case 'Active':
 					return new QQNode('active', 'boolean', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 				case 'NarroContextAsFile':
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasfile', 'reverse_reference', 'file_id');
 				case 'ChildNarroFile':

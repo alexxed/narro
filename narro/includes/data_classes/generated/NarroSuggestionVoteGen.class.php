@@ -281,6 +281,8 @@
 			$objBuilder->AddSelectItem($strTableName . '.`text_id` AS ' . $strAliasPrefix . 'text_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`user_id` AS ' . $strAliasPrefix . 'user_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`vote_value` AS ' . $strAliasPrefix . 'vote_value`');
+			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
+			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
 		}
 
 
@@ -317,6 +319,8 @@
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
 			$objToReturn->__intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
 			$objToReturn->intVoteValue = $objDbRow->GetColumn($strAliasPrefix . 'vote_value', 'Integer');
+			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
+			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -589,13 +593,17 @@
 							`context_id`,
 							`text_id`,
 							`user_id`,
-							`vote_value`
+							`vote_value`,
+							`created`,
+							`modified`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->intContextId) . ',
 							' . $objDatabase->SqlVariable($this->intTextId) . ',
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
-							' . $objDatabase->SqlVariable($this->intVoteValue) . '
+							' . $objDatabase->SqlVariable($this->intVoteValue) . ',
+							' . $objDatabase->SqlVariable($this->strCreated) . ',
+							' . $objDatabase->SqlVariable($this->strModified) . '
 						)
 					');
 
@@ -614,7 +622,9 @@
 							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ',
 							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . ',
 							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
-							`vote_value` = ' . $objDatabase->SqlVariable($this->intVoteValue) . '
+							`vote_value` = ' . $objDatabase->SqlVariable($this->intVoteValue) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
 						WHERE
 							`suggestion_id` = ' . $objDatabase->SqlVariable($this->__intSuggestionId) . ' AND
 							`context_id` = ' . $objDatabase->SqlVariable($this->__intContextId) . ' AND
@@ -742,6 +752,20 @@
 					 * @return integer
 					 */
 					return $this->intVoteValue;
+
+				case 'Created':
+					/**
+					 * Gets the value for strCreated (Not Null)
+					 * @return string
+					 */
+					return $this->strCreated;
+
+				case 'Modified':
+					/**
+					 * Gets the value for strModified (Not Null)
+					 * @return string
+					 */
+					return $this->strModified;
 
 
 				///////////////////
@@ -896,6 +920,32 @@
 					 */
 					try {
 						return ($this->intVoteValue = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Created':
+					/**
+					 * Sets the value for strCreated (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCreated = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Modified':
+					/**
+					 * Sets the value for strModified (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strModified = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1136,6 +1186,24 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_suggestion_vote.created
+		 * @var string strCreated
+		 */
+		protected $strCreated;
+		const CreatedMaxLength = 19;
+		const CreatedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_suggestion_vote.modified
+		 * @var string strModified
+		 */
+		protected $strModified;
+		const ModifiedMaxLength = 19;
+		const ModifiedDefault = null;
+
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -1212,6 +1280,8 @@
 			$strToReturn .= '<element name="Text" type="xsd1:NarroText"/>';
 			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="VoteValue" type="xsd:int"/>';
+			$strToReturn .= '<element name="Created" type="xsd:string"/>';
+			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1252,6 +1322,10 @@
 				$objToReturn->User = NarroUser::GetObjectFromSoapObject($objSoapObject->User);
 			if (property_exists($objSoapObject, 'VoteValue'))
 				$objToReturn->intVoteValue = $objSoapObject->VoteValue;
+			if (property_exists($objSoapObject, 'Created'))
+				$objToReturn->strCreated = $objSoapObject->Created;
+			if (property_exists($objSoapObject, 'Modified'))
+				$objToReturn->strModified = $objSoapObject->Modified;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1322,6 +1396,10 @@
 					return new QQNodeNarroUser('user_id', 'integer', $this);
 				case 'VoteValue':
 					return new QQNode('vote_value', 'integer', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNodeNarroSuggestion('suggestion_id', 'integer', $this);
@@ -1360,6 +1438,10 @@
 					return new QQNodeNarroUser('user_id', 'integer', $this);
 				case 'VoteValue':
 					return new QQNode('vote_value', 'integer', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNodeNarroSuggestion('suggestion_id', 'integer', $this);

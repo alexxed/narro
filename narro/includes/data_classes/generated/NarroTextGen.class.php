@@ -272,6 +272,8 @@
 			$objBuilder->AddSelectItem($strTableName . '.`text_value` AS ' . $strAliasPrefix . 'text_value`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_value_md5` AS ' . $strAliasPrefix . 'text_value_md5`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_char_count` AS ' . $strAliasPrefix . 'text_char_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
+			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
 		}
 
 
@@ -340,6 +342,18 @@
 					$blnExpandedViaArray = true;
 				}
 
+				if ((array_key_exists($strAliasPrefix . 'narrotextcommentastext__text_comment_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcommentastext__text_comment_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroTextCommentAsTextArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroTextCommentAsTextArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentastext__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroTextCommentAsTextArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroTextCommentAsTextArray, NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentastext__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -355,6 +369,8 @@
 			$objToReturn->strTextValue = $objDbRow->GetColumn($strAliasPrefix . 'text_value', 'Blob');
 			$objToReturn->strTextValueMd5 = $objDbRow->GetColumn($strAliasPrefix . 'text_value_md5', 'VarChar');
 			$objToReturn->intTextCharCount = $objDbRow->GetColumn($strAliasPrefix . 'text_char_count', 'Integer');
+			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
+			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -393,6 +409,14 @@
 					array_push($objToReturn->_objNarroSuggestionVoteAsTextArray, NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteastext__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objNarroSuggestionVoteAsText = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteastext__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroTextCommentAsText Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcommentastext__text_comment_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrotextcommentastext__text_comment_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroTextCommentAsTextArray, NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentastext__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroTextCommentAsText = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentastext__', $strExpandAsArrayNodes);
 			}
 
 			return $objToReturn;
@@ -489,11 +513,15 @@
 						INSERT INTO `narro_text` (
 							`text_value`,
 							`text_value_md5`,
-							`text_char_count`
+							`text_char_count`,
+							`created`,
+							`modified`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							' . $objDatabase->SqlVariable($this->strTextValueMd5) . ',
-							' . $objDatabase->SqlVariable($this->intTextCharCount) . '
+							' . $objDatabase->SqlVariable($this->intTextCharCount) . ',
+							' . $objDatabase->SqlVariable($this->strCreated) . ',
+							' . $objDatabase->SqlVariable($this->strModified) . '
 						)
 					');
 
@@ -511,7 +539,9 @@
 						SET
 							`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							`text_value_md5` = ' . $objDatabase->SqlVariable($this->strTextValueMd5) . ',
-							`text_char_count` = ' . $objDatabase->SqlVariable($this->intTextCharCount) . '
+							`text_char_count` = ' . $objDatabase->SqlVariable($this->intTextCharCount) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
 						WHERE
 							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
 					');
@@ -623,6 +653,20 @@
 					 */
 					return $this->intTextCharCount;
 
+				case 'Created':
+					/**
+					 * Gets the value for strCreated (Not Null)
+					 * @return string
+					 */
+					return $this->strCreated;
+
+				case 'Modified':
+					/**
+					 * Gets the value for strModified (Not Null)
+					 * @return string
+					 */
+					return $this->strModified;
+
 
 				///////////////////
 				// Member Objects
@@ -681,6 +725,22 @@
 					 */
 					return (array) $this->_objNarroSuggestionVoteAsTextArray;
 
+				case '_NarroTextCommentAsText':
+					/**
+					 * Gets the value for the private _objNarroTextCommentAsText (Read-Only)
+					 * if set due to an expansion on the narro_text_comment.text_id reverse relationship
+					 * @return NarroTextComment
+					 */
+					return $this->_objNarroTextCommentAsText;
+
+				case '_NarroTextCommentAsTextArray':
+					/**
+					 * Gets the value for the private _objNarroTextCommentAsTextArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_text_comment.text_id reverse relationship
+					 * @return NarroTextComment[]
+					 */
+					return (array) $this->_objNarroTextCommentAsTextArray;
+
 				default:
 					try {
 						return parent::__get($strName);
@@ -738,6 +798,32 @@
 					 */
 					try {
 						return ($this->intTextCharCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Created':
+					/**
+					 * Sets the value for strCreated (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCreated = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Modified':
+					/**
+					 * Sets the value for strModified (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strModified = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1233,6 +1319,156 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for NarroTextCommentAsText
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroTextCommentsAsText as an array of NarroTextComment objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroTextComment[]
+		*/ 
+		public function GetNarroTextCommentAsTextArray($objOptionalClauses = null) {
+			if ((is_null($this->intTextId)))
+				return array();
+
+			try {
+				return NarroTextComment::LoadArrayByTextId($this->intTextId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroTextCommentsAsText
+		 * @return int
+		*/ 
+		public function CountNarroTextCommentsAsText() {
+			if ((is_null($this->intTextId)))
+				return 0;
+
+			return NarroTextComment::CountByTextId($this->intTextId);
+		}
+
+		/**
+		 * Associates a NarroTextCommentAsText
+		 * @param NarroTextComment $objNarroTextComment
+		 * @return void
+		*/ 
+		public function AssociateNarroTextCommentAsText(NarroTextComment $objNarroTextComment) {
+			if ((is_null($this->intTextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextCommentAsText on this unsaved NarroText.');
+			if ((is_null($objNarroTextComment->TextCommentId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextCommentAsText on this NarroText with an unsaved NarroTextComment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroText::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_text_comment`
+				SET
+					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
+				WHERE
+					`text_comment_id` = ' . $objDatabase->SqlVariable($objNarroTextComment->TextCommentId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroTextCommentAsText
+		 * @param NarroTextComment $objNarroTextComment
+		 * @return void
+		*/ 
+		public function UnassociateNarroTextCommentAsText(NarroTextComment $objNarroTextComment) {
+			if ((is_null($this->intTextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsText on this unsaved NarroText.');
+			if ((is_null($objNarroTextComment->TextCommentId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsText on this NarroText with an unsaved NarroTextComment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroText::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_text_comment`
+				SET
+					`text_id` = null
+				WHERE
+					`text_comment_id` = ' . $objDatabase->SqlVariable($objNarroTextComment->TextCommentId) . ' AND
+					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroTextCommentsAsText
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroTextCommentsAsText() {
+			if ((is_null($this->intTextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsText on this unsaved NarroText.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroText::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_text_comment`
+				SET
+					`text_id` = null
+				WHERE
+					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroTextCommentAsText
+		 * @param NarroTextComment $objNarroTextComment
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroTextCommentAsText(NarroTextComment $objNarroTextComment) {
+			if ((is_null($this->intTextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsText on this unsaved NarroText.');
+			if ((is_null($objNarroTextComment->TextCommentId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsText on this NarroText with an unsaved NarroTextComment.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroText::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_text_comment`
+				WHERE
+					`text_comment_id` = ' . $objDatabase->SqlVariable($objNarroTextComment->TextCommentId) . ' AND
+					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroTextCommentsAsText
+		 * @return void
+		*/ 
+		public function DeleteAllNarroTextCommentsAsText() {
+			if ((is_null($this->intTextId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsText on this unsaved NarroText.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroText::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_text_comment`
+				WHERE
+					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
+			');
+		}
+
 
 
 
@@ -1271,6 +1507,24 @@
 		 */
 		protected $intTextCharCount;
 		const TextCharCountDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_text.created
+		 * @var string strCreated
+		 */
+		protected $strCreated;
+		const CreatedMaxLength = 19;
+		const CreatedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_text.modified
+		 * @var string strModified
+		 */
+		protected $strModified;
+		const ModifiedMaxLength = 19;
+		const ModifiedDefault = null;
 
 
 		/**
@@ -1322,6 +1576,22 @@
 		private $_objNarroSuggestionVoteAsTextArray = array();
 
 		/**
+		 * Private member variable that stores a reference to a single NarroTextCommentAsText object
+		 * (of type NarroTextComment), if this NarroText object was restored with
+		 * an expansion on the narro_text_comment association table.
+		 * @var NarroTextComment _objNarroTextCommentAsText;
+		 */
+		private $_objNarroTextCommentAsText;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroTextCommentAsText objects
+		 * (of type NarroTextComment[]), if this NarroText object was restored with
+		 * an ExpandAsArray on the narro_text_comment association table.
+		 * @var NarroTextComment[] _objNarroTextCommentAsTextArray;
+		 */
+		private $_objNarroTextCommentAsTextArray = array();
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -1357,6 +1627,8 @@
 			$strToReturn .= '<element name="TextValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="TextValueMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="TextCharCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="Created" type="xsd:string"/>';
+			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1387,6 +1659,10 @@
 				$objToReturn->strTextValueMd5 = $objSoapObject->TextValueMd5;
 			if (property_exists($objSoapObject, 'TextCharCount'))
 				$objToReturn->intTextCharCount = $objSoapObject->TextCharCount;
+			if (property_exists($objSoapObject, 'Created'))
+				$objToReturn->strCreated = $objSoapObject->Created;
+			if (property_exists($objSoapObject, 'Modified'))
+				$objToReturn->strModified = $objSoapObject->Modified;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1431,12 +1707,18 @@
 					return new QQNode('text_value_md5', 'string', $this);
 				case 'TextCharCount':
 					return new QQNode('text_char_count', 'integer', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 				case 'NarroContextAsText':
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextastext', 'reverse_reference', 'text_id');
 				case 'NarroSuggestionAsText':
 					return new QQReverseReferenceNodeNarroSuggestion($this, 'narrosuggestionastext', 'reverse_reference', 'text_id');
 				case 'NarroSuggestionVoteAsText':
 					return new QQReverseReferenceNodeNarroSuggestionVote($this, 'narrosuggestionvoteastext', 'reverse_reference', 'text_id');
+				case 'NarroTextCommentAsText':
+					return new QQReverseReferenceNodeNarroTextComment($this, 'narrotextcommentastext', 'reverse_reference', 'text_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('text_id', 'integer', $this);
@@ -1465,12 +1747,18 @@
 					return new QQNode('text_value_md5', 'string', $this);
 				case 'TextCharCount':
 					return new QQNode('text_char_count', 'integer', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 				case 'NarroContextAsText':
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextastext', 'reverse_reference', 'text_id');
 				case 'NarroSuggestionAsText':
 					return new QQReverseReferenceNodeNarroSuggestion($this, 'narrosuggestionastext', 'reverse_reference', 'text_id');
 				case 'NarroSuggestionVoteAsText':
 					return new QQReverseReferenceNodeNarroSuggestionVote($this, 'narrosuggestionvoteastext', 'reverse_reference', 'text_id');
+				case 'NarroTextCommentAsText':
+					return new QQReverseReferenceNodeNarroTextComment($this, 'narrotextcommentastext', 'reverse_reference', 'text_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('text_id', 'integer', $this);

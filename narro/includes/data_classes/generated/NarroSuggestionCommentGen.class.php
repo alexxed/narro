@@ -273,6 +273,8 @@
 			$objBuilder->AddSelectItem($strTableName . '.`user_id` AS ' . $strAliasPrefix . 'user_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`language_id` AS ' . $strAliasPrefix . 'language_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`comment_text` AS ' . $strAliasPrefix . 'comment_text`');
+			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
+			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
 		}
 
 
@@ -305,6 +307,8 @@
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasPrefix . 'language_id', 'Integer');
 			$objToReturn->strCommentText = $objDbRow->GetColumn($strAliasPrefix . 'comment_text', 'Blob');
+			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
+			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -512,12 +516,16 @@
 							`suggestion_id`,
 							`user_id`,
 							`language_id`,
-							`comment_text`
+							`comment_text`,
+							`created`,
+							`modified`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
-							' . $objDatabase->SqlVariable($this->strCommentText) . '
+							' . $objDatabase->SqlVariable($this->strCommentText) . ',
+							' . $objDatabase->SqlVariable($this->strCreated) . ',
+							' . $objDatabase->SqlVariable($this->strModified) . '
 						)
 					');
 
@@ -536,7 +544,9 @@
 							`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
 							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
-							`comment_text` = ' . $objDatabase->SqlVariable($this->strCommentText) . '
+							`comment_text` = ' . $objDatabase->SqlVariable($this->strCommentText) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
 						WHERE
 							`comment_id` = ' . $objDatabase->SqlVariable($this->intCommentId) . '
 					');
@@ -654,6 +664,20 @@
 					 * @return string
 					 */
 					return $this->strCommentText;
+
+				case 'Created':
+					/**
+					 * Gets the value for strCreated (Not Null)
+					 * @return string
+					 */
+					return $this->strCreated;
+
+				case 'Modified':
+					/**
+					 * Gets the value for strModified (Not Null)
+					 * @return string
+					 */
+					return $this->strModified;
 
 
 				///////////////////
@@ -780,6 +804,32 @@
 					 */
 					try {
 						return ($this->strCommentText = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Created':
+					/**
+					 * Sets the value for strCreated (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCreated = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Modified':
+					/**
+					 * Sets the value for strModified (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strModified = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -960,6 +1010,24 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_suggestion_comment.created
+		 * @var string strCreated
+		 */
+		protected $strCreated;
+		const CreatedMaxLength = 19;
+		const CreatedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_suggestion_comment.modified
+		 * @var string strModified
+		 */
+		protected $strModified;
+		const ModifiedMaxLength = 19;
+		const ModifiedDefault = null;
+
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -1026,6 +1094,8 @@
 			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
 			$strToReturn .= '<element name="CommentText" type="xsd:string"/>';
+			$strToReturn .= '<element name="Created" type="xsd:string"/>';
+			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1064,6 +1134,10 @@
 				$objToReturn->Language = NarroLanguage::GetObjectFromSoapObject($objSoapObject->Language);
 			if (property_exists($objSoapObject, 'CommentText'))
 				$objToReturn->strCommentText = $objSoapObject->CommentText;
+			if (property_exists($objSoapObject, 'Created'))
+				$objToReturn->strCreated = $objSoapObject->Created;
+			if (property_exists($objSoapObject, 'Modified'))
+				$objToReturn->strModified = $objSoapObject->Modified;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1128,6 +1202,10 @@
 					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'string', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('comment_id', 'integer', $this);
@@ -1164,6 +1242,10 @@
 					return new QQNodeNarroLanguage('language_id', 'integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'string', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('comment_id', 'integer', $this);

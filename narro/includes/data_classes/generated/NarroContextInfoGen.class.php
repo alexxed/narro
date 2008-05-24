@@ -271,6 +271,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`context_info_id` AS ' . $strAliasPrefix . 'context_info_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`context_id` AS ' . $strAliasPrefix . 'context_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`language_id` AS ' . $strAliasPrefix . 'language_id`');
+			$objBuilder->AddSelectItem($strTableName . '.`validator_user_id` AS ' . $strAliasPrefix . 'validator_user_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`valid_suggestion_id` AS ' . $strAliasPrefix . 'valid_suggestion_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`popular_suggestion_id` AS ' . $strAliasPrefix . 'popular_suggestion_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`has_plural` AS ' . $strAliasPrefix . 'has_plural`');
@@ -278,6 +279,8 @@
 			$objBuilder->AddSelectItem($strTableName . '.`has_suggestions` AS ' . $strAliasPrefix . 'has_suggestions`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_access_key` AS ' . $strAliasPrefix . 'text_access_key`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_access_key` AS ' . $strAliasPrefix . 'suggestion_access_key`');
+			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
+			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
 		}
 
 
@@ -308,6 +311,7 @@
 			$objToReturn->intContextInfoId = $objDbRow->GetColumn($strAliasPrefix . 'context_info_id', 'Integer');
 			$objToReturn->intContextId = $objDbRow->GetColumn($strAliasPrefix . 'context_id', 'Integer');
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasPrefix . 'language_id', 'Integer');
+			$objToReturn->intValidatorUserId = $objDbRow->GetColumn($strAliasPrefix . 'validator_user_id', 'Integer');
 			$objToReturn->intValidSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'valid_suggestion_id', 'Integer');
 			$objToReturn->intPopularSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'popular_suggestion_id', 'Integer');
 			$objToReturn->blnHasPlural = $objDbRow->GetColumn($strAliasPrefix . 'has_plural', 'Bit');
@@ -315,6 +319,8 @@
 			$objToReturn->blnHasSuggestions = $objDbRow->GetColumn($strAliasPrefix . 'has_suggestions', 'Bit');
 			$objToReturn->strTextAccessKey = $objDbRow->GetColumn($strAliasPrefix . 'text_access_key', 'VarChar');
 			$objToReturn->strSuggestionAccessKey = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_access_key', 'VarChar');
+			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
+			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -335,6 +341,10 @@
 			// Check for Language Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'language_id__language_id')))
 				$objToReturn->objLanguage = NarroLanguage::InstantiateDbRow($objDbRow, $strAliasPrefix . 'language_id__', $strExpandAsArrayNodes);
+
+			// Check for ValidatorUser Early Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'validator_user_id__user_id')))
+				$objToReturn->objValidatorUser = NarroUser::InstantiateDbRow($objDbRow, $strAliasPrefix . 'validator_user_id__', $strExpandAsArrayNodes);
 
 			// Check for ValidSuggestion Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'valid_suggestion_id__suggestion_id')))
@@ -541,6 +551,38 @@
 				QQ::Equal(QQN::NarroContextInfo()->PopularSuggestionId, $intPopularSuggestionId)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroContextInfo objects,
+		 * by ValidatorUserId Index(es)
+		 * @param integer $intValidatorUserId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroContextInfo[]
+		*/
+		public static function LoadArrayByValidatorUserId($intValidatorUserId, $objOptionalClauses = null) {
+			// Call NarroContextInfo::QueryArray to perform the LoadArrayByValidatorUserId query
+			try {
+				return NarroContextInfo::QueryArray(
+					QQ::Equal(QQN::NarroContextInfo()->ValidatorUserId, $intValidatorUserId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroContextInfos
+		 * by ValidatorUserId Index(es)
+		 * @param integer $intValidatorUserId
+		 * @return int
+		*/
+		public static function CountByValidatorUserId($intValidatorUserId) {
+			// Call NarroContextInfo::QueryCount to perform the CountByValidatorUserId query
+			return NarroContextInfo::QueryCount(
+				QQ::Equal(QQN::NarroContextInfo()->ValidatorUserId, $intValidatorUserId)
+			);
+		}
 
 
 
@@ -573,23 +615,29 @@
 						INSERT INTO `narro_context_info` (
 							`context_id`,
 							`language_id`,
+							`validator_user_id`,
 							`valid_suggestion_id`,
 							`popular_suggestion_id`,
 							`has_plural`,
 							`has_comments`,
 							`has_suggestions`,
 							`text_access_key`,
-							`suggestion_access_key`
+							`suggestion_access_key`,
+							`created`,
+							`modified`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intContextId) . ',
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							' . $objDatabase->SqlVariable($this->intValidatorUserId) . ',
 							' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->blnHasPlural) . ',
 							' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
 							' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
-							' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . '
+							' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . ',
+							' . $objDatabase->SqlVariable($this->strCreated) . ',
+							' . $objDatabase->SqlVariable($this->strModified) . '
 						)
 					');
 
@@ -607,13 +655,16 @@
 						SET
 							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ',
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							`validator_user_id` = ' . $objDatabase->SqlVariable($this->intValidatorUserId) . ',
 							`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
 							`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
 							`has_plural` = ' . $objDatabase->SqlVariable($this->blnHasPlural) . ',
 							`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
 							`text_access_key` = ' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
-							`suggestion_access_key` = ' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . '
+							`suggestion_access_key` = ' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
 						WHERE
 							`context_info_id` = ' . $objDatabase->SqlVariable($this->intContextInfoId) . '
 					');
@@ -718,6 +769,13 @@
 					 */
 					return $this->intLanguageId;
 
+				case 'ValidatorUserId':
+					/**
+					 * Gets the value for intValidatorUserId 
+					 * @return integer
+					 */
+					return $this->intValidatorUserId;
+
 				case 'ValidSuggestionId':
 					/**
 					 * Gets the value for intValidSuggestionId 
@@ -767,6 +825,20 @@
 					 */
 					return $this->strSuggestionAccessKey;
 
+				case 'Created':
+					/**
+					 * Gets the value for strCreated (Not Null)
+					 * @return string
+					 */
+					return $this->strCreated;
+
+				case 'Modified':
+					/**
+					 * Gets the value for strModified (Not Null)
+					 * @return string
+					 */
+					return $this->strModified;
+
 
 				///////////////////
 				// Member Objects
@@ -794,6 +866,20 @@
 						if ((!$this->objLanguage) && (!is_null($this->intLanguageId)))
 							$this->objLanguage = NarroLanguage::Load($this->intLanguageId);
 						return $this->objLanguage;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ValidatorUser':
+					/**
+					 * Gets the value for the NarroUser object referenced by intValidatorUserId 
+					 * @return NarroUser
+					 */
+					try {
+						if ((!$this->objValidatorUser) && (!is_null($this->intValidatorUserId)))
+							$this->objValidatorUser = NarroUser::Load($this->intValidatorUserId);
+						return $this->objValidatorUser;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -879,6 +965,20 @@
 					try {
 						$this->objLanguage = null;
 						return ($this->intLanguageId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ValidatorUserId':
+					/**
+					 * Sets the value for intValidatorUserId 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						$this->objValidatorUser = null;
+						return ($this->intValidatorUserId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -977,6 +1077,32 @@
 						throw $objExc;
 					}
 
+				case 'Created':
+					/**
+					 * Sets the value for strCreated (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCreated = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Modified':
+					/**
+					 * Sets the value for strModified (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strModified = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -1039,6 +1165,38 @@
 						// Update Local Member Variables
 						$this->objLanguage = $mixValue;
 						$this->intLanguageId = $mixValue->LanguageId;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'ValidatorUser':
+					/**
+					 * Sets the value for the NarroUser object referenced by intValidatorUserId 
+					 * @param NarroUser $mixValue
+					 * @return NarroUser
+					 */
+					if (is_null($mixValue)) {
+						$this->intValidatorUserId = null;
+						$this->objValidatorUser = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a NarroUser object
+						try {
+							$mixValue = QType::Cast($mixValue, 'NarroUser');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						} 
+
+						// Make sure $mixValue is a SAVED NarroUser object
+						if (is_null($mixValue->UserId))
+							throw new QCallerException('Unable to set an unsaved ValidatorUser for this NarroContextInfo');
+
+						// Update Local Member Variables
+						$this->objValidatorUser = $mixValue;
+						$this->intValidatorUserId = $mixValue->UserId;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1168,6 +1326,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_context_info.validator_user_id
+		 * @var integer intValidatorUserId
+		 */
+		protected $intValidatorUserId;
+		const ValidatorUserIdDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_context_info.valid_suggestion_id
 		 * @var integer intValidSuggestionId
 		 */
@@ -1226,6 +1392,24 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_context_info.created
+		 * @var string strCreated
+		 */
+		protected $strCreated;
+		const CreatedMaxLength = 19;
+		const CreatedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_context_info.modified
+		 * @var string strModified
+		 */
+		protected $strModified;
+		const ModifiedMaxLength = 19;
+		const ModifiedDefault = null;
+
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -1268,6 +1452,16 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column narro_context_info.validator_user_id.
+		 *
+		 * NOTE: Always use the ValidatorUser property getter to correctly retrieve this NarroUser object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var NarroUser objValidatorUser
+		 */
+		protected $objValidatorUser;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
 		 * in the database column narro_context_info.valid_suggestion_id.
 		 *
 		 * NOTE: Always use the ValidSuggestion property getter to correctly retrieve this NarroSuggestion object.
@@ -1300,6 +1494,7 @@
 			$strToReturn .= '<element name="ContextInfoId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Context" type="xsd1:NarroContext"/>';
 			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
+			$strToReturn .= '<element name="ValidatorUser" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="ValidSuggestion" type="xsd1:NarroSuggestion"/>';
 			$strToReturn .= '<element name="PopularSuggestion" type="xsd1:NarroSuggestion"/>';
 			$strToReturn .= '<element name="HasPlural" type="xsd:boolean"/>';
@@ -1307,6 +1502,8 @@
 			$strToReturn .= '<element name="HasSuggestions" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="TextAccessKey" type="xsd:string"/>';
 			$strToReturn .= '<element name="SuggestionAccessKey" type="xsd:string"/>';
+			$strToReturn .= '<element name="Created" type="xsd:string"/>';
+			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1317,6 +1514,7 @@
 				$strComplexTypeArray['NarroContextInfo'] = NarroContextInfo::GetSoapComplexTypeXml();
 				NarroContext::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroLanguage::AlterSoapComplexTypeArray($strComplexTypeArray);
+				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
@@ -1341,6 +1539,9 @@
 			if ((property_exists($objSoapObject, 'Language')) &&
 				($objSoapObject->Language))
 				$objToReturn->Language = NarroLanguage::GetObjectFromSoapObject($objSoapObject->Language);
+			if ((property_exists($objSoapObject, 'ValidatorUser')) &&
+				($objSoapObject->ValidatorUser))
+				$objToReturn->ValidatorUser = NarroUser::GetObjectFromSoapObject($objSoapObject->ValidatorUser);
 			if ((property_exists($objSoapObject, 'ValidSuggestion')) &&
 				($objSoapObject->ValidSuggestion))
 				$objToReturn->ValidSuggestion = NarroSuggestion::GetObjectFromSoapObject($objSoapObject->ValidSuggestion);
@@ -1357,6 +1558,10 @@
 				$objToReturn->strTextAccessKey = $objSoapObject->TextAccessKey;
 			if (property_exists($objSoapObject, 'SuggestionAccessKey'))
 				$objToReturn->strSuggestionAccessKey = $objSoapObject->SuggestionAccessKey;
+			if (property_exists($objSoapObject, 'Created'))
+				$objToReturn->strCreated = $objSoapObject->Created;
+			if (property_exists($objSoapObject, 'Modified'))
+				$objToReturn->strModified = $objSoapObject->Modified;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1383,6 +1588,10 @@
 				$objObject->objLanguage = NarroLanguage::GetSoapObjectFromObject($objObject->objLanguage, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intLanguageId = null;
+			if ($objObject->objValidatorUser)
+				$objObject->objValidatorUser = NarroUser::GetSoapObjectFromObject($objObject->objValidatorUser, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intValidatorUserId = null;
 			if ($objObject->objValidSuggestion)
 				$objObject->objValidSuggestion = NarroSuggestion::GetSoapObjectFromObject($objObject->objValidSuggestion, false);
 			else if (!$blnBindRelatedObjects)
@@ -1419,6 +1628,10 @@
 					return new QQNode('language_id', 'integer', $this);
 				case 'Language':
 					return new QQNodeNarroLanguage('language_id', 'integer', $this);
+				case 'ValidatorUserId':
+					return new QQNode('validator_user_id', 'integer', $this);
+				case 'ValidatorUser':
+					return new QQNodeNarroUser('validator_user_id', 'integer', $this);
 				case 'ValidSuggestionId':
 					return new QQNode('valid_suggestion_id', 'integer', $this);
 				case 'ValidSuggestion':
@@ -1437,6 +1650,10 @@
 					return new QQNode('text_access_key', 'string', $this);
 				case 'SuggestionAccessKey':
 					return new QQNode('suggestion_access_key', 'string', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('context_info_id', 'integer', $this);
@@ -1467,6 +1684,10 @@
 					return new QQNode('language_id', 'integer', $this);
 				case 'Language':
 					return new QQNodeNarroLanguage('language_id', 'integer', $this);
+				case 'ValidatorUserId':
+					return new QQNode('validator_user_id', 'integer', $this);
+				case 'ValidatorUser':
+					return new QQNodeNarroUser('validator_user_id', 'integer', $this);
 				case 'ValidSuggestionId':
 					return new QQNode('valid_suggestion_id', 'integer', $this);
 				case 'ValidSuggestion':
@@ -1485,6 +1706,10 @@
 					return new QQNode('text_access_key', 'string', $this);
 				case 'SuggestionAccessKey':
 					return new QQNode('suggestion_access_key', 'string', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('context_info_id', 'integer', $this);

@@ -275,6 +275,8 @@
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_value` AS ' . $strAliasPrefix . 'suggestion_value`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_value_md5` AS ' . $strAliasPrefix . 'suggestion_value_md5`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_char_count` AS ' . $strAliasPrefix . 'suggestion_char_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
+			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
 		}
 
 
@@ -373,6 +375,8 @@
 			$objToReturn->strSuggestionValue = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_value', 'Blob');
 			$objToReturn->strSuggestionValueMd5 = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_value_md5', 'VarChar');
 			$objToReturn->intSuggestionCharCount = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_char_count', 'Integer');
+			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
+			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -632,14 +636,18 @@
 							`language_id`,
 							`suggestion_value`,
 							`suggestion_value_md5`,
-							`suggestion_char_count`
+							`suggestion_char_count`,
+							`created`,
+							`modified`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
 							' . $objDatabase->SqlVariable($this->intTextId) . ',
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							' . $objDatabase->SqlVariable($this->strSuggestionValue) . ',
 							' . $objDatabase->SqlVariable($this->strSuggestionValueMd5) . ',
-							' . $objDatabase->SqlVariable($this->intSuggestionCharCount) . '
+							' . $objDatabase->SqlVariable($this->intSuggestionCharCount) . ',
+							' . $objDatabase->SqlVariable($this->strCreated) . ',
+							' . $objDatabase->SqlVariable($this->strModified) . '
 						)
 					');
 
@@ -660,7 +668,9 @@
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							`suggestion_value` = ' . $objDatabase->SqlVariable($this->strSuggestionValue) . ',
 							`suggestion_value_md5` = ' . $objDatabase->SqlVariable($this->strSuggestionValueMd5) . ',
-							`suggestion_char_count` = ' . $objDatabase->SqlVariable($this->intSuggestionCharCount) . '
+							`suggestion_char_count` = ' . $objDatabase->SqlVariable($this->intSuggestionCharCount) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
 						WHERE
 							`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
 					');
@@ -792,6 +802,20 @@
 					 * @return integer
 					 */
 					return $this->intSuggestionCharCount;
+
+				case 'Created':
+					/**
+					 * Gets the value for strCreated (Not Null)
+					 * @return string
+					 */
+					return $this->strCreated;
+
+				case 'Modified':
+					/**
+					 * Gets the value for strModified (Not Null)
+					 * @return string
+					 */
+					return $this->strModified;
 
 
 				///////////////////
@@ -1008,6 +1032,32 @@
 					 */
 					try {
 						return ($this->intSuggestionCharCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Created':
+					/**
+					 * Sets the value for strCreated (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCreated = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Modified':
+					/**
+					 * Sets the value for strModified (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strModified = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1814,6 +1864,24 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_suggestion.created
+		 * @var string strCreated
+		 */
+		protected $strCreated;
+		const CreatedMaxLength = 19;
+		const CreatedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_suggestion.modified
+		 * @var string strModified
+		 */
+		protected $strModified;
+		const ModifiedMaxLength = 19;
+		const ModifiedDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single NarroContextInfoAsPopularSuggestion object
 		 * (of type NarroContextInfo), if this NarroSuggestion object was restored with
 		 * an expansion on the narro_context_info association table.
@@ -1946,6 +2014,8 @@
 			$strToReturn .= '<element name="SuggestionValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="SuggestionValueMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="SuggestionCharCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="Created" type="xsd:string"/>';
+			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1988,6 +2058,10 @@
 				$objToReturn->strSuggestionValueMd5 = $objSoapObject->SuggestionValueMd5;
 			if (property_exists($objSoapObject, 'SuggestionCharCount'))
 				$objToReturn->intSuggestionCharCount = $objSoapObject->SuggestionCharCount;
+			if (property_exists($objSoapObject, 'Created'))
+				$objToReturn->strCreated = $objSoapObject->Created;
+			if (property_exists($objSoapObject, 'Modified'))
+				$objToReturn->strModified = $objSoapObject->Modified;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -2056,6 +2130,10 @@
 					return new QQNode('suggestion_value_md5', 'string', $this);
 				case 'SuggestionCharCount':
 					return new QQNode('suggestion_char_count', 'integer', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 				case 'NarroContextInfoAsPopularSuggestion':
 					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoaspopularsuggestion', 'reverse_reference', 'popular_suggestion_id');
 				case 'NarroContextInfoAsValidSuggestion':
@@ -2104,6 +2182,10 @@
 					return new QQNode('suggestion_value_md5', 'string', $this);
 				case 'SuggestionCharCount':
 					return new QQNode('suggestion_char_count', 'integer', $this);
+				case 'Created':
+					return new QQNode('created', 'string', $this);
+				case 'Modified':
+					return new QQNode('modified', 'string', $this);
 				case 'NarroContextInfoAsPopularSuggestion':
 					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoaspopularsuggestion', 'reverse_reference', 'popular_suggestion_id');
 				case 'NarroContextInfoAsValidSuggestion':
