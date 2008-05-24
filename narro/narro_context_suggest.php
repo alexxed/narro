@@ -231,6 +231,11 @@
         }
 
         protected function UpdateNavigator() {
+            $strPageTitle = sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
+                            (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($this->objNarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->objNarroContextInfo->Context->Text->TextValue);
+
+            QApplication::ExecuteJavaScript(sprintf('document.title="%s"', str_replace('"', '\\"', $strPageTitle)));
+
             $this->pnlNavigator->Text =
             sprintf('<a href="%s">'.t('Projects').'</a>', 'narro_project_list.php') .
             sprintf(' -> <a href="%s">%s</a>',
@@ -519,6 +524,8 @@
             $objSuggestion->SuggestionValue = $strSuggestionValue;
             $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
             $objSuggestion->SuggestionCharCount = mb_strlen($strSuggestionValue);
+            $objSuggestion->Modified = date('Y-m-d H:i:s');
+            $objSuggestion->Created = date('Y-m-d H:i:s');
 
             try {
                 $objSuggestion->Save();
@@ -527,10 +534,7 @@
                     throw $objExc;
                 }
                 else {
-                    $this->btnNext_Click($this->FormId, null, null);
-                    /**
-                    $this->pnlSuggestionList->btnVote_Click(0,0,0);
-                    */
+                    $this->pnlSuggestionList->dtgSuggestions_Bind();
                 }
             }
 
@@ -541,8 +545,11 @@
                         if (count($arrNarroContextInfo)) {
                             foreach($arrNarroContextInfo as $objNarroContextInfo) {
                                 $objNarroContextInfo->HasSuggestions = 1;
-                                if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $blnValidate && $this->objNarroContextInfo->ContextId == $objNarroContextInfo->ContextId)
+                                if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $blnValidate && $this->objNarroContextInfo->ContextId == $objNarroContextInfo->ContextId) {
                                     $objNarroContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
+                                    $objNarroContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
+                                }
+                                $objNarroContextInfo->Modified = date('Y-m-d H:i:s');
                                 $objNarroContextInfo->Save();
                             }
                         }
@@ -561,6 +568,7 @@
                 else
                     $this->objNarroContextInfo->SuggestionAccessKey = mb_strtoupper($this->objNarroContextInfo->TextAccessKey);
 
+                $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
                 $this->objNarroContextInfo->Save();
             }
 
@@ -569,6 +577,8 @@
                 $objSuggestionComment = new NarroSuggestionComment();
                 $objSuggestionComment->SuggestionId = $objSuggestion->SuggestionId;
                 $objSuggestionComment->CommentText = trim($this->txtSuggestionComment->Text);
+                $objSuggestionComment->Created = date('Y-m-d H:i:s');
+                $objSuggestionComment->Modified = date('Y-m-d H:i:s');
                 $objSuggestionComment->Save();
             }
             if ($this->chkGoToNext->Checked) {
@@ -576,6 +586,8 @@
             }
             elseif(QApplication::$blnUseAjax)
                 $this->UpdateData();
+
+            $strOutput = QApplication::$Cache->remove('project_progress_' . $this->objNarroContextInfo->Context->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
 
             return true;
         }
@@ -748,6 +760,7 @@
 
             if ($strParameter != $this->objNarroContextInfo->ValidSuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = (int) $strParameter;
+                $this->objNarroContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
             }
             else {
                 $this->objNarroContextInfo->ValidSuggestionId = null;
@@ -763,7 +776,11 @@
             else
                 $this->objNarroContextInfo->SuggestionAccessKey = mb_strtoupper($this->objNarroContextInfo->TextAccessKey);
 
+            $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
             $this->objNarroContextInfo->Save();
+
+            $strOutput = QApplication::$Cache->remove('project_progress_' . $this->objNarroContextInfo->Context->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
+
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();
 
@@ -778,6 +795,7 @@
               return false;
 
             $this->objNarroContextInfo->SuggestionAccessKey = $this->GetControl($strControlId)->SelectedValue;
+            $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
             $this->objNarroContextInfo->Save();
 
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
