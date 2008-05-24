@@ -122,6 +122,7 @@
             $this->btnSearch = new QButton($this);
             $this->btnSearch->Text = t('Search');
             $this->btnSearch->AddAction(new QClickEvent(), new QServerAction('btnSearch_Click'));
+            $this->btnSearch->PrimaryButton = true;
 
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->Visible = false;
@@ -194,7 +195,7 @@
 
                 $strSuggestionValue = NarroString::HtmlEntities($strSuggestionValue);
 
-                if ($objNarroContextInfo->SuggestionAccessKey)
+                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->SuggestionAccessKey)
                     $strSuggestionValue = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $strSuggestionValue, 1);
 
                 return $strSuggestionValue;
