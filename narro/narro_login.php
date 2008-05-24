@@ -22,6 +22,7 @@
         protected $lblMessage;
         protected $txtUsername;
         protected $txtPassword;
+        protected $chkRememberLogin;
         protected $btnLogin;
         protected $btnRecoverPassword;
 
@@ -31,6 +32,7 @@
             $this->txtUsername = new QTextBox($this);
             $this->txtPassword = new QTextBox($this);
             $this->txtPassword->TextMode = QTextMode::Password;
+            $this->chkRememberLogin = new QCheckBox($this);
             $this->btnLogin = new QButton($this);
             $this->btnLogin->Text = t('Login');
             $this->btnLogin->PrimaryButton = true;
@@ -49,6 +51,8 @@
         protected function btnLogin_Click($strFormId, $strControlId, $strParameter) {
             if ($objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text))) {
                 $_SESSION['objUser'] = $objUser;
+                if ($this->chkRememberLogin->Checked)
+                    setcookie(session_name(), $_COOKIE[session_name()], time()+31*24*3600, "/");
                 QApplication::$objUser = $objUser;
                 QApplication::Redirect('narro_project_list.php');
             }
