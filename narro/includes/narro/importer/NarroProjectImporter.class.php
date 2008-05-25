@@ -451,6 +451,9 @@
                 case NarroFileType::OpenOfficeSdf:
                         $objFileImporter = new NarroOpenOfficeSdfFileImporter($this);
                         break;
+                case NarroFileType::Svg:
+                        $objFileImporter = new NarroSvgFileImporter($this);
+                        break;
                 default:
                         return false;
             }
@@ -719,6 +722,9 @@
                 case NarroFileType::OpenOfficeSdf:
                         $objFileImporter = new NarroOpenOfficeSdfFileImporter($this);
                         break;
+                case NarroFileType::Svg:
+                        $objFileImporter = new NarroSvgFileImporter($this);
+                        break;
                 default:
                         return false;
             }
@@ -746,7 +752,8 @@
                         return NarroFileType::GettextPo;
                 case 'sdf':
                         return NarroFileType::OpenOfficeSdf;
-
+                case 'svg':
+                        return NarroFileType::Svg;
                 default:
                         return false;
             }
