@@ -545,10 +545,6 @@
                         if (count($arrNarroContextInfo)) {
                             foreach($arrNarroContextInfo as $objNarroContextInfo) {
                                 $objNarroContextInfo->HasSuggestions = 1;
-                                if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $blnValidate && $this->objNarroContextInfo->ContextId == $objNarroContextInfo->ContextId) {
-                                    $objNarroContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
-                                    $objNarroContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
-                                }
                                 $objNarroContextInfo->Modified = date('Y-m-d H:i:s');
                                 $objNarroContextInfo->Save();
                             }
@@ -560,6 +556,7 @@
             $this->objNarroContextInfo->HasSuggestions = 1;
             if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $blnValidate && $this->objNarroContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
+                $this->objNarroContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
 
                 if (mb_stripos($strSuggestionValue, $this->objNarroContextInfo->TextAccessKey) === false)
                     $this->objNarroContextInfo->SuggestionAccessKey = mb_substr($strSuggestionValue, 0, 1);
