@@ -29,6 +29,7 @@
     require_once(dirname(__FILE__) . '/NarroMozillaIniFileImporter.class.php');
     require_once(dirname(__FILE__) . '/NarroGettextPoFileImporter.class.php');
     require_once(dirname(__FILE__) . '/NarroOpenOfficeSdfFileImporter.class.php');
+    require_once(dirname(__FILE__) . '/NarroSvgFileImporter.class.php');
     require_once(dirname(__FILE__) . '/NarroImportStatistics.class.php');
     require_once(dirname(__FILE__) . '/NarroLog.class.php');
     require_once(dirname(__FILE__) . '/NarroRss.class.php');
