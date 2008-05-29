@@ -142,7 +142,7 @@
                 /**
                  * @todo clean this please
                  */
-                $strSuggestionChars = mb_ereg_replace('[\s\\n\.,:;\\\!\?0-9]+', '', $strSuggestionValue);
+                $strSuggestionChars = mb_ereg_replace('[\s\\n\.,:;\\\!\?]+', '', $strSuggestionValue);
                 $strSuggestionChars = strip_tags($strSuggestionChars);
                 /**
                  * mozilla entitites: &xxx;
