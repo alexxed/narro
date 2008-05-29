@@ -121,7 +121,7 @@
                         if ($objNarroContextInfo->SuggestionAccessKey)
                             $strAccessKey = $objNarroContextInfo->SuggestionAccessKey;
                         else {
-                            if (preg_match('/[a-zA-Z]/', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches)) {
+                            if (preg_match('/[a-zA-Z0-9]/', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches)) {
                                 $strAccessKey = $arrMatches[0];
                                 NarroLog::LogMessage(2, sprintf(t('No access key found for context %s, text %s, using "%s"'), $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches[0]));
                                 NarroImportStatistics::$arrStatistics['Texts with no access key set, but fixed']++;
