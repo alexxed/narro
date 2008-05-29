@@ -135,7 +135,7 @@
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
             // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-            $this->dtgNarroProject->TotalItemCount = NarroProject::CountAll();
+            $this->dtgNarroProject->TotalItemCount = NarroProject::QueryCount(QQ::Equal(QQN::NarroProject()->Active, 1));
 
             // Setup the $objClauses Array
             $objClauses = array();
@@ -150,7 +150,7 @@
                 array_push($objClauses, $objClause);
 
             // Set the DataSource to be the array of all NarroProject objects, given the clauses above
-            $this->dtgNarroProject->DataSource = NarroProject::LoadAll($objClauses);
+            $this->dtgNarroProject->DataSource = NarroProject::QueryArray(QQ::Equal(QQN::NarroProject()->Active, 1), $objClauses);
         }
     }
 
