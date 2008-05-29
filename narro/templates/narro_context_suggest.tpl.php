@@ -34,7 +34,7 @@
         <?php echo t('Text to translate'); ?>:
         <div class="green3dbg" style="border:1px dotted #DDDDDD;padding:5px;" title="Textul original">
             <?php $this->pnlOriginalText->Render(); ?>
-            <input type="button" style="float:right;" value="<?php echo t('Copy to suggestion') ?>" onclick="document.getElementById('<? echo $this->txtSuggestionValue->ControlId ?>').value = document.getElementById('<? echo $this->pnlOriginalText->ControlId ?>').innerHTML" />
+            <?php $this->btnCopyOriginal->Render(); ?>
         </div>
         <div class="white3dbg" style="border:1px solid #DDDDDD; padding:5px" title="Detalii despre locul în care apare textul">
             <?php $this->pnlContext->Render(); ?>

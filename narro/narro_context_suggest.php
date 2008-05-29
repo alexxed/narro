@@ -33,6 +33,7 @@
         protected $btnNext100;
         protected $btnPrevious100;
         protected $btnPrevious;
+        protected $btnCopyOriginal;
 
         protected $chkGoToNext;
 
@@ -137,6 +138,7 @@
             $this->btnNext100_Create();
             $this->btnPrevious100_Create();
             $this->btnPrevious_Create();
+            $this->btnCopyOriginal_Create();
 
             $this->chkGoToNext_Create();
 
@@ -457,6 +459,20 @@
                 $this->btnPrevious->AddAction(new QClickEvent(), new QServerAction('btnPrevious_Click'));
             $this->btnPrevious->CausesValidation = false;
             $this->btnPrevious->TabIndex = 6;
+        }
+
+        // Setup btnCopyOriginal
+        protected function btnCopyOriginal_Create() {
+            $this->btnCopyOriginal = new QButton($this);
+            $this->btnCopyOriginal->Text = t('Copy to suggestion');
+
+            if (QApplication::$blnUseAjax)
+                $this->btnCopyOriginal->AddAction(new QClickEvent(), new QAjaxAction('btnCopyOriginal_Click'));
+            else
+                $this->btnCopyOriginal->AddAction(new QClickEvent(), new QServerAction('btnCopyOriginal_Click'));
+
+            $this->btnCopyOriginal->CausesValidation = false;
+            $this->btnCopyOriginal->SetCustomStyle('float', 'right');
         }
 
         protected function ShowPluginErrors() {
@@ -785,6 +801,10 @@
                 $this->btnNext_Click($strFormId, $strControlId, $strParameter);
             }
 
+        }
+
+        public function btnCopyOriginal_Click($strFormId, $strControlId, $strParameter) {
+            $this->txtSuggestionValue->Text = $this->objNarroContextInfo->Context->Text->TextValue;
         }
 
         public function lstAccessKey_Change($strFormId, $strControlId, $strParameter) {
