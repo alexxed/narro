@@ -35,6 +35,14 @@
                         );
             }
             elseif (!isset($arrOriginalTextMatches[0]) && isset($arrSuggestionMatches[0])) {
+                if (preg_match('/\s+$/', $strOriginal, $arrSpaceMatches))
+                    $this->arrErrors[] =
+                        sprintf(
+                            t('The original text ends with %d space character(s), please correct your suggestion.'
+                            ),
+                            strlen($arrSpaceMatches[0])
+                        );
+                else
                     $this->arrErrors[] =
                         sprintf(
                             t('The original text does not end with "<span style="color:red;font-size:large">%s</span>".'
