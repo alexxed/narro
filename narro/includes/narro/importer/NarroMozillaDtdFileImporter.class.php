@@ -18,7 +18,7 @@
 
     class NarroMozillaDtdFileImporter extends NarroFileImporter {
 
-        public function ImportFile($objFile, $strTemplateFile, $strTranslatedFile) {
+        public function ImportFile($objFile, $strTemplateFile, $strTranslatedFile = null) {
             $intTime = time();
 
             $strEntitiesAndCommentsRegex = '/<!--\s*(.+)\s*-->\s+<!ENTITY\s+([^\s]+)\s+"([^"]+)"\s?>\s*|<!ENTITY\s+([^\s]+)\s+"([^"]*)"\s?>\s*|<!--\s*(.+)\s*-->\s+<!ENTITY\s+([^\s]+)\s+\'([^\']+)\'\s?>\s*|<!ENTITY\s+([^\s]+)\s+\'([^\']*)\'\s?>\s*/m';
