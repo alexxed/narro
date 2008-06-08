@@ -88,6 +88,7 @@
 
                 $arrFileParts = split('/', str_replace($strDirectory, '', $strFileToImport));
                 $strFileName = $arrFileParts[count($arrFileParts)-1];
+                $strFilePath = str_replace($strDirectory . '/' . $this->objSourceLanguage->LanguageCode, '', $strFileToImport);
 
                 unset($arrFileParts[count($arrFileParts)-1]);
                 unset($arrFileParts[0]);
@@ -153,6 +154,7 @@
                             $objFile->Active = 1;
                             $objFile->Modified = date('Y-m-d H:i:s');
                             $objFile->Created = date('Y-m-d H:i:s');
+                            $objFile->FilePath = $strFilePath;
                             $objFile->Save();
                             NarroLog::LogMessage(1, sprintf(t('Added folder "%s" from "%s"'), $strDir, $strPath));
                             NarroImportStatistics::$arrStatistics['Imported folders']++;
@@ -191,6 +193,7 @@
                     $objFile->Encoding = 'UTF-8';
                     $objFile->Modified = date('Y-m-d H:i:s');
                     $objFile->Created = date('Y-m-d H:i:s');
+                    $objFile->FilePath = $strFilePath;
                     $objFile->Save();
                     NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), $strFileName, $strPath));
                     NarroImportStatistics::$arrStatistics['Imported files']++;
