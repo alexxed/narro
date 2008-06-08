@@ -600,7 +600,7 @@
             elseif(QApplication::$blnUseAjax)
                 $this->UpdateData();
 
-            $strOutput = QApplication::$Cache->remove('project_progress_' . $this->objNarroContextInfo->Context->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
+            QApplication::$Cache->remove('project_progress_' . $this->objNarroContextInfo->Context->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
 
             return true;
         }
@@ -792,7 +792,7 @@
             $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
             $this->objNarroContextInfo->Save();
 
-            $strOutput = QApplication::$Cache->remove('project_progress_' . $this->objNarroContextInfo->Context->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
+            QApplication::$Cache->remove('project_progress_' . $this->objNarroContextInfo->Context->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
 
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();
