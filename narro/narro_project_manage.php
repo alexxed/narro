@@ -58,7 +58,11 @@
         }
 
         protected function Form_Create() {
+
             $this->SetupNarroProject();
+
+            if (!QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                QApplication::Redirect('narro_project_list.php');
 
             $this->txtProjectName = new QTextBox($this);
             $this->txtProjectName->Text = $this->objNarroProject->ProjectName;
@@ -76,7 +80,7 @@
             $this->btnSaveProject->Text = t('Save');
 
             $this->txtImportFromDirectory = new QTextBox($this);
-            $this->txtImportFromDirectory->Text = '/date/traduceri/mozilla.org_browser_HEAD/l10n';
+            $this->txtImportFromDirectory->Text = dirname(__FILE__) . '/data/import/' . $this->objNarroProject->ProjectId;
 
             $this->filImportFromFile = new QFileControl($this);
 
@@ -130,8 +134,7 @@
             }
             else {
                 if (!file_exists($this->txtImportFromDirectory->Text . '/' . QApplication::$objUser->Language->LanguageCode . '/import.status')) {
-                    $this->lblImport->Text =
-                        sprintf('<span style="color:green;font-weight:bold;">%s</span><br /><br />', t('Import finished.'));
+                    $this->lblImport->Text = t('Import finished.');
                     $this->lblImport->Visible = true;
                     $this->objImportProgress->Visible = false;
                 }
@@ -143,7 +146,7 @@
             }
             require_once('NarroLog.class.php');
             NarroLog::$strLogFile = '';
-            $cmd = sprintf('/usr/bin/php ' . escapeshellarg(__INCLUDES__ . '/narro/importer/importer.php'). ' --import-mozilla --minloglevel 1 --project %d --user %d --lang %s %s', $this->objNarroProject->ProjectId, QApplication::$objUser->UserId, QApplication::$objUser->Language->LanguageCode, escapeshellarg($this->txtImportFromDirectory->Text));
+            $cmd = sprintf('/usr/bin/php ' . escapeshellarg(__INCLUDES__ . '/narro/importer/importer.php'). ' --import --minloglevel 3 --project %d --user %d --validate --check-equal --source-lang en_US --target-lang %s %s', $this->objNarroProject->ProjectId, NarroUser::ANONYMOUS_USER_ID, QApplication::$objUser->Language->LanguageCode, escapeshellarg($this->txtImportFromDirectory->Text));
             proc_close(proc_open ("$cmd &", array(), $foo));
         }
 
@@ -177,7 +180,7 @@
             }
             require_once('NarroLog.class.php');
             NarroLog::$strLogFile = '';
-            $cmd = sprintf('/usr/bin/php ' . escapeshellarg(__INCLUDES__ . '/narro/importer/importer.php'). ' --export-mozilla --minloglevel 1 --project %d --user %d --lang %s %s', $this->objNarroProject->ProjectId, QApplication::$objUser->UserId, QApplication::$objUser->Language->LanguageCode, escapeshellarg($strDirectory));
+            $cmd = sprintf('/usr/bin/php ' . escapeshellarg(__INCLUDES__ . '/narro/importer/importer.php'). ' --export --minloglevel 3 --project %d --user %d --source-lang en_US --target-lang %s %s', $this->objNarroProject->ProjectId, QApplication::$objUser->UserId, QApplication::$objUser->Language->LanguageCode, escapeshellarg($strDirectory));
             proc_close(proc_open ("$cmd &", array(), $foo));
         }
     }
