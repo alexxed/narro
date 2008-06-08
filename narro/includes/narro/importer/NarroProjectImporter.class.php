@@ -428,6 +428,10 @@
             if (file_exists($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.status'))
                 unlink($strDirectory . '/' . $this->objTargetLanguage->LanguageCode  . '/import.status');
 
+            /**
+             * clear the progress cache
+             */
+            QApplication::$Cache->remove('project_progress_' . $this->objProject->ProjectId . '_' . $this->objTargetLanguage->LanguageId);
 
         }
 
