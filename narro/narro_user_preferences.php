@@ -24,6 +24,7 @@
         protected $txtPreviousUrl;
 
         protected $arrControls;
+        protected $objUser;
 
         public function __construct($objParentObject, $strControlId = null) {
             // Call the Parent
@@ -48,6 +49,15 @@
             $this->btnCancel->Text = t('Cancel');
             $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
 
+            if (is_numeric(QApplication::QueryString('u')) && QApplication::$objUser->hasPermission('Can manage users')) {
+                $this->objUser = NarroUser::LoadByUserId(QApplication::QueryString('u'));
+                $this->lblMessage->ForeColor = 'red';
+                $this->lblMessage->Text = t('Warning, you are editing another user\'s preferences!');
+            }
+            else {
+                $this->objUser = QApplication::$objUser;
+            }
+
         }
 
         protected function GetControlHtml() {
@@ -62,14 +72,14 @@
                             $txtNumber->Maximum = 100;
                             $txtNumber->MaxLength = 3;
                             $txtNumber->Width = 50;
-                            $txtNumber->Text = QApplication::$objUser->getPreferenceValueByName($strName);
+                            $txtNumber->Text = $this->objUser->getPreferenceValueByName($strName);
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtNumber->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $txtNumber;
                             break;
                     case 'text':
                             $txtTextPref = new QTextBox($this);
                             $txtTextPref->Name = $strName;
-                            $txtTextPref->Text = QApplication::$objUser->getPreferenceValueByName($strName);
+                            $txtTextPref->Text = $this->objUser->getPreferenceValueByName($strName);
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $txtTextPref;
                             break;
@@ -79,12 +89,12 @@
                             if ($strName == 'Language') {
                                 $arrLanguages = NarroLanguage::LoadAll(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
                                 foreach($arrLanguages as $objLanguage) {
-                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == QApplication::$objUser->getPreferenceValueByName($strName)));
+                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
                                 }
                             }
                             else
                                 foreach($arrPref['values'] as $strValue) {
-                                    $lstOption->AddItem(t($strValue), $strValue, ($strValue == QApplication::$objUser->getPreferenceValueByName($strName)));
+                                    $lstOption->AddItem(t($strValue), $strValue, ($strValue == $this->objUser->getPreferenceValueByName($strName)));
                                 }
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $lstOption->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $lstOption;
@@ -102,29 +112,30 @@
             foreach($this->arrControls as $strName=>$objControl) {
                 switch(QApplication::$arrPreferences[$strName]['type']) {
                     case 'number':
-                            QApplication::$objUser->setPreferenceValueByName($strName, $objControl->Text);
+                            $this->objUser->setPreferenceValueByName($strName, $objControl->Text);
                             break;
                     case 'text':
-                            QApplication::$objUser->setPreferenceValueByName($strName,  $objControl->Text);
+                            $this->objUser->setPreferenceValueByName($strName,  $objControl->Text);
                             break;
                     case 'option':
-                            QApplication::$objUser->setPreferenceValueByName($strName, $objControl->SelectedValue);
+                            $this->objUser->setPreferenceValueByName($strName, $objControl->SelectedValue);
                             break;
                 }
             }
 
-            QApplication::$objUser->Data = serialize(QApplication::$objUser->Preferences);
+            $this->objUser->Data = serialize($this->objUser->Preferences);
 
-            $_SESSION['objUser'] = QApplication::$objUser;
+            if (!is_numeric(QApplication::QueryString('u')) || !QApplication::$objUser->hasPermission('Can manage users'))
+                $_SESSION['objUser'] = QApplication::$objUser;
 
             /**
              * Don't save the preferences for the anonymous user in the database
              */
-            if (QApplication::$objUser->UserId == 0)
+            if ($this->objUser->UserId == 0 && (!is_numeric(QApplication::QueryString('u')) || !QApplication::$objUser->hasPermission('Can manage users')))
                 return true;
 
             try {
-                QApplication::$objUser->Save();
+                $this->objUser->Save();
                 $this->lblMessage->Text = t('Your preferences were saved successfuly.');
                 $this->lblMessage->ForeColor = 'green';
             } catch( Exception $objEx) {
