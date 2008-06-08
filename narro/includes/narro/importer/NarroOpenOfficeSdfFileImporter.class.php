@@ -23,22 +23,23 @@
 
             $hndTemplateFile = fopen($strTemplateFile, 'r');
             if (!$hndTemplateFile) {
-                NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Nu se poate deschide fișierul „%s” pentru citire', $strTemplateFile));
+                NarroLog::LogMessage(3, __LINE__ . ':' . sprintf(t('Can\'t open file "%s" for reading'), $strTemplateFile));
                 return false;
             }
 
             $hndTranslatedFile = fopen($strTranslatedFile, 'w');
             if (!$hndTranslatedFile) {
-                NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Nu se poate deschide fișierul „%s” pentru citire', $strTranslatedFile));
+                NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Can\'t open file "%s” for reading', $strTranslatedFile));
                 return false;
             }
 
             $intTotalToProcess = count(file($strTemplateFile));
 
-            NarroLog::LogMessage(1, __LINE__ . ':' . sprintf('Începe procesarea fișierului „%s” (%d texte), rezultatul se va scrie în „%s”.', $strTemplateFile, $this->intTotalToProcess, $strTranslatedFile));
+
+            NarroLog::LogMessage(1, __LINE__ . ':' . sprintf(t('Starting to process file "%s" (%d texts), the result is written to "%s".'), $strTemplateFile, $this->intTotalToProcess, $strTranslatedFile));
 
             /**
-             * Pentru început, se iau doar textele care au sugestii valide
+             * Get the contexts with valid suggestions
              */
             $strQuery = sprintf("SELECT `suggestion_value`, `text_value`, `context` FROM narro_context_info ci, narro_context c, narro_suggestion s, narro_text t WHERE c.active=1 AND c.text_id=t.text_id AND ci.valid_suggestion_id=s.suggestion_id AND c.project_id=%d AND c.context_id=ci.context_id AND ci.language_id=%d", $this->objProject->ProjectId, $this->objTargetLanguage->LanguageId);
 
@@ -49,75 +50,26 @@
 
             if ($objDbResult->CountRows()) {
                 while($arrDbRow = $objDbResult->FetchArray()) {
-                    /**
-                     * Poate riscant, dar fiindcă contextul e uneori foarte mare, cheia este md5 pe valoarea contextului.
-                     */
                     if (isset($arrFile[md5($arrDbRow['context'])]) && $arrDbRow['suggestion_value'] != $arrFile[md5($arrDbRow['context'])]) {
-                        NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Atenție, md5("%s") există deja ca cheie și are valoarea „%s”. Valoarea care ar trebui pusă este „%s”!', $arrDbRow['context'], $arrFile[md5($arrDbRow['context'])], $arrDbRow['suggestion_value']));
+                        NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Warning, md5("%s") already exists as key and it has the value "%s". I was trying to set the value "%s"!', $arrDbRow['context'], $arrFile[md5($arrDbRow['context'])], $arrDbRow['suggestion_value']));
                     }
                     $arrFile[md5($arrDbRow['context'])] = $arrDbRow['suggestion_value'];
                 }
             }
             else {
-                NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Eșec la apelul db_num_rows pe interogarea „%s”', $strQuery));
+                NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Failed to count rows after running query "%s"', $strQuery));
                 return false;
             }
 
-            $intValidSuggestions = count($arrFile);
-            NarroLog::LogMessage(1, __LINE__ . ':' . sprintf('S-au găsit %d texte cu sugestii validate', count($arrFile)));
-
-            /**
-             * Apoi, se caută în textele care au sugestii dar niciuna validată, și se ia ultima adăugată
-             * @todo Schimbă astfel încât să se ia sugestia cea mai votată
-             */
-
-//            $strQuery = sprintf("SELECT `suggestion_value`, `text_value`, `context` FROM `narro_context` c, narro_suggestion s, narro_text t WHERE c.valid_suggestion_id IS NULL AND c.text_id=t.text_id AND c.text_id=s.text_id AND c.project_id=%d ORDER BY c.context_id ASC, s.suggestion_id ASC", $this->objProject->ProjectId);
-//
-//            if (!$objResult = db_query($strQuery)) {
-//                NarroLog::LogMessage(3,  __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery );
-//                return false;
-//            }
-//
-//            if (db_num_rows($objResult)) {
-//                while($arrDbRow = db_fetch_array($objResult)) {
-//                    /**
-//                     * Poate riscant, dar fiindcă contextul e uneori foarte mare, cheia este md5 pe valoarea contextului.
-//                     */
-//                    $arrFile[md5($arrDbRow['context'])]= $arrDbRow['suggestion_value'];
-//                }
-//            }
-//            else {
-//                NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Eșec la apelul db_num_rows pe interogarea „%s”', $strQuery));
-//                return false;
-//            }
-
-            NarroLog::LogMessage(1, __LINE__ . ':' . sprintf('S-au găsit %d texte sugestii nevalidate', count($arrFile) - $intValidSuggestions));
-
-
-            NarroLog::LogMessage(1, __LINE__ . ':' . sprintf('În total, s-au găsit %d traduceri', count($arrFile)));
-
-            NarroLog::LogMessage(1, __LINE__ . ':' . 'Se începe scrierea fișierului pe baza sugestiilor găsite');
-
             $intFileLineNr=0;
-            $this->intTextsNotTranslated = 0;
-            $this->intTextsTranslated = 0;
-
-            if (file_exists('export.status'))
-                throw new Exception(sprintf(t('An export process is already running in the directory "%s" although no pid is recorded. Status is: "%s"'), file_get_contents('export.status')));
-
-            $hndStatusFile = fopen('import.status', 'w');
-            if (!$hndStatusFile)
-                throw new Exception(sprintf(t('Cannot create %s in %s.'), 'import.status', getcwd()));
-            fputs($hndStatusFile, '0');
 
             while(!feof($hndTemplateFile)) {
                 $strFileLine = fgets($hndTemplateFile, 4096);
                 $intFileLineNr++;
 
                 $arrColumn = preg_split('/\t/', $strFileLine);
-                if (count($arrColumn) < 10) {
-                    NarroLog::LogMessage(2, __LINE__ . ':' . sprintf('S-a sărit peste „%s”, pentru că împărțirea cu tab dă mai puțin de 10 coloane.', $strFileLine));
-                    $this->intSkipped;
+                if (count($arrColumn) != 15) {
+                    NarroLog::LogMessage(2, __LINE__ . ':' . sprintf('Skipped "%s" because splitting by tab does not give 14 columns.', $strFileLine));
                     continue;
                 }
 
@@ -125,7 +77,8 @@
 
                 $strLangCode = $arrColumn[9];
                 $strText = $arrColumn[10];
-                $strContext = trim($arrColumn[0] . "\n" . $arrColumn[1] . "\n" . $arrColumn[3] . "\n" . $arrColumn[4]);
+                $strContext = trim(str_replace("\t", "\n", $strFileLine));
+
 
                 $arrColumn[8] = 0;
                 $arrTranslatedColumn[8] = 0;
@@ -148,11 +101,8 @@
                         NarroLog::LogMessage(2, sprintf(t('A plugin returned an unexpected result while processing the suggestion "%s": %s'), $arrFile[md5($strContext)], print_r($arrResult, true)));
 
                     $arrTranslatedColumn[10] = str_replace(array("\n", "\r"), array("",""), $arrFile[md5($strContext)]);
-                    $this->intTextsTranslated++;
                 }
                 else {
-                    $this->intTextsNotTranslated++;
-                    //NarroLog::LogMessage(2, __LINE__ . ':' . sprintf('S-a sărit peste „%s” („%s”), pentru că nu e tradus.', $strContext, $strText));
                     continue;
                 }
 
@@ -161,12 +111,12 @@
 
                 if (isset($arrEscOrigMatches[0])) {
                     if (!isset($arrEscTransMatches[0])) {
-                        NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Atenție! Textul original „%s” are niște ghilimele dar textul tradus „%s” nu le are.', $strText, $arrFile[md5($strContext)]));
+                        NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Warning! The original text "%s" has some doube quotes but the translated text "%s" doesn\'t.', $strText, $arrFile[md5($strContext)]));
                         continue;
                     }
 
                     if (count($arrEscOrigMatches[0]) != count($arrEscTransMatches[0])) {
-                        NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Atenție! Textul original „%s” are niște ghilimele dar textul tradus „%s” are mai puține sau mai multe.', $strText, $arrFile[md5($strContext)]));
+                        NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Warning! The original text "%s" has some double quotes but the translated text "%s" has less or more of them.', $strText, $arrFile[md5($strContext)]));
                         continue;
                     }
                 }
@@ -175,23 +125,10 @@
                 fwrite($hndTranslatedFile, join("\t", $arrTranslatedColumn));
 
                 $intProcessedSoFar++;
-                ftruncate($hndStatusFile, 0);
-                fputs($hndStatusFile, (int) ceil(($intProcessedSoFar*100)/$intTotalToProcess));
-
-
             }
 
             fclose($hndTemplateFile);
             fclose($hndTranslatedFile);
-
-            fclose($hndStatusFile);
-            if (file_exists('import.status'))
-                unlink('import.status');
-
-            NarroLog::LogMessage(1, sprintf('Texte din fișierul model peste care s-a sărit: %d', $this->intSkipped));
-            NarroLog::LogMessage(1, sprintf('Texte traduse: %d', $this->intTextsTranslated));
-            NarroLog::LogMessage(1, sprintf('Texte fără traduceri: %d', $this->intTextsNotTranslated));
-            NarroLog::LogMessage(1, sprintf('Timp trecut: %s', $this->strElapsedTime));
         }
 
         public function ImportFile($objFile, $strTemplateFile, $strTranslatedFile) {
@@ -210,17 +147,6 @@
             $intTotalToProcess = count(file($strTemplateFile));
 
             /**
-             * initialize status file
-             */
-            if (file_exists('import.status'))
-                throw new Exception(sprintf(t('An export process is already running in the directory "%s" although no pid is recorded. Status is: "%s"'), file_get_contents('import.status')));
-
-            $hndStatusFile = fopen('import.status', 'w');
-            if (!$hndStatusFile)
-                throw new Exception(sprintf(t('Cannot create %s in %s.'), 'import.status', getcwd()));
-            fputs($hndStatusFile, '0');
-
-            /**
              * read the template file line by line
              */
             while(!feof($hndFile)) {
@@ -231,6 +157,11 @@
                  * OpenOffice uses tab separated values
                  */
                 $arrColumn = preg_split('/\t/', $strFileLine);
+
+                /**
+                 * skip help
+                 */
+                if ($arrColumn[0] == 'helpcontent2') continue;
 
                 $strLangCode = $arrColumn[9];
 
@@ -299,7 +230,7 @@
                     continue;
                 }
 
-                $strContext = $arrColumn[0] . "\n" . $arrColumn[1] . "\n" . $arrColumn[3] . "\n" . $arrColumn[4];
+                $strContext = str_replace("\t", "\n", $strFileLine);
 
                 $strDate = $arrColumn[14];
 
@@ -358,6 +289,7 @@
                                 $objFile->Encoding = 'UTF-8';
                                 $objFile->Modified = date('Y-m-d H:i:s');
                                 $objFile->Created = date('Y-m-d H:i:s');
+                                $objFile->FilePath = $strPath;
                                 $objFile->Save();
                                 NarroLog::LogMessage(1, sprintf(t('Added file "%s"'), $strFileName));
                                 NarroImportStatistics::$arrStatistics['Imported files']++;
@@ -386,43 +318,7 @@
                 if (!$objFile instanceof NarroFile && $this->blnOnlySuggestions)
                     continue;
 
-
-
-//                if (!is_null($strTranslation)) {
-//                    if ($strTextAccKey) {
-//                        if (preg_match('/~(\w)/', $strTranslation, $arrTranslationAccMatches)) {
-//                            $strTranslationAccKey = $arrTranslationAccMatches[1];
-//                        }
-//                        elseif ($intPos = mb_stripos($strTranslation, $strTextAccKey)) {
-//                            if (mb_strtolower($strTextAccKey) == mb_substr($strTranslation, $intPos, 1))
-//                                $strTranslationAccKey = mb_strtolower($strTextAccKey);
-//                            else
-//                                $strTranslationAccKey = mb_strtoupper($strTextAccKey);
-//                        }
-//                        elseif (preg_match('/\w/', $strTranslation, $arrTranslationAccMatches))
-//                            $strTranslationAccKey = $arrTranslationAccMatches[0];
-//                        else
-//                            $strTranslationAccKey = null;
-//
-//                        $strTranslation = mb_ereg_replace('~' . $strTranslationAccKey, $strTranslationAccKey, $strTranslation);
-//                    }
-//                }
-//                else {
-//                    $strTranslationAccKey = null;
-//
-//                    if (preg_match('/~(\w)/', $strText, $arrTextAccMatches)) {
-//                        $strTextAccKey = $arrTextAccMatches[1];
-//                        $strText = mb_ereg_replace('~' . $strTextAccKey, $strTextAccKey, $strText);
-//                    }
-//                    else {
-//                        $strTextAccKey = null;
-//                    }
-//                }
-
                 $this->AddTranslation($objFile, $strText, $strTextAccKey, $strTranslation, $strTranslationAccKey, $strContext);
-
-                ftruncate($hndStatusFile, 0);
-                fputs($hndStatusFile, (int) ceil(($intProcessedSoFar*100)/$intTotalToProcess));
 
                 if ($intProcessedSoFar % 10 === 0) {
                     NarroLog::LogMessage(3, sprintf(t("Progress: %s%%"), (int) ceil(($intProcessedSoFar*100)/$intTotalToProcess)));
@@ -431,11 +327,6 @@
 
             }
             fclose($hndFile);
-
-            fclose($hndStatusFile);
-            if (file_exists('import.status'))
-                unlink('import.status');
-
         }
     }
 ?>
