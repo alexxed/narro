@@ -18,7 +18,7 @@
 
     class NarroMozillaIniFileImporter extends NarroFileImporter {
 
-        public function ImportFile($objFile, $strTemplateFile, $strTranslatedFile) {
+        public function ImportFile($objFile, $strTemplateFile, $strTranslatedFile = null) {
             $intTime = time();
 
             if ($strTranslatedFile)
