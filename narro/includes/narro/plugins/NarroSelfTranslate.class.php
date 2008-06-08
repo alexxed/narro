@@ -59,26 +59,13 @@
         public static function UpdateTranslation($strText, $strSuggestion, $strContext, $objFile, $objProject) {
             if ($objProject->ProjectId != self::NARRO_PROJECT_ID) return true;
 
-            $strIdentifier = sprintf('narro_%d', QApplication::$objUser->Language->LanguageId);
-            $strUserIdentifier = sprintf('narro_%d_%d', QApplication::$objUser->Language->LanguageId, QApplication::$objUser->UserId);
-
-            $arrTextSuggestions = QApplication::$Cache->load($strIdentifier);
-            $arrUserSuggestions = QApplication::$Cache->load($strUserIdentifier);
-
-            $arrTextSuggestions[md5($strText)] = $strSuggestion;
-            $arrUserSuggestions[md5($strText)] = $strSuggestion;
-
-            QApplication::$Cache->save($arrUserSuggestions, $strUserIdentifier);
-            QApplication::$Cache->save($arrTextSuggestions, $strIdentifier);
-
+            self::CacheTranslation($strText);
         }
 
         public static function CacheTranslation($strText) {
             $strIdentifier = sprintf('narro_%d', QApplication::$objUser->Language->LanguageId);
-            $strUserIdentifier = sprintf('narro_%d_%d', QApplication::$objUser->Language->LanguageId, QApplication::$objUser->UserId);
 
             $arrTextSuggestions = QApplication::$Cache->load($strIdentifier);
-            $arrUserSuggestions = QApplication::$Cache->load($strUserIdentifier);
 
             /**
              * if this is the first suggestion, consider it most_voted
@@ -95,59 +82,14 @@
             if ($objContextInfo instanceof NarroContextInfo) {
                 $arrTextSuggestions[md5($strText)] = $objContextInfo->ValidSuggestion->SuggestionValue;
             }
-            elseif (
-                $arrSuggestions =
-                         NarroSuggestion::QueryArray(
-                             QQ::AndCondition(
-                                 QQ::Equal(QQN::NarroSuggestion()->Text->TextValueMd5, md5($strText)),
-                                 QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId)
-                             )
-                         )
-               )
-            {
-
-                if (count($arrSuggestions) == 1) {
-                    $arrTextSuggestions[md5($strText)] = $arrSuggestions[0]->SuggestionValue;
-                    $arrUserSuggestions[md5($strText)] = $arrSuggestions[0]->SuggestionValue;
-                }
-                else {
-                    $intVoteCnt = 0;
-
-                    foreach($arrSuggestions as $objSuggestion) {
-                        $intSuggVotCnt = NarroSuggestionVote::QueryCount(
-                                QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $objSuggestion->SuggestionId)
-                        );
-
-                        $intUserVote = NarroSuggestionVote::QueryCount(
-                            QQ::AndCondition(
-                                QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $objSuggestion->SuggestionId),
-                                QQ::Equal(QQN::NarroSuggestionVote()->UserId, QApplication::$objUser->UserId)
-                            )
-                        );
-
-                        $arrUserSuggestions[md5($strText)] = $objSuggestion->SuggestionValue;
-
-                        if ($intUserVote >= $intVoteCnt) {
-                            $intVoteCnt = $intUserVote;
-                            $arrTextSuggestions[md5($strText)] = $objSuggestion->SuggestionValue;
-                        }
-                    }
-                }
-            }
             else {
                 $arrTextSuggestions[md5($strText)] = $strText;
-                $arrUserSuggestions[md5($strText)] = $strText;
             }
-
-            if (isset($arrUserSuggestions))
-                QApplication::$Cache->save($arrUserSuggestions, $strUserIdentifier);
 
             if (isset($arrTextSuggestions))
                 QApplication::$Cache->save($arrTextSuggestions, $strIdentifier);
 
-            if (isset($arrUserSuggestions[md5($strText)]))
-                return $arrUserSuggestions[md5($strText)];
-            elseif (isset($arrTextSuggestions[md5($strText)]))
+            if (isset($arrTextSuggestions[md5($strText)]))
                 return $arrTextSuggestions[md5($strText)];
             else
                 return $strText;
@@ -155,24 +97,19 @@
         }
 
         public static function Translate($strText) {
-
             if (!count(self::$arrTranslations)) {
                 $strIdentifier = sprintf('narro_%d', QApplication::$objUser->Language->LanguageId);
-                $strUserIdentifier = sprintf('narro_%d_%d', QApplication::$objUser->Language->LanguageId, QApplication::$objUser->UserId);
 
                 $arrTextSuggestions = QApplication::$Cache->load($strIdentifier);
-                $arrUserSuggestions = QApplication::$Cache->load($strUserIdentifier);
 
-                if (is_array($arrUserSuggestions))
-                    self::$arrTranslations = array_intersect($arrUserSuggestions, $arrTextSuggestions);
-                elseif (is_array($arrTextSuggestions))
+                if (is_array($arrTextSuggestions))
                     self::$arrTranslations = $arrTextSuggestions;
             }
 
             if (isset(self::$arrTranslations[md5($strText)]))
                 return self::$arrTranslations[md5($strText)];
             else
-                return $strText;
+                return self::CacheTranslation($strText);
         }
 
         /////////////////////////
