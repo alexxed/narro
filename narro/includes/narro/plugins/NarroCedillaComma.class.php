@@ -83,6 +83,8 @@
                 )
             )
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
+            elseif (QApplication::$objUser->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
+                return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
             else
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
         }
