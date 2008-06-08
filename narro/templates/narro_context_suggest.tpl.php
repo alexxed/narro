@@ -63,7 +63,9 @@
             </td>
             </tr>
             </table>
-        <?php } ?>
+        <?php } else
+                  echo sprintf(t('You can add suggestions if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account.'), 'narro_register.php', 'narro_login.php') . '<br /><br />';
+        ?>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <?php $this->btnPrevious100->Render() ?>
         &nbsp;&nbsp;&nbsp;&nbsp;
