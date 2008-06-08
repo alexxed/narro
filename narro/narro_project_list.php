@@ -126,7 +126,7 @@
                 sprintf(' | <a href="narro_project_file_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Files')) .
                 sprintf(' | <a href="narro_project_language_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Languages'));
                 if (QApplication::$objUser->hasPermission('Can manage project', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
-                    sprintf(' | <a href="narro_project_manage.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Manage'));
+                    $strOutput .= sprintf(' | <a href="narro_project_manage.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Manage'));
 
             return $strOutput;
         }
