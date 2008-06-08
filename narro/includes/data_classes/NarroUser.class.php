@@ -84,8 +84,7 @@
                 return false;
             $arrUserPermissions = NarroUserPermission::LoadArrayByUserId($objUser->intUserId);
             foreach($arrUserPermissions as $objUserPermission) {
-                $objPermission = NarroPermission::Load($objUserPermission->PermissionId);
-                $objUser->arrPermissions[$objPermission->PermissionName] = $objUserPermission;
+                $objUser->arrPermissions[$objUserPermission->Permission->PermissionName . '-' . $objUserPermission->LanguageId . '-' . $objUserPermission->ProjectId] = $objUserPermission;
             }
 
             $objUser->arrPreferences = unserialize($objUser->Data);
@@ -110,8 +109,69 @@
             $objUser = NarroUser::LoadByUserId(self::ANONYMOUS_USER_ID);
             $arrUserPermissions = NarroUserPermission::LoadArrayByUserId(self::ANONYMOUS_USER_ID);
             foreach($arrUserPermissions as $objUserPermission) {
-                $objPermission = NarroPermission::Load($objUserPermission->PermissionId);
-                $objUser->arrPermissions[$objPermission->PermissionName] = $objUserPermission;
+                $objUser->arrPermissions[$objUserPermission->Permission->PermissionName . '-' . $objUserPermission->LanguageId . '-' . $objUserPermission->ProjectId] = $objUserPermission;
+            }
+
+            $objUser->arrPreferences = unserialize($objUser->Data);
+
+            if (isset($objUser->Preferences['Language'])) {
+                $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->Preferences['Language']);
+
+                if ($objLanguage instanceof NarroLanguage) {
+                    $objUser->Language = $objLanguage;
+                }
+                else {
+                    $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                }
+            }
+            else
+                $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+
+            return $objUser;
+        }
+
+        public static function LoadByUsername($strUsername) {
+            $objUser = NarroUser::QuerySingle(
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroUser()->Username, $strUsername)
+                        )
+            );
+            if (!$objUser instanceof NarroUser)
+                return false;
+            $arrUserPermissions = NarroUserPermission::LoadArrayByUserId($objUser->intUserId);
+            foreach($arrUserPermissions as $objUserPermission) {
+                $objUser->arrPermissions[$objUserPermission->Permission->PermissionName . '-' . $objUserPermission->LanguageId . '-' . $objUserPermission->ProjectId] = $objUserPermission;
+            }
+
+            $objUser->arrPreferences = unserialize($objUser->Data);
+
+            if (isset($objUser->Preferences['Language'])) {
+                $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->Preferences['Language']);
+
+                if ($objLanguage instanceof NarroLanguage) {
+                    $objUser->Language = $objLanguage;
+                }
+                else {
+                    $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                }
+            }
+            else
+                $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+
+            return $objUser;
+        }
+
+        public static function LoadByUserId($intUserId) {
+            $objUser = NarroUser::QuerySingle(
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroUser()->UserId, $intUserId)
+                        )
+            );
+            if (!$objUser instanceof NarroUser)
+                return false;
+            $arrUserPermissions = NarroUserPermission::LoadArrayByUserId($objUser->intUserId);
+            foreach($arrUserPermissions as $objUserPermission) {
+                $objUser->arrPermissions[$objUserPermission->Permission->PermissionName . '-' . $objUserPermission->LanguageId . '-' . $objUserPermission->ProjectId] = $objUserPermission;
             }
 
             $objUser->arrPreferences = unserialize($objUser->Data);
@@ -133,28 +193,16 @@
         }
 
         public function hasPermission($strPermissionName, $intProjectId = null, $intLanguageId = null) {
-            if ($intProjectId) {
-                if (isset($this->arrPermissions[$strPermissionName])) {
-                    $objUserPermission = $this->arrPermissions[$strPermissionName];
-                    if
-                    (
-                        $objUserPermission instanceof NarroUserPermission &&
-                        ( $objUserPermission->ProjectId == $intProjectId || is_null($objUserPermission->ProjectId) ) &&
-                        ( $objUserPermission->LanguageId == $intLanguageId || is_null($objUserPermission->LanguageId) )
-                    )
-                        return true;
-                    else
-                        return false;
-                }
-                else
-                    return false;
-            }
-            else {
-                if (isset($this->arrPermissions[$strPermissionName]))
+            if (
+                isset($this->arrPermissions[$strPermissionName . '-' . $intLanguageId . '-' . $intProjectId]) ||
+                isset($this->arrPermissions[$strPermissionName . '-' . $intLanguageId . '-']) ||
+                isset($this->arrPermissions[$strPermissionName . '--' . $intProjectId]) ||
+                isset($this->arrPermissions[$strPermissionName . '--'])
+               ) {
                     return true;
-                else
-                    return false;
             }
+            else
+                return false;
         }
 
 
