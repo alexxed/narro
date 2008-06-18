@@ -272,6 +272,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`text_value` AS ' . $strAliasPrefix . 'text_value`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_value_md5` AS ' . $strAliasPrefix . 'text_value_md5`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_char_count` AS ' . $strAliasPrefix . 'text_char_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`has_comments` AS ' . $strAliasPrefix . 'has_comments`');
 			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
 			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
 		}
@@ -330,18 +331,6 @@
 					$blnExpandedViaArray = true;
 				}
 
-				if ((array_key_exists($strAliasPrefix . 'narrosuggestionvoteastext__suggestion_id', $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrosuggestionvoteastext__suggestion_id')))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroSuggestionVoteAsTextArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objNarroSuggestionVoteAsTextArray[$intPreviousChildItemCount - 1];
-						$objChildItem = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteastext__', $strExpandAsArrayNodes, $objPreviousChildItem);
-						if ($objChildItem)
-							array_push($objPreviousItem->_objNarroSuggestionVoteAsTextArray, $objChildItem);
-					} else
-						array_push($objPreviousItem->_objNarroSuggestionVoteAsTextArray, NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteastext__', $strExpandAsArrayNodes));
-					$blnExpandedViaArray = true;
-				}
-
 				if ((array_key_exists($strAliasPrefix . 'narrotextcommentastext__text_comment_id', $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrotextcommentastext__text_comment_id')))) {
 					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroTextCommentAsTextArray)) {
@@ -369,6 +358,7 @@
 			$objToReturn->strTextValue = $objDbRow->GetColumn($strAliasPrefix . 'text_value', 'Blob');
 			$objToReturn->strTextValueMd5 = $objDbRow->GetColumn($strAliasPrefix . 'text_value_md5', 'VarChar');
 			$objToReturn->intTextCharCount = $objDbRow->GetColumn($strAliasPrefix . 'text_char_count', 'Integer');
+			$objToReturn->blnHasComments = $objDbRow->GetColumn($strAliasPrefix . 'has_comments', 'Bit');
 			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
 			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
 
@@ -401,14 +391,6 @@
 					array_push($objToReturn->_objNarroSuggestionAsTextArray, NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionastext__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objNarroSuggestionAsText = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionastext__', $strExpandAsArrayNodes);
-			}
-
-			// Check for NarroSuggestionVoteAsText Virtual Binding
-			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrosuggestionvoteastext__suggestion_id'))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrosuggestionvoteastext__suggestion_id', $strExpandAsArrayNodes)))
-					array_push($objToReturn->_objNarroSuggestionVoteAsTextArray, NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteastext__', $strExpandAsArrayNodes));
-				else
-					$objToReturn->_objNarroSuggestionVoteAsText = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteastext__', $strExpandAsArrayNodes);
 			}
 
 			// Check for NarroTextCommentAsText Virtual Binding
@@ -514,12 +496,14 @@
 							`text_value`,
 							`text_value_md5`,
 							`text_char_count`,
+							`has_comments`,
 							`created`,
 							`modified`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							' . $objDatabase->SqlVariable($this->strTextValueMd5) . ',
 							' . $objDatabase->SqlVariable($this->intTextCharCount) . ',
+							' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							' . $objDatabase->SqlVariable($this->strCreated) . ',
 							' . $objDatabase->SqlVariable($this->strModified) . '
 						)
@@ -540,6 +524,7 @@
 							`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							`text_value_md5` = ' . $objDatabase->SqlVariable($this->strTextValueMd5) . ',
 							`text_char_count` = ' . $objDatabase->SqlVariable($this->intTextCharCount) . ',
+							`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
 							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
 						WHERE
@@ -653,6 +638,13 @@
 					 */
 					return $this->intTextCharCount;
 
+				case 'HasComments':
+					/**
+					 * Gets the value for blnHasComments 
+					 * @return boolean
+					 */
+					return $this->blnHasComments;
+
 				case 'Created':
 					/**
 					 * Gets the value for strCreated (Not Null)
@@ -708,22 +700,6 @@
 					 * @return NarroSuggestion[]
 					 */
 					return (array) $this->_objNarroSuggestionAsTextArray;
-
-				case '_NarroSuggestionVoteAsText':
-					/**
-					 * Gets the value for the private _objNarroSuggestionVoteAsText (Read-Only)
-					 * if set due to an expansion on the narro_suggestion_vote.text_id reverse relationship
-					 * @return NarroSuggestionVote
-					 */
-					return $this->_objNarroSuggestionVoteAsText;
-
-				case '_NarroSuggestionVoteAsTextArray':
-					/**
-					 * Gets the value for the private _objNarroSuggestionVoteAsTextArray (Read-Only)
-					 * if set due to an ExpandAsArray on the narro_suggestion_vote.text_id reverse relationship
-					 * @return NarroSuggestionVote[]
-					 */
-					return (array) $this->_objNarroSuggestionVoteAsTextArray;
 
 				case '_NarroTextCommentAsText':
 					/**
@@ -798,6 +774,19 @@
 					 */
 					try {
 						return ($this->intTextCharCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'HasComments':
+					/**
+					 * Sets the value for blnHasComments 
+					 * @param boolean $mixValue
+					 * @return boolean
+					 */
+					try {
+						return ($this->blnHasComments = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1162,165 +1151,6 @@
 
 			
 		
-		// Related Objects' Methods for NarroSuggestionVoteAsText
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated NarroSuggestionVotesAsText as an array of NarroSuggestionVote objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroSuggestionVote[]
-		*/ 
-		public function GetNarroSuggestionVoteAsTextArray($objOptionalClauses = null) {
-			if ((is_null($this->intTextId)))
-				return array();
-
-			try {
-				return NarroSuggestionVote::LoadArrayByTextId($this->intTextId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated NarroSuggestionVotesAsText
-		 * @return int
-		*/ 
-		public function CountNarroSuggestionVotesAsText() {
-			if ((is_null($this->intTextId)))
-				return 0;
-
-			return NarroSuggestionVote::CountByTextId($this->intTextId);
-		}
-
-		/**
-		 * Associates a NarroSuggestionVoteAsText
-		 * @param NarroSuggestionVote $objNarroSuggestionVote
-		 * @return void
-		*/ 
-		public function AssociateNarroSuggestionVoteAsText(NarroSuggestionVote $objNarroSuggestionVote) {
-			if ((is_null($this->intTextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionVoteAsText on this unsaved NarroText.');
-			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionVoteAsText on this NarroText with an unsaved NarroSuggestionVote.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroText::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_suggestion_vote`
-				SET
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
-				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->TextId) . ' AND
-					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . '
-			');
-		}
-
-		/**
-		 * Unassociates a NarroSuggestionVoteAsText
-		 * @param NarroSuggestionVote $objNarroSuggestionVote
-		 * @return void
-		*/ 
-		public function UnassociateNarroSuggestionVoteAsText(NarroSuggestionVote $objNarroSuggestionVote) {
-			if ((is_null($this->intTextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsText on this unsaved NarroText.');
-			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsText on this NarroText with an unsaved NarroSuggestionVote.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroText::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_suggestion_vote`
-				SET
-					`text_id` = null
-				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->TextId) . ' AND
-					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all NarroSuggestionVotesAsText
-		 * @return void
-		*/ 
-		public function UnassociateAllNarroSuggestionVotesAsText() {
-			if ((is_null($this->intTextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsText on this unsaved NarroText.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroText::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_suggestion_vote`
-				SET
-					`text_id` = null
-				WHERE
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated NarroSuggestionVoteAsText
-		 * @param NarroSuggestionVote $objNarroSuggestionVote
-		 * @return void
-		*/ 
-		public function DeleteAssociatedNarroSuggestionVoteAsText(NarroSuggestionVote $objNarroSuggestionVote) {
-			if ((is_null($this->intTextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsText on this unsaved NarroText.');
-			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsText on this NarroText with an unsaved NarroSuggestionVote.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroText::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_suggestion_vote`
-				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->TextId) . ' AND
-					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated NarroSuggestionVotesAsText
-		 * @return void
-		*/ 
-		public function DeleteAllNarroSuggestionVotesAsText() {
-			if ((is_null($this->intTextId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsText on this unsaved NarroText.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroText::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_suggestion_vote`
-				WHERE
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
-			');
-		}
-
-			
-		
 		// Related Objects' Methods for NarroTextCommentAsText
 		//-------------------------------------------------------------------
 
@@ -1510,6 +1340,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_text.has_comments
+		 * @var boolean blnHasComments
+		 */
+		protected $blnHasComments;
+		const HasCommentsDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_text.created
 		 * @var string strCreated
 		 */
@@ -1558,22 +1396,6 @@
 		 * @var NarroSuggestion[] _objNarroSuggestionAsTextArray;
 		 */
 		private $_objNarroSuggestionAsTextArray = array();
-
-		/**
-		 * Private member variable that stores a reference to a single NarroSuggestionVoteAsText object
-		 * (of type NarroSuggestionVote), if this NarroText object was restored with
-		 * an expansion on the narro_suggestion_vote association table.
-		 * @var NarroSuggestionVote _objNarroSuggestionVoteAsText;
-		 */
-		private $_objNarroSuggestionVoteAsText;
-
-		/**
-		 * Private member variable that stores a reference to an array of NarroSuggestionVoteAsText objects
-		 * (of type NarroSuggestionVote[]), if this NarroText object was restored with
-		 * an ExpandAsArray on the narro_suggestion_vote association table.
-		 * @var NarroSuggestionVote[] _objNarroSuggestionVoteAsTextArray;
-		 */
-		private $_objNarroSuggestionVoteAsTextArray = array();
 
 		/**
 		 * Private member variable that stores a reference to a single NarroTextCommentAsText object
@@ -1627,6 +1449,7 @@
 			$strToReturn .= '<element name="TextValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="TextValueMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="TextCharCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="HasComments" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Created" type="xsd:string"/>';
 			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -1659,6 +1482,8 @@
 				$objToReturn->strTextValueMd5 = $objSoapObject->TextValueMd5;
 			if (property_exists($objSoapObject, 'TextCharCount'))
 				$objToReturn->intTextCharCount = $objSoapObject->TextCharCount;
+			if (property_exists($objSoapObject, 'HasComments'))
+				$objToReturn->blnHasComments = $objSoapObject->HasComments;
 			if (property_exists($objSoapObject, 'Created'))
 				$objToReturn->strCreated = $objSoapObject->Created;
 			if (property_exists($objSoapObject, 'Modified'))
@@ -1707,6 +1532,8 @@
 					return new QQNode('text_value_md5', 'string', $this);
 				case 'TextCharCount':
 					return new QQNode('text_char_count', 'integer', $this);
+				case 'HasComments':
+					return new QQNode('has_comments', 'boolean', $this);
 				case 'Created':
 					return new QQNode('created', 'string', $this);
 				case 'Modified':
@@ -1715,8 +1542,6 @@
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextastext', 'reverse_reference', 'text_id');
 				case 'NarroSuggestionAsText':
 					return new QQReverseReferenceNodeNarroSuggestion($this, 'narrosuggestionastext', 'reverse_reference', 'text_id');
-				case 'NarroSuggestionVoteAsText':
-					return new QQReverseReferenceNodeNarroSuggestionVote($this, 'narrosuggestionvoteastext', 'reverse_reference', 'text_id');
 				case 'NarroTextCommentAsText':
 					return new QQReverseReferenceNodeNarroTextComment($this, 'narrotextcommentastext', 'reverse_reference', 'text_id');
 
@@ -1747,6 +1572,8 @@
 					return new QQNode('text_value_md5', 'string', $this);
 				case 'TextCharCount':
 					return new QQNode('text_char_count', 'integer', $this);
+				case 'HasComments':
+					return new QQNode('has_comments', 'boolean', $this);
 				case 'Created':
 					return new QQNode('created', 'string', $this);
 				case 'Modified':
@@ -1755,8 +1582,6 @@
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextastext', 'reverse_reference', 'text_id');
 				case 'NarroSuggestionAsText':
 					return new QQReverseReferenceNodeNarroSuggestion($this, 'narrosuggestionastext', 'reverse_reference', 'text_id');
-				case 'NarroSuggestionVoteAsText':
-					return new QQReverseReferenceNodeNarroSuggestionVote($this, 'narrosuggestionvoteastext', 'reverse_reference', 'text_id');
 				case 'NarroTextCommentAsText':
 					return new QQReverseReferenceNodeNarroTextComment($this, 'narrotextcommentastext', 'reverse_reference', 'text_id');
 
