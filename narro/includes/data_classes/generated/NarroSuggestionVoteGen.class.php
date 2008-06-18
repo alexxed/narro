@@ -26,17 +26,15 @@
 		 * Load a NarroSuggestionVote from PK Info
 		 * @param integer $intSuggestionId
 		 * @param integer $intContextId
-		 * @param integer $intTextId
 		 * @param integer $intUserId
 		 * @return NarroSuggestionVote
 		 */
-		public static function Load($intSuggestionId, $intContextId, $intTextId, $intUserId) {
+		public static function Load($intSuggestionId, $intContextId, $intUserId) {
 			// Use QuerySingle to Perform the Query
 			return NarroSuggestionVote::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $intSuggestionId),
 				QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $intContextId),
-				QQ::Equal(QQN::NarroSuggestionVote()->TextId, $intTextId),
 				QQ::Equal(QQN::NarroSuggestionVote()->UserId, $intUserId)
 				)
 			);
@@ -278,7 +276,6 @@
 
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_id` AS ' . $strAliasPrefix . 'suggestion_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`context_id` AS ' . $strAliasPrefix . 'context_id`');
-			$objBuilder->AddSelectItem($strTableName . '.`text_id` AS ' . $strAliasPrefix . 'text_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`user_id` AS ' . $strAliasPrefix . 'user_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`vote_value` AS ' . $strAliasPrefix . 'vote_value`');
 			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
@@ -314,8 +311,6 @@
 			$objToReturn->__intSuggestionId = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_id', 'Integer');
 			$objToReturn->intContextId = $objDbRow->GetColumn($strAliasPrefix . 'context_id', 'Integer');
 			$objToReturn->__intContextId = $objDbRow->GetColumn($strAliasPrefix . 'context_id', 'Integer');
-			$objToReturn->intTextId = $objDbRow->GetColumn($strAliasPrefix . 'text_id', 'Integer');
-			$objToReturn->__intTextId = $objDbRow->GetColumn($strAliasPrefix . 'text_id', 'Integer');
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
 			$objToReturn->__intUserId = $objDbRow->GetColumn($strAliasPrefix . 'user_id', 'Integer');
 			$objToReturn->intVoteValue = $objDbRow->GetColumn($strAliasPrefix . 'vote_value', 'Integer');
@@ -341,10 +336,6 @@
 			// Check for Context Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'context_id__context_id')))
 				$objToReturn->objContext = NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'context_id__', $strExpandAsArrayNodes);
-
-			// Check for Text Early Binding
-			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'text_id__text_id')))
-				$objToReturn->objText = NarroText::InstantiateDbRow($objDbRow, $strAliasPrefix . 'text_id__', $strExpandAsArrayNodes);
 
 			// Check for User Early Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'user_id__user_id')))
@@ -394,19 +385,17 @@
 			
 		/**
 		 * Load a single NarroSuggestionVote object,
-		 * by SuggestionId, ContextId, TextId, UserId Index(es)
+		 * by SuggestionId, ContextId, UserId Index(es)
 		 * @param integer $intSuggestionId
 		 * @param integer $intContextId
-		 * @param integer $intTextId
 		 * @param integer $intUserId
 		 * @return NarroSuggestionVote
 		*/
-		public static function LoadBySuggestionIdContextIdTextIdUserId($intSuggestionId, $intContextId, $intTextId, $intUserId) {
+		public static function LoadBySuggestionIdContextIdUserId($intSuggestionId, $intContextId, $intUserId) {
 			return NarroSuggestionVote::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $intSuggestionId),
 				QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $intContextId),
-				QQ::Equal(QQN::NarroSuggestionVote()->TextId, $intTextId),
 				QQ::Equal(QQN::NarroSuggestionVote()->UserId, $intUserId)
 				)
 			);
@@ -414,53 +403,19 @@
 			
 		/**
 		 * Load a single NarroSuggestionVote object,
-		 * by SuggestionId, TextId, UserId, ContextId Index(es)
+		 * by SuggestionId, UserId, ContextId Index(es)
 		 * @param integer $intSuggestionId
-		 * @param integer $intTextId
 		 * @param integer $intUserId
 		 * @param integer $intContextId
 		 * @return NarroSuggestionVote
 		*/
-		public static function LoadBySuggestionIdTextIdUserIdContextId($intSuggestionId, $intTextId, $intUserId, $intContextId) {
+		public static function LoadBySuggestionIdUserIdContextId($intSuggestionId, $intUserId, $intContextId) {
 			return NarroSuggestionVote::QuerySingle(
 				QQ::AndCondition(
 				QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $intSuggestionId),
-				QQ::Equal(QQN::NarroSuggestionVote()->TextId, $intTextId),
 				QQ::Equal(QQN::NarroSuggestionVote()->UserId, $intUserId),
 				QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $intContextId)
 				)
-			);
-		}
-			
-		/**
-		 * Load an array of NarroSuggestionVote objects,
-		 * by TextId Index(es)
-		 * @param integer $intTextId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroSuggestionVote[]
-		*/
-		public static function LoadArrayByTextId($intTextId, $objOptionalClauses = null) {
-			// Call NarroSuggestionVote::QueryArray to perform the LoadArrayByTextId query
-			try {
-				return NarroSuggestionVote::QueryArray(
-					QQ::Equal(QQN::NarroSuggestionVote()->TextId, $intTextId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count NarroSuggestionVotes
-		 * by TextId Index(es)
-		 * @param integer $intTextId
-		 * @return int
-		*/
-		public static function CountByTextId($intTextId) {
-			// Call NarroSuggestionVote::QueryCount to perform the CountByTextId query
-			return NarroSuggestionVote::QueryCount(
-				QQ::Equal(QQN::NarroSuggestionVote()->TextId, $intTextId)
 			);
 		}
 			
@@ -591,7 +546,6 @@
 						INSERT INTO `narro_suggestion_vote` (
 							`suggestion_id`,
 							`context_id`,
-							`text_id`,
 							`user_id`,
 							`vote_value`,
 							`created`,
@@ -599,7 +553,6 @@
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->intContextId) . ',
-							' . $objDatabase->SqlVariable($this->intTextId) . ',
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
 							' . $objDatabase->SqlVariable($this->intVoteValue) . ',
 							' . $objDatabase->SqlVariable($this->strCreated) . ',
@@ -620,7 +573,6 @@
 						SET
 							`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
 							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ',
-							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . ',
 							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
 							`vote_value` = ' . $objDatabase->SqlVariable($this->intVoteValue) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
@@ -628,7 +580,6 @@
 						WHERE
 							`suggestion_id` = ' . $objDatabase->SqlVariable($this->__intSuggestionId) . ' AND
 							`context_id` = ' . $objDatabase->SqlVariable($this->__intContextId) . ' AND
-							`text_id` = ' . $objDatabase->SqlVariable($this->__intTextId) . ' AND
 							`user_id` = ' . $objDatabase->SqlVariable($this->__intUserId) . '
 					');
 				}
@@ -642,7 +593,6 @@
 			$this->__blnRestored = true;
 			$this->__intSuggestionId = $this->intSuggestionId;
 			$this->__intContextId = $this->intContextId;
-			$this->__intTextId = $this->intTextId;
 			$this->__intUserId = $this->intUserId;
 
 
@@ -655,7 +605,7 @@
 		 * @return void
 		*/
 		public function Delete() {
-			if ((is_null($this->intSuggestionId)) || (is_null($this->intContextId)) || (is_null($this->intTextId)) || (is_null($this->intUserId)))
+			if ((is_null($this->intSuggestionId)) || (is_null($this->intContextId)) || (is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Cannot delete this NarroSuggestionVote with an unset primary key.');
 
 			// Get the Database Object for this Class
@@ -669,7 +619,6 @@
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . ' AND
 					`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . ' AND
 					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '');
 		}
 
@@ -732,13 +681,6 @@
 					 */
 					return $this->intContextId;
 
-				case 'TextId':
-					/**
-					 * Gets the value for intTextId (PK)
-					 * @return integer
-					 */
-					return $this->intTextId;
-
 				case 'UserId':
 					/**
 					 * Gets the value for intUserId (PK)
@@ -794,20 +736,6 @@
 						if ((!$this->objContext) && (!is_null($this->intContextId)))
 							$this->objContext = NarroContext::Load($this->intContextId);
 						return $this->objContext;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'Text':
-					/**
-					 * Gets the value for the NarroText object referenced by intTextId (PK)
-					 * @return NarroText
-					 */
-					try {
-						if ((!$this->objText) && (!is_null($this->intTextId)))
-							$this->objText = NarroText::Load($this->intTextId);
-						return $this->objText;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -879,20 +807,6 @@
 					try {
 						$this->objContext = null;
 						return ($this->intContextId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'TextId':
-					/**
-					 * Sets the value for intTextId (PK)
-					 * @param integer $mixValue
-					 * @return integer
-					 */
-					try {
-						$this->objText = null;
-						return ($this->intTextId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1019,38 +933,6 @@
 					}
 					break;
 
-				case 'Text':
-					/**
-					 * Sets the value for the NarroText object referenced by intTextId (PK)
-					 * @param NarroText $mixValue
-					 * @return NarroText
-					 */
-					if (is_null($mixValue)) {
-						$this->intTextId = null;
-						$this->objText = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a NarroText object
-						try {
-							$mixValue = QType::Cast($mixValue, 'NarroText');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						} 
-
-						// Make sure $mixValue is a SAVED NarroText object
-						if (is_null($mixValue->TextId))
-							throw new QCallerException('Unable to set an unsaved Text for this NarroSuggestionVote');
-
-						// Update Local Member Variables
-						$this->objText = $mixValue;
-						$this->intTextId = $mixValue->TextId;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
 				case 'User':
 					/**
 					 * Sets the value for the NarroUser object referenced by intUserId (PK)
@@ -1148,21 +1030,6 @@
 		protected $__intContextId;
 
 		/**
-		 * Protected member variable that maps to the database PK column narro_suggestion_vote.text_id
-		 * @var integer intTextId
-		 */
-		protected $intTextId;
-		const TextIdDefault = null;
-
-
-		/**
-		 * Protected internal member variable that stores the original version of the PK column value (if restored)
-		 * Used by Save() to update a PK column during UPDATE
-		 * @var integer __intTextId;
-		 */
-		protected $__intTextId;
-
-		/**
 		 * Protected member variable that maps to the database PK column narro_suggestion_vote.user_id
 		 * @var integer intUserId
 		 */
@@ -1246,16 +1113,6 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column narro_suggestion_vote.text_id.
-		 *
-		 * NOTE: Always use the Text property getter to correctly retrieve this NarroText object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var NarroText objText
-		 */
-		protected $objText;
-
-		/**
-		 * Protected member variable that contains the object pointed by the reference
 		 * in the database column narro_suggestion_vote.user_id.
 		 *
 		 * NOTE: Always use the User property getter to correctly retrieve this NarroUser object.
@@ -1277,7 +1134,6 @@
 			$strToReturn = '<complexType name="NarroSuggestionVote"><sequence>';
 			$strToReturn .= '<element name="Suggestion" type="xsd1:NarroSuggestion"/>';
 			$strToReturn .= '<element name="Context" type="xsd1:NarroContext"/>';
-			$strToReturn .= '<element name="Text" type="xsd1:NarroText"/>';
 			$strToReturn .= '<element name="User" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="VoteValue" type="xsd:int"/>';
 			$strToReturn .= '<element name="Created" type="xsd:string"/>';
@@ -1292,7 +1148,6 @@
 				$strComplexTypeArray['NarroSuggestionVote'] = NarroSuggestionVote::GetSoapComplexTypeXml();
 				NarroSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroContext::AlterSoapComplexTypeArray($strComplexTypeArray);
-				NarroText::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
@@ -1314,9 +1169,6 @@
 			if ((property_exists($objSoapObject, 'Context')) &&
 				($objSoapObject->Context))
 				$objToReturn->Context = NarroContext::GetObjectFromSoapObject($objSoapObject->Context);
-			if ((property_exists($objSoapObject, 'Text')) &&
-				($objSoapObject->Text))
-				$objToReturn->Text = NarroText::GetObjectFromSoapObject($objSoapObject->Text);
 			if ((property_exists($objSoapObject, 'User')) &&
 				($objSoapObject->User))
 				$objToReturn->User = NarroUser::GetObjectFromSoapObject($objSoapObject->User);
@@ -1352,10 +1204,6 @@
 				$objObject->objContext = NarroContext::GetSoapObjectFromObject($objObject->objContext, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intContextId = null;
-			if ($objObject->objText)
-				$objObject->objText = NarroText::GetSoapObjectFromObject($objObject->objText, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intTextId = null;
 			if ($objObject->objUser)
 				$objObject->objUser = NarroUser::GetSoapObjectFromObject($objObject->objUser, false);
 			else if (!$blnBindRelatedObjects)
@@ -1386,10 +1234,6 @@
 					return new QQNode('context_id', 'integer', $this);
 				case 'Context':
 					return new QQNodeNarroContext('context_id', 'integer', $this);
-				case 'TextId':
-					return new QQNode('text_id', 'integer', $this);
-				case 'Text':
-					return new QQNodeNarroText('text_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
 				case 'User':
@@ -1428,10 +1272,6 @@
 					return new QQNode('context_id', 'integer', $this);
 				case 'Context':
 					return new QQNodeNarroContext('context_id', 'integer', $this);
-				case 'TextId':
-					return new QQNode('text_id', 'integer', $this);
-				case 'Text':
-					return new QQNodeNarroText('text_id', 'integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'integer', $this);
 				case 'User':
