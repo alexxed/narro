@@ -275,6 +275,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_value` AS ' . $strAliasPrefix . 'suggestion_value`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_value_md5` AS ' . $strAliasPrefix . 'suggestion_value_md5`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_char_count` AS ' . $strAliasPrefix . 'suggestion_char_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`has_comments` AS ' . $strAliasPrefix . 'has_comments`');
 			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
 			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
 		}
@@ -375,6 +376,7 @@
 			$objToReturn->strSuggestionValue = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_value', 'Blob');
 			$objToReturn->strSuggestionValueMd5 = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_value_md5', 'VarChar');
 			$objToReturn->intSuggestionCharCount = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_char_count', 'Integer');
+			$objToReturn->blnHasComments = $objDbRow->GetColumn($strAliasPrefix . 'has_comments', 'Bit');
 			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
 			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
 
@@ -637,6 +639,7 @@
 							`suggestion_value`,
 							`suggestion_value_md5`,
 							`suggestion_char_count`,
+							`has_comments`,
 							`created`,
 							`modified`
 						) VALUES (
@@ -646,6 +649,7 @@
 							' . $objDatabase->SqlVariable($this->strSuggestionValue) . ',
 							' . $objDatabase->SqlVariable($this->strSuggestionValueMd5) . ',
 							' . $objDatabase->SqlVariable($this->intSuggestionCharCount) . ',
+							' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							' . $objDatabase->SqlVariable($this->strCreated) . ',
 							' . $objDatabase->SqlVariable($this->strModified) . '
 						)
@@ -669,6 +673,7 @@
 							`suggestion_value` = ' . $objDatabase->SqlVariable($this->strSuggestionValue) . ',
 							`suggestion_value_md5` = ' . $objDatabase->SqlVariable($this->strSuggestionValueMd5) . ',
 							`suggestion_char_count` = ' . $objDatabase->SqlVariable($this->intSuggestionCharCount) . ',
+							`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
 							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
 						WHERE
@@ -802,6 +807,13 @@
 					 * @return integer
 					 */
 					return $this->intSuggestionCharCount;
+
+				case 'HasComments':
+					/**
+					 * Gets the value for blnHasComments 
+					 * @return boolean
+					 */
+					return $this->blnHasComments;
 
 				case 'Created':
 					/**
@@ -1032,6 +1044,19 @@
 					 */
 					try {
 						return ($this->intSuggestionCharCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'HasComments':
+					/**
+					 * Sets the value for blnHasComments 
+					 * @param boolean $mixValue
+					 * @return boolean
+					 */
+					try {
+						return ($this->blnHasComments = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1681,7 +1706,7 @@
 		public function AssociateNarroSuggestionVoteAsSuggestion(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intSuggestionId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionVoteAsSuggestion on this unsaved NarroSuggestion.');
-			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
+			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->UserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionVoteAsSuggestion on this NarroSuggestion with an unsaved NarroSuggestionVote.');
 
 			// Get the Database Object for this Class
@@ -1696,7 +1721,6 @@
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
 					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->TextId) . ' AND
 					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . '
 			');
 		}
@@ -1709,7 +1733,7 @@
 		public function UnassociateNarroSuggestionVoteAsSuggestion(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intSuggestionId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsSuggestion on this unsaved NarroSuggestion.');
-			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
+			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->UserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsSuggestion on this NarroSuggestion with an unsaved NarroSuggestionVote.');
 
 			// Get the Database Object for this Class
@@ -1724,7 +1748,6 @@
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
 					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->TextId) . ' AND
 					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . ' AND
 					`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
 			');
@@ -1760,7 +1783,7 @@
 		public function DeleteAssociatedNarroSuggestionVoteAsSuggestion(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intSuggestionId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsSuggestion on this unsaved NarroSuggestion.');
-			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->TextId)) || (is_null($objNarroSuggestionVote->UserId)))
+			if ((is_null($objNarroSuggestionVote->SuggestionId)) || (is_null($objNarroSuggestionVote->ContextId)) || (is_null($objNarroSuggestionVote->UserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsSuggestion on this NarroSuggestion with an unsaved NarroSuggestionVote.');
 
 			// Get the Database Object for this Class
@@ -1773,7 +1796,6 @@
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
 					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
-					`text_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->TextId) . ' AND
 					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . ' AND
 					`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
 			');
@@ -1861,6 +1883,14 @@
 		 */
 		protected $intSuggestionCharCount;
 		const SuggestionCharCountDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_suggestion.has_comments
+		 * @var boolean blnHasComments
+		 */
+		protected $blnHasComments;
+		const HasCommentsDefault = null;
 
 
 		/**
@@ -2014,6 +2044,7 @@
 			$strToReturn .= '<element name="SuggestionValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="SuggestionValueMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="SuggestionCharCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="HasComments" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Created" type="xsd:string"/>';
 			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -2058,6 +2089,8 @@
 				$objToReturn->strSuggestionValueMd5 = $objSoapObject->SuggestionValueMd5;
 			if (property_exists($objSoapObject, 'SuggestionCharCount'))
 				$objToReturn->intSuggestionCharCount = $objSoapObject->SuggestionCharCount;
+			if (property_exists($objSoapObject, 'HasComments'))
+				$objToReturn->blnHasComments = $objSoapObject->HasComments;
 			if (property_exists($objSoapObject, 'Created'))
 				$objToReturn->strCreated = $objSoapObject->Created;
 			if (property_exists($objSoapObject, 'Modified'))
@@ -2130,6 +2163,8 @@
 					return new QQNode('suggestion_value_md5', 'string', $this);
 				case 'SuggestionCharCount':
 					return new QQNode('suggestion_char_count', 'integer', $this);
+				case 'HasComments':
+					return new QQNode('has_comments', 'boolean', $this);
 				case 'Created':
 					return new QQNode('created', 'string', $this);
 				case 'Modified':
@@ -2182,6 +2217,8 @@
 					return new QQNode('suggestion_value_md5', 'string', $this);
 				case 'SuggestionCharCount':
 					return new QQNode('suggestion_char_count', 'integer', $this);
+				case 'HasComments':
+					return new QQNode('has_comments', 'boolean', $this);
 				case 'Created':
 					return new QQNode('created', 'string', $this);
 				case 'Modified':
