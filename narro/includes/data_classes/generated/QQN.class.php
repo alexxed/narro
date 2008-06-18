@@ -15,9 +15,6 @@
 		static public function NarroFileHeader() {
 			return new QQNodeNarroFileHeader('narro_file_header', null);
 		}
-		static public function NarroGlossaryTerm() {
-			return new QQNodeNarroGlossaryTerm('narro_glossary_term', null);
-		}
 		static public function NarroLanguage() {
 			return new QQNodeNarroLanguage('narro_language', null);
 		}
