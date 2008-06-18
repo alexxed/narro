@@ -352,6 +352,11 @@
                     $strMsgStr2 = null;
                     $strCurrentGroup++;
                 }
+
+                fclose($hndExportFile);
+                chmod($strTranslatedFile, 0666);
+//              exec('msgcat ' . $strTranslatedFile . ' -o ' . $strTranslatedFile . '.1');
+//              exec('mv -f ' . $strTranslatedFile . '.1 ' . $strTranslatedFile);
             }
             else {
                 NarroLog::LogMessage(3, sprintf(t('Cannot open file "%s".'), $strFileToImport));
@@ -708,6 +713,20 @@
             );
 
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
+                $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginal, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $strContext, $this->objFile, $this->objProject);
+                if
+                (
+                    trim($arrResult[1]) != '' &&
+                    $arrResult[0] == $strOriginal &&
+                    $arrResult[2] == $strContext &&
+                    $arrResult[3] == $this->objFile &&
+                    $arrResult[4] == $this->objProject
+                ) {
+                $objNarroContextInfo->ValidSuggestion->SuggestionValue = $arrResult[1];
+                }
+            else
+            NarroLog::LogMessage(2, sprintf(t('A plugin returned an unexpected result while processing the suggestion "%s": %s'), $strTranslation, $strTranslation));
+
                 if (!is_null($strOriginalAccKey) && !is_null($strOriginalAccKeyPrefix)) {
                     /**
                      * @todo don't export if there's no valid access key
