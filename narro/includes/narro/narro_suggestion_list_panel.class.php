@@ -425,7 +425,6 @@
             $arrSuggestion = NarroSuggestionVote::QueryArray(
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $this->objNarroContextInfo->ContextId),
-                    QQ::Equal(QQN::NarroSuggestionVote()->TextId, $this->objNarroContextInfo->Context->TextId),
                     QQ::Equal(QQN::NarroSuggestionVote()->UserId, QApplication::$objUser->UserId)
                 )
             );
@@ -441,7 +440,6 @@
                 $objNarroSuggestionVote = new NarroSuggestionVote();
                 $objNarroSuggestionVote->SuggestionId = $strParameter;
                 $objNarroSuggestionVote->ContextId = $this->objNarroContextInfo->ContextId;
-                $objNarroSuggestionVote->TextId = $this->objNarroContextInfo->Context->TextId;
                 $objNarroSuggestionVote->UserId = QApplication::$objUser->UserId;
                 $objNarroSuggestionVote->Created = date('Y-m-d H:i:s');
                 $objNarroSuggestionVote->VoteValue = 1;
