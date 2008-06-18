@@ -25,9 +25,8 @@
         <?php } ?>
         <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/style.css" />
         <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/font-<?php echo QApplication::$objUser->getPreferenceValueByName('Font size') ?>.css" />
-        <?php if(QApplication::QueryString('p')) { ?>
-        <link rel="alternate" type="application/rss+xml" title="New texts for this project in the current language" href="/narro/rss.php?p=<?php echo QApplication::QueryString('p') ?>" />
-        <?php } ?>
+        <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('New suggestions in %s'), QApplication::$objUser->Language->LanguageName) ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::$objUser->Language->LanguageId ?>" />
+        <link rel="alternate" type="application/rss+xml" title="<?php echo t('New texts to translate') ?>" href="rss.php?t=text&l=<?php echo QApplication::$objUser->Language->LanguageId ?>" />
     </head>
     <body>
         <div id="header">
