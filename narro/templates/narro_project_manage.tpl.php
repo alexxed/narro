@@ -34,62 +34,68 @@
                 t('Manage');
         ?>
         </div>
-        <?php if (QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
-            <br />
-            <div class="dotted_box">
-            <div class="dotted_box_title">Project properties</div>
-            <div class="dotted_box_content">
-            <?php echo t('Name') . ': ' ?>
-            <?php $this->txtProjectName->Render(); ?>
-            <br />
-            <?php echo t('Type') . ': ' ?>
-            <?php $this->lstProjectType->Render(); ?>
-            <br />
-            <?php echo t('Active') . ': ' ?>
-            <?php $this->lstProjectActive->Render(); ?>
-            <br />
-            <br />
-            <?php $this->btnSaveProject->Render(); ?>
-            </div>
-            </div>
-        <?php } ?>
-        <?php if (QApplication::$objUser->hasPermission('Can import', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
-            <br />
-            <div class="dotted_box">
-            <div class="dotted_box_title">Import project</div>
-            <div class="dotted_box_content">
-            <p class="instructions">You might want to choose to import from a directory where you have a fresh checkout. You can have a cron to do this on a regular basis.
-            </p>
-            1. From a directory: <?php $this->txtImportFromDirectory->Render(); ?>
-            <p class="instructions">Since option one is not available to most people, uploading an archive might be the best option.
-            </p>
-            2. From an archive: <?php $this->filImportFromFile->Render(); ?>
-            <br /><br />
-            <?php $this->btnImport->Render(); $this->objImportProgress->Render();?>
-            <?php $this->lblImport->Render(); ?>
-            </div>
-            </div>
-        <?php } ?>
+        <br />
+        <div class="dotted_box">
+        <div class="dotted_box_title"><?php echo t('Project properties'); ?></div>
+        <div class="dotted_box_content">
+        <?php echo t('Name') . ': ' ?>
+        <?php $this->txtProjectName->Render(); ?>
+        <br />
+        <?php echo t('Type') . ': ' ?>
+        <?php $this->lstProjectType->Render(); ?>
+        <br />
+        <?php echo t('Active') . ': ' ?>
+        <?php $this->lstProjectActive->Render(); ?>
+        <br />
+        <br />
+        <?php $this->btnSaveProject->Render(); ?>
+        </div>
+        </div>
+        <br />
+        <div class="dotted_box">
+        <div class="dotted_box_title"><?php echo t('Import and export options'); ?></div>
+        <div class="dotted_box_content">
+        <?php echo $this->chkForce->Render(false) . ' ' . t('Force operation even if a previous operation is reported to be running'); ?>
+        <p class="instructions"><?php echo t('Cleanup the files that are used during an import or export and allow starting another operation'); ?></p>
+        </div>
+        </div>
+        <br />
+        <div class="dotted_box">
+        <div class="dotted_box_title"><?php echo t('Import project'); ?></div>
+        <div class="dotted_box_content">
+        <?php echo $this->chkValidate->Render(false) . ' ' . t('Validate the imported translations'); ?>
+        <p class="instructions"><?php echo t('Mark the imported suggestions as validated.'); ?></p>
+        <?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?>
+        <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts.'); ?></p>
 
-        <?php if (QApplication::$objUser->hasPermission('Can export', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
-            <br />
-            <div class="dotted_box">
-            <div class="dotted_box_title">Export project</div>
-            <div class="dotted_box_content">
-            <p class="instructions">You might want to choose to export to a directory where you have a fresh checkout. After the export is done, just go
-            to that directory and commit your changes to the versioning system.
-            </p>
-            1. To a directory: <input type="text" disabled="disabled" /><?php //$this->txtExportToDirectory->Render(); ?>
-            <p class="instructions">Most probably option one isn't available to most people, so downloading an archive to copy it over a fresh local checkout
-            might be the best option.</p>
-            2.
-            To an archive.
-            <br /><br />
-            <?php $this->btnExport->Render(); $this->objExportProgress->Render();?>
-            <?php $this->lblExport->Render(); ?>
-            </div>
-            </div>
-        <?php } ?>
+        <p class="instructions"><?php echo t('You might want to choose to import from a directory where you have a fresh checkout. You can have a cron to do this on a regular basis.'); ?></p>
+        <?php echo t('From a directory') . ': ' . $this->txtImportFromDirectory->Render(false); ?>
+        <p class="instructions"><?php echo t('Since option one is not available to most people, uploading an archive might be the best option.'); ?></p>
+        <?php echo t('From an archive') . ': ' . $this->filImportFromFile->Render(false); ?>
+        <br /><br />
+        <?php $this->btnImport->Render(); $this->objImportProgress->Render();?>
+        <?php $this->lblImport->Render(); ?>
+        </div>
+        </div>
+        <br />
+        <div class="dotted_box">
+        <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
+        <div class="dotted_box_content">
+        <?php echo t('Export translations using') . ': ' . $this->lstExportedSuggestion->Render(false); ?>
+        <p class="instructions"><?php echo t('If you chose to use your suggestion or the most voted suggestion for each text, if you have no suggestion for a text or there aren\'t any votes, the validated suggestion will be exported instead.'); ?></p>
+
+        <p class="instructions"><?php echo t('You might want to choose to export to a directory where you have a fresh checkout. After the export is done, just go
+        to that directory and commit your changes to the versioning system.'); ?>
+        </p>
+        <?php echo t('To a directory') . ': ' . $this->txtExportToDirectory->Render(false); ?>
+        <p class="instructions"><?php echo t('Most probably option one isn\'t available to most people, so downloading an archive to copy it over a fresh local checkout
+        might be the best option.'); ?></p>
+        <?php echo t('To an archive') . ': '; ?>
+        <br /><br />
+        <?php $this->btnExport->Render(); $this->objExportProgress->Render();?>
+        <?php $this->lblExport->Render(); ?>
+        </div>
+        </div>
 
         <?php if (QApplication::$objUser->hasPermission('Can delete project')) { ?>
             <br />
