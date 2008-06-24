@@ -125,8 +125,9 @@
 
             $this->objUser->Data = serialize($this->objUser->Preferences);
 
-            if (!is_numeric(QApplication::QueryString('u')) || !QApplication::$objUser->hasPermission('Can manage users'))
-                $_SESSION['objUser'] = QApplication::$objUser;
+            if (!is_numeric(QApplication::QueryString('u'))) {
+                $_SESSION['objUser'] = $this->objUser;
+            }
 
             /**
              * Don't save the preferences for the anonymous user in the database

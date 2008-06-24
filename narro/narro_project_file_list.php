@@ -188,6 +188,7 @@
                  * @todo remove hard coded value en_US
                  */
                 $strTemplateFile = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en_US' . $objNarroFile->FilePath;
+
                 if (!file_exists($strTemplateFile)) return '';
 
                 if (!$objExportButton = $this->GetControl('btnExport' . $objNarroFile->FileId)) {
@@ -195,7 +196,7 @@
                     $objExportButton->Text = t('Export');
                     $objExportButton->ActionParameter = $objNarroFile->FileId;
                     $objExportButton->AddAction(new QClickEvent(), new QServerAction('btnExport_Click'));
-                    $objExportButton->Visible = QApplication::$objUser->hasPermission('Can export', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                    $objExportButton->Visible = QApplication::$objUser->hasPermission('Can export', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
                 if (!$objImportButton = $this->GetControl('btnImport' . $objNarroFile->FileId)) {
@@ -203,23 +204,23 @@
                     $objImportButton->Text = t('Import');
                     $objImportButton->ActionParameter = $objNarroFile->FileId;
                     $objImportButton->AddAction(new QClickEvent(), new QServerAction('btnImport_Click'));
-                    $objImportButton->Visible = QApplication::$objUser->hasPermission('Can import', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                    $objImportButton->Visible = QApplication::$objUser->hasPermission('Can import', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
                 if (!$objImportFile = $this->GetControl('fileImport' . $objNarroFile->FileId)) {
                     $objImportFile = new QFileControl($this, 'fileImport' . $objNarroFile->FileId);
-                    $objImportFile->Visible = QApplication::$objUser->hasPermission('Can import', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                    $objImportFile->Visible = QApplication::$objUser->hasPermission('Can import', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
                 if (!$objExportFile = $this->GetControl('fileExport' . $objNarroFile->FileId)) {
                     $objExportFile = new QFileControl($this, 'fileExport' . $objNarroFile->FileId);
-                    $objExportFile->Visible = QApplication::$objUser->hasPermission('Can export', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                    $objExportFile->Visible = QApplication::$objUser->hasPermission('Can export', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
-                if (QApplication::$objUser->hasPermission('Can import', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId))
+                if (QApplication::$objUser->hasPermission('Can import', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId))
                     $strImportAction = t('File to import') . ': ' . $objImportFile->Render(false) . $objImportButton->Render(false);
 
-                if (QApplication::$objUser->hasPermission('Can export', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId))
+                if (QApplication::$objUser->hasPermission('Can export', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId))
                     $strExportAction = t('Model to use') . ': ' . $objExportFile->Render(false) . $objExportButton->Render(false);
 
 
@@ -328,9 +329,6 @@
             $objFileImporter->Project = $this->objNarroProject;
             $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
             $objFileImporter->TargetLanguage = QApplication::$objUser->Language;
-            $objFileImporter->CheckEqual = true;
-            $objFileImporter->OnlySuggestions = false;
-            $objFileImporter->Validate = QApplication::$objUser->hasPermission('Can validate', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
 
@@ -379,7 +377,12 @@
             $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
             $objFileImporter->TargetLanguage = QApplication::$objUser->Language;
             $objFileImporter->CheckEqual = true;
-            $objFileImporter->OnlySuggestions = false;
+
+            if (!QApplication::$objUser->hasPermission('Can manage project', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId)) {
+                $objFileImporter->OnlySuggestions = true;
+                $objFileImporter->DeactivateFiles = false;
+                $objFileImporter->DeactivateContexts = false;
+            }
             $objFileImporter->Validate = QApplication::$objUser->hasPermission('Can validate', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);

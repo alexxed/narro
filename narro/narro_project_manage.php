@@ -31,6 +31,13 @@
         protected $btnDelProjectFiles;
         protected $btnDelProjectContexts;
 
+        protected $lstExportedSuggestion;
+        protected $chkForce;
+        protected $chkDoNotDeactivateFiles;
+        protected $chkDoNotDeactivateContexts;
+        protected $chkValidate;
+        protected $chkOnlySuggestions;
+
         protected $btnImport;
         protected $txtImportFromDirectory;
         protected $filImportFromFile;
@@ -79,6 +86,25 @@
             $this->btnSaveProject = new QButton($this);
             $this->btnSaveProject->Text = t('Save');
 
+            $this->lstExportedSuggestion = new QListBox($this);
+            $this->lstExportedSuggestion->AddItem(t('The validated suggestion'), 1);
+            $this->lstExportedSuggestion->AddItem(t('The most voted suggestion'), 2);
+            $this->lstExportedSuggestion->AddItem(t('My suggestion'), 3);
+
+            $this->chkForce = new QCheckBox($this);
+
+            $this->chkDoNotDeactivateFiles = new QCheckBox($this);
+            $this->chkDoNotDeactivateFiles->Checked = true;
+
+            $this->chkDoNotDeactivateContexts = new QCheckBox($this);
+            $this->chkDoNotDeactivateContexts->Checked = true;
+
+            $this->chkValidate = new QCheckBox($this);
+            $this->chkValidate->Checked = true;
+
+            $this->chkOnlySuggestions = new QCheckBox($this);
+
+
             $this->txtImportFromDirectory = new QTextBox($this);
             $this->txtImportFromDirectory->Text = dirname(__FILE__) . '/data/import/' . $this->objNarroProject->ProjectId;
 
@@ -96,7 +122,7 @@
             $this->lblImport->Visible = false;
 
             $this->txtExportToDirectory = new QTextBox($this);
-            $this->txtExportToDirectory->Text = '/date/traduceri/mozilla.org_browser_HEAD/l10n';
+            $this->txtExportToDirectory->Text = dirname(__FILE__) . '/data/import/' . $this->objNarroProject->ProjectId;
 
             $this->btnExport = new QButton($this);
             $this->btnExport->Text = t('Export');
@@ -127,13 +153,21 @@
         }
 
         public function btnImport_Click($strFormId, $strControlId, $strParameter) {
+            if (!QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                return false;
+
+            if ($this->txtImportFromDirectory->Text == '')
+                $strDirectory = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
+            else
+                $strDirectory = $this->txtImportFromDirectory->Text;
+
             if ($strParameter != 1) {
                 $this->btnImport->Visible = false;
                 $this->objImportProgress->Visible = true;
                 QApplication::ExecuteJavaScript(sprintf('setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $strFormId, $strControlId, 1000));
             }
             else {
-                if (!file_exists($this->txtImportFromDirectory->Text . '/' . QApplication::$objUser->Language->LanguageCode . '/import.status')) {
+                if (!file_exists($strDirectory . '/' . QApplication::$objUser->Language->LanguageCode . '/import.status')) {
                     $this->lblImport->Text = t('Import finished.');
                     $this->lblImport->Visible = true;
                     $this->objImportProgress->Visible = false;
@@ -146,11 +180,27 @@
             }
             require_once('NarroLog.class.php');
             NarroLog::$strLogFile = '';
-            $cmd = sprintf('/usr/bin/php ' . escapeshellarg(__INCLUDES__ . '/narro/importer/importer.php'). ' --import --minloglevel 3 --project %d --user %d --validate --check-equal --source-lang en_US --target-lang %s %s', $this->objNarroProject->ProjectId, NarroUser::ANONYMOUS_USER_ID, QApplication::$objUser->Language->LanguageCode, escapeshellarg($this->txtImportFromDirectory->Text));
-            proc_close(proc_open ("$cmd &", array(), $foo));
+            $strCommand = sprintf(
+                '/usr/bin/php ' .
+                    escapeshellarg(__INCLUDES__ . '/narro/importer/importer.php').
+                    ' --import --minloglevel 3 --project %d --user %d ' .
+                    (($this->chkValidate->Checked)?'--validate ':'') .
+                    (($this->chkForce->Checked)?'--force ':'') .
+                    (($this->chkOnlySuggestions->Checked)?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
+                    '--check-equal --source-lang en_US --target-lang %s %s',
+                $this->objNarroProject->ProjectId,
+                QApplication::$objUser->UserId,
+                QApplication::$objUser->Language->LanguageCode,
+                escapeshellarg($strDirectory)
+            );
+
+            proc_close(proc_open ("$strCommand &", array(), $foo));
         }
 
         public function btnExport_Click($strFormId, $strControlId, $strParameter) {
+            if (!QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                return false;
+
             if ($this->txtExportToDirectory->Text == '')
                 $strDirectory = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
             else
@@ -166,7 +216,7 @@
                     $this->lblExport->Text =
                         sprintf('<span style="color:green;font-weight:bold;">%s</span><br /><br />', t('Export finished.'));
 
-                    if (file_exists(sprintf('%s/%d/%s-%s.tar.bz2', __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__, $this->objNarroProject->ProjectId, $this->objNarroProject->ProjectName, QApplication::$objUser->Language->LanguageCode)))
+                    if (file_exists(sprintf('%s/%s-%s.tar.bz2', $strDirectory, $this->objNarroProject->ProjectName, QApplication::$objUser->Language->LanguageCode)))
                         $this->lblExport->Text .= sprintf(' <a href="%s/%s/%d/%s-%s.tar.bz2">%s</a>', __HTTP_URL__, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . __IMPORT_PATH__, $this->objNarroProject->ProjectId, $this->objNarroProject->ProjectName, QApplication::$objUser->Language->LanguageCode, t('Download the export archive'));
 
                     $this->lblExport->Visible = true;
@@ -180,8 +230,19 @@
             }
             require_once('NarroLog.class.php');
             NarroLog::$strLogFile = '';
-            $cmd = sprintf('/usr/bin/php ' . escapeshellarg(__INCLUDES__ . '/narro/importer/importer.php'). ' --export --minloglevel 3 --project %d --user %d --source-lang en_US --target-lang %s %s', $this->objNarroProject->ProjectId, QApplication::$objUser->UserId, QApplication::$objUser->Language->LanguageCode, escapeshellarg($strDirectory));
-            proc_close(proc_open ("$cmd &", array(), $foo));
+            $strCommand = sprintf(
+                '/usr/bin/php ' .
+                    escapeshellarg(__INCLUDES__ . '/narro/importer/importer.php').
+                    ' --export --minloglevel 3 --project %d --user %d ' .
+                    (($this->chkForce->Checked)?'--force ':'') .
+                    '--check-equal --source-lang en_US --target-lang %s %s',
+                $this->objNarroProject->ProjectId,
+                QApplication::$objUser->UserId,
+                QApplication::$objUser->Language->LanguageCode,
+                escapeshellarg($strDirectory)
+            );
+
+            proc_close(proc_open ("$strCommand &", array(), $foo));
         }
     }
 
