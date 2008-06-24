@@ -63,6 +63,10 @@
                     continue;
                 }
 
+                if (preg_match('/\/includes\//', $strFileToImport)) {
+                    unset($arrFiles[$intFileNo]);
+                    continue;
+                }
 
                 $strFileContents = file_get_contents($strFileToImport);
                 $strFileContents = str_replace("\'", "&&&simplequote&&&", $strFileContents);
@@ -292,13 +296,9 @@
     $objNarroImporter = new NarroSelfFileImporter();
     $objNarroImporter->Project = NarroProject::LoadByProjectName('Narro');
 
+    foreach(NarroLanguage::LoadAll() as $objLanguage) {
         $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
-        $objNarroImporter->TargetLanguage = NarroLanguage::LoadByLanguageCode('ro');
+        $objNarroImporter->TargetLanguage = $objLanguage;
         $objNarroImporter->Import();
-
-//    foreach(NarroLanguage::LoadAll() as $objLanguage) {
-//        $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
-//        $objNarroImporter->TargetLanguage = $objLanguage;
-//        $objNarroImporter->Import();
-//    }
+    }
 ?>

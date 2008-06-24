@@ -41,7 +41,7 @@
             /**
              * Get the contexts with valid suggestions
              */
-            $strQuery = sprintf("SELECT `suggestion_value`, `text_value`, `context` FROM narro_context_info ci, narro_context c, narro_suggestion s, narro_text t WHERE c.active=1 AND c.text_id=t.text_id AND ci.valid_suggestion_id=s.suggestion_id AND c.project_id=%d AND c.context_id=ci.context_id AND ci.language_id=%d", $this->objProject->ProjectId, $this->objTargetLanguage->LanguageId);
+            $strQuery = sprintf("SELECT `text_access_key`, `suggestion_access_key`, `suggestion_value`, `text_value`, `context` FROM narro_context_info ci, narro_context c, narro_suggestion s, narro_text t WHERE c.active=1 AND c.text_id=t.text_id AND ci.valid_suggestion_id=s.suggestion_id AND c.project_id=%d AND c.context_id=ci.context_id AND ci.language_id=%d", $this->objProject->ProjectId, $this->objTargetLanguage->LanguageId);
 
             if (!$objDbResult = $objDatabase->Query($strQuery)) {
                 NarroLog::LogMessage(3, __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery);
@@ -53,7 +53,10 @@
                     if (isset($arrFile[md5($arrDbRow['context'])]) && $arrDbRow['suggestion_value'] != $arrFile[md5($arrDbRow['context'])]) {
                         NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Warning, md5("%s") already exists as key and it has the value "%s". I was trying to set the value "%s"!', $arrDbRow['context'], $arrFile[md5($arrDbRow['context'])], $arrDbRow['suggestion_value']));
                     }
-                    $arrFile[md5($arrDbRow['context'])] = $arrDbRow['suggestion_value'];
+                    if ($arrDbRow['text_access_key'] == '')
+                        $arrFile[md5($arrDbRow['context'])] = $arrDbRow['suggestion_value'];
+                    else
+                        $arrFile[md5($arrDbRow['context'])] = NarroString::Replace($arrDbRow['suggestion_access_key'], '~' . $arrDbRow['suggestion_access_key'], $arrDbRow['suggestion_value'], 1);
                 }
             }
             else {
@@ -129,6 +132,7 @@
 
             fclose($hndTemplateFile);
             fclose($hndTranslatedFile);
+            chmod($strTranslatedFile, 0666);
         }
 
         public function ImportFile($objFile, $strTemplateFile, $strTranslatedFile) {
