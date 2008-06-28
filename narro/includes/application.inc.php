@@ -97,8 +97,8 @@
 
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
-    QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'ro', array('en_US'));
-    QApplication::RegisterPreference('Special characters', 'text', 'Paste here the characters that you can not type in with your keyboard', 'ăîâşţĂÎÂŞŢ„”«»');
+    QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'en-US', array('en-US'));
+    QApplication::RegisterPreference('Special characters', 'text', 'Paste here the characters that you can not type in with your keyboard', '$€');
     QApplication::RegisterPreference('Theme', 'option', 'The theme used in the translation page', 'narro', array('Narro', 'KBabel'));
 
     if (isset($_SESSION['objUser']) && $_SESSION['objUser'] instanceof NarroUser)
