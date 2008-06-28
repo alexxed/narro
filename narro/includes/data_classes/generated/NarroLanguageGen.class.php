@@ -274,6 +274,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`country_code` AS ' . $strAliasPrefix . 'country_code`');
 			$objBuilder->AddSelectItem($strTableName . '.`encoding` AS ' . $strAliasPrefix . 'encoding`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_direction` AS ' . $strAliasPrefix . 'text_direction`');
+			$objBuilder->AddSelectItem($strTableName . '.`special_characters` AS ' . $strAliasPrefix . 'special_characters`');
 		}
 
 
@@ -383,6 +384,7 @@
 			$objToReturn->strCountryCode = $objDbRow->GetColumn($strAliasPrefix . 'country_code', 'VarChar');
 			$objToReturn->strEncoding = $objDbRow->GetColumn($strAliasPrefix . 'encoding', 'VarChar');
 			$objToReturn->strTextDirection = $objDbRow->GetColumn($strAliasPrefix . 'text_direction', 'VarChar');
+			$objToReturn->strSpecialCharacters = $objDbRow->GetColumn($strAliasPrefix . 'special_characters', 'VarChar');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -547,13 +549,15 @@
 							`language_code`,
 							`country_code`,
 							`encoding`,
-							`text_direction`
+							`text_direction`,
+							`special_characters`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strLanguageName) . ',
 							' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
 							' . $objDatabase->SqlVariable($this->strCountryCode) . ',
 							' . $objDatabase->SqlVariable($this->strEncoding) . ',
-							' . $objDatabase->SqlVariable($this->strTextDirection) . '
+							' . $objDatabase->SqlVariable($this->strTextDirection) . ',
+							' . $objDatabase->SqlVariable($this->strSpecialCharacters) . '
 						)
 					');
 
@@ -573,7 +577,8 @@
 							`language_code` = ' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
 							`country_code` = ' . $objDatabase->SqlVariable($this->strCountryCode) . ',
 							`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding) . ',
-							`text_direction` = ' . $objDatabase->SqlVariable($this->strTextDirection) . '
+							`text_direction` = ' . $objDatabase->SqlVariable($this->strTextDirection) . ',
+							`special_characters` = ' . $objDatabase->SqlVariable($this->strSpecialCharacters) . '
 						WHERE
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 					');
@@ -698,6 +703,13 @@
 					 * @return string
 					 */
 					return $this->strTextDirection;
+
+				case 'SpecialCharacters':
+					/**
+					 * Gets the value for strSpecialCharacters 
+					 * @return string
+					 */
+					return $this->strSpecialCharacters;
 
 
 				///////////////////
@@ -872,6 +884,19 @@
 					 */
 					try {
 						return ($this->strTextDirection = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'SpecialCharacters':
+					/**
+					 * Sets the value for strSpecialCharacters 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strSpecialCharacters = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1719,6 +1744,15 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_language.special_characters
+		 * @var string strSpecialCharacters
+		 */
+		protected $strSpecialCharacters;
+		const SpecialCharactersMaxLength = 255;
+		const SpecialCharactersDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single NarroContextCommentAsLanguage object
 		 * (of type NarroContextComment), if this NarroLanguage object was restored with
 		 * an expansion on the narro_context_comment association table.
@@ -1836,6 +1870,7 @@
 			$strToReturn .= '<element name="CountryCode" type="xsd:string"/>';
 			$strToReturn .= '<element name="Encoding" type="xsd:string"/>';
 			$strToReturn .= '<element name="TextDirection" type="xsd:string"/>';
+			$strToReturn .= '<element name="SpecialCharacters" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1870,6 +1905,8 @@
 				$objToReturn->strEncoding = $objSoapObject->Encoding;
 			if (property_exists($objSoapObject, 'TextDirection'))
 				$objToReturn->strTextDirection = $objSoapObject->TextDirection;
+			if (property_exists($objSoapObject, 'SpecialCharacters'))
+				$objToReturn->strSpecialCharacters = $objSoapObject->SpecialCharacters;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1918,6 +1955,8 @@
 					return new QQNode('encoding', 'string', $this);
 				case 'TextDirection':
 					return new QQNode('text_direction', 'string', $this);
+				case 'SpecialCharacters':
+					return new QQNode('special_characters', 'string', $this);
 				case 'NarroContextCommentAsLanguage':
 					return new QQReverseReferenceNodeNarroContextComment($this, 'narrocontextcommentaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroContextInfoAsLanguage':
@@ -1960,6 +1999,8 @@
 					return new QQNode('encoding', 'string', $this);
 				case 'TextDirection':
 					return new QQNode('text_direction', 'string', $this);
+				case 'SpecialCharacters':
+					return new QQNode('special_characters', 'string', $this);
 				case 'NarroContextCommentAsLanguage':
 					return new QQReverseReferenceNodeNarroContextComment($this, 'narrocontextcommentaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroContextInfoAsLanguage':
