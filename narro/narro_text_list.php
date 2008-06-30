@@ -159,7 +159,7 @@
 
                 $strText = htmlentities($strText, null, 'utf-8');
 
-                if ($objNarroContextInfo->TextAccessKey)
+                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->ValidSuggestionId && QApplication::$objUser->hasPermission('Can validate', $objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
                     $strText = preg_replace('/' . $objNarroContextInfo->TextAccessKey . '/', '<u>' . $objNarroContextInfo->TextAccessKey . '</u>', $strText, 1);
 
                 return $strText;
