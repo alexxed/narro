@@ -88,7 +88,7 @@
             }
 
             $objUser->arrPreferences = unserialize($objUser->Data);
-
+            
             if (isset($objUser->Preferences['Language'])) {
                 $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->Preferences['Language']);
 
@@ -113,7 +113,32 @@
             }
 
             $objUser->arrPreferences = unserialize($objUser->Data);
-
+            
+            if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+                if (strstr($_SERVER['HTTP_ACCEPT_LANGUAGE'], ';')) {
+                    $arrLangGroups = split(';', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+                    foreach($arrLangGroups as $strLangGroup) {
+                        if (strstr($strLangGroup, ',')) {
+                            $arrLangCodes = split(',', $strLangGroup);
+                            foreach($arrLangCodes as $strLangCode) {
+                                $objLanguage = NarroLanguage::LoadByLanguageCode($strLangCode);
+                                if ($objLanguage instanceof NarroLanguage) {
+                                    $objUser->Language = $objLanguage;
+                                    return $objUser;
+                                }
+                            }
+                        }
+                        else {
+                            $objLanguage = NarroLanguage::LoadByLanguageCode($strLangCode);
+                            if ($objLanguage instanceof NarroLanguage) {
+                                $objUser->Language = $objLanguage;
+                                return $objUser;
+                            }
+                        }
+                    }
+                }
+            }
+            
             if (isset($objUser->Preferences['Language'])) {
                 $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->Preferences['Language']);
 
