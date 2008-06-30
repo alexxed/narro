@@ -59,15 +59,19 @@
 
                             if ($strLabelCtx) {
                                 /**
+                                 * strip mozilla entities when looking for an acceptable access key
+                                 */
+                                $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]);
+                                /**
                                  * search for the accesskey in the label
                                  */
-                                $intPos = mb_stripos( $arrTexts[$strLabelCtx], $strAccKey);
+                                $intPos = mb_stripos( $strOriginalText, $strAccKey);
                                 if ($intPos !== false) {
-                                    $strNewAcc = mb_substr($arrTexts[$strLabelCtx], $intPos, 1);
+                                    $strNewAcc = mb_substr($strOriginalText, $intPos, 1);
                                     $arrAccKey[$strLabelCtx] = $strNewAcc;
                                     unset($arrTexts[$strAccCtx]);
                                 }
-                                else {
+                                elseif (preg_match('/[a-z]/i', $strOriginalText)) {
                                     NarroLog::LogMessage(2, sprintf(t('Found access key %s does not exist in the label %s, using the first letter as accesskey'), $strAccKey, $arrTexts[$strLabelCtx]));
                                     $strNewAcc = mb_substr($arrTexts[$strLabelCtx], 0, 1);
                                     $arrAccKey[$strLabelCtx] = $strNewAcc;
