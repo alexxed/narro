@@ -1,20 +1,23 @@
 <?php
-	require(__DATAGEN_CLASSES__ . '/NarroProjectTypeGen.class.php');
+    /**
+     * Narro is an application that allows online software translation and maintenance.
+     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * http://code.google.com/p/narro/
+     *
+     * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+     * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any
+     * later version.
+     *
+     * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
+     * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+     * more details.
+     *
+     * You should have received a copy of the GNU General Public License along with this program; if not, write to the
+     * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+     */
 
-	/**
-	 * The NarroProjectType class defined here contains any
-	 * customized code for the NarroProjectType enumerated type. 
-	 * 
-	 * It represents the enumerated values found in the "narro_project_type" table in the database,
-	 * and extends from the code generated abstract NarroProjectTypeGen
-	 * class, which contains all the values extracted from the database.
-	 * 
-	 * Type classes which are generally used to attach a type to data object.
-	 * However, they may be used as simple database indepedant enumerated type.
-	 * 
-	 * @package Narro
-	 * @subpackage DataObjects
-	 */
-	abstract class NarroProjectType extends NarroProjectTypeGen {
-	}
+    require(__DATAGEN_CLASSES__ . '/NarroProjectTypeGen.class.php');
+
+    abstract class NarroProjectType extends NarroProjectTypeGen {
+    }
 ?>
