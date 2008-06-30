@@ -63,7 +63,7 @@
                     continue;
                 }
 
-                if (preg_match('/\/includes\//', $strFileToImport)) {
+                if (preg_match('/\/includes\/narro\/importer/', $strFileToImport)) {
                     unset($arrFiles[$intFileNo]);
                     continue;
                 }
@@ -82,7 +82,7 @@
                         unset($arrFiles[$intFileNo]);
 
                 }
-                
+
                 NarroProgress::SetProgress(intval(($intFileNo * 100)/$intTotalFilesToProcess));
 
             }
@@ -212,7 +212,7 @@
                 if ($intFileNo % 10 === 0)
                     NarroLog::LogMessage(1, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
             }
-            
+
             $objFile = NarroFile::QuerySingle(
                             QQ::AndCondition(
                                 QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
@@ -246,7 +246,8 @@
                 $objFile->Save();
                 NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), $strFileName, $strPath));
                 NarroImportStatistics::$arrStatistics['Imported files']++;
-            }            
+            }
+
             foreach(NarroLanguage::LoadAll() as $objLanguage) {
                 $this->objFile = $objFile;
                 $this->AddTranslation(
@@ -255,6 +256,11 @@
                                 'Used in the narro_language table'
                 );
             }
+
+            /**
+             * clear the progress cache
+             */
+            QApplication::$Cache->remove('project_progress_' . $this->objProject->ProjectId . '_' . $this->objTargetLanguage->LanguageId);
         }
 
         public function ImportFile($objFile, $strFileName) {
