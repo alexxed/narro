@@ -38,7 +38,7 @@
 
             $this->colProjectType = new QDataGridColumn(t('Type'), '<?= $_FORM->dtgNarroProject_ProjectTypeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectType), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectType, false)));
             $this->colActive = new QDataGridColumn(t('Active'), '<?= $_FORM->dtgNarroProject_ActiveColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->Active), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->Active, false)));
-            
+
             $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>');
             $this->colPercentTranslated->HtmlEntities = false;
 
@@ -59,14 +59,14 @@
             $this->dtgNarroProject->SetDataBinder('dtgNarroProject_Bind');
 
             $this->dtgNarroProject->AddColumn($this->colProjectName);
-            
+
             if (QApplication::$objUser->hasPermission('Can manage project', null, QApplication::$objUser->Language->LanguageId)) {
                 $this->dtgNarroProject->AddColumn($this->colProjectType);
                 $this->dtgNarroProject->AddColumn($this->colActive);
             }
-            
+
             $this->dtgNarroProject->AddColumn($this->colPercentTranslated);
-            
+
             $this->dtgNarroProject->AddColumn($this->colActions);
 
             $this->pnlTopUsers = new NarroTopUsersPanel($this);
@@ -130,13 +130,13 @@
                 $objNarroProject->ProjectName
             );
         }
-        
+
         public function dtgNarroProject_ProjectTypeColumn_Render(NarroProject $objNarroProject) {
             return NarroProjectType::ToString($objNarroProject->ProjectType);
         }
-        
+
         public function dtgNarroProject_ActiveColumn_Render(NarroProject $objNarroProject) {
-            if ($objNarroProject->Active) 
+            if ($objNarroProject->Active)
                 return t('Yes');
             else
                 return t('No');
@@ -147,12 +147,14 @@
                 sprintf('<a href="narro_project_text_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Texts')) .
                 sprintf(' | <a href="narro_project_file_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Files')) .
                 sprintf(' | <a href="narro_project_language_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Languages'));
-                if (QApplication::$objUser->hasPermission('Can manage project', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) {
-                    $strOutput .= 
-                        sprintf(' | <a href="narro_project_manage.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Manage')) .
-                        sprintf(' | <a href="narro_project_edit.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Edit'))
-                        ;
-                }
+
+            if (QApplication::$objUser->hasPermission('Can manage project', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                $strOutput .=
+                    sprintf(' | <a href="narro_project_manage.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Manage'));
+
+            if (QApplication::$objUser->hasPermission('Can edit project', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                $strOutput .=
+                    sprintf(' | <a href="narro_project_edit.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Edit'));
 
             return $strOutput;
         }
@@ -165,7 +167,7 @@
                 $this->dtgNarroProject->TotalItemCount = NarroProject::CountAll();
             else
                 $this->dtgNarroProject->TotalItemCount = NarroProject::QueryCount(QQ::Equal(QQN::NarroProject()->Active, 1));
-                
+
             if ($this->dtgNarroProject->TotalItemCount == 0)
                 QApplication::Redirect('narro_project_edit.php');
 

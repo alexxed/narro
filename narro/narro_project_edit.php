@@ -119,6 +119,10 @@
             $this->btnSave->AddAction(new QClickEvent(), new QServerAction('btnSave_Click'));
             $this->btnSave->PrimaryButton = true;
             $this->btnSave->CausesValidation = true;
+            if ($this->blnEditMode)
+                $this->btnSave->Visible = QApplication::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId);
+            else
+                $this->btnSave->Visible = QApplication::$objUser->hasPermission('Can add project', null, QApplication::$objUser->Language->LanguageId);
         }
 
         // Setup btnCancel
@@ -136,8 +140,11 @@
             $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE the project "%s"?\nThis operation might take a while and will delete:\n - user permissions related to this project\n - project contexts and associated comments\n - votes for contexts belonging to this project\n - project\'s files.\nTexts and suggestions are not deleted.'), $this->objNarroProject->ProjectName)));
             $this->btnDelete->AddAction(new QClickEvent(), new QServerAction('btnDelete_Click'));
             $this->btnDelete->CausesValidation = false;
+
             if (!$this->blnEditMode)
                 $this->btnDelete->Visible = false;
+
+            $this->btnDelete->Visible = QApplication::$objUser->hasPermission('Can delete project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId);
         }
 
         // Protected Update Methods
@@ -150,6 +157,12 @@
 
         // Control ServerActions
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
+            if ($this->blnEditMode && !QApplication::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                QApplication::Redirect('narro_project_list.php');
+
+            if (!$this->blnEditMode && !QApplication::$objUser->hasPermission('Can add project', null, QApplication::$objUser->Language->LanguageId))
+                QApplication::Redirect('narro_project_list.php');
+
             $this->UpdateNarroProjectFields();
             $this->objNarroProject->Save();
 
@@ -164,6 +177,9 @@
         }
 
         protected function btnDelete_Click($strFormId, $strControlId, $strParameter) {
+            if (!QApplication::$objUser->hasPermission('Can delete project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                QApplication::Redirect('narro_project_list.php');
+
             $objDatabase = QApplication::$Database[1];
 
             $strQuery = sprintf("DELETE FROM `narro_user_permission` WHERE project_id = %d", $this->objNarroProject->ProjectId);

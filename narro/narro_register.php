@@ -68,13 +68,13 @@
                 /**
                  * give super powers to the first user
                  */
-                $arrPermissions = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+                $arrPermissions = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17);
             else
                 /**
                  * registered users can suggest, vote and comment
                  */
                 $arrPermissions = array(1, 2, 4);
-                
+
             foreach($arrPermissions as $intPermissionId) {
                 $objUserPermission = new NarroUserPermission();
                 $objUserPermission->PermissionId = $intPermissionId;

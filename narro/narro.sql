@@ -180,10 +180,15 @@ CREATE TABLE narro_permission (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO narro_permission VALUES(12, 'Administrator');
+INSERT INTO narro_permission VALUES(16, 'Can add language');
+INSERT INTO narro_permission VALUES(14, 'Can add project');
 INSERT INTO narro_permission VALUES(4, 'Can comment');
 INSERT INTO narro_permission VALUES(5, 'Can delete any suggestion');
+INSERT INTO narro_permission VALUES(17, 'Can delete language');
 INSERT INTO narro_permission VALUES(11, 'Can delete project');
 INSERT INTO narro_permission VALUES(6, 'Can edit any suggestion');
+INSERT INTO narro_permission VALUES(15, 'Can edit language');
+INSERT INTO narro_permission VALUES(13, 'Can edit project');
 INSERT INTO narro_permission VALUES(9, 'Can export');
 INSERT INTO narro_permission VALUES(8, 'Can import');
 INSERT INTO narro_permission VALUES(10, 'Can manage project');

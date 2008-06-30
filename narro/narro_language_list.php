@@ -33,7 +33,7 @@
         protected function Form_Create() {
             if (!QApplication::$objUser->hasPermission('Administrator'))
                 QApplication::Redirect('narro_project_list.php');
-            
+
             // Setup DataGrid Columns
             $this->colLanguageName = new QDataGridColumn(t('Language Name'), '<?= $_FORM->dtgNarroLanguage_LanguageNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName, false)));
             $this->colLanguageCode = new QDataGridColumn(t('Language Code'), '<?= $_FORM->dtgNarroLanguage_LanguageCodeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageCode), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageCode, false)));
@@ -70,36 +70,37 @@
         public function dtgNarroLanguage_LanguageNameColumn_Render(NarroLanguage $objNarroLanguage) {
             return $objNarroLanguage->LanguageName;
         }
-        
+
         public function dtgNarroLanguage_LanguageCodeColumn_Render(NarroLanguage $objNarroLanguage) {
             return $objNarroLanguage->LanguageCode;
         }
-        
+
         public function dtgNarroLanguage_CountryCodeColumn_Render(NarroLanguage $objNarroLanguage) {
             return $objNarroLanguage->CountryCode;
         }
-        
+
         public function dtgNarroLanguage_EncodingColumn_Render(NarroLanguage $objNarroLanguage) {
             return $objNarroLanguage->Encoding;
         }
-        
+
         public function dtgNarroLanguage_TextDirectionColumn_Render(NarroLanguage $objNarroLanguage) {
             return $objNarroLanguage->TextDirection;
         }
-        
+
         public function dtgNarroLanguage_SpecialCharactersColumn_Render(NarroLanguage $objNarroLanguage) {
             return $objNarroLanguage->SpecialCharacters;
         }
-        
+
         public function dtgNarroLanguage_Actions_Render(NarroLanguage $objNarroLanguage) {
-            return sprintf('<a href="narro_language_edit.php?l=%d">%s</a>', $objNarroLanguage->LanguageId, t('Edit'));
+            if (QApplication::$objUser->hasPermission('Can edit language', null, QApplication::$objUser->Language->LanguageId))
+                return sprintf('<a href="narro_language_edit.php?l=%d">%s</a>', $objNarroLanguage->LanguageId, t('Edit'));
         }
 
         protected function dtgNarroLanguage_Bind() {
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
             $this->dtgNarroLanguage->TotalItemCount = NarroLanguage::CountAll();
-                
+
             if ($this->dtgNarroLanguage->TotalItemCount == 0)
                 QApplication::Redirect('narro_language_edit.php');
 
