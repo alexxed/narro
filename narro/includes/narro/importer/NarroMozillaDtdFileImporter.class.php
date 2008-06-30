@@ -18,7 +18,7 @@
 
     class NarroMozillaDtdFileImporter extends NarroFileImporter {
 
-        public function ImportFile($objFile, $strTemplateFile, $strTranslatedFile = null) {
+        public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
             $intTime = time();
 
             $strEntitiesAndCommentsRegex = '/<!--\s*(.+)\s*-->\s+<!ENTITY\s+([^\s]+)\s+"([^"]+)"\s?>\s*|<!ENTITY\s+([^\s]+)\s+"([^"]*)"\s?>\s*|<!--\s*(.+)\s*-->\s+<!ENTITY\s+([^\s]+)\s+\'([^\']+)\'\s?>\s*|<!ENTITY\s+([^\s]+)\s+\'([^\']*)\'\s?>\s*/m';
@@ -96,9 +96,9 @@
 
                         $intElapsedTime = time() - $intTime;
                         if ($intElapsedTime > 0)
-                            NarroLog::LogMessage(1, sprintf(t('DTD file %s processing took %d seconds.'), $objFile->FileName, $intElapsedTime));
+                            NarroLog::LogMessage(1, sprintf(t('DTD file %s processing took %d seconds.'), $this->objFile->FileName, $intElapsedTime));
 
-                        NarroLog::LogMessage(1, sprintf(t('Found %d contexts in file %s.'), count($arrTemplate), $objFile->FileName));
+                        NarroLog::LogMessage(1, sprintf(t('Found %d contexts in file %s.'), count($arrTemplate), $this->objFile->FileName));
 
                         foreach($arrTemplate as $strContextKey=>$strOriginalText) {
                             if (isset($arrTranslation) && isset($arrTranslation[$strContextKey]))
@@ -112,7 +112,6 @@
                                 $strContextComment = null;
 
                             $this->AddTranslation(
-                                        $objFile,
                                         $strOriginalText,
                                         isset($arrTemplateKeys[$strContextKey])?$arrTemplateKeys[$strContextKey]:null,
                                         $strTranslation,
@@ -134,7 +133,7 @@
                 return false;
         }
 
-        public function ExportFile($objFile, $strTemplateFile, $strTranslatedFile) {
+        public function ExportFile($strTemplateFile, $strTranslatedFile) {
             $strTemplateContents = file_get_contents($strTemplateFile);
 
             if (!$strTemplateContents) {
@@ -152,17 +151,17 @@
 
             $strTranslateContents = '';
 
-            $arrTranslation = NarroMozilla::GetTranslations($objFile, $arrTemplate);
+            $arrTranslation = NarroMozilla::GetTranslations($this->objFile, $arrTemplate);
 
             foreach($arrTemplate as $strKey=>$strOriginalText) {
                 if (isset($arrTranslation[$strKey])) {
-                    $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $objFile, $this->objProject);
+                    $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
                     if
                     (
                         trim($arrResult[1]) != '' &&
                         $arrResult[0] == $strOriginalText &&
                         $arrResult[2] == $strKey &&
-                        $arrResult[3] == $objFile &&
+                        $arrResult[3] == $this->objFile &&
                         $arrResult[4] == $this->objProject
                     ) {
 
@@ -179,7 +178,7 @@
                         NarroLog::LogMessage(3, sprintf('In file "%s", failed to replace "%s"', 'str_replace("' . $arrTemplate[$strKey] . '"' . ', "' . $arrTranslation[$strKey] . '", ' . $arrTemplateLines[$strKey] . ');'));
                 }
                 else {
-                    NarroLog::LogMessage(1, sprintf('Couldn\'t find the key "%s" in the translations for "%s" from the file "%s". Using the original text.', $strKey, $strOriginalText, $objFile->FileName));
+                    NarroLog::LogMessage(1, sprintf('Couldn\'t find the key "%s" in the translations for "%s" from the file "%s". Using the original text.', $strKey, $strOriginalText, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                 }
             }
