@@ -173,6 +173,7 @@
                     $strWorkDir = __TMP_PATH__ . '/import-project-' . $this->objNarroProject->ProjectId . '-' . QApplication::$objUser->Language->LanguageCode;
                     exec('rm -rf ' . escapeshellarg($strWorkDir));
                     mkdir($strWorkDir);
+                    chmod($strWorkDir, 0777);
                     chdir($strWorkDir);
                     exec('tar jxvf ' . $this->flaImportFromFile->File);
                     if (!file_exists($strWorkDir . '/en-US') && !file_exists($strWorkDir . '/' . QApplication::$objUser->Language->LanguageCode)) {
@@ -260,6 +261,7 @@
                     $strWorkDir = __TMP_PATH__ . '/export-project-' . $this->objNarroProject->ProjectId . '-' . QApplication::$objUser->Language->LanguageCode;
                     exec('rm -rf ' . escapeshellarg($strWorkDir));
                     mkdir($strWorkDir);
+                    chmod($strWorkDir, 0777);
                     chdir($strWorkDir);
                     exec('tar jxvf ' . $this->flaExportFromFile->File);
                     if (!file_exists($strWorkDir . '/en-US') && !file_exists($strWorkDir . '/' . QApplication::$objUser->Language->LanguageCode)) {
