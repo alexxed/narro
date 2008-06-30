@@ -21,7 +21,7 @@
     $__exc_objFileArray = file($__exc_strFilename);
 
 
-    if ($_SERVER['HTTP_HOST'] != 'localhost') {
+    if ($_SERVER['HTTP_HOST'] != 'localhost' && !QApplication::$objUser->hasPermission('Administrator')) {
         $objEmailMessage = new QEmailMessage();
         $objEmailMessage->From = ADMIN_EMAIL_ADDRESS;
         $objEmailMessage->To = ADMIN_EMAIL_ADDRESS;
