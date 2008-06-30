@@ -34,7 +34,7 @@
                 t('Manage');
         ?>
         </div>
-        <br />        
+        <br />
         <?php $this->pnlLogViewer->Render(); ?>
         <br />
         <div class="dotted_box">
@@ -53,7 +53,7 @@
             <p class="instructions"><?php echo t('Mark the imported suggestions as validated.'); ?></p>
             <?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?>
             <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
-    
+
             <?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>
             <p class="instructions"><?php echo sprintf(t('The archive must contain two directories, en-US and %s, each having the same file structure. Supported formats: zip, tar.bz2, tar.gz'), QApplication::$objUser->Language->LanguageCode); ?></p>
             <p class="instructions"><?php echo sprintf(t('If you don\'t upload an archive, the import will use the directory "%s", subdirectories "%s" and "%s". You could update those directories nightly from CVS, SVN or a web address.'), __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 'en-US', QApplication::$objUser->Language->LanguageCode); ?></p>
@@ -76,27 +76,6 @@
             <p class="instructions"><?php echo sprintf(t('You will get an archive containing two directories, en_US and %s, each having the same file structure.'), QApplication::$objUser->Language->LanguageCode); ?></p>
             </div>
             </div>
-    
-            <?php if (QApplication::$objUser->hasPermission('Can delete project')) { ?>
-                <br />
-                <div class="dotted_box">
-                <div class="dotted_box_title">Project maintenance</div>
-                <div class="dotted_box_content">
-                <p class="instructions">Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
-                You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
-                </p>
-                <?php $this->btnDelProjectContexts->Render(); ?>
-                <p class="instructions">Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
-                You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
-                </p>
-                <?php $this->btnDelProjectFiles->Render(); ?>
-                <p class="instructions">By deleting a project, you delete the files and contexts associated with it. You will also loose context comments for this project.
-                Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
-                </p>
-                <?php $this->btnDelProject->Render(); ?>
-                </div>
-                </div>
-            <?php } ?>
         <?php } ?>
 
     <?php $this->RenderEnd() ?>
