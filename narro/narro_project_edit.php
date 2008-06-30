@@ -139,7 +139,7 @@
             if (!$this->blnEditMode)
                 $this->btnDelete->Visible = false;
         }
-        
+
         // Protected Update Methods
         protected function UpdateNarroProjectFields() {
             $this->objNarroProject->ProjectName = $this->txtProjectName->Text;
@@ -152,7 +152,7 @@
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
             $this->UpdateNarroProjectFields();
             $this->objNarroProject->Save();
-            
+
             if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$objUser->Language->LanguageCode))
                 mkdir(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$objUser->Language->LanguageCode, 0777, true);
 
@@ -165,36 +165,37 @@
 
         protected function btnDelete_Click($strFormId, $strControlId, $strParameter) {
             $objDatabase = QApplication::$Database[1];
-            
+
             $strQuery = sprintf("DELETE FROM `narro_user_permission` WHERE project_id = %d", $this->objNarroProject->ProjectId);
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
                 throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-            }            
-            
+            }
+
             $strQuery = sprintf("DELETE FROM `narro_context` WHERE project_id = %d", $this->objNarroProject->ProjectId);
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
                 throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
             }
-            
+
+            $objDatabase->NonQuery('SET FOREIGN_KEY_CHECKS=0');
             $strQuery = sprintf("DELETE FROM `narro_file` WHERE project_id = %d", $this->objNarroProject->ProjectId);
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
                 throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
             }
-            
+
             if (file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId))
                 exec('rm -rf ' . escapeshellarg(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId));
-            
+
             $this->objNarroProject->Delete();
 
             QApplication::Redirect('narro_project_list.php');
         }
-        
+
     }
 
     NarroProjectEditForm::Run('NarroProjectEditForm', 'templates/narro_project_edit.tpl.php');
