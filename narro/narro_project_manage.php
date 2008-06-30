@@ -229,9 +229,10 @@
             if (file_exists($strImportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/import.log'))
                 unlink($strImportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/import.log');
 
+            chdir(__DOCROOT__ . __SUBDIRECTORY__);
             $strCommand = sprintf(
                 '/usr/bin/php ' .
-                    escapeshellarg(__INCLUDES__ . '/narro/importer/importer.php').
+                    escapeshellarg('includes/narro/importer/importer.php').
                     ' --import --minloglevel 3 --project %d --user %d ' .
                     (($this->chkValidate->Checked)?'--validate ':'') .
                     (($this->chkForce->Checked)?'--force ':'') .
@@ -327,9 +328,10 @@
             if (file_exists($strExportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/export.log'))
                 unlink($strExportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/export.log');
 
+            chdir(__DOCROOT__ . __SUBDIRECTORY__);
             $strCommand = sprintf(
                 '/usr/bin/php ' .
-                    escapeshellarg(__INCLUDES__ . '/narro/importer/importer.php').
+                    escapeshellarg('includes/narro/importer/importer.php').
                     ' --export --minloglevel 3 --project %d --user %d ' .
                     (($this->chkValidate->Checked)?'--validate ':'') .
                     (($this->chkForce->Checked)?'--force ':'') .
