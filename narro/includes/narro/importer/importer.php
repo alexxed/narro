@@ -27,7 +27,7 @@
                     "--export                      export a project\n" .
                     "--minloglevel                 minimum level of errors logged, 1 gives the most information\n" .
                     "--project                     project id from the database\n" .
-                    "--source-lang                 source language code, optional, defaults to en_US\n" .
+                    "--source-lang                 source language code, optional, defaults to en-US\n" .
                     "--target-lang                 target language code\n" .
                     "--user                        user id that will be used for the added suggestions, optional, defaults to anonymous\n" .
                     "--exported-suggestion         1 for validated, 2 - the most voted, 3 - the user's suggestion\n" .
@@ -44,19 +44,6 @@
         exit();
     }
         
-    require_once(dirname(__FILE__) . '/NarroProjectImporter.class.php');
-    require_once(dirname(__FILE__) . '/NarroFileImporter.class.php');
-    require_once(dirname(__FILE__) . '/NarroMozillaIncFileImporter.class.php');
-    require_once(dirname(__FILE__) . '/NarroMozillaDtdFileImporter.class.php');
-    require_once(dirname(__FILE__) . '/NarroMozillaIniFileImporter.class.php');
-    require_once(dirname(__FILE__) . '/NarroGettextPoFileImporter.class.php');
-    require_once(dirname(__FILE__) . '/NarroOpenOfficeSdfFileImporter.class.php');
-    require_once(dirname(__FILE__) . '/NarroSvgFileImporter.class.php');
-    require_once(dirname(__FILE__) . '/NarroImportStatistics.class.php');
-    require_once(dirname(__FILE__) . '/NarroLog.class.php');
-    require_once(dirname(__FILE__) . '/NarroRss.class.php');
-    require_once(dirname(__FILE__) . '/NarroMozilla.class.php');
-
     if (in_array('--import', $argv)) {
 
         $objNarroImporter = new NarroProjectImporter();
@@ -84,7 +71,7 @@
         if (array_search('--source-lang', $argv) !== false)
             $strSourceLanguage = $argv[array_search('--source-lang', $argv)+1];
         else
-            $strSourceLanguage = 'en_US';
+            $strSourceLanguage = 'en-US';
 
         if (array_search('--target-lang', $argv) !== false)
             $strTargetLanguage = $argv[array_search('--target-lang', $argv)+1];
@@ -111,16 +98,6 @@
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
             NarroLog::LogMessage(3, sprintf(t('Project with id=%s does not exist in the database.'), $intProjectId));
-            return false;
-        }
-        
-        /**
-         * Strip the " if they were used to enclose the path
-         */
-        $strArchiveFile = str_replace('"','', $argv[$argc-1]);
-
-        if (!file_exists($strArchiveFile)) {
-            NarroLog::LogMessage(3, sprintf(t('File "%s" does not exist.'), $strArchiveFile));
             return false;
         }
         
@@ -154,11 +131,22 @@
         $objNarroImporter->User = $objUser;
 
         if (in_array('--force', $argv)) {
-            $objNarroImporter->CleanImportDirectory($strArchiveFile);
+            $objNarroImporter->CleanImportDirectory();
         }
-
-        $objNarroImporter->ImportProjectArchive($strArchiveFile);
-
+        
+        try {
+            $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
+            $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
+                
+            $objNarroImporter->ImportProject();
+        }
+        catch (Exception $objEx) {
+            NarroLog::LogMessage(3, sprintf(t('An error occured during import: %s'), $objEx->getMessage()));
+            $objNarroImporter->CleanImportDirectory();
+            exit();
+        }
+        
+        $objNarroImporter->CleanImportDirectory();
         NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
         NarroLog::LogMessage(3, sprintf(t('Import took %d seconds'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
      }
@@ -179,7 +167,7 @@
         if (array_search('--source-lang', $argv) !== false)
             $strSourceLanguage = $argv[array_search('--source-lang', $argv)+1];
         else
-            $strSourceLanguage = 'en_US';
+            $strSourceLanguage = 'en-US';
 
         if (array_search('--target-lang', $argv) !== false)
             $strTargetLanguage = $argv[array_search('--target-lang', $argv)+1];
@@ -202,13 +190,6 @@
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
             NarroLog::LogMessage(3, sprintf(t('Project with id=%s does not exist in the database.'), $intProjectId));
-            return false;
-        }
-
-        $strArchiveFile = str_replace('"','', $argv[$argc-1]);
-
-        if (!file_exists($strArchiveFile)) {
-            NarroLog::LogMessage(3, sprintf(t('File "%s" does not exist.'), $strArchiveFile));
             return false;
         }
 
@@ -236,11 +217,21 @@
         $objNarroImporter->User = $objUser;
 
         if (in_array('--force', $argv)) {
-            $objNarroImporter->CleanExportDirectory($strArchiveFile);
+            $objNarroImporter->CleanExportDirectory();
         }
-
-        $objNarroImporter->ExportProjectArchive($strArchiveFile);
-
+        
+        try {
+            $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
+            $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
+            $objNarroImporter->ExportProject();
+        }
+        catch (Exception $objEx) {
+            NarroLog::LogMessage(3, sprintf(t('An error occured during export: %s'), $objEx->getMessage()));
+            $objNarroImporter->CleanExportDirectory();
+            exit();
+        }
+        
+        $objNarroImporter->CleanExportDirectory();
         NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
         NarroLog::LogMessage(2, sprintf(t('Export took %d seconds'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
 
