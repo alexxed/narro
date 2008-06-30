@@ -16,16 +16,12 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroSelfTranslate extends NarroPlugin {
-        protected $strName;
-        protected $arrErrors;
-
-        const NARRO_PROJECT_ID = 6;
 
         public static $arrTranslations;
 
         public function __construct() {
             parent::__construct();
-            $this->blnEnable = false;
+            $this->blnEnable = true;
             $this->strName = t('Narro self translator');
         }
 
@@ -36,7 +32,7 @@
         }
 
         public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
-            if ($objProject->ProjectId == self::NARRO_PROJECT_ID)
+            if ($objProject->ProjectName == 'Narro')
                 self::UpdateTranslation($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
 
             return func_get_args();
@@ -57,7 +53,7 @@
         }
 
         public static function UpdateTranslation($strText, $strSuggestion, $strContext, $objFile, $objProject) {
-            if ($objProject->ProjectId != self::NARRO_PROJECT_ID) return true;
+            if ($objProject->ProjectName != 'Narro') return true;
 
             self::CacheTranslation($strText);
         }
@@ -72,7 +68,7 @@
              */
             $objContextInfo = NarroContextInfo::QuerySingle(
                 QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, NarroSelfTranslate::NARRO_PROJECT_ID),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->Project->ProjectName, 'Narro'),
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId),
                     QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strText)),
                     QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId)
