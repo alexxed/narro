@@ -137,7 +137,10 @@
 
             try {
                 $this->objUser->Save();
-                $this->lblMessage->Text = t('Your preferences were saved successfuly.');
+                if (is_numeric(QApplication::QueryString('u')) && QApplication::$objUser->hasPermission('Can manage users'))
+                    $this->lblMessage->Text = sprintf(t('Preferences for %s were saved successfuly.'), $this->objUser->Username);
+                else
+                    $this->lblMessage->Text = t('Your preferences were saved successfuly.');
                 $this->lblMessage->ForeColor = 'green';
             } catch( Exception $objEx) {
                 $this->lblMessage->Text = t('An error occured while trying to save your preferences.');
@@ -148,6 +151,20 @@
         public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
             QApplication::Redirect('narro_project_list.php');
         }
+        
+        public function __get($strName) {
+            switch ($strName) {
+                case 'User': return $this->objUser;
+
+                default:
+                    try {
+                        return parent::__get($strName);
+                    } catch (QCallerException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+            }
+        }        
 
     }
 
@@ -157,8 +174,6 @@
         protected function Form_Create() {
             $this->pnlPreferences = new NarroUserPreferencesPanel($this);
         }
-
-
     }
 
     NarroUserPreferencesForm::Run('NarroUserPreferencesForm', 'templates/narro_user_preferences.tpl.php');
