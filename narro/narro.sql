@@ -89,6 +89,15 @@ CREATE TABLE narro_file_type (
   UNIQUE KEY UQ_qdrupal_narro_file_type_1 (file_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO narro_file_type VALUES(3, 'Folder');
+INSERT INTO narro_file_type VALUES(1, 'GettextPo');
+INSERT INTO narro_file_type VALUES(4, 'MozillaDtd');
+INSERT INTO narro_file_type VALUES(7, 'MozillaInc');
+INSERT INTO narro_file_type VALUES(5, 'MozillaIni');
+INSERT INTO narro_file_type VALUES(6, 'Narro');
+INSERT INTO narro_file_type VALUES(2, 'OpenOfficeSdf');
+INSERT INTO narro_file_type VALUES(8, 'Svg');
+
 CREATE TABLE narro_language (
   language_id int(10) unsigned NOT NULL auto_increment,
   language_name varchar(128) NOT NULL,
