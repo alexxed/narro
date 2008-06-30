@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(t('Preferences for %s'), QApplication::$objUser->Username);
+    $strPageTitle = sprintf(t('Preferences for %s'), $this->pnlPreferences->User->Username);
 
     require('includes/header.inc.php');
 ?>
