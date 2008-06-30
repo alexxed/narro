@@ -28,11 +28,11 @@
         /**
          * file handle for the log file
          */
-        public static $hndLogFile;
+        private static $hndLogFile;
         /**
          * log file name with path
          */
-        public static $strLogFile;
+        private static $strLogFile;
         /*
          * severity level
          */
@@ -46,23 +46,35 @@
                 echo $strText . "\n";
 
             if (self::$blnLogOutput) {
-                if (self::$strLogFile)
-                    self::OutputLog($intMessageType, $strText);
-                else
-                    error_log($strText);
+                self::OutputLog($intMessageType, $strText);
             }
         }
 
         private static function OutputLog($intMessageType, $strText) {
 
-            if (!self::$hndLogFile)
-                self::$hndLogFile = fopen(self::$strLogFile, 'w');
-
             if (self::$hndLogFile)
                 fputs(self::$hndLogFile, $strText . "\n");
+            else {
+                self::SetLogFile(__TMP_PATH__ . '/narro-' . QApplication::$objUser->Language->LanguageCode);
+                if (self::$hndLogFile)
+                    fputs(self::$hndLogFile, $strText . "\n");
+                else
+                    error_log($strText);
+            }
+        }
+        
+        public static function SetLogFile($strLogFile) {
+            self::$strLogFile = $strLogFile;
+            self::$hndLogFile = fopen(self::$strLogFile, 'w');
+        }
+        
+        public static function GetLogContents() {
+            if (file_exists(self::$strLogFile))
+                return file_get_contents(self::$strLogFile);
+            elseif (file_exists(__TMP_PATH__ . '/narro-' . QApplication::$objUser->Language->LanguageCode))            
+                return file_get_contents(__TMP_PATH__ . '/narro-' . QApplication::$objUser->Language->LanguageCode);
             else
-                error_log($strText);
-
+                return sprintf(t('No log found, check the server log. Log file is set in Narro to: "%s"'), self::$strLogFile);
         }
     }
 ?>
