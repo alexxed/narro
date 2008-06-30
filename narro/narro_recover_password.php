@@ -52,9 +52,7 @@
                 $objEmailMessage->From = ADMIN_EMAIL_ADDRESS;
                 $objEmailMessage->To = $objUser->Email;
                 $objEmailMessage->Subject = sprintf(t('Password recovery for "%s" on "%s"'), $objUser->Username, $_SERVER['HTTP_HOST']);
-                $objEmailMessage->Body = sprintf(t(
-                    'Somebody, probably you, requested a password recovery for "%s" on "%s".' . "\n\n" .
-                    'To change your password, please follow this link: %s'),
+                $objEmailMessage->Body = sprintf(t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this link: %'),
                     $objUser->Username,
                     $_SERVER['HTTP_HOST'],
                     ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')?'https://':'http://') . $_SERVER['HTTP_HOST'] . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . sprintf('/narro_change_password.php?u=%s&h=%s', $objUser->Username, $objUser->Password)
