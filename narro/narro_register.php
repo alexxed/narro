@@ -64,7 +64,18 @@
             /**
              * set up default permissions
              */
-            foreach(array(1, 2) as $intPermissionId) {
+            if ($objUser->UserId == 1)
+                /**
+                 * give super powers to the first user
+                 */
+                $arrPermissions = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+            else
+                /**
+                 * registered users can suggest, vote and comment
+                 */
+                $arrPermissions = array(1, 2, 4);
+                
+            foreach($arrPermissions as $intPermissionId) {
                 $objUserPermission = new NarroUserPermission();
                 $objUserPermission->PermissionId = $intPermissionId;
                 $objUserPermission->UserId = $objUser->UserId;
