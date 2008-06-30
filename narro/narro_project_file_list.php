@@ -185,9 +185,9 @@
             }
             else {
                 /**
-                 * @todo remove hard coded value en_US
+                 * @todo remove hard coded value en-US
                  */
-                $strTemplateFile = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en_US' . $objNarroFile->FilePath;
+                $strTemplateFile = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US' . $objNarroFile->FilePath;
 
                 if (!file_exists($strTemplateFile)) return '';
 
@@ -327,8 +327,9 @@
 
             $objFileImporter->User = QApplication::$objUser;
             $objFileImporter->Project = $this->objNarroProject;
-            $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
+            $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en-US');
             $objFileImporter->TargetLanguage = QApplication::$objUser->Language;
+            $objFileImporter->File = $objFile;
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
 
@@ -337,7 +338,7 @@
                 unlink($objFileControl->File);
             }
             else
-                $objFileImporter->ExportFile($objFile, __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en_US' . $objFile->FilePath, $strTempFileName);
+                $objFileImporter->ExportFile(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US' . $objFile->FilePath, $strTempFileName);
 
             header(sprintf('Content-Disposition: attachment; filename="%s"', $objFile->FileName));
             readfile($strTempFileName);
@@ -374,9 +375,10 @@
 
             $objFileImporter->User = QApplication::$objUser;
             $objFileImporter->Project = $this->objNarroProject;
-            $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
+            $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en-US');
             $objFileImporter->TargetLanguage = QApplication::$objUser->Language;
             $objFileImporter->CheckEqual = true;
+            $objFileImporter->File = $objFile;
 
             if (!QApplication::$objUser->hasPermission('Can manage project', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId)) {
                 $objFileImporter->OnlySuggestions = true;
@@ -387,7 +389,7 @@
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
 
-            $objFileImporter->ImportFile($objFile, $objFileControl->File);
+            $objFileImporter->ImportFile($objFileControl->File);
         }
 
     }
