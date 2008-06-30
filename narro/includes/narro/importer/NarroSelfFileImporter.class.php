@@ -82,7 +82,8 @@
                         unset($arrFiles[$intFileNo]);
 
                 }
-
+                
+                NarroProgress::SetProgress(intval(($intFileNo * 100)/$intTotalFilesToProcess));
 
             }
 
@@ -211,6 +212,49 @@
                 if ($intFileNo % 10 === 0)
                     NarroLog::LogMessage(1, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
             }
+            
+            $objFile = NarroFile::QuerySingle(
+                            QQ::AndCondition(
+                                QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
+                                QQ::Equal(QQN::NarroFile()->FileName, 'narro_language_names'),
+                                QQ::Equal(QQN::NarroFile()->ParentId, $intParentId)
+                            )
+            );
+
+            if ($objFile instanceof NarroFile) {
+                $objFile->Active = 1;
+                $objFile->TypeId = NarroFileType::Narro;
+                $objFile->Modified = date('Y-m-d H:i:s');
+                $objFile->Save();
+                NarroImportStatistics::$arrStatistics['Kept files']++;
+            }
+            else {
+                /**
+                 * add the file
+                 */
+                $objFile = new NarroFile();
+                $objFile->FileName = 'narro_language_names';
+                $objFile->TypeId = NarroFileType::Narro;
+                if ($intParentId)
+                    $objFile->ParentId = $intParentId;
+                $objFile->ProjectId = $this->objProject->ProjectId;
+                $objFile->Active = 1;
+                $objFile->Encoding = 'UTF-8';
+                $objFile->Modified = date('Y-m-d H:i:s');
+                $objFile->Created = date('Y-m-d H:i:s');
+                $objFile->FilePath = $strFilePath;
+                $objFile->Save();
+                NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), $strFileName, $strPath));
+                NarroImportStatistics::$arrStatistics['Imported files']++;
+            }            
+            foreach(NarroLanguage::LoadAll() as $objLanguage) {
+                $this->objFile = $objFile;
+                $this->AddTranslation(
+                                $objLanguage->LanguageName, null,
+                                false, null,
+                                'Used in the narro_language table'
+                );
+            }
         }
 
         public function ImportFile($objFile, $strFileName) {
@@ -237,9 +281,8 @@
                                 ),
                                 $strText
                             );
-
+                            $this->objFile = $objFile;
                             $this->AddTranslation(
-                                $objFile,
                                 $strText, null,
                                 false, null,
                                 sprintf('Used somewhere in the file "%s"', str_replace(__DOCROOT__ . __SUBDIRECTORY__ . '/', '', $strFileName))
@@ -291,14 +334,5 @@
             }
             return $arrFiles;
         }
-    }
-
-    $objNarroImporter = new NarroSelfFileImporter();
-    $objNarroImporter->Project = NarroProject::LoadByProjectName('Narro');
-
-    foreach(NarroLanguage::LoadAll() as $objLanguage) {
-        $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en_US');
-        $objNarroImporter->TargetLanguage = $objLanguage;
-        $objNarroImporter->Import();
     }
 ?>
