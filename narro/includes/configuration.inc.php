@@ -20,7 +20,7 @@
     // Feel free to use, change or ignore.
     define('SERVER_INSTANCE', 'dev');
     define('ALLOW_REMOTE_ADMIN', false);
-    define('ADMIN_EMAIL_ADDRESS', 'alexxed@gmail.com');
+    define('ADMIN_EMAIL_ADDRESS', 'user@host.com');
     define ('__DOCROOT__', realpath(dirname(__FILE__) . '/../..'));
     define ('__VIRTUAL_DIRECTORY__', '');
     define ('__HTTP_URL__', 'http://localhost');
