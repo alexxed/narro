@@ -56,11 +56,6 @@
     define('__IMPORT_PATH__', '/data/import');
     define('__RSS_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/rss');
 
-    if (!file_exists(dirname(__FILE__) . '/db.inc.php')) {
-        echo sprintf('You need to create the file "%s" and adjust the database settings there. Here\'s a sample: <br />', dirname(__FILE__) . '/db.inc.php');
-        echo
-"<pre>
-&lt;?php
     /**
      * Database configuration
      */
@@ -74,12 +69,6 @@
         'password' => '',
         'profiling' => false)));
 
-?&gt;
-</pre>";
-        die();
-    }
-    require_once('db.inc.php');
-
     // (For PHP > v5.1) Setup the default timezone (if not already specified in php.ini)
     if ((function_exists('date_default_timezone_set')) && (!ini_get('date.timezone')))
         date_default_timezone_set('America/Los_Angeles');
@@ -91,7 +80,7 @@
 
     set_include_path(
         get_include_path() . PATH_SEPARATOR .
-        dirname(__FILE__) . '/narro' . PATH_SEPARATOR .
+        dirname(__FILE__) . __SUBDIRECTORY__ . PATH_SEPARATOR .
         __INCLUDES__ . PATH_SEPARATOR .
         __INCLUDES__ . '/narro/importer'
         );
@@ -101,30 +90,5 @@
     ini_set('memory_limit', "512M");
 
     set_time_limit(0);
-
-    if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data'))
-        die(sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__));
-
-    foreach (array('cache/i18n', 'cache/zend', 'dictionaries', 'import', 'tmp') as $strDirName) {
-        if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName))
-            if (!mkdir(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName, 0777, true))
-                die(sprintf('Could not create a directory. Please create the directory "%s" and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName));
-    }
-
-    $arrConData = unserialize(DB_CONNECTION_1);
-
-    $link = mysql_connect($arrConData['server'].(($arrConData['port'])?':' . $arrConData['port']:''), $arrConData['username'], $arrConData['password']);
-    if (!$link) {
-        print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/db.inc.php') . '<br />');
-        print(sprintf('Error: "%s"', mysql_error()));
-        die();
-    }
-
-    if (!mysql_select_db($arrConData['database'], $link)) {
-        print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/db.inc.php') . '<br />');
-        print(sprintf('Error: "%s"', mysql_error()));
-        die();
-    }
-
 
 ?>
