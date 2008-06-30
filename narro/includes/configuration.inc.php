@@ -56,15 +56,7 @@
     define('__IMPORT_PATH__', '/data/import');
     define('__RSS_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/rss');
 
-    define('DB_CONNECTION_1', serialize(array(
-        'adapter' => 'MySqli5',
-        'encoding' => 'UTF8',
-        'server' => 'localhost',
-        'port' => null,
-        'database' => 'narro',
-        'username' => 'narro',
-        'password' => '',
-        'profiling' => false)));
+    require_once('db.inc.php');
 
     // (For PHP > v5.1) Setup the default timezone (if not already specified in php.ini)
     if ((function_exists('date_default_timezone_set')) && (!ini_get('date.timezone')))
@@ -84,4 +76,33 @@
 
     ini_set('mbstring.encoding_translation', true);
     ini_set('mbstring.internal_encoding', 'UTF-8');
+    ini_set('memory_limit', "512M");
+
+    set_time_limit(0);
+
+    if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data'))
+        die(sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__));
+
+    foreach (array('cache/i18n', 'cache/zend', 'dictionaries', 'import', 'tmp') as $strDirName) {
+        if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName))
+            if (!mkdir(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName, 0777, true))
+                die(sprintf('Could not create a directory. Please create the directory "%s" and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName));
+    }
+
+    $arrConData = unserialize(DB_CONNECTION_1);
+
+    $link = mysql_connect($arrConData['server'].(($arrConData['port'])?':' . $arrConData['port']:''), $arrConData['username'], $arrConData['password']);
+    if (!$link) {
+        print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/db.inc.php') . '<br />');
+        print(sprintf('Error: "%s"', mysql_error()));
+        die();
+    }
+
+    if (!mysql_select_db($arrConData['database'], $link)) {
+        print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/db.inc.php') . '<br />');
+        print(sprintf('Error: "%s"', mysql_error()));
+        die();
+    }
+
+
 ?>
