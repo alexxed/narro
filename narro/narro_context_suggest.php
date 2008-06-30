@@ -194,6 +194,7 @@
             if
             (
                 !is_null($this->objNarroContextInfo->TextAccessKey) &&
+                !is_null($this->objNarroContextInfo->ValidSuggestionId) &&
                 QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId)
             )
                 $this->pnlOriginalText->Text = preg_replace(
@@ -583,6 +584,8 @@
 
                 $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
                 $this->objNarroContextInfo->Save();
+                
+                QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             }
 
 
@@ -788,9 +791,10 @@
                 $this->objNarroContextInfo->SuggestionAccessKey = mb_strtolower($this->objNarroContextInfo->TextAccessKey);
             else
                 $this->objNarroContextInfo->SuggestionAccessKey = mb_strtoupper($this->objNarroContextInfo->TextAccessKey);
-
+                
             $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
             $this->objNarroContextInfo->Save();
+            QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
 
             QApplication::$Cache->remove('project_progress_' . $this->objNarroContextInfo->Context->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
 
