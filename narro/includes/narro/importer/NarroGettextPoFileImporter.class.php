@@ -17,10 +17,8 @@
      */
 
     class NarroGettextPoFileImporter extends NarroFileImporter {
-        protected $objFile;
 
-        public function ExportFile($objFile, $strTemplate, $strTranslatedFile = null) {
-            $this->objFile = $objFile;
+        public function ExportFile($strTemplate, $strTranslatedFile = null) {
             $hndExportFile = fopen($strTranslatedFile, 'w');
             if (!$hndExportFile) {
                 NarroLog::LogMessage(3, sprintf(t('Cannot create or write to "%s".'), $strTranslatedFile));
@@ -363,7 +361,7 @@
             }
         }
 
-        public function ImportFile($objFile, $strFileToImport, $strTranslatedFile = null) {
+        public function ImportFile($strFileToImport, $strTranslatedFile = null) {
             $hndTemplate = fopen($strFileToImport, 'r');
             if ($hndTemplate) {
                 $strCurrentGroup = 1;
@@ -600,14 +598,14 @@
                         if (!is_null($strMsgStr2)) $strMsgStr2 = str_replace('\"', '"', $strMsgStr2);
 
                         if (trim($strContext) == '') {
-                            $strContext = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $objFile->FileName, $strCurrentGroup);
+                            $strContext = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $this->objFile->FileName, $strCurrentGroup);
                         }
 
                         /**
                          * if it's not a plural, just add msgid and msgstr
                          */
                         if (is_null($strMsgPluralId)) {
-                                $this->AddTranslation($objFile, $this->stripAccessKey($strMsgId), $this->getAccessKey($strMsgId), $this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), $strContext);
+                                $this->AddTranslation($this->stripAccessKey($strMsgId), $this->getAccessKey($strMsgId), $this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), $strContext);
                         }
                         else {
                             /**
@@ -618,15 +616,15 @@
                              * @todo add unlimited plurals support
                              */
                             if (!is_null($strMsgStr0)) {
-                                $this->AddTranslation($objFile, $this->stripAccessKey($strMsgId), $this->getAccessKey($strMsgPluralId), $this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), $strContext . "\nThis text has plurals.");
+                                $this->AddTranslation($this->stripAccessKey($strMsgId), $this->getAccessKey($strMsgPluralId), $this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), $strContext . "\nThis text has plurals.");
                             }
 
                             if (!is_null($strMsgStr1)) {
-                                $this->AddTranslation($objFile, $this->stripAccessKey($strMsgPluralId), $this->getAccessKey($strMsgPluralId), $this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), $strContext . "\nThis is plural form 1 for the text \"$strMsgId\".");
+                                $this->AddTranslation($this->stripAccessKey($strMsgPluralId), $this->getAccessKey($strMsgPluralId), $this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), $strContext . "\nThis is plural form 1 for the text \"$strMsgId\".");
                             }
 
                             if (!is_null($strMsgStr2)) {
-                                $this->AddTranslation($objFile, $this->stripAccessKey($strMsgPluralId), $this->getAccessKey($strMsgPluralId), $this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), $strContext . "\nThis is plural form 2 for the text \"$strMsgId\".");
+                                $this->AddTranslation($this->stripAccessKey($strMsgPluralId), $this->getAccessKey($strMsgPluralId), $this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), $strContext . "\nThis is plural form 2 for the text \"$strMsgId\".");
                             }
                         }
                     }
