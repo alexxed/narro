@@ -18,7 +18,7 @@
 
     class NarroMozillaIncFileImporter extends NarroFileImporter {
 
-        public function ImportFile($objFile, $strTemplateFile, $strTranslatedFile = null) {
+        public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
             $intTime = time();
 
             if ($strTranslatedFile)
@@ -63,14 +63,13 @@
 
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
-                NarroLog::LogMessage(1, sprintf(t('Inc file %s preprocessing took %d seconds.'), $objFile->FileName, $intElapsedTime));
+                NarroLog::LogMessage(1, sprintf(t('Inc file %s preprocessing took %d seconds.'), $this->objFile->FileName, $intElapsedTime));
 
-            NarroLog::LogMessage(1, sprintf(t('Found %d contexts in file %s.'), count($arrTemplate), $objFile->FileName));
+            NarroLog::LogMessage(1, sprintf(t('Found %d contexts in file %s.'), count($arrTemplate), $this->objFile->FileName));
 
             if (is_array($arrTemplate))
                 foreach($arrTemplate as $strKey=>$strVal) {
                     $this->AddTranslation(
-                                $objFile,
                                 $strVal,
                                 isset($arrTemplateAccKeys[$strKey])?$arrTemplateAccKeys[$strKey]:null,
                                 $arrTranslation[$strKey],
@@ -84,7 +83,7 @@
 
         }
 
-        public function ExportFile($objFile, $strTemplateFile, $strTranslatedFile) {
+        public function ExportFile($strTemplateFile, $strTranslatedFile) {
             $strTemplateContents = file_get_contents($strTemplateFile);
 
             if (!$strTemplateContents)
@@ -98,7 +97,7 @@
                     $arrTemplateLines[trim($arrMatches[1])] = $arrMatches[0];
                 }
                 elseif (trim($strLine) != '' && $strLine[0] != '#')
-                    NarroLog::LogMessage(1, sprintf(t('Skipped line "%s" from the template "%s".'), $strLine, $objFile->FileName));
+                    NarroLog::LogMessage(1, sprintf(t('Skipped line "%s" from the template "%s".'), $strLine, $this->objFile->FileName));
             }
 
             $strTranslateContents = '';
@@ -108,7 +107,7 @@
             $arrTranslationObjects =
                 NarroContextInfo::QueryArray(
                     QQ::AndCondition(
-                        QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $objFile->FileId),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
                         QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
                     )
@@ -143,7 +142,7 @@
                         NarroImportStatistics::$arrStatistics["Texts that don't have access keys"]++;
                 }
                 else {
-                    NarroLog::LogMessage(1, sprintf(t('In file "%s", the context "%s" does not have a valid suggestion.'), $objFile->FileName, $objNarroContextInfo->Context->Context));
+                    NarroLog::LogMessage(1, sprintf(t('In file "%s", the context "%s" does not have a valid suggestion.'), $this->objFile->FileName, $objNarroContextInfo->Context->Context));
                     NarroImportStatistics::$arrStatistics['Texts without valid suggestions']++;
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                 }
@@ -156,14 +155,14 @@
 
                 if (isset($arrTranslation[$strKey])) {
 
-                    $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $objFile, $this->objProject);
+                    $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
 
                     if
                     (
                         trim($arrResult[1]) != '' &&
                         $arrResult[0] == $strOriginalText &&
                         $arrResult[2] == $strKey &&
-                        $arrResult[3] == $objFile &&
+                        $arrResult[3] == $this->objFile &&
                         $arrResult[4] == $this->objProject
                     ) {
 
@@ -175,7 +174,7 @@
                     if (strstr($strTranslateContents, sprintf('#define %s %s', $strKey, $strOriginalText)))
                         $strTranslateContents = str_replace(sprintf('#define %s %s', $strKey, $strOriginalText), sprintf('#define %s %s', $strKey, $arrTranslation[$strKey]), $strTranslateContents);
                     else
-                        NarroLog::LogMessage(2, sprintf(t('Can\'t find "%s" in the file "%s"'), $strKey . $strGlue . $strOriginalText, $objFile->FileName));
+                        NarroLog::LogMessage(2, sprintf(t('Can\'t find "%s" in the file "%s"'), $strKey . $strGlue . $strOriginalText, $this->objFile->FileName));
 
                     if (strstr($arrTranslation[$strKey], "\n")) {
                         NarroLog::LogMessage(2, sprintf(t('Skpping translation "%s" because it has a newline in it'), $arrTranslation[$strKey]));
@@ -184,7 +183,7 @@
 
                 }
                 else {
-                    NarroLog::LogMessage(1, sprintf(t('Couldn\'t find the key "%s" in the translations, using the original text.'), $strKey, $objFile->FileName));
+                    NarroLog::LogMessage(1, sprintf(t('Couldn\'t find the key "%s" in the translations, using the original text.'), $strKey, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                 }
             }
