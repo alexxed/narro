@@ -26,7 +26,9 @@
         <h3><?php echo t('Project list') ?></h3>
         <p><?php echo t('This is a list of projects that are being translated here. You can help too. Click on any project name to start translating.'); ?></p>
         <br />
-
+        <?php if (QApplication::$objUser->hasPermission('Administrator')) { ?>
+            <p align="right"><a href="narro_project_edit.php"><?php _t('Add project') ?></a></p>
+        <?php } ?>
         <?php $this->dtgNarroProject->Render() ?>
         <p><?php echo t('Top 10 translators') ?>
         <?php $this->pnlTopUsers->Render() ?>
