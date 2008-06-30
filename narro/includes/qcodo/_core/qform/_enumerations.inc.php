@@ -163,5 +163,6 @@
 		const Image = 1;
 		const Pdf = 2;
 		const Document = 3;
+		const Archive = 4;
 	}
 ?>
