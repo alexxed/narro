@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(t('%s :: Manage'), $this->objNarroProject->ProjectName);
+    $strPageTitle = sprintf('%s :: ' . t('Manage'), $this->objNarroProject->ProjectName);
 
     require('includes/header.inc.php')
 ?>
@@ -34,28 +34,13 @@
                 t('Manage');
         ?>
         </div>
-        <br />
-        <div class="dotted_box">
-        <div class="dotted_box_title"><?php echo t('Project properties'); ?></div>
-        <div class="dotted_box_content">
-        <?php echo t('Name') . ': ' ?>
-        <?php $this->txtProjectName->Render(); ?>
-        <br />
-        <?php echo t('Type') . ': ' ?>
-        <?php $this->lstProjectType->Render(); ?>
-        <br />
-        <?php echo t('Active') . ': ' ?>
-        <?php $this->lstProjectActive->Render(); ?>
-        <br />
-        <br />
-        <?php $this->btnSaveProject->Render(); ?>
-        </div>
-        </div>
+        <br />        
+        <?php $this->pnlLogViewer->Render(); ?>
         <br />
         <div class="dotted_box">
         <div class="dotted_box_title"><?php echo t('Import and export options'); ?></div>
         <div class="dotted_box_content">
-        <?php echo $this->chkForce->Render(false) . ' ' . t('Force operation even if a previous operation is reported to be running'); ?>
+        <label for="<?php echo $this->chkForce->ControlId ?>"><?php echo $this->chkForce->Render(false) . ' ' . t('Force operation even if a previous operation is reported to be running'); ?></label>
         <p class="instructions"><?php echo t('Cleanup the files that are used during an import or export and allow starting another operation'); ?></p>
         </div>
         </div>
@@ -63,61 +48,56 @@
         <div class="dotted_box">
         <div class="dotted_box_title"><?php echo t('Import project'); ?></div>
         <div class="dotted_box_content">
-        <?php echo $this->chkValidate->Render(false) . ' ' . t('Validate the imported translations'); ?>
-        <p class="instructions"><?php echo t('Mark the imported suggestions as validated.'); ?></p>
-        <?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?>
-        <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts.'); ?></p>
-
-        <p class="instructions"><?php echo t('You might want to choose to import from a directory where you have a fresh checkout. You can have a cron to do this on a regular basis.'); ?></p>
-        <?php echo t('From a directory') . ': ' . $this->txtImportFromDirectory->Render(false); ?>
-        <p class="instructions"><?php echo t('Since option one is not available to most people, uploading an archive might be the best option.'); ?></p>
-        <?php echo t('From an archive') . ': ' . $this->filImportFromFile->Render(false); ?>
-        <br /><br />
+        <?php if ($this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
+            <?php echo $this->chkValidate->Render(false) . ' ' . t('Validate the imported translations'); ?>
+            <p class="instructions"><?php echo t('Mark the imported suggestions as validated.'); ?></p>
+            <?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?>
+            <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
+    
+            <?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>
+            <p class="instructions"><?php echo sprintf(t('The archive must contain two directories, en-US and %s, each having the same file structure. Supported formats: zip, tar.bz2, tar.gz'), QApplication::$objUser->Language->LanguageCode); ?></p>
+            <p class="instructions"><?php echo sprintf(t('If you don\'t upload an archive, the import will use the directory "%s", subdirectories "%s" and "%s". You could update those directories nightly from CVS, SVN or a web address.'), __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 'en-US', QApplication::$objUser->Language->LanguageCode); ?></p>
+        <?php } ?>
         <?php $this->btnImport->Render(); $this->objImportProgress->Render();?>
         <?php $this->lblImport->Render(); ?>
         </div>
         </div>
-        <br />
-        <div class="dotted_box">
-        <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
-        <div class="dotted_box_content">
-        <?php echo t('Export translations using') . ': ' . $this->lstExportedSuggestion->Render(false); ?>
-        <p class="instructions"><?php echo t('If you chose to use your suggestion or the most voted suggestion for each text, if you have no suggestion for a text or there aren\'t any votes, the validated suggestion will be exported instead.'); ?></p>
-
-        <p class="instructions"><?php echo t('You might want to choose to export to a directory where you have a fresh checkout. After the export is done, just go
-        to that directory and commit your changes to the versioning system.'); ?>
-        </p>
-        <?php echo t('To a directory') . ': ' . $this->txtExportToDirectory->Render(false); ?>
-        <p class="instructions"><?php echo t('Most probably option one isn\'t available to most people, so downloading an archive to copy it over a fresh local checkout
-        might be the best option.'); ?></p>
-        <?php echo t('To an archive') . ': '; ?>
-        <br /><br />
-        <?php $this->btnExport->Render(); $this->objExportProgress->Render();?>
-        <?php $this->lblExport->Render(); ?>
-        </div>
-        </div>
-
-        <?php if (QApplication::$objUser->hasPermission('Can delete project')) { ?>
+        <?php if ($this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
             <br />
             <div class="dotted_box">
-            <div class="dotted_box_title">Project maintenance</div>
+            <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
             <div class="dotted_box_content">
-            <p class="instructions">Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
-            You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
-            </p>
-            <?php $this->btnDelProjectContexts->Render(); ?>
-            <p class="instructions">Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
-            You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
-            </p>
-            <?php $this->btnDelProjectFiles->Render(); ?>
-            <p class="instructions">By deleting a project, you delete the files and contexts associated with it. You will also loose context comments for this project.
-            Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
-            </p>
-            <?php $this->btnDelProject->Render(); ?>
+            <?php echo t('Export translations using') . ': ' . $this->lstExportedSuggestion->Render(false); ?>
+            <p class="instructions"><?php echo t('If you chose to use your suggestion or the most voted suggestion for each text, if you have no suggestion for a text or there aren\'t any votes, the validated suggestion will be exported instead.'); ?></p>
+            <?php echo t('To an archive') . ': ' . $this->objNarroProject->ProjectId . '-' . QApplication::$objUser->Language->LanguageCode . '.tar.bz2'; ?>
+            <br /><br />
+            <?php $this->btnExport->Render(); $this->objExportProgress->Render();?>
+            <?php $this->lblExport->Render(); ?>
+            <p class="instructions"><?php echo sprintf(t('You will get an archive containing two directories, en_US and %s, each having the same file structure.'), QApplication::$objUser->Language->LanguageCode); ?></p>
             </div>
             </div>
+    
+            <?php if (QApplication::$objUser->hasPermission('Can delete project')) { ?>
+                <br />
+                <div class="dotted_box">
+                <div class="dotted_box_title">Project maintenance</div>
+                <div class="dotted_box_content">
+                <p class="instructions">Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+                You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
+                </p>
+                <?php $this->btnDelProjectContexts->Render(); ?>
+                <p class="instructions">Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+                You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
+                </p>
+                <?php $this->btnDelProjectFiles->Render(); ?>
+                <p class="instructions">By deleting a project, you delete the files and contexts associated with it. You will also loose context comments for this project.
+                Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
+                </p>
+                <?php $this->btnDelProject->Render(); ?>
+                </div>
+                </div>
+            <?php } ?>
         <?php } ?>
-
 
     <?php $this->RenderEnd() ?>
 
