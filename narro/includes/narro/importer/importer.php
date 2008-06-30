@@ -17,9 +17,9 @@
      */
 
     require_once(dirname(__FILE__) . '/../../prepend.inc.php');
-    
+
     if (!isset($argv[2])) {
-        echo 
+        echo
             sprintf(
                 t(
                     "php %s [--import|--export] [options]\n" .
@@ -37,19 +37,19 @@
                     "--check-equal                 check if the translation is equal to the original text and don't import it\n" .
                     "--validate                    validate the imported suggestions\n" .
                     "--only-suggestions            import only suggestions, don't add files, texts or contexts\n"
-                ), 
+                ),
                 basename(__FILE__)
             )
         ;
         exit();
     }
-        
+
     if (in_array('--import', $argv)) {
 
         $objNarroImporter = new NarroProjectImporter();
 
         NarroLog::$blnEchoOutput = false;
-        
+
         /**
          * Get boolean options
          */
@@ -58,7 +58,7 @@
         $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
         $objNarroImporter->Validate = (bool) array_search('--validate', $argv);
         $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
-        
+
         /**
          * Get specific options
          */
@@ -78,14 +78,14 @@
 
         if (array_search('--user', $argv) !== false)
             $intUserId = $argv[array_search('--user', $argv)+1];
-        
+
         /**
          * Load the specified user or the anonymous user if unspecified
          */
-        $objUser = NarroUser::Load($intUserId);
+        $objUser = NarroUser::LoadByUserId($intUserId);
         if (!$objUser instanceof NarroUser) {
             NarroLog::LogMessage(2, sprintf(t('User id=%s does not exist in the database, will try to use the anonymous user.'), $intUserId));
-            $objUser = NarroUser::Load(NarroUser::ANONYMOUS_USER_ID);
+            $objUser = NarroUser::LoadAnonymousUser();
             if (!$objUser instanceof NarroUser) {
                 NarroLog::LogMessage(3, sprintf(t('The anonymous user id=%s does not exist in the database.'), $intUserId));
                 return false;
@@ -100,7 +100,7 @@
             NarroLog::LogMessage(3, sprintf(t('Project with id=%s does not exist in the database.'), $intProjectId));
             return false;
         }
-        
+
         /**
          * Load the specified target language
          */
@@ -133,11 +133,11 @@
         if (in_array('--force', $argv)) {
             $objNarroImporter->CleanImportDirectory();
         }
-        
+
         try {
             $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
             $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
-                
+
             $objNarroImporter->ImportProject();
         }
         catch (Exception $objEx) {
@@ -145,7 +145,7 @@
             $objNarroImporter->CleanImportDirectory();
             exit();
         }
-        
+
         $objNarroImporter->CleanImportDirectory();
         NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
         NarroLog::LogMessage(3, sprintf(t('Import took %d seconds'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
@@ -157,10 +157,10 @@
 
         if (array_search('--minloglevel', $argv))
             $objNarroImporter->MinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
-            
+
         if (array_search('--exported-suggestion', $argv))
             $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];
-            
+
         if (array_search('--project', $argv) !== false)
             $intProjectId = $argv[array_search('--project', $argv)+1];
 
@@ -177,10 +177,10 @@
 
 
 
-        $objUser = NarroUser::Load($intUserId);
+        $objUser = NarroUser::LoadByUserId($intUserId);
         if (!$objUser instanceof NarroUser) {
             NarroLog::LogMessage(2, sprintf(t('User id=%s does not exist in the database, will try to use the anonymous user.'), $intUserId));
-            $objUser = NarroUser::Load(NarroUser::ANONYMOUS_USER_ID);
+            $objUser = NarroUser::LoadAnonymousUser();
             if (!$objUser instanceof NarroUser) {
                 NarroLog::LogMessage(3, sprintf(t('The anonymous user id=%s does not exist in the database.'), $intUserId));
                 return false;
@@ -219,7 +219,7 @@
         if (in_array('--force', $argv)) {
             $objNarroImporter->CleanExportDirectory();
         }
-        
+
         try {
             $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
             $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
@@ -230,10 +230,10 @@
             $objNarroImporter->CleanExportDirectory();
             exit();
         }
-        
+
         $objNarroImporter->CleanExportDirectory();
         NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
-        NarroLog::LogMessage(2, sprintf(t('Export took %d seconds'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
+        NarroLog::LogMessage(3, sprintf(t('Export took %d seconds'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
 
      }
 
