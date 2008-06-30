@@ -47,6 +47,7 @@
 			$this->strIconFilePathArray['blank'] = __DOCROOT__ . __IMAGE_ASSETS__ . '/file_asset_blank.png';
 			$this->strIconFilePathArray['default'] = __DOCROOT__ . __IMAGE_ASSETS__ . '/file_asset_default.png';
 			$this->strIconFilePathArray['pdf'] = __DOCROOT__ . __IMAGE_ASSETS__ . '/file_asset_pdf.png';
+			$this->strIconFilePathArray['archive'] = __DOCROOT__ . __IMAGE_ASSETS__ . '/file_asset_archive.png';
 		}
 
 		public function Validate() {
@@ -194,6 +195,11 @@
 					case 'pdf':
 						$this->imgFileIcon->ImagePath = $this->strIconFilePathArray[trim(strtolower($strExtension))];
 						break;
+                    case 'bz2':
+                    case 'gz':
+				    case 'zip':
+					    $this->imgFileIcon->ImagePath = $this->strIconFilePathArray['archive'];
+                        break;
 					default:
 						$this->imgFileIcon->ImagePath = $this->strIconFilePathArray['default'];
 						break;
@@ -206,6 +212,17 @@
 		
 		protected function SetFileAssetType($intFileAssetType) {
 			switch ($intFileAssetType) {
+                case QFileAssetType::Archive:
+                    $this->intFileAssetType = $intFileAssetType;
+                    $this->strAcceptibleMimeArray = array(
+                        'application/x-bzip2' => 'bz2',
+                        'application/x-gzip' => 'gz',
+                        'application/zip' => 'zip',
+                        'application/x-zip' => 'zip'
+                    );
+                    $this->strUnacceptableMessage = QApplication::Translate('Must be a tar.bz2, tar.gz or zip archive');
+                    break;
+			    
 				case QFileAssetType::Image:
 					$this->intFileAssetType = $intFileAssetType;
 					$this->strAcceptibleMimeArray = array(
