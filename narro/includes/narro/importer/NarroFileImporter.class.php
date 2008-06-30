@@ -33,7 +33,7 @@
          * the project object that is imported
          */
         protected $objProject;
-
+        protected $objFile;
         /**
          * whether to check if the suggestion value is the same as the original text
          * if it's true, the suggestions that are the same as the original text are not imported
@@ -47,6 +47,14 @@
          * whether to import only suggestions, that is don't add anything else than suggestions
          */
         protected $blnOnlySuggestions = false;
+        /**
+         * what suggestions are exported
+         * 1 = validated
+         * 2 = most voted and validated
+         * 3 = current user's suggestion and validated
+         * for 2 and 3 the fallback is to validated
+         */
+        protected $intExportedSuggestion = 1;
 
         public function __construct($objImporter = null) {
 
@@ -75,7 +83,6 @@
         /**
          * A translation here consists of the project, file, text, translation, context, plurals, validation, ignore equals
          *
-         * @param NarroFile $objFile
          * @param string $strOriginal the original text
          * @param string $strOriginalAccKey access key for the original text
          * @param string $strTranslation the translated text from the import file (can be empty)
@@ -83,7 +90,7 @@
          * @param string $strContext the context where the text/translation appears in the file
          * @param string $strComment a comment from the imported file
          */
-        protected function AddTranslation(NarroFile $objFile, $strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
+        protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
             $blnContextInfoChanged = false;
             $blnContextChanged = false;
 
@@ -91,7 +98,7 @@
              * First, let the plug-ins process the data
              */
             if ($strOriginal == '') {
-                NarroLog::LogMessage(2, sprintf(t('In file "%s", the context "%s" was skipped because the original text "%s" was empty.'), $objFile->FileName, $strContext, $strOriginal));
+                NarroLog::LogMessage(2, sprintf(t('In file "%s", the context "%s" was skipped because the original text "%s" was empty.'), $this->objFile->FileName, $strContext, $strOriginal));
                 NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Skipped texts']++;
@@ -99,13 +106,13 @@
                 return false;
             }
             else {
-                $arrResult = QApplication::$objPluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $objFile, $this->objProject);
+                $arrResult = QApplication::$objPluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[0]) != '' &&
                     $arrResult[1] == $strTranslation &&
                     $arrResult[2] == $strContext &&
-                    $arrResult[3] == $objFile &&
+                    $arrResult[3] == $this->objFile &&
                     $arrResult[4] == $this->objProject
                 ) {
 
@@ -116,13 +123,13 @@
             }
 
             if ($strTranslation != '') {
-                $arrResult = QApplication::$objPluginHandler->SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $this->objProject);
+                $arrResult = QApplication::$objPluginHandler->SaveSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[1]) != '' &&
                     $arrResult[0] == $strOriginal &&
                     $arrResult[2] == $strContext &&
-                    $arrResult[3] == $objFile &&
+                    $arrResult[3] == $this->objFile &&
                     $arrResult[4] == $this->objProject
                 ) {
                     $strTranslation = $arrResult[1];
@@ -132,7 +139,7 @@
             }
 
             if ($strContext == '') {
-                NarroLog::LogMessage(2, sprintf(t('In file "%s", the context "%s" was skipped because it was empty.'), $objFile->FileName, $strContext));
+                NarroLog::LogMessage(2, sprintf(t('In file "%s", the context "%s" was skipped because it was empty.'), $this->objFile->FileName, $strContext));
                 NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Skipped texts']++;
@@ -140,13 +147,13 @@
             }
             else {
                 $strContext = trim($strContext);
-                $arrResult = QApplication::$objPluginHandler->SaveContext($strOriginal, $strTranslation, $strContext, $objFile, $this->objProject);
+                $arrResult = QApplication::$objPluginHandler->SaveContext($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[2]) != '' &&
                     $arrResult[0] == $strOriginal &&
                     $arrResult[1] == $strTranslation &&
-                    $arrResult[3] == $objFile &&
+                    $arrResult[3] == $this->objFile &&
                     $arrResult[4] == $this->objProject
                 ) {
 
@@ -157,14 +164,14 @@
             }
 
             if (!is_null($strComment) && trim($strComment) != '') {
-                $arrResult = QApplication::$objPluginHandler->SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $objFile, $this->objProject);
+                $arrResult = QApplication::$objPluginHandler->SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[3]) != '' &&
                     $arrResult[0] == $strOriginal &&
                     $arrResult[1] == $strTranslation &&
                     $arrResult[2] == $strContext &&
-                    $arrResult[4] == $objFile &&
+                    $arrResult[4] == $this->objFile &&
                     $arrResult[5] == $this->objProject
                 ) {
 
@@ -193,7 +200,7 @@
 
                 try {
                     $objNarroText->Save();
-                    NarroLog::LogMessage(1, sprintf(t('Added text "%s" from the file "%s"'), $strOriginal, $objFile->FileName));
+                    NarroLog::LogMessage(1, sprintf(t('Added text "%s" from the file "%s"'), $strOriginal, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Imported texts']++;
                 } catch(Exception $objExc) {
                     NarroLog::LogMessage(3, sprintf(t('Error while adding "%s": %s'), $strOriginal, $objExc->getMessage()));
@@ -217,7 +224,7 @@
                                         /**
                                          * If you change the file structure, and would like to reuse contexts, you might want to comment the following line
                                          */
-                                        QQ::Equal(QQN::NarroContext()->FileId, $objFile->FileId),
+                                        QQ::Equal(QQN::NarroContext()->FileId, $this->objFile->FileId),
                                         QQ::Equal(QQN::NarroContext()->ProjectId, $this->objProject->ProjectId),
                                         QQ::Equal(QQN::NarroContext()->Context, $strContext)
                                     )
@@ -232,13 +239,13 @@
                 $objNarroContext->ProjectId = $this->objProject->ProjectId;
                 $objNarroContext->Context = $strContext;
                 $objNarroContext->ContextMd5 = md5($strContext);
-                $objNarroContext->FileId = $objFile->FileId;
+                $objNarroContext->FileId = $this->objFile->FileId;
                 $objNarroContext->Active = 1;
                 $objNarroContext->Modified = date('Y-m-d H:i:s');
                 $objNarroContext->Created = date('Y-m-d H:i:s');
                 $objNarroContext->Save();
 
-                NarroLog::LogMessage(1, sprintf(t('Added the context "%s" from the file "%s"'), $strContext, $objFile->FileName));
+                NarroLog::LogMessage(1, sprintf(t('Added the context "%s" from the file "%s"'), $strContext, $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Imported contexts']++;
             }
             else {
@@ -268,9 +275,9 @@
             /**
              * this lies outside the if/else if reusing contexts is activated, so if a context was moved in another file, we'll just update the file_id
              */
-            if ($objNarroContext->FileId != $objFile->FileId) {
+            if ($objNarroContext->FileId != $this->objFile->FileId) {
                 $blnContextChanged = true;
-                $objNarroContext->FileId = $objFile->FileId;
+                $objNarroContext->FileId = $this->objFile->FileId;
             }
 
             if ($objContextInfo->TextAccessKey != $strOriginalAccKey) {
@@ -317,7 +324,7 @@
              */
             elseif ($this->blnCheckEqual && strlen($strOriginal)>1 && $strOriginal == $strTranslation)
             {
-                NarroLog::LogMessage(1, sprintf(t('Skipped "%s" because "%s" has the same value. From "%s".'), $strOriginal, $strTranslation, $objFile->FileName));
+                NarroLog::LogMessage(1, sprintf(t('Skipped "%s" because "%s" has the same value. From "%s".'), $strOriginal, $strTranslation, $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Suggestions that kept the original text']++;
             }
@@ -437,9 +444,106 @@
             $blnContextPluralChanged = false;
             $blnContextPluralInfoChanged = false;
 
-            //NarroRss::AddContext($this->objProject, $objFile, $objNarroContext, $objNarroText, $objNarroSuggestion);
-
             return true;
+        }
+
+        /**
+         * Get the context info for a certain context
+         *
+         * @param string $strContext
+         * @param integer $intType
+         * @return NarroContextInfo
+         */
+        public function GetContextInfo($strOriginal, $strContext) {
+            return NarroContextInfo::QuerySingle(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5($strContext)),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
+                )
+            );
+        }
+
+        /**
+         * Get the suggestion made by a specified user
+         *
+         * @param integer $intContextId
+         * @param integer $intTextId
+         * @param integer $intUserId
+         * @return NarroSuggestion
+         */
+        public function GetUserSuggestion($intContextId, $intTextId, $intUserId) {
+            $arrSuggestion = NarroSuggestion::QueryArray(
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroSuggestion()->UserId, $intUserId),
+                            QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId)
+                        )
+            );
+
+            if (count($arrSuggestion) == 1) {
+                return $arrSuggestion[0];
+            }
+            elseif(count($arrSuggestion) > 1) {
+                /**
+                 * if there are more suggestions for a user, get the one that he has voted for
+                 */
+                $objSuggestionVote = NarroSuggestionVote::QuerySingle(
+                    QQ::AndCondition(
+                        QQ::Equal(QQN::NarroSuggestionVote()->UserId, $intUserId),
+                        QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $intContextId)
+                    )
+                );
+
+                if ($objSuggestionVote)
+                    return NarroSuggestion::Load($objSuggestionVote->SuggestionId);
+                else
+                    /**
+                     * the user has more suggestions but has voted none
+                     */
+                    return false;
+            }
+            else
+                /**
+                 * The user has no suggestions for this text
+                 */
+                return false;
+        }
+
+        /**
+         * Get the most voted suggestion for a context
+         *
+         * @param integer $intContextId
+         * @return NarroSuggestion
+         */
+        public function GetMostVotedSuggestion($intContextId) {
+            $strQuery = sprintf(
+                'SELECT suggestion_id, SUM(vote_value) as votes ' .
+                'FROM narro_suggestion_vote ' .
+                'WHERE context_id=%d ' .
+                'GROUP BY suggestion_id ' .
+                'ORDER BY votes DESC ' .
+                'LIMIT 1',
+                $intContextId
+            );
+            $objDatabase = QApplication::$Database[1];
+
+            if (!$objDbResult = $objDatabase->Query($strQuery)) {
+                NarroLog::LogMessage(3, __METHOD__ . ':' . __LINE__ . ':db_query failed. $strQuery=' . $strQuery);
+                return false;
+            }
+            else {
+
+                if ($objDbResult->CountRows()) {
+                    $arrDbRow = $objDbResult->FetchArray();
+                    return NarroSuggestion::Load($arrDbRow['suggestion_id']);
+                }
+                else {
+                    NarroLog::LogMessage(2, __METHOD__ . ':' . __LINE__ . ': There are no votes recorded from ' . $strQuery);
+                    return false;
+                }
+            }
         }
 
         /////////////////////////
@@ -480,7 +584,15 @@
                         throw new Exception(t('Project should be set with an instance of NarroProject'));
 
                     break;
+                    
+                case "File":
+                    if ($mixValue instanceof NarroFile)
+                        $this->objFile = $mixValue;
+                    else
+                        throw new Exception(t('File should be set with an instance of NarroFile'));
 
+                    break;
+                    
                 case "TargetLanguage":
                     if ($mixValue instanceof NarroLanguage)
                         $this->objTargetLanguage = $mixValue;
