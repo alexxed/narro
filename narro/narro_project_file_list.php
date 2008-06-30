@@ -192,7 +192,7 @@
                 if (!file_exists($strTemplateFile)) return '';
 
                 if (!$objExportButton = $this->GetControl('btnExport' . $objNarroFile->FileId)) {
-                    $objExportButton = new QButton($this, 'btnExport' . $objNarroFile->FileId);
+                    $objExportButton = new QButton($this->dtgNarroFile, 'btnExport' . $objNarroFile->FileId);
                     $objExportButton->Text = t('Export');
                     $objExportButton->ActionParameter = $objNarroFile->FileId;
                     $objExportButton->AddAction(new QClickEvent(), new QServerAction('btnExport_Click'));
@@ -200,7 +200,7 @@
                 }
 
                 if (!$objImportButton = $this->GetControl('btnImport' . $objNarroFile->FileId)) {
-                    $objImportButton = new QButton($this, 'btnImport' . $objNarroFile->FileId);
+                    $objImportButton = new QButton($this->dtgNarroFile, 'btnImport' . $objNarroFile->FileId);
                     $objImportButton->Text = t('Import');
                     $objImportButton->ActionParameter = $objNarroFile->FileId;
                     $objImportButton->AddAction(new QClickEvent(), new QServerAction('btnImport_Click'));
@@ -208,12 +208,12 @@
                 }
 
                 if (!$objImportFile = $this->GetControl('fileImport' . $objNarroFile->FileId)) {
-                    $objImportFile = new QFileControl($this, 'fileImport' . $objNarroFile->FileId);
+                    $objImportFile = new QFileControl($this->dtgNarroFile, 'fileImport' . $objNarroFile->FileId);
                     $objImportFile->Visible = QApplication::$objUser->hasPermission('Can import', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
                 if (!$objExportFile = $this->GetControl('fileExport' . $objNarroFile->FileId)) {
-                    $objExportFile = new QFileControl($this, 'fileExport' . $objNarroFile->FileId);
+                    $objExportFile = new QFileControl($this->dtgNarroFile, 'fileExport' . $objNarroFile->FileId);
                     $objExportFile->Visible = QApplication::$objUser->hasPermission('Can export', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
