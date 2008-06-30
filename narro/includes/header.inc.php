@@ -50,9 +50,12 @@
                 <a href="narro_login.php"><?php echo t('Login') ?></a> |
             <?php } ?>
             <a href="narro_user_preferences.php"><?php echo t('Preferences') ?></a> |
-            <a href="narro_project_list.php"><?php echo t('Project list') ?></a>
+            <a href="narro_project_list.php" title="<?php echo t('Project list') ?>"><?php echo t('Projects') ?></a>
+            <?php if (QApplication::$objUser->hasPermission('Administrator')) { ?>
+            | <a href="narro_language_list.php" title="<?php echo t('Manage languages') ?>"><?php echo t('Languages') ?></a>
+            <?php } ?>            
             <?php if (QApplication::$objUser->hasPermission('Can manage users')) { ?>
-            | <a href="narro_user_list.php"><?php echo t('Manage users') ?></a>
+            | <a href="narro_user_list.php" title="<?php echo t('Manage users') ?>"><?php echo t('Users') ?></a>
             <?php } ?>
             <?php if (QApplication::$objUser->UserId > 0) { ?>
                 | <a href="narro_logout.php"><?php echo t('Logout') ?></a>
