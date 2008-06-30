@@ -56,6 +56,28 @@
     define('__IMPORT_PATH__', '/data/import');
     define('__RSS_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/rss');
 
+    if (!file_exists(dirname(__FILE__) . '/db.inc.php')) {
+        echo sprintf('You need to create the file "%s" and adjust the database settings there. Here\'s a sample: <br />', dirname(__FILE__) . '/db.inc.php');
+        echo
+"<pre>
+&lt;?php
+    /**
+     * Database configuration
+     */
+    define('DB_CONNECTION_1', serialize(array(
+        'adapter' => 'MySqli5',
+        'encoding' => 'UTF8',
+        'server' => 'localhost',
+        'port' => null,
+        'database' => 'narro',
+        'username' => 'narro',
+        'password' => '',
+        'profiling' => false)));
+
+?&gt;
+</pre>";
+        die();
+    }
     require_once('db.inc.php');
 
     // (For PHP > v5.1) Setup the default timezone (if not already specified in php.ini)
