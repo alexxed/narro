@@ -49,6 +49,9 @@
         }
 
         public static function GetSpellSuggestionsWithPspell($strText, $strSpellLang) {
+            if (!function_exists('pspell_new'))
+                return true;
+                
             if (file_exists(__DICTIONARY_PATH__ . '/' . $strSpellLang . '.dat')) {
                 if (!defined('PSPELL_FAST'))
                     return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
