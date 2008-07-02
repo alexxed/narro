@@ -187,9 +187,7 @@
              */
             $objNarroText = NarroText::QuerySingle(QQ::Equal(QQN::NarroText()->TextValueMd5, md5($strOriginal)));
 
-            if (!$objNarroText instanceof NarroText) {
-
-                if ($this->blnOnlySuggestions) return false;
+            if (!$this->blnOnlySuggestions && !$objNarroText instanceof NarroText) {
 
                 $objNarroText = new NarroText();
                 $objNarroText->TextValue = $strOriginal;
@@ -214,6 +212,12 @@
                     return false;
                 }
             }
+            elseif (!$objNarroText instanceof NarroText) {
+                /**
+                 * If there's no text, there's no context and no suggestion
+                 */
+                return false;
+            }
 
             /**
              * fetch the context
@@ -230,9 +234,7 @@
                                     )
                                 );
 
-            if (!$objNarroContext instanceof NarroContext) {
-
-                if ($this->blnOnlySuggestions) return false;
+            if (!$this->blnOnlySuggestions && !$objNarroContext instanceof NarroContext) {
 
                 $objNarroContext = new NarroContext();
                 $objNarroContext->TextId = $objNarroText->TextId;
@@ -248,6 +250,12 @@
                 NarroLog::LogMessage(1, sprintf(t('Added the context "%s" from the file "%s"'), $strContext, $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Imported contexts']++;
             }
+            elseif(!$objNarroContext instanceof NarroContext) {
+                /*
+                 * no context found = no go
+                 */
+                return false;
+            }
             else {
                 NarroImportStatistics::$arrStatistics['Reused contexts']++;
             }
@@ -258,9 +266,7 @@
              */
             $objContextInfo = NarroContextInfo::LoadByContextIdLanguageId($objNarroContext->ContextId, $this->objTargetLanguage->LanguageId);
 
-            if (!$objContextInfo instanceof NarroContextInfo) {
-
-                if ($this->blnOnlySuggestions) return false;
+            if (!$this->blnOnlySuggestions && !$objContextInfo instanceof NarroContextInfo) {
 
                 $objContextInfo = new NarroContextInfo();
                 $objContextInfo->ContextId = $objNarroContext->ContextId;
@@ -269,6 +275,12 @@
                 $objContextInfo->HasComments = 0;
                 $objContextInfo->HasPlural = 0;
                 $blnContextInfoChanged = true;
+            }
+            elseif (!$objContextInfo instanceof NarroContextInfo) {
+                /**
+                 * no context info = no go
+                 */
+                return false;
             }
 
 
@@ -417,10 +429,7 @@
                 }
             }
 
-
-            if ($this->blnOnlySuggestions) return true;
-
-            if ($objNarroContext instanceof NarroContext) {
+            if (!$this->blnOnlySuggestions && $objNarroContext instanceof NarroContext) {
                 try {
                     $objNarroContext->Active = 1;
                     $objNarroContext->Modified = date('Y-m-d H:i:s');
