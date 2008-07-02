@@ -369,8 +369,11 @@
                 case NarroFileType::Svg:
                     $objFileImporter = new NarroSvgFileImporter();
                     break;
+                case NarroFileType::OpenOfficeSdf:
+                    $objFileImporter = new NarroOpenOfficeSdfFileImporter();
+                    break;                    
                 default:
-                    throw new Exception(sprintf(t('Tried to export an unknown file type: %d'), $strParameter));
+                    throw new Exception(sprintf(t('Tried to import an unknown file type: %d'), $strParameter));
             }
 
             $objFileImporter->User = QApplication::$objUser;
@@ -380,16 +383,21 @@
             $objFileImporter->CheckEqual = true;
             $objFileImporter->File = $objFile;
 
-            if (!QApplication::$objUser->hasPermission('Can manage project', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId)) {
-                $objFileImporter->OnlySuggestions = true;
-                $objFileImporter->DeactivateFiles = false;
-                $objFileImporter->DeactivateContexts = false;
-            }
+            $objFileImporter->OnlySuggestions = true;
+            $objFileImporter->DeactivateFiles = false;
+            $objFileImporter->DeactivateContexts = false;
+            
             $objFileImporter->Validate = QApplication::$objUser->hasPermission('Can validate', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
-
+            
             $objFileImporter->ImportFile($objFileControl->File);
+            
+            /**
+             * clear the progress cache
+             */
+            QApplication::$Cache->remove('project_progress_' . $this->objProject->ProjectId . '_' . $this->objTargetLanguage->LanguageId);
+            
         }
 
     }
