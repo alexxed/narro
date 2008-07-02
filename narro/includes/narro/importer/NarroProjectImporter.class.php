@@ -264,7 +264,7 @@
                  * create directories
                  */
                 $strPath = '';
-                $intParentId = 0;
+                $intParentId = null;
                 foreach($arrFileParts as $intPos=>$strDir) {
                     $strPath = $strPath . '/' . $strDir;
                     if (!isset($arrDirectories[$strPath])) {
@@ -340,7 +340,7 @@
                  */
                 if (!$intFileType = $this->GetFileType($strFileName))
                     continue;
-
+                
                 $objFile = NarroFile::QuerySingle(
                                 QQ::AndCondition(
                                     QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
@@ -348,7 +348,7 @@
                                     QQ::Equal(QQN::NarroFile()->ParentId, $intParentId)
                                 )
                 );
-
+                
                 if ($objFile instanceof NarroFile) {
                     $objFile->Active = 1;
                     $objFile->TypeId = $intFileType;
