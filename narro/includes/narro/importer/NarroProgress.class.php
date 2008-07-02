@@ -32,13 +32,13 @@
         public static function SetProgress($intValue) {
             $intOldValue = self::GetProgress();
                 
-            if ($intOldValue > $intValue)
-                throw new Exception(sprintf(t('Tried to set a progress value (%s) smaller than what it was (%s)'), $intValue, $intOldValue));
+//            if ($intOldValue > $intValue)
+//                throw new Exception(sprintf(t('Tried to set a progress value (%s) smaller than what it was (%s)'), $intValue, $intOldValue));
                 
             $intRetVal = @file_put_contents(self::$strProgressFile, $intValue);
             
-            if (!$intRetVal)
-                throw new Exception(sprintf(t('Could not write "%s" in progress file "%s"'), self::$strProgressFile, $intValue));
+//            if (!$intRetVal)
+//                throw new Exception(sprintf(t('Could not write "%s" in progress file "%s"'), self::$strProgressFile, $intValue));
         }
     }
 ?>
