@@ -84,8 +84,6 @@
 
             $this->dtgSuggestions->PaginatorAlternate = new QPaginator($this->dtgSuggestions);
 
-
-
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgSuggestions->UseAjax = true;
 
@@ -350,7 +348,7 @@
         public function dtgSuggestions_Bind() {
             // Get Total Count b/c of Pagination
             if ($this->chkShowAllLanguages->Checked)
-                $intTotalItemCount = NarroSuggestion::CountByTextId($this->objNarroContextInfo->Context->TextId);
+                $this->dtgSuggestions->TotalItemCount = NarroSuggestion::CountByTextId($this->objNarroContextInfo->Context->TextId);
             else
                 $this->dtgSuggestions->TotalItemCount = NarroSuggestion::QueryCount(
                         QQ::AndCondition(
