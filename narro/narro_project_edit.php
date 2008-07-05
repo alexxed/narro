@@ -205,7 +205,7 @@
             }
 
             if (file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId))
-                exec('rm -rf ' . escapeshellarg(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId));
+                NarroUtils::RecursiveDelete(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId);
 
             $this->objNarroProject->Delete();
 
