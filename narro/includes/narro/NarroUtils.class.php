@@ -17,26 +17,41 @@
      */
     class NarroUtils {
         public static function RecursiveDelete($strFilePath) {
-            if (is_dir($strFilePath) && !is_link($strFilePath))
-            {
-                if ($hndDir = opendir($strFilePath))
-                {
-                    while (($strFileName = readdir($hndDir)) !== false)
-                    {
+            if (strstr($strFilePath, '/*')) {
+                $strFilePath = str_replace('/*', '', $strFilePath);
+                if ($hndDir = opendir($strFilePath)) {
+                    while (($strFileName = readdir($hndDir)) !== false) {
                         if ($strFileName == '.' || $strFileName == '..')
-                        {
                             continue;
-                        }
+
                         if (!self::RecursiveDelete($strFilePath.'/'.$strFileName))
-                        {
                             throw new Exception($strFilePath.'/'.$strFileName.' could not be deleted.');
-                        }
                     }
                     closedir($hndDir);
                 }
-                return @rmdir($strFilePath);
             }
-            return @unlink($strFilePath);
+            else {
+                if (is_dir($strFilePath) && !is_link($strFilePath))
+                {
+                    if ($hndDir = opendir($strFilePath))
+                    {
+                        while (($strFileName = readdir($hndDir)) !== false)
+                        {
+                            if ($strFileName == '.' || $strFileName == '..')
+                            {
+                                continue;
+                            }
+                            if (!self::RecursiveDelete($strFilePath.'/'.$strFileName))
+                            {
+                                throw new Exception($strFilePath.'/'.$strFileName.' could not be deleted.');
+                            }
+                        }
+                        closedir($hndDir);
+                    }
+                    return @rmdir($strFilePath);
+                }
+                return @unlink($strFilePath);
+            }
         }
 
         public static function RecursiveChmod($strFilePath, $intFileMode = 0666, $intDirMode = 0777) {
@@ -60,6 +75,30 @@
                 return @chmod($strFilePath, $intDirMode);
             }
             return @chmod($strFilePath, $intFileMode);
+        }
+
+        function RecursiveCopy( $source, $target ) {
+            if ( is_dir( $source ) ) {
+                @mkdir( $target );
+
+                $d = dir( $source );
+
+                while ( FALSE !== ( $entry = $d->read() ) ) {
+                    if ( $entry == '.' || $entry == '..' )
+                        continue;
+
+                    $Entry = $source . '/' . $entry;
+                    if ( is_dir( $Entry ) ) {
+                        self::RecursiveCopy( $Entry, $target . '/' . $entry );
+                        continue;
+                    }
+                    copy( $Entry, $target . '/' . $entry );
+                }
+
+                $d->close();
+            } else {
+                copy( $source, $target );
+            }
         }
     }
 ?>
