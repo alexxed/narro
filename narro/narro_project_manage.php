@@ -25,6 +25,9 @@
 
         protected $pnlLogViewer;
 
+        protected $btnDelProjectFiles;
+        protected $btnDelProjectContexts;
+
         /**
          * common options
          */
@@ -80,6 +83,16 @@
 
             $this->pnlLogViewer = new QPanel($this);
             $this->pnlLogViewer->Visible = false;
+
+            $this->btnDelProjectContexts = new QButton($this);
+            $this->btnDelProjectContexts->Text = t('Delete project contexts');
+            $this->btnDelProjectContexts->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE the contexts for the project "%s"?\nThis operation might take a while and will delete:\n - project contexts and associated comments\n - votes for contexts belonging to this project\nTexts and suggestions are not deleted.'), $this->objNarroProject->ProjectName)));
+            $this->btnDelProjectContexts->AddAction(new QClickEvent(), new QServerAction('btnDelProjectContexts_Click'));
+
+            $this->btnDelProjectFiles = new QButton($this);
+            $this->btnDelProjectFiles->Text = t('Delete project files');
+            $this->btnDelProjectFiles->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE the files for the project "%s"?\nThis operation might take a while and will delete:\n - project contexts and associated comments\n - votes for contexts belonging to this project\n - project\'s files.\nTexts and suggestions are not deleted.'), $this->objNarroProject->ProjectName)));
+            $this->btnDelProjectFiles->AddAction(new QClickEvent(), new QServerAction('btnDelProjectFiles_Click'));
 
             $this->lstExportedSuggestion = new QListBox($this);
             $this->lstExportedSuggestion->AddItem(t('The validated suggestion'), 1);
@@ -510,6 +523,47 @@
             NarroLog::ClearLog();
         }
 
+        protected function btnDelProjectContexts_Click($strFormId, $strControlId, $strParameter) {
+            if (!QApplication::$objUser->hasPermission('Can delete project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                QApplication::Redirect('narro_project_list.php');
+
+            $objDatabase = QApplication::$Database[1];
+
+            $strQuery = sprintf("DELETE FROM `narro_context` WHERE project_id = %d", $this->objNarroProject->ProjectId);
+            try {
+                $objDatabase->NonQuery($strQuery);
+            }catch (Exception $objEx) {
+                throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+            }
+        }
+
+        protected function btnDelProjectFiles_Click($strFormId, $strControlId, $strParameter) {
+            if (!QApplication::$objUser->hasPermission('Can delete project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                QApplication::Redirect('narro_project_list.php');
+
+            $objDatabase = QApplication::$Database[1];
+
+            $strQuery = sprintf("DELETE FROM `narro_context` WHERE project_id = %d", $this->objNarroProject->ProjectId);
+            try {
+                $objDatabase->NonQuery($strQuery);
+            }catch (Exception $objEx) {
+                throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+            }
+
+            $strQuery = sprintf("UPDATE `narro_file` SET parent_id=NULL WHERE project_id = %d", $this->objNarroProject->ProjectId);
+            try {
+                $objDatabase->NonQuery($strQuery);
+            }catch (Exception $objEx) {
+                throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+            }
+
+            $strQuery = sprintf("DELETE FROM `narro_file` WHERE project_id = %d", $this->objNarroProject->ProjectId);
+            try {
+                $objDatabase->NonQuery($strQuery);
+            }catch (Exception $objEx) {
+                throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+            }
+        }
     }
 
 
