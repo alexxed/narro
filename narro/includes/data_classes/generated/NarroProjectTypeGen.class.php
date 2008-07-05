@@ -23,22 +23,25 @@
 		const Gettext = 3;
 		const Narro = 4;
 		const Svg = 5;
+		const DumbGettextPo = 6;
 
-		const MaxId = 5;
+		const MaxId = 6;
 
 		public static $NameArray = array(
 			1 => 'Mozilla',
 			2 => 'OpenOffice',
 			3 => 'Gettext',
 			4 => 'Narro',
-			5 => 'Svg');
+			5 => 'Svg',
+			6 => 'DumbGettextPo');
 
 		public static $TokenArray = array(
 			1 => 'Mozilla',
 			2 => 'OpenOffice',
 			3 => 'Gettext',
 			4 => 'Narro',
-			5 => 'Svg');
+			5 => 'Svg',
+			6 => 'DumbGettextPo');
 
 		public static function ToString($intNarroProjectTypeId) {
 			switch ($intNarroProjectTypeId) {
@@ -47,6 +50,7 @@
 				case 3: return 'Gettext';
 				case 4: return 'Narro';
 				case 5: return 'Svg';
+				case 6: return 'DumbGettextPo';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroProjectTypeId: %s', $intNarroProjectTypeId));
 			}
@@ -59,6 +63,7 @@
 				case 3: return 'Gettext';
 				case 4: return 'Narro';
 				case 5: return 'Svg';
+				case 6: return 'DumbGettextPo';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroProjectTypeId: %s', $intNarroProjectTypeId));
 			}

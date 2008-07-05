@@ -26,8 +26,9 @@
 		const Narro = 6;
 		const MozillaInc = 7;
 		const Svg = 8;
+		const DumbGettextPo = 9;
 
-		const MaxId = 8;
+		const MaxId = 9;
 
 		public static $NameArray = array(
 			1 => 'GettextPo',
@@ -37,7 +38,8 @@
 			5 => 'MozillaIni',
 			6 => 'Narro',
 			7 => 'MozillaInc',
-			8 => 'Svg');
+			8 => 'Svg',
+			9 => 'DumbGettextPo');
 
 		public static $TokenArray = array(
 			1 => 'GettextPo',
@@ -47,7 +49,8 @@
 			5 => 'MozillaIni',
 			6 => 'Narro',
 			7 => 'MozillaInc',
-			8 => 'Svg');
+			8 => 'Svg',
+			9 => 'DumbGettextPo');
 
 		public static function ToString($intNarroFileTypeId) {
 			switch ($intNarroFileTypeId) {
@@ -59,6 +62,7 @@
 				case 6: return 'Narro';
 				case 7: return 'MozillaInc';
 				case 8: return 'Svg';
+				case 9: return 'DumbGettextPo';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroFileTypeId: %s', $intNarroFileTypeId));
 			}
@@ -74,6 +78,7 @@
 				case 6: return 'Narro';
 				case 7: return 'MozillaInc';
 				case 8: return 'Svg';
+				case 9: return 'DumbGettextPo';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroFileTypeId: %s', $intNarroFileTypeId));
 			}
