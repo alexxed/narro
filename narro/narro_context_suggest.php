@@ -190,15 +190,18 @@
 
         // Update values from objNarroContextInfo
         protected function UpdateData() {
-            $this->pnlOriginalText->Text = NarroString::HtmlEntities($this->objNarroContextInfo->Context->Text->TextValue);
+            /**
+             * @todo Show somehow the leading spaces ' ' => &nbsp;
+             */
+            $this->pnlOriginalText->Text = nl2br(NarroString::HtmlEntities($this->objNarroContextInfo->Context->Text->TextValue));
             if
             (
                 !is_null($this->objNarroContextInfo->TextAccessKey) &&
                 !is_null($this->objNarroContextInfo->ValidSuggestionId) &&
                 QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId)
             )
-                $this->pnlOriginalText->Text = preg_replace(
-                    '/' . $this->objNarroContextInfo->TextAccessKey . '/',
+                $this->pnlOriginalText->Text = NarroString::Replace(
+                    $this->objNarroContextInfo->TextAccessKey,
                     '<u>' . $this->objNarroContextInfo->TextAccessKey . '</u>',
                     $this->pnlOriginalText->Text,
                     1
@@ -237,7 +240,7 @@
             $strPageTitle = sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
                             (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($this->objNarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->objNarroContextInfo->Context->Text->TextValue);
 
-            QApplication::ExecuteJavaScript(sprintf('document.title="%s"', str_replace('"', '\\"', $strPageTitle)));
+            QApplication::ExecuteJavaScript(sprintf('document.title="%s"', str_replace(array('"', "\n"), array('\\"', ' '), $strPageTitle)));
 
             $this->pnlNavigator->Text =
             sprintf('<a href="%s">'.t('Projects').'</a>', 'narro_project_list.php') .
@@ -584,7 +587,7 @@
 
                 $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
                 $this->objNarroContextInfo->Save();
-                
+
                 QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             }
 
@@ -791,7 +794,7 @@
                 $this->objNarroContextInfo->SuggestionAccessKey = mb_strtolower($this->objNarroContextInfo->TextAccessKey);
             else
                 $this->objNarroContextInfo->SuggestionAccessKey = mb_strtoupper($this->objNarroContextInfo->TextAccessKey);
-                
+
             $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
             $this->objNarroContextInfo->Save();
             QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
