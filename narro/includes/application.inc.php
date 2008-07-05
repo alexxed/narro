@@ -128,7 +128,7 @@
     );
 
     QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
-    
+
 
     QApplication::$objPluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
 
@@ -145,5 +145,7 @@
     QApplicationBase::$ClassFile['NarroImportStatistics'] = __INCLUDES__ . '/narro/importer/NarroImportStatistics.class.php';
     QApplicationBase::$ClassFile['NarroLog'] = __INCLUDES__ . '/narro/importer/NarroLog.class.php';
     QApplicationBase::$ClassFile['NarroProgress'] = __INCLUDES__ . '/narro/importer/NarroProgress.class.php';
+    QApplicationBase::$ClassFile['NarroUtils'] = __INCLUDES__ . '/narro/NarroUtils.class.php';
+    QApplicationBase::$ClassFile['NarroString'] = __INCLUDES__ . '/narro/NarroString.class.php';
 
 ?>
