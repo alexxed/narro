@@ -331,6 +331,8 @@
             $objFileImporter->TargetLanguage = QApplication::$objUser->Language;
             $objFileImporter->File = $objFile;
 
+            NarroLog::$intMinLogLevel = 3;
+
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
 
             if ($objFileControl instanceof QFileControl && file_exists($objFileControl->File)) {
@@ -371,7 +373,7 @@
                     break;
                 case NarroFileType::OpenOfficeSdf:
                     $objFileImporter = new NarroOpenOfficeSdfFileImporter();
-                    break;                    
+                    break;
                 default:
                     throw new Exception(sprintf(t('Tried to import an unknown file type: %d'), $strParameter));
             }
@@ -386,18 +388,19 @@
             $objFileImporter->OnlySuggestions = true;
             $objFileImporter->DeactivateFiles = false;
             $objFileImporter->DeactivateContexts = false;
-            
+
+            NarroLog::$intMinLogLevel = 3;
+
             $objFileImporter->Validate = QApplication::$objUser->hasPermission('Can validate', $objFile->ProjectId, QApplication::$objUser->Language->LanguageId);
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
-            
+
             $objFileImporter->ImportFile($objFileControl->File);
-            
+
             /**
              * clear the progress cache
              */
-            QApplication::$Cache->remove('project_progress_' . $this->objProject->ProjectId . '_' . $this->objTargetLanguage->LanguageId);
-            
+            QApplication::$Cache->remove('project_progress_' . $this->objNarroProject->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
         }
 
     }
