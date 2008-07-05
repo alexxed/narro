@@ -31,8 +31,8 @@
             if (!$strTranslatedFileContents || !$strTemplateContents)
                 return false;
 
-            $strTranslatedFileContents = str_replace("\\\n", '\\n', $strTranslatedFileContents);
-            $strTemplateContents = str_replace("\\\n", '\\\n', $strTemplateContents);
+            $strTranslatedFileContents = str_replace("\\\n", '', $strTranslatedFileContents);
+            $strTemplateContents = str_replace("\\\n", '', $strTemplateContents);
 
             $arrFileContents = split("\n", $strTranslatedFileContents);
             $arrTemplateContents = split("\n", $strTemplateContents);
@@ -89,7 +89,7 @@
                 return false;
             }
 
-            $strTemplateContents = str_replace("\\\n", '\\\n', $strTemplateContents);
+            $strTemplateContents = str_replace("\\\n", '', $strTemplateContents);
 
             $arrTemplateContents = split("\n", $strTemplateContents);
 
