@@ -80,6 +80,24 @@
             <p class="instructions"><?php echo sprintf(t('You will get an archive containing two directories, en_US and %s, each having the same file structure.'), QApplication::$objUser->Language->LanguageCode); ?></p>
             </div>
             </div>
+
+            <?php if (QApplication::$objUser->hasPermission('Can delete project')) { ?>
+                <br />
+                <div class="dotted_box">
+                <div class="dotted_box_title">Project maintenance</div>
+                <div class="dotted_box_content">
+                <?php $this->btnDelProjectContexts->Render(); ?>
+                <p class="instructions">Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+                You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
+                </p>
+                <?php $this->btnDelProjectFiles->Render(); ?>
+                <p class="instructions">Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+                You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
+                </p>
+
+                </div>
+                </div>
+            <?php } ?>
         <?php } ?>
 
     <?php $this->RenderEnd() ?>
