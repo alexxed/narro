@@ -18,7 +18,7 @@
 
     $strPageTitle = sprintf('%s :: ' . t('Manage'), $this->objNarroProject->ProjectName);
 
-    require('includes/header.inc.php')
+    require(dirname(__FILE__) . '/../includes/header.inc.php');
 ?>
 
     <?php $this->RenderBegin() ?>
@@ -40,6 +40,8 @@
         <div class="dotted_box">
         <div class="dotted_box_title"><?php echo t('Import and export options'); ?></div>
         <div class="dotted_box_content">
+        <label for="<?php echo $this->lstLogLevel->ControlId ?>"><?php echo t('Minimum logged error level') . ' ' . $this->lstLogLevel->Render(false); ?></label>
+        <p class="instructions"><?php echo t('Lower values give more verbosity'); ?></p>
         <label for="<?php echo $this->chkForce->ControlId ?>"><?php echo $this->chkForce->Render(false) . ' ' . t('Force operation even if a previous operation is reported to be running'); ?></label>
         <p class="instructions"><?php echo t('Cleanup the files that are used during an import or export and allow starting another operation'); ?></p>
         </div>
@@ -49,13 +51,15 @@
         <div class="dotted_box_title"><?php echo t('Import project'); ?></div>
         <div class="dotted_box_content">
         <?php if ($this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
+            <label for="<?php echo $this->chkCheckEqual->ControlId ?>"><?php echo $this->chkCheckEqual->Render(false) . ' ' . t('Do not import translations that are identical to the original text'); ?></label>
+            <p class="instructions"><?php echo t('Warning, if you uncheck this and choose to validate the imported suggestions all the translations identical to the original texts will be validated.'); ?></p>
             <?php echo $this->chkValidate->Render(false) . ' ' . t('Validate the imported translations'); ?>
             <p class="instructions"><?php echo t('Mark the imported suggestions as validated.'); ?></p>
             <?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?>
             <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
 
             <?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>
-            <p class="instructions"><?php echo sprintf(t('The archive must contain two directories, en-US and %s, each having the same file structure. Supported formats: zip, tar.bz2, tar.gz'), QApplication::$objUser->Language->LanguageCode); ?></p>
+            <p class="instructions"><?php echo sprintf(t('The archive must contain two directories, en-US and %s, each having the same file structure. Supported formats: tar.bz2, tar.gz'), QApplication::$objUser->Language->LanguageCode); ?></p>
             <p class="instructions"><?php echo sprintf(t('If you don\'t upload an archive, the import will use the directory "%s", subdirectories "%s" and "%s". You could update those directories nightly from CVS, SVN or a web address.'), __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 'en-US', QApplication::$objUser->Language->LanguageCode); ?></p>
         <?php } ?>
         <?php $this->btnImport->Render(); $this->objImportProgress->Render();?>
@@ -67,10 +71,10 @@
             <div class="dotted_box">
             <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
             <div class="dotted_box_content">
+            <label for="<?php echo $this->lstExportArchiveType->ControlId ?>"><?php echo  t('Export archive format') . ' ' . $this->lstExportArchiveType->Render(false); ?></label>
+            <p class="instructions"><?php echo t('Choose the format of the exported archive.'); ?></p>
             <?php echo t('Export translations using') . ': ' . $this->lstExportedSuggestion->Render(false); ?>
             <p class="instructions"><?php echo t('If you chose to use your suggestion or the most voted suggestion for each text, if you have no suggestion for a text or there aren\'t any votes, the validated suggestion will be exported instead.'); ?></p>
-            <?php echo t('To an archive') . ': ' . $this->objNarroProject->ProjectId . '-' . QApplication::$objUser->Language->LanguageCode . '.tar.bz2'; ?>
-            <br /><br />
             <?php $this->btnExport->Render(); $this->objExportProgress->Render();?>
             <?php $this->lblExport->Render(); ?>
             <p class="instructions"><?php echo sprintf(t('You will get an archive containing two directories, en_US and %s, each having the same file structure.'), QApplication::$objUser->Language->LanguageCode); ?></p>
@@ -80,4 +84,4 @@
 
     <?php $this->RenderEnd() ?>
 
-<?php require('includes/footer.inc.php'); ?>
+<?php require(dirname(__FILE__) . '/../includes/footer.inc.php'); ?>
