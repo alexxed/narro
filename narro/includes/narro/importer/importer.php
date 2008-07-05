@@ -137,6 +137,7 @@
         try {
             $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
             $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
+            NarroLog::SetLogFile(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode . '/import.log');
 
             $objNarroImporter->ImportProject();
         }
@@ -148,7 +149,6 @@
 
         $objNarroImporter->CleanImportDirectory();
         NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
-        NarroLog::LogMessage(3, sprintf(t('Import took %d seconds'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
      }
      elseif (in_array('--export', $argv)) {
 
@@ -156,7 +156,7 @@
         NarroLog::$blnEchoOutput = false;
 
         if (array_search('--minloglevel', $argv))
-            $objNarroImporter->MinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
+            NarroLog::$intMinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
 
         if (array_search('--exported-suggestion', $argv))
             $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];
@@ -223,6 +223,7 @@
         try {
             $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
             $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
+            NarroLog::SetLogFile(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode . '/export.log');
             $objNarroImporter->ExportProject();
         }
         catch (Exception $objEx) {
@@ -233,7 +234,6 @@
 
         $objNarroImporter->CleanExportDirectory();
         NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
-        NarroLog::LogMessage(3, sprintf(t('Export took %d seconds'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
 
      }
 
