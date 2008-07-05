@@ -25,11 +25,10 @@
                 return false;
             }
 
-            $hndTranslatedFile = fopen($strTranslatedFile, 'w');
-            if (!$hndTranslatedFile) {
-                NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Can\'t open file "%s" for writing', $strTranslatedFile));
-                return false;
-            }
+            $hndTranslatedFile = @fopen($strTranslatedFile, 'w');
+
+            if (!$hndTranslatedFile)
+                throw new Exception(sprintf('Can\'t open file "%s" for writing', $strTranslatedFile));
 
             $intTotalToProcess = NarroUtils::CountFileLines($strTemplateFile);
 
@@ -47,10 +46,9 @@
                 $arrColumn = preg_split('/\t/', $strFileLine);
 
                 /**
-                 * Unset a number before language code and the language code to allow matching original with translation
+                 * Unset a number before language code
                  */
                 $arrColumn[8] = '';
-                $arrColumn[9] = '';
 
                 /**
                  * skip help
