@@ -92,6 +92,8 @@
             }
         }
 
+        QApplication::$objUser = $objUser;
+
         /**
          * Load the specified project
          */
@@ -175,8 +177,6 @@
         if (array_search('--user', $argv) !== false)
             $intUserId = $argv[array_search('--user', $argv)+1];
 
-
-
         $objUser = NarroUser::LoadByUserId($intUserId);
         if (!$objUser instanceof NarroUser) {
             NarroLog::LogMessage(2, sprintf(t('User id=%s does not exist in the database, will try to use the anonymous user.'), $intUserId));
@@ -186,6 +186,8 @@
                 return false;
             }
         }
+
+        QApplication::$objUser = $objUser;
 
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
