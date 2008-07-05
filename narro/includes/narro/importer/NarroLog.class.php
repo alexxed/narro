@@ -47,14 +47,14 @@
         }
 
         private static function OutputLog($intMessageType, $strText) {
-            $hndLogFile = fopen(self::$strLogFile, 'a');
+            $hndLogFile = fopen(self::$strLogFile, 'a+');
 
             if ($hndLogFile)
                 if ($strText != '')
                     fputs($hndLogFile, $strText . "\n");
             else {
                 self::SetLogFile(__TMP_PATH__ . '/narro-' . QApplication::$objUser->Language->LanguageCode);
-                $hndLogFile = fopen(self::$strLogFile, 'a');
+                $hndLogFile = fopen(self::$strLogFile, 'a+');
                 if ($hndLogFile)
                     if ($strText != '')
                         fputs($hndLogFile, $strText . "\n");
@@ -63,22 +63,24 @@
                         error_log($strText);
             }
 
-            if ($hndLogFile)
+            if ($hndLogFile) {
                 fclose($hndLogFile);
+                chmod(self::$strLogFile, 0666);
+            }
+                
         }
 
         public static function SetLogFile($strLogFile, $blnClear = false) {
-            self::$strLogFile = $strLogFile;
+            self::$strLogFile = $strLogFile;            
 
             if ($blnClear)
                 self::ClearLog();
         }
 
         public static function ClearLog() {
-            $hndLogFile = fopen(self::$strLogFile, 'w');
-            if ($hndLogFile) {
-                fclose($hndLogFile);
-                chmod(self::$strLogFile, 0666);
+
+            if (file_exists(self::$strLogFile)) {
+                unlink(self::$strLogFile);
             }
 
             if (file_exists(__TMP_PATH__ . '/narro-' . QApplication::$objUser->Language->LanguageCode)) {
