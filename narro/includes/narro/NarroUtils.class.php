@@ -77,7 +77,7 @@
             return @chmod($strFilePath, $intFileMode);
         }
 
-        function RecursiveCopy( $source, $target ) {
+        public static function RecursiveCopy( $source, $target ) {
             if ( is_dir( $source ) ) {
                 @mkdir( $target );
 
@@ -99,6 +99,19 @@
             } else {
                 copy( $source, $target );
             }
+        }
+
+        public static function CountFileLines($strFile) {
+            if ($hndFile = fopen($strFile, 'r')) {
+                $intLines = 0;
+                while(fgets($hndFile)) $intLines++;
+                fclose($hndFile);
+                return $intLines;
+            }
+            else
+                return false;
+
+
         }
     }
 ?>
