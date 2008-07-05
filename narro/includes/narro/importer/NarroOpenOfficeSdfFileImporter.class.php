@@ -31,26 +31,32 @@
                 return false;
             }
 
-            $intTotalToProcess = (int) preg_replace('/[^0-9]/', '', exec('wc -l ' . escapeshellarg($strTemplateFile)));
+            $intTotalToProcess = NarroUtils::CountFileLines($strTemplateFile);
 
             NarroLog::LogMessage(1, __LINE__ . ':' . sprintf(t('Starting to process file "%s" (%d texts), the result is written to "%s".'), $strTemplateFile, $intTotalToProcess, $strTranslatedFile));
 
             $intFileLineNr=0;
 
             while(!feof($hndTemplateFile)) {
-                
+
                 $strFileLine = fgets($hndTemplateFile, 4096);
                 $intFileLineNr++;
-                
+
                 NarroProgress::SetProgress((int) ceil(($intFileLineNr*100)/$intTotalToProcess));
 
                 $arrColumn = preg_split('/\t/', $strFileLine);
-                
+
+                /**
+                 * Unset a number before language code and the language code to allow matching original with translation
+                 */
+                $arrColumn[8] = '';
+                $arrColumn[9] = '';
+
                 /**
                  * skip help
                  */
                 if ($arrColumn[0] == 'helpcontent2') continue;
-                                
+
                 if (count($arrColumn) != 15) {
                     NarroLog::LogMessage(2, __LINE__ . ':' . sprintf('Skipped "%s" because splitting by tab does not give 14 columns.', $strFileLine));
                     continue;
@@ -60,15 +66,22 @@
 
                 $strLangCode = $arrColumn[9];
                 $strText = $arrColumn[10];
-                $strContext = trim(str_replace("\t", "\n", $strFileLine));
 
+                $strPossibleContext = '';
+                /**
+                 * positions 8, 9 and 10 contain a number, the language code and the text/translation
+                 */
+                foreach(array(1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14) as $intPos) {
+                    if (trim($arrColumn[$intPos]) != '' && !is_numeric($arrColumn[$intPos]))
+                        $strPossibleContext .= $arrColumn[$intPos] ."\n";
+                }
+                $strContext = trim($strPossibleContext);
 
-                $arrColumn[8] = 0;
                 $arrTranslatedColumn[8] = 0;
                 $arrTranslatedColumn[9] = 'ro';
-                
+
                 $objNarroContextInfo = $this->GetContextInfo($strText, $strContext);
-                
+
                 if ($objNarroContextInfo instanceof NarroContextInfo && $objNarroContextInfo->ValidSuggestionId) {
                     $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strText, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $strContext, $objFile, $this->objProject);
                     if
@@ -88,7 +101,7 @@
                     if ($objNarroContextInfo->TextAccessKey != '' && $objNarroContextInfo->SuggestionAccessKey != '') {
                         $objNarroContextInfo->ValidSuggestion->SuggestionValue = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '~' . $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, 1);
                     }
-                        
+
                     $arrTranslatedColumn[10] = str_replace(array("\n", "\r"), array("",""), $objNarroContextInfo->ValidSuggestion->SuggestionValue);
                 }
                 else {
@@ -113,7 +126,7 @@
 
                 fwrite($hndTranslatedFile, join("\t", $arrColumn));
                 fwrite($hndTranslatedFile, join("\t", $arrTranslatedColumn));
-                
+
             }
 
             fclose($hndTemplateFile);
@@ -121,7 +134,7 @@
             chmod($strTranslatedFile, 0666);
         }
 
-        public function ImportFile($strTemplateFile, $strTranslatedFile) {
+        public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
             $objDatabase = QApplication::$Database[1];
             /**
              * Open the template file
@@ -133,8 +146,8 @@
                 return false;
             }
 
-            //@todo replace this with a command or something, this takes way too much memory
-            $intTotalToProcess = count(file($strTemplateFile));
+            $intTotalToProcess = NarroUtils::CountFileLines($strTemplateFile);
+            $intProcessedSoFar = 0;
 
             /**
              * read the template file line by line
@@ -142,6 +155,7 @@
             while(!feof($hndFile)) {
                 $strFileLine = fgets($hndFile, 16384);
                 $intProcessedSoFar++;
+                NarroProgress::SetProgress((int) ceil(($intProcessedSoFar*100)/$intTotalToProcess));
 
                 /**
                  * OpenOffice uses tab separated values
@@ -155,6 +169,23 @@
 
                 $strLangCode = $arrColumn[9];
 
+                $strPossibleContext = '';
+                /**
+                 * positions 8, 9 and 10 contain a number, the language code and the text/translation
+                 */
+                foreach(array(1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14) as $intPos) {
+                    if (trim($arrColumn[$intPos]) != '' && !is_numeric($arrColumn[$intPos]))
+                        $strPossibleContext .= $arrColumn[$intPos] ."\n";
+                }
+                $strPossibleContext = trim($strPossibleContext);
+
+                /**
+                 * Unset some unused fields
+                 */
+                unset($arrColumn[8]);
+                unset($arrColumn[9]);
+                unset($arrColumn[9]);
+
                 if ($strLangCode == 1)
                     $strLangCode = 'en-US';
 
@@ -162,7 +193,7 @@
                  * if we have a line with the target language in the language column, then the previous line was probably the original english value
                  * to be sure, we're checking the context too
                  */
-                if ($this->objTargetLanguage->LanguageCode == trim($strLangCode) && $strContext == $arrColumn[0] . "\n" . $arrColumn[1] . "\n" . $arrColumn[3] . "\n" . $arrColumn[4]) {
+                if ($this->objTargetLanguage->LanguageCode == trim($strLangCode) && isset($strContext) && $strContext == $strPossibleContext) {
                     /**
                      * $strText and $strTextAccKey are kept from the previous cycle
                      */
@@ -216,7 +247,7 @@
                     continue;
                 }
 
-                $strContext = str_replace("\t", "\n", $strFileLine);
+                $strContext = $strPossibleContext;
 
                 $strDate = $arrColumn[14];
 
@@ -228,16 +259,11 @@
                     continue;
                 }
 
-                if (!$objFile instanceof NarroFile && $this->blnOnlySuggestions)
-                    continue;
-
-                $this->AddTranslation($objFile, $strText, $strTextAccKey, $strTranslation, $strTranslationAccKey, $strContext);
+                $this->AddTranslation($strText, $strTextAccKey, $strTranslation, $strTranslationAccKey, $strContext);
 
                 if ($intProcessedSoFar % 10 === 0) {
                     NarroLog::LogMessage(1, sprintf(t("Progress: %s%%"), (int) ceil(($intProcessedSoFar*100)/$intTotalToProcess)));
                 }
-                
-                NarroProgress::SetProgress((int) ceil(($intProcessedSoFar*100)/$intTotalToProcess));
             }
             fclose($hndFile);
         }
