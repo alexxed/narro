@@ -46,7 +46,7 @@
          * whether to import only suggestions, that is don't add anything else than suggestions
          */
         protected $blnOnlySuggestions = false;
-        
+
         /**
          * what suggestions are exported
          * 1 = validated
@@ -63,35 +63,35 @@
          * whether to make contexts inactive before import
          */
         protected $blnDeactivateContexts = true;
-        
+
         protected $strTranslationPath;
         protected $strTemplatePath;
         protected $intTotalContexts = 0;
         protected $intTotalFiles = 0;
-        
+
         public function CleanImportDirectory() {
             if (file_exists($this->strTranslationPath  . '/import.pid'))
                 unlink($this->strTranslationPath  . '/import.pid');
-                
+
             if (file_exists($this->strTranslationPath  . '/import.progress'))
-                unlink($this->strTranslationPath  . '/import.progress');                
+                unlink($this->strTranslationPath  . '/import.progress');
         }
 
         public function CleanExportDirectory() {
             if (file_exists($this->strTranslationPath  . '/export.pid'))
                 unlink($this->strTranslationPath  . '/export.pid');
-                
+
             if (file_exists($this->strTranslationPath  . '/export.progress'))
-                unlink($this->strTranslationPath  . '/export.progress');                
+                unlink($this->strTranslationPath  . '/export.progress');
         }
 
         public function ImportProject() {
             $this->startTimer();
-            
+
             switch ($this->objProject->ProjectType) {
                 case NarroProjectType::Narro:
                     NarroProgress::SetProgressFile($this->strTranslationPath  . '/import.progress');
-                    
+
                     $objNarroImporter = new NarroSelfFileImporter();
                     $objNarroImporter->Project = NarroProject::LoadByProjectName('Narro');
 
@@ -100,13 +100,13 @@
                     $objNarroImporter->Import();
                     break;
                 default:
-            
+
                     if (!file_exists($this->strTemplatePath))
                         throw new Exception(sprintf(t('%s does not exist.'), $this->strTemplatePath));
-                    
-                    NarroLog::LogMessage(1, sprintf(t('Starting import for the project %s from the directory %s'), $this->objProject->ProjectName, realpath($this->strTemplatePath . '/..')));
-                    
-        
+
+                    NarroLog::LogMessage(3, sprintf(t('Starting import for the project %s from the directory %s'), $this->objProject->ProjectName, realpath($this->strTemplatePath . '/..')));
+
+
                     if (is_dir($this->strTemplatePath))
                         $this->ImportFromDirectory();
                     elseif (is_file($this->strTemplatePath))
@@ -114,8 +114,9 @@
                     else
                         throw new Exception(sprintf(t('"%s" is not a file or a directory.'), $this->strTemplatePath));
             }
-            
+
             $this->stopTimer();
+            NarroLog::LogMessage(3, sprintf(t('Import finished successfully in %d seconds.'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
         }
 
         public function ImportFromFile() {
@@ -134,9 +135,9 @@
 
             fputs($hndPidFile, getmypid());
             fclose($hndPidFile);
-            
+
             NarroProgress::SetProgressFile($this->strTranslationPath  . '/import.progress');
-            
+
             if (!$intFileType = $this->GetFileType($this->strTranslationPath))
                 throw new Exception(t('Unrecognizable file type given for import.'));
 
@@ -221,7 +222,7 @@
 
             fputs($hndPidFile, getmypid());
             fclose($hndPidFile);
-            
+
             NarroProgress::SetProgressFile($this->strTranslationPath  . '/import.progress');
 
             /**
@@ -340,7 +341,7 @@
                  */
                 if (!$intFileType = $this->GetFileType($strFileName))
                     continue;
-                
+
                 $objFile = NarroFile::QuerySingle(
                                 QQ::AndCondition(
                                     QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
@@ -348,7 +349,7 @@
                                     QQ::Equal(QQN::NarroFile()->ParentId, $intParentId)
                                 )
                 );
-                
+
                 if ($objFile instanceof NarroFile) {
                     $objFile->Active = 1;
                     $objFile->TypeId = $intFileType;
@@ -431,18 +432,21 @@
                 case NarroFileType::Svg:
                         $objFileImporter = new NarroSvgFileImporter($this);
                         break;
+                case NarroFileType::DumbGettextPo:
+                        $objFileImporter = new NarroDumbGettextPoFileImporter($this);
+                        break;
                 default:
                         return false;
             }
-            
+
             $objFileImporter->File = $objFile;
-            
+
             return $objFileImporter->ImportFile($strTemplateFile, $strTranslatedFile);
         }
 
         public function ExportProject() {
-            
-            NarroLog::LogMessage(1, sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
+
+            NarroLog::LogMessage(3, sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
 
             $this->startTimer();
 
@@ -453,6 +457,8 @@
             else
                 throw new Exception(sprintf(t('%s does not exist or it is not a directory or file'), $this->strTemplatePath));
             $this->stopTimer();
+
+            NarroLog::LogMessage(3, sprintf(t('Export finished successfully in %d seconds.'), NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
         }
 
         public function ExportToFile() {
@@ -472,7 +478,7 @@
 
             fputs($hndPidFile, getmypid());
             fclose($hndPidFile);
-            
+
             NarroProgress::SetProgressFile($this->strTranslationPath  . '/export.progress');
 
             NarroLog::LogMessage(1, sprintf(t('Exporting to "%s" using template "%s"'), $this->strTranslationPath, $this->strTemplatePath));
@@ -506,7 +512,7 @@
                             )
                 );
 
-                if (!$objFile instanceof NarroFile) 
+                if (!$objFile instanceof NarroFile)
                     throw new Exception(t('There are no files in the database for this project.'));
             }
 
@@ -523,7 +529,7 @@
         public function ExportFromDirectory() {
 
             NarroLog::SetLogFile($this->strTranslationPath . '/export.log');
-            
+
             NarroLog::LogMessage(1, sprintf(t('Starting to export in directory "%s"'), $this->strTranslationPath));
 
             if (file_exists($this->strTranslationPath  . '/export.pid'))
@@ -563,14 +569,13 @@
                     $strPath = $strPath . '/' . $strDir;
 
                     if (!isset($arrDirectories[$strPath])) {
-                        if ($intParentId)
+                        if (!is_null($intParentId))
                             $objFile = NarroFile::QuerySingle(
                                 QQ::AndCondition(
                                     QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
                                     QQ::Equal(QQN::NarroFile()->FileName, $strDir),
                                     QQ::Equal(QQN::NarroFile()->TypeId, NarroFileType::Folder),
-                                    QQ::Equal(QQN::NarroFile()->ParentId, $intParentId),
-                                    QQ::Equal(QQN::NarroFile()->Active, 1)
+                                    QQ::Equal(QQN::NarroFile()->ParentId, $intParentId)
                                 )
                             );
                         else
@@ -579,8 +584,7 @@
                                         QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
                                         QQ::Equal(QQN::NarroFile()->FileName, $strDir),
                                         QQ::Equal(QQN::NarroFile()->TypeId, NarroFileType::Folder),
-                                        QQ::IsNull(QQN::NarroFile()->ParentId),
-                                        QQ::Equal(QQN::NarroFile()->Active, 1)
+                                        QQ::IsNull(QQN::NarroFile()->ParentId)
                                     )
                             );
 
@@ -596,11 +600,11 @@
 
                 if (!$intFileType = $this->GetFileType($strFileName))
                     continue;
-                
+
                 $objFile = NarroFile::QuerySingle(
                                 QQ::AndCondition(
-                                    QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId), 
-                                    QQ::Equal(QQN::NarroFile()->FileName, $strFileName), 
+                                    QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
+                                    QQ::Equal(QQN::NarroFile()->FileName, $strFileName),
                                     QQ::Equal(QQN::NarroFile()->ParentId, $intParentId),
                                     QQ::Equal(QQN::NarroFile()->Active, 1)
                                 )
@@ -622,9 +626,6 @@
 
                 NarroProgress::SetProgress((int) ceil(($intFileNo*100)/$intTotalFilesToProcess));
 
-                if ($intFileNo % 10 === 0) {
-                    NarroLog::LogMessage(3, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
-                }
             }
 
             $this->stopTimer();
@@ -652,6 +653,9 @@
                         break;
                 case NarroFileType::Svg:
                         $objFileImporter = new NarroSvgFileImporter($this);
+                        break;
+                case NarroFileType::DumbGettextPo:
+                        $objFileImporter = new NarroDumbGettextPoFileImporter($this);
                         break;
                 default:
                         return false;
@@ -682,6 +686,8 @@
                         return NarroFileType::OpenOfficeSdf;
                 case 'svg':
                         return NarroFileType::Svg;
+                case 'dpo':
+                        return NarroFileType::DumbGettextPo;
                 default:
                         return false;
             }
@@ -718,10 +724,10 @@
                             $this->strTranslationPath = $mixValue;
                         else
                             throw new Exception(sprintf(t('TranslationPath "%s" does not exist.'), $mixValue));
-                    }   
-                        
+                    }
+
                     break;
-                    
+
                 case "TemplatePath":
                     if (file_exists($mixValue))
                         $this->strTemplatePath = $mixValue;
@@ -730,16 +736,16 @@
                             $this->strTranslationPath = $mixValue;
                         else
                             throw new Exception(sprintf(t('TranslationPath "%s" does not exist.'), $mixValue));
-                    }   
-                        
+                    }
+
                     break;
-                                                        
+
                 case "User":
                     if ($mixValue instanceof NarroUser)
                         $this->objUser = $mixValue;
                     else
                         throw new Exception(t('User should be set with an instance of NarroUser'));
-                        
+
                     break;
 
                 case "Project":
