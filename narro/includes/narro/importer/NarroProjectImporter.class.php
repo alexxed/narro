@@ -556,7 +556,7 @@
             $arrDirectories = array();
 
             foreach($arrFiles as $intFileNo=>$strFileToExport) {
-                $arrFileParts = split('/', str_replace(realpath($this->strTemplatePath), '', $strFileToExport));
+                $arrFileParts = split('/', str_replace($this->strTemplatePath, '', $strFileToExport));
                 $strFileName = $arrFileParts[count($arrFileParts)-1];
                 unset($arrFileParts[count($arrFileParts)-1]);
                 unset($arrFileParts[0]);
