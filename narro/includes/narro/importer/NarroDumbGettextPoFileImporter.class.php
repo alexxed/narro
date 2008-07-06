@@ -284,9 +284,9 @@
                             if (!is_null($strMsgStr0))
                                 $strMsgStr0 = $this->GetTranslation($this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), $this->getAccessKeyPrefix($strMsgStr0), null, null, $strContext . $strMsgId . $strMsgPluralId . "This text has plurals.", 0);
                             if (!is_null($strMsgStr1))
-                                $strMsgStr1 = $this->GetTranslation($this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), $this->getAccessKeyPrefix($strMsgStr1), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 1 for the text \"$strMsgStr\".", 1);
+                                $strMsgStr1 = $this->GetTranslation($this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), $this->getAccessKeyPrefix($strMsgStr1), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 1 for the text \"$strMsgStr0\".", 1);
                             if (!is_null($strMsgStr2))
-                                $strMsgStr2 = $this->GetTranslation($this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), $this->getAccessKeyPrefix($strMsgStr2), null, null, $this->getAccessKey($strMsgStr2), $strContext . $strMsgId . $strMsgPluralId . "This is plural form 2 for the text \"$strMsgStr\".", 2);
+                                $strMsgStr2 = $this->GetTranslation($this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), $this->getAccessKeyPrefix($strMsgStr2), null, null, $this->getAccessKey($strMsgStr2), $strContext . $strMsgId . $strMsgPluralId . "This is plural form 2 for the text \"$strMsgStr0\".", 2);
                         }
                     }
 
@@ -619,11 +619,11 @@
                             }
 
                             if (!is_null($strMsgStr1)) {
-                                $this->AddTranslation($this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 1 for the text \"$strMsgStr\".");
+                                $this->AddTranslation($this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 1 for the text \"$strMsgStr0\".");
                             }
 
                             if (!is_null($strMsgStr2)) {
-                                $this->AddTranslation($this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 2 for the text \"$strMsgStr\".");
+                                $this->AddTranslation($this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 2 for the text \"$strMsgStr0\".");
                             }
                         }
                     }
