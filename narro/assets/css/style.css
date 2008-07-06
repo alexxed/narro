@@ -45,7 +45,7 @@ body {
 .file_asset_dbox input { padding: 3px; margin-right: 5px; }
 
 .dotted_box { border:1px dotted black;}
-.dotted_box_title { display:block; background-color: lightgreen; font-weight:bold; padding:2px; }
+.dotted_box_title { display:block; background-color: #A5F7A5; font-weight:bold; padding:2px; }
 .dotted_box_content { padding:5px; }
 
 a:link, a:visited {
@@ -127,12 +127,16 @@ tr.datagrid_odd {
     background: #FFFFFF url(../images/bg_td1.jpg) repeat-x;
 }
 
+tr.selected {
+    background: #D0FAD0;
+}
+
 .white3dbg {
     background: #FFFFFF url(../images/bg_td1.jpg) repeat-x;
 }
 
 .green3dbg {
-    background: lightgreen;
+    background: #A5F7A5;
 }
 
 tbody th.datagrid_row,td.datagrid_row {
