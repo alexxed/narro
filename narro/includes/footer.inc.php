@@ -24,5 +24,11 @@
     if (QApplication::$Database[1]->EnableProfiling)
         QApplication::$Database[1]->OutputProfiling();
 ?>
+<?php
+    /**
+     * Yes, you are free to remove this footer
+     */
+?>
+    <p align="center" style="font-size:small"><a target="_blank" href="http://code.google.com/p/narro/wiki/About"><?php echo sprintf(t('%s, version %s'), 'Narro', NARRO_VERSION) ?></a></p>
     </body>
 </html>
