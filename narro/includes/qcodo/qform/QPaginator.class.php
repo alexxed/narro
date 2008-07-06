@@ -31,6 +31,8 @@
         }
 
         public function GetControlHtml() {
+            if ($this->intTotalItemCount < $this->intItemsPerPage) return false;
+
             $this->blnActionsMustTerminate = false;
             $this->objPaginatedControl->DataBind();
 
