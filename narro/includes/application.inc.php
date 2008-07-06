@@ -135,6 +135,7 @@
     QApplicationBase::$ClassFile['NarroFileImporter'] = __INCLUDES__ . '/narro/importer/NarroFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroProjectImporter'] = __INCLUDES__ . '/narro/importer/NarroProjectImporter.class.php';
     QApplicationBase::$ClassFile['NarroGettextPoFileImporter'] = __INCLUDES__ . '/narro/importer/NarroGettextPoFileImporter.class.php';
+    QApplicationBase::$ClassFile['NarroDumbGettextPoFileImporter'] = __INCLUDES__ . '/narro/importer/NarroDumbGettextPoFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroMozillaIniFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaIniFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroMozillaIncFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaIncFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroMozillaDtdFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaDtdFileImporter.class.php';
