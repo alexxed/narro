@@ -81,6 +81,8 @@
 
             $this->dtgSuggestions->TotalItemCount = NarroSuggestion::CountByUserId($this->intUserId);
             $this->dtgSuggestions->DataSource = NarroSuggestion::LoadArrayByUserId($this->intUserId, $objClauses);
+
+            QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
 
         protected function GetControlHtml() {
