@@ -77,6 +77,8 @@
 
             $this->dtgUsers->DataSource = $objDbResult->GetRows();
 
+            QApplication::ExecuteJavaScript('highlight_datagrid();');
+
         }
 
         protected function GetControlHtml() {
