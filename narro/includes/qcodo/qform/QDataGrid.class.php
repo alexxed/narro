@@ -33,9 +33,12 @@
 
         }
 
-        // Override any of these methods/variables below to alter the way the DataGrid gets rendered
-
-//      protected function GetPaginatorRowHtml() {}
+        protected function GetPaginatorRowHtml($objPaginator) {
+            if ($this->objPaginator->TotalItemCount < $this->objPaginator->ItemsPerPage)
+                return false;
+            else
+                return parent::GetPaginatorRowHtml($objPaginator);
+        }
 
 //      protected function GetHeaderRowHtml() {}
 
