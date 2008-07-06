@@ -508,6 +508,9 @@
         }
 
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
+            if (trim($this->txtSuggestionValue->Text) == '')
+                return true;
+
             $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             if (is_array($arrResult) && isset($arrResult[1]))
                 $strSuggestionValue = $arrResult[1];
@@ -532,9 +535,6 @@
         }
 
         protected function SaveSuggestion($blnValidate = false) {
-            if (trim($this->txtSuggestionValue->Text) == '')
-                return false;
-
             if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
                 return false;
 
