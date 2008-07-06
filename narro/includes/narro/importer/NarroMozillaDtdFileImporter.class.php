@@ -129,8 +129,10 @@
                 else
                     NarroLog::LogMessage(2, sprintf(t('No entities found in template file %s'), $strTemplateFile));
             }
-            else
+            else {
+                NarroLog::LogMessage(2, sprintf(t('No contexts found in file: %s'), $strTemplateFile));
                 return false;
+            }
         }
 
         public function ExportFile($strTemplateFile, $strTranslatedFile) {
