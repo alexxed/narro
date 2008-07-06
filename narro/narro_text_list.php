@@ -20,6 +20,7 @@
 
     class NarroTextListForm extends QForm {
         protected $dtgNarroContextInfo;
+        protected $objNarroProject;
 
         // DataGrid Columns
         protected $colContext;
