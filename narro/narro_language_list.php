@@ -114,6 +114,8 @@
                 array_push($objClauses, $objClause);
 
             $this->dtgNarroLanguage->DataSource = NarroLanguage::LoadAll($objClauses);
+
+            QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
     }
 
