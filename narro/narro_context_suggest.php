@@ -38,6 +38,7 @@
         protected $chkGoToNext;
 
         protected $objNarroContextInfo;
+        protected $objNarroProject;
         protected $pnlOriginalText;
         protected $pnlContext;
         public $txtSuggestionValue;
@@ -125,6 +126,9 @@
 
         protected function Form_Create() {
             $this->SetupNarroContextInfo();
+
+            $this->objNarroProject = $this->objNarroContextInfo->Context->Project;
+
             $this->intTextFilter = $this->intTextFilter;
 
             $this->pnlOriginalText_Create();
