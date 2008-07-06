@@ -19,8 +19,6 @@
     require_once('narro_text_list.php');
     class NarroProjectTextListForm extends NarroTextListForm {
 
-        protected $objNarroProject;
-
         protected function Form_Create() {
             parent::Form_Create();
             switch($this->lstSearchType->SelectedValue) {
@@ -155,6 +153,8 @@
                     );
                     break;
             }
+
+            QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
 
     }
