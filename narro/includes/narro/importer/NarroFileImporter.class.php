@@ -50,9 +50,8 @@
         /**
          * what suggestions are exported
          * 1 = validated
-         * 2 = most voted and validated
-         * 3 = current user's suggestion and validated
-         * for 2 and 3 the fallback is to validated
+         * 2 = validated and most voted
+         * 3 = validated and current user's suggestion
          */
         protected $intExportedSuggestion = 1;
 
@@ -593,7 +592,7 @@
                         throw new Exception(t('Project should be set with an instance of NarroProject'));
 
                     break;
-                    
+
                 case "File":
                     if ($mixValue instanceof NarroFile)
                         $this->objFile = $mixValue;
@@ -601,7 +600,7 @@
                         throw new Exception(t('File should be set with an instance of NarroFile'));
 
                     break;
-                    
+
                 case "TargetLanguage":
                     if ($mixValue instanceof NarroLanguage)
                         $this->objTargetLanguage = $mixValue;

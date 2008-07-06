@@ -252,7 +252,7 @@
                             if (strlen(trim($strFlag)) < 4) $strFlag = null;
                         }
 
-                        $strContext = trim($strTranslatorComment . $strExtractedComment . $strReference . $strFlag . $strPreviousContext . $strPreviousUntranslated . $strPreviousUntranslatedPlural . $strMsgContext);
+                        $strContext = $strTranslatorComment . $strExtractedComment . $strReference . $strFlag . $strPreviousContext . $strPreviousUntranslated . $strPreviousUntranslatedPlural . $strMsgContext;
                         NarroLog::LogMessage(1, 'Context is: ' . $strContext);
 
                         if (!is_null($strMsgId)) $strMsgId = str_replace('\"', '"', $strMsgId);
@@ -271,7 +271,7 @@
                          * if it's not a plural, just add msgid and msgstr
                          */
                         if (is_null($strMsgPluralId)) {
-                            $strMsgStr = $this->GetTranslation($this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), $this->getAccessKeyPrefix($strMsgStr), null , null, $strContext . "\n" . $strMsgId);
+                            $strMsgStr = $this->GetTranslation($this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), $this->getAccessKeyPrefix($strMsgStr), null , null, $strContext . $strMsgId);
                         }
                         else {
                             /**
@@ -281,11 +281,11 @@
                              * the next ones (currently 2) are added with plural id, so in fact they will be tied to the same text
                              */
                             if (!is_null($strMsgStr0))
-                                $strMsgStr0 = $this->GetTranslation($this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), $this->getAccessKeyPrefix($strMsgStr0), null, null, $strContext . "\n" . $strMsgId . "\n" . $strMsgPluralId . "\nThis text has plurals.", 0);
+                                $strMsgStr0 = $this->GetTranslation($this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), $this->getAccessKeyPrefix($strMsgStr0), null, null, $strContext . $strMsgId . $strMsgPluralId . "This text has plurals.", 0);
                             if (!is_null($strMsgStr1))
-                                $strMsgStr1 = $this->GetTranslation($this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), $this->getAccessKeyPrefix($strMsgStr1), null, null, $strContext . "\n" . $strMsgId . "\n" . $strMsgPluralId . "\nThis is plural form 1 for the text \"$strMsgId\".", 1);
+                                $strMsgStr1 = $this->GetTranslation($this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), $this->getAccessKeyPrefix($strMsgStr1), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 1 for the text \"$strMsgStr\".", 1);
                             if (!is_null($strMsgStr2))
-                                $strMsgStr2 = $this->GetTranslation($this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), $this->getAccessKeyPrefix($strMsgStr2), null, null, $this->getAccessKey($strMsgStr2), $strContext . "\n" . $strMsgId . "\n" . $strMsgPluralId . "\nThis is plural form 2 for the text \"$strMsgId\".", 2);
+                                $strMsgStr2 = $this->GetTranslation($this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), $this->getAccessKeyPrefix($strMsgStr2), null, null, $this->getAccessKey($strMsgStr2), $strContext . $strMsgId . $strMsgPluralId . "This is plural form 2 for the text \"$strMsgStr\".", 2);
                         }
                     }
 
@@ -353,8 +353,6 @@
 
                 fclose($hndExportFile);
                 chmod($strTranslatedFile, 0666);
-//              exec('msgcat ' . $strTranslatedFile . ' -o ' . $strTranslatedFile . '.1');
-//              exec('mv -f ' . $strTranslatedFile . '.1 ' . $strTranslatedFile);
             }
             else {
                 NarroLog::LogMessage(3, sprintf(t('Cannot open file "%s".'), $strFileToImport));
@@ -605,7 +603,7 @@
                          * if it's not a plural, just add msgid and msgstr
                          */
                         if (is_null($strMsgPluralId)) {
-                                $this->AddTranslation($this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), null, null, $strContext . "\n" . $strMsgId);
+                                $this->AddTranslation($this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), null, null, $strContext . $strMsgId);
                         }
                         else {
                             /**
@@ -616,15 +614,15 @@
                              * @todo add unlimited plurals support
                              */
                             if (!is_null($strMsgStr0)) {
-                                $this->AddTranslation($this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), null, null, $strContext . "\n" . $strMsgId . "\n" . $strMsgPluralId . "\nThis text has plurals.");
+                                $this->AddTranslation($this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), null, null, $strContext . $strMsgId . $strMsgPluralId . "This text has plurals.");
                             }
 
                             if (!is_null($strMsgStr1)) {
-                                $this->AddTranslation($this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), null, null, $strContext . "\n" . $strMsgId . "\n" . $strMsgPluralId . "\nThis is plural form 1 for the text \"$strMsgId\".");
+                                $this->AddTranslation($this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 1 for the text \"$strMsgStr\".");
                             }
 
                             if (!is_null($strMsgStr2)) {
-                                $this->AddTranslation($this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), null, null, $strContext . "\n" . $strMsgId . "\n" . $strMsgPluralId . "\nThis is plural form 2 for the text \"$strMsgId\".");
+                                $this->AddTranslation($this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 2 for the text \"$strMsgStr\".");
                             }
                         }
                     }
@@ -699,6 +697,7 @@
          * @return string valid suggestion
          */
         protected function GetTranslation($strOriginal, $strOriginalAccKey = null, $strOriginalAccKeyPrefix = null, $strTranslation, $strTranslationAccKey = null, $strContext, $intPluralForm = null, $strComment = null) {
+
             $objNarroContextInfo = NarroContextInfo::QuerySingle(
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
