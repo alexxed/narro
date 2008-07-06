@@ -620,8 +620,8 @@
         }
 
         protected function btnPrevious_Click($strFormId, $strControlId, $strParameter) {
-            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
-                return false;
+//            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
+//                return false;
 
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
@@ -659,8 +659,8 @@
         }
 
         protected function btnNext_Click($strFormId, $strControlId, $strParameter) {
-            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
-                return false;
+//            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
+//                return false;
 
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
@@ -699,8 +699,8 @@
         }
 
         protected function btnNext100_Click($strFormId, $strControlId, $strParameter) {
-            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
-                return false;
+//            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
+//                return false;
 
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
@@ -739,8 +739,8 @@
         }
 
         protected function btnPrevious100_Click($strFormId, $strControlId, $strParameter) {
-            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
-                return false;
+//            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
+//                return false;
 
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
