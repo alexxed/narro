@@ -81,8 +81,7 @@
         <?php $this->pnlProgress->Render() ?>
         <?php $this->lblMessage->Render() ?>
 
-        <?php if(QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID && $this->txtSuggestionValue->Display)
-$this->txtSuggestionValue->Focus(); ?>
+        <?php if(QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID && $this->txtSuggestionValue->Display) $this->txtSuggestionValue->Focus(); ?>
     <?php $this->RenderEnd() ?>
 
 <?php require('includes/footer.inc.php'); ?>

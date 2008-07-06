@@ -233,15 +233,15 @@
                     }
 
                     if (isset($objArchiver)) {
-                        $objArchiver->set_options(array('overwrite' => 1));
+                        $objArchiver->set_options(array('basedir' => $strWorkDir, 'overwrite' => 1));
                         $objArchiver->extract_files();
-                        if (count($objArchiver->errors) == 0) {
-                            NarroLog::LogMessage(3, join("\n", $objArchiver->errors));
+                        if (count($objArchiver->error) > 0) {
+                            foreach($objArchiver->error as $strError)
+                                NarroLog::LogMessage(3, $strError);
                         }
                         NarroUtils::RecursiveChmod($strWorkDir);
                     }
 
-                    //exec('tar jxvf ' . $this->flaImportFromFile->File);
                     if (!file_exists($strWorkDir . '/en-US') && !file_exists($strWorkDir . '/' . QApplication::$objUser->Language->LanguageCode)) {
                         NarroLog::LogMessage(3, sprintf(t('The uploaded archive should have at least one directory named "en-US" or one named "%s" that contains the files with the original texts'), QApplication::$objUser->Language->LanguageCode));
                         $this->lblImport->Text = t('Import failed.');

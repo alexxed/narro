@@ -414,6 +414,10 @@ class tar_file extends archive
                     'magic' => $temp['magic'],
                 );
 
+                if (!file_exists(dirname($file['name'])) && !mkdir($file['name'], 0777, true)) {
+                    $this->error[] = 'Failed to create directory: ' . getcwd() . '/' . $file['name'];
+                }
+
                 if ($file['checksum'] == 0x00000000)
                     break;
                 else if (substr($file['magic'], 0, 5) != "ustar")
@@ -437,7 +441,7 @@ class tar_file extends archive
                 }
                 else if ($file['type'] == 5)
                 {
-                    if (!mkdir($file['name'], 0777, true)) {
+                    if (!file_exists(dirname($file['name'])) && !mkdir($file['name'], 0777, true)) {
                         $this->error[] = 'Failed to create directory: ' . getcwd() . '/' . $file['name'];
                     }
                     //chmod($file['name'], $file['stat'][2]);
@@ -478,7 +482,7 @@ class tar_file extends archive
 
     function open_archive()
     {
-        return @fopen($this->options['name'], "rb");
+        return fopen($this->options['name'], "rb");
     }
 }
 
@@ -581,7 +585,7 @@ class zip_file extends archive
             throw new Exception(__METHOD__ . ':Can\'t open file: ' . $this->options['name']);
         }
 
-        ZipArchive::extractTo($this->options['basedir']);
+        $zip->extractTo($this->options['basedir']);
     }
 
     function create_zip() {
