@@ -392,9 +392,6 @@
 
                 NarroProgress::SetProgress((int) ceil(($intFileNo*100)/$intTotalFilesToProcess));
 
-                if ($intFileNo % 10 === 0) {
-                    NarroLog::LogMessage(1, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
-                }
             }
 
             if (file_exists($this->strTranslationPath . '/import.pid'))
