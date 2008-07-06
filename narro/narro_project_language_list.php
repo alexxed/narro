@@ -62,7 +62,7 @@
             $this->dtgNarroLanguage->PaginatorAlternate = new QPaginator($this->dtgNarroLanguage);
             $this->dtgNarroLanguage->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
             $this->dtgNarroLanguage->SortColumnIndex = 0;
-            
+
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgNarroLanguage->UseAjax = false;
 
@@ -125,12 +125,13 @@
 
         protected function dtgNarroLanguage_Bind() {
             $this->dtgNarroLanguage->TotalItemCount = NarroLanguage::CountAll();
-            
+
             $this->dtgNarroLanguage->DataSource = NarroLanguage::LoadAll(QQ::Clause(
                 $this->dtgNarroLanguage->OrderByClause,
                 $this->dtgNarroLanguage->LimitClause
             ));
 
+            QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
 
     }
