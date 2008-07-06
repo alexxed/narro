@@ -272,6 +272,7 @@
                          */
                         if (is_null($strMsgPluralId)) {
                             $strMsgStr = $this->GetTranslation($this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), $this->getAccessKeyPrefix($strMsgStr), null , null, $strContext . $strMsgId);
+
                         }
                         else {
                             /**
@@ -738,7 +739,7 @@
                 /**
                  * leave it untranslated
                  */
-                return "";
+                return $strOriginal;
             }
         }
     }
