@@ -34,6 +34,8 @@
 
             } else
                 QApplication::Redirect('narro_project_file_list.php?p=' . $intProjectId);
+
+            $this->objNarroProject = $this->objNarroFile->Project;
         }
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {
@@ -145,6 +147,7 @@
                     break;
             }
 
+            QApplication::ExecuteJavaScript('highlight_datagrid();');
 
         }
 
