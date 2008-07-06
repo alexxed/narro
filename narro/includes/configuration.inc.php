@@ -21,6 +21,7 @@
     define('SERVER_INSTANCE', 'dev');
     define('ALLOW_REMOTE_ADMIN', false);
     define('ADMIN_EMAIL_ADDRESS', 'user@host.com');
+    define('NARRO_VERSION', '0.9.0');
     define ('__DOCROOT__', realpath(dirname(__FILE__) . '/../..'));
     define ('__VIRTUAL_DIRECTORY__', '');
     define ('__HTTP_URL__', 'http://localhost');
