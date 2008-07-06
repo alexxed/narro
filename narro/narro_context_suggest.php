@@ -516,10 +516,12 @@
 
             QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $strSuggestionValue, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
 
-            if (QApplication::$objPluginHandler->Error)
+            if (QApplication::$objPluginHandler->Error) {
                 $this->ShowPluginErrors();
+                return false;
+            }
             else
-                $this->SaveSuggestion();
+                return $this->SaveSuggestion();
         }
 
         protected function btnSaveValidate_Click($strFormId, $strControlId, $strParameter) {
@@ -530,6 +532,8 @@
         }
 
         protected function SaveSuggestion($blnValidate = false) {
+            if (trim($this->txtSuggestionValue->Text) == '')
+                return false;
 
             if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
                 return false;
@@ -616,6 +620,9 @@
         }
 
         protected function btnPrevious_Click($strFormId, $strControlId, $strParameter) {
+            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
+                return false;
+
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
             else
@@ -652,6 +659,9 @@
         }
 
         protected function btnNext_Click($strFormId, $strControlId, $strParameter) {
+            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
+                return false;
+
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
             else
@@ -689,6 +699,9 @@
         }
 
         protected function btnNext100_Click($strFormId, $strControlId, $strParameter) {
+            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
+                return false;
+
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
             else
@@ -726,6 +739,9 @@
         }
 
         protected function btnPrevious100_Click($strFormId, $strControlId, $strParameter) {
+            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
+                return false;
+
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
             else
