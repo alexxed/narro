@@ -69,10 +69,11 @@
 
             $this->colVote = new QDataGridColumn(t('Votes'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colVote_Render($_ITEM); ?>');
             $this->colVote->HtmlEntities = false;
-            //$this->colVote->Width = 30;
+            $this->colVote->Wrap = false;
+
             $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colActions_Render($_ITEM); ?>');
             $this->colActions->HtmlEntities = false;
-            //$this->colActions->Width = 100;
+            $this->colActions->Wrap = false;
 
             // Setup DataGrid
             $this->dtgSuggestions = new QDataGrid($this);
@@ -257,7 +258,15 @@
         }
 
         public function dtgSuggestions_colAuthor_Render( NarroSuggestion $objNarroSuggestion ) {
-            return sprintf('<a href="narro_user_profile.php?u=%d">%s</a>', $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username);
+            $objDateSpan = new QDateTimeSpan(time() - strtotime($objNarroSuggestion->Created));
+            $strCreatedWhen = $objDateSpan->SimpleDisplay();
+
+            if (strtotime($objNarroSuggestion->Created) > 0 && $strCreatedWhen && $objNarroSuggestion->User->Username)
+                return sprintf('<a href="narro_user_profile.php?u=%d">%s</a>, ' . t('%s ago'), $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username, $strCreatedWhen);
+            elseif (strtotime($objNarroSuggestion->Created) > 0 && $strCreatedWhen && !$objNarroSuggestion->User->Username)
+                return sprintf(t('%s ago'), $strCreatedWhen);
+            else
+                return sprintf('<a href="narro_user_profile.php?u=%d">%s</a>', $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username);
         }
 
 
@@ -357,8 +366,8 @@
                         )
                 );
 
-            $this->dtgSuggestions->ShowFooter = $this->dtgSuggestions->TotalItemCount > $this->dtgSuggestions->ItemsPerPage;
-            $this->dtgSuggestions->ShowHeader = $this->dtgSuggestions->TotalItemCount > $this->dtgSuggestions->ItemsPerPage;
+            $this->dtgSuggestions->ShowFooter = ($this->dtgSuggestions->TotalItemCount > $this->dtgSuggestions->ItemsPerPage);
+            $this->dtgSuggestions->ShowHeader = ($this->dtgSuggestions->TotalItemCount > $this->dtgSuggestions->ItemsPerPage);
 
 
             $objClauses = QQ::Clause(QQ::OrderBy(QQN::NarroSuggestion()->LanguageId));
@@ -379,6 +388,7 @@
                         $objClauses
                     );
             $this->blnModified = true;
+            QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
 
         // Control ServerActions
