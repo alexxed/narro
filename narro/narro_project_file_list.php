@@ -141,7 +141,7 @@
                     $sOutput .= $objProgressBar->Render(false);
 
                 }
-                return $sOutput;
+                return sprintf('<a href="narro_file_text_list.php?p=%d&f=%d">%s</a>', $objNarroFile->ProjectId, $objNarroFile->FileId, $sOutput);
             }
             else
                 return '';
@@ -288,6 +288,7 @@
                     $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::IsNull(QQN::NarroFile()->ParentId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder)), $objClauses);
             }
 
+            QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
 
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
