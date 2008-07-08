@@ -17,6 +17,199 @@
      */
 
     class NarroDumbGettextPoFileImporter extends NarroFileImporter {
+        protected function getPoFields(&$hndFile) {
+            $arrFields = array();
+            
+            if (!is_resource($hndFile) || feof($hndFile)) return $arrFields;
+            
+            $strLine = fgets($hndFile, 8192);
+            NarroLog::LogMessage(1, "Processing " . $strLine . "<br />");
+            if (strpos($strLine, '# ') === 0) {
+                 NarroLog::LogMessage(1, 'Found translator comment. <br />');
+                $arrFields['TranslatorComment'] = $strLine;
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '# ') === 0)
+                        $arrFields['TranslatorComment'] .= $strLine;
+                    else
+                        break;
+
+                }
+            }
+
+            if (strpos($strLine, '#.') === 0) {
+                NarroLog::LogMessage(1, 'Found extracted comment. <br />');
+                $arrFields['ExtractedComment'] = $strLine;
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '#.') === 0)
+                        $arrFields['ExtractedComment'] .= $strLine;
+                    else
+                        break;
+
+                }
+            }
+
+            if (strpos($strLine, '#:') === 0) {
+                NarroLog::LogMessage(1, 'Found reference. <br />');
+                $arrFields['Reference'] = $strLine;
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '#:') === 0)
+                        $arrFields['Reference'] .= $strLine;
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, '#,') === 0) {
+                NarroLog::LogMessage(1, 'Found flag. <br />');
+                $arrFields['Flag'] = $strLine;
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '#,') === 0)
+                        $arrFields['Flag'] .= $strLine;
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, '#| msgctxt') === 0) {
+                NarroLog::LogMessage(1, 'Found previous context. <br />');
+                $arrFields['PreviousContext'] = $strLine;
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '#| msgctxt') === 0)
+                        $arrFields['PreviousContext'] .= $strLine;
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, '#| msgid') === 0) {
+                NarroLog::LogMessage(1, 'Found previous translated string. <br />');
+                $arrFields['PreviousUntranslated'] = $strLine;
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '#| msgid') === 0)
+                        $arrFields['PreviousUntranslated'] .= $strLine;
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, '#| msgid_plural') === 0) {
+                NarroLog::LogMessage(1, 'Found previous translated plural string. <br />');
+                $arrFields['PreviousUntranslatedPlural'] = $strLine;
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '#| msgid_plural') === 0)
+                        $arrFields['PreviousUntranslatedPlural'] .= $strLine;
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, 'msgctxt ') === 0) {
+                NarroLog::LogMessage(1, 'Found string. <br />');
+                preg_match('/msgctxt\s+\"(.*)\"/', $strLine, $arrMatches);
+                $arrFields['MsgContext'] = str_replace('\"', '"', $arrMatches[1]);
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '"') === 0) {
+                        $arrFields['MsgContext'] .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
+                    }
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, 'msgid ') === 0) {
+                NarroLog::LogMessage(1, 'Found msgid. <br />');
+                preg_match('/msgid\s+\"(.*)\"/', $strLine, $arrMatches);
+                $arrFields['MsgId'] = str_replace('\"', '"', $arrMatches[1]);
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '"') === 0) {
+                        $arrFields['MsgId'] .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
+                    }
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, 'msgid_plural') === 0) {
+                NarroLog::LogMessage(1, 'Found plural string. <br />');
+                preg_match('/msgid_plural\s+\"(.*)\"/', $strLine, $arrMatches);
+                $arrFields['MsgPluralId'] = str_replace('\"', '"', $arrMatches[1]);
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '"') === 0) {
+                        $arrFields['MsgPluralId'] .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
+                    }
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, 'msgstr ') === 0) {
+                NarroLog::LogMessage(1, 'Found translation. <br />');
+                preg_match('/msgstr\s+\"(.*)\"/', $strLine, $arrMatches);
+                $arrFields['MsgStr'] = str_replace('\"', '"', $arrMatches[1]);
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '"') === 0) {
+                        $arrFields['MsgStr'] .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
+                    }
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, 'msgstr[0]') === 0) {
+                NarroLog::LogMessage(1, 'Found translation plural 1. <br />');
+                preg_match('/msgstr\[0\]\s+\"(.*)\"/', $strLine, $arrMatches);
+                $arrFields['MsgStr0'] = str_replace('\"', '"', $arrMatches[1]);
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '"') === 0) {
+                        $arrFields['MsgStr0'] .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
+                    }
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, 'msgstr[1]') === 0) {
+                NarroLog::LogMessage(1, 'Found translation plural 2. <br />');
+                preg_match('/msgstr\[1\]\s+\"(.*)\"/', $strLine, $arrMatches);
+                $arrFields['MsgStr1'] = str_replace('\"', '"', $arrMatches[1]);
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '"') === 0) {
+                        $arrFields['MsgStr1'] .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
+                    }
+                    else
+                        break;
+                }
+            }
+
+            if (strpos($strLine, 'msgstr[2]') === 0) {
+                NarroLog::LogMessage(1, 'Found translation plural 3. <br />');
+                preg_match('/msgstr\[2\]\s+\"(.*)\"/', $strLine, $arrMatches);
+                $arrFields['MsgStr2'] = str_replace('\"', '"', $arrMatches[1]);
+                while (!feof($hndFile)) {
+                    $strLine = fgets($hndFile, 8192);
+                    if (strpos($strLine, '"') === 0) {
+                        $arrFields['MsgStr2'] .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
+                    }
+                    else
+                        break;
+                }
+            }
+            
+            return $arrFields;
+        }
 
         public function ExportFile($strTemplate, $strTranslatedFile = null) {
             $hndExportFile = fopen($strTranslatedFile, 'w');
@@ -25,253 +218,51 @@
                 return false;
             }
 
-            $hndTemplate = fopen($strTemplate, 'r');
-            if ($hndTemplate) {
+            $hndTemplateFile = fopen($strTemplate, 'r');
+            if ($hndTemplateFile) {
                 $strCurrentGroup = 1;
-                while (!feof($hndTemplate)) {
-                    $strLine = fgets($hndTemplate, 8192);
+                while (!feof($hndTemplateFile)) {
+                    $arrTemplateFields = $this->getPoFields($hndTemplateFile);
 
-                    NarroLog::LogMessage(1, 'Processing ' . $strLine );
-
-                    if (strpos($strLine, '# ') === 0) {
-                        NarroLog::LogMessage(1, 'Found translator comment.');
-                        $strTranslatorComment = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '# ') === 0)
-                                $strTranslatorComment .= $strLine;
-                            else
-                                break;
-
-                        }
-                    }
-
-                    if (strpos($strLine, '#.') === 0) {
-                        NarroLog::LogMessage(1, 'Found extracted comment.');
-                        $strExtractedComment = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#.') === 0)
-                                $strExtractedComment .= $strLine;
-                            else
-                                break;
-
-                        }
-                    }
-
-                    if (strpos($strLine, '#:') === 0) {
-                        NarroLog::LogMessage(1, 'Found reference.');
-                        $strReference = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#:') === 0)
-                                $strReference .= $strLine;
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, '#,') === 0) {
-                        NarroLog::LogMessage(1, 'Found flag.');
-                        $strFlag = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#,') === 0)
-                                $strFlag .= $strLine;
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, '#| msgctxt') === 0) {
-                        NarroLog::LogMessage(1, 'Found previous context.');
-                        $strPreviousContext = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#| msgctxt') === 0)
-                                $strPreviousContext .= $strLine;
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, '#| msgid') === 0) {
-                        NarroLog::LogMessage(1, 'Found previous translated string.');
-                        $strPreviousUntranslated = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#| msgid') === 0)
-                                $strPreviousUntranslated .= $strLine;
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, '#| msgid_plural') === 0) {
-                        NarroLog::LogMessage(1, 'Found previous translated plural string.');
-                        $strPreviousUntranslatedPlural = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#| msgid_plural') === 0)
-                                $strPreviousUntranslatedPlural .= $strLine;
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgctxt ') === 0) {
-                        NarroLog::LogMessage(1, 'Found context.');
-                        preg_match('/msgctxt\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgContext = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgContext .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgid ') === 0) {
-                        preg_match('/msgid\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgId = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgId .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgid_plural') === 0) {
-                        NarroLog::LogMessage(1, 'Found plural string.');
-                        preg_match('/msgid_plural\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgPluralId = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgPluralId .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgstr ') === 0) {
-                        NarroLog::LogMessage(1, 'Found translation.');
-                        preg_match('/msgstr\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgStr = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgStr .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgstr[0]') === 0) {
-                        NarroLog::LogMessage(1, 'Found translation plural 1.');
-                        preg_match('/msgstr\[0\]\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgStr0 = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgStr0 .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgstr[1]') === 0) {
-                        NarroLog::LogMessage(1, 'Found translation plural 2.');
-                        preg_match('/msgstr\[1\]\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgStr1 = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgStr1 .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgstr[2]') === 0) {
-                        NarroLog::LogMessage(1, 'Found translation plural 3.');
-                        preg_match('/msgstr\[2\]\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgStr2 = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgStr2 .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if(isset($strMsgId) && $strMsgId != '') {
-                        /**
-                        echo '$strTranslatorComment: ' . $strTranslatorComment . "<br />";
-                        echo '$strExtractedComment: ' . $strExtractedComment . "<br />";
-                        echo '$strReference: ' . $strReference . "<br />";
-                        echo '$strFlag: ' . $strFlag . "<br />";
-                        echo '$strPreviousContext: ' . $strPreviousContext . "<br />";
-                        echo '$strPreviousUntranslated: ' . $strPreviousUntranslated . "<br />";
-                        echo '$strPreviousUntranslatedPlural: ' . $strPreviousUntranslatedPlural . "<br />";
-                        echo '$strMsgContext: ' . $strMsgContext . "<br />";
-                        echo '$strMsgId: ' . $strMsgId . "<br />";
-                        echo '$strMsgPluralId: ' . $strMsgPluralId . "<br />";
-                        echo '$strMsgStr: ' . $strMsgStr . "<br />";
-                        echo '$strMsgStr0: ' . $strMsgStr0 . "<br />";
-                        echo '$strMsgStr1: ' . $strMsgStr1 . "<br />";
-                        echo '$strMsgStr2: ' . $strMsgStr2 . "<br />";
-                        echo '<hr />';
-                        */
+                    if(isset($arrTemplateFields['MsgId']) && $arrTemplateFields['MsgId'] != '') {
 
                         /**
                          * if the string is marked fuzzy, don't import the translation and delete fuzzy flag
                          */
-                        if (strstr($strFlag, ', fuzzy')) {
-                            if (!is_null($strMsgStr)) $strMsgStr = '';
+                        if (strstr($arrTemplateFields['Flag'], ', fuzzy')) {
+                            if (!is_null($arrTemplateFields['MsgStr'])) $arrTemplateFields['MsgStr'] = '';
 
-                            if (!is_null($strMsgStr0)) $strMsgStr0 = '';
-                            if (!is_null($strMsgStr1)) $strMsgStr1 = '';
-                            if (!is_null($strMsgStr2)) $strMsgStr2 = '';
+                            if (!is_null($arrTemplateFields['MsgStr0'])) $arrTemplateFields['MsgStr0'] = '';
+                            if (!is_null($arrTemplateFields['MsgStr1'])) $arrTemplateFields['MsgStr1'] = '';
+                            if (!is_null($arrTemplateFields['MsgStr2'])) $arrTemplateFields['MsgStr2'] = '';
 
-                            $strFlag = str_replace(', fuzzy', '', $strFlag);
+                            $arrTemplateFields['Flag'] = str_replace(', fuzzy', '', $arrTemplateFields['Flag']);
                             /**
                              * if no other flags are found, just empty the variable
                              */
-                            if (strlen(trim($strFlag)) < 4) $strFlag = null;
+                            if (strlen(trim($arrTemplateFields['Flag'])) < 4) $arrTemplateFields['Flag'] = null;
                         }
 
-                        $strContext = $strTranslatorComment . $strExtractedComment . $strReference . $strFlag . $strPreviousContext . $strPreviousUntranslated . $strPreviousUntranslatedPlural . $strMsgContext;
-                        NarroLog::LogMessage(1, 'Context is: ' . $strContext);
+                        $arrTemplateFields['Context'] = $arrTemplateFields['TranslatorComment'] . $arrTemplateFields['ExtractedComment'] . $arrTemplateFields['Reference'] . $arrTemplateFields['Flag'] . $arrTemplateFields['PreviousContext'] . $arrTemplateFields['PreviousUntranslated'] . $arrTemplateFields['PreviousUntranslatedPlural'] . $arrTemplateFields['MsgContext'];
+                        NarroLog::LogMessage(1, 'Context is: ' . $arrTemplateFields['Context']);
 
-                        if (!is_null($strMsgId)) $strMsgId = str_replace('\"', '"', $strMsgId);
-                        if (!is_null($strMsgStr)) $strMsgStr = str_replace('\"', '"', $strMsgStr);
+                        if (!is_null($arrTemplateFields['MsgId'])) $arrTemplateFields['MsgId'] = str_replace('\"', '"', $arrTemplateFields['MsgId']);
+                        if (!is_null($arrTemplateFields['MsgStr'])) $arrTemplateFields['MsgStr'] = str_replace('\"', '"', $arrTemplateFields['MsgStr']);
 
-                        if (!is_null($strMsgPluralId)) $strMsgPluralId = str_replace('\"', '"', $strMsgPluralId);
-                        if (!is_null($strMsgStr0)) $strMsgStr0 = str_replace('\"', '"', $strMsgStr0);
-                        if (!is_null($strMsgStr1)) $strMsgStr1 = str_replace('\"', '"', $strMsgStr1);
-                        if (!is_null($strMsgStr2)) $strMsgStr2 = str_replace('\"', '"', $strMsgStr2);
+                        if (!is_null($arrTemplateFields['MsgPluralId'])) $arrTemplateFields['MsgPluralId'] = str_replace('\"', '"', $arrTemplateFields['MsgPluralId']);
+                        if (!is_null($arrTemplateFields['MsgStr0'])) $arrTemplateFields['MsgStr0'] = str_replace('\"', '"', $arrTemplateFields['MsgStr0']);
+                        if (!is_null($arrTemplateFields['MsgStr1'])) $arrTemplateFields['MsgStr1'] = str_replace('\"', '"', $arrTemplateFields['MsgStr1']);
+                        if (!is_null($arrTemplateFields['MsgStr2'])) $arrTemplateFields['MsgStr2'] = str_replace('\"', '"', $arrTemplateFields['MsgStr2']);
 
-                        if (trim($strContext) == '') {
-                            $strContext = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $this->objFile->FileName, $strCurrentGroup);
+                        if (trim($arrTemplateFields['Context']) == '') {
+                            $arrTemplateFields['Context'] = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $this->objFile->FileName, $strCurrentGroup);
                         }
 
                         /**
                          * if it's not a plural, just add msgid and msgstr
                          */
-                        if (is_null($strMsgPluralId)) {
-                            $strMsgStr = $this->GetTranslation($this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), $this->getAccessKeyPrefix($strMsgStr), null , null, $strContext . $strMsgId);
+                        if (is_null($arrTemplateFields['MsgPluralId'])) {
+                            $arrTemplateFields['MsgStr'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr']), $this->getAccessKey($arrTemplateFields['MsgStr']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr']), null , null, $arrTemplateFields['Context'] . $arrTemplateFields['MsgId']);
 
                         }
                         else {
@@ -281,74 +272,60 @@
                              * the first one is added with msgid/msgstr[0] (this is the singular)
                              * the next ones (currently 2) are added with plural id, so in fact they will be tied to the same text
                              */
-                            if (!is_null($strMsgStr0))
-                                $strMsgStr0 = $this->GetTranslation($this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), $this->getAccessKeyPrefix($strMsgStr0), null, null, $strContext . $strMsgId . $strMsgPluralId . "This text has plurals.", 0);
-                            if (!is_null($strMsgStr1))
-                                $strMsgStr1 = $this->GetTranslation($this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), $this->getAccessKeyPrefix($strMsgStr1), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 1 for the text \"$strMsgStr0\".", 1);
-                            if (!is_null($strMsgStr2))
-                                $strMsgStr2 = $this->GetTranslation($this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), $this->getAccessKeyPrefix($strMsgStr2), null, null, $this->getAccessKey($strMsgStr2), $strContext . $strMsgId . $strMsgPluralId . "This is plural form 2 for the text \"$strMsgStr0\".", 2);
+                            if (!is_null($arrTemplateFields['MsgStr0']))
+                                $arrTemplateFields['MsgStr0'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr0']), $this->getAccessKey($arrTemplateFields['MsgStr0']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr0']), null, null, $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This text has plurals.", 0);
+                            if (!is_null($arrTemplateFields['MsgStr1']))
+                                $arrTemplateFields['MsgStr1'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr1']), $this->getAccessKey($arrTemplateFields['MsgStr1']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr1']), null, null, $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This is plural form 1 for the text \"".$arrTemplateFields['MsgStr0']."\".", 1);
+                            if (!is_null($arrTemplateFields['MsgStr2']))
+                                $arrTemplateFields['MsgStr2'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr2']), $this->getAccessKey($arrTemplateFields['MsgStr2']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr2']), null, null, $this->getAccessKey($arrTemplateFields['MsgStr2']), $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This is plural form 2 for the text \"".$arrTemplateFields['MsgStr0']."\".", 2);
                         }
                     }
 
-                    if (!is_null($strTranslatorComment))
-                        fputs($hndExportFile, $strTranslatorComment);
-                    if (!is_null($strExtractedComment))
-                        fputs($hndExportFile, $strExtractedComment);
-                    if (!is_null($strReference))
-                        fputs($hndExportFile, $strReference);
-                    if (!is_null($strFlag))
-                        fputs($hndExportFile, $strFlag);
-                    if (!is_null($strPreviousContext))
-                        fputs($hndExportFile, $strPreviousContext);
-                    if (!is_null($strPreviousUntranslated))
-                        fputs($hndExportFile, $strPreviousUntranslated);
-                    if (!is_null($strPreviousUntranslatedPlural))
-                        fputs($hndExportFile, $strPreviousUntranslatedPlural);
-                    if (!is_null($strMsgContext))
-                        fputs($hndExportFile, sprintf('msgctxt "%s"' . "\n", str_replace('"', '\"', $strMsgContext)));
-                    if (!is_null($strMsgId))
-                        fputs($hndExportFile, sprintf('msgid "%s"' . "\n", str_replace('"', '\"', $strMsgId)));
-                    if (!is_null($strMsgPluralId))
-                        fputs($hndExportFile, sprintf('msgid_plural "%s"' . "\n", str_replace('"', '\"', $strMsgPluralId)));
+                    if (!is_null($arrTemplateFields['TranslatorComment']))
+                        fputs($hndExportFile, $arrTemplateFields['TranslatorComment']);
+                    if (!is_null($arrTemplateFields['ExtractedComment']))
+                        fputs($hndExportFile, $arrTemplateFields['ExtractedComment']);
+                    if (!is_null($arrTemplateFields['Reference']))
+                        fputs($hndExportFile, $arrTemplateFields['Reference']);
+                    if (!is_null($arrTemplateFields['Flag']))
+                        fputs($hndExportFile, $arrTemplateFields['Flag']);
+                    if (!is_null($arrTemplateFields['PreviousContext']))
+                        fputs($hndExportFile, $arrTemplateFields['PreviousContext']);
+                    if (!is_null($arrTemplateFields['PreviousUntranslated']))
+                        fputs($hndExportFile, $arrTemplateFields['PreviousUntranslated']);
+                    if (!is_null($arrTemplateFields['PreviousUntranslatedPlural']))
+                        fputs($hndExportFile, $arrTemplateFields['PreviousUntranslatedPlural']);
+                    if (!is_null($arrTemplateFields['MsgContext']))
+                        fputs($hndExportFile, sprintf('msgctxt "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgContext'])));
+                    if (!is_null($arrTemplateFields['MsgId']))
+                        fputs($hndExportFile, sprintf('msgid "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgId'])));
+                    if (!is_null($arrTemplateFields['MsgPluralId']))
+                        fputs($hndExportFile, sprintf('msgid_plural "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgPluralId'])));
 
-                    if (!is_null($strMsgStr))
-                        if ($strMsgId == '') {
+                    if (!is_null($arrTemplateFields['MsgStr']))
+                        if ($arrTemplateFields['MsgId'] == '') {
                             /**
                              * this must be the po header
                              */
-                            $strPoHeader = sprintf("msgstr \"\"\n\"%s\"\n", str_replace('\n', "\\n\"\n\"", $strMsgStr));
-                            $strPoHeader = preg_replace('/\n""/', '', $strPoHeader);
-                            fputs($hndExportFile, $strPoHeader);
+                            $arrTemplateFields['PoHeader'] = sprintf("msgstr \"\"\n\"%s\"\n", str_replace('\n', "\\n\"\n\"", $arrTemplateFields['MsgStr']));
+                            $arrTemplateFields['PoHeader'] = preg_replace('/\n""/', '', $arrTemplateFields['PoHeader']);
+                            fputs($hndExportFile, $arrTemplateFields['PoHeader']);
                         }
                         else
-                            fputs($hndExportFile, sprintf('msgstr "%s"' . "\n", str_replace('"', '\"', $strMsgStr)));
-                    if (!is_null($strMsgStr0))
-                        fputs($hndExportFile, sprintf('msgstr[0] "%s"' . "\n", str_replace('"', '\"', $strMsgStr0)));
-                    if (!is_null($strMsgStr1))
-                        fputs($hndExportFile, sprintf('msgstr[1] "%s"' . "\n", str_replace('"', '\"', $strMsgStr1)));
-                    if (!is_null($strMsgStr2))
-                        fputs($hndExportFile, sprintf('msgstr[2] "%s"' . "\n", str_replace('"', '\"', $strMsgStr2)));
+                            fputs($hndExportFile, sprintf('msgstr "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr'])));
+                    if (!is_null($arrTemplateFields['MsgStr0']))
+                        fputs($hndExportFile, sprintf('msgstr[0] "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr0'])));
+                    if (!is_null($arrTemplateFields['MsgStr1']))
+                        fputs($hndExportFile, sprintf('msgstr[1] "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr1'])));
+                    if (!is_null($arrTemplateFields['MsgStr2']))
+                        fputs($hndExportFile, sprintf('msgstr[2] "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr2'])));
 
                     fputs($hndExportFile, "\n");
 
-                    if ($strMsgId == '') {
+                    if ($arrTemplateFields['MsgId'] == '') {
                         fputs($hndExportFile, $strLine);
                     }
 
-                    $strTranslatorComment = null;
-                    $strExtractedComment = null;
-                    $strReference = null;
-                    $strFlag = null;
-                    $strPreviousUntranslated = null;
-                    $strPreviousContext = null;
-                    $strPreviousUntranslatedPlural = null;
-                    $strMsgContext = null;
-                    $strMsgId = null;
-                    $strMsgPluralId = null;
-                    $strMsgStr = null;
-                    $strMsgStr0 = null;
-                    $strMsgStr1 = null;
-                    $strMsgStr2 = null;
                     $strCurrentGroup++;
                 }
 
@@ -356,255 +333,78 @@
                 chmod($strTranslatedFile, 0666);
             }
             else {
-                NarroLog::LogMessage(3, sprintf(t('Cannot open file "%s".'), $strFileToImport));
+                NarroLog::LogMessage(3, sprintf(t('Cannot open file "%s".'), $strTemplate));
             }
         }
 
         public function ImportFile($strFileToImport, $strTranslatedFile = null) {
-            $hndTemplate = fopen($strFileToImport, 'r');
-            if ($hndTemplate) {
+            $hndTemplateFile = fopen($strFileToImport, 'r');
+            $hndTranslatedFile = fopen($strTranslatedFile, 'r');
+            if ($hndTemplateFile) {
                 $strCurrentGroup = 1;
-                while (!feof($hndTemplate)) {
-                    $strLine = fgets($hndTemplate, 8192);
-                    // echo "Processing " . $strLine . "<br />";
-                    if (strpos($strLine, '# ') === 0) {
-                        // echo 'Found translator comment. <br />';
-                        $strTranslatorComment = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '# ') === 0)
-                                $strTranslatorComment .= $strLine;
-                            else
-                                break;
+                while (!feof($hndTemplateFile)) {
+                    
+                    $arrTemplateFields = $this->getPoFields($hndTemplateFile);
+                    $arrTranslatedFields = $this->getPoFields($hndTranslatedFile);
 
-                        }
-                    }
-
-                    if (strpos($strLine, '#.') === 0) {
-                        // echo 'Found extracted comment. <br />';
-                        $strExtractedComment = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#.') === 0)
-                                $strExtractedComment .= $strLine;
-                            else
-                                break;
-
-                        }
-                    }
-
-                    if (strpos($strLine, '#:') === 0) {
-                        // echo 'Found reference. <br />';
-                        $strReference = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#:') === 0)
-                                $strReference .= $strLine;
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, '#,') === 0) {
-                        // echo 'Found flag. <br />';
-                        $strFlag = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#,') === 0)
-                                $strFlag .= $strLine;
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, '#| msgctxt') === 0) {
-                        // echo 'Found previous context. <br />';
-                        $strPreviousContext = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#| msgctxt') === 0)
-                                $strPreviousContext .= $strLine;
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, '#| msgid') === 0) {
-                        // echo 'Found previous translated string. <br />';
-                        $strPreviousUntranslated = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#| msgid') === 0)
-                                $strPreviousUntranslated .= $strLine;
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, '#| msgid_plural') === 0) {
-                        // echo 'Found previous translated plural string. <br />';
-                        $strPreviousUntranslatedPlural = $strLine;
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '#| msgid_plural') === 0)
-                                $strPreviousUntranslatedPlural .= $strLine;
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgctxt ') === 0) {
-                        // echo 'Found string. <br />';
-                        preg_match('/msgctxt\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgContext = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgContext .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgid ') === 0) {
-                        preg_match('/msgid\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgId = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgId .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgid_plural') === 0) {
-                        // echo 'Found plural string. <br />';
-                        preg_match('/msgid_plural\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgPluralId = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgPluralId .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgstr ') === 0) {
-                        // echo 'Found translation. <br />';
-                        preg_match('/msgstr\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgStr = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgStr .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgstr[0]') === 0) {
-                        // echo 'Found translation plural 1. <br />';
-                        preg_match('/msgstr\[0\]\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgStr0 = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgStr0 .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgstr[1]') === 0) {
-                        // echo 'Found translation plural 2. <br />';
-                        preg_match('/msgstr\[1\]\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgStr1 = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgStr1 .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if (strpos($strLine, 'msgstr[2]') === 0) {
-                        // echo 'Found translation plural 3. <br />';
-                        preg_match('/msgstr\[2\]\s+\"(.*)\"/', $strLine, $arrMatches);
-                        $strMsgStr2 = str_replace('\"', '"', $arrMatches[1]);
-                        while (!feof($hndTemplate)) {
-                            $strLine = fgets($hndTemplate, 8192);
-                            if (strpos($strLine, '"') === 0) {
-                                $strMsgStr2 .= str_replace('\"', '"', substr(trim($strLine), 1, strlen(trim($strLine)) - 2));
-                            }
-                            else
-                                break;
-                        }
-                    }
-
-                    if($strMsgId) {
-                        /**
-                        echo '$strTranslatorComment: ' . $strTranslatorComment . "<br />";
-                        echo '$strExtractedComment: ' . $strExtractedComment . "<br />";
-                        echo '$strReference: ' . $strReference . "<br />";
-                        echo '$strFlag: ' . $strFlag . "<br />";
-                        echo '$strPreviousContext: ' . $strPreviousContext . "<br />";
-                        echo '$strPreviousUntranslated: ' . $strPreviousUntranslated . "<br />";
-                        echo '$strPreviousUntranslatedPlural: ' . $strPreviousUntranslatedPlural . "<br />";
-                        echo '$strMsgContext: ' . $strMsgContext . "<br />";
-                        echo '$strMsgId: ' . $strMsgId . "<br />";
-                        echo '$strMsgPluralId: ' . $strMsgPluralId . "<br />";
-                        echo '$strMsgStr: ' . $strMsgStr . "<br />";
-                        echo '$strMsgStr0: ' . $strMsgStr0 . "<br />";
-                        echo '$strMsgStr1: ' . $strMsgStr1 . "<br />";
-                        echo '$strMsgStr2: ' . $strMsgStr2 . "<br />";
-                        echo '<hr />';
-                        */
+                    if($arrTemplateFields['MsgId']) {
 
                         /**
                          * if the string is marked fuzzy, don't import the translation and delete fuzzy flag
                          */
-                        if (strstr($strFlag, ', fuzzy')) {
-                            if (!is_null($strMsgStr)) $strMsgStr = '';
+                        if (strstr($arrTemplateFields['Flag'], ', fuzzy')) {
+                            if (!is_null($arrTemplateFields['MsgStr'])) $arrTemplateFields['MsgStr'] = '';
 
-                            if (!is_null($strMsgStr0)) $strMsgStr0 = '';
-                            if (!is_null($strMsgStr1)) $strMsgStr1 = '';
-                            if (!is_null($strMsgStr2)) $strMsgStr2 = '';
+                            if (!is_null($arrTemplateFields['MsgStr0'])) $arrTemplateFields['MsgStr0'] = '';
+                            if (!is_null($arrTemplateFields['MsgStr1'])) $arrTemplateFields['MsgStr1'] = '';
+                            if (!is_null($arrTemplateFields['MsgStr2'])) $arrTemplateFields['MsgStr2'] = '';
 
-                            $strFlag = str_replace(', fuzzy', '', $strFlag);
+                            $arrTemplateFields['Flag'] = str_replace(', fuzzy', '', $arrTemplateFields['Flag']);
                             /**
                              * if no other flags are found, just empty the variable
                              */
-                            if (strlen(trim($strFlag)) < 4) $strFlag = null;
+                            if (strlen(trim($arrTemplateFields['Flag'])) < 4) $arrTemplateFields['Flag'] = null;
                         }
 
-                        $strContext = $strTranslatorComment . $strExtractedComment . $strReference . $strFlag . $strPreviousContext . $strPreviousUntranslated . $strPreviousUntranslatedPlural . $strMsgContext;
+                        $arrTemplateFields['Context'] = $arrTemplateFields['TranslatorComment'] . $arrTemplateFields['ExtractedComment'] . $arrTemplateFields['Reference'] . $arrTemplateFields['Flag'] . $arrTemplateFields['PreviousContext'] . $arrTemplateFields['PreviousUntranslated'] . $arrTemplateFields['PreviousUntranslatedPlural'] . $arrTemplateFields['MsgContext'];
 
-                        if (!is_null($strMsgId)) $strMsgId = str_replace('\"', '"', $strMsgId);
-                        if (!is_null($strMsgStr)) $strMsgStr = str_replace('\"', '"', $strMsgStr);
+                        if (!is_null($arrTemplateFields['MsgId'])) $arrTemplateFields['MsgId'] = str_replace('\"', '"', $arrTemplateFields['MsgId']);
+                        if (!is_null($arrTemplateFields['MsgStr'])) $arrTemplateFields['MsgStr'] = str_replace('\"', '"', $arrTemplateFields['MsgStr']);
 
-                        if (!is_null($strMsgPluralId)) $strMsgPluralId = str_replace('\"', '"', $strMsgPluralId);
-                        if (!is_null($strMsgStr0)) $strMsgStr0 = str_replace('\"', '"', $strMsgStr0);
-                        if (!is_null($strMsgStr1)) $strMsgStr1 = str_replace('\"', '"', $strMsgStr1);
-                        if (!is_null($strMsgStr2)) $strMsgStr2 = str_replace('\"', '"', $strMsgStr2);
+                        if (!is_null($arrTemplateFields['MsgPluralId'])) $arrTemplateFields['MsgPluralId'] = str_replace('\"', '"', $arrTemplateFields['MsgPluralId']);
+                        if (!is_null($arrTemplateFields['MsgStr0'])) $arrTemplateFields['MsgStr0'] = str_replace('\"', '"', $arrTemplateFields['MsgStr0']);
+                        if (!is_null($arrTemplateFields['MsgStr1'])) $arrTemplateFields['MsgStr1'] = str_replace('\"', '"', $arrTemplateFields['MsgStr1']);
+                        if (!is_null($arrTemplateFields['MsgStr2'])) $arrTemplateFields['MsgStr2'] = str_replace('\"', '"', $arrTemplateFields['MsgStr2']);
 
-                        if (trim($strContext) == '') {
-                            $strContext = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $this->objFile->FileName, $strCurrentGroup);
+                        if (trim($arrTemplateFields['Context']) == '') {
+                            $arrTemplateFields['Context'] = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $this->objFile->FileName, $strCurrentGroup);
                         }
+                        
+                        if (isset($arrTranslatedFields['MsgStr']) && $arrTranslatedFields['MsgStr'] != '' && isset($arrTranslatedFields['MsgId']) == $arrTemplateFields['MsgId'])
+                            $strTranslatedText = str_replace('\"', '"', $arrTranslatedFields['MsgStr']);
+                        else
+                            $strTranslatedText = null;
+                            
+                        if (isset($arrTranslatedFields['MsgStr0']) && $arrTranslatedFields['MsgStr0'] != '' && isset($arrTranslatedFields['MsgPluralId']) == $arrTemplateFields['MsgPluralId'])
+                            $strTranslatedText0 = str_replace('\"', '"', $arrTranslatedFields['MsgStr0']);
+                        else
+                            $strTranslatedText0 = null;
 
+                        if (isset($arrTranslatedFields['MsgStr1']) && $arrTranslatedFields['MsgStr1'] != '' && isset($arrTranslatedFields['MsgPluralId']) == $arrTemplateFields['MsgPluralId'])
+                            $strTranslatedText1 = str_replace('\"', '"', $arrTranslatedFields['MsgStr1']);
+                        else
+                            $strTranslatedText1 = null;
+
+                        if (isset($arrTranslatedFields['MsgStr2']) && $arrTranslatedFields['MsgStr2'] != '' && isset($arrTranslatedFields['MsgPluralId']) == $arrTemplateFields['MsgPluralId'])
+                            $strTranslatedText2 = str_replace('\"', '"', $arrTranslatedFields['MsgStr2']);
+                        else
+                            $strTranslatedText2 = null;     
+                        
                         /**
                          * if it's not a plural, just add msgid and msgstr
                          */
-                        if (is_null($strMsgPluralId)) {
-                                $this->AddTranslation($this->stripAccessKey($strMsgStr), $this->getAccessKey($strMsgStr), null, null, $strContext . $strMsgId);
+                        if (is_null($arrTemplateFields['MsgPluralId'])) {
+                                $this->AddTranslation($this->stripAccessKey($arrTemplateFields['MsgStr']), $this->getAccessKey($arrTemplateFields['MsgStr']), $strTranslatedText, $this->getAccessKey($strTranslatedText), $arrTemplateFields['Context'] . $arrTemplateFields['MsgId']);
                         }
                         else {
                             /**
@@ -614,34 +414,34 @@
                              * the next ones (currently 2) are added with plural id, so in fact they will be tied to the same text
                              * @todo add unlimited plurals support
                              */
-                            if (!is_null($strMsgStr0)) {
-                                $this->AddTranslation($this->stripAccessKey($strMsgStr0), $this->getAccessKey($strMsgStr0), null, null, $strContext . $strMsgId . $strMsgPluralId . "This text has plurals.");
+                            if (!is_null($arrTemplateFields['MsgStr0'])) {
+                                $this->AddTranslation($this->stripAccessKey($arrTemplateFields['MsgStr0']), $this->getAccessKey($arrTemplateFields['MsgStr0']), $strTranslatedText0, $this->getAccessKey($strTranslatedText0), $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This text has plurals.");
                             }
 
-                            if (!is_null($strMsgStr1)) {
-                                $this->AddTranslation($this->stripAccessKey($strMsgStr1), $this->getAccessKey($strMsgStr1), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 1 for the text \"$strMsgStr0\".");
+                            if (!is_null($arrTemplateFields['MsgStr1'])) {
+                                $this->AddTranslation($this->stripAccessKey($arrTemplateFields['MsgStr1']), $this->getAccessKey($arrTemplateFields['MsgStr1']), $strTranslatedText1, $this->getAccessKey($strTranslatedText1), $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This is plural form 1 for the text \"" . $arrTemplateFields['MsgStr0'] . "\".");
                             }
 
-                            if (!is_null($strMsgStr2)) {
-                                $this->AddTranslation($this->stripAccessKey($strMsgStr2), $this->getAccessKey($strMsgStr2), null, null, $strContext . $strMsgId . $strMsgPluralId . "This is plural form 2 for the text \"$strMsgStr0\".");
+                            if (!is_null($arrTemplateFields['MsgStr2'])) {
+                                $this->AddTranslation($this->stripAccessKey($arrTemplateFields['MsgStr2']), $this->getAccessKey($arrTemplateFields['MsgStr2']), $strTranslatedText2, $this->getAccessKey($strTranslatedText2), $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This is plural form 2 for the text \"" . $arrTemplateFields['MsgStr0'] . "\".");
                             }
                         }
                     }
-
-                    $strTranslatorComment = null;
-                    $strExtractedComment = null;
-                    $strReference = null;
-                    $strFlag = null;
-                    $strPreviousUntranslated = null;
-                    $strPreviousContext = null;
-                    $strPreviousUntranslatedPlural = null;
-                    $strMsgContext = null;
-                    $strMsgId = null;
-                    $strMsgPluralId = null;
-                    $strMsgStr = null;
-                    $strMsgStr0 = null;
-                    $strMsgStr1 = null;
-                    $strMsgStr2 = null;
+                    
+                    $arrTemplateFields['TranslatorComment'] = null;
+                    $arrTemplateFields['ExtractedComment'] = null;
+                    $arrTemplateFields['Reference'] = null;
+                    $arrTemplateFields['Flag'] = null;
+                    $arrTemplateFields['PreviousUntranslated'] = null;
+                    $arrTemplateFields['PreviousContext'] = null;
+                    $arrTemplateFields['PreviousUntranslatedPlural'] = null;
+                    $arrTemplateFields['MsgContext'] = null;
+                    $arrTemplateFields['MsgId'] = null;
+                    $arrTemplateFields['MsgPluralId'] = null;
+                    $arrTemplateFields['MsgStr'] = null;
+                    $arrTemplateFields['MsgStr0'] = null;
+                    $arrTemplateFields['MsgStr1'] = null;
+                    $arrTemplateFields['MsgStr2'] = null;
 
                     $strCurrentGroup++;
                 }
