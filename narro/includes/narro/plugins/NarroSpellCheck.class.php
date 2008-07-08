@@ -51,7 +51,7 @@
         public static function GetSpellSuggestionsWithPspell($strText, $strSpellLang) {
             if (!function_exists('pspell_new'))
                 return true;
-                
+
             if (file_exists(__DICTIONARY_PATH__ . '/' . $strSpellLang . '.dat')) {
                 if (!defined('PSPELL_FAST'))
                     return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
@@ -95,6 +95,10 @@
         public static function GetSpellSuggestionsWithHunspell($strText, $strSpellLang) {
             //@todo code me please
             return true;
+        }
+
+        public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+            return $this->ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
         public function ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {

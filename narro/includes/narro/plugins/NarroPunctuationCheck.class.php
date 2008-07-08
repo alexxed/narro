@@ -22,6 +22,10 @@
             $this->strName = t('Punctuation check');
         }
 
+        public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+            return $this->ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
+        }
+
         public function ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
 
             preg_match('/[\.\!\?\:]+$/', $strOriginal, $arrOriginalTextMatches);
