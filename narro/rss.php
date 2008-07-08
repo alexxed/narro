@@ -35,7 +35,7 @@
                         ),
                         __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                         sprintf(
-                            t('Get the latest 100 translation suggestions in %s'),
+                            t('Get the latest translation suggestions in %s'),
                             QApplication::$objUser->Language->LanguageName
                         )
                 );
@@ -43,7 +43,7 @@
                 $objRssFeed->Language = strtolower(str_replace('_', '-', QApplication::$objUser->Language->LanguageCode));
 
                 $strDescription = '';
-                foreach(NarroSuggestion::QueryArray(QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId), array(QQ::OrderBy(QQN::NarroSuggestion()->Created, 0), QQ::LimitInfo(100, 0))) as $intKey=>$objSuggestion) {
+                foreach(NarroSuggestion::QueryArray(QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId), array(QQ::OrderBy(QQN::NarroSuggestion()->Created, 0), QQ::LimitInfo(20, 0))) as $intKey=>$objSuggestion) {
 
                     $strDescription .= '<tr><td>' . $objSuggestion->Text->TextValue . '</td><td>' . $objSuggestion->SuggestionValue . '</td><td>' . $objSuggestion->User->Username . '</td></tr>';
                     if ($intKey % 10 == 0 && $intKey != 0) {
@@ -66,19 +66,97 @@
             $objRssFeed->Run();
             break;
         case 'text':
-            $strCacheId = sprintf('rssfeed_text_%d', QApplication::QueryString('l'));
+            if (isset($objProject) && $objProject instanceof NarroProject)
+                $strCacheId = sprintf('rssfeed_text_%d_%d', $objProject->ProjectId, QApplication::QueryString('l'));
+            else
+                $strCacheId = sprintf('rssfeed_text_%d', QApplication::QueryString('l'));
 
             if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
-                $objRssFeed  = new QRssFeed(
-                        t('New texts to translate'),
-                        __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
-                        t('Get the latest 100 texts to translate')
-                );
+                if (isset($objProject) && $objProject instanceof NarroProject)
+                    $objRssFeed  = new QRssFeed(
+                            sprintf(t('New texts to translate for the project %s'), $objProject->ProjectName),
+                            __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
+                            sprintf(t('Get the latest texts to translate for the project %s'), $objProject->ProjectName)
+                    );                
+                else
+                    $objRssFeed  = new QRssFeed(
+                            t('New texts to translate'),
+                            __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
+                            t('Get the latest texts to translate')
+                    );
+                    
                 $objRssFeed->PubDate = new QDateTime(QDateTime::Now);
                 $objRssFeed->Language = strtolower(str_replace('_', '-', QApplication::$objUser->Language->LanguageCode));
 
-                $strDescription = '';
-                foreach(NarroText::LoadAll(array(QQ::OrderBy(QQN::NarroText()->Created, 0), QQ::LimitInfo(100, 0))) as $intKey=>$objText) {
+                if (isset($objProject) && $objProject instanceof NarroProject) {
+                    foreach(NarroContext::LoadAll(array(QQ::OrderBy(QQN::NarroContext()->Created, 0), QQ::LimitInfo(20, 0))) as $intKey=>$objNarroContext) {
+                        $objNarroContextInfo = NarroContextInfo::QuerySingle(
+                            QQ::AndCondition(
+                                QQ::Equal(QQN::NarroContextInfo()->ContextId, $objNarroContext->ContextId), 
+                                QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId)
+                            )
+                        );
+                        
+                        $strContextLink = sprintf(
+                                __HTTP_URL__ .
+                                __VIRTUAL_DIRECTORY__ .
+                                __SUBDIRECTORY__ .
+                                '/narro_context_suggest.php?p=%d&c=%d',
+                                $objNarroContext->ProjectId, $objNarroContext->ContextId
+                        );
+    
+                        $strProjectLink = sprintf(
+                                __HTTP_URL__ .
+                                __VIRTUAL_DIRECTORY__ .
+                                __SUBDIRECTORY__ .
+                                '/narro_project_text_list.php?p=%d',
+                                $objNarroContext->ProjectId
+                        );
+                        
+                        $objItem = new QRssItem(
+                            (strlen($objNarroContext->Text->TextValue)>124)?
+                                substr($objNarroContext->Text->TextValue, 0, 124) . '...':
+                                $objNarroContext->Text->TextValue,
+                            $strContextLink
+                        );
+                            
+                        $objItem->Description = 
+                            sprintf('<p>' . t('Project') . ': <a href="%s">%s</a></p>', $strProjectLink, $objNarroContext->Project->ProjectName) .
+                            sprintf('<p>' . t('Context') . ': <a href="%s">%s</a></p>', $strContextLink, $objNarroContext->Context) .
+                            sprintf('<p>' . t('Original text') . ': %s</p>', $objNarroContext->Text->TextValue) .
+                            (
+                                ($objNarroContextInfo->ValidSuggestionId)?
+                                    sprintf('<p>' . t('Validated suggestion') . ': %s</p>',
+                                        (
+                                            ($objNarroContextInfo->TextAccessKey)?
+                                                NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $objNarroContextInfo->ValidSuggestion->SuggestionValue, 1):
+                                                $objNarroContextInfo->ValidSuggestion->SuggestionValue
+                                        )
+                                    )
+                                    :
+                                    ''
+                            ) .
+                            (($objNarroContextInfo->HasSuggestions)?
+                                sprintf(t('The text has %s suggestions'), NarroSuggestion::CountByTextId($objNarroContextInfo->Context->TextId)):
+                                t('The text has no suggestions')) .
+                            (
+                                ($objNarroContextInfo->ValidSuggestionId)?
+                                    sprintf('<p>' . t('Validated by') . ': <a href="%s">%s</a>', $strUserLink, ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:''):
+                                    ''
+                            )
+                        ;
+
+                        if ($objNarroContextInfo->HasComments)
+                            $objItem->Comments = sprintf(t('%d comments'), NarroContextComment::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroContextComment()->ContextId, $objNarroContextInfo->ContextId), QQ::Equal(QQN::NarroContextComment()->LanguageId, $objNarroContextInfo->LanguageId))));
+
+                        $objItem->PubDate = new QDateTime($objNarroContext->Created);
+
+                        $objRssFeed->AddItem($objItem);
+                    }
+                }
+            }
+            else {
+                foreach(NarroText::LoadAll(array(QQ::OrderBy(QQN::NarroText()->Created, 0), QQ::LimitInfo(20, 0))) as $intKey=>$objText) {
                     $strDescription .= '<li>' . $objText->TextValue . '</li>';
                     if ($intKey % 10 == 0 && $intKey != 0) {
                         $objItem = new QRssItem(
@@ -90,10 +168,10 @@
                         $objRssFeed->AddItem($objItem);
                         $strDescription = '';
                     }
-                }
-
-                QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
+                }                    
             }
+
+            QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
 
             $objRssFeed->Run();
             break;
@@ -111,7 +189,7 @@
                         ),
                         __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                         sprintf(
-                            t('Get the latest 100 translation suggestions in %s'),
+                            t('Get the latest context information changes in %s'),
                             QApplication::$objUser->Language->LanguageName
                         )
                 );
@@ -134,7 +212,7 @@
                 else
                     $objCondition = QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId);
 
-                foreach(NarroContextInfo::QueryArray($objCondition, array(QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0), QQ::LimitInfo(100, 0))) as $intKey=>$objNarroContextInfo) {
+                foreach(NarroContextInfo::QueryArray($objCondition, array(QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0), QQ::LimitInfo(20, 0))) as $intKey=>$objNarroContextInfo) {
                     $strContextLink = sprintf(
                             __HTTP_URL__ .
                             __VIRTUAL_DIRECTORY__ .
