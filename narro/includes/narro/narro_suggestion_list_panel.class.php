@@ -77,7 +77,7 @@
 
             // Setup DataGrid
             $this->dtgSuggestions = new QDataGrid($this);
-            $this->dtgSuggestions->ShowHeader = false;
+            $this->dtgSuggestions->ShowHeader = true;
 
             // Datagrid Paginator
             $this->dtgSuggestions->Paginator = new QPaginator($this->dtgSuggestions);
@@ -370,8 +370,6 @@
                 );
 
             $this->dtgSuggestions->ShowFooter = ($this->dtgSuggestions->TotalItemCount > $this->dtgSuggestions->ItemsPerPage);
-            $this->dtgSuggestions->ShowHeader = ($this->dtgSuggestions->TotalItemCount > $this->dtgSuggestions->ItemsPerPage);
-
 
             $objClauses = QQ::Clause(QQ::OrderBy(QQN::NarroSuggestion()->LanguageId));
             if ($objClause = $this->dtgSuggestions->OrderByClause)
