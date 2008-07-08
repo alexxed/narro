@@ -56,7 +56,7 @@
                 <?php $this->btnSave->Render() ?>&nbsp;<?php $this->btnSaveIgnore->Render() ?>
                 <?php if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
                     <br />
-                    <?php $this->btnSaveValidate->Render() ?>
+                    <?php $this->chkValidate->Render() ?> <label for="<?php echo $this->chkValidate->ControlId ?>"><?php echo t('Validate') ?></label>
                 <?php } ?>
                 <br />
                 <?php $this->chkGoToNext->Render() ?> <label for="<?php echo $this->chkGoToNext->ControlId ?>"><?php echo t('After, go to the next text') ?></label>
