@@ -34,39 +34,46 @@
                 t('Manage');
         ?>
         </div>
-        <br />
-        <?php $this->pnlLogViewer->Render(); ?>
-        <br />
-        <div class="dotted_box">
-        <div class="dotted_box_title"><?php echo t('Import and export options'); ?></div>
-        <div class="dotted_box_content">
-        <label for="<?php echo $this->lstLogLevel->ControlId ?>"><?php echo t('Minimum logged error level') . ' ' . $this->lstLogLevel->Render(false); ?></label>
-        <p class="instructions"><?php echo t('Lower values give more verbosity'); ?></p>
-        <label for="<?php echo $this->chkForce->ControlId ?>"><?php echo $this->chkForce->Render(false) . ' ' . t('Force operation even if a previous operation is reported to be running'); ?></label>
-        <p class="instructions"><?php echo t('Cleanup the files that are used during an import or export and allow starting another operation'); ?></p>
-        </div>
-        </div>
-        <br />
-        <div class="dotted_box">
-        <div class="dotted_box_title"><?php echo t('Import project'); ?></div>
-        <div class="dotted_box_content">
-        <?php if ($this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
-            <label for="<?php echo $this->chkCheckEqual->ControlId ?>"><?php echo $this->chkCheckEqual->Render(false) . ' ' . t('Do not import translations that are identical to the original text'); ?></label>
-            <p class="instructions"><?php echo t('Warning, if you uncheck this and choose to validate the imported suggestions all the translations identical to the original texts will be validated.'); ?></p>
-            <?php echo $this->chkValidate->Render(false) . ' ' . t('Validate the imported translations'); ?>
-            <p class="instructions"><?php echo t('Mark the imported suggestions as validated.'); ?></p>
-            <?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?>
-            <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
-
-            <?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>
-            <p class="instructions"><?php echo sprintf(t('The archive must contain two directories, en-US and %s, each having the same file structure. Supported formats: zip, tar.bz2, tar.gz'), QApplication::$objUser->Language->LanguageCode); ?></p>
-            <p class="instructions"><?php echo sprintf(t('If you don\'t upload an archive, the import will use the directory "%s", subdirectories "%s" and "%s". You could update those directories nightly from CVS, SVN or a web address.'), __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 'en-US', QApplication::$objUser->Language->LanguageCode); ?></p>
+        <?php if (QApplication::$objUser->hasPermission('Can import project', null, QApplication::$objUser->Language->LanguageId) || QApplication::$objUser->hasPermission('Can export project', null, QApplication::$objUser->Language->LanguageId)) { ?>
+            <br />
+            <?php $this->pnlLogViewer->Render(); ?>
+            <br />
+            <div class="dotted_box">
+            <div class="dotted_box_title"><?php echo t('Import and export options'); ?></div>
+            <div class="dotted_box_content">
+            <label for="<?php echo $this->lstLogLevel->ControlId ?>"><?php echo t('Minimum logged error level') . ' ' . $this->lstLogLevel->Render(false); ?></label>
+            <p class="instructions"><?php echo t('Lower values give more verbosity'); ?></p>
+            <label for="<?php echo $this->chkForce->ControlId ?>"><?php echo $this->chkForce->Render(false) . ' ' . t('Force operation even if a previous operation is reported to be running'); ?></label>
+            <p class="instructions"><?php echo t('Cleanup the files that are used during an import or export and allow starting another operation'); ?></p>
+            </div>
+            </div>
         <?php } ?>
-        <?php $this->btnImport->Render(); $this->objImportProgress->Render();?>
-        <?php $this->lblImport->Render(); ?>
-        </div>
-        </div>
-        <?php if ($this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
+
+        <?php if (QApplication::$objUser->hasPermission('Can import project', null, QApplication::$objUser->Language->LanguageId)) { ?>
+            <br />
+            <div class="dotted_box">
+            <div class="dotted_box_title"><?php echo t('Import project'); ?></div>
+            <div class="dotted_box_content">
+            <?php if ($this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
+                <label for="<?php echo $this->chkCheckEqual->ControlId ?>"><?php echo $this->chkCheckEqual->Render(false) . ' ' . t('Do not import translations that are identical to the original text'); ?></label>
+                <p class="instructions"><?php echo t('Warning, if you uncheck this and choose to validate the imported suggestions all the translations identical to the original texts will be validated.'); ?></p>
+                <?php echo $this->chkValidate->Render(false) . ' ' . t('Validate the imported translations'); ?>
+                <p class="instructions"><?php echo t('Mark the imported suggestions as validated.'); ?></p>
+                <?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?>
+                <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
+                <?php if (QApplication::$objUser->hasPermission('Can upload project', null, QApplication::$objUser->Language->LanguageId)) { ?>
+                    <?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>
+                    <p class="instructions"><?php echo sprintf(t('The archive must contain two directories, en-US and %s, each having the same file structure. Supported formats: zip, tar.bz2, tar.gz'), QApplication::$objUser->Language->LanguageCode); ?></p>
+                    <p class="instructions"><?php echo sprintf(t('If you don\'t upload an archive, the import will use the directory "%s", subdirectories "%s" and "%s". You could update those directories nightly from CVS, SVN or a web address.'), __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 'en-US', QApplication::$objUser->Language->LanguageCode); ?></p>
+                <?php } ?>
+            <?php } ?>
+            <?php $this->btnImport->Render(); $this->objImportProgress->Render();?>
+            <?php $this->lblImport->Render(); ?>
+            </div>
+            </div>
+        <?php } ?>
+
+        <?php if (QApplication::$objUser->hasPermission('Can export project', null, QApplication::$objUser->Language->LanguageId) && $this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
             <br />
             <div class="dotted_box">
             <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
@@ -80,25 +87,26 @@
             <p class="instructions"><?php echo sprintf(t('You will get an archive containing two directories, en_US and %s, each having the same file structure.'), QApplication::$objUser->Language->LanguageCode); ?></p>
             </div>
             </div>
-
-            <?php if (QApplication::$objUser->hasPermission('Can delete project')) { ?>
-                <br />
-                <div class="dotted_box">
-                <div class="dotted_box_title">Project maintenance</div>
-                <div class="dotted_box_content">
-                <?php $this->btnDelProjectContexts->Render(); ?>
-                <p class="instructions">Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
-                You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
-                </p>
-                <?php $this->btnDelProjectFiles->Render(); ?>
-                <p class="instructions">Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
-                You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
-                </p>
-
-                </div>
-                </div>
-            <?php } ?>
         <?php } ?>
+
+        <?php if (QApplication::$objUser->hasPermission('Can delete project')) { ?>
+            <br />
+            <div class="dotted_box">
+            <div class="dotted_box_title">Project maintenance</div>
+            <div class="dotted_box_content">
+            <?php $this->btnDelProjectContexts->Render(); ?>
+            <p class="instructions">Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+            You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
+            </p>
+            <?php $this->btnDelProjectFiles->Render(); ?>
+            <p class="instructions">Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+            You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
+            </p>
+
+            </div>
+            </div>
+        <?php } ?>
+
 
     <?php $this->RenderEnd() ?>
 
