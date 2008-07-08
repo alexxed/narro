@@ -34,7 +34,7 @@
             if (isset($arrOriginalTextMatches[0]) && !isset($arrSuggestionMatches[0])) {
                     $this->arrErrors[] =
                         sprintf(
-                            t('<span style="color:red">Did you forget the ending "<span style="color:red;font-size:large">%s.</span>"?</span>'),
+                            t('<span style="color:red">Did you forget the ending "<span style="color:red;font-size:large">%s</span>"?</span>'),
                         $arrOriginalTextMatches[0]
                         );
             }
