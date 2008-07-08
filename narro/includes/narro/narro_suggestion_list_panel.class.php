@@ -260,11 +260,16 @@
             $strCreatedWhen = $objDateSpan->SimpleDisplay();
 
             if (strtotime($objNarroSuggestion->Created) > 0 && $strCreatedWhen && $objNarroSuggestion->User->Username)
-                return sprintf('<a href="narro_user_profile.php?u=%d">%s</a>, ' . t('%s ago'), $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username, $strCreatedWhen);
+                $strAuthorInfo = sprintf('<a href="narro_user_profile.php?u=%d">%s</a>, ' . t('%s ago'), $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username, $strCreatedWhen);
             elseif (strtotime($objNarroSuggestion->Created) > 0 && $strCreatedWhen && !$objNarroSuggestion->User->Username)
-                return sprintf(t('%s ago'), $strCreatedWhen);
+                $strAuthorInfo = sprintf(t('%s ago'), $strCreatedWhen);
             else
-                return sprintf('<a href="narro_user_profile.php?u=%d">%s</a>', $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username);
+                $strAuthorInfo = sprintf('<a href="narro_user_profile.php?u=%d">%s</a>', $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username);
+
+            if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->ValidatorUser->Username)
+                $strAuthorInfo .= '<br />' . sprintf('validated by <a href="narro_user_profile.php?u=%d">%s</a>', $this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username);
+
+            return $strAuthorInfo;
         }
 
 
