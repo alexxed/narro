@@ -108,7 +108,6 @@
             $this->chkActive = new QCheckBox($this);
             $this->chkActive->Name = QApplication::Translate('Active');
             $this->chkActive->Checked = $this->objNarroProject->Active;
-            $this->chkActive->Required = true;
         }
 
 
@@ -151,7 +150,7 @@
         protected function UpdateNarroProjectFields() {
             $this->objNarroProject->ProjectName = $this->txtProjectName->Text;
             $this->objNarroProject->ProjectType = $this->lstProjectTypeObject->SelectedValue;
-            $this->objNarroProject->Active = $this->chkActive->Checked;
+            $this->objNarroProject->Active = ($this->chkActive->Checked)?1:0;
         }
 
 
