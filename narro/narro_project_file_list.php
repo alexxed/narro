@@ -325,6 +325,9 @@
                 case NarroFileType::Svg:
                     $objFileImporter = new NarroSvgFileImporter();
                     break;
+                case NarroFileType::PhpMyAdmin:
+                    $objFileImporter = new NarroPhpMyAdminFileImporter();
+                    break;
                 default:
                     throw new Exception(sprintf(t('Tried to export an unknown file type: %d'), $strParameter));
             }
@@ -380,6 +383,9 @@
                     break;
                 case NarroFileType::OpenOfficeSdf:
                     $objFileImporter = new NarroOpenOfficeSdfFileImporter();
+                    break;
+                case NarroFileType::PhpMyAdmin:
+                    $objFileImporter = new NarroPhpMyAdminFileImporter();
                     break;
                 default:
                     throw new Exception(sprintf(t('Tried to import an unknown file type: %d'), $strParameter));

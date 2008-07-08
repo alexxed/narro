@@ -432,6 +432,9 @@
                 case NarroFileType::DumbGettextPo:
                         $objFileImporter = new NarroDumbGettextPoFileImporter($this);
                         break;
+                case NarroFileType::PhpMyAdmin:
+                        $objFileImporter = new NarroPhpMyAdminFileImporter($this);
+                        break;
                 default:
                         return false;
             }
@@ -654,6 +657,9 @@
                 case NarroFileType::DumbGettextPo:
                         $objFileImporter = new NarroDumbGettextPoFileImporter($this);
                         break;
+                case NarroFileType::PhpMyAdmin:
+                        $objFileImporter = new NarroPhpMyAdminFileImporter($this);
+                        break;
                 default:
                         return false;
             }
@@ -685,6 +691,8 @@
                         return NarroFileType::Svg;
                 case 'dpo':
                         return NarroFileType::DumbGettextPo;
+                case 'php':
+                        return NarroFileType::PhpMyAdmin;
                 default:
                         return false;
             }
