@@ -56,7 +56,7 @@
             if ($objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text))) {
                 $_SESSION['objUser'] = $objUser;
                 if ($this->chkRememberLogin->Checked)
-                    setcookie(session_name(), $_COOKIE[session_name()], time()+31*24*3600, "/");
+                    setcookie(session_name(), $_COOKIE[session_name()], time()+31*24*3600, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
                 QApplication::$objUser = $objUser;
                 if ($this->txtPreviousUrl)
                     QApplication::Redirect($this->txtPreviousUrl);

@@ -514,7 +514,7 @@
         protected function SaveSuggestion($blnIgnorePluginErrors = false) {
             if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
                 return false;
-
+                
             $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             if (is_array($arrResult) && isset($arrResult[1]))
                 $strSuggestionValue = $arrResult[1];
@@ -526,6 +526,12 @@
                 $this->ShowPluginErrors();
                 return false;
             }
+            
+            /**
+             * Make sure that we're not putting in a empty suggestion
+             */
+            if ($strSuggestionValue == '')
+                return false;
 
             $this->pnlPluginMessages->Text = '';
             $this->pnlPluginMessages->Visible = false;

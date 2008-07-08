@@ -93,6 +93,8 @@
     /////////////////////////////
     // Start Session Handler (if required)
     /////////////////////////////
+    session_name('NARRO_ID');
+    session_set_cookie_params(time()+31*24*3600, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
     session_start();
 
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
