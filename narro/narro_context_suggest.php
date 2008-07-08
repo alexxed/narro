@@ -27,7 +27,7 @@
 
         // Button Actions
         protected $btnSave;
-        protected $btnSaveValidate;
+        protected $chkValidate;
         protected $btnSaveIgnore;
         protected $btnNext;
         protected $btnNext100;
@@ -136,7 +136,7 @@
             // Create/Setup Button Action controls
             $this->btnSave_Create();
             $this->btnSaveIgnore_Create();
-            $this->btnSaveValidate_Create();
+            $this->chkValidate_Create();
 
             $this->btnNext_Create();
             $this->btnNext100_Create();
@@ -234,7 +234,6 @@
 
             $this->pnlPluginMessages->Visible = false;
             $this->btnSaveIgnore->Visible = false;
-            $this->btnSaveValidate->Visible = true;
 
             $this->lblMessage->Text = '';
 
@@ -394,27 +393,20 @@
             $this->btnSaveIgnore = new QButton($this);
             $this->btnSaveIgnore->Text = t('Ignore and save');
             if (QApplication::$blnUseAjax)
-                $this->btnSaveIgnore->AddAction(new QClickEvent(), new QAjaxAction('btnSaveIgnore_Click'));
+                $this->btnSaveIgnore->AddAction(new QClickEvent(), new QAjaxAction('btnSave_Click'));
             else
-                $this->btnSaveIgnore->AddAction(new QClickEvent(), new QServerAction('btnSaveIgnore_Click'));
+                $this->btnSaveIgnore->AddAction(new QClickEvent(), new QServerAction('btnSave_Click'));
             $this->btnSaveIgnore->CausesValidation = true;
             $this->btnSaveIgnore->TabIndex = 3;
             $this->btnSaveIgnore->Visible = false;
             $this->btnSaveIgnore->Display = QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId);
         }
 
-        // Setup btnSaveValidate
-        protected function btnSaveValidate_Create() {
-            $this->btnSaveValidate = new QButton($this);
-            $this->btnSaveValidate->Text = t('Save and validate');
-            if (QApplication::$blnUseAjax)
-                $this->btnSaveValidate->AddAction(new QClickEvent(), new QAjaxAction('btnSaveValidate_Click'));
-            else
-                $this->btnSaveValidate->AddAction(new QClickEvent(), new QServerAction('btnSaveValidate_Click'));
-            $this->btnSaveValidate->CausesValidation = true;
-            $this->btnSaveValidate->TabIndex = 7;
-            $this->btnSaveValidate->Visible = true;
-            $this->btnSaveValidate->Display = QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId);
+        // Setup chkValidate
+        protected function chkValidate_Create() {
+            $this->chkValidate = new QCheckBox($this);
+            //$this->chkValidate->TabIndex = 7;
+            $this->chkValidate->Display = QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId);
         }
 
         // Setup btnNext
@@ -483,77 +475,70 @@
             $this->btnCopyOriginal->SetCustomStyle('float', 'right');
         }
 
-        protected function ShowPluginErrors() {
+        public function ShowPluginErrors() {
             $this->pnlPluginMessages->Text = '';
             if (QApplication::$objPluginHandler->Error) {
                 foreach(QApplication::$objPluginHandler->PluginErrors as $strPluginName=>$arrErors) {
                     $this->pnlPluginMessages->Text .= $strPluginName . '<div style="padding-left:10px;border:1px dotted black;">' . join('<br />', $arrErors) . '</div><br />';
                 }
                 $this->pnlPluginMessages->Visible = true;
-                $this->btnSaveIgnore->Visible = true;
-                $this->btnSaveValidate->Visible = false;
             }
             else {
                 $this->pnlPluginMessages->Visible = false;
-                $this->btnSaveIgnore->Visible = false;
-                $this->btnSaveValidate->Visible = true;
             }
 
             $this->pnlPluginMessages->MarkAsModified();
-        }
-
-        // Control ServerActions
-        protected function btnSaveIgnore_Click($strFormId, $strControlId, $strParameter) {
-            $this->SaveSuggestion();
         }
 
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
             if (trim($this->txtSuggestionValue->Text) == '')
                 return true;
 
+            /**
+             * For SaveIgnore, pass ignore checking parameter
+             */
+            $blnResult = $this->SaveSuggestion($strControlId == $this->btnSaveIgnore->ControlId);
+
+            /**
+             * Update the data only if we remain on the same page (button save was clicked)
+             */
+            if ($blnResult && !$this->chkGoToNext->Checked && QApplication::$blnUseAjax)
+                $this->UpdateData();
+
+            if ($blnResult && $this->chkGoToNext->Checked )
+                $this->btnNext_Click($strFormId, $strControlId, $strParameter);
+
+            return $blnResult;
+        }
+
+        protected function SaveSuggestion($blnIgnorePluginErrors = false) {
+            if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+                return false;
+
             $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             if (is_array($arrResult) && isset($arrResult[1]))
                 $strSuggestionValue = $arrResult[1];
             else
                 $strSuggestionValue = $this->txtSuggestionValue->Text;
 
-            QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $strSuggestionValue, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
-
-            if (QApplication::$objPluginHandler->Error) {
+            if (!$blnIgnorePluginErrors && QApplication::$objPluginHandler->Error) {
+                $this->btnSaveIgnore->Visible = true;
                 $this->ShowPluginErrors();
                 return false;
             }
-            else
-                return $this->SaveSuggestion();
-        }
 
-        protected function btnSaveValidate_Click($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
-              return false;
-
-            $this->SaveSuggestion(true);
-        }
-
-        protected function SaveSuggestion($blnValidate = false) {
-            if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
-                return false;
+            $this->pnlPluginMessages->Text = '';
+            $this->pnlPluginMessages->Visible = false;
+            $this->btnSaveIgnore->Visible = false;
 
             $objSuggestion = new NarroSuggestion();
             $objSuggestion->UserId = QApplication::$objUser->UserId;
             $objSuggestion->LanguageId = QApplication::$objUser->Language->LanguageId;
             $objSuggestion->TextId = $this->objNarroContextInfo->Context->TextId;
-
-            $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
-            if (is_array($arrResult) && isset($arrResult[1]))
-                $strSuggestionValue = $arrResult[1];
-            else
-                $strSuggestionValue = $this->txtSuggestionValue->Text;
-
+            $objSuggestion->Created = date('Y-m-d H:i:s');
             $objSuggestion->SuggestionValue = $strSuggestionValue;
             $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
             $objSuggestion->SuggestionCharCount = mb_strlen($strSuggestionValue);
-            $objSuggestion->Modified = date('Y-m-d H:i:s');
-            $objSuggestion->Created = date('Y-m-d H:i:s');
 
             try {
                 $objSuggestion->Save();
@@ -582,7 +567,7 @@
             }
 
             $this->objNarroContextInfo->HasSuggestions = 1;
-            if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $blnValidate && $this->objNarroContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
+            if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && $this->chkValidate->Checked && $this->objNarroContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
                 $this->objNarroContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
 
@@ -608,11 +593,6 @@
                 $objSuggestionComment->Modified = date('Y-m-d H:i:s');
                 $objSuggestionComment->Save();
             }
-            if ($this->chkGoToNext->Checked) {
-                $this->btnNext_Click($this->FormId, null, null);
-            }
-            elseif(QApplication::$blnUseAjax)
-                $this->UpdateData();
 
             QApplication::$Cache->remove('project_progress_' . $this->objNarroContextInfo->Context->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
 
@@ -620,8 +600,8 @@
         }
 
         protected function btnPrevious_Click($strFormId, $strControlId, $strParameter) {
-//            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
-//                return false;
+            if ($strControlId == $this->btnPrevious->ControlId && !$this->SaveSuggestion())
+                return false;
 
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
@@ -659,8 +639,8 @@
         }
 
         protected function btnNext_Click($strFormId, $strControlId, $strParameter) {
-//            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
-//                return false;
+            if ($strControlId == $this->btnNext->ControlId && !$this->SaveSuggestion())
+                return false;
 
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
@@ -699,8 +679,8 @@
         }
 
         protected function btnNext100_Click($strFormId, $strControlId, $strParameter) {
-//            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
-//                return false;
+            if ($strControlId == $this->btnNext100->ControlId && !$this->SaveSuggestion())
+                return false;
 
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
@@ -739,8 +719,8 @@
         }
 
         protected function btnPrevious100_Click($strFormId, $strControlId, $strParameter) {
-//            if (!$this->btnSave_Click($strFormId, $this->btnSave->ControlId, $strParameter))
-//                return false;
+            if ($strControlId == $this->btnPrevious100->ControlId && !$this->SaveSuggestion())
+                return false;
 
             if ($this->intFileId)
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->intFileId);
@@ -785,7 +765,7 @@
                 return true;
             }
             else {
-                $strCommonUrl = sprintf('p=%d&c=%d&tf=%d&s=%s&is=%d&gn=%d', $this->intProjectId, $objContext->ContextId, $this->intTextFilter, $this->strSearchText, $this->chkIgnoreSpellcheck->Checked, $this->chkGoToNext->Checked);
+                $strCommonUrl = sprintf('p=%d&c=%d&tf=%d&s=%s', $this->intProjectId, $objContext->ContextId, $this->intTextFilter, $this->strSearchText);
                 if ($this->intFileId)
                     QApplication::Redirect('narro_context_suggest.php?' . $strCommonUrl . sprintf( '&f=%d', $this->intFileId));
                 else
@@ -824,9 +804,8 @@
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();
 
-            if ($this->chkGoToNext->Checked ) {
+            if ($this->chkGoToNext->Checked )
                 $this->btnNext_Click($strFormId, $strControlId, $strParameter);
-            }
 
         }
 
