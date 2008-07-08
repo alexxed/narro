@@ -60,7 +60,7 @@
 
 
             // Setup DataGrid Columns
-            $this->colSuggestion = new QDataGridColumn(t('Other suggestions'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
+            $this->colSuggestion = new QDataGridColumn(t('Translation'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
             $this->colSuggestion->HtmlEntities = false;
             $this->colSuggestion->CssClass = QApplication::$objUser->Language->TextDirection;
 
@@ -205,14 +205,12 @@
 
             if
             (
-                (
-                    QApplication::$objUser->hasPermission(
-                        'Can edit any suggestion',
-                        $this->objNarroContextInfo->Context->ProjectId,
-                        QApplication::$objUser->Language->LanguageId
-                    ) ||
-                    ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID )
-                ) &&
+                QApplication::$objUser->hasPermission(
+                    'Can suggest',
+                    $this->objNarroContextInfo->Context->ProjectId,
+                    QApplication::$objUser->Language->LanguageId
+                )
+                &&
                 $this->intEditSuggestionId == $objNarroSuggestion->SuggestionId
             ) {
                 $strControlId = 'txtEditSuggestion' . $objNarroSuggestion->SuggestionId;
@@ -344,7 +342,7 @@
 
             if (QApplication::$objUser->hasPermission('Can vote', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
                 $strText .= '&nbsp;' . $btnVote->Render(false);
-            if (QApplication::$objUser->hasPermission('Can edit any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
+            if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
                 $strText .= '&nbsp;' . $btnEdit->Render(false);
             if (QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
                 $strText .= '&nbsp;' . $btnDelete->Render(false);
@@ -462,9 +460,27 @@
         }
 
         public function btnEdit_Click($strFormId, $strControlId, $strParameter) {
+            if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+                return false;
+
             $objSuggestion = NarroSuggestion::Load($strParameter);
-            if (!QApplication::$objUser->hasPermission('Can edit any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && ($objSuggestion->UserId != QApplication::$objUser->UserId || QApplication::$objUser->UserId == NarroUser::ANONYMOUS_USER_ID ))
-                          return false;
+
+            $blnCanEdit = QApplication::$objUser->hasPermission(
+                                'Can edit any suggestion',
+                                $this->objNarroContextInfo->Context->ProjectId,
+                                QApplication::$objUser->Language->LanguageId
+                          )
+                          ||
+                          (
+                                $objSuggestion->UserId == QApplication::$objUser->UserId
+                                &&
+                                QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID
+                          );
+            if (!$blnCanEdit) {
+                $this->Form->txtSuggestionValue->Text = $objSuggestion->SuggestionValue;
+                $this->Form->txtSuggestionValue->Focus();
+                return false;
+            }
 
             $btnEdit = $this->objForm->GetControl($strControlId);
             if ($btnEdit->Text == t('Edit')) {
@@ -476,6 +492,10 @@
                 if (!$this->IsSuggestionUsed($strParameter)) {
                     $txtControlId = str_replace('btnEditSuggestion', 'txtEditSuggestion', $strControlId);
                     $txtControl = $this->objForm->GetControl($txtControlId);
+
+                    if (trim($txtControl->Text) == '')
+                        return true;
+
                     if ($txtControl) {
                         $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $txtControl->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
                         if (is_array($arrResult) && isset($arrResult[1]))
@@ -483,9 +503,15 @@
                         else
                             $strSuggestionValue = $txtControl->Text;
 
+                        $this->Form->ShowPluginErrors();
+                        if (QApplication::$objPluginHandler->Error)
+                            return false;
+
+                        $objSuggestion->Modified = date('Y-m-d H:i:s');
                         $objSuggestion->SuggestionValue = $strSuggestionValue;
                         $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
-                        $objSuggestion->Modified = date('Y-m-d H:i:s');
+                        $objSuggestion->SuggestionCharCount = mb_strlen($strSuggestionValue);
+
                         try {
                             $objSuggestion->Save();
                             $this->lblMessage->Text = t('Your changes were saved succesfully.');
