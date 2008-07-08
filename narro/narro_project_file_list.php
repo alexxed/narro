@@ -196,7 +196,7 @@
                     $objExportButton->Text = t('Export');
                     $objExportButton->ActionParameter = $objNarroFile->FileId;
                     $objExportButton->AddAction(new QClickEvent(), new QServerAction('btnExport_Click'));
-                    $objExportButton->Visible = QApplication::$objUser->hasPermission('Can export', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                    $objExportButton->Visible = QApplication::$objUser->hasPermission('Can export file', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
                 if (!$objImportButton = $this->GetControl('btnImport' . $objNarroFile->FileId)) {
@@ -204,23 +204,23 @@
                     $objImportButton->Text = t('Import');
                     $objImportButton->ActionParameter = $objNarroFile->FileId;
                     $objImportButton->AddAction(new QClickEvent(), new QServerAction('btnImport_Click'));
-                    $objImportButton->Visible = QApplication::$objUser->hasPermission('Can import', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                    $objImportButton->Visible = QApplication::$objUser->hasPermission('Can import file', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
                 if (!$objImportFile = $this->GetControl('fileImport' . $objNarroFile->FileId)) {
                     $objImportFile = new QFileControl($this->dtgNarroFile, 'fileImport' . $objNarroFile->FileId);
-                    $objImportFile->Visible = QApplication::$objUser->hasPermission('Can import', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                    $objImportFile->Visible = QApplication::$objUser->hasPermission('Can import file', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
                 if (!$objExportFile = $this->GetControl('fileExport' . $objNarroFile->FileId)) {
                     $objExportFile = new QFileControl($this->dtgNarroFile, 'fileExport' . $objNarroFile->FileId);
-                    $objExportFile->Visible = QApplication::$objUser->hasPermission('Can export', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
+                    $objExportFile->Visible = QApplication::$objUser->hasPermission('Can export file', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId);
                 }
 
-                if (QApplication::$objUser->hasPermission('Can import', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId))
+                if (QApplication::$objUser->hasPermission('Can import file', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId))
                     $strImportAction = t('File to import') . ': ' . $objImportFile->Render(false) . $objImportButton->Render(false);
 
-                if (QApplication::$objUser->hasPermission('Can export', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId))
+                if (QApplication::$objUser->hasPermission('Can export file', $objNarroFile->ProjectId, QApplication::$objUser->Language->LanguageId))
                     $strExportAction = t('Model to use') . ': ' . $objExportFile->Render(false) . $objExportButton->Render(false);
 
 
@@ -340,7 +340,7 @@
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
 
             if ($objFileControl instanceof QFileControl && file_exists($objFileControl->File)) {
-                $objFileImporter->ExportFile($objFile, $objFileControl->File, $strTempFileName);
+                $objFileImporter->ExportFile($objFileControl->File, $strTempFileName);
                 unlink($objFileControl->File);
             }
             else
@@ -402,7 +402,7 @@
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$objUser->Language->LanguageCode);
 
-            $objFileImporter->ImportFile($objFileControl->File);
+            $objFileImporter->ImportFile(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US' . $objFile->FilePath, $objFileControl->File);
 
             /**
              * clear the progress cache
