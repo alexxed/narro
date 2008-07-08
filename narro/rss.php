@@ -89,7 +89,13 @@
                 $objRssFeed->Language = strtolower(str_replace('_', '-', QApplication::$objUser->Language->LanguageCode));
 
                 if (isset($objProject) && $objProject instanceof NarroProject) {
-                    foreach(NarroContext::LoadAll(array(QQ::OrderBy(QQN::NarroContext()->Created, 0), QQ::LimitInfo(20, 0))) as $intKey=>$objNarroContext) {
+                    foreach(NarroContext::QueryArray(
+                                QQ::AndCondition(
+                                    QQ::Equal(QQN::NarroContext()->ProjectId, $objProject->ProjectId),
+                                    QQ::Equal(QQN::NarroContext()->Active, 1)
+                                ),
+                                array(QQ::OrderBy(QQN::NarroContext()->Created, 0), QQ::LimitInfo(20, 0))) as $intKey=>$objNarroContext) {
+                                    
                         $objNarroContextInfo = NarroContextInfo::QuerySingle(
                             QQ::AndCondition(
                                 QQ::Equal(QQN::NarroContextInfo()->ContextId, $objNarroContext->ContextId), 
@@ -104,15 +110,15 @@
                                 '/narro_context_suggest.php?p=%d&c=%d',
                                 $objNarroContext->ProjectId, $objNarroContext->ContextId
                         );
-    
-                        $strProjectLink = sprintf(
+                        
+                        $strUserLink = sprintf(
                                 __HTTP_URL__ .
                                 __VIRTUAL_DIRECTORY__ .
                                 __SUBDIRECTORY__ .
-                                '/narro_project_text_list.php?p=%d',
-                                $objNarroContext->ProjectId
+                                '/narro_user_profile.php?u=%d',
+                                $objNarroContextInfo->ValidatorUserId
                         );
-                        
+    
                         $objItem = new QRssItem(
                             (strlen($objNarroContext->Text->TextValue)>124)?
                                 substr($objNarroContext->Text->TextValue, 0, 124) . '...':
@@ -121,7 +127,6 @@
                         );
                             
                         $objItem->Description = 
-                            sprintf('<p>' . t('Project') . ': <a href="%s">%s</a></p>', $strProjectLink, $objNarroContext->Project->ProjectName) .
                             sprintf('<p>' . t('Context') . ': <a href="%s">%s</a></p>', $strContextLink, $objNarroContext->Context) .
                             sprintf('<p>' . t('Original text') . ': %s</p>', $objNarroContext->Text->TextValue) .
                             (
