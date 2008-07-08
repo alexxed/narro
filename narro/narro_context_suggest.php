@@ -600,7 +600,7 @@
         }
 
         protected function btnPrevious_Click($strFormId, $strControlId, $strParameter) {
-            if ($strControlId == $this->btnPrevious->ControlId && !$this->SaveSuggestion())
+            if (trim($this->txtSuggestionValue->Text != '') && $strControlId == $this->btnPrevious->ControlId && !$this->SaveSuggestion())
                 return false;
 
             if ($this->intFileId)
@@ -639,7 +639,7 @@
         }
 
         protected function btnNext_Click($strFormId, $strControlId, $strParameter) {
-            if ($strControlId == $this->btnNext->ControlId && !$this->SaveSuggestion())
+            if (trim($this->txtSuggestionValue->Text != '') && $strControlId == $this->btnNext->ControlId && !$this->SaveSuggestion())
                 return false;
 
             if ($this->intFileId)
@@ -679,7 +679,7 @@
         }
 
         protected function btnNext100_Click($strFormId, $strControlId, $strParameter) {
-            if ($strControlId == $this->btnNext100->ControlId && !$this->SaveSuggestion())
+            if (trim($this->txtSuggestionValue->Text != '') && $strControlId == $this->btnNext100->ControlId && !$this->SaveSuggestion())
                 return false;
 
             if ($this->intFileId)
@@ -719,7 +719,7 @@
         }
 
         protected function btnPrevious100_Click($strFormId, $strControlId, $strParameter) {
-            if ($strControlId == $this->btnPrevious100->ControlId && !$this->SaveSuggestion())
+            if (trim($this->txtSuggestionValue->Text != '') && $strControlId == $this->btnPrevious100->ControlId && !$this->SaveSuggestion())
                 return false;
 
             if ($this->intFileId)
