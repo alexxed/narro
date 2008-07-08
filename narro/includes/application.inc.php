@@ -94,6 +94,7 @@
     // Start Session Handler (if required)
     /////////////////////////////
     session_name('NARRO_ID');
+    session_save_path(__TMP_PATH__ . '/session');
     session_set_cookie_params(time()+31*24*3600, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
     session_start();
 
@@ -138,6 +139,7 @@
     QApplicationBase::$ClassFile['NarroProjectImporter'] = __INCLUDES__ . '/narro/importer/NarroProjectImporter.class.php';
     QApplicationBase::$ClassFile['NarroGettextPoFileImporter'] = __INCLUDES__ . '/narro/importer/NarroGettextPoFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroDumbGettextPoFileImporter'] = __INCLUDES__ . '/narro/importer/NarroDumbGettextPoFileImporter.class.php';
+    QApplicationBase::$ClassFile['NarroPhpMyAdminFileImporter'] = __INCLUDES__ . '/narro/importer/NarroPhpMyAdminFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroMozillaIniFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaIniFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroMozillaIncFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaIncFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroMozillaDtdFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaDtdFileImporter.class.php';
