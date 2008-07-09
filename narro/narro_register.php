@@ -64,11 +64,16 @@
             /**
              * set up default permissions
              */
-            if ($objUser->UserId == 1)
+            if ($objUser->UserId == 1) {
                 /**
                  * give super powers to the first user
                  */
-                $arrPermissions = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17);
+                $arrPermissions = array();
+                $arrNarroPermissions = NarroPermission::LoadAll();
+                foreach($arrNarroPermissions as $objNarroPermission) {
+                    $arrPermissions[] = $objNarroPermission->PermissionId;
+                }
+            }
             else
                 /**
                  * registered users can suggest, vote and comment
