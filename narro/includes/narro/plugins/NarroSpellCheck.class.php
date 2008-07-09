@@ -20,9 +20,12 @@
         public function __construct() {
             parent::__construct();
             $this->strName = t('Spell check');
+            QApplication::RegisterPreference('Spellchecking', 'option', 'The languages used for spellcheck', QApplication::$objUser->Language->LanguageCode, array('No spellchecking', QApplication::$objUser->Language->LanguageCode));
         }
 
         public static function GetSpellSuggestions($strText) {
+            if (QApplication::$objUser->getPreferenceValueByName('Spellchecking') == 'No spellchecking')
+                return true;
             $strCleanText = mb_ereg_replace('[\\n\.,:;\\\!\?0-9]+', ' ', $strText);
             $strCleanText = strip_tags($strCleanText);
             /**
