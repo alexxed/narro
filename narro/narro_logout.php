@@ -16,8 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     session_name('NARRO_ID');
-    session_save_path(__TMP_PATH__ . '/session');
-    session_set_cookie_params(time()+31*24*3600, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
+    session_save_path(dirname(__FILE__) . '/data/tmp/session');
     session_start();
     session_destroy();
     header('Location: narro_project_list.php');
