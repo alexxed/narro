@@ -20,7 +20,7 @@
         public function __construct() {
             parent::__construct();
             $this->strName = t('Spell check');
-            QApplication::RegisterPreference('Spellchecking', 'option', 'The languages used for spellcheck', QApplication::$objUser->Language->LanguageCode, array('No spellchecking', QApplication::$objUser->Language->LanguageCode));
+            QApplication::RegisterPreference('Spellchecking', 'option', 'The languages used for spellcheck', 'Yes, please', array('I don\'t need it', 'Yes, please'));
         }
 
         public static function GetSpellSuggestions($strText) {
