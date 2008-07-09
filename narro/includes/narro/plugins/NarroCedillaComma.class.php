@@ -19,8 +19,10 @@
 
         public function __construct() {
             parent::__construct();
+            $this->blnEnable = false;
             $this->strName = t('Cedill/Comma issue solver');
-            QApplication::RegisterPreference('Cedilla or comma', 'option', 'Select wether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
+            if ($this->blnEnable)
+                QApplication::RegisterPreference('Cedilla or comma', 'option', 'Select wether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
         }
 
         protected function ConvertToSedilla($strText) {
@@ -40,8 +42,10 @@
 
             if ( $strPref  && $strPref == 'comma' )
                 return $this->ConvertToComma($strText);
-            else
+            elseif ( $strPref  && $strPref == 'cedilla' )
                 return $this->ConvertToSedilla($strText);
+            else
+                return $strText;
         }
 
         public function DisplaySuggestion($strSuggestion) {
@@ -85,6 +89,8 @@
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
             elseif (QApplication::$objUser->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
+            elseif (QApplication::$objUser->getPreferenceValueByName('Cedilla or comma') == 'comma')
+                return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
             else
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
         }
