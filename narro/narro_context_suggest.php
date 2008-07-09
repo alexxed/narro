@@ -346,16 +346,13 @@
         protected function txtSuggestionValue_Create() {
             $this->txtSuggestionValue = new QTextBox($this);
             $this->txtSuggestionValue->Text = '';
-            //$this->txtSuggestionValue->BorderStyle = QBorderStyle::None;
-            $this->txtSuggestionValue->CssClass = 'green3dbg';
+            $this->txtSuggestionValue->CssClass = QApplication::$objUser->Language->TextDirection . ' green3dbg';
             $this->txtSuggestionValue->Width = '100%';
             $this->txtSuggestionValue->Height = 85;
             $this->txtSuggestionValue->Required = true;
             $this->txtSuggestionValue->TextMode = QTextMode::MultiLine;
             $this->txtSuggestionValue->TabIndex = 1;
             $this->txtSuggestionValue->CrossScripting = QCrossScripting::Allow;
-            //$this->txtSuggestionValue->Display = QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId);
-            //$this->txtSuggestionValue->AddAction(new QKeyUpEvent(), new QJavaScriptAction(sprintf("document.getElementById('%s').style.display=(this.value!='')?'inline':'none';document.getElementById('%s_div').style.display=(this.value!='')?'block':'none'", $this->btnSave->ControlId, $this->txtSuggestionComment->ControlId)));
         }
 
         // Create and Setup txtSuggestionValueMd5
