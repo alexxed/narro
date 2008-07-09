@@ -63,6 +63,8 @@
 
 
         public function __call($strMethod, $arrParameters) {
+            $mixReturn = $arrParameters;
+
             foreach($this->arrPlugins as $objPlugin) {
                 if (method_exists($objPlugin, $strMethod)) {
                     $this->arrPluginReturnValues[$objPlugin->Name] = call_user_func_array(array($objPlugin, $strMethod), $arrParameters);
@@ -80,21 +82,20 @@
                         if (!is_array($arrParameters)) return $arrParameters;
 
                         switch((count($arrParameters))) {
-                            case 0: $mixReturn = false;
-                            case 1: $mixReturn = $arrParameters[0];
+                            case 0: $mixReturn = false; break;
+                            case 1: $mixReturn = $arrParameters[0]; break;
                             default: $mixReturn = $arrParameters;
                         }
                     }
                 }
                 else {
                     switch((count($arrParameters))) {
-                        case 0: $mixReturn = false;
-                        case 1: $mixReturn = $arrParameters[0];
+                        case 0: $mixReturn = false; break;
+                        case 1: $mixReturn = $arrParameters[0]; break;
                         default: $mixReturn = $arrParameters;
                     }
                 }
             }
-
             return $mixReturn;
         }
 
