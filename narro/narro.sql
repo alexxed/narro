@@ -97,6 +97,8 @@ INSERT INTO narro_file_type VALUES(5, 'MozillaIni');
 INSERT INTO narro_file_type VALUES(6, 'Narro');
 INSERT INTO narro_file_type VALUES(2, 'OpenOfficeSdf');
 INSERT INTO narro_file_type VALUES(8, 'Svg');
+INSERT INTO narro_file_type VALUES(9, 'DumbGettextPo');
+INSERT INTO narro_file_type VALUES(10, 'PhpMyAdmin');
 
 CREATE TABLE narro_language (
   language_id int(10) unsigned NOT NULL auto_increment,
@@ -189,13 +191,17 @@ INSERT INTO narro_permission VALUES(11, 'Can delete project');
 INSERT INTO narro_permission VALUES(6, 'Can edit any suggestion');
 INSERT INTO narro_permission VALUES(15, 'Can edit language');
 INSERT INTO narro_permission VALUES(13, 'Can edit project');
-INSERT INTO narro_permission VALUES(9, 'Can export');
-INSERT INTO narro_permission VALUES(8, 'Can import');
+INSERT INTO narro_permission VALUES(9, 'Can export file');
+INSERT INTO narro_permission VALUES(8, 'Can import file');
 INSERT INTO narro_permission VALUES(10, 'Can manage project');
 INSERT INTO narro_permission VALUES(7, 'Can manage users');
 INSERT INTO narro_permission VALUES(1, 'Can suggest');
 INSERT INTO narro_permission VALUES(3, 'Can validate');
 INSERT INTO narro_permission VALUES(2, 'Can vote');
+INSERT INTO narro_permission VALUES(18, 'Can import project');
+INSERT INTO narro_permission VALUES(19, 'Can export project');
+INSERT INTO narro_permission VALUES(20, 'Can upload project');
+
 
 CREATE TABLE narro_project (
   project_id int(10) unsigned NOT NULL auto_increment,
@@ -221,6 +227,8 @@ INSERT INTO narro_project_type VALUES(1, 'Mozilla');
 INSERT INTO narro_project_type VALUES(4, 'Narro');
 INSERT INTO narro_project_type VALUES(2, 'OpenOffice');
 INSERT INTO narro_project_type VALUES(5, 'Svg');
+INSERT INTO narro_project_type VALUES(6, 'DumbGettextPo');
+INSERT INTO narro_project_type VALUES(7, 'Generic');
 
 CREATE TABLE narro_suggestion (
   suggestion_id bigint(20) unsigned NOT NULL auto_increment,
