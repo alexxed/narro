@@ -186,11 +186,16 @@
                     $intAccPos = mb_stripos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
                 else
                     $intAccPos = 0;
+                    
+                if (QApplication::$objUser->Language->TextDirection == 'rtl' && $intAccPos == 0) 
+                    $strDirControlChar = "\xE2\x80\x8E"; //ltr = \xE2\x80\x8F"
+                else
+                    $strDirControlChar = '';
 
                 if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
-                    $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $lstAccessKey->Render(false) . mb_substr($strSuggestionValue, $intAccPos + 1);
+                    $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $strDirControlChar . $lstAccessKey->Render(false) . mb_substr($strSuggestionValue, $intAccPos + 1);
                 else
-                    $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . '<u>' . mb_substr($strSuggestionValue, $intAccPos, 1) . '</u>' . mb_substr($strSuggestionValue, $intAccPos + 1);
+                    $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $strDirControlChar . '<u>' . mb_substr($strSuggestionValue, $intAccPos, 1) . '</u>' . mb_substr($strSuggestionValue, $intAccPos + 1);
             }
 
             if (is_array($arrWordSuggestions))
@@ -217,7 +222,7 @@
                 $txtEditSuggestion = $this->objForm->GetControl($strControlId);
                 if (!$txtEditSuggestion) {
                     $txtEditSuggestion = new QTextBox($this->dtgSuggestions, $strControlId);
-                    $txtEditSuggestion->BackColor = 'lightgreen';
+                    $txtEditSuggestion->CssClass = QApplication::$objUser->Language->TextDirection . ' green3dbg';
                     $txtEditSuggestion->Width = '100%';
                     $txtEditSuggestion->Height = 85;
                     $txtEditSuggestion->Required = true;

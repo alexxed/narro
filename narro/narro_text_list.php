@@ -117,6 +117,7 @@
             $this->lstSearchType->AddItem(t('original texts'), self::SEARCH_TEXTS, true);
             $this->lstSearchType->AddItem(t('translations'), self::SEARCH_SUGGESTIONS);
             $this->lstSearchType->AddItem(t('contexts'), self::SEARCH_CONTEXTS);
+            $this->lstSearchType->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('qc.getControl(\'%s\').className=((this.selectedIndex == 1)?\'%s\':\'ltr\');', $this->txtSearch->ControlId, QApplication::$objUser->Language->TextDirection)));
             if (QApplication::QueryString('st') > 0)
                 $this->lstSearchType->SelectedValue = QApplication::QueryString('st');
 
