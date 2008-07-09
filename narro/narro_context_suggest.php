@@ -236,8 +236,8 @@
             $this->btnSaveIgnore->Visible = false;
 
             $this->lblMessage->Text = '';
-            
-            $this->txtSuggestionValue->Focus();
+
+            if ($this->txtSuggestionValue->Rendered) $this->txtSuggestionValue->Focus();
 
         }
 
