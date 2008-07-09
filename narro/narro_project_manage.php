@@ -313,8 +313,9 @@
                         ' --import --minloglevel %d --project %d --user %d ' .
                         (($this->chkValidate->Checked)?'--validate ':'') .
                         (($this->chkForce->Checked)?'--force ':'') .
+                        (($this->chkCheckEqual->Checked)?'--check-equal ':'') .
                         (($this->chkOnlySuggestions->Checked)?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
-                        ' --check-equal --source-lang en-US --target-lang %s',
+                        ' --source-lang en-US --target-lang %s',
                     $this->lstLogLevel->SelectedValue,
                     $this->objNarroProject->ProjectId,
                     QApplication::$objUser->UserId,
