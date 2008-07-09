@@ -407,6 +407,7 @@
             $this->chkValidate = new QCheckBox($this);
             //$this->chkValidate->TabIndex = 7;
             $this->chkValidate->Display = QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId);
+            $this->chkValidate->Checked = QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId);
         }
 
         // Setup btnNext
@@ -514,7 +515,7 @@
         protected function SaveSuggestion($blnIgnorePluginErrors = false) {
             if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
                 return false;
-                
+
             $arrResult = QApplication::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             if (is_array($arrResult) && isset($arrResult[1]))
                 $strSuggestionValue = $arrResult[1];
@@ -526,7 +527,7 @@
                 $this->ShowPluginErrors();
                 return false;
             }
-            
+
             /**
              * Make sure that we're not putting in a empty suggestion
              */
