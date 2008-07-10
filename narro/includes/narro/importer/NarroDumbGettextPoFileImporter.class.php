@@ -19,9 +19,9 @@
     class NarroDumbGettextPoFileImporter extends NarroFileImporter {
         protected function getPoFields(&$hndFile) {
             $arrFields = array();
-            
+
             if (!is_resource($hndFile) || feof($hndFile)) return $arrFields;
-            
+
             $strLine = fgets($hndFile, 8192);
             NarroLog::LogMessage(1, "Processing " . $strLine . "<br />");
             if (strpos($strLine, '# ') === 0) {
@@ -207,7 +207,7 @@
                         break;
                 }
             }
-            
+
             return $arrFields;
         }
 
@@ -272,12 +272,14 @@
                              * the first one is added with msgid/msgstr[0] (this is the singular)
                              * the next ones (currently 2) are added with plural id, so in fact they will be tied to the same text
                              */
+                            $strSingularText = $arrTemplateFields['MsgStr0'];
+
                             if (!is_null($arrTemplateFields['MsgStr0']))
                                 $arrTemplateFields['MsgStr0'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr0']), $this->getAccessKey($arrTemplateFields['MsgStr0']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr0']), null, null, $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This text has plurals.", 0);
                             if (!is_null($arrTemplateFields['MsgStr1']))
-                                $arrTemplateFields['MsgStr1'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr1']), $this->getAccessKey($arrTemplateFields['MsgStr1']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr1']), null, null, $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This is plural form 1 for the text \"".$arrTemplateFields['MsgStr0']."\".", 1);
+                                $arrTemplateFields['MsgStr1'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr1']), $this->getAccessKey($arrTemplateFields['MsgStr1']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr1']), null, null, $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This is plural form 1 for the text \"".$strSingularText."\".", 1);
                             if (!is_null($arrTemplateFields['MsgStr2']))
-                                $arrTemplateFields['MsgStr2'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr2']), $this->getAccessKey($arrTemplateFields['MsgStr2']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr2']), null, null, $this->getAccessKey($arrTemplateFields['MsgStr2']), $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This is plural form 2 for the text \"".$arrTemplateFields['MsgStr0']."\".", 2);
+                                $arrTemplateFields['MsgStr2'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr2']), $this->getAccessKey($arrTemplateFields['MsgStr2']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr2']), null, null, $this->getAccessKey($arrTemplateFields['MsgStr2']), $arrTemplateFields['Context'] . $arrTemplateFields['MsgId'] . $arrTemplateFields['MsgPluralId'] . "This is plural form 2 for the text \"".$strSingularText."\".", 2);
                         }
                     }
 
@@ -343,7 +345,7 @@
             if ($hndTemplateFile) {
                 $strCurrentGroup = 1;
                 while (!feof($hndTemplateFile)) {
-                    
+
                     $arrTemplateFields = $this->getPoFields($hndTemplateFile);
                     $arrTranslatedFields = $this->getPoFields($hndTranslatedFile);
 
@@ -379,12 +381,12 @@
                         if (trim($arrTemplateFields['Context']) == '') {
                             $arrTemplateFields['Context'] = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $this->objFile->FileName, $strCurrentGroup);
                         }
-                        
+
                         if (isset($arrTranslatedFields['MsgStr']) && $arrTranslatedFields['MsgStr'] != '' && isset($arrTranslatedFields['MsgId']) == $arrTemplateFields['MsgId'])
                             $strTranslatedText = str_replace('\"', '"', $arrTranslatedFields['MsgStr']);
                         else
                             $strTranslatedText = null;
-                            
+
                         if (isset($arrTranslatedFields['MsgStr0']) && $arrTranslatedFields['MsgStr0'] != '' && isset($arrTranslatedFields['MsgPluralId']) == $arrTemplateFields['MsgPluralId'])
                             $strTranslatedText0 = str_replace('\"', '"', $arrTranslatedFields['MsgStr0']);
                         else
@@ -398,8 +400,8 @@
                         if (isset($arrTranslatedFields['MsgStr2']) && $arrTranslatedFields['MsgStr2'] != '' && isset($arrTranslatedFields['MsgPluralId']) == $arrTemplateFields['MsgPluralId'])
                             $strTranslatedText2 = str_replace('\"', '"', $arrTranslatedFields['MsgStr2']);
                         else
-                            $strTranslatedText2 = null;     
-                        
+                            $strTranslatedText2 = null;
+
                         /**
                          * if it's not a plural, just add msgid and msgstr
                          */
@@ -427,7 +429,7 @@
                             }
                         }
                     }
-                    
+
                     $arrTemplateFields['TranslatorComment'] = null;
                     $arrTemplateFields['ExtractedComment'] = null;
                     $arrTemplateFields['Reference'] = null;
