@@ -83,7 +83,8 @@
         get_include_path() . PATH_SEPARATOR .
         dirname(__FILE__) . __SUBDIRECTORY__ . PATH_SEPARATOR .
         __INCLUDES__ . PATH_SEPARATOR .
-        __INCLUDES__ . '/narro/importer'
+        __INCLUDES__ . '/narro/importer' . PATH_SEPARATOR .
+        __INCLUDES__ . '/PEAR'
         );
 
     ini_set('mbstring.encoding_translation', true);

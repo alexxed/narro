@@ -88,6 +88,7 @@
                 break;
             case E_STRICT:
                 $__exc_strObjectType = "E_STRICT";
+                return true;
                 break;
             case E_CORE_ERROR:
                 $__exc_strObjectType = "E_CORE_ERROR";

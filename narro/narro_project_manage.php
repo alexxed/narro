@@ -18,7 +18,6 @@
 
     require_once('includes/prepend.inc.php');
     require_once('includes/narro/narro_progress_bar.class.php');
-    require_once(__INCLUDES__ . '/archive.class.php');
 
     class NarroProjectManageForm extends QForm {
         protected $objNarroProject;
@@ -160,7 +159,6 @@
 
             $this->lstExportArchiveType = new QListBox($this);
             $this->lstExportArchiveType->AddItem('tar.gz', 'tar.gz');
-            $this->lstExportArchiveType->AddItem('tar.bz2', 'tar.bz2');
             $this->lstExportArchiveType->AddItem('zip', 'zip');
 
             $this->chkForce = new QCheckBox($this);
@@ -175,6 +173,8 @@
                 $this->objImportProgress->Translated = NarroProgress::GetProgress();
                 QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->FormId, $this->btnImport->ControlId, 2000));
             }
+            else
+                NarroLog::ClearLog();
 
             if (file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$objUser->Language->LanguageCode . '/export.pid')) {
                 $this->btnExport->Enabled = false;
@@ -184,6 +184,9 @@
                 $this->objExportProgress->Translated = NarroProgress::GetProgress();
                 QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->FormId, $this->btnExport->ControlId, 2000));
             }
+            else
+                NarroLog::ClearLog();
+
 
             $this->Form_PreRender();
 
@@ -208,8 +211,15 @@
 
                 if (file_exists($this->flaImportFromFile->File)) {
                     $strWorkDir = __TMP_PATH__ . '/import-project-' . $this->objNarroProject->ProjectId . '-' . QApplication::$objUser->Language->LanguageCode;
+
                     if (file_exists($strWorkDir))
-                        NarroUtils::RecursiveDelete($strWorkDir);
+                        try {
+                            NarroUtils::RecursiveDelete($strWorkDir);
+                        }
+                        catch(Exception $objEx) {
+                            NarroLog::LogMessage(3, $objEx->getMessage());
+                        }
+
                     mkdir($strWorkDir);
                     chmod($strWorkDir, 0777);
                     chdir($strWorkDir);
@@ -219,33 +229,45 @@
                     if (file_exists($strExportPath . '/' . $strExportArchive))
                         unlink($strExportPath . '/' . $strExportArchive);
 
-                    if (strstr($this->flaImportFromFile->File, '.bz2')) {
-                        $objArchiver = new bzip_file($this->flaImportFromFile->File);
-                    }
-                    elseif (strstr($this->flaImportFromFile->File, '.gz')) {
-                        $objArchiver = new gzip_file($this->flaImportFromFile->File);
-                    }
-                    elseif (strstr($this->flaImportFromFile->File, '.zip')) {
-                        $objArchiver = new zip_file($this->flaImportFromFile->File);
-                    }
-                    else {
-                        NarroLog::LogMessage(3, t('Unable to detect the type for the uploaded file'));
+                    switch($strExt = pathinfo($this->flaImportFromFile->File, PATHINFO_EXTENSION)) {
+                        case 'gz':
+                            $objArchiver = new Archive_Tar($this->flaImportFromFile->File, $strExt);
+                            if (!$objArchiver->extract($strWorkDir))
+                                NarroLog::LogMessage(3, sprintf(t('Failed to uncompress %s'), $this->flaImportFromFile->FileName));
+                            break;
+                        case 'zip':
+                            $objArchiver = new ZipArchive();
+
+                            if ($objArchiver->open($this->flaImportFromFile->File) === true) {
+                                if (!$objArchiver->extractTo($strWorkDir))
+                                    NarroLog::LogMessage(3, sprintf(t('Failed to uncompress %s'), $this->flaImportFromFile->FileName));
+                            }
+                            else
+                                NarroLog::LogMessage(3, sprintf(t('Can\'t open %s as a zip file'), $this->flaImportFromFile->FileName));
+                            break;
+                        default:
+                            NarroLog::LogMessage(3, sprintf(t('Unsupported extension: %s. Supported archives are: %s'), $strExt, 'tar.gz, zip'));
                     }
 
                     if (isset($objArchiver)) {
-                        $objArchiver->set_options(array('basedir' => $strWorkDir, 'overwrite' => 1));
-                        $objArchiver->extract_files();
-                        if (count($objArchiver->error) > 0) {
-                            foreach($objArchiver->error as $strError)
-                                NarroLog::LogMessage(3, $strError);
+                        try {
+                            NarroUtils::RecursiveChmod($strWorkDir);
                         }
-                        NarroUtils::RecursiveChmod($strWorkDir);
+                        catch(Exception $objEx) {
+                            NarroLog::LogMessage(3, $objEx->getMessage());
+                        }
+
                     }
 
                     if (!file_exists($strWorkDir . '/en-US') && !file_exists($strWorkDir . '/' . QApplication::$objUser->Language->LanguageCode)) {
                         NarroLog::LogMessage(3, sprintf(t('The uploaded archive should have at least one directory named "en-US" or one named "%s" that contains the files with the original texts'), QApplication::$objUser->Language->LanguageCode));
                         $this->lblImport->Text = t('Import failed.');
-                        NarroUtils::RecursiveDelete($strWorkDir);
+                        try {
+                            NarroUtils::RecursiveDelete($strWorkDir);
+                        }
+                        catch(Exception $objEx) {
+                            NarroLog::LogMessage(3, $objEx->getMessage());
+                        }
 
                         if (file_exists($this->flaImportFromFile->File))
                             unlink($this->flaImportFromFile->File);
@@ -257,20 +279,35 @@
                     }
                     else {
                         if (file_exists($strWorkDir . '/en-US')) {
-                            NarroUtils::RecursiveDelete($strImportPath . '/en-US');
-                            NarroUtils::RecursiveCopy($strWorkDir . '/en-US', __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US');
-                            NarroUtils::RecursiveChmod(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US');
+                            try {
+                                NarroUtils::RecursiveDelete($strImportPath . '/en-US');
+                                NarroUtils::RecursiveCopy($strWorkDir . '/en-US', __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US');
+                                NarroUtils::RecursiveChmod(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US');
+                            }
+                            catch(Exception $objEx) {
+                                NarroLog::LogMessage(3, $objEx->getMessage());
+                            }
                         }
 
                         if (file_exists($strWorkDir . '/' . QApplication::$objUser->Language->LanguageCode)) {
-                            NarroUtils::RecursiveDelete($strImportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/*');
-                            NarroUtils::RecursiveCopy($strWorkDir . '/' . QApplication::$objUser->Language->LanguageCode, __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$objUser->Language->LanguageCode);
-                            NarroUtils::RecursiveChmod(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$objUser->Language->LanguageCode);
+                            try {
+                                NarroUtils::RecursiveDelete($strImportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/*');
+                                NarroUtils::RecursiveCopy($strWorkDir . '/' . QApplication::$objUser->Language->LanguageCode, __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$objUser->Language->LanguageCode);
+                                NarroUtils::RecursiveChmod(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$objUser->Language->LanguageCode);
+                            }
+                            catch(Exception $objEx) {
+                                NarroLog::LogMessage(3, $objEx->getMessage());
+                            }
                         }
 
-                        NarroUtils::RecursiveDelete($strWorkDir);
+                        try {
+                            NarroUtils::RecursiveDelete($strWorkDir);
+                        }
+                        catch(Exception $objEx) {
+                            NarroLog::LogMessage(3, $objEx->getMessage());
+                        }
 
-                        NarroLog::LogMessage(3, sprintf(t('The directories "%s" and "%s" from the uploaded archive "%s" were extracted to "%s"'), 'en-US', QApplication::$objUser->Language->LanguageCode, $this->flaImportFromFile->FileName, __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId));
+                        NarroLog::LogMessage(3, sprintf(t('The directories "%s" and "%s" from the uploaded archive were extracted to "%s"'), 'en-US', QApplication::$objUser->Language->LanguageCode, __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId));
                     }
 
                 }
@@ -409,40 +446,48 @@
                      */
                     if (file_exists($strExportPath . '/' . QApplication::$objUser->Language->LanguageCode)) {
                         $strExportArchive = $this->objNarroProject->ProjectId . '-' . QApplication::$objUser->Language->LanguageCode . '.' . $this->lstExportArchiveType->SelectedValue;
+                        $strCurDir = getcwd();
+                        chdir($strExportPath);
 
                         if (file_exists($strExportPath . '/' . $strExportArchive))
                             unlink($strExportPath . '/' . $strExportArchive);
 
+                        $arrFiles = array_merge(
+                            NarroUtils::ListDirectory($strExportPath . '/en-US', null, '/CVS|\.svn|port\.pid|port\.log|port\.status/', $strExportPath . '/', true),
+                            NarroUtils::ListDirectory($strExportPath . '/' . QApplication::$objUser->Language->LanguageCode, null, '/CVS|\.svn|port\.pid|port\.log|port\.status/', $strExportPath . '/', true)
+                        );
+
+
                         switch($this->lstExportArchiveType->SelectedValue) {
                             case 'tar.gz':
-                                $objArchiver = new gzip_file($strExportArchive);
-                                break;
-                            case 'zip':
-                                $objArchiver = new zip_file($strExportArchive);
-                                break;
+                            case 'tar.bz2':
+                                foreach($arrFiles as $intKey=>$strFile)
+                                    if (is_dir($strFile)) unset($arrFiles[$intKey]);
+
+                                $objArchiver = new Archive_Tar($strExportArchive);
+                                $objArchiver->create($arrFiles);
                             default:
-                                $objArchiver = new bzip_file($strExportArchive);
+                                $objArchiver = new ZipArchive();
+                                if ($objArchiver->open($strExportArchive, ZIPARCHIVE::OVERWRITE) !== true ) {
+                                    throw new Exception(__METHOD__ . ':Can\'t open file: ' . $strExportArchive);
+                                }
+
+                                foreach ($arrFiles as $strFile)
+                                {
+                                    if (is_dir($strFile))
+                                        $objArchiver->addEmptyDir($strFile);
+                                    elseif (is_file($strFile))
+                                        $objArchiver->addFile($strFile);
+                                }
+
+                                $objArchiver->close();
                         }
 
-                        $objArchiver->set_options(array('basedir' => $strExportPath, 'overwrite' => 1, 'level' => 1));
-
-                        $objArchiver->add_files(QApplication::$objUser->Language->LanguageCode . '/*');
-                        $objArchiver->add_files('en-US/*');
-
-                        $objArchiver->exclude_files(QApplication::$objUser->Language->LanguageCode . '/*.log');
-                        $objArchiver->exclude_files(QApplication::$objUser->Language->LanguageCode . '/*.pid');
-                        $objArchiver->exclude_files(QApplication::$objUser->Language->LanguageCode . '/*.status');
-
-                        $objArchiver->create_archive();
-
-                        // Check for errors (you can check for errors at any point)
-                        if (count($objArchiver->errors) == 0) {
-                            chmod($strExportPath . '/' . $strExportArchive, 0666);
-                            if (file_exists($strExportPath . '/' . $strExportArchive)) {
-                                $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $strExportArchive;
-                                QApplication::ExecuteJavaScript(sprintf('setInterval("document.location=\'%s\';"), 2000', $strDownloadUrl));
-                                $this->objExportProgress->Translated = 0;
-                            }
+                        chmod($strExportPath . '/' . $strExportArchive, 0666);
+                        if (file_exists($strExportPath . '/' . $strExportArchive)) {
+                            $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $strExportArchive;
+                            QApplication::ExecuteJavaScript(sprintf('setInterval("document.location=\'%s\';"), 3000', $strDownloadUrl));
+                            $this->objExportProgress->Translated = 0;
                         }
 
                         $this->showLog();
@@ -521,7 +566,6 @@
             <div class="dotted_box_content">' . nl2br(NarroLog::GetLogContents()) . '</div></div></div>';
 
             $this->pnlLogViewer->Visible = true;
-            NarroLog::ClearLog();
         }
 
         protected function btnDelProjectContexts_Click($strFormId, $strControlId, $strParameter) {

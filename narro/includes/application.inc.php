@@ -152,5 +152,6 @@
     QApplicationBase::$ClassFile['NarroProgress'] = __INCLUDES__ . '/narro/importer/NarroProgress.class.php';
     QApplicationBase::$ClassFile['NarroUtils'] = __INCLUDES__ . '/narro/NarroUtils.class.php';
     QApplicationBase::$ClassFile['NarroString'] = __INCLUDES__ . '/narro/NarroString.class.php';
+    QApplicationBase::$ClassFile['Archive_Tar'] = __INCLUDES__ . '/PEAR/Archive/Tar.php';
 
 ?>
