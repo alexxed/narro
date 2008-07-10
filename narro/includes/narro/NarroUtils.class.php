@@ -24,50 +24,64 @@
                         if ($strFileName == '.' || $strFileName == '..')
                             continue;
 
-                        if (!self::RecursiveDelete($strFilePath.'/'.$strFileName))
-                            throw new Exception($strFilePath.'/'.$strFileName.' could not be deleted.');
+                        if (!self::RecursiveDelete($strFilePath.'/'.$strFileName)) {
+                            throw new Exception(
+                                            sprintf('%s/%s could not be deleted. File owner: %s, file permissions %s',
+                                                $strFilePath,
+                                                $strFileName,
+                                                fileowner($strFilePath . '/' . $strFileName),
+                                                fileperms($strFilePath . '/' . $strFileName)
+                                            )
+                            );
+                        }
                     }
                     closedir($hndDir);
                 }
             }
             else {
-                if (is_dir($strFilePath) && !is_link($strFilePath))
-                {
-                    if ($hndDir = opendir($strFilePath))
-                    {
-                        while (($strFileName = readdir($hndDir)) !== false)
-                        {
-                            if ($strFileName == '.' || $strFileName == '..')
-                            {
+                if (is_dir($strFilePath) && !is_link($strFilePath)) {
+                    if ($hndDir = opendir($strFilePath)) {
+                        while (($strFileName = readdir($hndDir)) !== false) {
+                            if ($strFileName == '.' || $strFileName == '..') {
                                 continue;
                             }
-                            if (!self::RecursiveDelete($strFilePath.'/'.$strFileName))
-                            {
-                                throw new Exception($strFilePath.'/'.$strFileName.' could not be deleted.');
+                            if (!self::RecursiveDelete($strFilePath.'/'.$strFileName)) {
+                                throw new Exception(
+                                                sprintf('%s/%s could not be deleted. File owner: %s, file permissions %s',
+                                                    $strFilePath,
+                                                    $strFileName,
+                                                    fileowner($strFilePath . '/' . $strFileName),
+                                                    fileperms($strFilePath . '/' . $strFileName)
+                                                )
+                                );
                             }
                         }
                         closedir($hndDir);
                     }
-                    return @rmdir($strFilePath);
+                    return rmdir($strFilePath);
                 }
-                return @unlink($strFilePath);
+                return unlink($strFilePath);
             }
         }
 
         public static function RecursiveChmod($strFilePath, $intFileMode = 0666, $intDirMode = 0777) {
-            if (is_dir($strFilePath) && !is_link($strFilePath))
-            {
-                if ($hndDir = opendir($strFilePath))
-                {
-                    while (($strFileName = readdir($hndDir)) !== false)
-                    {
-                        if ($strFileName == '.' || $strFileName == '..')
-                        {
+            if (is_dir($strFilePath) && !is_link($strFilePath)) {
+                if ($hndDir = opendir($strFilePath)) {
+                    while (($strFileName = readdir($hndDir)) !== false) {
+
+                        if ($strFileName == '.' || $strFileName == '..') {
                             continue;
                         }
-                        if (!self::RecursiveChmod($strFilePath.'/'.$strFileName, $intFileMode, $intDirMode))
-                        {
-                            throw new Exception($strFilePath.'/'.$strFileName.' could not be chmoded.');
+
+                        if (!self::RecursiveChmod($strFilePath.'/'.$strFileName, $intFileMode, $intDirMode)) {
+                                throw new Exception(
+                                                sprintf('%s/%s could not be chmoded. File owner: %s, file permissions %s',
+                                                    $strFilePath,
+                                                    $strFileName,
+                                                    fileowner($strFilePath . '/' . $strFileName),
+                                                    fileperms($strFilePath . '/' . $strFileName)
+                                                )
+                                );
                         }
                     }
                     closedir($hndDir);
@@ -112,6 +126,54 @@
                 return false;
 
 
+        }
+
+        public static function ListDirectory($strDir = '.', $strIncludePattern = null, $strExcludePattern = null, $strExcludePath = null, $blnIncludeDirectories = false) {
+
+            $arrFiles = array();
+            if (is_dir($strDir)) {
+                $hndFile = opendir($strDir);
+                if ($blnIncludeDirectories) {
+                    $blnContinue = false;
+                    if ($strIncludePattern && !preg_match($strIncludePattern, $strDir))
+                        $blnContinue = true;
+
+                    if (!$blnContinue && $strExcludePattern && preg_match($strExcludePattern, $strDir))
+                        $blnContinue = true;
+
+                    if (!$blnContinue)
+                        array_push($arrFiles, ($strExcludePath)?str_replace($strExcludePath, '', $strDir):$strDir);
+                }
+
+                while (($strFile = readdir($hndFile)) !== false) {
+                    // loop through the files, skipping . and .., and recursing if necessary
+                    if (strcmp($strFile, '.')==0 || strcmp($strFile, '..')==0) continue;
+
+                    $strFilePath = $strDir . '/' . $strFile;
+
+                    if ( is_dir($strFilePath) )
+                        $arrFiles = array_merge($arrFiles, self::ListDirectory($strFilePath, $strIncludePattern, $strExcludePattern, $strExcludePath));
+                    else {
+                        if ($strIncludePattern && !preg_match($strIncludePattern, $strFilePath))
+                            continue;
+
+                        if ($strExcludePattern && preg_match($strExcludePattern, $strFilePath))
+                            continue;
+
+                        if ($strExcludePath) {
+                            array_push($arrFiles, str_replace($strExcludePath, '', $strFilePath));
+                            continue;
+                        }
+
+                        array_push($arrFiles, $strFilePath);
+                    }
+                }
+                closedir($hndFile);
+            } else {
+                // false if the function was called with an invalid non-directory argument
+                $arrFiles = false;
+            }
+            return $arrFiles;
         }
     }
 ?>
