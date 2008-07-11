@@ -34,7 +34,7 @@
                 t('Manage');
         ?>
         </div>
-        <?php if (QApplication::$objUser->hasPermission('Can import project', null, QApplication::$objUser->Language->LanguageId) || QApplication::$objUser->hasPermission('Can export project', null, QApplication::$objUser->Language->LanguageId)) { ?>
+        <?php if (QApplication::$objUser->hasPermission('Can import project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId) || QApplication::$objUser->hasPermission('Can export project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId)) { ?>
             <br />
             <?php $this->pnlLogViewer->Render(); ?>
             <br />
@@ -49,7 +49,7 @@
             </div>
         <?php } ?>
 
-        <?php if (QApplication::$objUser->hasPermission('Can import project', null, QApplication::$objUser->Language->LanguageId)) { ?>
+        <?php if (QApplication::$objUser->hasPermission('Can import project', $this->objNarroProject->ProjectId , QApplication::$objUser->Language->LanguageId)) { ?>
             <br />
             <div class="dotted_box">
             <div class="dotted_box_title"><?php echo t('Import project'); ?></div>
@@ -73,7 +73,7 @@
             </div>
         <?php } ?>
 
-        <?php if (QApplication::$objUser->hasPermission('Can export project', null, QApplication::$objUser->Language->LanguageId) && $this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
+        <?php if (QApplication::$objUser->hasPermission('Can export project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId) && $this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
             <br />
             <div class="dotted_box">
             <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
@@ -90,7 +90,7 @@
             </div>
         <?php } ?>
 
-        <?php if (QApplication::$objUser->hasPermission('Can delete project')) { ?>
+        <?php if (QApplication::$objUser->hasPermission('Can delete project', $this->objNarroProject->ProjectId)) { ?>
             <br />
             <div class="dotted_box">
             <div class="dotted_box_title">Project maintenance</div>
