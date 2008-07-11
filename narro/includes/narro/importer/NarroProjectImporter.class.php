@@ -598,8 +598,12 @@
                     $intParentId = $arrDirectories[$strPath];
                 }
 
-                if (!$intFileType = $this->GetFileType($strFileName))
+                if (!$intFileType = $this->GetFileType($strFileName)) {
+                    NarroLog::LogMessage(2, sprintf(t('Copying unhandled file type: %s'), $strFileToExport));
+                    NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
+                    copy($strFileToExport, str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToExport));
                     continue;
+                }
 
                 $objFile = NarroFile::QuerySingle(
                                 QQ::AndCondition(
@@ -661,6 +665,9 @@
                         $objFileImporter = new NarroPhpMyAdminFileImporter($this);
                         break;
                 default:
+                        NarroLog::LogMessage(2, sprintf(t('Copying unhandled file type: %s'), $strTemplateFile));
+                        NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
+                        copy($strTemplateFile, $strTranslatedFile);
                         return false;
             }
             $objFileImporter->File = $objFile;
