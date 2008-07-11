@@ -92,8 +92,6 @@
 
                         list($arrTemplate, $arrTemplateKeys) = NarroMozilla::GetAccessKeys($arrTemplate);
 
-
-
                         $intElapsedTime = time() - $intTime;
                         if ($intElapsedTime > 0)
                             NarroLog::LogMessage(1, sprintf(t('DTD file %s processing took %d seconds.'), $this->objFile->FileName, $intElapsedTime));
@@ -143,13 +141,24 @@
                 return false;
             }
 
-            if (!preg_match_all('/^<!ENTITY\s+([^\s]+)\s+"([^"]*)"\s?>\s*/ms', $strTemplateContents, $arrTemplateMatches))
-                return false;
+            preg_match_all('/^<!ENTITY\s+([^\s]+)\s+"([^"]*)"\s?>\s*/ms', $strTemplateContents, $arrTemplateMatches);
 
-            foreach($arrTemplateMatches[1] as $intPos=>$strVal) {
-                $arrTemplate[$strVal] = $arrTemplateMatches[2][$intPos];
-                $arrTemplateLines[$strVal] = $arrTemplateMatches[0][$intPos];
-            }
+            if (is_array($arrTemplateMatches))
+                foreach($arrTemplateMatches[1] as $intPos=>$strVal) {
+                    $arrTemplate[$strVal] = $arrTemplateMatches[2][$intPos];
+                    $arrTemplateLines[$strVal] = $arrTemplateMatches[0][$intPos];
+                }
+
+            preg_match_all('/^<!ENTITY\s+([^\s]+)\s+\'([^\']*)\'\s?>\s*/ms', $strTemplateContents, $arrTemplateMatches);
+
+            if (is_array($arrTemplateMatches))
+                foreach($arrTemplateMatches[1] as $intPos=>$strVal) {
+                    $arrTemplate[$strVal] = $arrTemplateMatches[2][$intPos];
+                    $arrTemplateLines[$strVal] = $arrTemplateMatches[0][$intPos];
+                }
+
+            if (!is_array($arrTemplate) || count($arrTemplate) == 0)
+                return false;
 
             $strTranslateContents = '';
 
@@ -173,6 +182,11 @@
                         NarroLog::LogMessage(2, sprintf(t('A plugin returned an unexpected result while processing the suggestion "%s": %s'), $arrTranslation[$strKey], print_r($arrResult, true)));
 
                     $strTranslatedLine = str_replace('"' . $arrTemplate[$strKey] . '"', '"' . $arrTranslation[$strKey] . '"', $arrTemplateLines[$strKey]);
+                    /**
+                     * try again with simple quotes
+                     */
+                    if ($strTranslatedLine == $arrTemplateLines[$strKey])
+                        $strTranslatedLine = str_replace("'" . $arrTemplate[$strKey] . "'", "'" . $arrTranslation[$strKey] . "'", $arrTemplateLines[$strKey]);
 
                     if ($strTranslatedLine)
                         $strTemplateContents = str_replace($arrTemplateLines[$strKey], $strTranslatedLine, $strTemplateContents);
