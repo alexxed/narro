@@ -26,8 +26,8 @@
          * @return string
          **/
         public static function HtmlEntities($strText, $strEncoding = 'utf-8') {
-            $arrPattern = array('<', '>');
-            $arrReplacement = array('&lt;', '&gt;');
+            $arrPattern = array('&', '<', '>');
+            $arrReplacement = array('&amp;', '&lt;', '&gt;', );
             for ($i=0; $i<count($arrPattern); $i++) {
                 $strText = mb_ereg_replace($arrPattern[$i], $arrReplacement[$i], $strText);
             }
