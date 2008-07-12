@@ -163,6 +163,8 @@
             $this->lblExport->Visible = false;
             $this->lblExport->HtmlEntities = false;
 
+
+
             $this->lstExportArchiveType = new QListBox($this);
             $this->lstExportArchiveType->AddItem('tar.gz', 'tar.gz');
             $this->lstExportArchiveType->AddItem('zip', 'zip');
@@ -171,27 +173,42 @@
             $this->chkForce->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('document.getElementById(\'%s\').disabled = false', $this->btnImport->ControlId)));
             $this->chkForce->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('document.getElementById(\'%s\').disabled = false', $this->btnExport->ControlId)));
 
-            if (file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$objUser->Language->LanguageCode . '/import.pid')) {
+            $strImportPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
+
+            foreach(array('tar.gz', 'zip') as $strFileExt) {
+                $strArchiveName = $this->objNarroProject->ProjectId . '-' . QApplication::$objUser->Language->LanguageCode . '.' . $strFileExt;
+                $strExportFile = $strImportPath . '/' . $strArchiveName;
+                if (file_exists($strExportFile)) {
+                    $objDateSpan = new QDateTimeSpan(time() - filemtime($strExportFile));
+                    $this->lblExport->Text = sprintf(t('Link to last export: <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
+                    $this->lblExport->Visible = true;
+                }
+            }
+
+            if (file_exists($strImportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/import.pid')) {
                 $this->btnImport->Enabled = false;
                 $this->objImportProgress->Visible = true;
-                $strImportPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
                 NarroProgress::SetProgressFile($strImportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/import.progress');
                 $this->objImportProgress->Translated = NarroProgress::GetProgress();
                 QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->FormId, $this->btnImport->ControlId, 2000));
             }
-            else
+            else {
+                NarroLog::SetLogFile($strImportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/import.log');
                 NarroLog::ClearLog();
+            }
 
-            if (file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$objUser->Language->LanguageCode . '/export.pid')) {
+
+            if (file_exists($strImportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/export.pid')) {
                 $this->btnExport->Enabled = false;
                 $this->objExportProgress->Visible = true;
-                $strImportPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
                 NarroProgress::SetProgressFile($strImportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/export.progress');
                 $this->objExportProgress->Translated = NarroProgress::GetProgress();
                 QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->FormId, $this->btnExport->ControlId, 2000));
             }
-            else
+            else {
+                NarroLog::SetLogFile($strImportPath . '/' . QApplication::$objUser->Language->LanguageCode . '/export.log');
                 NarroLog::ClearLog();
+            }
 
 
             $this->Form_PreRender();
@@ -492,7 +509,11 @@
                         chmod($strExportPath . '/' . $strExportArchive, 0666);
                         if (file_exists($strExportPath . '/' . $strExportArchive)) {
                             $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $strExportArchive;
-                            QApplication::ExecuteJavaScript(sprintf('setInterval("document.location=\'%s\';"), 3000', $strDownloadUrl));
+                            $this->lblExport->Text .= ' ' . sprintf(t('Download link: <a href="%s">%s</a>'), $strDownloadUrl, $strExportArchive);
+                            $this->objExportProgress->Translated = 0;
+                        }
+                        else {
+                            $this->lblExport->Text .= ' ' . t('Failed to create an archive for download');
                             $this->objExportProgress->Translated = 0;
                         }
 
