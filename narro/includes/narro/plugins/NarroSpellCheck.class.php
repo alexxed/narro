@@ -26,7 +26,7 @@
         public static function GetSpellSuggestions($strText) {
             if (QApplication::$objUser->getPreferenceValueByName('Spellchecking') == 'No spellchecking')
                 return true;
-            $strCleanText = mb_ereg_replace('[\\n\.,:;\\\!\?0-9]+', ' ', $strText);
+            $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strText);
             $strCleanText = strip_tags($strCleanText);
             /**
              * mozilla entitites: &xxx;
