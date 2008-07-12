@@ -549,6 +549,7 @@
              * get the file list with complete paths
              */
             $arrFiles = $this->ListDir($this->strTemplatePath);
+
             $intTotalFilesToProcess = count($arrFiles);
 
             NarroLog::LogMessage(1, sprintf(t('Starting to process %d files'), $intTotalFilesToProcess));
@@ -598,10 +599,19 @@
                     $intParentId = $arrDirectories[$strPath];
                 }
 
+                $strTranslatedFileToExport = str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToExport);
+                if (!file_exists(dirname($strTranslatedFileToExport))) {
+                    if (!mkdir(dirname($strTranslatedFileToExport), 0777, true)) {
+                        NarroLog::LogMessage(2, sprintf(t('Failed to create the parent directories for the file %s'), $strFileToExport));
+                        continue;
+                    }
+                }
+
                 if (!$intFileType = $this->GetFileType($strFileName)) {
                     NarroLog::LogMessage(2, sprintf(t('Copying unhandled file type: %s'), $strFileToExport));
                     NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
-                    copy($strFileToExport, str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToExport));
+                    if (!copy($strFileToExport, $strTranslatedFileToExport))
+                        NarroLog::LogMessage(2, sprintf(t('Failed to copy the file to %s'), $strTranslatedFileToExport));
                     continue;
                 }
 
@@ -617,11 +627,6 @@
                 if (!$objFile instanceof NarroFile) {
                     continue;
                 }
-
-                $strTranslatedFileToExport = str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToExport);
-
-                if (!file_exists(dirname($strTranslatedFileToExport)))
-                    mkdir(dirname($strTranslatedFileToExport), 0777, true);
 
                 NarroLog::LogMessage(1, sprintf(t('Exporting file "%s" using template "%s"'), $objFile->FileName, $strTranslatedFileToExport));
 
