@@ -610,7 +610,7 @@
                 if (!$intFileType = $this->GetFileType($strFileName)) {
                     NarroLog::LogMessage(2, sprintf(t('Copying unhandled file type: %s'), $strFileToExport));
                     NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
-                    if (!copy($strFileToExport, $strTranslatedFileToExport))
+                    if (!file_exists($strTranslatedFileToExport) && !copy($strFileToExport, $strTranslatedFileToExport))
                         NarroLog::LogMessage(2, sprintf(t('Failed to copy the file to %s'), $strTranslatedFileToExport));
                     continue;
                 }
