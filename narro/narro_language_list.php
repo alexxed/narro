@@ -63,6 +63,8 @@
             $this->dtgNarroLanguage->AddColumn($this->colTextDirection);
             $this->dtgNarroLanguage->AddColumn($this->colSpecialCharacters);
             $this->dtgNarroLanguage->AddColumn($this->colActions);
+
+            $this->dtgNarroLanguage->SortColumnIndex = 0;
         }
 
         public function dtgNarroLanguage_LanguageNameColumn_Render(NarroLanguage $objNarroLanguage) {

@@ -72,6 +72,8 @@
 
             $this->dtgNarroLanguage->AddColumn($this->colLanguageName);
             $this->dtgNarroLanguage->AddColumn($this->colPercentTranslated);
+
+            $this->dtgNarroLanguage->SortColumnIndex = 0;
         }
 
         public function dtgNarroLanguage_PercentTranslated_Render(NarroLanguage $objNarroLanguage) {
