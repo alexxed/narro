@@ -27,11 +27,12 @@
         }
 
         public function ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+            $strPreparedOriginal = preg_replace('/\\r|\\n|\\t/', ' ', $strOriginal);
 
-            preg_match_all('/%[Ssd]/', $strOriginal, $arrPoMatches);
-            preg_match_all('/[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}[\s\.\;$]/', $strOriginal, $arrMatches);
-            preg_match_all('/&[a-zA-Z\-0-9]+\;/', $strOriginal, $arrMoz1Matches);
-            preg_match_all('/\%[0-9]\$S/', $strOriginal, $arrMoz2Matches);
+            preg_match_all('/%[Ssd]/', $strPreparedOriginal, $arrPoMatches);
+            preg_match_all('/[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}[\s\.\;$]/', $strPreparedOriginal, $arrMatches);
+            preg_match_all('/&[a-zA-Z\-0-9]+\;/', $strPreparedOriginal, $arrMoz1Matches);
+            preg_match_all('/\%[0-9]\$S/', $strPreparedOriginal, $arrMoz2Matches);
             if (is_array($arrPoMatches[0])) {
                 $arrMatches[0] = array_merge($arrMatches[0], $arrPoMatches[0]);
                 $arrMatches[0] = array_unique($arrMatches[0]);
@@ -58,7 +59,6 @@
                                 'You translated or forgot some variables that should have been left as they were: <span style="color:red;font-size:large">%s</span>'),
                             join(', ', $arrDiff)
                         );
-                    return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
                 }
             }
 
