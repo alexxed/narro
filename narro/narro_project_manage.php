@@ -604,7 +604,14 @@
 
             $objDatabase = QApplication::$Database[1];
 
-            $strQuery = sprintf("DELETE FROM narro_context_info, narro_context USING narro_context_info LEFT JOIN narro_context ON narro_context_info.context_id=narro_context.context_id WHERE narro_context_info.language_id=%d AND narro_context.project_id=%d", QApplication::$objUser->Language->LanguageId, $this->objNarroProject->ProjectId);
+            $strQuery = sprintf("DELETE FROM narro_context_comment USING narro_context_comment LEFT JOIN narro_context ON narro_context_comment.context_id=narro_context.context_id WHERE narro_context_comment.language_id=%d AND narro_context.project_id=%d", QApplication::$objUser->Language->LanguageId, $this->objNarroProject->ProjectId);
+            try {
+                $objDatabase->NonQuery($strQuery);
+            }catch (Exception $objEx) {
+                throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+            }
+
+            $strQuery = sprintf("DELETE FROM narro_context_info USING narro_context_info LEFT JOIN narro_context ON narro_context_info.context_id=narro_context.context_id WHERE narro_context_info.language_id=%d AND narro_context.project_id=%d", QApplication::$objUser->Language->LanguageId, $this->objNarroProject->ProjectId);
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
