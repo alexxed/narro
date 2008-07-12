@@ -96,12 +96,16 @@
             <div class="dotted_box_title">Project maintenance</div>
             <div class="dotted_box_content">
             <?php $this->btnDelProjectContexts->Render(); ?>
-            <p class="instructions">Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
-            You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
+            <p class="instructions"><?php _t('Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+            You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.');?>
+            </p>
+            <?php $this->btnDelProjectContextInfos->Render(); ?>
+            <p class="instructions"><?php _t('Sometimes, it might help to delete the informations about contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+            Translations and texts are kept, and you can import your project to recreate the context informations any time you want. This affects only the current language');?>
             </p>
             <?php $this->btnDelProjectFiles->Render(); ?>
-            <p class="instructions">Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
-            You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.
+            <p class="instructions"><?php _t('Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+            You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.');?>
             </p>
 
             </div>
