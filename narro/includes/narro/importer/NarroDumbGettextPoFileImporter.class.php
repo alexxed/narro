@@ -262,10 +262,6 @@
                 if (!is_null($arrTemplateFields['MsgStr1'])) $arrTemplateFields['MsgStr1'] = str_replace('\"', '"', $arrTemplateFields['MsgStr1']);
                 if (!is_null($arrTemplateFields['MsgStr2'])) $arrTemplateFields['MsgStr2'] = str_replace('\"', '"', $arrTemplateFields['MsgStr2']);
 
-                if (trim($arrTemplateFields['Context']) == '') {
-                    $arrTemplateFields['Context'] = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $this->objFile->FileName, $strCurrentGroup);
-                }
-
                 /**
                  * if it's not a plural, just add msgid and msgstr
                  */
@@ -322,6 +318,7 @@
                     }
                     else
                         fputs($hndExportFile, sprintf('msgstr "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr'])));
+
                 if (!is_null($arrTemplateFields['MsgStr0']))
                     fputs($hndExportFile, sprintf('msgstr[0] "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr0'])));
                 if (!is_null($arrTemplateFields['MsgStr1']))
@@ -359,6 +356,11 @@
             $arrTranslatedFile = $this->getFieldGroups($strTranslatedFile);
 
             foreach($arrTemplateFile as $strContext=>$arrTemplateFields) {
+                /**
+                 * ignore po header
+                 * @todo find a way to handle it
+                 */
+                if ($arrTemplateFields['MsgId'] == '') continue;
                 /**
                  * if the string is marked fuzzy, don't import the translation and delete fuzzy flag
                  */
