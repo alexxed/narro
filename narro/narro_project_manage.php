@@ -180,7 +180,10 @@
                 $strExportFile = $strImportPath . '/' . $strArchiveName;
                 if (file_exists($strExportFile)) {
                     $objDateSpan = new QDateTimeSpan(time() - filemtime($strExportFile));
-                    $this->lblExport->Text = sprintf(t('Link to last export: <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
+                    if ($this->lblExport->Visible)
+                        $this->lblExport->Text .= ', ' . sprintf(t('or <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
+                    else
+                        $this->lblExport->Text = sprintf(t('Link to last export: <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
                     $this->lblExport->Visible = true;
                 }
             }
