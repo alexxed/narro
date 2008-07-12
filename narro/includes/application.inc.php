@@ -113,6 +113,15 @@
         // @todo add handling here
         throw Exception('Could not create an instance of NarroUser');
 
+    if (QApplication::QueryString('switch_lang')) {
+        $objNewLanguage = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('switch_lang'));
+        if ( $objNewLanguage instanceof NarroLanguage ) {
+            QApplication::$objUser->Language = $objNewLanguage;
+            $_SESSION['objUser'] = QApplication::$objUser;
+            header('Location: index.php');
+        }
+    }
+
     QApplication::$LanguageCode = QApplication::$objUser->Language->LanguageCode;
 
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
