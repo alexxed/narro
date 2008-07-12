@@ -26,6 +26,7 @@
 
         protected $btnDelProjectFiles;
         protected $btnDelProjectContexts;
+        protected $btnDelProjectContextInfos;
 
         /**
          * common options
@@ -87,6 +88,11 @@
             $this->btnDelProjectContexts->Text = t('Delete project contexts');
             $this->btnDelProjectContexts->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE the contexts for the project "%s"?\nThis operation might take a while and will delete:\n - project contexts and associated comments\n - votes for contexts belonging to this project\nTexts and suggestions are not deleted.'), $this->objNarroProject->ProjectName)));
             $this->btnDelProjectContexts->AddAction(new QClickEvent(), new QServerAction('btnDelProjectContexts_Click'));
+
+            $this->btnDelProjectContextInfos = new QButton($this);
+            $this->btnDelProjectContextInfos->Text = sprintf(t('Delete context informations in %s for this project'), QApplication::$objUser->Language->LanguageName);
+            $this->btnDelProjectContextInfos->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE the context information for the project "%s", language "%s"?\nThis operation might take a while and will delete:\n - context information for the current language\nYou can recreate this deleted information by doing an import for this project and current language\nProject\'s contexts are not deleted, only this language is affected\nTexts and suggestions are not deleted.'), $this->objNarroProject->ProjectName, QApplication::$objUser->Language->LanguageName)));
+            $this->btnDelProjectContextInfos->AddAction(new QClickEvent(), new QServerAction('btnDelProjectContextInfos_Click'));
 
             $this->btnDelProjectFiles = new QButton($this);
             $this->btnDelProjectFiles->Text = t('Delete project files');
@@ -566,6 +572,20 @@
             <div class="dotted_box_content">' . nl2br(NarroLog::GetLogContents()) . '</div></div></div>';
 
             $this->pnlLogViewer->Visible = true;
+        }
+
+        protected function btnDelProjectContextInfos_Click($strFormId, $strControlId, $strParameter) {
+            if (!QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+                QApplication::Redirect('narro_project_list.php');
+
+            $objDatabase = QApplication::$Database[1];
+
+            $strQuery = sprintf("DELETE FROM narro_context_info, narro_context USING narro_context_info LEFT JOIN narro_context ON narro_context_info.context_id=narro_context.context_id WHERE narro_context_info.language_id=%d AND narro_context.project_id=%d", QApplication::$objUser->Language->LanguageId, $this->objNarroProject->ProjectId);
+            try {
+                $objDatabase->NonQuery($strQuery);
+            }catch (Exception $objEx) {
+                throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+            }
         }
 
         protected function btnDelProjectContexts_Click($strFormId, $strControlId, $strParameter) {
