@@ -33,6 +33,7 @@
         protected function Form_Create() {
             // Setup DataGrid Columns
             $this->colLanguageName = new QDataGridColumn(t('Language Name'), '<?= $_FORM->dtgNarroLanguage_LanguageNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName, false)));
+            $this->colLanguageName->HtmlEntities = false;
             $this->colLanguageCode = new QDataGridColumn(t('Language Code'), '<?= $_FORM->dtgNarroLanguage_LanguageCodeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageCode), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageCode, false)));
             $this->colCountryCode = new QDataGridColumn(t('Country Code'), '<?= $_FORM->dtgNarroLanguage_CountryCodeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->CountryCode), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->CountryCode, false)));
             $this->colEncoding = new QDataGridColumn(t('Encoding'), '<?= $_FORM->dtgNarroLanguage_EncodingColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->Encoding), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->Encoding, false)));
@@ -65,7 +66,7 @@
         }
 
         public function dtgNarroLanguage_LanguageNameColumn_Render(NarroLanguage $objNarroLanguage) {
-            return $objNarroLanguage->LanguageName;
+            return sprintf('<a href="%s?switch_lang=%s">%s</a>', basename(__FILE__), $objNarroLanguage->LanguageCode, $objNarroLanguage->LanguageName);
         }
 
         public function dtgNarroLanguage_LanguageCodeColumn_Render(NarroLanguage $objNarroLanguage) {

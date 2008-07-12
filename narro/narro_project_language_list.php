@@ -48,6 +48,7 @@
 
             // Setup DataGrid Columns
             $this->colLanguageName = new QDataGridColumn(t('Language'), '<?= $_FORM->dtgNarroLanguage_LanguageNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName, false)));
+            $this->colLanguageName->HtmlEntities = false;
 
             $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroLanguage_PercentTranslated_Render($_ITEM); ?>');
             $this->colPercentTranslated->HtmlEntities = false;
@@ -120,7 +121,7 @@
         }
 
         public function dtgNarroLanguage_LanguageNameColumn_Render(NarroLanguage $objNarroLanguage) {
-            return $objNarroLanguage->LanguageName;
+            return sprintf('<a href="%s?switch_lang=%s">%s</a>', basename(__FILE__), $objNarroLanguage->LanguageCode, $objNarroLanguage->LanguageName);
         }
 
         protected function dtgNarroLanguage_Bind() {
