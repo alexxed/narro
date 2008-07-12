@@ -37,7 +37,7 @@
             <?php $this->pnlOriginalText->Render(); ?>
             <?php $this->btnCopyOriginal->Render(); ?>
         </div>
-        <div class="white3dbg" style="border:1px solid #DDDDDD; padding:5px" title="Detalii despre locul în care apare textul">
+        <div class="white3dbg" style="border:1px solid #DDDDDD; padding:5px<?php if ($this->objNarroContextInfo->Context->Active == 0) echo ';color:gray;' ?>" title="<?php _t('Details about the place where the text appears'); ?>">
             <?php $this->pnlContext->Render(); ?>
         </div>
         <br />
