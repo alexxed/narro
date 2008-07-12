@@ -85,94 +85,86 @@
                             t('Get the latest texts to translate')
                     );
 
-                $objRssFeed->PubDate = new QDateTime(QDateTime::Now);
-                $objRssFeed->Language = strtolower(str_replace('_', '-', QApplication::$objUser->Language->LanguageCode));
 
-                if (isset($objProject) && $objProject instanceof NarroProject) {
-                    foreach(NarroContext::QueryArray(
-                                QQ::AndCondition(
-                                    QQ::Equal(QQN::NarroContext()->ProjectId, $objProject->ProjectId),
-                                    QQ::Equal(QQN::NarroContext()->Active, 1)
-                                ),
-                                array(QQ::OrderBy(QQN::NarroContext()->Created, 0), QQ::LimitInfo(20, 0))) as $intKey=>$objNarroContext) {
+                if (isset($objProject) && $objProject instanceof NarroProject)
+                    $objProjectCondition = QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $objProject->ProjectId);
+                else
+                    $objProjectCondition = QQ::All();
 
-                        $objNarroContextInfo = NarroContextInfo::QuerySingle(
-                            QQ::AndCondition(
-                                QQ::Equal(QQN::NarroContextInfo()->ContextId, $objNarroContext->ContextId),
-                                QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId)
-                            )
-                        );
+                $arrNarroContextInfo = NarroContextInfo::QueryArray(
+                    QQ::AndCondition(
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1),
+                        $objProjectCondition,
+                        QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId),
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId)
+                    ),
+                    array(
+                        QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->Created, 0),
+                        QQ::OrderBy(QQN::NarroContextInfo()->Context->TextId, 1),
+                        QQ::OrderBy(QQN::NarroContextInfo()->Context->ProjectId, 1),
+                        QQ::LimitInfo(20, 0)
+                    )
+                );
 
-                        $strContextLink = sprintf(
-                                __HTTP_URL__ .
-                                __VIRTUAL_DIRECTORY__ .
-                                __SUBDIRECTORY__ .
-                                '/narro_context_suggest.php?p=%d&c=%d',
-                                $objNarroContext->ProjectId, $objNarroContext->ContextId
-                        );
+                $intOldTextId = 0;
+                $intOldProjectId = 0;
+                $strDescription = '';
 
-                        $strUserLink = sprintf(
-                                __HTTP_URL__ .
-                                __VIRTUAL_DIRECTORY__ .
-                                __SUBDIRECTORY__ .
-                                '/narro_user_profile.php?u=%d',
-                                $objNarroContextInfo->ValidatorUserId
-                        );
+                foreach($arrNarroContextInfo as $intKey=>$objNarroContextInfo) {
+                    $strContextLink = sprintf(
+                            __HTTP_URL__ .
+                            __VIRTUAL_DIRECTORY__ .
+                            __SUBDIRECTORY__ .
+                            '/narro_context_suggest.php?p=%d&c=%d&tf=2',
+                            $objNarroContextInfo->Context->ProjectId, $objNarroContextInfo->ContextId
+                    );
+
+                    if ($intOldTextId != $objNarroContextInfo->Context->TextId) {
+                        if (isset($objItem)) {
+                            $objItem->Description = $strDescription . '</ul><p>' . t('Click on any context to translate the text, on the file name or project name to see all the untranslated texts from that file or project.'). '</p>';
+                            $objRssFeed->AddItem($objItem);
+                            $strDescription = '';
+                            $intOldProjectId = 0;
+                        }
 
                         $objItem = new QRssItem(
-                            (strlen($objNarroContext->Text->TextValue)>124)?
-                                substr($objNarroContext->Text->TextValue, 0, 124) . '...':
-                                $objNarroContext->Text->TextValue,
+                            (strlen($objNarroContextInfo->Context->Text->TextValue)>124)?
+                                substr($objNarroContextInfo->Context->Text->TextValue, 0, 124) . '...':
+                                $objNarroContextInfo->Context->Text->TextValue,
                             $strContextLink
                         );
-
-                        $objItem->Description =
-                            sprintf('<p>' . t('Context') . ': <a href="%s">%s</a></p>', $strContextLink, $objNarroContext->Context) .
-                            sprintf('<p>' . t('Original text') . ': %s</p>', $objNarroContext->Text->TextValue) .
-                            (
-                                ($objNarroContextInfo->ValidSuggestionId)?
-                                    sprintf('<p>' . t('Validated suggestion') . ': %s</p>',
-                                        (
-                                            ($objNarroContextInfo->TextAccessKey)?
-                                                NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $objNarroContextInfo->ValidSuggestion->SuggestionValue, 1):
-                                                $objNarroContextInfo->ValidSuggestion->SuggestionValue
-                                        )
-                                    )
-                                    :
-                                    ''
-                            ) .
-                            (($objNarroContextInfo->HasSuggestions)?
-                                sprintf(t('The text has %s suggestions'), NarroSuggestion::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId), QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId)))):
-                                t('The text has no suggestions')) .
-                            (
-                                ($objNarroContextInfo->ValidSuggestionId)?
-                                    sprintf('<p>' . t('Validated by') . ': <a href="%s">%s</a>', $strUserLink, ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:''):
-                                    ''
-                            )
-                        ;
-
-                        if ($objNarroContextInfo->HasComments)
-                            $objItem->Comments = sprintf(t('%d comments'), NarroContextComment::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroContextComment()->ContextId, $objNarroContextInfo->ContextId), QQ::Equal(QQN::NarroContextComment()->LanguageId, $objNarroContextInfo->LanguageId))));
-
-                        $objItem->PubDate = new QDateTime($objNarroContext->Created);
-
-                        $objRssFeed->AddItem($objItem);
+                        $objItem->PubDate = new QDateTime($objNarroContextInfo->Context->Text->Created);
                     }
-                }
-            }
-            else {
-                foreach(NarroText::LoadAll(array(QQ::OrderBy(QQN::NarroText()->Created, 0), QQ::LimitInfo(20, 0))) as $intKey=>$objText) {
-                    $strDescription .= '<li>' . $objText->TextValue . '</li>';
-                    if ($intKey % 10 == 0 && $intKey != 0) {
-                        $objItem = new QRssItem(
-                                        (strlen($objText->TextValue)>124)?substr($objText->TextValue, 0, 124) . '...':$objText->TextValue,
-                                        sprintf(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/narro_project_list.php'),
-                                        '<ul>' . $strDescription . '</ul>'
+
+                    $intOldTextId = $objNarroContextInfo->Context->TextId;
+
+                    if ($intOldProjectId != $objNarroContextInfo->Context->ProjectId) {
+                        $strProjectLink = sprintf(
+                                __HTTP_URL__ .
+                                __VIRTUAL_DIRECTORY__ .
+                                __SUBDIRECTORY__ .
+                                '/narro_project_text_list.php?p=%d&tf=2',
+                                $objNarroContextInfo->Context->ProjectId
                         );
-
-                        $objRssFeed->AddItem($objItem);
-                        $strDescription = '';
+                        if (isset($objProject))
+                            $strDescription .= sprintf(t('Used in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));
+                        else
+                            $strDescription .= sprintf(t('Used in the project <a href="%s">%s</a>, in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));
                     }
+
+                    $intOldProjectId = $objNarroContextInfo->Context->ProjectId;
+
+                    $strFileLink = sprintf(
+                            __HTTP_URL__ .
+                            __VIRTUAL_DIRECTORY__ .
+                            __SUBDIRECTORY__ .
+                            '/narro_file_text_list.php?p=%d&f=%d&tf=2',
+                            $objNarroContextInfo->Context->ProjectId,
+                            $objNarroContextInfo->Context->FileId
+                    );
+
+                    $strDescription .= sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>') . '</li>', $strContextLink, $objNarroContextInfo->Context->Context, $strFileLink, $objNarroContextInfo->Context->File->FileName);
+
                 }
             }
 
@@ -279,7 +271,7 @@
                             sprintf(t('The text has %s suggestions'), NarroSuggestion::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId), QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId)))):
                             t('The text has no suggestions')) .
                         (
-                            ($objNarroContextInfo->ValidSuggestionId)?
+                            ($objNarroContextInfo->ValidSuggestionId && $objNarroContextInfo->ValidatorUser->Username)?
                                 sprintf('<p>' . t('Validated by') . ': <a href="%s">%s</a>', $strUserLink, ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:''):
                                 ''
                         );
