@@ -41,7 +41,6 @@ CREATE TABLE narro_context_info (
   validator_user_id int(10) unsigned default NULL,
   valid_suggestion_id bigint(20) unsigned default NULL,
   popular_suggestion_id bigint(20) unsigned default NULL,
-  has_plural tinyint(1) NOT NULL default '0',
   has_comments tinyint(1) NOT NULL default '0',
   has_suggestions tinyint(1) unsigned default '0',
   text_access_key varchar(2) default NULL,
@@ -108,6 +107,7 @@ CREATE TABLE narro_language (
   encoding varchar(10) NOT NULL,
   text_direction varchar(3) NOT NULL default 'ltr',
   special_characters varchar(255) default NULL,
+  plural_form varchar(255) NOT NULL default '"Plural-Forms: nplurals=2; plural=n != 1;\\n"',
   PRIMARY KEY  (language_id),
   UNIQUE KEY language_name (language_name),
   UNIQUE KEY language_code (language_code)
