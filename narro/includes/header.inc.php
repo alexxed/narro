@@ -46,7 +46,7 @@
                         QApplication::$objUser->Language->LanguageName
                     ) . ' | ';
             ?>
-            <?php if (QApplication::$objUser->UserId > 0) {
+            <?php if (QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID) {
                 echo
                     sprintf(
                         t('<i>Logged in as <a href="%s" style="color:green;font-weight:bold">%s</a></i>'),
