@@ -186,8 +186,8 @@
                     $intAccPos = mb_stripos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
                 else
                     $intAccPos = 0;
-                    
-                if (QApplication::$objUser->Language->TextDirection == 'rtl' && $intAccPos == 0) 
+
+                if (QApplication::$objUser->Language->TextDirection == 'rtl' && $intAccPos == 0)
                     $strDirControlChar = "\xE2\x80\x8E"; //ltr = \xE2\x80\x8F"
                 else
                     $strDirControlChar = '';
@@ -254,10 +254,7 @@
 
         public function dtgSuggestions_colVote_Render(NarroSuggestion $objNarroSuggestion) {
             $intVoteCount = NarroSuggestionVote::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $this->objNarroContextInfo->ContextId), QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $objNarroSuggestion->SuggestionId)));
-            if ($intVoteCount)
-                return t(sprintf('%s votes', $intVoteCount));
-            else
-                return t('no votes');
+            return $intVoteCount;
         }
 
         public function dtgSuggestions_colAuthor_Render( NarroSuggestion $objNarroSuggestion ) {
@@ -268,10 +265,12 @@
                 $strAuthorInfo = sprintf('<a href="narro_user_profile.php?u=%d">%s</a>, ' . t('%s ago'), $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username, $strCreatedWhen);
             elseif (strtotime($objNarroSuggestion->Created) > 0 && $strCreatedWhen && !$objNarroSuggestion->User->Username)
                 $strAuthorInfo = sprintf(t('%s ago'), $strCreatedWhen);
-            else
+            elseif ($objNarroSuggestion->User->Username)
                 $strAuthorInfo = sprintf('<a href="narro_user_profile.php?u=%d">%s</a>', $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username);
+            else
+                $strAuthorInfo = t('Unknown');
 
-            if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->ValidatorUser->Username)
+            if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID)
                 $strAuthorInfo .= '<br />' . sprintf('validated by <a href="narro_user_profile.php?u=%d">%s</a>', $this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username);
 
             return $strAuthorInfo;
