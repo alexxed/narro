@@ -18,10 +18,11 @@
 
     class NarroGettextPoFileImporter extends NarroFileImporter {
         protected function getFieldGroups($strFile) {
-            $hndFile = fopen($strFile, 'r');
 
             $arrGroupFields = array();
+            if (trim($strFile) == '') return $arrGroupFields;
 
+            $hndFile = fopen($strFile, 'r');
             if ($hndFile) {
 
                 $intCurrentGroup = 1;
@@ -309,7 +310,7 @@
                             /**
                              * the plural declaration isn't there, try to change it
                              */
-                            $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $this->objTargetLanguage->PluralForm;
+                            $arrTemplateFields['MsgStr'] .= "\n" . $this->objTargetLanguage->PluralForm;
                         }
 
                         /**
@@ -317,7 +318,7 @@
                          */
                         $arrTemplateFields['MsgStr'] = trim(preg_replace('/"$/', '', $arrTemplateFields['MsgStr']));
 
-                        $strGeneratorLine = sprintf('X-Generator: Narro %s\n', NARRO_VERSION);
+                        $strGeneratorLine = sprintf('X-Generator: Narro %s on %s\n', NARRO_VERSION, __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
 
                         if (strstr($arrTemplateFields['MsgStr'], '"X-Generator:'))
                             $arrTemplateFields['MsgStr'] = preg_replace('/X\-Generator:[^"]+/mi', $strGeneratorLine, $arrTemplateFields['MsgStr']);
@@ -489,7 +490,7 @@
                         $this->AddTranslation(
                             $this->stripAccessKey($arrTemplateFields['MsgId']),
                             $this->getAccessKey($arrTemplateFields['MsgId']),
-                            $arrTranslatedFile[$strContext]['MsgStr'],
+                            $this->stripAccessKey($arrTranslatedFile[$strContext]['MsgStr']),
                             $this->getAccessKey($arrTranslatedFile[$strContext]['MsgStr']),
                             $arrTemplateFields['Context'],
                             $arrTemplateFields['ContextComment']
@@ -505,7 +506,7 @@
                         $this->AddTranslation(
                             $this->stripAccessKey($arrTemplateFields['MsgId']),
                             $this->getAccessKey($arrTemplateFields['MsgId']),
-                            $arrTranslatedFile[$strContext]['MsgStr0'],
+                            $this->stripAccessKey($arrTranslatedFile[$strContext]['MsgStr0']),
                             $this->getAccessKey($arrTranslatedFile[$strContext]['MsgStr0']),
                             $arrTemplateFields['Context'] . "This text has plurals.",
                             $arrTemplateFields['ContextComment']
