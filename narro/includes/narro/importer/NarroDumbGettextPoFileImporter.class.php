@@ -230,8 +230,20 @@
                         $arrFields['Context'] = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $this->objFile->FileName, $intCurrentGroup);
                     }
 
+                    if ((!isset($arrFields['MsgId']) && !isset($arrFields['MsgPluralId'])) || (!isset($arrFields['MsgStr']) && !isset($arrFields['MsgStr0'])))
+                        continue;
+
                     $intCurrentGroup++;
+                    /**
+                     * If there is a similar context, add a unique thing to it, like the group number in the file
+                     */
+                    if (isset($arrGroupFields[$arrFields['Context']])) {
+                        $arrFields['Context'] .= sprintf("\nPosition in file: %d", $intCurrentGroup);
                     $arrGroupFields[$arrFields['Context']] = $arrFields;
+                    }
+                    else {
+                        $arrGroupFields[$arrFields['Context']] = $arrFields;
+                    }
                 }
             }
             else {
@@ -252,42 +264,120 @@
 
             foreach($arrTemplateFile as $strContext=>$arrTemplateFields) {
 
-                $arrTemplateFields['Context'] = $arrTemplateFields['MsgId'];
-                $arrTemplateFields['ContextComment'] . $arrTemplateFields['ExtractedComment'] . $arrTemplateFields['Reference'] . $arrTemplateFields['Flag'] . $arrTemplateFields['PreviousContext'] . $arrTemplateFields['PreviousUntranslated'] . $arrTemplateFields['PreviousUntranslatedPlural'] . $arrTemplateFields['MsgContext'];
-
-                NarroLog::LogMessage(1, 'Context is: ' . $arrTemplateFields['Context']);
-                NarroLog::LogMessage(1, 'Context comment is: ' . $arrTemplateFields['ContextComment']);
-
                 if (!is_null($arrTemplateFields['MsgId'])) $arrTemplateFields['MsgId'] = str_replace('\"', '"', $arrTemplateFields['MsgId']);
                 if (!is_null($arrTemplateFields['MsgStr'])) $arrTemplateFields['MsgStr'] = str_replace('\"', '"', $arrTemplateFields['MsgStr']);
 
                 if (!is_null($arrTemplateFields['MsgPluralId'])) $arrTemplateFields['MsgPluralId'] = str_replace('\"', '"', $arrTemplateFields['MsgPluralId']);
-                if (!is_null($arrTemplateFields['MsgStr0'])) $arrTemplateFields['MsgStr0'] = str_replace('\"', '"', $arrTemplateFields['MsgStr0']);
-                if (!is_null($arrTemplateFields['MsgStr1'])) $arrTemplateFields['MsgStr1'] = str_replace('\"', '"', $arrTemplateFields['MsgStr1']);
-                if (!is_null($arrTemplateFields['MsgStr2'])) $arrTemplateFields['MsgStr2'] = str_replace('\"', '"', $arrTemplateFields['MsgStr2']);
+
+                if (isset($arrTemplateFields['MsgPluralId']))
+                    for($intPluralId=0; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
+                        $arrTemplateFields['MsgStr' . $intPluralId] = str_replace('\"', '"', $arrTemplateFields['MsgStr' . $intPluralId]);
+                    }
 
                 /**
                  * if it's not a plural, just add msgid and msgstr
                  */
                 if (is_null($arrTemplateFields['MsgPluralId'])) {
-                    $arrTemplateFields['MsgStr'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr']), $this->getAccessKey($arrTemplateFields['MsgStr']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr']), null , null, $arrTemplateFields['Context']);
+                    /**
+                     * Leave the header alone
+                     */
+                    if ($arrTemplateFields['MsgId'] == '' && strstr($arrTemplateFields['MsgStr'], 'Project-Id-Version')) {
+                        /**
+                         * This is the header
+                         */
 
+                        /**
+                         * unset the flag, if is set
+                         */
+                        unset($arrTemplateFields['Flag']);
+                        /**
+                         * At import, we concatenate strings on more than one lines, so no we have to restore it
+                         */
+                        $arrTemplateFields['MsgStr'] = str_replace('\n', '\\n"' . "\n" . '"', $arrTemplateFields['MsgStr']);
+                        /**
+                         * There's an extra " at the end, remove it
+                         */
+                        $arrTemplateFields['MsgStr'] = trim(preg_replace('/"$/', '', $arrTemplateFields['MsgStr']));
+
+                        if (strstr($arrTemplateFields['MsgStr'], '"Plural-Forms')) {
+                            /**
+                             * the plural declaration is there, try to replace it
+                             */
+                            $arrTemplateFields['MsgStr'] = preg_replace('/"Plural-Forms:[^"]+"/mi', $this->objTargetLanguage->PluralForm, $arrTemplateFields['MsgStr']);
+                        }
+                        else {
+                            /**
+                             * the plural declaration isn't there, try to change it
+                             */
+                            $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $this->objTargetLanguage->PluralForm;
+                        }
+
+                        /**
+                         * There's an extra " at the end, remove it
+                         */
+                        $arrTemplateFields['MsgStr'] = trim(preg_replace('/"$/', '', $arrTemplateFields['MsgStr']));
+
+                        $strGeneratorLine = sprintf('X-Generator: Narro %s\n', NARRO_VERSION);
+
+                        if (strstr($arrTemplateFields['MsgStr'], '"X-Generator:'))
+                            $arrTemplateFields['MsgStr'] = preg_replace('/X\-Generator:[^"]+/mi', $strGeneratorLine, $arrTemplateFields['MsgStr']);
+                        else
+                            $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strGeneratorLine ;
+
+                        $strProjectLine = sprintf('Project-Id-Version: %s\n', $this->objProject->ProjectName);
+
+                        if (strstr($arrTemplateFields['MsgStr'], 'Project-Id-Version:'))
+                            $arrTemplateFields['MsgStr'] = preg_replace('/Project\-Id\-Version:[^"]+/mi', $strProjectLine, $arrTemplateFields['MsgStr']);
+                        else
+                            $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strProjectLine ;
+
+                        $strCharsetLine = sprintf('Content-Type: text/plain; charset=%s\n', $this->objTargetLanguage->Encoding);
+
+                        if (strstr($arrTemplateFields['MsgStr'], '"Content-Type:'))
+                            $arrTemplateFields['MsgStr'] = preg_replace('/Content\-Type:[^"]+/mi', $strCharsetLine, $arrTemplateFields['MsgStr']);
+                        else
+                            $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strCharsetLine ;
+
+                        $strTranslatorLine = sprintf('Last-Translator: %s <%s>\n', QApplication::$objUser->Username, QApplication::$objUser->Email);
+
+                        if (strstr($arrTemplateFields['MsgStr'], '"Last-Translator:'))
+                            $arrTemplateFields['MsgStr'] = preg_replace('/Last\-Translator:[^"]+/mi', $strTranslatorLine, $arrTemplateFields['MsgStr']);
+                        else
+                            $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strTranslatorLine ;
+
+                        $strLanguageLine = sprintf('Language-Team: %s <LL@li.org>\n', $this->objTargetLanguage->LanguageName);
+
+                        if (strstr($arrTemplateFields['MsgStr'], '"Language-Team:'))
+                            $arrTemplateFields['MsgStr'] = preg_replace('/Language\-Team:[^"]+/mi', $strLanguageLine, $arrTemplateFields['MsgStr']);
+                        else
+                            $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strLanguageLine;
+
+                        $strRevisionLine = sprintf('PO-Revision-Date: %s\n', date('Y-m-d H:iO'));
+
+                        if (strstr($arrTemplateFields['MsgStr'], '"PO-Revision-Date:'))
+                            $arrTemplateFields['MsgStr'] = preg_replace('/PO\-Revision\-Date:[^"]+/mi', $strRevisionLine, $arrTemplateFields['MsgStr']);
+                        else
+                            $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strRevisionLine;
+
+                    }
+                    else
+                        $arrTemplateFields['MsgStr'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr']), $this->getAccessKey($arrTemplateFields['MsgStr']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr']), null , null, $arrTemplateFields['Context']);
                 }
                 else {
                     /**
                      * if it's a plural, add the pluralid with all the msgstr's available
-                     * currently limited to 3 (so 3 plural forms)
                      * the first one is added with msgid/msgstr[0] (this is the singular)
-                     * the next ones (currently 2) are added with plural id, so in fact they will be tied to the same text
+                     * the next ones are added with plural id, so in fact they will be tied to the same text
                      */
                     $strSingularText = $arrTemplateFields['MsgStr0'];
 
                     if (!is_null($arrTemplateFields['MsgStr0']))
-                        $arrTemplateFields['MsgStr0'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr0']), $this->getAccessKey($arrTemplateFields['MsgStr0']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr0']), null, null, $arrTemplateFields['Context'] . "This text has plurals.", 0);
-                    if (!is_null($arrTemplateFields['MsgStr1']))
-                        $arrTemplateFields['MsgStr1'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr1']), $this->getAccessKey($arrTemplateFields['MsgStr1']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr1']), null, null, $arrTemplateFields['Context'] . "This is plural form 1 for the text \"".$strSingularText."\".", 1);
-                    if (!is_null($arrTemplateFields['MsgStr2']))
-                        $arrTemplateFields['MsgStr2'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr2']), $this->getAccessKey($arrTemplateFields['MsgStr2']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr2']), null, null, $this->getAccessKey($arrTemplateFields['MsgStr2']), $arrTemplateFields['Context'] . "This is plural form 2 for the text \"".$strSingularText."\".", 2);
+                        $arrTemplateFields['MsgStr0'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgStr0']), $this->getAccessKey($arrTemplateFields['MsgStr0']), $this->getAccessKeyPrefix($arrTemplateFields['MsgStr0']), null, null, $arrTemplateFields['Context'] . "\nThis text has plurals.");
+
+                    $strPluralText = $arrTemplateFields['MsgStr1'];
+                    for($intPluralId=1; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
+                        $arrTemplateFields['MsgStr' . $intPluralId] = $this->GetTranslation($this->stripAccessKey($strPluralText), $this->getAccessKey($strPluralText), $this->getAccessKeyPrefix($strPluralText), null, null, $arrTemplateFields['Context'] . "\nThis is plural form $intPluralId for the text \"".$strSingularText."\".");
+                    }
                 }
 
                 if (!is_null($arrTemplateFields['TranslatorComment']))
@@ -311,24 +401,20 @@
                 if (!is_null($arrTemplateFields['MsgPluralId']))
                     fputs($hndExportFile, sprintf('msgid_plural "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgPluralId'])));
 
-                if (!is_null($arrTemplateFields['MsgStr']))
-                    if ($arrTemplateFields['MsgId'] == '') {
-                        /**
-                         * this must be the po header
-                         */
-                        $arrTemplateFields['PoHeader'] = sprintf("msgstr \"\"\n\"%s\"\n", str_replace('\n', "\\n\"\n\"", $arrTemplateFields['MsgStr']));
-                        $arrTemplateFields['PoHeader'] = preg_replace('/\n""/', '', $arrTemplateFields['PoHeader']);
-                        fputs($hndExportFile, $arrTemplateFields['PoHeader']);
-                    }
+                if (!is_null($arrTemplateFields['MsgStr'])) {
+                    /**
+                     * put the header as it is
+                     */
+                    if ($arrTemplateFields['MsgId'] == '' && strstr($arrTemplateFields['MsgStr'], 'Project-Id-Version'))
+                        fputs($hndExportFile, sprintf('msgstr "%s"' . "\n", $arrTemplateFields['MsgStr']));
                     else
                         fputs($hndExportFile, sprintf('msgstr "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr'])));
+                }
 
-                if (!is_null($arrTemplateFields['MsgStr0']))
-                    fputs($hndExportFile, sprintf('msgstr[0] "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr0'])));
-                if (!is_null($arrTemplateFields['MsgStr1']))
-                    fputs($hndExportFile, sprintf('msgstr[1] "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr1'])));
-                if (!is_null($arrTemplateFields['MsgStr2']))
-                    fputs($hndExportFile, sprintf('msgstr[2] "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr2'])));
+                for($intPluralId=0; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
+                    if (!is_null($arrTemplateFields['MsgStr' . $intPluralId]))
+                        fputs($hndExportFile, sprintf('msgstr[%d] "%s"' . "\n", $intPluralId, str_replace('"', '\"', $arrTemplateFields['MsgStr' . $intPluralId])));
+                }
 
                 fputs($hndExportFile, "\n");
 
@@ -362,71 +448,82 @@
             foreach($arrTemplateFile as $strContext=>$arrTemplateFields) {
                 /**
                  * ignore po header
-                 * @todo find a way to handle it
                  */
-                if ($arrTemplateFields['MsgId'] == '') continue;
-                /**
-                 * if the string is marked fuzzy, don't import the translation and delete fuzzy flag
-                 */
-                if (strstr($arrTemplateFields['Flag'], ', fuzzy')) {
-                    if (!is_null($arrTemplateFields['MsgStr'])) $arrTemplateFields['MsgStr'] = '';
-
-                    if (!is_null($arrTemplateFields['MsgStr0'])) $arrTemplateFields['MsgStr0'] = '';
-                    if (!is_null($arrTemplateFields['MsgStr1'])) $arrTemplateFields['MsgStr1'] = '';
-                    if (!is_null($arrTemplateFields['MsgStr2'])) $arrTemplateFields['MsgStr2'] = '';
-
-                    $arrTemplateFields['Flag'] = str_replace(', fuzzy', '', $arrTemplateFields['Flag']);
-                    /**
-                     * if no other flags are found, just empty the variable
-                     */
-                    if (strlen(trim($arrTemplateFields['Flag'])) < 4) $arrTemplateFields['Flag'] = null;
-                }
-
+                if ($arrTemplateFields['MsgId'] === '') continue;
 
                 if (isset($arrTranslatedFile[$strContext]['MsgStr']) && $arrTranslatedFile[$strContext]['MsgStr'] != '' && isset($arrTranslatedFile[$strContext]['MsgId']) && $arrTranslatedFile[$strContext]['MsgId'] == $arrTemplateFields['MsgId'])
-                    $strTranslatedText = str_replace('\"', '"', $arrTranslatedFile[$strContext]['MsgStr']);
+                    $arrTranslatedFile[$strContext]['MsgStr'] = str_replace('\"', '"', $arrTranslatedFile[$strContext]['MsgStr']);
                 else
-                    $strTranslatedText = null;
+                    $arrTranslatedFile[$strContext]['MsgStr'] = null;
 
-                if (isset($arrTranslatedFile[$strContext]['MsgStr0']) && $arrTranslatedFile[$strContext]['MsgStr0'] != '' && isset($arrTranslatedFile[$strContext]['MsgPluralId']) && $arrTranslatedFile[$strContext]['MsgPluralId'] == $arrTemplateFields['MsgPluralId'])
-                    $strTranslatedText0 = str_replace('\"', '"', $arrTranslatedFile[$strContext]['MsgStr0']);
-                else
-                    $strTranslatedText0 = null;
+                for($intPluralId=0; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
+                    if (strstr($arrTranslatedFile[$strContext]['Flag'], 'fuzzy')) {
+                        /**
+                         * if the string is marked fuzzy, don't import the translation and delete fuzzy flag
+                         */
+                        $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] = '';
 
-                if (isset($arrTranslatedFile[$strContext]['MsgStr1']) && $arrTranslatedFile[$strContext]['MsgStr1'] != '' && isset($arrTranslatedFile[$strContext]['MsgPluralId']) && $arrTranslatedFile[$strContext]['MsgPluralId'] == $arrTemplateFields['MsgPluralId'])
-                    $strTranslatedText1 = str_replace('\"', '"', $arrTranslatedFile[$strContext]['MsgStr1']);
-                else
-                    $strTranslatedText1 = null;
+                        $arrTranslatedFile[$strContext]['Flag'] = str_replace(', fuzzy', '', $arrTranslatedFile[$strContext]['Flag']);
+                        /**
+                         * if no other flags are found, just empty the variable
+                         */
+                        if (strlen(trim($arrTranslatedFile[$strContext]['Flag'])) < 4) $arrTranslatedFile[$strContext]['Flag'] = null;
+                    }
 
-                if (isset($arrTranslatedFile[$strContext]['MsgStr2']) && $arrTranslatedFile[$strContext]['MsgStr2'] != '' && isset($arrTranslatedFile[$strContext]['MsgPluralId']) && $arrTranslatedFile[$strContext]['MsgPluralId'] == $arrTemplateFields['MsgPluralId'])
-                    $strTranslatedText2 = str_replace('\"', '"', $arrTranslatedFile[$strContext]['MsgStr2']);
-                else
-                    $strTranslatedText2 = null;
+                    if (
+                        isset($arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]) &&
+                        $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] != '' &&
+                        isset($arrTranslatedFile[$strContext]['MsgPluralId']) &&
+                        $arrTranslatedFile[$strContext]['MsgPluralId'] == $arrTemplateFields['MsgPluralId']
+                    ) {
+                        $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] = str_replace('\"', '"', $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]);
+                    }
+                    else {
+                        $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] = '';
+                    }
+                }
 
                 /**
                  * if it's not a plural, just add msgid and msgstr
                  */
                 if (is_null($arrTemplateFields['MsgPluralId'])) {
-                        $this->AddTranslation($this->stripAccessKey($arrTemplateFields['MsgStr']), $this->getAccessKey($arrTemplateFields['MsgStr']), $strTranslatedText, $this->getAccessKey($strTranslatedText), $arrTemplateFields['Context'], $arrTemplateFields['ContextComment']);
+                        $this->AddTranslation(
+                            $this->stripAccessKey($arrTemplateFields['MsgStr']),
+                            $this->getAccessKey($arrTemplateFields['MsgStr']),
+                            $arrTranslatedFile[$strContext]['MsgStr'],
+                            $this->getAccessKey($arrTranslatedFile[$strContext]['MsgStr']),
+                            $arrTemplateFields['Context'],
+                            $arrTemplateFields['ContextComment']
+                        );
                 }
                 else {
                     /**
                      * if it's a plural, add the pluralid with all the msgstr's available
-                     * currently limited to 3 (so 3 plural forms)
                      * the first one is added with msgid/msgstr[0] (this is the singular)
-                     * the next ones (currently 2) are added with plural id, so in fact they will be tied to the same text
-                     * @todo add unlimited plurals support
+                     * the next ones are added with plural id, so in fact they will be tied to the same text
                      */
                     if (!is_null($arrTemplateFields['MsgStr0'])) {
-                        $this->AddTranslation($this->stripAccessKey($arrTemplateFields['MsgStr0']), $this->getAccessKey($arrTemplateFields['MsgStr0']), $strTranslatedText0, $this->getAccessKey($strTranslatedText0), $arrTemplateFields['Context'] . "This text has plurals.", $arrTemplateFields['ContextComment']);
+                        $this->AddTranslation(
+                            $this->stripAccessKey($arrTemplateFields['MsgStr0']),
+                            $this->getAccessKey($arrTemplateFields['MsgStr0']),
+                            $arrTranslatedFile[$strContext]['MsgStr0'],
+                            $this->getAccessKey($arrTranslatedFile[$strContext]['MsgStr0']),
+                            $arrTemplateFields['Context'] . "\nThis text has plurals.",
+                            $arrTemplateFields['ContextComment']
+                        );
                     }
 
-                    if (!is_null($arrTemplateFields['MsgStr1'])) {
-                        $this->AddTranslation($this->stripAccessKey($arrTemplateFields['MsgStr1']), $this->getAccessKey($arrTemplateFields['MsgStr1']), $strTranslatedText1, $this->getAccessKey($strTranslatedText1), $arrTemplateFields['Context'] . "This is plural form 1 for the text \"" . $arrTemplateFields['MsgStr0'] . "\".", $arrTemplateFields['ContextComment']);
-                    }
-
-                    if (!is_null($arrTemplateFields['MsgStr2'])) {
-                        $this->AddTranslation($this->stripAccessKey($arrTemplateFields['MsgStr2']), $this->getAccessKey($arrTemplateFields['MsgStr2']), $strTranslatedText2, $this->getAccessKey($strTranslatedText2), $arrTemplateFields['Context'] . "This is plural form 2 for the text \"" . $arrTemplateFields['MsgStr0'] . "\".", $arrTemplateFields['ContextComment']);
+                    for($intPluralId=1; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
+                        if (!is_null($arrTranslatedFile[$strContext]['MsgStr' . $intPluralId])) {
+                            $this->AddTranslation(
+                                $this->stripAccessKey($arrTemplateFields['MsgStr1']),
+                                $this->getAccessKey($arrTemplateFields['MsgStr1']),
+                                $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId],
+                                $this->getAccessKey($arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]),
+                                $arrTemplateFields['Context'] . "\nThis is plural form $intPluralId for the text \"" . $arrTemplateFields['MsgStr0'] . "\".",
+                                $arrTemplateFields['ContextComment']
+                            );
+                        }
                     }
                 }
             }
@@ -478,13 +575,12 @@
          *
          * @return string valid suggestion
          */
-        protected function GetTranslation($strOriginal, $strOriginalAccKey = null, $strOriginalAccKeyPrefix = null, $strTranslation, $strTranslationAccKey = null, $strContext, $intPluralForm = null, $strComment = null) {
-
+        protected function GetTranslation($strOriginal, $strOriginalAccKey = null, $strOriginalAccKeyPrefix = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
             $objNarroContextInfo = NarroContextInfo::QuerySingle(
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
                     QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5($strContext)),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5(trim($strContext))),
                     QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId),
                     QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId)
