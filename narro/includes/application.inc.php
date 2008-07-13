@@ -125,7 +125,7 @@
     QApplication::$LanguageCode = QApplication::$objUser->Language->LanguageCode;
 
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
-    QForm::$FormStateHandler = 'QSessionFormStateHandler';
+    QForm::$FormStateHandler = 'QFormStateHandler';
     QFileFormStateHandler::$StatePath = __TMP_PATH__ . '/qform_states/';
 
     require_once __INCLUDES__ . '/Zend/Cache.php';
