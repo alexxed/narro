@@ -80,7 +80,7 @@
         }
 
         /**
-         * A translation here consists of the project, file, text, translation, context, plurals, validation, ignore equals
+         * A translation here consists of the project, file, text, translation, context, validation, ignore equals
          *
          * @param string $strOriginal the original text
          * @param string $strOriginalAccKey access key for the original text
@@ -272,7 +272,6 @@
                 $objContextInfo->LanguageId = $this->objTargetLanguage->LanguageId;
                 $objContextInfo->HasSuggestions = 0;
                 $objContextInfo->HasComments = 0;
-                $objContextInfo->HasPlural = 0;
                 $blnContextInfoChanged = true;
             }
             elseif (!$objContextInfo instanceof NarroContextInfo) {
@@ -448,9 +447,6 @@
                     NarroImportStatistics::$arrStatistics['Skipped context infos']++;
                 }
             }
-
-            $blnContextPluralChanged = false;
-            $blnContextPluralInfoChanged = false;
 
             return true;
         }
