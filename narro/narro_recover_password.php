@@ -48,6 +48,11 @@
             }
 
             if ($objUser instanceof NarroUser) {
+                if ($objUser->UserId == NarroUser::ANONYMOUS_USER_ID) {
+                    $this->lblMessage->ForeColor = 'red';
+                    $this->lblMessage->Text = t('Hey, the anonymous user doesn\'t have a password. What are you trying to do?');
+                    return false;
+                }
                 $objEmailMessage = new QEmailMessage();
                 $objEmailMessage->From = ADMIN_EMAIL_ADDRESS;
                 $objEmailMessage->To = $objUser->Email;
