@@ -28,6 +28,8 @@
         protected $colEncoding;
         protected $colTextDirection;
         protected $colSpecialCharacters;
+        protected $colPluralForm;
+
         protected $colActions;
 
         protected function Form_Create() {
@@ -39,6 +41,7 @@
             $this->colEncoding = new QDataGridColumn(t('Encoding'), '<?= $_FORM->dtgNarroLanguage_EncodingColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->Encoding), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->Encoding, false)));
             $this->colTextDirection = new QDataGridColumn(t('Text Direction'), '<?= $_FORM->dtgNarroLanguage_TextDirectionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->TextDirection), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->TextDirection, false)));
             $this->colSpecialCharacters = new QDataGridColumn(t('Special Characters'), '<?= $_FORM->dtgNarroLanguage_SpecialCharactersColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));
+            $this->colPluralForm = new QDataGridColumn(t('Plural Forms'), '<?= $_FORM->dtgNarroLanguage_PluralFormColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));
 
             $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_FORM->dtgNarroLanguage_Actions_Render($_ITEM) ?>');
             $this->colActions->HtmlEntities = false;
@@ -62,6 +65,8 @@
             $this->dtgNarroLanguage->AddColumn($this->colEncoding);
             $this->dtgNarroLanguage->AddColumn($this->colTextDirection);
             $this->dtgNarroLanguage->AddColumn($this->colSpecialCharacters);
+            $this->dtgNarroLanguage->AddColumn($this->colPluralForm);
+
             $this->dtgNarroLanguage->AddColumn($this->colActions);
 
             $this->dtgNarroLanguage->SortColumnIndex = 0;
@@ -73,6 +78,10 @@
 
         public function dtgNarroLanguage_LanguageCodeColumn_Render(NarroLanguage $objNarroLanguage) {
             return $objNarroLanguage->LanguageCode;
+        }
+
+        public function dtgNarroLanguage_PluralFormColumn_Render(NarroLanguage $objNarroLanguage) {
+            return $objNarroLanguage->Plurals;
         }
 
         public function dtgNarroLanguage_CountryCodeColumn_Render(NarroLanguage $objNarroLanguage) {

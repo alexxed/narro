@@ -31,6 +31,7 @@
         protected $txtEncoding;
         protected $lstTextDirection;
         protected $txtSpecialCharacters;
+        protected $txtPluralForm;
 
         // Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -70,6 +71,7 @@
             $this->txtEncoding_Create();
             $this->lstTextDirection_Create();
             $this->txtSpecialCharacters_Create();
+            $this->txtPluralForm_Create();
 
             // Create/Setup ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -143,6 +145,14 @@
             $this->txtSpecialCharacters->MaxLength = NarroLanguage::SpecialCharactersMaxLength;
         }
 
+        // Create and Setup txtPluralForm
+        protected function txtPluralForm_Create() {
+            $this->txtPluralForm = new QTextBox($this);
+            $this->txtPluralForm->Name = QApplication::Translate('Plural formula');
+            $this->txtPluralForm->Text = $this->objNarroLanguage->PluralForm;
+            $this->txtPluralForm->Width = 800;
+            $this->txtPluralForm->MaxLength = NarroLanguage::PluralFormMaxLength;
+        }
 
         // Setup btnSave
         protected function btnSave_Create() {
@@ -185,6 +195,7 @@
             $this->objNarroLanguage->Encoding = $this->txtEncoding->Text;
             $this->objNarroLanguage->TextDirection = $this->lstTextDirection->SelectedValue;
             $this->objNarroLanguage->SpecialCharacters = $this->txtSpecialCharacters->Text;
+            $this->objNarroLanguage->PluralForm = $this->txtPluralForm->Text;
         }
 
 
