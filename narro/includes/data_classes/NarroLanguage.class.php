@@ -44,8 +44,6 @@
             return sprintf('NarroLanguage Object %s',  $this->intLanguageId);
         }
 
-
-
         // Override or Create New Load/Count methods
         // (For obvious reasons, these methods are commented out...
         // but feel free to use these as a starting point)
@@ -116,12 +114,14 @@
         // For performance reasons, these variables and __set and __get override methods
         // are commented out.  But if you wish to implement or override any
         // of the data generated properties, please feel free to uncomment them.
-/*
-        protected $strSomeNewProperty;
 
         public function __get($strName) {
             switch ($strName) {
-                case 'SomeNewProperty': return $this->strSomeNewProperty;
+                case 'Plurals':
+                    if (preg_match('/nplurals=([0-9])/i', $this->strPluralForm, $arrMatches))
+                        return $arrMatches[1];
+                    else
+                        return 2;
 
                 default:
                     try {
@@ -132,7 +132,7 @@
                     }
             }
         }
-
+/*
         public function __set($strName, $mixValue) {
             switch ($strName) {
                 case 'SomeNewProperty':
