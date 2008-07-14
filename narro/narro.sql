@@ -5,7 +5,7 @@ CREATE TABLE narro_context (
   context_id bigint(20) unsigned NOT NULL auto_increment,
   text_id bigint(20) unsigned NOT NULL,
   project_id int(10) unsigned NOT NULL,
-  `context` text NOT NULL,
+  context text NOT NULL,
   context_md5 varchar(255) NOT NULL,
   file_id int(10) unsigned NOT NULL,
   created timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -107,72 +107,72 @@ CREATE TABLE narro_language (
   encoding varchar(10) NOT NULL,
   text_direction varchar(3) NOT NULL default 'ltr',
   special_characters varchar(255) default NULL,
-  plural_form varchar(255) NOT NULL default '"Plural-Forms: nplurals=2; plural=n != 1;\\n"',
+  plural_form varchar(255) NOT NULL default '"Plural-Forms: nplurals=2; plural=(n != 1);\n"',
   PRIMARY KEY  (language_id),
   UNIQUE KEY language_name (language_name),
   UNIQUE KEY language_code (language_code)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-INSERT INTO narro_language VALUES(1, 'Romanian', 'ro', 'ro', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(2, 'French', 'fr', 'fr', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(3, 'Spanish', 'es-ES', 'es-ES', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(4, 'Afrikaans', 'af', 'af', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(5, 'Arabic', 'ar', 'ar', 'UTF-8', 'rtl', NULL);
-INSERT INTO narro_language VALUES(6, 'Belarusian', 'be', 'be', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(7, 'Bulgarian', 'bg', 'bg', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(8, 'Catalan', 'ca', 'ca', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(9, 'Czech', 'cs', 'cs', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(10, 'Danish', 'da', 'da', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(11, 'German', 'de', 'de', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(12, 'Greek', 'el', 'el', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(13, 'English, UK', 'en-GB', 'en-GB', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(14, 'English (South African)', 'en-ZA', 'en-ZA', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(15, 'Spanish, Argentina', 'es-AR', 'es-AR', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(16, 'Frisian', 'fy-NL', 'fy-NL', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(17, 'Basque', 'eu', 'eu', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(18, 'Finnish', 'fi', 'fi', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(19, 'Irish', 'ga-IE', 'ga-IE', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(20, 'Gujarati', 'gu-IN', 'gu-IN', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(21, 'Hebrew', 'he', 'he', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(22, 'Hungarian', 'hu', 'hu', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(23, 'Armenian', 'hy-AM', 'hy-AM', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(24, 'Italian', 'it', 'it', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(25, 'Japanese', 'ja', 'ja', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(26, 'Georgian', 'ka', 'ka', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(27, 'Korean', 'ko', 'ko', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(28, 'Kurdish', 'ku', 'ku', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(29, 'Lithuanian', 'lt', 'lt', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(30, 'Macedonian', 'mk', 'mk', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(31, 'Mongolian', 'mn', 'mn', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(32, 'Norwegian bokmaal', 'nb-NO', 'nb-NO', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(33, 'Dutch', 'nl', 'nl', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(34, 'Ndebele', 'nr', 'nr', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(35, 'Northern Sotho', 'nso', 'nso', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(36, 'Norwegian nynorsk', 'nn-NO', 'nn-NO', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(37, 'Punjabi', 'pa-IN', 'pa-IN', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(38, 'Polish', 'pl', 'pl', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(39, 'Portuguese, Brazil', 'pt-BR', 'pt-BR', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(40, 'Portuguese, Portugal', 'pt-PT', 'pt-PT', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(41, 'Russian', 'ru', 'ru', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(42, 'Slovak', 'sk', 'sk', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(43, 'Slovenian', 'sl', 'sl', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(44, 'Albanian', 'sq', 'sq', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(45, 'Serbian', 'sr', 'sr', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(46, 'Swati', 'ss', 'ss', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(47, 'Southern Sotho', 'st', 'st', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(48, 'Swedish', 'sv-SE', 'sv-SE', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(49, 'Tswana', 'tn', 'tn', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(50, 'Turkish', 'tr', 'tr', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(51, 'Tsonga', 'ts', 'ts', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(52, 'Ukrainian', 'uk', 'uk', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(53, 'Venda', 've', 've', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(54, 'Xhosa', 'xh', 'xh', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(55, 'Chinese Simplified, China', 'zh-CN', 'zh-CN', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(56, 'Chinese Traditional, Taiwan', 'zh-TW', 'zh-TW', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(57, 'Zulu', 'zu', 'zu', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(58, 'English US', 'en-US', 'en-US', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(59, 'Urdu (Pakistan)', 'ur-PK', 'ur-PK', 'UTF-8', 'ltr', NULL);
-INSERT INTO narro_language VALUES(60, 'Vietnamese', 'vi', 'vi', 'UTF-8', 'ltr', NULL);
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(1, 'Romanian', 'ro', 'ro', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 or (n%100 > 0 && n%100 < 20)) ? 1 : 2);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(2, 'French', 'fr', 'fr', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n > 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(3, 'Spanish', 'es-ES', 'es-ES', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(4, 'Afrikaans', 'af', 'af', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(5, 'Arabic', 'ar', 'ar', 'UTF-8', 'rtl', NULL, '"Plural-Forms: nplurals=6; plural= n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(6, 'Belarusian', 'be', 'be', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 or n%100>=20) ? 1 : 2);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(7, 'Bulgarian', 'bg', 'bg', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(8, 'Catalan', 'ca', 'ca', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(9, 'Czech', 'cs', 'cs', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n< =4) ? 1 : 2;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(10, 'Danish', 'da', 'da', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(11, 'German', 'de', 'de', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(12, 'Greek', 'el', 'el', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(13, 'English, UK', 'en-GB', 'en-GB', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(14, 'English (South African)', 'en-ZA', 'en-ZA', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(15, 'Spanish, Argentina', 'es-AR', 'es-AR', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(16, 'Frisian', 'fy-NL', 'fy-NL', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(17, 'Basque', 'eu', 'eu', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(18, 'Finnish', 'fi', 'fi', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(19, 'Irish', 'ga-IE', 'ga-IE', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(20, 'Gujarati', 'gu-IN', 'gu-IN', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(21, 'Hebrew', 'he', 'he', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(22, 'Hungarian', 'hu', 'hu', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=1; plural=0;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(23, 'Armenian', 'hy-AM', 'hy-AM', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=1; plural=0;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(24, 'Italian', 'it', 'it', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(25, 'Japanese', 'ja', 'ja', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=1; plural=0;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(26, 'Georgian', 'ka', 'ka', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=1; plural=0;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(27, 'Korean', 'ko', 'ko', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=1; plural=0;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(28, 'Kurdish', 'ku', 'ku', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n!= 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(29, 'Lithuanian', 'lt', 'lt', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 or n%100>=20) ? 1 : 2);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(30, 'Macedonian', 'mk', 'mk', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=3; plural= n==1 or n%10==1 ? 0 : 1;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(31, 'Mongolian', 'mn', 'mn', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(32, 'Norwegian bokmaal', 'nb-NO', 'nb-NO', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(33, 'Dutch', 'nl', 'nl', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(34, 'Ndebele', 'nr', 'nr', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(35, 'Northern Sotho', 'nso', 'nso', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n > 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(36, 'Norwegian nynorsk', 'nn-NO', 'nn-NO', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(37, 'Punjabi', 'pa-IN', 'pa-IN', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(38, 'Polish', 'pl', 'pl', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 or n%100>=20) ? 1 : 2);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(39, 'Portuguese, Brazil', 'pt-BR', 'pt-BR', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n > 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(40, 'Portuguese, Portugal', 'pt-PT', 'pt-PT', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(41, 'Russian', 'ru', 'ru', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 or n%100>=20) ? 1 : 2);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(42, 'Slovak', 'sk', 'sk', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(43, 'Slovenian', 'sl', 'sl', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 or n%100==4 ? 2 : 3);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(44, 'Albanian', 'sq', 'sq', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(45, 'Serbian', 'sr', 'sr', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(46, 'Swati', 'ss', 'ss', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(47, 'Southern Sotho', 'st', 'st', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(48, 'Swedish', 'sv-SE', 'sv-SE', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1) ;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(49, 'Tswana', 'tn', 'tn', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(50, 'Turkish', 'tr', 'tr', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=1; plural=0;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(51, 'Tsonga', 'ts', 'ts', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(52, 'Ukrainian', 'uk', 'uk', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 or n%100>=20) ? 1 : 2);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(53, 'Venda', 've', 've', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(54, 'Xhosa', 'xh', 'xh', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(55, 'Chinese Simplified, China', 'zh-CN', 'zh-CN', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=1; plural=0;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(56, 'Chinese Traditional, Taiwan', 'zh-TW', 'zh-TW', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=1; plural=0;\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(57, 'Zulu', 'zu', 'zu', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(58, 'English US', 'en-US', 'en-US', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(59, 'Urdu (Pakistan)', 'ur-PK', 'ur-PK', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+INSERT INTO narro_language (language_id, language_name, language_code, country_code, encoding, text_direction, special_characters, plural_form) VALUES(60, 'Vietnamese', 'vi', 'vi', 'UTF-8', 'ltr', NULL, '"Plural-Forms: nplurals=1; plural=0;\\n"');
 
 CREATE TABLE narro_permission (
   permission_id int(10) unsigned NOT NULL auto_increment,
@@ -304,9 +304,9 @@ CREATE TABLE narro_text_comment (
 CREATE TABLE narro_user (
   user_id int(10) unsigned NOT NULL,
   username varchar(128) NOT NULL,
-  `password` varchar(64) NOT NULL,
+  password varchar(64) NOT NULL,
   email varchar(128) NOT NULL,
-  `data` text,
+  data text,
   PRIMARY KEY  (user_id),
   UNIQUE KEY username (username),
   UNIQUE KEY email (email)
@@ -328,54 +328,54 @@ CREATE TABLE narro_user_permission (
   KEY language_id (language_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `narro_context`
+ALTER TABLE narro_context
   ADD CONSTRAINT narro_context_ibfk_13 FOREIGN KEY (text_id) REFERENCES narro_text (text_id),
   ADD CONSTRAINT narro_context_ibfk_14 FOREIGN KEY (project_id) REFERENCES narro_project (project_id),
   ADD CONSTRAINT narro_context_ibfk_15 FOREIGN KEY (file_id) REFERENCES narro_file (file_id);
 
-ALTER TABLE `narro_context_comment`
+ALTER TABLE narro_context_comment
   ADD CONSTRAINT narro_context_comment_ibfk_4 FOREIGN KEY (context_id) REFERENCES narro_context (context_id) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT narro_context_comment_ibfk_5 FOREIGN KEY (user_id) REFERENCES narro_user (user_id),
   ADD CONSTRAINT narro_context_comment_ibfk_6 FOREIGN KEY (language_id) REFERENCES narro_language (language_id);
 
-ALTER TABLE `narro_context_info`
+ALTER TABLE narro_context_info
   ADD CONSTRAINT narro_context_info_ibfk_10 FOREIGN KEY (popular_suggestion_id) REFERENCES narro_suggestion (suggestion_id) ON DELETE SET NULL ON UPDATE SET NULL,
   ADD CONSTRAINT narro_context_info_ibfk_15 FOREIGN KEY (validator_user_id) REFERENCES narro_user (user_id) ON DELETE SET NULL ON UPDATE SET NULL,
   ADD CONSTRAINT narro_context_info_ibfk_17 FOREIGN KEY (context_id) REFERENCES narro_context (context_id) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT narro_context_info_ibfk_18 FOREIGN KEY (language_id) REFERENCES narro_language (language_id),
   ADD CONSTRAINT narro_context_info_ibfk_9 FOREIGN KEY (valid_suggestion_id) REFERENCES narro_suggestion (suggestion_id) ON DELETE SET NULL ON UPDATE SET NULL;
 
-ALTER TABLE `narro_file`
+ALTER TABLE narro_file
   ADD CONSTRAINT narro_file_ibfk_10 FOREIGN KEY (project_id) REFERENCES narro_project (project_id),
   ADD CONSTRAINT narro_file_ibfk_4 FOREIGN KEY (parent_id) REFERENCES narro_file (file_id) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT narro_file_ibfk_9 FOREIGN KEY (type_id) REFERENCES narro_file_type (file_type_id);
 
-ALTER TABLE `narro_file_header`
+ALTER TABLE narro_file_header
   ADD CONSTRAINT narro_file_header_ibfk_1 FOREIGN KEY (file_id) REFERENCES narro_file (file_id);
 
-ALTER TABLE `narro_project`
+ALTER TABLE narro_project
   ADD CONSTRAINT narro_project_ibfk_1 FOREIGN KEY (project_type) REFERENCES narro_project_type (project_type_id);
 
-ALTER TABLE `narro_suggestion`
+ALTER TABLE narro_suggestion
   ADD CONSTRAINT narro_suggestion_ibfk_7 FOREIGN KEY (user_id) REFERENCES narro_user (user_id),
   ADD CONSTRAINT narro_suggestion_ibfk_8 FOREIGN KEY (text_id) REFERENCES narro_text (text_id),
   ADD CONSTRAINT narro_suggestion_ibfk_9 FOREIGN KEY (language_id) REFERENCES narro_language (language_id);
 
-ALTER TABLE `narro_suggestion_comment`
+ALTER TABLE narro_suggestion_comment
   ADD CONSTRAINT narro_suggestion_comment_ibfk_1 FOREIGN KEY (suggestion_id) REFERENCES narro_suggestion (suggestion_id),
   ADD CONSTRAINT narro_suggestion_comment_ibfk_2 FOREIGN KEY (user_id) REFERENCES narro_user (user_id),
   ADD CONSTRAINT narro_suggestion_comment_ibfk_3 FOREIGN KEY (language_id) REFERENCES narro_language (language_id);
 
-ALTER TABLE `narro_suggestion_vote`
+ALTER TABLE narro_suggestion_vote
   ADD CONSTRAINT narro_suggestion_vote_ibfk_10 FOREIGN KEY (suggestion_id) REFERENCES narro_suggestion (suggestion_id) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT narro_suggestion_vote_ibfk_7 FOREIGN KEY (context_id) REFERENCES narro_context (context_id) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT narro_suggestion_vote_ibfk_9 FOREIGN KEY (user_id) REFERENCES narro_user (user_id) ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE `narro_text_comment`
+ALTER TABLE narro_text_comment
   ADD CONSTRAINT narro_text_comment_ibfk_3 FOREIGN KEY (text_id) REFERENCES narro_text (text_id),
   ADD CONSTRAINT narro_text_comment_ibfk_4 FOREIGN KEY (user_id) REFERENCES narro_user (user_id);
 
-ALTER TABLE `narro_user_permission`
+ALTER TABLE narro_user_permission
   ADD CONSTRAINT narro_user_permission_ibfk_12 FOREIGN KEY (user_id) REFERENCES narro_user (user_id),
   ADD CONSTRAINT narro_user_permission_ibfk_13 FOREIGN KEY (permission_id) REFERENCES narro_permission (permission_id),
   ADD CONSTRAINT narro_user_permission_ibfk_14 FOREIGN KEY (project_id) REFERENCES narro_project (project_id),
