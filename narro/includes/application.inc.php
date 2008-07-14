@@ -101,7 +101,7 @@
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
     QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'en-US', array('en-US'));
-    QApplication::RegisterPreference('Special characters', 'text', 'Paste here the characters that you can not type in with your keyboard', '$€');
+    QApplication::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
     QApplication::RegisterPreference('Theme', 'option', 'The theme used in the translation page', 'narro', array('Narro', 'KBabel'));
 
     if (isset($_SESSION['objUser']) && $_SESSION['objUser'] instanceof NarroUser)
@@ -162,5 +162,6 @@
     QApplicationBase::$ClassFile['NarroUtils'] = __INCLUDES__ . '/narro/NarroUtils.class.php';
     QApplicationBase::$ClassFile['NarroString'] = __INCLUDES__ . '/narro/NarroString.class.php';
     QApplicationBase::$ClassFile['Archive_Tar'] = __INCLUDES__ . '/PEAR/Archive/Tar.php';
+    QApplicationBase::$ClassFile['NarroDiacriticsPanel'] = __INCLUDES__ . '/narro/narro_diacritics_panel.class.php';
 
 ?>
