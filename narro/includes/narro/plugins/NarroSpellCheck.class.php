@@ -20,7 +20,7 @@
         public function __construct() {
             parent::__construct();
             $this->strName = t('Spell check');
-            QApplication::RegisterPreference('Spellchecking', 'option', 'The languages used for spellcheck', 'Yes, please', array('I don\'t need it', 'Yes, please'));
+            QApplication::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don\'t need it', 'Yes, please'));
         }
 
         public static function GetSpellSuggestions($strText) {
@@ -74,6 +74,10 @@
             else
                 if (file_exists('/usr/lib/aspell-0.60/' . $strSpellLang . '.dat')) {
                     $strDictPath = '/usr/lib/aspell-0.60/';
+                    $pspell_link = pspell_new($strSpellLang, null, null, 'utf-8');
+                }
+                elseif (file_exists('/usr/lib64/aspell-0.60/' . $strSpellLang . '.dat')) {
+                    $strDictPath = '/usr/lib64/aspell-0.60/';
                     $pspell_link = pspell_new($strSpellLang, null, null, 'utf-8');
                 }
                 else
