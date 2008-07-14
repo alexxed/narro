@@ -17,7 +17,7 @@
  */
 
 class NarroDiacriticsPanel extends QPanel {
-    private $arrEntities = array(        
+    public static $arrEntities = array(        
         'AElig'=>"\xc3\x86",
         'Aacute'=>"\xc3\x81",
         'Acirc'=>"\xc3\x82",
@@ -290,15 +290,12 @@ class NarroDiacriticsPanel extends QPanel {
 
         foreach(split(' ', $strSpecialChars) as $strChar) {
             $objLabel = new QLabel($this);
-            if (isset($this->arrEntities[$strChar]))
-                $objLabel->Text = $strChar;
-            else
-                $objLabel->Text = $strChar;
+            $objLabel->Text = $strChar;
             $objLabel->FontSize = 20;
             $objLabel->Padding = 3;
             $objLabel->AddAction(new QMouseOverEvent(), new QJavaScriptAction("this.style.backgroundColor='red'; this.style.color='white'; this.style.cursor='crosshair'"));
             $objLabel->AddAction(new QMouseOutEvent(), new QJavaScriptAction("this.style.backgroundColor=''; this.style.color='black'; this.style.cursor='normal'"));
-            $objLabel->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf("qc.getControl('%s').value += '%s'; qc.getControl('%s').focus();", $this->strTextareaControlId, $this->arrEntities[$strChar], $this->strTextareaControlId)));
+            $objLabel->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf("qc.getControl('%s').value += '%s'; qc.getControl('%s').focus();", $this->strTextareaControlId, ((isset(self::$arrEntities[$strChar]))?self::$arrEntities[$strChar]:$strChar), $this->strTextareaControlId)));
 
             $this->strText .= $objLabel->Render(false);
         }
