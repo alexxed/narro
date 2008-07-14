@@ -54,5 +54,29 @@
             return $strText;
         }
 
+        public static function ShowLeadingAndTrailingSpaces($strText) {
+            if (preg_match_all('/^\s+/m', $strText, $arrMatches)) {
+                foreach($arrMatches[0] as $strSpaces) {
+                    foreach(str_split($strSpaces) as $strSpaceCharacter) {
+                        $strSpanSpaces .= '<span style="background-color:white;margin-right:2px;">&nbsp;</span>';
+                    }
+
+                    $strText = preg_replace('/^' . $strSpaces . '/m', $strSpanSpaces, $strText);
+                }
+            }
+
+            if (preg_match_all('/\s+$/m', $strText, $arrMatches)) {
+                foreach($arrMatches[0] as $strSpaces) {
+                    foreach(str_split($strSpaces) as $strSpaceCharacter) {
+                        $strSpanSpaces .= '<span class="whitespace">&nbsp;</span>';
+                    }
+
+                    $strText = preg_replace('/' . $strSpaces . '$/m', $strSpanSpaces, $strText);
+                }
+            }
+
+            return $strText;
+        }
+
     }
 ?>

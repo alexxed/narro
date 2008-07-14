@@ -234,9 +234,9 @@
 
             }
             if ($this->chkShowAllLanguages->Checked)
-                return '<div style="color:gray;font-size:70%">' . $objNarroSuggestion->Language->LanguageName . '</div>' . $strCellValue;
+                return '<div style="color:gray;font-size:70%">' . $objNarroSuggestion->Language->LanguageName . '</div>' . NarroString::ShowLeadingAndTrailingSpaces($strCellValue);
             else
-                return $strCellValue;
+                return NarroString::ShowLeadingAndTrailingSpaces($strCellValue);
 
         }
 

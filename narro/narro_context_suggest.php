@@ -198,6 +198,8 @@
              * @todo Show somehow the leading spaces ' ' => &nbsp;
              */
             $this->pnlOriginalText->Text = nl2br(NarroString::HtmlEntities($this->objNarroContextInfo->Context->Text->TextValue));
+            $this->pnlOriginalText->Text = NarroString::ShowLeadingAndTrailingSpaces($this->pnlOriginalText->Text);
+
             if
             (
                 !is_null($this->objNarroContextInfo->TextAccessKey) &&

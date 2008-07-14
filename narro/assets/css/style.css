@@ -190,3 +190,8 @@ td.datagrid_footer {
     background-color:white;
     font-weight:bold;
 }
+
+.whitespace {
+    background-color:white;
+    margin-right:2px;
+}
