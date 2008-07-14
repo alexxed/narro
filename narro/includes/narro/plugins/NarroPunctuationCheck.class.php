@@ -65,6 +65,53 @@
                         );
             }
 
+            $intLeadingTextSpaces = 0;
+            $intLeadingTranslationSpaces = 0;
+            $intTrailingTextSpaces = 0;
+            $intTrailingTranslationSpaces = 0;
+
+            if (preg_match_all('/^\s+/m', $strOriginal, $arrMatches))
+                $intLeadingTextSpaces = strlen($arrMatches[0][0]);
+
+            if (preg_match_all('/^\s+/m', $strTranslation, $arrMatches))
+                $intLeadingTranslationSpaces = strlen($arrMatches[0][0]);
+
+            if (preg_match_all('/\s+$/m', $strOriginal, $arrMatches))
+                $intTrailingTextSpaces = strlen($arrMatches[0][0]);
+
+            if (preg_match_all('/\s+$/m', $strTranslation, $arrMatches))
+                $intTrailingTranslationSpaces = strlen($arrMatches[0][0]);
+
+            if ($intLeadingTextSpaces != $intLeadingTranslationSpaces && $intTrailingTextSpaces != $intTrailingTranslationSpaces)
+                $this->arrErrors[] =
+                        sprintf(
+                            t(
+                                'The original text has %d leading spaces and %d trailing spaces, your suggestion has %d leading spaces and %d trailing spaces.'
+                            ),
+                            $intLeadingTextSpaces,
+                            $intLeadingTranslationSpaces,
+                            $intTrailingTextSpaces,
+                            $intTrailingTranslationSpaces
+                        );
+            elseif ($intLeadingTextSpaces != $intLeadingTranslationSpaces)
+                $this->arrErrors[] =
+                        sprintf(
+                            t(
+                                'The original text has %d leading spaces, your suggestion has %d.'
+                            ),
+                            $intLeadingTextSpaces,
+                            $intLeadingTranslationSpaces
+                        );
+            elseif ($intTrailingTextSpaces != $intTrailingTranslationSpaces)
+                $this->arrErrors[] =
+                        sprintf(
+                            t(
+                                'The original text has %d trailing spaces, your suggestion has %d.'
+                            ),
+                            $intTrailingTextSpaces,
+                            $intTrailingTranslationSpaces
+                        );
+
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
     }
