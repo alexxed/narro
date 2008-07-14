@@ -73,6 +73,14 @@
         </td>
         </tr>
         <tr>
+        <td>
+        <label for="<?php echo $this->txtPluralForm->ControlId ?>"><?php _t('Plural formula') ?></label>
+        </td>
+        <td>
+        <?php $this->txtPluralForm->Render(); ?>
+        </td>
+        </tr>
+        <tr>
         <td colspan="2" align="right">
         <?php $this->btnSave->Render() ?>
         &nbsp;&nbsp;&nbsp;
