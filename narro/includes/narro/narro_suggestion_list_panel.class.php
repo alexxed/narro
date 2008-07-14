@@ -135,7 +135,7 @@
             else*/
                 $arrWordSuggestions = array();
 
-            $strSuggestionValue = NarroString::HtmlEntities($strSuggestionValue);
+            $strSuggestionValue = NarroString::ShowLeadingAndTrailingSpaces(NarroString::HtmlEntities($strSuggestionValue));
 
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->TextAccessKey) {
                 /**
@@ -234,9 +234,9 @@
 
             }
             if ($this->chkShowAllLanguages->Checked)
-                return '<div style="color:gray;font-size:70%">' . $objNarroSuggestion->Language->LanguageName . '</div>' . NarroString::ShowLeadingAndTrailingSpaces($strCellValue);
+                return '<div style="color:gray;font-size:70%">' . $objNarroSuggestion->Language->LanguageName . '</div>' . $strCellValue;
             else
-                return NarroString::ShowLeadingAndTrailingSpaces($strCellValue);
+                return $strCellValue;
 
         }
 
