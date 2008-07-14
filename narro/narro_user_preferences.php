@@ -80,6 +80,16 @@
                             $txtTextPref = new QTextBox($this);
                             $txtTextPref->Name = $strName;
                             $txtTextPref->Text = $this->objUser->getPreferenceValueByName($strName);
+                            
+                            if ($strName == 'Special characters') {
+                                $strSelect = sprintf('<select onchange="document.getElementById(\'%s\').value+=this.options[this.selectedIndex].value;">', $txtTextPref->ControlId);
+                                foreach(NarroDiacriticsPanel::$arrEntities as $strEntityName=>$strEntityChar) 
+                                    $strSelect .= sprintf('<option value=" %s">%s (%s)', $strEntityName, $strEntityChar, $strEntityName);
+                                $strSelect .= '</select>';  
+                                $arrPref['description'] .= $strSelect;
+                                $txtTextPref->Width = 400;
+                            }
+                            
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $txtTextPref;
                             break;
