@@ -466,7 +466,7 @@
         // Setup btnCopyOriginal
         protected function btnCopyOriginal_Create() {
             $this->btnCopyOriginal = new QButton($this);
-            $this->btnCopyOriginal->Text = t('Copy to suggestion');
+            $this->btnCopyOriginal->Text = t('Copy');
 
             if (QApplication::$blnUseAjax)
                 $this->btnCopyOriginal->AddAction(new QClickEvent(), new QAjaxAction('btnCopyOriginal_Click'));
@@ -558,7 +558,7 @@
                     $this->pnlSuggestionList->dtgSuggestions_Bind();
                 }
             }
-            
+
             NarroCache::UpdateTranslatedTextsByProjectAndLanguage(1, $this->objNarroProject->ProjectId);
 
             $arrNarroText = NarroText::QueryArray(QQ::Equal(QQN::NarroText()->TextValue, $this->objNarroContextInfo->Context->Text->TextValue));
@@ -835,7 +835,7 @@
             $this->pnlSuggestionList->MarkAsModified();
 
         }
-        
+
         protected function getSortOrderClause() {
             switch(QApplication::QueryString('o')) {
                 case 0:

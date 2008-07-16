@@ -34,7 +34,7 @@
         protected $chkShowAllLanguages;
 
         protected $intEditSuggestionId;
-        
+
         public function __construct($objParentObject, $strControlId = null) {
             // Call the Parent
             try {
@@ -98,10 +98,24 @@
         }
 
         public function GetControlHtml() {
-            $this->strText = ''; 
+            $this->strText = '';
             if ($this->objNarroContextInfo->ValidSuggestionId) {
+                $strControlId = 'btnEditSuggestion';
+                $btnEdit = $this->objForm->GetControl($strControlId);
+                if (!$btnEdit) {
+                    $btnEdit = new QButton($this, $strControlId);
+                    $btnEdit->SetCustomStyle('float', 'right');
+                    $btnEdit->Text = t('Copy');
+                    if (QApplication::$blnUseAjax)
+                        $btnEdit->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnEdit_Click'));
+                    else
+                        $btnEdit->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnEdit_Click'));
+                }
+
+                $btnEdit->ActionParameter = $this->objNarroContextInfo->ValidSuggestionId;
+
                 $strControlId = 'btnVoteValidSuggestion';
-    
+
                 $btnVote = $this->objForm->GetControl($strControlId);
                 if (!$btnVote) {
                     $btnVote = new QButton($this, $strControlId);
@@ -112,14 +126,14 @@
                     else
                         $btnVote->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnVote_Click')
                     );
-                    
-    
+
+
                 }
-    
+
                 $btnVote->ActionParameter = $this->objNarroContextInfo->ValidSuggestionId;
-                
+
                 $strControlId = 'btnCancelValidation';
-    
+
                 $btnValidate = $this->objForm->GetControl($strControlId);
                 if (!$btnValidate) {
                     $btnValidate = new QButton($this, $strControlId);
@@ -130,22 +144,23 @@
                         $btnValidate->AddAction(new QClickEvent(), new QServerAction('btnValidate_Click')
                     );
                 }
-                
+
                 $btnValidate->Text = t('Cancel validation');
-    
-                $btnValidate->ActionParameter = $this->objNarroContextInfo->ValidSuggestionId;                
-                                
-                $this->strText .= sprintf('<div style="color:gray;float:right;">%s, %s %s</div>%s<div class="green3dbg" style="border:1px dotted #DDDDDD;padding: 5px"><div style="float:right;">%s%s</div>%s</div><br/>',
+
+                $btnValidate->ActionParameter = $this->objNarroContextInfo->ValidSuggestionId;
+
+                $this->strText .= sprintf('<div style="color:gray;float:right;">%s, %s %s</div>%s<div class="green3dbg" style="border:1px dotted #DDDDDD;padding: 5px"><div style="float:right;">%s%s%s</div>%s</div><br/>',
                     sprintf(t('adăugată de %s'), $this->dtgSuggestions_colAuthor_Render($this->objNarroContextInfo->ValidSuggestion)),
                     $this->dtgSuggestions_colVote_Render($this->objNarroContextInfo->ValidSuggestion),
                     t('votes'),
                     t('Approved translation:'),
                     $btnVote->Render(false),
+                    $btnEdit->Render(false),
                     ((QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?$btnValidate->Render(false):'' ),
                     $this->dtgSuggestions_colSuggestion_Render($this->objNarroContextInfo->ValidSuggestion)
                 );
             }
-            
+
             if ($this->dtgSuggestions->TotalItemCount) {
                 $this->lblSuggestions->Text = t('Translations for this text:');
                 $this->dtgSuggestions->Visible = true;
@@ -324,7 +339,7 @@
 
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID) {
                 $objDateSpan = new QDateTimeSpan(time() - strtotime($this->objNarroContextInfo->Modified));
-                $strCreatedWhen = $objDateSpan->SimpleDisplay();                
+                $strCreatedWhen = $objDateSpan->SimpleDisplay();
                 $strAuthorInfo .= ', ' . sprintf('validated by <a href="narro_user_profile.php?u=%d">%s</a> %s', $this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username, (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
             }
 
@@ -344,8 +359,20 @@
                     $btnEdit->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnEdit_Click'));
             }
 
+            $blnCanEdit = QApplication::$objUser->hasPermission(
+                                'Can edit any suggestion',
+                                $this->objNarroContextInfo->Context->ProjectId,
+                                QApplication::$objUser->Language->LanguageId
+                          )
+                          ||
+                          (
+                                $objNarroSuggestion->UserId == QApplication::$objUser->UserId
+                                &&
+                                QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID
+                          );
+
             if ($objNarroSuggestion->SuggestionId != $this->intEditSuggestionId)
-                $btnEdit->Text = t('Edit');
+                $btnEdit->Text = ($blnCanEdit)?t('Edit'):t('Copy');
 
             $btnEdit->ActionParameter = $objNarroSuggestion->SuggestionId;
 
@@ -393,7 +420,7 @@
                     $btnValidate->AddAction(new QClickEvent(), new QServerAction('btnValidate_Click')
                 );
             }
-            
+
             $btnValidate->Text = t('Validate');
 
             $btnValidate->ActionParameter = $objNarroSuggestion->SuggestionId;
@@ -473,7 +500,7 @@
                   return false;
 
                 $objSuggestion->Delete();
-                NarroCache::UpdateTranslatedTextsByProjectAndLanguage(-1, $this->objNarroContextInfo->Context->ProjectId);                
+                NarroCache::UpdateTranslatedTextsByProjectAndLanguage(-1, $this->objNarroContextInfo->Context->ProjectId);
 
                 if (NarroSuggestion::QueryCount(QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId)) == 0) {
                     $arrCtx = NarroContextInfo::QueryArray(QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $this->objNarroContextInfo->Context->TextId));
@@ -549,14 +576,14 @@
                                 &&
                                 QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID
                           );
-            if (!$blnCanEdit) {
+            if (!$blnCanEdit || $this->objNarroContextInfo->ValidSuggestionId == $strParameter) {
                 $this->Form->txtSuggestionValue->Text = $objSuggestion->SuggestionValue;
                 $this->Form->txtSuggestionValue->Focus();
                 return false;
             }
 
             $btnEdit = $this->objForm->GetControl($strControlId);
-            if ($btnEdit->Text == t('Edit')) {
+            if ($btnEdit->Text != t('Save')) {
                 $btnEdit->Text = t('Save');
                 $this->intEditSuggestionId = $strParameter;
             }
@@ -588,7 +615,7 @@
                         try {
                             $objSuggestion->Save();
                             $this->lblMessage->Text = t('Your changes were saved succesfully.');
-                            $btnEdit->Text = t('Edit');
+                            $btnEdit->Text = ($blnCanEdit)?t('Edit'):t('Copy');
                             $this->intEditSuggestionId = null;
                         } catch (QMySqliDatabaseException $objExc) {
                             $this->lblMessage->Text = t('The text you are trying to save already exists.');
@@ -602,10 +629,10 @@
 
         protected function IsSuggestionUsed($strSuggestionId) {
             if ( $arrCtx = NarroContextInfo::LoadArrayByValidSuggestionId($strSuggestionId) ) {
-                if (count($arrCtx) == 1 && $arrCtx[0]->ValidSuggestionId == $this->objNarroContextInfo->ValidSuggestionId) 
+                if (count($arrCtx) == 1 && $arrCtx[0]->ValidSuggestionId == $this->objNarroContextInfo->ValidSuggestionId)
                     return false;
                 else {
-                    
+
                     foreach($arrCtx as $objContext) {
                         if ($objContext->ContextId != $this->objNarroContextInfo->ContextId)
                             $arrTexts[sprintf('<a target="_blank" href="narro_context_suggest.php?p=%d&c=%d&f=%d&tf=%d&s=%s">%s</a>',
