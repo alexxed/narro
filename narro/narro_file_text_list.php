@@ -48,7 +48,7 @@
             else
                 $strText = t('Details');
 
-            return sprintf('<a href="narro_context_suggest.php?p=%d&f=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d">%s</a>',
+            return sprintf('<a href="narro_context_suggest.php?p=%d&f=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d&o=%d&a=%d">%s</a>',
                         $this->objNarroFile->Project->ProjectId,
                         $this->objNarroFile->FileId,
                         $objNarroContextInfo->ContextId,
@@ -57,6 +57,8 @@
                         $this->txtSearch->Text,
                         $intRowIndex,
                         $this->dtgNarroContextInfo->TotalItemCount,
+                        $this->dtgNarroContextInfo->SortColumnIndex,
+                        $this->dtgNarroContextInfo->SortDirection,
                         $strText
                    );
         }
