@@ -32,15 +32,15 @@
             if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('New translations in %s for %s'), QApplication::$objUser->Language->LanguageName, $objProject->ProjectName),
+                            sprintf(t('New translations in %s for %s'), t(QApplication::$objUser->Language->LanguageName), $objProject->ProjectName),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
-                            sprintf(t('Get the latest translation suggestions in %s for %s'), QApplication::$objUser->Language->LanguageName, $objProject->ProjectName)
+                            sprintf(t('Get the latest translation suggestions in %s for %s'), t(QApplication::$objUser->Language->LanguageName), $objProject->ProjectName)
                     );
                 else
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('New translations in %s'), QApplication::$objUser->Language->LanguageName),
+                            sprintf(t('New translations in %s'), t(QApplication::$objUser->Language->LanguageName)),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
-                            sprintf(t('Get the latest translation suggestions in %s'), QApplication::$objUser->Language->LanguageName)
+                            sprintf(t('Get the latest translation suggestions in %s'), t(QApplication::$objUser->Language->LanguageName))
                     );
 
 
@@ -143,13 +143,13 @@
             if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('New texts to translate in %s for %s'), QApplication::$objUser->Language->LanguageName, $objProject->ProjectName),
+                            sprintf(t('New texts to translate in %s for %s'), t(QApplication::$objUser->Language->LanguageName), $objProject->ProjectName),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                             sprintf(t('Get the latest texts to translate for the project %s'), $objProject->ProjectName)
                     );
                 else
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('New texts to translate in %s'), QApplication::$objUser->Language->LanguageName),
+                            sprintf(t('New texts to translate in %s'), t(QApplication::$objUser->Language->LanguageName)),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                             t('Get the latest texts to translate')
                     );
@@ -251,12 +251,12 @@
                 $objRssFeed  = new QRssFeed(
                         sprintf(
                             t('Context information changes in %s'),
-                            QApplication::$objUser->Language->LanguageName
+                            t(QApplication::$objUser->Language->LanguageName)
                         ),
                         __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                         sprintf(
                             t('Get the latest context information changes in %s'),
-                            QApplication::$objUser->Language->LanguageName
+                            t(QApplication::$objUser->Language->LanguageName)
                         )
                 );
                 $objRssFeed->PubDate = new QDateTime(QDateTime::Now);
