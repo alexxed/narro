@@ -150,7 +150,7 @@
                 $btnValidate->ActionParameter = $this->objNarroContextInfo->ValidSuggestionId;
 
                 $this->strText .= sprintf('<div style="color:gray;float:right;">%s, %s %s</div>%s<div class="green3dbg" style="border:1px dotted #DDDDDD;padding: 5px"><div style="float:right;">%s%s%s</div>%s</div><br/>',
-                    sprintf(t('adăugată de %s'), $this->dtgSuggestions_colAuthor_Render($this->objNarroContextInfo->ValidSuggestion)),
+                    sprintf(t('added by %s'), $this->dtgSuggestions_colAuthor_Render($this->objNarroContextInfo->ValidSuggestion)),
                     $this->dtgSuggestions_colVote_Render($this->objNarroContextInfo->ValidSuggestion),
                     t('votes'),
                     t('Approved translation:'),
