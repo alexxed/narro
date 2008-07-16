@@ -43,7 +43,7 @@
                 echo
                     sprintf(
                         t('<i>Translating in: %s</i>'),
-                        QApplication::$objUser->Language->LanguageName
+                        t(QApplication::$objUser->Language->LanguageName)
                     ) . ' | ';
             ?>
             <?php if (QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID) {
