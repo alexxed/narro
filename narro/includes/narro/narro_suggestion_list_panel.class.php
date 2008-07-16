@@ -415,7 +415,12 @@
         public function dtgSuggestions_Bind() {
             // Get Total Count b/c of Pagination
             if ($this->chkShowAllLanguages->Checked)
-                $this->dtgSuggestions->TotalItemCount = NarroSuggestion::CountByTextId($this->objNarroContextInfo->Context->TextId);
+                $this->dtgSuggestions->TotalItemCount = NarroSuggestion::QueryCount(
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId),
+                            QQ::NotEqual(QQN::NarroSuggestion()->SuggestionId, $this->objNarroContextInfo->ValidSuggestionId)
+                        )
+                );
             else
                 $this->dtgSuggestions->TotalItemCount = NarroSuggestion::QueryCount(
                         QQ::AndCondition(
@@ -434,7 +439,14 @@
                 array_push($objClauses, $objClause);
 
             if ($this->chkShowAllLanguages->Checked)
-                $this->dtgSuggestions->DataSource = NarroSuggestion::LoadArrayByTextId($this->objNarroContextInfo->Context->TextId, $objClauses);
+                $this->dtgSuggestions->DataSource =
+                    NarroSuggestion::QueryArray(
+                            QQ::AndCondition(
+                                QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId),
+                                QQ::NotEqual(QQN::NarroSuggestion()->SuggestionId, $this->objNarroContextInfo->ValidSuggestionId)
+                            ),
+                            $objClauses
+                    );
             else
                 $this->dtgSuggestions->DataSource =
                     NarroSuggestion::QueryArray(
