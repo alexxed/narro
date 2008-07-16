@@ -104,12 +104,12 @@
                         $this->strSearchText,
                         $this->intSearchType,
                         $this->intTextFilter,
-                        QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, true)),
+                        $this->getSortOrderClause(),
                         $objExtraCondition
                     )
                 )
                 {
-                    $strCommonUrl = sprintf('p=%d&c=%d&tf=%d&st=%d&s=%s&gn=%d', $this->intProjectId, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText, 1);
+                    $strCommonUrl = sprintf('p=%d&c=%d&tf=%d&st=%d&s=%s&cc=%d&ci=%d', $this->intProjectId, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText, QApplication::QueryString('cc'), 1);
                     if ($this->intFileId)
                         QApplication::Redirect('narro_context_suggest.php?' . $strCommonUrl . sprintf( '&f=%d', $this->intFileId));
                     else
@@ -558,6 +558,8 @@
                     $this->pnlSuggestionList->dtgSuggestions_Bind();
                 }
             }
+            
+            NarroCache::UpdateTranslatedTextsByProjectAndLanguage(1, $this->objNarroProject->ProjectId);
 
             $arrNarroText = NarroText::QueryArray(QQ::Equal(QQN::NarroText()->TextValue, $this->objNarroContextInfo->Context->Text->TextValue));
             if (count($arrNarroText)) {
@@ -629,7 +631,7 @@
                                                     $this->strSearchText,
                                                     $this->intSearchType,
                                                     $this->intTextFilter,
-                                                    QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, false)),
+                                                    $this->getSortOrderClause(),
                                                     $objExtraCondition
                 )
             )
@@ -668,7 +670,7 @@
                                                     $this->strSearchText,
                                                     $this->intSearchType,
                                                     $this->intTextFilter,
-                                                    QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, true)),
+                                                    $this->getSortOrderClause(),
                                                     $objExtraCondition
                 )
             )
@@ -708,7 +710,7 @@
                                                     $this->strSearchText,
                                                     $this->intSearchType,
                                                     $this->intTextFilter,
-                                                    QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, true)),
+                                                    $this->getSortOrderClause(),
                                                     $objExtraCondition
                 )
             )
@@ -748,7 +750,7 @@
                                                     $this->strSearchText,
                                                     $this->intSearchType,
                                                     $this->intTextFilter,
-                                                    QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, false)),
+                                                    $this->getSortOrderClause(),
                                                     $objExtraCondition
                 )
             )
@@ -832,6 +834,17 @@
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();
 
+        }
+        
+        protected function getSortOrderClause() {
+            switch(QApplication::QueryString('o')) {
+                case 0:
+                    return QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->TextCharCount, QApplication::QueryString('a'));
+                case 1:
+                    return QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->TextValue, QApplication::QueryString('a'));
+                default:
+                    return QQ::OrderBy(QQN::NarroContextInfo()->ContextId, true);
+            }
         }
 
     }
