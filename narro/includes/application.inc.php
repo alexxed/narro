@@ -158,6 +158,7 @@
     QApplicationBase::$ClassFile['NarroMozilla'] = __INCLUDES__ . '/narro/importer/NarroMozilla.class.php';
     QApplicationBase::$ClassFile['NarroImportStatistics'] = __INCLUDES__ . '/narro/importer/NarroImportStatistics.class.php';
     QApplicationBase::$ClassFile['NarroLog'] = __INCLUDES__ . '/narro/importer/NarroLog.class.php';
+    QApplicationBase::$ClassFile['NarroCache'] = __INCLUDES__ . '/narro/NarroCache.class.php';
     QApplicationBase::$ClassFile['NarroProgress'] = __INCLUDES__ . '/narro/importer/NarroProgress.class.php';
     QApplicationBase::$ClassFile['NarroUtils'] = __INCLUDES__ . '/narro/NarroUtils.class.php';
     QApplicationBase::$ClassFile['NarroString'] = __INCLUDES__ . '/narro/NarroString.class.php';
