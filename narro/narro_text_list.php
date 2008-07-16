@@ -24,6 +24,7 @@
 
         // DataGrid Columns
         protected $colContext;
+        protected $colOriginalTextLength;
         protected $colOriginalText;
         protected $colTranslatedText;
         protected $colActions;
@@ -67,6 +68,15 @@
                 )
             );
             $this->colOriginalText->HtmlEntities = false;
+            
+            $this->colOriginalTextLength = new QDataGridColumn(
+                t('Length'),
+                '<?= $_ITEM->Context->Text->TextCharCount ?>',
+                array(
+                    'OrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->TextCharCount),
+                    'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->TextCharCount, false)
+                )
+            );
 
             $this->colTranslatedText = new QDataGridColumn(
                 t('Translated text'),
@@ -97,6 +107,7 @@
 
             if (QApplication::QueryString('st') == 3)
                 $this->dtgNarroContextInfo->AddColumn($this->colContext);
+            $this->dtgNarroContextInfo->AddColumn($this->colOriginalTextLength);
             $this->dtgNarroContextInfo->AddColumn($this->colOriginalText);
             $this->dtgNarroContextInfo->AddColumn($this->colTranslatedText);
             $this->dtgNarroContextInfo->AddColumn($this->colActions);
