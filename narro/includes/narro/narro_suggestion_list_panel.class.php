@@ -301,7 +301,7 @@
 
             }
             if ($this->chkShowAllLanguages->Checked)
-                return '<div style="color:gray;font-size:70%">' . $objNarroSuggestion->Language->LanguageName . '</div>' . $strCellValue;
+                return '<div style="color:gray;font-size:70%">' . t($objNarroSuggestion->Language->LanguageName) . '</div>' . $strCellValue;
             else
                 return $strCellValue;
 
@@ -340,7 +340,7 @@
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID) {
                 $objDateSpan = new QDateTimeSpan(time() - strtotime($this->objNarroContextInfo->Modified));
                 $strCreatedWhen = $objDateSpan->SimpleDisplay();
-                $strAuthorInfo .= ', ' . sprintf('validated by <a href="narro_user_profile.php?u=%d">%s</a> %s', $this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username, (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
+                $strAuthorInfo .= ', ' . sprintf(sprintf(t('validated by %s'), '<a href="narro_user_profile.php?u=%d">%s</a> %s'), $this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username, (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
             }
 
             return $strAuthorInfo;
