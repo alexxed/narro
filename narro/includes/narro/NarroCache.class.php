@@ -16,6 +16,14 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroCache {
+        public static function ClearAllTextsCount($intProjectId, $intLanguageId = null) {
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::$objUser->Language->LanguageId;
+            
+            QApplication::$Cache->remove('total_texts_' . $intProjectId . '_' . $intLanguageId);
+            QApplication::$Cache->remove('translated_texts_' . $intProjectId . '_' . $intLanguageId);
+            QApplication::$Cache->remove('validated_texts_' . $intProjectId . '_' . $intLanguageId);
+        }
+        
         public static function UpdateAllTextsByProjectAndLanguage($intValue, $intProjectId, $intLanguageId = null) {
             $objDatabase = QApplication::$Database[1];
             if (is_null($intLanguageId)) $intLanguageId = QApplication::$objUser->Language->LanguageId;

@@ -260,7 +260,7 @@
             /**
              * clear the progress cache
              */
-            QApplication::$Cache->remove('project_progress_' . $this->objProject->ProjectId . '_' . $this->objTargetLanguage->LanguageId);
+            NarroCache::ClearAllTextsCount($this->objProject->ProjectId, $this->objTargetLanguage->LanguageId);
         }
 
         public function ImportFile($objFile, $strFileName) {

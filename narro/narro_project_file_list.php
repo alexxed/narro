@@ -413,7 +413,7 @@
             /**
              * clear the progress cache
              */
-            QApplication::$Cache->remove('project_progress_' . $this->objNarroProject->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
+            NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId);
         }
 
     }
