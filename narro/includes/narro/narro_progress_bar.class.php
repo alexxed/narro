@@ -35,7 +35,7 @@
             $intPercentTranslated = 0;
             $intPercentFuzzy = 0;
 
-            $strText = sprintf('<div class="graph" title="%d with suggestions, %d validated, %d in total">', $this->intFuzzy, $this->intTranslated, $this->intTotal);
+            $strText = sprintf(sprintf('<div class="graph" title="%s">', t('%d with suggestions, %d validated, %d untranslated, %d in total')), $this->intFuzzy, $this->intTranslated, $this->intTotal - $this->intFuzzy - $this->intTranslated, $this->intTotal);
 
             if ($this->intTranslated <= $this->intTotal) {
                 $intPercentTranslated = ceil(($this->intTranslated * 100)/$this->intTotal);
