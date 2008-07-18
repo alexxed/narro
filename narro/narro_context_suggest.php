@@ -104,7 +104,7 @@
                         $this->strSearchText,
                         $this->intSearchType,
                         $this->intTextFilter,
-                        $this->getSortOrderClause(),
+                        QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, true)),
                         $objExtraCondition
                     )
                 )
@@ -631,7 +631,7 @@
                                                     $this->strSearchText,
                                                     $this->intSearchType,
                                                     $this->intTextFilter,
-                                                    $this->getSortOrderClause(),
+                                                    QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, false)),
                                                     $objExtraCondition
                 )
             )
@@ -670,7 +670,7 @@
                                                     $this->strSearchText,
                                                     $this->intSearchType,
                                                     $this->intTextFilter,
-                                                    $this->getSortOrderClause(),
+                                                    QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, true)),
                                                     $objExtraCondition
                 )
             )
@@ -710,7 +710,7 @@
                                                     $this->strSearchText,
                                                     $this->intSearchType,
                                                     $this->intTextFilter,
-                                                    $this->getSortOrderClause(),
+                                                    QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, true)),
                                                     $objExtraCondition
                 )
             )
@@ -750,7 +750,7 @@
                                                     $this->strSearchText,
                                                     $this->intSearchType,
                                                     $this->intTextFilter,
-                                                    $this->getSortOrderClause(),
+                                                    QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, false)),
                                                     $objExtraCondition
                 )
             )
