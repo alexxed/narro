@@ -67,7 +67,7 @@
             switch ($strName) {
                 case "Total":
                     try {
-                        $this->intTotal = QType::Cast($mixValue, QType::Integer);
+                        $this->intTotal = max(0, QType::Cast($mixValue, QType::Integer));
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
@@ -76,7 +76,7 @@
 
                 case "Fuzzy":
                     try {
-                        $this->intFuzzy = QType::Cast($mixValue, QType::Integer);
+                        $this->intFuzzy = max(0, QType::Cast($mixValue, QType::Integer));
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
@@ -85,7 +85,7 @@
 
                 case "Translated":
                     try {
-                        $this->intTranslated = QType::Cast($mixValue, QType::Integer);
+                        $this->intTranslated = max(0, QType::Cast($mixValue, QType::Integer));
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
