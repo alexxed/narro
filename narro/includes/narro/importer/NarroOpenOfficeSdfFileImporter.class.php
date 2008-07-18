@@ -258,10 +258,6 @@
                 }
 
                 $this->AddTranslation($strText, $strTextAccKey, $strTranslation, $strTranslationAccKey, $strContext);
-
-                if ($intProcessedSoFar % 10 === 0) {
-                    NarroLog::LogMessage(1, sprintf(t("Progress: %s%%"), (int) ceil(($intProcessedSoFar*100)/$intTotalToProcess)));
-                }
             }
             fclose($hndFile);
         }
