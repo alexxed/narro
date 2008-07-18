@@ -592,6 +592,7 @@
                 $this->objNarroContextInfo->Save();
 
                 QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+                NarroCache::UpdateValidatedTextsByProjectAndLanguage(1, $this->objNarroProject->ProjectId);
             }
 
 
@@ -604,7 +605,6 @@
                 $objSuggestionComment->Save();
             }
 
-            QApplication::$Cache->remove('project_progress_' . $this->objNarroContextInfo->Context->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
             return true;
         }
 
@@ -790,9 +790,11 @@
             if ($strParameter != $this->objNarroContextInfo->ValidSuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = (int) $strParameter;
                 $this->objNarroContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
+                NarroCache::UpdateValidatedTextsByProjectAndLanguage(1, $this->objNarroProject->ProjectId);
             }
             else {
                 $this->objNarroContextInfo->ValidSuggestionId = null;
+                NarroCache::UpdateValidatedTextsByProjectAndLanguage(-1, $this->objNarroProject->ProjectId);
             }
 
             $objSuggestion = NarroSuggestion::Load($strParameter);
@@ -809,7 +811,7 @@
             $this->objNarroContextInfo->Save();
             QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
 
-            QApplication::$Cache->remove('project_progress_' . $this->objNarroContextInfo->Context->ProjectId . '_' . QApplication::$objUser->Language->LanguageId);
+
 
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();
