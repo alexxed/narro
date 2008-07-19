@@ -76,8 +76,11 @@
                                 isset($arrTemplateComments[$strKey])?$arrTemplateComments[$strKey]:null
                     );
                 }
-            else
-                NarroLog::LogMessage(2, sprintf(t('Found a empty template (%s)'), $strTemplateFile));
+            else {
+                NarroLog::LogMessage(2, sprintf(t('Found a empty template (%s), copying the original'), $strTemplateFile));
+                copy($strTemplateFile, $strTranslatedFile);
+                chmod($strTranslatedFile, 0666);
+            }
 
         }
 
