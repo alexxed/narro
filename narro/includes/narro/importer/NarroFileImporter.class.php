@@ -199,7 +199,6 @@
                     $objNarroText->Save();
                     NarroLog::LogMessage(1, sprintf(t('Added text "%s" from the file "%s"'), $strOriginal, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Imported texts']++;
-                    NarroCache::UpdateAllTextsByProjectAndLanguage(1, $this->objProject->ProjectId, $this->objTargetLanguage->LanguageId);
                 } catch(Exception $objExc) {
                     NarroLog::LogMessage(3, sprintf(t('Error while adding "%s": %s'), $strOriginal, $objExc->getMessage()));
                     NarroImportStatistics::$arrStatistics['Skipped contexts']++;
@@ -372,7 +371,6 @@
                      */
                     if ($objContextInfo->HasSuggestions == 0 && $objNarroSuggestion instanceof NarroSuggestion ) {
                         $objContextInfo->HasSuggestions = 1;
-                        NarroCache::UpdateTranslatedTextsByProjectAndLanguage(1, $this->objProject->ProjectId, $this->objTargetLanguage->LanguageId);
                     }
 
                     NarroImportStatistics::$arrStatistics['Imported suggestions']++;
@@ -386,8 +384,6 @@
                     $objContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
                     $blnContextInfoChanged = true;
                     NarroImportStatistics::$arrStatistics['Validated suggestions']++;
-                    NarroCache::UpdateTranslatedTextsByProjectAndLanguage(-1, $this->objProject->ProjectId, $this->objTargetLanguage->LanguageId);
-                    NarroCache::UpdateValidatedTextsByProjectAndLanguage(1, $this->objProject->ProjectId, $this->objTargetLanguage->LanguageId);
                 }
 
                 if (!is_null($strTranslationAccKey) && $objContextInfo->SuggestionAccessKey != $strTranslationAccKey) {

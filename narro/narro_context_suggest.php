@@ -559,7 +559,7 @@
                 }
             }
 
-            NarroCache::UpdateTranslatedTextsByProjectAndLanguage(1, $this->objNarroProject->ProjectId);
+            NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId);
 
             $arrNarroText = NarroText::QueryArray(QQ::Equal(QQN::NarroText()->TextValue, $this->objNarroContextInfo->Context->Text->TextValue));
             if (count($arrNarroText)) {
@@ -592,7 +592,7 @@
                 $this->objNarroContextInfo->Save();
 
                 QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
-                NarroCache::UpdateValidatedTextsByProjectAndLanguage(1, $this->objNarroProject->ProjectId);
+                NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId);
             }
 
 
@@ -790,13 +790,11 @@
             if ($strParameter != $this->objNarroContextInfo->ValidSuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = (int) $strParameter;
                 $this->objNarroContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
-                NarroCache::UpdateValidatedTextsByProjectAndLanguage(1, $this->objNarroProject->ProjectId);
             }
             else {
                 $this->objNarroContextInfo->ValidSuggestionId = null;
-                NarroCache::UpdateValidatedTextsByProjectAndLanguage(-1, $this->objNarroProject->ProjectId);
             }
-
+            
             $objSuggestion = NarroSuggestion::Load($strParameter);
             $strSuggestionValue = $objSuggestion->SuggestionValue;
 
@@ -810,8 +808,7 @@
             $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
             $this->objNarroContextInfo->Save();
             QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
-
-
+            NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId);
 
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();
