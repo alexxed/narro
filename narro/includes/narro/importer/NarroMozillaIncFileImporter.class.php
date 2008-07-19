@@ -89,8 +89,12 @@
         public function ExportFile($strTemplateFile, $strTranslatedFile) {
             $strTemplateContents = file_get_contents($strTemplateFile);
 
-            if (!$strTemplateContents)
+            if (!$strTemplateContents) {
+                NarroLog::LogMessage(2, sprintf(t('Found a empty template (%s), copying the original'), $strTemplateFile));
+                copy($strTemplateFile, $strTranslatedFile);
+                chmod($strTranslatedFile, 0666);
                 return false;
+            }
 
             $arrTemplateContents = split("\n", $strTemplateContents);
 

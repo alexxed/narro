@@ -88,7 +88,9 @@
             $strTemplateContents = file_get_contents($strTemplateFile);
 
             if (!$strTemplateContents) {
-                NarroLog::LogMessage(3, t('Found an empty template'));
+                NarroLog::LogMessage(2, sprintf(t('Found a empty template (%s), copying the original'), $strTemplateFile));
+                copy($strTemplateFile, $strTranslatedFile);
+                chmod($strTranslatedFile, 0666);
                 return false;
             }
 
