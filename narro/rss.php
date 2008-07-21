@@ -122,6 +122,7 @@
                             ,
                             null,
                             '<p>' . t('Original text') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->Text->TextValue) . '</p>' .
+                            '<p>' . t('Translation') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->SuggestionValue) . '</p>' .
                             '<ul>' . $strDescription . '</ul>' .
                             t('Click on the context to use the suggestion, on the file name or project name to search for the suggestion in them.')
                         );
