@@ -125,10 +125,10 @@
                                 NarroImportStatistics::$arrStatistics['Texts with no access key set, but fixed']++;
                             }
                             else {
-                                NarroLog::LogMessage(2, sprintf(t('No access key found for context %s, text %s and could not find a valid letter to use, dropping translation.'), $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue));
-                                unset($arrTranslation[$objNarroContextInfo->Context->Context]);
-                                NarroImportStatistics::$arrStatistics['Texts without acceptable access keys']++;
-                                NarroImportStatistics::$arrStatistics['Texts kept as original']++;
+//                                NarroLog::LogMessage(2, sprintf(t('No access key found for context %s, text %s and could not find a valid letter to use, dropping translation.'), $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue));
+//                                unset($arrTranslation[$objNarroContextInfo->Context->Context]);
+//                                NarroImportStatistics::$arrStatistics['Texts without acceptable access keys']++;
+//                                NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                             }
 
                         }
