@@ -25,6 +25,8 @@
         protected $btnRecoverPassword;
 
         protected function Form_Create() {
+            parent::Form_Create();
+            
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->HtmlEntities = false;
             $this->txtUsername = new QTextBox($this);
@@ -60,7 +62,7 @@
                 $objEmailMessage->Body = sprintf(t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this link: %s'),
                     $objUser->Username,
                     $_SERVER['HTTP_HOST'],
-                    ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')?'https://':'http://') . $_SERVER['HTTP_HOST'] . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . sprintf('/narro_change_password.php?u=%s&h=%s', $objUser->Username, $objUser->Password)
+                    ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')?'https://':'http://') . $_SERVER['HTTP_HOST'] . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . sprintf('/narro_change_password.php?l=%s&u=%s&h=%s', QApplication::$Language->LanguageCode, $objUser->Username, $objUser->Password)
                 );
                 
                 try {

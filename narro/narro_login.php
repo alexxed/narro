@@ -28,6 +28,8 @@
         protected $txtPreviousUrl;
 
         protected function Form_Create() {
+            parent::Form_Create();
+            
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->HtmlEntities = false;
             $this->txtUsername = new QTextBox($this);
@@ -61,7 +63,7 @@
                 if ($this->txtPreviousUrl)
                     QApplication::Redirect($this->txtPreviousUrl);
                 else
-                    QApplication::Redirect('narro_project_list.php');
+                    QApplication::Redirect(NarroLink::ProjectList());
             }
             else {
                 $this->lblMessage->ForeColor = 'red';

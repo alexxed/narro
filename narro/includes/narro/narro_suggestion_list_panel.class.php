@@ -62,7 +62,7 @@
             // Setup DataGrid Columns
             $this->colSuggestion = new QDataGridColumn(t('Translation'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
             $this->colSuggestion->HtmlEntities = false;
-            $this->colSuggestion->CssClass = QApplication::$objUser->Language->TextDirection;
+            $this->colSuggestion->CssClass = QApplication::$Language->TextDirection;
 
             $this->colAuthor = new QDataGridColumn(t('Author'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colAuthor_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId, false)));
             $this->colAuthor->HtmlEntities = false;
@@ -156,7 +156,7 @@
                     t('Approved translation:'),
                     $btnVote->Render(false),
                     $btnEdit->Render(false),
-                    ((QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))?$btnValidate->Render(false):'' ),
+                    ((QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))?$btnValidate->Render(false):'' ),
                     $this->dtgSuggestions_colSuggestion_Render($this->objNarroContextInfo->ValidSuggestion)
                 );
             }
@@ -184,9 +184,7 @@
 
         public function dtgSuggestions_colProject_Render(NarroSuggestion $objNarroSuggestion) {
             if ($strProjectName = $this->objNarroContextInfo->Context->File->Project->ProjectName)
-                return sprintf('<a href="%s">%s</a>',
-                    'narro_project_file_list.php?intProjectId=' . $this->objNarroContextInfo->Context->File->Project->ProjectId,
-                    $strProjectName);
+                return NarroLink::ProjectFileList($this->objNarroContextInfo->Context->Project->ProjectId, 1, $strProjectName);
         }
 
 
@@ -197,7 +195,7 @@
                 $strSuggestionValue = $objNarroSuggestion->SuggestionValue;
             /**
              * @todo Fix please. There are problems with html code.
-            if ($objNarroSuggestion->LanguageId == QApplication::$objUser->Language->LanguageId)
+            if ($objNarroSuggestion->LanguageId == QApplication::$Language->LanguageId)
                 $arrWordSuggestions = QApplication::GetSpellSuggestions($objNarroSuggestion->SuggestionValue);
             else*/
                 $arrWordSuggestions = array();
@@ -254,12 +252,12 @@
                 else
                     $intAccPos = 0;
 
-                if (QApplication::$objUser->Language->TextDirection == 'rtl' && $intAccPos == 0)
+                if (QApplication::$Language->TextDirection == 'rtl' && $intAccPos == 0)
                     $strDirControlChar = "\xE2\x80\x8E"; //ltr = \xE2\x80\x8F"
                 else
                     $strDirControlChar = '';
 
-                if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+                if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
                     $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $strDirControlChar . $lstAccessKey->Render(false) . mb_substr($strSuggestionValue, $intAccPos + 1);
                 else
                     $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $strDirControlChar . '<u>' . mb_substr($strSuggestionValue, $intAccPos, 1) . '</u>' . mb_substr($strSuggestionValue, $intAccPos + 1);
@@ -280,7 +278,7 @@
                 QApplication::$objUser->hasPermission(
                     'Can suggest',
                     $this->objNarroContextInfo->Context->ProjectId,
-                    QApplication::$objUser->Language->LanguageId
+                    QApplication::$Language->LanguageId
                 )
                 &&
                 $this->intEditSuggestionId == $objNarroSuggestion->SuggestionId
@@ -289,7 +287,7 @@
                 $txtEditSuggestion = $this->objForm->GetControl($strControlId);
                 if (!$txtEditSuggestion) {
                     $txtEditSuggestion = new QTextBox($this->dtgSuggestions, $strControlId);
-                    $txtEditSuggestion->CssClass = QApplication::$objUser->Language->TextDirection . ' green3dbg';
+                    $txtEditSuggestion->CssClass = QApplication::$Language->TextDirection . ' green3dbg';
                     $txtEditSuggestion->Width = '100%';
                     $txtEditSuggestion->Height = 85;
                     $txtEditSuggestion->Required = true;
@@ -362,7 +360,7 @@
             $blnCanEdit = QApplication::$objUser->hasPermission(
                                 'Can edit any suggestion',
                                 $this->objNarroContextInfo->Context->ProjectId,
-                                QApplication::$objUser->Language->LanguageId
+                                QApplication::$Language->LanguageId
                           )
                           ||
                           (
@@ -427,13 +425,13 @@
 
             $strText = '';
 
-            if (QApplication::$objUser->hasPermission('Can vote', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+            if (QApplication::$objUser->hasPermission('Can vote', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
                 $strText .= '&nbsp;' . $btnVote->Render(false);
-            if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
+            if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
                 $strText .= '&nbsp;' . $btnEdit->Render(false);
-            if (QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
+            if (QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
                 $strText .= '&nbsp;' . $btnDelete->Render(false);
-            if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+            if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
                 $strText .= '&nbsp;' . $btnValidate->Render(false);
 
             return '<div style="float:right">' . $strText . '</div>';
@@ -452,7 +450,7 @@
                 $this->dtgSuggestions->TotalItemCount = NarroSuggestion::QueryCount(
                         QQ::AndCondition(
                             QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId),
-                            QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId),
+                            QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$Language->LanguageId),
                             QQ::NotEqual(QQN::NarroSuggestion()->SuggestionId, $this->objNarroContextInfo->ValidSuggestionId)
                         )
                 );
@@ -479,7 +477,7 @@
                     NarroSuggestion::QueryArray(
                         QQ::AndCondition(
                             QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId),
-                            QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId),
+                            QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$Language->LanguageId),
                             QQ::NotEqual(QQN::NarroSuggestion()->SuggestionId, $this->objNarroContextInfo->ValidSuggestionId)
                         ),
                         $objClauses
@@ -496,7 +494,7 @@
 
                 QApplication::$objPluginHandler->DeleteSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $objSuggestion->SuggestionValue, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
 
-                if (!QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId) && ($objSuggestion->UserId != QApplication::$objUser->UserId || QApplication::$objUser->UserId == NarroUser::ANONYMOUS_USER_ID ))
+                if (!QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) && ($objSuggestion->UserId != QApplication::$objUser->UserId || QApplication::$objUser->UserId == NarroUser::ANONYMOUS_USER_ID ))
                   return false;
 
                 $objSuggestion->Delete();
@@ -522,7 +520,7 @@
 
         public function btnVote_Click($strFormId, $strControlId, $strParameter) {
 
-            if (!QApplication::$objUser->hasPermission('Can vote', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+            if (!QApplication::$objUser->hasPermission('Can vote', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
               return false;
 
             $objSuggestion = NarroSuggestion::Load($strParameter);
@@ -560,7 +558,7 @@
         }
 
         public function btnEdit_Click($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+            if (!QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
                 return false;
 
             $objSuggestion = NarroSuggestion::Load($strParameter);
@@ -568,7 +566,7 @@
             $blnCanEdit = QApplication::$objUser->hasPermission(
                                 'Can edit any suggestion',
                                 $this->objNarroContextInfo->Context->ProjectId,
-                                QApplication::$objUser->Language->LanguageId
+                                QApplication::$Language->LanguageId
                           )
                           ||
                           (
@@ -635,14 +633,18 @@
 
                     foreach($arrCtx as $objContext) {
                         if ($objContext->ContextId != $this->objNarroContextInfo->ContextId)
-                            $arrTexts[sprintf('<a target="_blank" href="narro_context_suggest.php?p=%d&c=%d&f=%d&tf=%d&s=%s">%s</a>',
-                                QApplication::QueryString('p'),
-                                $objContext->ContextId,
-                                QApplication::QueryString('f'),
-                                QApplication::QueryString('tf'),
-                                QApplication::QueryString('s'),
-                                $objContext->ContextId
-                                )] = 1;
+                            $arrTexts[
+                                sprintf('<a target="_blank" href="%s">%s</a>',
+                                    NarroLink::ContextSuggest(
+                                        QApplication::QueryString('p'),
+                                        $objContext->ContextId,
+                                        QApplication::QueryString('tf'),
+                                        QApplication::QueryString('st'),
+                                        QApplication::QueryString('s')
+                                    ),
+                                    $objContext->ContextId
+                                )
+                            ] = 1;
                     }
                     if (isset($arrTexts) && count(array_keys($arrTexts))) {
                         $this->lblMessage->ForeColor = 'red';

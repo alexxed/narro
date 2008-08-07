@@ -23,6 +23,7 @@
 ?>
 
     <?php $this->RenderBegin() ?>
+        <?php $this->pnlHeader->Render() ?>
         <h3><?php echo t('Language list') ?></h3>
         <p><?php echo t('This is a list of languages that projects can be translated in.'); ?></p>
         <br />

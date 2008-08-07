@@ -102,6 +102,12 @@
                                     $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
                                 }
                             }
+                            elseif ($strName == 'Application language') {
+                                $arrLanguages = NarroLanguage::LoadAll(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
+                                foreach($arrLanguages as $objLanguage) {
+                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageId, ($objLanguage->LanguageId == $this->objUser->getPreferenceValueByName($strName)));
+                                }
+                            }                            
                             else
                                 foreach($arrPref['values'] as $strValue) {
                                     $lstOption->AddItem(t($strValue), $strValue, ($strValue == $this->objUser->getPreferenceValueByName($strName)));
@@ -159,7 +165,7 @@
         }
 
         public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
-            QApplication::Redirect('narro_project_list.php');
+            QApplication::Redirect(NarroLink::ProjectList());
         }
         
         public function __get($strName) {
@@ -182,6 +188,8 @@
         protected $pnlPreferences;
 
         protected function Form_Create() {
+            parent::Form_Create();
+            
             $this->pnlPreferences = new NarroUserPreferencesPanel($this);
         }
     }

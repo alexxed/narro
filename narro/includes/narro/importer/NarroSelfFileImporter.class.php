@@ -304,7 +304,7 @@
                 NarroContextInfo::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->Project->ProjectName, 'Narro'),
-                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->Language->LanguageId)
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$Language->LanguageId)
                     )
                 ) as $objContextInfo) {
                     NarroSelfTranslate::UpdateTranslation(

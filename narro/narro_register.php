@@ -26,6 +26,8 @@
         protected $btnRegister;
 
         protected function Form_Create() {
+            parent::Form_Create();
+            
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->HtmlEntities = false;
             $this->txtUsername = new QTextBox($this);
@@ -90,11 +92,11 @@
             $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text));
 
             if (!$objUser instanceof NarroUser)
-                QApplication::Redirect('narro_login.php');
+                QApplication::Redirect(sprintf('narro_login.php?l=%s', QApplication::$Language->LanguageCode));
 
             $_SESSION['objUser'] = $objUser;
             QApplication::$objUser = $objUser;
-            QApplication::Redirect('narro_user_preferences.php');
+            QApplication::Redirect(sprintf('narro_user_preferences.php?l=%s', QApplication::$Language->LanguageCode));
         }
     }
 

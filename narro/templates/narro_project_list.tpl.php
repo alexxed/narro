@@ -19,14 +19,15 @@
     $strPageTitle = t('Project list');
 
 
-    require('includes/header.inc.php')
+    require('includes/header.inc.php')    
 ?>
 
     <?php $this->RenderBegin() ?>
+        <?php $this->pnlHeader->Render() ?>
         <h3><?php echo t('Project list') ?></h3>
         <p><?php echo t('This is a list of projects that are being translated here. You can help too. Click on any project name to start translating.'); ?></p>
         <br />
-        <?php if (QApplication::$objUser->hasPermission('Can add project', null, QApplication::$objUser->Language->LanguageId)) { ?>
+        <?php if (QApplication::$objUser->hasPermission('Can add project', null, QApplication::$Language->LanguageId)) { ?>
             <p align="right"><a href="narro_project_edit.php"><?php _t('Add project') ?></a></p>
         <?php } ?>
         <?php $this->dtgNarroProject->Render() ?>

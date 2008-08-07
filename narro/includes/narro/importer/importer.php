@@ -112,7 +112,7 @@
             return false;
         }
 
-        QApplication::$objUser->Language = $objLanguage;
+        QApplication::$Language = $objLanguage;
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 
@@ -201,7 +201,7 @@
             return false;
         }
 
-        QApplication::$objUser->Language = $objLanguage;
+        QApplication::$Language = $objLanguage;
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 

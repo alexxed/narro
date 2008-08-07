@@ -47,6 +47,8 @@
         const SEARCH_CONTEXTS = 3;
 
         protected function Form_Create() {
+            parent::Form_Create();
+            
             $this->SetupNarroObject();
 
             // Setup DataGrid Columns
@@ -69,21 +71,12 @@
             );
             $this->colOriginalText->HtmlEntities = false;
             
-            $this->colOriginalTextLength = new QDataGridColumn(
-                t('Length'),
-                '<?= $_ITEM->Context->Text->TextCharCount ?>',
-                array(
-                    'OrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->TextCharCount),
-                    'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->TextCharCount, false)
-                )
-            );
-
             $this->colTranslatedText = new QDataGridColumn(
                 t('Translated text'),
                 '<?= $_FORM->dtgNarroContextInfo_TranslatedText_Render($_ITEM); ?>'
             );
             $this->colTranslatedText->HtmlEntities = false;
-            $this->colTranslatedText->CssClass = QApplication::$objUser->Language->TextDirection;
+            $this->colTranslatedText->CssClass = QApplication::$Language->TextDirection;
             $this->colActions = new QDataGridColumn(
                 t('Actions'),
                 '<?= $_FORM->dtgNarroContextInfo_Actions_Render($_ITEM, $_CONTROL->CurrentRowIndex + 1); ?>'
@@ -107,7 +100,6 @@
 
             if (QApplication::QueryString('st') == 3)
                 $this->dtgNarroContextInfo->AddColumn($this->colContext);
-            $this->dtgNarroContextInfo->AddColumn($this->colOriginalTextLength);
             $this->dtgNarroContextInfo->AddColumn($this->colOriginalText);
             $this->dtgNarroContextInfo->AddColumn($this->colTranslatedText);
             $this->dtgNarroContextInfo->AddColumn($this->colActions);
@@ -128,7 +120,7 @@
             $this->lstSearchType->AddItem(t('original texts'), self::SEARCH_TEXTS, true);
             $this->lstSearchType->AddItem(t('translations'), self::SEARCH_SUGGESTIONS);
             $this->lstSearchType->AddItem(t('contexts'), self::SEARCH_CONTEXTS);
-            $this->lstSearchType->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('qc.getControl(\'%s\').className=((this.selectedIndex == 1)?\'%s\':\'ltr\');', $this->txtSearch->ControlId, QApplication::$objUser->Language->TextDirection)));
+            $this->lstSearchType->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('qc.getControl(\'%s\').className=((this.selectedIndex == 1)?\'%s\':\'ltr\');', $this->txtSearch->ControlId, QApplication::$Language->TextDirection)));
             if (QApplication::QueryString('st') > 0)
                 $this->lstSearchType->SelectedValue = QApplication::QueryString('st');
 
@@ -172,7 +164,7 @@
 
                 $strText = htmlentities($strText, null, 'utf-8');
 
-                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->ValidSuggestionId && QApplication::$objUser->hasPermission('Can validate', $objNarroContextInfo->Context->ProjectId, QApplication::$objUser->Language->LanguageId))
+                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->ValidSuggestionId && QApplication::$objUser->hasPermission('Can validate', $objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
                     $strText = preg_replace('/' . $objNarroContextInfo->TextAccessKey . '/', '<u>' . $objNarroContextInfo->TextAccessKey . '</u>', $strText, 1);
 
                 return $strText;
@@ -218,7 +210,7 @@
                          NarroSuggestion::QuerySingle(
                              QQ::AndCondition(
                                  QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId),
-                                 QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId),
+                                 QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$Language->LanguageId),
                                  QQ::Equal(QQN::NarroSuggestion()->UserId, QApplication::$objUser->UserId)
                              )
                          )
@@ -236,7 +228,7 @@
                         NarroSuggestion::QueryArray(
                             QQ::AndCondition(
                                 QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId),
-                                QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$objUser->Language->LanguageId)
+                                QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$Language->LanguageId)
                             )
                         )
                    ) {

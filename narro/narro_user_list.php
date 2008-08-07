@@ -29,8 +29,10 @@
 
 
         protected function Form_Create() {
+            parent::Form_Create();
+            
             if (!QApplication::$objUser->hasPermission('Can manage users'))
-                QApplication::Redirect('narro_project_list.php');
+                QApplication::Redirect(NarroLink::ProjectList());
 
             $this->objUser = NarroUser::Load(QApplication::QueryString('u'));
 
@@ -88,12 +90,14 @@
 
         public function dtgNarroUserList_ActionsColumn_Render(NarroUser $objNarroUser) {
             return
-                sprintf('<a href="narro_user_preferences.php?u=%d">%s</a>',
+                sprintf('<a href="narro_user_preferences.php?l=%s&u=%d">%s</a>',
+                    QApplication::$Language->LanguageCode,
                     $objNarroUser->UserId,
                     QApplication::Translate('Preferences')
                 ) . ' | ' .
-                sprintf('<a href="narro_user_permission.php?u=%d">%s</a>',
-                    $objNarroUser->UserId,
+                sprintf('<a href="narro_user_permission.php?l=%s&u=%d">%s</a>',
+                    QApplication::$Language->LanguageCode,
+                    $objNarroUser->UserId,                    
                     QApplication::Translate('Permissions')
                 );
             return '';

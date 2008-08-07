@@ -32,6 +32,8 @@
         protected $pnlTopUsers;
 
         protected function Form_Create() {
+            parent::Form_Create();
+            
             // Setup DataGrid Columns
             $this->colProjectName = new QDataGridColumn(t('Name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
             $this->colProjectName->HtmlEntities = false;
@@ -60,7 +62,7 @@
 
             $this->dtgNarroProject->AddColumn($this->colProjectName);
 
-            if (QApplication::$objUser->hasPermission('Can manage project', null, QApplication::$objUser->Language->LanguageId)) {
+            if (QApplication::$objUser->hasPermission('Can manage project', null, QApplication::$Language->LanguageId)) {
                 $this->dtgNarroProject->AddColumn($this->colProjectType);
                 $this->dtgNarroProject->AddColumn($this->colActive);
             }
@@ -87,7 +89,19 @@
 
             $strOutput .= $objProgressBar->Render(false);
 
-            return sprintf('<a href="narro_context_suggest.php?p=%s&tf=2&st=1&s=&ci=%d&cc=%d">%s</a>', $objNarroProject->ProjectId, 0, $intTotalTexts - $intValidatedTexts - $intTranslatedTexts, $strOutput);
+            return 
+                NarroLink::ContextSuggest(
+                    $objNarroProject->ProjectId, 
+                    0,
+                    2,
+                    1,
+                    '',
+                    0,
+                    $intTotalTexts - $intValidatedTexts - $intTranslatedTexts,
+                    -1,
+                    0, 
+                    $strOutput
+                );
         }
 
         public function dtgNarroProject_ProjectNameColumn_Render(NarroProject $objNarroProject) {
@@ -95,12 +109,19 @@
             $intTranslatedTexts = NarroCache::CountTranslatedTextsByProjectAndLanguage($objNarroProject->ProjectId);
             $intValidatedTexts = NarroCache::CountValidatedTextsByProjectAndLanguage($objNarroProject->ProjectId);
             
-            return sprintf('<a href="narro_context_suggest.php?p=%s&tf=2&st=1&s=&ci=%d&cc=%d">%s</a>',
-                $objNarroProject->ProjectId,
-                0, 
-                $intTotalTexts - $intValidatedTexts - $intTranslatedTexts,                
-                $objNarroProject->ProjectName
-            );
+            return 
+                NarroLink::ContextSuggest(
+                    $objNarroProject->ProjectId, 
+                    0,
+                    2,
+                    1,
+                    '',
+                    0,
+                    $intTotalTexts - $intValidatedTexts - $intTranslatedTexts,
+                    -1,
+                    0, 
+                    $objNarroProject->ProjectName
+                );
         }
 
         public function dtgNarroProject_ProjectTypeColumn_Render(NarroProject $objNarroProject) {
@@ -116,17 +137,18 @@
 
         public function dtgNarroProject_Actions_Render(NarroProject $objNarroProject) {
             $strOutput =
-                sprintf('<a href="narro_project_text_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Texts')) .
-                sprintf(' | <a href="narro_project_file_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Files')) .
-                sprintf(' | <a href="narro_project_language_list.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Languages'));
+                NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')) .
+                ' | ' .
+                NarroLink::ProjectFileList($objNarroProject->ProjectId, 0, t('Files')) .
+                sprintf(' | <a href="narro_project_language_list.php?l=%s&p=%d">%s</a>', QApplication::$Language->LanguageCode, $objNarroProject->ProjectId, t('Languages'));
 
-            if (QApplication::$objUser->hasPermission('Can manage project', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+            if (QApplication::$objUser->hasPermission('Can manage project', $objNarroProject->ProjectId, QApplication::$Language->LanguageId))
                 $strOutput .=
-                    sprintf(' | <a href="narro_project_manage.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Manage'));
+                    sprintf(' | <a href="narro_project_manage.php?l=%s&p=%d">%s</a>', QApplication::$Language->LanguageCode, $objNarroProject->ProjectId, t('Manage'));
 
-            if (QApplication::$objUser->hasPermission('Can edit project', $objNarroProject->ProjectId, QApplication::$objUser->Language->LanguageId))
+            if (QApplication::$objUser->hasPermission('Can edit project', $objNarroProject->ProjectId, QApplication::$Language->LanguageId))
                 $strOutput .=
-                    sprintf(' | <a href="narro_project_edit.php?p=%d">%s</a>', $objNarroProject->ProjectId, t('Edit'));
+                    sprintf(' | <a href="narro_project_edit.php?l=%s&p=%d">%s</a>', QApplication::$Language->LanguageCode, $objNarroProject->ProjectId, t('Edit'));
 
             return $strOutput;
         }
@@ -135,13 +157,13 @@
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
             // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-            if (QApplication::$objUser->hasPermission('Can manage project', null, QApplication::$objUser->Language->LanguageId))
+            if (QApplication::$objUser->hasPermission('Can manage project', null, QApplication::$Language->LanguageId))
                 $this->dtgNarroProject->TotalItemCount = NarroProject::CountAll();
             else
                 $this->dtgNarroProject->TotalItemCount = NarroProject::QueryCount(QQ::Equal(QQN::NarroProject()->Active, 1));
 
             if ($this->dtgNarroProject->TotalItemCount == 0)
-                QApplication::Redirect('narro_project_edit.php');
+                QApplication::Redirect('narro_project_edit.php?l=%s', QApplication::$Language->LanguageCode);
 
             // Setup the $objClauses Array
             $objClauses = array();
@@ -156,7 +178,7 @@
                 array_push($objClauses, $objClause);
 
             // Set the DataSource to be the array of all NarroProject objects, given the clauses above
-            if (QApplication::$objUser->hasPermission('Can manage project', null, QApplication::$objUser->Language->LanguageId))
+            if (QApplication::$objUser->hasPermission('Can manage project', null, QApplication::$Language->LanguageId))
                 $this->dtgNarroProject->DataSource = NarroProject::LoadAll($objClauses);
             else
                 $this->dtgNarroProject->DataSource = NarroProject::QueryArray(QQ::Equal(QQN::NarroProject()->Active, 1), $objClauses);

@@ -23,6 +23,7 @@
 ?>
 
     <?php $this->RenderBegin() ?>
+        <?php $this->pnlHeader->Render() ?>
         <h3><?php echo t('Login') ?></h3>
         <p><?php echo t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>
         <br />

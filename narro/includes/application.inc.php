@@ -23,6 +23,7 @@
         public static $arrPreferences;
         public static $arrFormats;
         public static $Cache;
+        public static $Language;
 
         /**
         * This is called by the PHP5 Autoloader.  This method overrides the
@@ -101,6 +102,7 @@
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
     QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'en-US', array('en-US'));
+    QApplication::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', 'en-US', array('en-US'));
     QApplication::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
     QApplication::RegisterPreference('Theme', 'option', 'The theme used in the translation page', 'narro', array('Narro', 'KBabel'));
 
@@ -113,16 +115,12 @@
         // @todo add handling here
         throw Exception('Could not create an instance of NarroUser');
 
-    if (QApplication::QueryString('switch_lang')) {
-        $objNewLanguage = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('switch_lang'));
-        if ( $objNewLanguage instanceof NarroLanguage ) {
-            QApplication::$objUser->Language = $objNewLanguage;
-            $_SESSION['objUser'] = QApplication::$objUser;
-            header('Location: index.php');
-        }
-    }
-
-    QApplication::$LanguageCode = QApplication::$objUser->Language->LanguageCode;
+    if (QApplication::QueryString('l'))
+        QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
+    else
+        QApplication::$Language = QApplication::$objUser->Language;
+    
+    QApplication::$LanguageCode = QApplication::$Language->LanguageCode;
 
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
     QForm::$FormStateHandler = 'QFormStateHandler';
@@ -164,5 +162,7 @@
     QApplicationBase::$ClassFile['NarroString'] = __INCLUDES__ . '/narro/NarroString.class.php';
     QApplicationBase::$ClassFile['Archive_Tar'] = __INCLUDES__ . '/PEAR/Archive/Tar.php';
     QApplicationBase::$ClassFile['NarroDiacriticsPanel'] = __INCLUDES__ . '/narro/narro_diacritics_panel.class.php';
+    QApplicationBase::$ClassFile['NarroHeaderPanel'] = __INCLUDES__ . '/narro/NarroHeaderPanel.class.php';
+    QApplicationBase::$ClassFile['NarroLink'] = __INCLUDES__ . '/narro/NarroLink.class.php';
 
 ?>

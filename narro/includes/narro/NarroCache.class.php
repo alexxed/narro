@@ -17,7 +17,7 @@
      */
     class NarroCache {
         public static function ClearAllTextsCount($intProjectId, $intLanguageId = null) {
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$objUser->Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
             
             QApplication::$Cache->remove('total_texts_' . $intProjectId . '_' . $intLanguageId);
             QApplication::$Cache->remove('translated_texts_' . $intProjectId . '_' . $intLanguageId);
@@ -26,7 +26,7 @@
         
         public static function UpdateAllTextsByProjectAndLanguage($intValue, $intProjectId, $intLanguageId = null) {
             $objDatabase = QApplication::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$objUser->Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
             
             $intTotalTexts = QApplication::$Cache->load('total_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false)
@@ -38,7 +38,7 @@
         
         public static function UpdateTranslatedTextsByProjectAndLanguage($intValue, $intProjectId, $intLanguageId = null) {
             $objDatabase = QApplication::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$objUser->Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
             
             $intTotalTexts = QApplication::$Cache->load('translated_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false)
@@ -50,7 +50,7 @@
 
         public static function UpdateValidatedTextsByProjectAndLanguage($intValue, $intProjectId, $intLanguageId = null) {
             $objDatabase = QApplication::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$objUser->Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
             
             $intTotalTexts = QApplication::$Cache->load('validated_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false)
@@ -62,7 +62,7 @@
         
         public static function CountAllTextsByProjectAndLanguage($intProjectId, $intLanguageId = null) {
             $objDatabase = QApplication::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$objUser->Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
             
             $intTotalTexts = QApplication::$Cache->load('total_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false) {
@@ -85,7 +85,7 @@
         public static function CountTranslatedTextsByProjectAndLanguage($intProjectId, $intLanguageId = null) {
             $objDatabase = QApplication::$Database[1];
             
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$objUser->Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
             $intTranslatedTexts = QApplication::$Cache->load('translated_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTranslatedTexts === false) {
             
@@ -107,7 +107,7 @@
         public static function CountValidatedTextsByProjectAndLanguage($intProjectId, $intLanguageId = null) {
             $objDatabase = QApplication::$Database[1];
             
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$objUser->Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
             $intValidatedTexts = QApplication::$Cache->load('validated_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intValidatedTexts === false) {
             

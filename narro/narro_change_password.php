@@ -24,6 +24,8 @@
         protected $btnChangePassword;
 
         protected function Form_Create() {
+            parent::Form_Create();
+            
             if (QApplication::$objUser->UserId == NarroUser::ANONYMOUS_USER_ID) {
                 $strPassHash = QApplication::QueryString('h');
                 $strUsername = QApplication::QueryString('u');
