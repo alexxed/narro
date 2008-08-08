@@ -30,10 +30,11 @@
         protected $colActions;
 
         protected $pnlTopUsers;
+        protected $pnlNewUsers;
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             // Setup DataGrid Columns
             $this->colProjectName = new QDataGridColumn(t('Name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
             $this->colProjectName->HtmlEntities = false;
@@ -72,6 +73,7 @@
             $this->dtgNarroProject->AddColumn($this->colActions);
 
             $this->pnlTopUsers = new NarroTopUsersPanel($this);
+            $this->pnlNewUsers = new NarroNewUsersPanel($this);
 
         }
 
@@ -89,9 +91,9 @@
 
             $strOutput .= $objProgressBar->Render(false);
 
-            return 
+            return
                 NarroLink::ContextSuggest(
-                    $objNarroProject->ProjectId, 
+                    $objNarroProject->ProjectId,
                     0,
                     2,
                     1,
@@ -99,7 +101,7 @@
                     0,
                     $intTotalTexts - $intValidatedTexts - $intTranslatedTexts,
                     -1,
-                    0, 
+                    0,
                     $strOutput
                 );
         }
@@ -108,10 +110,10 @@
             $intTotalTexts = NarroCache::CountAllTextsByProjectAndLanguage($objNarroProject->ProjectId);
             $intTranslatedTexts = NarroCache::CountTranslatedTextsByProjectAndLanguage($objNarroProject->ProjectId);
             $intValidatedTexts = NarroCache::CountValidatedTextsByProjectAndLanguage($objNarroProject->ProjectId);
-            
-            return 
+
+            return
                 NarroLink::ContextSuggest(
-                    $objNarroProject->ProjectId, 
+                    $objNarroProject->ProjectId,
                     0,
                     2,
                     1,
@@ -119,7 +121,7 @@
                     0,
                     $intTotalTexts - $intValidatedTexts - $intTranslatedTexts,
                     -1,
-                    0, 
+                    0,
                     $objNarroProject->ProjectName
                 );
         }

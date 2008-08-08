@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    class NarroTopUsersPanel extends QPanel {
+    class NarroNewUsersPanel extends QPanel {
         protected $dtgUsers;
         protected $colUsername;
         protected $colLanguage;
@@ -83,7 +83,7 @@
         public function dtgUsers_Bind() {
             $objDatabase = QApplication::$Database[1];
 
-            $strQuery = sprintf('SELECT u.username, u.user_id, u.data, COUNT(s.suggestion_id) as suggestion_cnt, SUM(s.suggestion_char_count) AS char_cnt FROM narro_user u LEFT JOIN narro_suggestion s ON u.user_id=s.user_id WHERE u.user_id<>%d GROUP BY u.user_id ORDER BY suggestion_cnt DESC LIMIT 0,%d', NarroUser::ANONYMOUS_USER_ID, $this->intLimit);
+            $strQuery = sprintf('SELECT u.username, u.user_id, u.data, COUNT(s.suggestion_id) as suggestion_cnt, SUM(s.suggestion_char_count) AS char_cnt FROM narro_user u LEFT JOIN narro_suggestion s ON u.user_id=s.user_id WHERE u.user_id<>%d GROUP BY u.user_id ORDER BY u.user_id DESC LIMIT 0,%d', NarroUser::ANONYMOUS_USER_ID, $this->intLimit);
 
             // Perform the Query
             $objDbResult = $objDatabase->Query($strQuery);
