@@ -19,7 +19,7 @@
     $strPageTitle = t('Project list');
 
 
-    require('includes/header.inc.php')    
+    require('includes/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
@@ -28,7 +28,7 @@
         <p><?php echo t('This is a list of projects that are being translated here. You can help too. Click on any project name to start translating.'); ?></p>
         <br />
         <?php if (QApplication::$objUser->hasPermission('Can add project', null, QApplication::$Language->LanguageId)) { ?>
-            <p align="right"><a href="narro_project_edit.php"><?php _t('Add project') ?></a></p>
+            <p align="right"><a href="narro_project_edit.php?l=<?php echo QApplication::$Language->LanguageCode ?>"><?php _t('Add project') ?></a></p>
         <?php } ?>
         <?php $this->dtgNarroProject->Render() ?>
         <p><?php echo t('Top 10 translators') ?>

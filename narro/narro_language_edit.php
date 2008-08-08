@@ -43,7 +43,7 @@
         protected function SetupNarroLanguage() {
             // Lookup Object PK information from Query String (if applicable)
             // Set mode to Edit or New depending on what's found
-            $intLanguageId = QApplication::QueryString('l');
+            $intLanguageId = QApplication::QueryString('lid');
             if (($intLanguageId)) {
                 $this->objNarroLanguage = NarroLanguage::Load(($intLanguageId));
 
@@ -61,7 +61,7 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             // Call SetupNarroLanguage to either Load/Edit Existing or Create New
             $this->SetupNarroLanguage();
 
@@ -204,10 +204,10 @@
         // Control ServerActions
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
             if ($this->blnEditMode && !QApplication::$objUser->hasPermission('Can edit language', null, QApplication::$Language->LanguageId))
-                QApplication::Redirect('narro_language_list.php');
+                $this->RedirectToListPage();
 
             if (!$this->blnEditMode && !QApplication::$objUser->hasPermission('Can add language'))
-                QApplication::Redirect('narro_language_list.php');
+                $this->RedirectToListPage();
 
             $this->UpdateNarroLanguageFields();
             $this->objNarroLanguage->Save();
@@ -222,7 +222,7 @@
 
         protected function btnDelete_Click($strFormId, $strControlId, $strParameter) {
             if (!QApplication::$objUser->hasPermission('Can delete language', null, QApplication::$Language->LanguageId))
-                QApplication::Redirect('narro_language_list.php');
+                $this->RedirectToListPage();
 
             $this->objNarroLanguage->Delete();
 
@@ -230,7 +230,7 @@
         }
 
         protected function RedirectToListPage() {
-            QApplication::Redirect('narro_language_list.php');
+            QApplication::Redirect('narro_language_list.php?l=' . QApplication::$Language->LanguageCode);
         }
     }
 

@@ -58,7 +58,7 @@
         }
 
         public function dtgUsers_colUsername_Render( $arrUserInfo ) {
-            return sprintf('<a href="narro_user_profile.php?u=%d">%s</a>', $arrUserInfo->GetColumn('user_id'), $arrUserInfo->GetColumn('username'));
+            return NarroLink::UserProfile($arrUserInfo->GetColumn('user_id'), $arrUserInfo->GetColumn('username'));
         }
 
         public function dtgUsers_colSuggestionCnt_Render( $arrUserInfo ) {

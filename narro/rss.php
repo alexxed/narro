@@ -72,13 +72,12 @@
                         )
                     );
 
-                    $strUserLink = sprintf(
+                    $strUserLink =
                             __HTTP_URL__ .
                             __VIRTUAL_DIRECTORY__ .
                             __SUBDIRECTORY__ .
-                            '/narro_user_profile.php?u=%d',
-                            $objNarroSuggestion->UserId
-                    );
+                            NarroLink::UserProfile($objNarroSuggestion->UserId)
+                    ;
 
                     foreach($arrNarroContextInfo as $objNarroContextInfo) {
                         $strContextLink = sprintf(
@@ -99,7 +98,7 @@
                                 __HTTP_URL__ .
                                 __VIRTUAL_DIRECTORY__ .
                                 __SUBDIRECTORY__ .
-                                '/' . 
+                                '/' .
                                 NarroLink::FileTextList(
                                     $objNarroContextInfo->Context->ProjectId,
                                     $objNarroContextInfo->Context->FileId,
@@ -199,7 +198,7 @@
                             __SUBDIRECTORY__ .
                             '/' .
                             NarroLink::ContextSuggest(
-                                $objNarroContextInfo->Context->ProjectId, 
+                                $objNarroContextInfo->Context->ProjectId,
                                 $objNarroContextInfo->ContextId
                             )
                     );
@@ -309,9 +308,9 @@
                             __HTTP_URL__ .
                             __VIRTUAL_DIRECTORY__ .
                             __SUBDIRECTORY__ .
-                            '/' . 
+                            '/' .
                             NarroLink::ContextSuggest(
-                                $objNarroContextInfo->Context->ProjectId, 
+                                $objNarroContextInfo->Context->ProjectId,
                                 $objNarroContextInfo->ContextId
                             )
                     );
@@ -329,13 +328,12 @@
                             )
                     );
 
-                    $strUserLink = sprintf(
+                    $strUserLink =
                             __HTTP_URL__ .
                             __VIRTUAL_DIRECTORY__ .
                             __SUBDIRECTORY__ .
-                            '/narro_user_profile.php?u=%d',
-                            $objNarroContextInfo->ValidatorUserId
-                    );
+                            NarroLink::UserProfile($objNarroContextInfo->ValidatorUserId)
+                    ;
 
                     if (isset($objProject) && $objProject instanceof NarroProject)
                         $strItemName = '';

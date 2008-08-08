@@ -327,18 +327,18 @@
             $strModifiedWhen = $objDateSpan->SimpleDisplay();
 
             if (strtotime($objNarroSuggestion->Modified) > 0 && $strModifiedWhen && $objNarroSuggestion->User->Username)
-                $strAuthorInfo = sprintf('<a href="narro_user_profile.php?u=%d">%s</a>, ' . t('%s ago'), $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username, $strModifiedWhen);
+                $strAuthorInfo = sprintf('%s, ' . t('%s ago'), NarroLink::UserProfile($objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username), $strModifiedWhen);
             elseif (strtotime($objNarroSuggestion->Modified) > 0 && $strModifiedWhen && !$objNarroSuggestion->User->Username)
                 $strAuthorInfo = sprintf(t('%s ago'), $strModifiedWhen);
             elseif ($objNarroSuggestion->User->Username)
-                $strAuthorInfo = sprintf('<a href="narro_user_profile.php?u=%d">%s</a>', $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username);
+                $strAuthorInfo = NarroLink::UserProfile($objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username);
             else
                 $strAuthorInfo = t('Unknown');
 
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID) {
                 $objDateSpan = new QDateTimeSpan(time() - strtotime($this->objNarroContextInfo->Modified));
                 $strModifiedWhen = $objDateSpan->SimpleDisplay();
-                $strAuthorInfo .= ', ' . sprintf(sprintf(t('validated by %s'), '<a href="narro_user_profile.php?u=%d">%s</a> %s'), $this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username, (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
+                $strAuthorInfo .= ', ' . sprintf(sprintf(t('validated by %s'), NarroLink::UserProfile($this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username) . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
             }
 
             return $strAuthorInfo;

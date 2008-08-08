@@ -25,31 +25,31 @@
         echo
             sprintf(
                 t('<i>Logged in as <a href="%s" style="color:green;font-weight:bold">%s</a></i>'),
-                'narro_user_profile.php?u=' . QApplication::$objUser->UserId,
+                NarroLink::UserProfile(QApplication::$objUser->UserId),
                 QApplication::$objUser->Username
             ) . ' | '
             ;
     } else {
     ?>
-        <a href="narro_register.php"><?php echo t('Register') ?></a> |
-        <a href="narro_login.php"><?php echo t('Login') ?></a> |
+        <a href="narro_register.php?l=<?php echo QApplication::$Language->LanguageCode ?>"><?php echo t('Register') ?></a> |
+        <a href="narro_login.php?l=<?php echo QApplication::$Language->LanguageCode ?>"><?php echo t('Login') ?></a> |
     <?php
     }
     ?>
-    <a href="narro_user_preferences.php"><?php echo t('Preferences') ?></a> |
+    <a href="narro_user_preferences.php?l=<?php echo QApplication::$Language->LanguageCode ?>"><?php echo t('Preferences') ?></a> |
     <?php echo NarroLink::ProjectList(t('Project list')) ?> |
-    <a href="narro_language_list.php" title="<?php echo t('Language list') ?>"><?php echo t('Languages') ?></a>
+    <a href="narro_language_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('Language list') ?>"><?php echo t('Languages') ?></a>
     <?php
     if (QApplication::$objUser->hasPermission('Can manage users')) {
     ?>
-        | <a href="narro_user_list.php" title="<?php echo t('Manage users') ?>"><?php echo t('Users') ?></a>
+        | <a href="narro_user_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('Manage users') ?>"><?php echo t('Users') ?></a>
     <?php
     }
     ?>
     <?php
     if (QApplication::$objUser->UserId > 0) {
     ?>
-        | <a href="narro_logout.php"><?php echo t('Logout') ?></a>
+        | <a href="narro_logout.php?l=<?php echo QApplication::$Language->LanguageCode ?>"><?php echo t('Logout') ?></a>
     <?php
     }
     ?>

@@ -23,35 +23,43 @@
             else
                 return $strLink;
         }
-        
+
         public static function ProjectTextList($intProjectId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $strLinkText = '') {
             $strLink = sprintf('narro_project_text_list.php?l=%s&p=%d&tf=%d&st=%d&s=%s', QApplication::$Language->LanguageCode, $intProjectId, $intTextFilter, $intSearchType, $strSearchText);
             if ($strLinkText)
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
                 return $strLink;
-        }   
-        
+        }
+
         public static function FileTextList($intProjectId, $intFileId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $strLinkText = '') {
             $strLink = sprintf('narro_file_text_list.php?l=%s&p=%d&f=%d&tf=%d&st=%d&s=%s', QApplication::$Language->LanguageCode, $intProjectId, $intFileId, $intTextFilter, $intSearchType, $strSearchText);
             if ($strLinkText)
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
                 return $strLink;
-        }           
-        
+        }
+
         public static function ProjectFileList($intProjectId, $intParentFileId = 0, $strLinkText = '') {
             $strLink = sprintf('narro_project_file_list.php?l=%s&p=%d&pf=%d', QApplication::$Language->LanguageCode, $intProjectId, $intParentFileId);
             if ($strLinkText)
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
                 return $strLink;
-        }  
+        }
+
+        public static function UserProfile($intUserId, $strLinkText = '') {
+            $strLink = sprintf('narro_user_profile.php?l=%s&u=%d', QApplication::$Language->LanguageCode, $intUserId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
 
         public static function ContextSuggest($intProjectId, $intContextId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $intCurrentContext = null, $intContextCount = null, $intSortColumnIndex = -1, $intSortDirection = 0, $strLinkText = '') {
             $strLink = sprintf(
-                'narro_context_suggest.php?l=%s&p=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d&o=%d&a=%d', 
-                QApplication::$Language->LanguageCode, 
+                'narro_context_suggest.php?l=%s&p=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d&o=%d&a=%d',
+                QApplication::$Language->LanguageCode,
                 $intProjectId,
                 $intContextId,
                 $intTextFilter,
@@ -66,6 +74,6 @@
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
                 return $strLink;
-        } 
+        }
     }
 ?>
