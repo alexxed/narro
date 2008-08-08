@@ -323,13 +323,13 @@
         }
 
         public function dtgSuggestions_colAuthor_Render( NarroSuggestion $objNarroSuggestion ) {
-            $objDateSpan = new QDateTimeSpan(time() - strtotime($objNarroSuggestion->Created));
-            $strCreatedWhen = $objDateSpan->SimpleDisplay();
+            $objDateSpan = new QDateTimeSpan(time() - strtotime($objNarroSuggestion->Modified));
+            $strModifiedWhen = $objDateSpan->SimpleDisplay();
 
-            if (strtotime($objNarroSuggestion->Created) > 0 && $strCreatedWhen && $objNarroSuggestion->User->Username)
-                $strAuthorInfo = sprintf('<a href="narro_user_profile.php?u=%d">%s</a>, ' . t('%s ago'), $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username, $strCreatedWhen);
-            elseif (strtotime($objNarroSuggestion->Created) > 0 && $strCreatedWhen && !$objNarroSuggestion->User->Username)
-                $strAuthorInfo = sprintf(t('%s ago'), $strCreatedWhen);
+            if (strtotime($objNarroSuggestion->Modified) > 0 && $strModifiedWhen && $objNarroSuggestion->User->Username)
+                $strAuthorInfo = sprintf('<a href="narro_user_profile.php?u=%d">%s</a>, ' . t('%s ago'), $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username, $strModifiedWhen);
+            elseif (strtotime($objNarroSuggestion->Modified) > 0 && $strModifiedWhen && !$objNarroSuggestion->User->Username)
+                $strAuthorInfo = sprintf(t('%s ago'), $strModifiedWhen);
             elseif ($objNarroSuggestion->User->Username)
                 $strAuthorInfo = sprintf('<a href="narro_user_profile.php?u=%d">%s</a>', $objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username);
             else
@@ -337,7 +337,7 @@
 
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID) {
                 $objDateSpan = new QDateTimeSpan(time() - strtotime($this->objNarroContextInfo->Modified));
-                $strCreatedWhen = $objDateSpan->SimpleDisplay();
+                $strModifiedWhen = $objDateSpan->SimpleDisplay();
                 $strAuthorInfo .= ', ' . sprintf(sprintf(t('validated by %s'), '<a href="narro_user_profile.php?u=%d">%s</a> %s'), $this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username, (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
             }
 
@@ -368,6 +368,21 @@
                                 &&
                                 QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID
                           );
+
+            if ($blnCanEdit) {
+                $strControlId = 'btnSaveIgnoreSuggestion' . $objNarroSuggestion->SuggestionId;
+                $btnSaveIgnoreSuggestion = $this->objForm->GetControl($strControlId);
+                if (!$btnSaveIgnoreSuggestion) {
+                    $btnSaveIgnoreSuggestion = new QButton($this->dtgSuggestions, $strControlId);
+                    $btnSaveIgnoreSuggestion->Text = t('Ignore and save');
+                    $btnSaveIgnoreSuggestion->Visible = false;
+                    if (QApplication::$blnUseAjax)
+                        $btnSaveIgnoreSuggestion->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnEdit_Click'));
+                    else
+                        $btnSaveIgnoreSuggestion->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnEdit_Click'));
+                }
+                $btnSaveIgnoreSuggestion->ActionParameter = $objNarroSuggestion->SuggestionId;
+            }
 
             if ($objNarroSuggestion->SuggestionId != $this->intEditSuggestionId)
                 $btnEdit->Text = ($blnCanEdit)?t('Edit'):t('Copy');
@@ -427,8 +442,10 @@
 
             if (QApplication::$objUser->hasPermission('Can vote', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
                 $strText .= '&nbsp;' . $btnVote->Render(false);
-            if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
+            if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID )) {
                 $strText .= '&nbsp;' . $btnEdit->Render(false);
+                if ($blnCanEdit) $strText .= '&nbsp;' . $btnSaveIgnoreSuggestion->Render(false);
+            }
             if (QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
                 $strText .= '&nbsp;' . $btnDelete->Render(false);
             if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
@@ -580,7 +597,7 @@
                 return false;
             }
 
-            $btnEdit = $this->objForm->GetControl($strControlId);
+            $btnEdit = $this->objForm->GetControl('btnEditSuggestion' . $objSuggestion->SuggestionId);
             if ($btnEdit->Text != t('Save')) {
                 $btnEdit->Text = t('Save');
                 $this->intEditSuggestionId = $strParameter;
@@ -588,8 +605,7 @@
             else {
                 // save
                 if (!$this->IsSuggestionUsed($strParameter)) {
-                    $txtControlId = str_replace('btnEditSuggestion', 'txtEditSuggestion', $strControlId);
-                    $txtControl = $this->objForm->GetControl($txtControlId);
+                    $txtControl = $this->objForm->GetControl('txtEditSuggestion' . $objSuggestion->SuggestionId);
 
                     if (trim($txtControl->Text) == '')
                         return true;
@@ -601,9 +617,20 @@
                         else
                             $strSuggestionValue = $txtControl->Text;
 
-                        $this->Form->ShowPluginErrors();
-                        if (QApplication::$objPluginHandler->Error)
+                        $btnSaveIgnoreSuggestion = $this->objForm->GetControl('btnSaveIgnoreSuggestion' . $objSuggestion->SuggestionId);
+
+                        if ($strControlId != 'btnSaveIgnoreSuggestion' . $objSuggestion->SuggestionId && QApplication::$objPluginHandler->Error) {
+                            if ($btnSaveIgnoreSuggestion instanceof QButton)
+                                $btnSaveIgnoreSuggestion->Visible = true;
+                            $this->Form->ShowPluginErrors();
                             return false;
+                        }
+                        else {
+                            if ($btnSaveIgnoreSuggestion instanceof QButton)
+                                $btnSaveIgnoreSuggestion->Visible = false;
+                            $this->Form->HidePluginErrors();
+                        }
+
 
                         $objSuggestion->Modified = date('Y-m-d H:i:s');
                         $objSuggestion->SuggestionValue = $strSuggestionValue;

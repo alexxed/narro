@@ -34,7 +34,7 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             // Setup DataGrid Columns
             $this->colLanguageName = new QDataGridColumn(t('Language Name'), '<?= $_FORM->dtgNarroLanguage_LanguageNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName, false)));
             $this->colLanguageName->HtmlEntities = false;
@@ -75,7 +75,7 @@
         }
 
         public function dtgNarroLanguage_LanguageNameColumn_Render(NarroLanguage $objNarroLanguage) {
-            return sprintf('<a href="%s?switch_lang=%s">%s</a>', basename(__FILE__), $objNarroLanguage->LanguageCode, $objNarroLanguage->LanguageName);
+            return sprintf('<a href="%s?l=%s">%s</a>', basename(__FILE__), $objNarroLanguage->LanguageCode, $objNarroLanguage->LanguageName);
         }
 
         public function dtgNarroLanguage_LanguageCodeColumn_Render(NarroLanguage $objNarroLanguage) {

@@ -17,7 +17,7 @@
      */
 
     require_once('includes/prepend.inc.php');
-    require_once('includes/narro/narro_suggestion_list_panel.class.php');
+    require_once('includes/narro/NarroSuggestionListPanel.class.php');
     require_once('includes/narro/narro_diacritics_panel.class.php');
     require_once('includes/narro/narro_progress_bar.class.php');
 
@@ -111,10 +111,10 @@
                     QApplication::Redirect(
                         NarroLink::ContextSuggest(
                             $this->intProjectId,
-                            $objContext->ContextId, 
-                            $this->intTextFilter, 
-                            $this->intSearchType, 
-                            $this->strSearchText, 
+                            $objContext->ContextId,
+                            $this->intTextFilter,
+                            $this->intSearchType,
+                            $this->strSearchText,
                             null,
                             QApplication::QueryString('cc')
                         )
@@ -131,7 +131,7 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             $this->SetupNarroContextInfo();
 
             $this->objNarroProject = $this->objNarroContextInfo->Context->Project;
@@ -496,6 +496,12 @@
             $this->pnlPluginMessages->MarkAsModified();
         }
 
+        public function HidePluginErrors() {
+            $this->pnlPluginMessages->Text = '';
+            $this->pnlPluginMessages->Visible = false;
+            $this->pnlPluginMessages->MarkAsModified();
+        }
+
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
             if (trim($this->txtSuggestionValue->Text) == '')
                 return true;
@@ -794,7 +800,7 @@
             else {
                 $this->objNarroContextInfo->ValidSuggestionId = null;
             }
-            
+
             $objSuggestion = NarroSuggestion::Load($strParameter);
             $strSuggestionValue = $objSuggestion->SuggestionValue;
 
