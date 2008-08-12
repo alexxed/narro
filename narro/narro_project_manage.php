@@ -493,6 +493,7 @@
 
                                 $objArchiver = new Archive_Tar($strExportArchive);
                                 $objArchiver->create($arrFiles);
+                                break;
                             default:
                                 $objArchiver = new ZipArchive();
                                 if ($objArchiver->open($strExportArchive, ZIPARCHIVE::OVERWRITE) !== true ) {
