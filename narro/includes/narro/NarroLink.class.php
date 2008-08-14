@@ -25,7 +25,7 @@
         }
 
         public static function ProjectTextList($intProjectId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $strLinkText = '') {
-            $strLink = sprintf('narro_project_text_list.php?l=%s&p=%d&tf=%d&st=%d&s=%s', QApplication::$Language->LanguageCode, $intProjectId, $intTextFilter, $intSearchType, $strSearchText);
+            $strLink = sprintf('narro_project_text_list.php?l=%s&p=%d&tf=%d&st=%d&s=%s', QApplication::$Language->LanguageCode, $intProjectId, $intTextFilter, $intSearchType, urlencode($strSearchText));
             if ($strLinkText)
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -33,7 +33,7 @@
         }
 
         public static function FileTextList($intProjectId, $intFileId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $strLinkText = '') {
-            $strLink = sprintf('narro_file_text_list.php?l=%s&p=%d&f=%d&tf=%d&st=%d&s=%s', QApplication::$Language->LanguageCode, $intProjectId, $intFileId, $intTextFilter, $intSearchType, $strSearchText);
+            $strLink = sprintf('narro_file_text_list.php?l=%s&p=%d&f=%d&tf=%d&st=%d&s=%s', QApplication::$Language->LanguageCode, $intProjectId, $intFileId, $intTextFilter, $intSearchType, urlencode($strSearchText));
             if ($strLinkText)
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -64,7 +64,7 @@
                 $intContextId,
                 $intTextFilter,
                 $intSearchType,
-                $strSearchText,
+                urlencode($strSearchText),
                 $intCurrentContext,
                 $intContextCount,
                 $intSortColumnIndex,
