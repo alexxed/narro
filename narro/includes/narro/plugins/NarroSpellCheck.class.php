@@ -24,7 +24,7 @@
         }
 
         public static function GetSpellSuggestions($strText) {
-            if (QApplication::$objUser->getPreferenceValueByName('Spellchecking') == 'No spellchecking')
+            if (QApplication::$objUser->getPreferenceValueByName('Spellchecking') == 'I don\'t need it')
                 return true;
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strText);
             $strCleanText = strip_tags($strCleanText);
@@ -128,7 +128,7 @@
                             $strWord
                         ) . '<br />';
                 }
-                
+
                 if ($strSpellcheckText)
                     $this->arrErrors[] =  $strSpellcheckText;
             }
