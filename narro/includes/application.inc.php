@@ -119,12 +119,12 @@
         QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
     else
         QApplication::$Language = QApplication::$objUser->Language;
-    
+
     QApplication::$LanguageCode = QApplication::$Language->LanguageCode;
 
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
-    QForm::$FormStateHandler = 'QFormStateHandler';
-    QFileFormStateHandler::$StatePath = __TMP_PATH__ . '/qform_states/';
+    QForm::$FormStateHandler = 'QFileFormStateHandler';
+    QFileFormStateHandler::$StatePath = __TMP_PATH__ . '/qform_state';
 
     require_once __INCLUDES__ . '/Zend/Cache.php';
 
