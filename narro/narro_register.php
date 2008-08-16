@@ -70,7 +70,7 @@
             $objNarroSession = new Zend_Session_Namespace('Narro');
             $objNarroSession->User = $objUser;
             QApplication::$objUser = $objUser;
-            QApplication::Redirect(sprintf('narro_user_preferences.php?l=%s', QApplication::$Language->LanguageCode));
+            QApplication::Redirect(NarroLink::UserPreferences($objUser->UserId));
         }
     }
 

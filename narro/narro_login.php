@@ -61,6 +61,9 @@
 
                 if ($auth->hasIdentity()) {
                     $objUser = NarroUser::LoadByUsername($auth->getIdentity());
+                    require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
+                    $objNarroSession = new Zend_Session_Namespace('Narro');
+
                     if (!$objUser instanceof NarroUser) {
                         try {
                             $objUser = NarroUser::RegisterUser($auth->getIdentity(), $auth->getIdentity(), '');
@@ -70,10 +73,11 @@
                             $this->lblMessage->Text = t('Failed to create an associated user for this OpenId') . $objEx->getMessage() . var_export($auth->getIdentity(), true);
                             return false;
                         }
+
+                        $objNarroSession->User = $objUser;
+                        QApplication::Redirect(NarroLink::UserPreferences($objUser->UserId));
                     }
 
-                    require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
-                    $objNarroSession = new Zend_Session_Namespace('Narro');
                     $objNarroSession->User = $objUser;
 
                     QApplication::$objUser = $objUser;

@@ -35,7 +35,7 @@
                 throw $objExc;
             }
 
-            if (isset($_SERVER['HTTP_REFERER']) && !strstr($_SERVER['HTTP_REFERER'], basename(__FILE__)) && $_SERVER['HTTP_REFERER'] !='')
+            if (isset($_SERVER['HTTP_REFERER']) && !strstr($_SERVER['HTTP_REFERER'], 'narro_login.php') && strstr($_SERVER['HTTP_REFERER'], __HTTP_URL__) && !strstr($_SERVER['HTTP_REFERER'], basename(__FILE__)) && $_SERVER['HTTP_REFERER'] !='')
                 $this->txtPreviousUrl = $_SERVER['HTTP_REFERER'];
 
             $this->lblMessage = new QLabel($this);

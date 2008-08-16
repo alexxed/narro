@@ -36,7 +36,7 @@
     <?php
     }
     ?>
-    <a href="narro_user_preferences.php?l=<?php echo QApplication::$Language->LanguageCode ?>"><?php echo t('Preferences') ?></a> |
+    <?php echo NarroLink::UserPreferences(QApplication::$objUser->UserId, t('Preferences')) ?> |
     <?php echo NarroLink::ProjectList(t('Project list')) ?> |
     <a href="narro_language_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('Language list') ?>"><?php echo t('Languages') ?></a>
     <?php

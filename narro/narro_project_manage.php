@@ -151,7 +151,11 @@
 
             $this->btnExport = new QButton($this);
             $this->btnExport->Text = t('Export');
-            if (function_exists('proc_open') && QApplication::$blnUseAjax)
+            if (
+                function_exists('proc_open') &&
+                function_exists('escapeshellarg') &&
+                function_exists('escapeshellcmd') &&
+                QApplication::$blnUseAjax)
                 $this->btnExport->AddAction(new QClickEvent(), new QAjaxAction('btnExport_Click'));
             else
                 $this->btnExport->AddAction(new QClickEvent(), new QServerAction('btnExport_Click'));
@@ -496,7 +500,8 @@
                                 break;
                             default:
                                 $objArchiver = new ZipArchive();
-                                if ($objArchiver->open($strExportArchive, ZIPARCHIVE::OVERWRITE) !== true ) {
+                                unlink($strExportArchive);
+                                if ($objArchiver->open($strExportArchive, ZIPARCHIVE::CREATE) !== true ) {
                                     throw new Exception(__METHOD__ . ':Can\'t open file: ' . $strExportArchive);
                                 }
 

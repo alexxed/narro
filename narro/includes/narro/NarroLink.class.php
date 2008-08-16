@@ -56,6 +56,14 @@
                 return $strLink;
         }
 
+        public static function UserPreferences($intUserId, $strLinkText = '') {
+            $strLink = sprintf('narro_user_preferences.php?l=%s&u=%d', QApplication::$Language->LanguageCode, $intUserId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
         public static function ContextSuggest($intProjectId, $intContextId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $intCurrentContext = null, $intContextCount = null, $intSortColumnIndex = -1, $intSortDirection = 0, $strLinkText = '') {
             $strLink = sprintf(
                 'narro_context_suggest.php?l=%s&p=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d&o=%d&a=%d',
