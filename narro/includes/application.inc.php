@@ -94,10 +94,18 @@
     /////////////////////////////
     // Start Session Handler (if required)
     /////////////////////////////
-    session_name('NARRO_ID');
-    session_save_path(__TMP_PATH__ . '/session');
-    session_set_cookie_params(time()+31*24*3600, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
-    session_start();
+    require_once __INCLUDES__ . '/Zend/Session.php';
+    Zend_Session::setOptions(
+        array(
+            'name'=>'NARRO_ID',
+            'save_path'=> __TMP_PATH__ . '/session',
+            'cookie_lifetime'           => 31*24*3600,
+            'cookie_path'               => __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
+        )
+    );
+
+    require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
+    $objNarroSession = new Zend_Session_Namespace('Narro');
 
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
@@ -106,8 +114,8 @@
     QApplication::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
     QApplication::RegisterPreference('Theme', 'option', 'The theme used in the translation page', 'narro', array('Narro', 'KBabel'));
 
-    if (isset($_SESSION['objUser']) && $_SESSION['objUser'] instanceof NarroUser)
-        QApplication::$objUser = $_SESSION['objUser'];
+    if (isset($objNarroSession->User) && $objNarroSession->User instanceof NarroUser)
+        QApplication::$objUser = $objNarroSession->User;
     else
         QApplication::$objUser = NarroUser::LoadAnonymousUser();
 

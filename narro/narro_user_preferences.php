@@ -80,16 +80,16 @@
                             $txtTextPref = new QTextBox($this);
                             $txtTextPref->Name = $strName;
                             $txtTextPref->Text = $this->objUser->getPreferenceValueByName($strName);
-                            
+
                             if ($strName == 'Special characters') {
                                 $strSelect = sprintf('<select onchange="document.getElementById(\'%s\').value+=this.options[this.selectedIndex].value;">', $txtTextPref->ControlId);
-                                foreach(NarroDiacriticsPanel::$arrEntities as $strEntityName=>$strEntityChar) 
+                                foreach(NarroDiacriticsPanel::$arrEntities as $strEntityName=>$strEntityChar)
                                     $strSelect .= sprintf('<option value=" %s">%s (%s)', $strEntityName, $strEntityChar, $strEntityName);
-                                $strSelect .= '</select>';  
+                                $strSelect .= '</select>';
                                 $arrPref['description'] .= $strSelect;
                                 $txtTextPref->Width = 400;
                             }
-                            
+
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $txtTextPref;
                             break;
@@ -107,7 +107,7 @@
                                 foreach($arrLanguages as $objLanguage) {
                                     $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageId, ($objLanguage->LanguageId == $this->objUser->getPreferenceValueByName($strName)));
                                 }
-                            }                            
+                            }
                             else
                                 foreach($arrPref['values'] as $strValue) {
                                     $lstOption->AddItem(t($strValue), $strValue, ($strValue == $this->objUser->getPreferenceValueByName($strName)));
@@ -142,7 +142,9 @@
             $this->objUser->Data = serialize($this->objUser->Preferences);
 
             if (!is_numeric(QApplication::QueryString('u'))) {
-                $_SESSION['objUser'] = $this->objUser;
+                require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
+                $objNarroSession = new Zend_Session_Namespace('Narro');
+                $objNarroSession->User = $this->objUser;
             }
 
             /**
@@ -167,7 +169,7 @@
         public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
             QApplication::Redirect(NarroLink::ProjectList());
         }
-        
+
         public function __get($strName) {
             switch ($strName) {
                 case 'User': return $this->objUser;
@@ -180,7 +182,7 @@
                         throw $objExc;
                     }
             }
-        }        
+        }
 
     }
 
@@ -189,7 +191,7 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             $this->pnlPreferences = new NarroUserPreferencesPanel($this);
         }
     }
