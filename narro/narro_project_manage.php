@@ -484,8 +484,8 @@
                             unlink($strExportPath . '/' . $strExportArchive);
 
                         $arrFiles = array_merge(
-                            NarroUtils::ListDirectory($strExportPath . '/en-US', null, '/CVS|\.svn|port\.pid|port\.log|port\.status/', $strExportPath . '/', true),
-                            NarroUtils::ListDirectory($strExportPath . '/' . QApplication::$Language->LanguageCode, null, '/CVS|\.svn|port\.pid|port\.log|port\.status/', $strExportPath . '/', true)
+                            NarroUtils::ListDirectory($strExportPath . '/en-US', null, '/CVS|\.svn|\.hg|port\.pid|port\.log|port\.status/', $strExportPath . '/', true),
+                            NarroUtils::ListDirectory($strExportPath . '/' . QApplication::$Language->LanguageCode, null, '/CVS|\.svn|\.hg|port\.pid|port\.log|port\.status/', $strExportPath . '/', true)
                         );
 
 
