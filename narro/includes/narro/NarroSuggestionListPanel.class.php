@@ -323,7 +323,7 @@
         }
 
         public function dtgSuggestions_colAuthor_Render( NarroSuggestion $objNarroSuggestion ) {
-            $objDateSpan = new QDateTimeSpan(time() - strtotime($objNarroSuggestion->Modified));
+            $objDateSpan = new QDateTimeSpan(time() - strtotime($objNarroSuggestion->Created));
             $strModifiedWhen = $objDateSpan->SimpleDisplay();
 
             if (strtotime($objNarroSuggestion->Modified) > 0 && $strModifiedWhen && $objNarroSuggestion->User->Username)
