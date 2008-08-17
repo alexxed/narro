@@ -86,7 +86,7 @@
             <p class="instructions"><?php echo t('If you chose to use your suggestion or the most voted suggestion for each text, if you have no suggestion for a text or there aren\'t any votes, the validated suggestion will be exported instead.'); ?></p>
             <?php $this->btnExport->Render(); $this->objExportProgress->Render();?>
             <?php $this->lblExport->Render(); ?>
-            <p class="instructions"><?php echo sprintf(t('You will get an archive containing two directories, en_US and %s, each having the same file structure.'), QApplication::$Language->LanguageCode); ?></p>
+            <p class="instructions"><?php echo sprintf(t('You will get an archive containing two directories, en-US and %s, each having the same file structure.'), QApplication::$Language->LanguageCode); ?></p>
             </div>
             </div>
         <?php } ?>

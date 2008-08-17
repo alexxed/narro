@@ -26,13 +26,13 @@
         <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/style.css" />
         <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/font-<?php echo QApplication::$objUser->getPreferenceValueByName('Font size') ?>.css" />
         <?php if (QApplication::QueryString('p')) { ?>
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context information changes in %s for the project %s'), QApplication::$Language->LanguageName, $this->objNarroProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context information changes in %s for the project %s'), t(QApplication::$Language->LanguageName), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
             <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('New texts to translate for the project %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=text&l=<?php echo QApplication::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
         <?php } else { ?>
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context information changes in %s'), QApplication::$Language->LanguageName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::$Language->LanguageId ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context information changes in %s'), t(QApplication::$Language->LanguageName)) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::$Language->LanguageId ?>" />
             <link rel="alternate" type="application/rss+xml" title="<?php echo t('New texts to translate') ?>" href="rss.php?t=text&l=<?php echo QApplication::$Language->LanguageId ?>" />
         <?php } ?>
-        <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('New translation suggestions in %s'), QApplication::$Language->LanguageName) ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::$Language->LanguageId ?>" />
+        <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('New translation suggestions in %s'), t(QApplication::$Language->LanguageName)) ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::$Language->LanguageId ?>" />
         <link type="image/x-icon" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ ?>/narro.ico" rel="shortcut icon"/>
         <link type="image/x-icon" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ ?>/narro.ico" rel="icon"/>
         <script type="text/javascript" src="<?php echo __JS_ASSETS__ ?>/table_row_highlight.js"></script>
