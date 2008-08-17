@@ -58,12 +58,12 @@
         }
 
         public static function LoadAll($objOptionalClauses = null) {
-            $arrLanguage = QApplication::$Cache->load('narrolanguage_all');
+            $arrLanguage = QApplication::$Cache->load('narrolanguage_loadall');
 
             if (!$arrLanguage) {
                 $arrLanguage = parent::LoadAll($objOptionalClauses);
                 if ($arrLanguage) {
-                    QApplication::$Cache->save($arrLanguage, 'narrolanguage_all');
+                    QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadall');
                 }
             }
 
@@ -99,6 +99,7 @@
         public function Save($blnForceInsert = false, $blnForceUpdate = false) {
             QApplication::$Cache->remove('narrolanguage_' . str_replace('-', '_', $this->LanguageCode));
             QApplication::$Cache->remove('narrolanguage_' . $this->LanguageId);
+            QApplication::$Cache->remove('narrolanguage_loadall');
             QApplication::$Cache->remove('narrolanguage_countall');
             parent::Save($blnForceInsert, $blnForceUpdate);
         }
@@ -106,6 +107,7 @@
         public function Delete() {
             QApplication::$Cache->remove('narrolanguage_' . str_replace('-', '_', $this->LanguageCode));
             QApplication::$Cache->remove('narrolanguage_' . $this->LanguageId);
+            QApplication::$Cache->remove('narrolanguage_loadall');
             QApplication::$Cache->remove('narrolanguage_countall');
             parent::Delete();
         }
