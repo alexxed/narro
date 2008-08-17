@@ -123,13 +123,6 @@
         // @todo add handling here
         throw Exception('Could not create an instance of NarroUser');
 
-    if (QApplication::QueryString('l'))
-        QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
-    else
-        QApplication::$Language = QApplication::$objUser->Language;
-
-    QApplication::$LanguageCode = QApplication::$Language->LanguageCode;
-
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
     QForm::$FormStateHandler = 'QFileFormStateHandler';
     QFileFormStateHandler::$StatePath = __TMP_PATH__ . '/qform_state';
@@ -147,8 +140,14 @@
 
     QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
 
+    if (QApplication::QueryString('l'))
+        QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
+    else
+        QApplication::$Language = QApplication::$objUser->Language;
 
-    QApplication::$objPluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
+    QApplication::$LanguageCode = QApplication::$Language->LanguageCode;
+
+        QApplication::$objPluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
 
     QApplicationBase::$ClassFile['NarroFileImporter'] = __INCLUDES__ . '/narro/importer/NarroFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroProjectImporter'] = __INCLUDES__ . '/narro/importer/NarroProjectImporter.class.php';
