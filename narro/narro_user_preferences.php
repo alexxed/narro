@@ -141,7 +141,7 @@
 
             $this->objUser->Data = serialize($this->objUser->Preferences);
 
-            if (!is_numeric(QApplication::QueryString('u'))) {
+            if (QApplication::QueryString('u') == $this->objUser->UserId) {
                 require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
                 $objNarroSession = new Zend_Session_Namespace('Narro');
                 $objNarroSession->User = $this->objUser;

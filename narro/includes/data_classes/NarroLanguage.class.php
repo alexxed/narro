@@ -60,7 +60,7 @@
         public static function LoadAll($objOptionalClauses = null) {
             $arrLanguage = QApplication::$Cache->load('narrolanguage_loadall');
 
-            if (!$arrLanguage) {
+            if (!$arrLanguage && $objOptionalClauses == QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName))) {
                 $arrLanguage = parent::LoadAll($objOptionalClauses);
                 if ($arrLanguage) {
                     QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadall');

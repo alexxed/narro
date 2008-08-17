@@ -107,22 +107,6 @@
     require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
     $objNarroSession = new Zend_Session_Namespace('Narro');
 
-    QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
-    QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
-    QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'en-US', array('en-US'));
-    QApplication::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', 'en-US', array('en-US'));
-    QApplication::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
-    QApplication::RegisterPreference('Theme', 'option', 'The theme used in the translation page', 'narro', array('Narro', 'KBabel'));
-
-    if (isset($objNarroSession->User) && $objNarroSession->User instanceof NarroUser)
-        QApplication::$objUser = $objNarroSession->User;
-    else
-        QApplication::$objUser = NarroUser::LoadAnonymousUser();
-
-    if (!QApplication::$objUser instanceof NarroUser)
-        // @todo add handling here
-        throw Exception('Could not create an instance of NarroUser');
-
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
     QForm::$FormStateHandler = 'QFileFormStateHandler';
     QFileFormStateHandler::$StatePath = __TMP_PATH__ . '/qform_state';
@@ -139,6 +123,22 @@
     );
 
     QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
+
+    QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
+    QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
+    QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'en-US', array('en-US'));
+    QApplication::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', 'en-US', array('en-US'));
+    QApplication::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
+    QApplication::RegisterPreference('Theme', 'option', 'The theme used in the translation page', 'narro', array('Narro', 'KBabel'));
+
+    if (isset($objNarroSession->User) && $objNarroSession->User instanceof NarroUser)
+        QApplication::$objUser = $objNarroSession->User;
+    else
+        QApplication::$objUser = NarroUser::LoadAnonymousUser();
+
+    if (!QApplication::$objUser instanceof NarroUser)
+        // @todo add handling here
+        throw Exception('Could not create an instance of NarroUser');
 
     if (QApplication::QueryString('l'))
         QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
