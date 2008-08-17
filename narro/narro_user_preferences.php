@@ -49,7 +49,7 @@
             $this->btnCancel->Text = t('Cancel');
             $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
 
-            if (is_numeric(QApplication::QueryString('u')) && QApplication::$objUser->hasPermission('Can manage users')) {
+            if (QApplication::$objUser->UserId != QApplication::QueryString('u') && QApplication::$objUser->hasPermission('Can manage users')) {
                 $this->objUser = NarroUser::LoadByUserId(QApplication::QueryString('u'));
                 $this->lblMessage->ForeColor = 'red';
                 $this->lblMessage->Text = t('Warning, you are editing another user\'s preferences!');
@@ -155,7 +155,7 @@
 
             try {
                 $this->objUser->Save();
-                if (is_numeric(QApplication::QueryString('u')) && QApplication::$objUser->hasPermission('Can manage users'))
+                if (QApplication::$objUser->UserId != QApplication::QueryString('u') && QApplication::$objUser->hasPermission('Can manage users'))
                     $this->lblMessage->Text = sprintf(t('Preferences for %s were saved successfuly.'), $this->objUser->Username);
                 else
                     $this->lblMessage->Text = t('Your preferences were saved successfuly.');
