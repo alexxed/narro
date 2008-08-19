@@ -44,7 +44,7 @@
         </div>
         <br />
         <?php $this->dtgNarroContextInfo->Render() ?>
-        <?php QApplication::ExecuteJavaScript("if (location.hash) qc.pA('NarroProjectTextListForm', '" . $this->dtgNarroContextInfo->Paginator->ControlId . "', 'QClickEvent', location.hash.replace('#', ''), '');"); ?>
+        <?php QApplication::ExecuteJavaScript("if (location.hash.match('p')) qc.pA('NarroProjectTextListForm', '" . $this->dtgNarroContextInfo->Paginator->ControlId . "', 'QClickEvent', location.hash.replace('#p', ''), '');"); ?>
     <?php $this->RenderEnd() ?>
 
 <?php require('includes/footer.inc.php'); ?>

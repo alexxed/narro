@@ -32,17 +32,22 @@
 
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->HtmlEntities = false;
-            $this->txtUsername = new QTextBox($this);
+            $this->txtUsername = new QTextBox($this, 'username');
+            $this->txtUsername->TabIndex = 1;
             $this->txtPassword = new QTextBox($this);
+            $this->txtPassword->TabIndex = 2;
             $this->txtPassword->TextMode = QTextMode::Password;
             $this->btnLogin = new QButton($this);
             $this->btnLogin->Text = t('Login');
             $this->btnLogin->PrimaryButton = true;
+            $this->btnLogin->TabIndex = 4;
             $this->btnLogin->AddAction(new QClickEvent(), new QServerAction('btnLogin_Click'));
             $this->btnRecoverPassword = new QButton($this);
             $this->btnRecoverPassword->Text = t('Lost password or username');
             $this->btnRecoverPassword->AddAction(new QClickEvent(), new QServerAction('btnRecoverPassword_Click'));
-            $this->txtOpenId = new QTextBox($this);
+            $this->btnRecoverPassword->TabIndex = 5;
+            $this->txtOpenId = new QTextBox($this, 'openid');
+            $this->txtOpenId->TabIndex = 3;
 
             if (isset($_SERVER['HTTP_REFERER']) && !strstr($_SERVER['HTTP_REFERER'], basename(__FILE__)) && $_SERVER['HTTP_REFERER'] !='')
                 $this->txtPreviousUrl = $_SERVER['HTTP_REFERER'];

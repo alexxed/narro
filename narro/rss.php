@@ -32,13 +32,13 @@
             if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('New translations in %s for %s'), t(QApplication::$Language->LanguageName), $objProject->ProjectName),
+                            sprintf(t('Translations for %s'), $objProject->ProjectName),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                             sprintf(t('Get the latest translation suggestions in %s for %s'), t(QApplication::$Language->LanguageName), $objProject->ProjectName)
                     );
                 else
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('New translations in %s'), t(QApplication::$Language->LanguageName)),
+                            sprintf(t('Translations for all projects'), t(QApplication::$Language->LanguageName)),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                             sprintf(t('Get the latest translation suggestions in %s'), t(QApplication::$Language->LanguageName))
                     );
@@ -80,7 +80,7 @@
                     ;
 
                     foreach($arrNarroContextInfo as $objNarroContextInfo) {
-                        $strContextLink = sprintf(
+                        $strContextLink =
                                 __HTTP_URL__ .
                                 __VIRTUAL_DIRECTORY__ .
                                 __SUBDIRECTORY__ .
@@ -92,9 +92,9 @@
                                     2,
                                     $objNarroSuggestion->SuggestionValue
                                 )
-                        );
+                        ;
 
-                        $strFileLink = sprintf(
+                        $strFileLink =
                                 __HTTP_URL__ .
                                 __VIRTUAL_DIRECTORY__ .
                                 __SUBDIRECTORY__ .
@@ -106,9 +106,9 @@
                                     2,
                                     $objNarroSuggestion->SuggestionValue
                                 )
-                        );
+                        ;
 
-                        $strProjectLink = sprintf(
+                        $strProjectLink =
                                 __HTTP_URL__ .
                                 __VIRTUAL_DIRECTORY__ .
                                 __SUBDIRECTORY__ .
@@ -119,7 +119,7 @@
                                     2,
                                     $objNarroSuggestion->SuggestionValue
                                 )
-                        );
+                        ;
 
                         $strDescription = sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>, project <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName, $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName);
 
@@ -155,13 +155,13 @@
             if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('New texts to translate in %s for %s'), t(QApplication::$Language->LanguageName), $objProject->ProjectName),
+                            sprintf(t('Texts to translate for %s'), $objProject->ProjectName),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                             sprintf(t('Get the latest texts to translate for the project %s'), $objProject->ProjectName)
                     );
                 else
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('New texts to translate in %s'), t(QApplication::$Language->LanguageName)),
+                            t('Texts to translate'),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                             t('Get the latest texts to translate')
                     );
@@ -275,7 +275,7 @@
             if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
                 $objRssFeed  = new QRssFeed(
                         sprintf(
-                            t('Context information changes in %s'),
+                            t('Context changes in %s'),
                             t(QApplication::$Language->LanguageName)
                         ),
                         __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
@@ -401,9 +401,101 @@
 
             $objRssFeed->Run();
             break;
-        case 'vote':
-            break;
+        case 'textcomment':
+            if (isset($objProject) && $objProject instanceof NarroProject)
+                $strCacheId = sprintf('rssfeed_textcomment_%d_%d', $objProject->ProjectId, QApplication::QueryString('l'));
+            else
+                $strCacheId = sprintf('rssfeed_textcomment_%d', QApplication::QueryString('l'));
 
+            if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
+                if (isset($objProject) && $objProject instanceof NarroProject)
+                    $objRssFeed  = new QRssFeed(
+                            sprintf(t('Debates on texts from %s'), $objProject->ProjectName),
+                            __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
+                            sprintf(t('Get the latest debates on texts from the project %s'), $objProject->ProjectName)
+                    );
+                else
+                    $objRssFeed  = new QRssFeed(
+                            t('Debates on texts'),
+                            __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
+                            t('Get the latest debates on texts')
+                    );
+
+
+                if (isset($objProject) && $objProject instanceof NarroProject)
+                    $strSqlQuery = sprintf(
+                        'SELECT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
+                         $objProject->ProjectId,
+                         QApplication::$Language->LanguageId
+                    );
+                else
+                    $strSqlQuery = sprintf('SELECT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
+                         QApplication::$Language->LanguageId
+                    );
+
+                $objDatabase = QApplication::$Database[1];
+                $objDbResult = $objDatabase->Query($strSqlQuery);
+
+                if ($objDbResult) {
+                    $arrTextComment = NarroTextComment::InstantiateDbResult($objDbResult);
+                    foreach($arrTextComment as $objTextComment) {
+                        if (isset($objProject) && $objProject instanceof NarroProject) {
+                            $objContext = NarroContext::QuerySingle(
+                                QQ::AndCondition(
+                                    QQ::Equal(QQN::NarroContext()->ProjectId, $objProject->ProjectId),
+                                    QQ::Equal(QQN::NarroContext()->TextId, $objTextComment->TextId),
+                                    QQ::Equal(QQN::NarroContext()->Active, 1)
+                                )
+                            );
+
+                        }
+                        else {
+                            $objContext = NarroContext::QuerySingle(
+                                QQ::AndCondition(
+                                    QQ::Equal(QQN::NarroContext()->TextId, $objTextComment->TextId),
+                                    QQ::Equal(QQN::NarroContext()->Active, 1)
+                                )
+                            );
+                        }
+
+                        if ($objContext) {
+                            $strDescription = sprintf('
+                                <span style="font-size:80%%;color:gray;">' . t('%s wrote on %s:') . '</span>
+                                <br />
+                                <span style="margin-left:5px;padding:3px;">%s</span>',
+                                NarroLink::UserProfile($objTextComment->UserId, '<b>' . $objTextComment->User->Username . '</b>'),
+                                $objTextComment->Created,
+                                nl2br($objTextComment->CommentText)
+                            );
+                            $strLink = __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ .
+                                sprintf('/narro_context_suggest.php?l=%s&p=%d&c=%d#textcomments',
+                                    QApplication::$Language->LanguageCode,
+                                    $objContext->ProjectId,
+                                    $objContext->ContextId
+                                );
+
+                        }
+                        else
+                            continue;
+
+                        $objItem = new QRssItem(
+                            (strlen($objTextComment->CommentText)>124)?
+                                substr($objTextComment->CommentText, 0, 124) . '...'
+                                :
+                                $objTextComment->CommentText,
+                            $strLink
+                        );
+                        $objItem->Description = $strDescription;
+                        $objItem->PubDate = new QDateTime($objTextComment->Created);
+                        $objItem->Author = $objTextComment->User->Username;
+                        $objRssFeed->AddItem($objItem);
+                    }
+                }
+                QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
+            }
+
+            $objRssFeed->Run();
+            break;
         default:
             exit();
     }

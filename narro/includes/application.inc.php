@@ -129,7 +129,6 @@
     QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'en-US', array('en-US'));
     QApplication::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', 'en-US', array('en-US'));
     QApplication::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
-    QApplication::RegisterPreference('Theme', 'option', 'The theme used in the translation page', 'narro', array('Narro', 'KBabel'));
 
     if (isset($objNarroSession->User) && $objNarroSession->User instanceof NarroUser)
         QApplication::$objUser = $objNarroSession->User;
@@ -170,6 +169,7 @@
     QApplicationBase::$ClassFile['Archive_Tar'] = __INCLUDES__ . '/PEAR/Archive/Tar.php';
     QApplicationBase::$ClassFile['NarroDiacriticsPanel'] = __INCLUDES__ . '/narro/narro_diacritics_panel.class.php';
     QApplicationBase::$ClassFile['NarroHeaderPanel'] = __INCLUDES__ . '/narro/NarroHeaderPanel.class.php';
+    QApplicationBase::$ClassFile['NarroTextCommentListPanel'] = __INCLUDES__ . '/narro/NarroTextCommentListPanel.class.php';
     QApplicationBase::$ClassFile['NarroLink'] = __INCLUDES__ . '/narro/NarroLink.class.php';
 
 ?>

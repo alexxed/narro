@@ -33,12 +33,14 @@
         protected $btnPrevious100;
         protected $btnPrevious;
         protected $btnCopyOriginal;
+        protected $btnComments;
 
         protected $chkGoToNext;
 
         protected $objNarroContextInfo;
         protected $objNarroProject;
         protected $pnlOriginalText;
+        protected $pnlComments;
         protected $pnlContext;
         public $txtSuggestionValue;
         protected $txtSuggestionComment;
@@ -150,10 +152,12 @@
             $this->btnPrevious100_Create();
             $this->btnPrevious_Create();
             $this->btnCopyOriginal_Create();
+            $this->btnComments_Create();
 
             $this->chkGoToNext_Create();
 
             $this->pnlContext_Create();
+            $this->pnlComments_Create();
             $this->txtSuggestionValue_Create();
 
             $this->pnlSuggestionList = new NarroSuggestionListPanel($this);
@@ -199,6 +203,12 @@
             $this->pnlContext->ToolTip = t('Details about the place where the text is used');
         }
 
+        // Create and Setup pnlComments
+        protected function pnlComments_Create() {
+            $this->pnlComments = new NarroTextCommentListPanel($this, 'textcomments');
+            $this->pnlComments->Display = false;
+        }
+
         // Update values from objNarroContextInfo
         protected function UpdateData() {
             /**
@@ -221,6 +231,18 @@
                 );
 
             $this->pnlContext->Text = nl2br(NarroString::HtmlEntities($this->objNarroContextInfo->Context->Context));
+            $this->pnlComments->NarroText = $this->objNarroContextInfo->Context->Text;
+
+            if ($this->objNarroContextInfo->Context->Text->HasComments)
+                if ($this->pnlComments->Display)
+                    $this->btnComments->Text = t('Hide debate');
+                else
+                    if ($this->objNarroContextInfo->Context->Text->HasComments)
+                        $this->btnComments->Text = t('Show debate');
+                    else
+                        $this->btnComments->Text = t('Start a debate');
+
+            $this->btnComments->MarkAsModified();
 
             if
             (
@@ -480,6 +502,23 @@
 
             $this->btnCopyOriginal->CausesValidation = false;
             $this->btnCopyOriginal->SetCustomStyle('float', 'right');
+        }
+
+        // Setup btnComments
+        protected function btnComments_Create() {
+            $this->btnComments = new QButton($this);
+            if ($this->objNarroContextInfo->Context->Text->HasComments)
+                $this->btnComments->Text = t('Hide debate');
+            else
+                $this->btnComments->Text = t('Start a debate');
+
+            if (QApplication::$blnUseAjax)
+                $this->btnComments->AddAction(new QClickEvent(), new QAjaxAction('btnComments_Click'));
+            else
+                $this->btnComments->AddAction(new QClickEvent(), new QServerAction('btnComments_Click'));
+
+            $this->btnComments->CausesValidation = false;
+            $this->btnComments->SetCustomStyle('float', 'right');
         }
 
         public function ShowPluginErrors() {
@@ -827,6 +866,20 @@
 
         public function btnCopyOriginal_Click($strFormId, $strControlId, $strParameter) {
             $this->txtSuggestionValue->Text = $this->objNarroContextInfo->Context->Text->TextValue;
+        }
+
+        public function btnComments_Click($strFormId, $strControlId, $strParameter) {
+            if ($this->pnlComments->Display) {
+                if ($this->objNarroContextInfo->Context->Text->HasComments)
+                    $this->btnComments->Text = t('Show debate');
+                else
+                    $this->btnComments->Text = t('Start a debate');
+                $this->pnlComments->Display = false;
+            }
+            else {
+                $this->btnComments->Text = t('Hide debate');
+                $this->pnlComments->Display = true;
+            }
         }
 
         public function lstAccessKey_Change($strFormId, $strControlId, $strParameter) {

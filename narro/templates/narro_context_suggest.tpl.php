@@ -23,7 +23,7 @@
 ?>
 
     <?php $this->RenderBegin() ?>
-        <?php QApplication::ExecuteJavaScript(sprintf("if (location.hash) {iContext=location.hash.replace(/i[0-9]+/,'');iContext=iContext.replace('#c','');iPos=location.hash.replace(/#c[0-9]+i/,'');sLocation=location.href.replace('&c=%d', '&c=' + iContext);sLocation=sLocation.replace('&ci=%d', '&ci=' + iPos);sLocation=sLocation.replace(location.hash,'');location.hash='';location.replace(sLocation);};", $this->objNarroContextInfo->ContextId, $this->intCurrentContext)); ?>
+        <?php QApplication::ExecuteJavaScript(sprintf("if (location.hash.match('/c[0-9]+/')) {iContext=location.hash.replace(/i[0-9]+/,'');iContext=iContext.replace('#c','');iPos=location.hash.replace(/#c[0-9]+i/,'');sLocation=location.href.replace('&c=%d', '&c=' + iContext);sLocation=sLocation.replace('&ci=%d', '&ci=' + iPos);sLocation=sLocation.replace(location.hash,'');location.hash='';location.replace(sLocation);};", $this->objNarroContextInfo->ContextId, $this->intCurrentContext)); ?>
         <?php $this->pnlHeader->Render() ?>
         <div style="width:100%;display:block;">
             <div style="float:left">
@@ -37,6 +37,7 @@
         <div class="green3dbg" style="border:1px dotted #DDDDDD;padding:5px;" title="Textul original">
             <?php $this->pnlOriginalText->Render(); ?>
             <?php $this->btnCopyOriginal->Render(); ?>
+            <?php $this->btnComments->Render(); ?>
         </div>
         <div class="white3dbg" style="border:1px solid #DDDDDD; padding:5px<?php if ($this->objNarroContextInfo->Context->Active == 0) echo ';color:gray;' ?>" title="<?php _t('Details about the place where the text appears'); ?>">
             <?php $this->pnlContext->Render(); ?>
@@ -66,7 +67,7 @@
             </tr>
             </table>
         <?php } else
-                  echo sprintf(t('You can add suggestions if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account.'), 'narro_register.php?l=' . QApplication::$Language->LanguageCode, 'narro_login.php?l=' . QApplication::$Language->LanguageCode) . '<br /><br />';
+                  echo sprintf(t('You can add suggestions if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . QApplication::$Language->LanguageCode, 'narro_login.php?l=' . QApplication::$Language->LanguageCode) . '<br /><br />';
         ?>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <?php $this->btnPrevious100->Render() ?>
@@ -82,6 +83,8 @@
         <br />
         <?php $this->pnlProgress->Render() ?>
         <?php $this->lblMessage->Render() ?>
+        <br />
+        <?php $this->pnlComments->Render() ?>
 
         <?php if(QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID && $this->txtSuggestionValue->Display) $this->txtSuggestionValue->Focus(); ?>
     <?php $this->RenderEnd() ?>
