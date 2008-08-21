@@ -208,9 +208,6 @@
                 $this->ImportFile($objFile, $strFileToImport);
                 $intElapsedTime = time() - $intTime;
                 NarroLog::LogMessage(1, sprintf(t('Processed file "%s" in %d seconds, %d files left'), str_replace($strDirectory, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intCurFile)));
-
-                if ($intFileNo % 10 === 0)
-                    NarroLog::LogMessage(1, sprintf(t("Progress: %s%%"), ceil(($intFileNo*100)/$intTotalFilesToProcess)));
             }
 
             $objFile = NarroFile::QuerySingle(
