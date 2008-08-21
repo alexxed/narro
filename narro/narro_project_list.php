@@ -164,8 +164,8 @@
             else
                 $this->dtgNarroProject->TotalItemCount = NarroProject::QueryCount(QQ::Equal(QQN::NarroProject()->Active, 1));
 
-            if ($this->dtgNarroProject->TotalItemCount == 0)
-                QApplication::Redirect('narro_project_edit.php?l=%s', QApplication::$Language->LanguageCode);
+            if ($this->dtgNarroProject->TotalItemCount == 0 && QApplication::$objUser->hasPermission('Can manage project', null, QApplication::$Language->LanguageId))
+                QApplication::Redirect(sprintf('narro_project_edit.php?l=%s', QApplication::$Language->LanguageCode));
 
             // Setup the $objClauses Array
             $objClauses = array();

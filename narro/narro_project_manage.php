@@ -391,6 +391,10 @@
                 );
 
                 proc_close(proc_open ("$strCommand &", array(), $foo));
+                /**
+                 * give the process a few seconds to start
+                 */
+                sleep(3);
             } elseif ($strParameter != 1) {
                 set_time_limit(0);
 

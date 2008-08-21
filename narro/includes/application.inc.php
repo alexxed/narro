@@ -123,11 +123,13 @@
     );
 
     QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
+    if (QApplication::QueryString('l'))
+        QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
 
     QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
-    QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', 'en-US', array('en-US'));
-    QApplication::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', 'en-US', array('en-US'));
+    QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', QApplication::QueryString('l'), array(QApplication::QueryString('l')));
+    QApplication::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(QApplication::$Language))?QApplication::$Language->LanguageId:1, array((isset(QApplication::$Language))?QApplication::$Language->LanguageId:1));
     QApplication::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
 
     if (isset($objNarroSession->User) && $objNarroSession->User instanceof NarroUser)
@@ -139,14 +141,12 @@
         // @todo add handling here
         throw Exception('Could not create an instance of NarroUser');
 
-    if (QApplication::QueryString('l'))
-        QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
-    else
+    if (!isset(QApplication::$Language))
         QApplication::$Language = QApplication::$objUser->Language;
 
     QApplication::$LanguageCode = QApplication::$Language->LanguageCode;
 
-        QApplication::$objPluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
+    QApplication::$objPluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
 
     QApplicationBase::$ClassFile['NarroFileImporter'] = __INCLUDES__ . '/narro/importer/NarroFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroProjectImporter'] = __INCLUDES__ . '/narro/importer/NarroProjectImporter.class.php';
