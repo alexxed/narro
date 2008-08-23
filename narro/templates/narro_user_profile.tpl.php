@@ -26,13 +26,20 @@
         <h1><?php echo sprintf(t('%s\'s translations'), $this->objUser->Username); ?></h1>
         <?php
             $intSuggestionCount = NarroSuggestion::CountByUserId($this->objUser->UserId);
-            $objDatabase = QApplication::$Database[1];
-            $intValidSuggestionCount = NarroContextInfo::QueryCount(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->ValidSuggestion->UserId, $this->objUser->UserId),
-                    QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId)
-                )
-            );
+            $objDatabase = NarroContextInfo::GetDatabase();
+            $strQuery = sprintf("
+                SELECT
+                    DISTINCT narro_context_info.valid_suggestion_id
+                FROM
+                    narro_context_info, narro_suggestion
+                WHERE
+                    narro_context_info.valid_suggestion_id=narro_suggestion.suggestion_id AND
+                    narro_suggestion.user_id=%d",
+                $this->objUser->UserId);
+
+            $objDbResult = $objDatabase->Query($strQuery);
+
+            $intValidSuggestionCount = $objDbResult->CountRows();
 
             if ($intSuggestionCount && $intValidSuggestionCount) {
                 echo sprintf(t('Out of a total of %d suggestions made by %s, %d were validated.'), $intSuggestionCount, $this->objUser->Username, $intValidSuggestionCount);
