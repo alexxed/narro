@@ -75,7 +75,7 @@
                     $strUserLink =
                             __HTTP_URL__ .
                             __VIRTUAL_DIRECTORY__ .
-                            __SUBDIRECTORY__ .
+                            __SUBDIRECTORY__ . '/' .
                             NarroLink::UserProfile($objNarroSuggestion->UserId)
                     ;
 
@@ -134,10 +134,13 @@
                             null,
                             '<p>' . t('Original text') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->Text->TextValue) . '</p>' .
                             '<p>' . t('Translation') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->SuggestionValue) . '</p>' .
+                            '<p>' . t('Author') . ': ' . sprintf('<a href="%s">%s</a>', $strUserLink, $objNarroSuggestion->User->Username) . '</p>' .
+                            '<p>' . t('Contexts where the suggestion can be used:') . '</p>' .
                             '<ul>' . $strDescription . '</ul>' .
                             t('Click on the context to use the suggestion, on the file name or project name to search for the suggestion in them.')
                         );
                         $objItem->PubDate = new QDateTime($objNarroSuggestion->Created);
+                        $objItem->Author = $objNarroSuggestion->User->Username;
                         $objRssFeed->AddItem($objItem);
                     }
                 }
@@ -331,7 +334,7 @@
                     $strUserLink =
                             __HTTP_URL__ .
                             __VIRTUAL_DIRECTORY__ .
-                            __SUBDIRECTORY__ .
+                            __SUBDIRECTORY__ . '/' .
                             NarroLink::UserProfile($objNarroContextInfo->ValidatorUserId)
                     ;
 
