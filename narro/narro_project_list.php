@@ -69,8 +69,9 @@
             }
 
             $this->dtgNarroProject->AddColumn($this->colPercentTranslated);
-
             $this->dtgNarroProject->AddColumn($this->colActions);
+
+            $this->dtgNarroProject->SortColumnIndex = 0;
 
             $this->pnlTopUsers = new NarroTopUsersPanel($this);
             $this->pnlNewUsers = new NarroNewUsersPanel($this);
