@@ -268,7 +268,7 @@
 
             $this->lblMessage->Text = '';
 
-            if ($this->txtSuggestionValue->Rendered)
+            if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
                 $this->txtSuggestionValue->Focus();
 
         }
@@ -370,7 +370,7 @@
         // Create and Setup chkGoToNext
         protected function chkGoToNext_Create() {
             $this->chkGoToNext = new QCheckBox($this);
-            $this->chkGoToNext->Checked = (bool) QApplication::QueryString('gn');
+            $this->chkGoToNext->Checked = true;
         }
 
         // Create and Setup txtSuggestionValue
