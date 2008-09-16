@@ -1923,7 +1923,7 @@
 		 * @var string strLanguageCode
 		 */
 		protected $strLanguageCode;
-		const LanguageCodeMaxLength = 6;
+		const LanguageCodeMaxLength = 64;
 		const LanguageCodeDefault = null;
 
 
@@ -1932,7 +1932,7 @@
 		 * @var string strCountryCode
 		 */
 		protected $strCountryCode;
-		const CountryCodeMaxLength = 6;
+		const CountryCodeMaxLength = 64;
 		const CountryCodeDefault = null;
 
 
