@@ -31,7 +31,8 @@
 
             preg_match_all('/%[Ssd]/', $strPreparedOriginal, $arrPoMatches);
             preg_match_all('/[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}[\s\.\;$]/', $strPreparedOriginal, $arrMatches);
-            preg_match_all('/&[a-zA-Z\-0-9]+\;/', $strPreparedOriginal, $arrMoz1Matches);
+            if ($objProject->ProjectType != NarroProjectType::Gettext)
+                preg_match_all('/&[a-zA-Z\-0-9]+\;/', $strPreparedOriginal, $arrMoz1Matches);
             preg_match_all('/\%[0-9]\$S/', $strPreparedOriginal, $arrMoz2Matches);
             if (is_array($arrPoMatches[0])) {
                 $arrMatches[0] = array_merge($arrMatches[0], $arrPoMatches[0]);
