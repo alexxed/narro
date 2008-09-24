@@ -16,41 +16,88 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroEntityCheck extends NarroPlugin {
+        private static $arrEntityRegex;
+        private static $arrIgnoreRegex;
 
         public function __construct() {
             parent::__construct();
             $this->strName = t('Entity check');
         }
 
-        public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+        public static function RegisterEntityFormat($strRegexForEntity) {
+            self::$arrEntityRegex[] = $strRegexForEntity;
+        }
+
+        public static function RegisterIgnoreCharacters($strRegexFind, $strReplace) {
+            self::$arrIgnoreRegex[] = array('find' => $strRegexFind, 'replace' => $strReplace);
+        }
+
+        public static function StripEntities($strText, $strWithWhat = ' ') {
+            if (is_array(self::$arrEntityRegex))
+                foreach(self::$arrEntityRegex as $strRegexForEntity)
+                    $strText = preg_replace($strRegexForEntity, $strWithWhat, $strText);
+
+            return $strText;
+        }
+
+        public static function GetEntities($strText) {
+            if (is_array(self::$arrEntityRegex)) {
+                $arrEntityMatches = array();
+                foreach(self::$arrEntityRegex as $strRegexForEntity)
+                    if (preg_match_all($strRegexForEntity, $strText, $arrMatches))
+                        $arrEntityMatches = array_merge($arrEntityMatches, $arrMatches[0]);
+            }
+
+            if (is_array($arrEntityMatches))
+                return array_unique($arrEntityMatches);
+            else
+                return false;
+        }
+
+        public static function StripIgnoreCharacters($strText) {
+            if (is_array(self::$arrIgnoreRegex))
+                foreach(self::$arrIgnoreRegex as $arrFindReplace)
+                    $strText = preg_replace($arrFindReplace['find'], $arrFindReplace['replace'], $strText);
+
+            return $strText;
+        }
+
+        public function SaveSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
             return $this->ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
-        public function ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
-            $strPreparedOriginal = preg_replace('/\\r|\\n|\\t/', ' ', $strOriginal);
-
-            preg_match_all('/%[Ssd]/', $strPreparedOriginal, $arrPoMatches);
-            preg_match_all('/[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}[\s\.\;$]/', $strPreparedOriginal, $arrMatches);
+        /**
+         * Checks for forgotten variables and entities
+         * @param $strOriginal
+         * @param $strTranslation
+         * @param $strContext
+         * @param $objFile
+         * @param $objProject
+         * @return array with the same parameters given
+         */
+        public function ValidateSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
+            /**
+             * replace CR, LF and tabs with a space
+             */
+            self::RegisterIgnoreCharacters('/\\r|\\n|\\t/', ' ');
+            /**
+             * usual sprintf placeholders catch
+             */
+            self::RegisterEntityFormat('/%[a-zA-Z.0-9\$]+/');
+            self::RegisterEntityFormat('/[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}[\s\.\;$]/');
             if ($objProject->ProjectType != NarroProjectType::Gettext)
-                preg_match_all('/&[a-zA-Z\-0-9]+\;/', $strPreparedOriginal, $arrMoz1Matches);
-            preg_match_all('/\%[0-9]\$S/', $strPreparedOriginal, $arrMoz2Matches);
-            if (is_array($arrPoMatches[0])) {
-                $arrMatches[0] = array_merge($arrMatches[0], $arrPoMatches[0]);
-                $arrMatches[0] = array_unique($arrMatches[0]);
-            }
-            if (is_array($arrMoz1Matches[0])) {
-                $arrMatches[0] = array_merge($arrMatches[0], $arrMoz1Matches[0]);
-                $arrMatches[0] = array_unique($arrMatches[0]);
-            }
-            if (is_array($arrMoz2Matches[0])) {
-                $arrMatches[0] = array_merge($arrMatches[0], $arrMoz2Matches[0]);
-                $arrMatches[0] = array_unique($arrMatches[0]);
-            }
+                /**
+                 * &entity; catch
+                 */
+                self::RegisterEntityFormat('/&[a-zA-Z\-0-9]+\;/');
 
-            if (isset($arrMatches[0]) && count($arrMatches[0])) {
-                foreach($arrMatches[0] as $strMatch) {
-                    if (strpos($strTranslation, trim($strMatch)) === false)
-                        $arrDiff[] = htmlspecialchars(trim($strMatch), null, 'utf-8');
+            $strPreparedOriginal = self::StripIgnoreCharacters($strOriginal);
+
+            $arrEntities = self::GetEntities($strOriginal);
+            if (count($arrEntities)) {
+                foreach($arrEntities as $strEntity) {
+                    if (strpos($strTranslation, trim($strEntity)) === false)
+                        $arrDiff[] = htmlspecialchars(trim($strEntity), null, 'utf-8');
                 }
 
                 if (isset($arrDiff) && $arrDiff) {
