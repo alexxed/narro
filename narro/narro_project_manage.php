@@ -504,7 +504,8 @@
                                 break;
                             default:
                                 $objArchiver = new ZipArchive();
-                                unlink($strExportArchive);
+                                if (file_exists($strExportArchive))
+                                    unlink($strExportArchive);
                                 if ($objArchiver->open($strExportArchive, ZIPARCHIVE::CREATE) !== true ) {
                                     throw new Exception(__METHOD__ . ':Can\'t open file: ' . $strExportArchive);
                                 }
