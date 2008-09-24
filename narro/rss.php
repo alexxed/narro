@@ -87,6 +87,7 @@
                                 '/' .
                                 NarroLink::ContextSuggest(
                                     $objNarroContextInfo->Context->ProjectId,
+                                    0,
                                     $objNarroContextInfo->ContextId,
                                     1,
                                     2,
@@ -144,6 +145,8 @@
                         $objRssFeed->AddItem($objItem);
                     }
                 }
+                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
                 QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
 
@@ -202,6 +205,7 @@
                             '/' .
                             NarroLink::ContextSuggest(
                                 $objNarroContextInfo->Context->ProjectId,
+                                0,
                                 $objNarroContextInfo->ContextId
                             )
                     );
@@ -222,6 +226,17 @@
                             $strContextLink
                         );
                         $objItem->PubDate = new QDateTime($objNarroContextInfo->Context->Text->Created);
+                        if ($objNarroContextInfo->Context->Text->HasComments)
+                            $objItem->Comments =
+                                __HTTP_URL__ .
+                                __VIRTUAL_DIRECTORY__ .
+                                __SUBDIRECTORY__ .
+                                sprintf('/narro_context_suggest.php?l=%s&p=%d&c=%d#textcomments',
+                                    QApplication::$Language->LanguageCode,
+                                    $objNarroContextInfo->Context->ProjectId,
+                                    $objNarroContextInfo->ContextId
+                                )
+                            ;
                     }
 
                     $intOldTextId = $objNarroContextInfo->Context->TextId;
@@ -264,6 +279,8 @@
                     $strDescription .= sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName);
 
                 }
+                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
                 QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
 
@@ -314,6 +331,7 @@
                             '/' .
                             NarroLink::ContextSuggest(
                                 $objNarroContextInfo->Context->ProjectId,
+                                0,
                                 $objNarroContextInfo->ContextId
                             )
                     );
@@ -398,7 +416,8 @@
                     $objRssFeed->AddItem($objItem);
                     $strDescription = '';
                 }
-
+                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
                 QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
 
@@ -427,12 +446,12 @@
 
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $strSqlQuery = sprintf(
-                        'SELECT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
+                        'SELECT DISTINCT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(narro_text_comment.created) > 3600 ORDER BY narro_text_comment.created DESC',
                          $objProject->ProjectId,
                          QApplication::$Language->LanguageId
                     );
                 else
-                    $strSqlQuery = sprintf('SELECT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
+                    $strSqlQuery = sprintf('SELECT DISTINCT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(narro_text_comment.created) > 3600 ORDER BY narro_text_comment.created DESC',
                          QApplication::$Language->LanguageId
                     );
 
@@ -494,6 +513,8 @@
                         $objRssFeed->AddItem($objItem);
                     }
                 }
+                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
                 QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
 
