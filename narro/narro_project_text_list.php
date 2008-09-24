@@ -21,7 +21,7 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             switch($this->lstSearchType->SelectedValue) {
                 case NarroTextListForm::SEARCH_SUGGESTIONS:
                     $this->SetMessage(t('Note that, since you\'re searching suggestions, you won\'t see the texts without suggestions.'));
@@ -54,9 +54,10 @@
             else
                 $strText = t('Details');
 
-            return 
+            return
                 NarroLink::ContextSuggest(
                     $this->objNarroProject->ProjectId,
+                    0,
                     $objNarroContextInfo->Context->ContextId,
                     $this->lstTextFilter->SelectedValue,
                     $this->lstSearchType->SelectedValue,

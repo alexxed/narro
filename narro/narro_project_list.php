@@ -96,6 +96,7 @@
                 NarroLink::ContextSuggest(
                     $objNarroProject->ProjectId,
                     0,
+                    0,
                     2,
                     1,
                     '',
@@ -115,6 +116,7 @@
             return
                 NarroLink::ContextSuggest(
                     $objNarroProject->ProjectId,
+                    0,
                     0,
                     2,
                     1,

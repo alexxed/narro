@@ -50,6 +50,7 @@
 
             return NarroLink::ContextSuggest(
                         $this->objNarroFile->Project->ProjectId,
+                        $this->objNarroFile->FileId,
                         $objNarroContextInfo->ContextId,
                         $this->lstTextFilter->SelectedValue,
                         $this->lstSearchType->SelectedValue,

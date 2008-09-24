@@ -113,6 +113,7 @@
                     QApplication::Redirect(
                         NarroLink::ContextSuggest(
                             $this->intProjectId,
+                            $this->intFileId,
                             $objContext->ContextId,
                             $this->intTextFilter,
                             $this->intSearchType,
@@ -825,7 +826,7 @@
                 return true;
             }
             else {
-                QApplication::Redirect(NarroLink::ContextSuggest($this->intProjectId, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText));
+                QApplication::Redirect(NarroLink::ContextSuggest($this->intProjectId, $this->intFileId, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText));
             }
         }
 
