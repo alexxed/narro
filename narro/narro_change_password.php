@@ -31,7 +31,7 @@
                 $strUsername = QApplication::QueryString('u');
                 if ($strPassHash && $strUsername) {
                     if ($objUser = NarroUser::LoadByUsernameAndPassword($strUsername, $strPassHash)) {
-                        require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
+                        require_once 'Zend/Session/Namespace.php';
                         $objNarroSession = new Zend_Session_Namespace('Narro');
                         $objNarroSession->User = $objUser;
                         QApplication::$objUser = $objUser;
@@ -64,7 +64,7 @@
                 $this->lblMessage->Text = t('Failed to change the password.');
             }
 
-            require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
+            require_once 'Zend/Session/Namespace.php';
             $objNarroSession = new Zend_Session_Namespace('Narro');
             $objNarroSession->User = QApplication::$objUser;
             $this->lblMessage->ForeColor = 'green';
