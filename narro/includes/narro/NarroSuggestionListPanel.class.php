@@ -672,6 +672,7 @@
                                 sprintf('<a target="_blank" href="%s">%s</a>',
                                     NarroLink::ContextSuggest(
                                         QApplication::QueryString('p'),
+                                        0,
                                         $objContext->ContextId,
                                         QApplication::QueryString('tf'),
                                         QApplication::QueryString('st'),

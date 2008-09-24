@@ -64,11 +64,12 @@
                 return $strLink;
         }
 
-        public static function ContextSuggest($intProjectId, $intContextId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $intCurrentContext = null, $intContextCount = null, $intSortColumnIndex = -1, $intSortDirection = 0, $strLinkText = '') {
+        public static function ContextSuggest($intProjectId, $intFileId, $intContextId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $intCurrentContext = null, $intContextCount = null, $intSortColumnIndex = -1, $intSortDirection = 0, $strLinkText = '') {
             $strLink = sprintf(
-                'narro_context_suggest.php?l=%s&p=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d&o=%d&a=%d',
+                'narro_context_suggest.php?l=%s&p=%d&f=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d&o=%d&a=%d',
                 QApplication::$Language->LanguageCode,
                 $intProjectId,
+                $intFileId,
                 $intContextId,
                 $intTextFilter,
                 $intSearchType,
