@@ -44,20 +44,10 @@
                 throw $objExc;
             }
 
-            $this->lblMessage = new QLabel($this);
-            $this->lblMessage->ForeColor = 'green';
-            $this->lblMessage->HtmlEntities = false;
-            $this->lblMessage->DisplayStyle = QDisplayStyle::Block;
+            $this->lblMessage_Create();
+            $this->chkShowAllLanguages_Create();
 
             $this->lblSuggestions = new QLabel($this);
-
-            $this->chkShowAllLanguages = new QCheckBox($this);
-            $this->chkShowAllLanguages->Text = t('Show suggestions from all languages');
-            if (QApplication::$blnUseAjax)
-                $this->chkShowAllLanguages->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgSuggestions_Bind'));
-            else
-                $this->chkShowAllLanguages->AddAction(new QClickEvent(), new QServerControlAction($this, 'dtgSuggestions_Bind'));
-
 
             // Setup DataGrid Columns
             $this->colSuggestion = new QDataGridColumn(t('Translation'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
@@ -95,6 +85,22 @@
             $this->dtgSuggestions->AddColumn($this->colAuthor);
             $this->dtgSuggestions->AddColumn($this->colVote);
             $this->dtgSuggestions->AddColumn($this->colActions);
+        }
+
+        private function lblMessage_Create() {
+            $this->lblMessage = new QLabel($this);
+            $this->lblMessage->ForeColor = 'green';
+            $this->lblMessage->HtmlEntities = false;
+            $this->lblMessage->DisplayStyle = QDisplayStyle::Block;
+        }
+
+        private function chkShowAllLanguages_Create() {
+            $this->chkShowAllLanguages = new QCheckBox($this);
+            $this->chkShowAllLanguages->Text = t('Show suggestions from all languages');
+            if (QApplication::$blnUseAjax)
+                $this->chkShowAllLanguages->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgSuggestions_Bind'));
+            else
+                $this->chkShowAllLanguages->AddAction(new QClickEvent(), new QServerControlAction($this, 'dtgSuggestions_Bind'));
         }
 
         public function GetControlHtml() {
@@ -238,7 +244,7 @@
                     $lstAccessKey = new QListBox($this, $strControlId);
                     foreach($arrAccKeys as $strKey) {
                         $lstAccessKey->AddItem($strKey, $strKey, $this->objNarroContextInfo->SuggestionAccessKey == $strKey);
-                    }
+                }
                     //foreach
                     if (QApplication::$blnUseAjax)
                         $lstAccessKey->AddAction(new QChangeEvent(), new QAjaxAction('lstAccessKey_Change'));
@@ -246,6 +252,8 @@
                         $lstAccessKey->AddAction(new QChangeEvent(), new QServerAction('lstAccessKey_Change')
                     );
                 }
+
+
 
                 if ($this->objNarroContextInfo->SuggestionAccessKey != '')
                     $intAccPos = mb_stripos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
