@@ -30,11 +30,8 @@
         <?php $this->lblMessage->Render() ?>
         <table>
             <tr>
-                <td><?php echo t('Username')?>:</td>
+                <td><?php echo t('Username or <a href="http://www.openid.net">OpenID</a>')?>:</td>
                 <td><?php $this->txtUsername->Render() ?></td>
-                <td rowspan="2"><h3><?php echo t('or') ?></h3></td>
-                <td rowspan="2" valign="middle"><?php echo t('<a href="http://www.openid.net">OpenID</a>')?>:</td>
-                <td rowspan="2" valign="middle"><?php $this->txtOpenId->Render() ?></td>
             </tr>
             <tr>
                 <td><?php echo t('Password')?>:</td>

@@ -22,7 +22,6 @@
         protected $lblMessage;
         protected $txtUsername;
         protected $txtPassword;
-        protected $txtOpenId;
         protected $btnLogin;
         protected $btnRecoverPassword;
         protected $txtPreviousUrl;
@@ -46,8 +45,6 @@
             $this->btnRecoverPassword->Text = t('Lost password or username');
             $this->btnRecoverPassword->AddAction(new QClickEvent(), new QServerAction('btnRecoverPassword_Click'));
             $this->btnRecoverPassword->TabIndex = 5;
-            $this->txtOpenId = new QTextBox($this, 'openid');
-            $this->txtOpenId->TabIndex = 3;
 
             if (isset($_SERVER['HTTP_REFERER']) && !strstr($_SERVER['HTTP_REFERER'], basename(__FILE__)) && $_SERVER['HTTP_REFERER'] !='')
                 $this->txtPreviousUrl = $_SERVER['HTTP_REFERER'];
@@ -57,16 +54,16 @@
 
         protected function Form_PreRender() {
             if (isset($_REQUEST['openid_mode'])) {
-                require_once __INCLUDES__ . "/Zend/Auth.php";
-                require_once __INCLUDES__ . "/Zend/Auth/Adapter/OpenId.php";
-                require_once __INCLUDES__ . "/Zend/Auth/Storage/NonPersistent.php";
+                require_once "Zend/Auth.php";
+                require_once "Zend/Auth/Adapter/OpenId.php";
+                require_once "Zend/Auth/Storage/NonPersistent.php";
 
                 $auth = Zend_Auth::getInstance();
-                $auth->authenticate(new Zend_Auth_Adapter_OpenId($this->txtOpenId->Text));
+                $auth->authenticate(new Zend_Auth_Adapter_OpenId($this->txtUsername->Text));
 
                 if ($auth->hasIdentity()) {
                     $objUser = NarroUser::LoadByUsername($auth->getIdentity());
-                    require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
+                    require_once 'Zend/Session/Namespace.php';
                     $objNarroSession = new Zend_Session_Namespace('Narro');
 
                     if (!$objUser instanceof NarroUser) {
@@ -99,17 +96,17 @@
         }
 
         protected function btnLogin_Click($strFormId, $strControlId, $strParameter) {
-            if (trim($this->txtOpenId->Text) != '') {
-                require_once __INCLUDES__ . "/Zend/Auth.php";
-                require_once __INCLUDES__ . "/Zend/Auth/Adapter/OpenId.php";
-                require_once __INCLUDES__ . "/Zend/Auth/Storage/NonPersistent.php";
+            if (trim($this->txtPassword->Text) == '') {
+                require_once "Zend/Auth.php";
+                require_once "Zend/Auth/Adapter/OpenId.php";
+                require_once "Zend/Auth/Storage/NonPersistent.php";
 
-                $this->txtOpenId->Text = preg_replace('/\/$/', '', $this->txtOpenId->Text);
+                $this->txtUsername->Text = preg_replace('/\/$/', '', $this->txtUsername->Text);
 
                 $status = "";
                 $auth = Zend_Auth::getInstance();
                 $result = $auth->authenticate(
-                new Zend_Auth_Adapter_OpenId($this->txtOpenId->Text));
+                new Zend_Auth_Adapter_OpenId($this->txtUsername->Text));
                 if ($result->isValid()) {
                     Zend_OpenId::redirect(Zend_OpenId::selfURL());
                 } else {
@@ -118,12 +115,12 @@
                         $status .= "$message<br>\n";
                     }
                     $this->lblMessage->ForeColor = 'red';
-                    $this->lblMessage->Text = $status;
+                    $this->lblMessage->Text = 'OpenId: ' . $status;
                 }
             }
             else {
                 if (trim($this->txtPassword->Text) != '' && $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text))) {
-                    require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
+                    require_once 'Zend/Session/Namespace.php';
                     $objNarroSession = new Zend_Session_Namespace('Narro');
                     $objNarroSession->User = $objUser;
 
