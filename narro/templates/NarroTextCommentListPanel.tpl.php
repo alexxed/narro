@@ -30,7 +30,7 @@
         <br />
         <?php $_CONTROL->btnAddTextComment->Render(); ?>
     </p>
-    <?php } else {
-        echo '<p>' . sprintf(t('You can debate texts if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . QApplication::$Language->LanguageCode, 'narro_login.php?l=' . QApplication::$Language->LanguageCode) . '</p>';
-    }
+    <?php } elseif (QApplication::$objUser->UserId == 0) {
+              echo '<p>' . sprintf(t('You can debate texts if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . QApplication::$Language->LanguageCode, 'narro_login.php?l=' . QApplication::$Language->LanguageCode) . '</p>';
+          }
     ?>
