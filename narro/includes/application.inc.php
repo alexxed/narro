@@ -94,7 +94,7 @@
     /////////////////////////////
     // Start Session Handler (if required)
     /////////////////////////////
-    require_once __INCLUDES__ . '/Zend/Session.php';
+    require_once 'Zend/Session.php';
     Zend_Session::setOptions(
         array(
             'name'=>'NARRO_ID',
@@ -104,14 +104,14 @@
         )
     );
 
-    require_once __INCLUDES__ . '/Zend/Session/Namespace.php';
+    require_once 'Zend/Session/Namespace.php';
     $objNarroSession = new Zend_Session_Namespace('Narro');
 
     QCache::$CachePath = __DOCROOT__ . __SUBDIRECTORY__ . '/data/cache';
     QForm::$FormStateHandler = 'QFileFormStateHandler';
     QFileFormStateHandler::$StatePath = __TMP_PATH__ . '/qform_state';
 
-    require_once __INCLUDES__ . '/Zend/Cache.php';
+    require_once 'Zend/Cache.php';
 
     $frontendOptions = array(
         'lifetime' => null, // cache forever
