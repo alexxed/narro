@@ -528,10 +528,10 @@
                 if (NarroSuggestion::QueryCount(QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId)) == 0) {
                     $arrCtx = NarroContextInfo::QueryArray(QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $this->objNarroContextInfo->Context->TextId));
 
-                    foreach($arrCtx as $objContext) {
-                        $objContext->HasSuggestions = 0;
-                        $objContext->Modified = date('Y-m-d H:i:s');
-                        $objContext->Save();
+                    foreach($arrCtx as $objContextInfo) {
+                        $objContextInfo->HasSuggestions = 0;
+                        $objContextInfo->Modified = date('Y-m-d H:i:s');
+                        $objContextInfo->Save();
                     }
 
                     $this->objNarroContextInfo->HasSuggestions = 0;
@@ -666,19 +666,19 @@
                     return false;
                 else {
 
-                    foreach($arrCtx as $objContext) {
-                        if ($objContext->ContextId != $this->objNarroContextInfo->ContextId)
+                    foreach($arrCtx as $objContextInfo) {
+                        if ($objContextInfo->ContextId != $this->objNarroContextInfo->ContextId)
                             $arrTexts[
                                 sprintf('<a target="_blank" href="%s">%s</a>',
                                     NarroLink::ContextSuggest(
-                                        $objContext->ProjectId,
-                                        $objContext->FileId,
-                                        $objContext->ContextId,
+                                        $objContextInfo->Context->ProjectId,
+                                        $objContextInfo->Context->FileId,
+                                        $objContextInfo->ContextId,
                                         QApplication::QueryString('tf'),
                                         QApplication::QueryString('st'),
                                         QApplication::QueryString('s')
                                     ),
-                                    $objContext->ContextId
+                                    $objContextInfo->ContextId
                                 )
                             ] = 1;
                     }
