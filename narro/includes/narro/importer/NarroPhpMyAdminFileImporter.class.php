@@ -30,7 +30,10 @@
 
                             $objNarroContextInfo = $this->GetContextInfo($strText, trim($strContext));
                             if ($objNarroContextInfo->ValidSuggestionId) {
-                                $strNewBlock = str_replace($strText, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrTemplateMatches[0][$intKey]);
+                                /**
+                                 * @todo replace the following code with a replacement of the full line
+                                 */
+                                $strNewBlock = NarroString::Replace("= '" . $strText . "'", "= '" . $objNarroContextInfo->ValidSuggestion->SuggestionValue . "'", $arrTemplateMatches[0][$intKey], 1);
                                 $strTemplateFileContents = str_replace($arrTemplateMatches[0][$intKey], $strNewBlock, $strTemplateFileContents);
                             }
 
