@@ -456,6 +456,20 @@
                 else
                     $arrTranslatedFile[$strContext]['MsgStr'] = null;
 
+                if (strstr($arrTranslatedFile[$strContext]['Flag'], 'fuzzy')) {
+                    /**
+                     * if the string is marked fuzzy, don't import the translation and delete fuzzy flag
+                     */
+                    $arrTranslatedFile[$strContext]['MsgStr'] = '';
+
+                    $arrTranslatedFile[$strContext]['Flag'] = str_replace(', fuzzy', '', $arrTranslatedFile[$strContext]['Flag']);
+                    /**
+                     * if no other flags are found, just empty the variable
+                     */
+                    if (strlen(trim($arrTranslatedFile[$strContext]['Flag'])) < 4) $arrTranslatedFile[$strContext]['Flag'] = null;
+                }
+
+
                 for($intPluralId=0; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
                     if (strstr($arrTranslatedFile[$strContext]['Flag'], 'fuzzy')) {
                         /**
