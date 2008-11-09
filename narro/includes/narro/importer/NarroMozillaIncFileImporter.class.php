@@ -28,6 +28,9 @@
 
             $strTemplateContents = file_get_contents($strTemplateFile);
 
+            if (strstr($strTemplateContents, '# #define MOZ_LANGPACK_CONTRIBUTORS'))
+                $strTemplateContents = preg_replace('/^# #define MOZ_LANGPACK_CONTRIBUTORS.*$/m', '#define MOZ_LANGPACK_CONTRIBUTORS <em:contributor>Joe Solon</em:contributor> <em:contributor>Suzy Solon</em:contributor>', $strTemplateContents);
+
             if (!$strTranslatedFileContents || !$strTemplateContents)
                 return false;
 
@@ -95,6 +98,9 @@
                 chmod($strTranslatedFile, 0666);
                 return false;
             }
+
+            if (strstr($strTemplateContents, '#define MOZ_LANGPACK_CONTRIBUTORS'))
+                $strTemplateContents = preg_replace('/^#\s+#define MOZ_LANGPACK_CONTRIBUTORS.*$/m', '#define MOZ_LANGPACK_CONTRIBUTORS <em:contributor>Joe Solon</em:contributor> <em:contributor>Suzy Solon</em:contributor>', $strTemplateContents);
 
             $arrTemplateContents = split("\n", $strTemplateContents);
 

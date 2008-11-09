@@ -58,7 +58,13 @@
              */
             $strTemplateContents = file_get_contents($strTemplateFile);
 
+            /**
+             * handle the credits.translation
+             */
             if ($strTemplateContents) {
+                if (strstr($strTemplateContents, 'credit.translation'))
+                    $strTemplateContents = preg_replace('/<!ENTITY\s+credit.translation\s+"">/', '<!ENTITY credit.translation "<h3>Translators</h3><ul><li>Name Here</li></ul>">', $strTemplateContents);
+
                 /**
                  * Fetch all entities and eventual comments before them
                  */
@@ -150,16 +156,16 @@
 
             if (is_array($arrTemplateMatches))
                 foreach($arrTemplateMatches[1] as $intPos=>$strVal) {
-                    $arrTemplate[$strVal] = $arrTemplateMatches[2][$intPos];
-                    $arrTemplateLines[$strVal] = $arrTemplateMatches[0][$intPos];
+                        $arrTemplate[$strVal] = $arrTemplateMatches[2][$intPos];
+                        $arrTemplateLines[$strVal] = $arrTemplateMatches[0][$intPos];
                 }
 
             preg_match_all('/^<!ENTITY\s+([^\s]+)\s+\'([^\']*)\'\s?>\s*/ms', $strTemplateContents, $arrTemplateMatches);
 
             if (is_array($arrTemplateMatches))
                 foreach($arrTemplateMatches[1] as $intPos=>$strVal) {
-                    $arrTemplate[$strVal] = $arrTemplateMatches[2][$intPos];
-                    $arrTemplateLines[$strVal] = $arrTemplateMatches[0][$intPos];
+                        $arrTemplate[$strVal] = $arrTemplateMatches[2][$intPos];
+                        $arrTemplateLines[$strVal] = $arrTemplateMatches[0][$intPos];
                 }
 
             if (!is_array($arrTemplate) || count($arrTemplate) == 0)
