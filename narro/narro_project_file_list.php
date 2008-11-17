@@ -55,7 +55,7 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             $this->SetupNarroProject();
 
             // Setup DataGrid Columns
@@ -152,7 +152,7 @@
 
         public function dtgNarroFile_FileNameColumn_Render(NarroFile $objNarroFile) {
             if ($objNarroFile->TypeId == NarroFileType::Folder)
-                return sprintf('<img src="%s" style="vertical-align:middle" /> %s',                
+                return sprintf('<img src="%s" style="vertical-align:middle" /> %s',
                     __IMAGE_ASSETS__ . '/folder.png',
                     NarroLink::ProjectFileList(
                         $this->objNarroProject->ProjectId,
@@ -407,7 +407,7 @@
             $objFileImporter->CheckEqual = true;
             $objFileImporter->File = $objFile;
 
-            $objFileImporter->OnlySuggestions = true;
+            $objFileImporter->OnlySuggestions = !QApplication::$objUser->hasPermission('Can validate', $objFile->ProjectId, QApplication::$Language->LanguageId);
             $objFileImporter->DeactivateFiles = false;
             $objFileImporter->DeactivateContexts = false;
 
