@@ -1363,7 +1363,6 @@
 		 * @var string strCreated
 		 */
 		protected $strCreated;
-		const CreatedMaxLength = 19;
 		const CreatedDefault = null;
 
 
@@ -1372,7 +1371,6 @@
 		 * @var string strModified
 		 */
 		protected $strModified;
-		const ModifiedMaxLength = 19;
 		const ModifiedDefault = null;
 
 
