@@ -143,6 +143,7 @@
         }
 
         public function ExportFile($strTemplateFile, $strTranslatedFile) {
+            NarroLog::LogMessage(1, sprintf(t('Exporting %s using %s'), $strTemplateFile, __CLASS__));
             $strTemplateContents = file_get_contents($strTemplateFile);
 
             if (!$strTemplateContents) {
@@ -152,7 +153,7 @@
                 return false;
             }
 
-            preg_match_all('/^<!ENTITY\s+([^\s]+)\s+"([^"]*)"\s?>\s*/ms', $strTemplateContents, $arrTemplateMatches);
+            preg_match_all('/<!ENTITY\s+([^\s]+)\s+"([^"]*)"\s?>/m', $strTemplateContents, $arrTemplateMatches);
 
             if (is_array($arrTemplateMatches))
                 foreach($arrTemplateMatches[1] as $intPos=>$strVal) {
@@ -160,7 +161,7 @@
                         $arrTemplateLines[$strVal] = $arrTemplateMatches[0][$intPos];
                 }
 
-            preg_match_all('/^<!ENTITY\s+([^\s]+)\s+\'([^\']*)\'\s?>\s*/ms', $strTemplateContents, $arrTemplateMatches);
+            preg_match_all('/<!ENTITY\s+([^\s]+)\s+\'([^\']*)\'\s?>/m', $strTemplateContents, $arrTemplateMatches);
 
             if (is_array($arrTemplateMatches))
                 foreach($arrTemplateMatches[1] as $intPos=>$strVal) {
@@ -168,8 +169,12 @@
                         $arrTemplateLines[$strVal] = $arrTemplateMatches[0][$intPos];
                 }
 
-            if (!is_array($arrTemplate) || count($arrTemplate) == 0)
+            if (!is_array($arrTemplate) || count($arrTemplate) == 0) {
+                NarroLog::LogMessage(2, sprintf(t('No contexts found in %s'), $strTemplateFile));
                 return false;
+            }
+
+            NarroLog::LogMessage(1, sprintf(t('Found %d contexts in %s'), count($arrTemplate), $strTemplateFile));
 
             $strTranslateContents = '';
 
