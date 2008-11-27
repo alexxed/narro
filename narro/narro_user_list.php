@@ -24,15 +24,13 @@
         // DataGrid Columns
         protected $colUsername;
         protected $colEmail;
+        protected $colRoles;
         protected $colPreferences;
         protected $colActions;
 
 
         protected function Form_Create() {
             parent::Form_Create();
-
-            if (!QApplication::$objUser->hasPermission('Can manage users'))
-                QApplication::Redirect(NarroLink::ProjectList());
 
             $this->objUser = NarroUser::Load(QApplication::QueryString('u'));
 
@@ -41,7 +39,9 @@
             $this->colUsername->HtmlEntities = false;
             $this->colEmail = new QDataGridColumn(QApplication::Translate('Email'), '<?= $_FORM->dtgNarroUserList_EmailColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUser()->Email), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUser()->Email, false)));
             $this->colEmail->HtmlEntities = false;
-            $this->colPreferences = new QDataGridColumn(QApplication::Translate('Preferences'), '<?= $_FORM->dtgNarroUserList_DataColumn_Render($_ITEM) ?>');
+            $this->colRoles = new QDataGridColumn(QApplication::Translate('Roles'), '<?= $_FORM->dtgNarroUserList_RolesColumn_Render($_ITEM) ?>');
+            $this->colRoles->HtmlEntities = false;
+            $this->colPreferences = new QDataGridColumn(QApplication::Translate('Preferences'), '<?= $_FORM->dtgNarroUserList_PreferencesColumn_Render($_ITEM) ?>');
             $this->colPreferences->HtmlEntities = false;
 
             $this->colActions = new QDataGridColumn(QApplication::Translate('Actions'), '<?= $_FORM->dtgNarroUserList_ActionsColumn_Render($_ITEM) ?>');
@@ -68,35 +68,59 @@
             $this->dtgNarroUserList->SetDataBinder('dtgNarroUserList_Bind');
 
             $this->dtgNarroUserList->AddColumn($this->colUsername);
-            $this->dtgNarroUserList->AddColumn($this->colEmail);
-            $this->dtgNarroUserList->AddColumn($this->colPreferences);
-            $this->dtgNarroUserList->AddColumn($this->colActions);
+
+            if (QApplication::$objUser->hasPermission('Can manage users')) {
+                $this->dtgNarroUserList->AddColumn($this->colEmail);
+                $this->dtgNarroUserList->AddColumn($this->colRoles);
+                $this->dtgNarroUserList->AddColumn($this->colPreferences);
+                $this->dtgNarroUserList->AddColumn($this->colActions);
+            }
+
+
         }
 
         public function dtgNarroUserList_UsernameColumn_Render(NarroUser $objNarroUser) {
             if ($objNarroUser->UserId == NarroUser::ANONYMOUS_USER_ID)
                 return t('Anonymous');
             else
-                return $objNarroUser->Username;
+                return NarroLink::UserProfile($objNarroUser->UserId, $objNarroUser->Username);
         }
 
         public function dtgNarroUserList_EmailColumn_Render(NarroUser $objNarroUser) {
             return $objNarroUser->Email;
         }
 
-        public function dtgNarroUserList_DataColumn_Render(NarroUser $objNarroUser) {
-            return '<pre>' . var_export(unserialize($objNarroUser->Data),true) . '</pre>';
+        public function dtgNarroUserList_RolesColumn_Render(NarroUser $objNarroUser) {
+            $arrRoles = NarroUserRole::LoadArrayByUserId($objNarroUser->UserId, array(QQ::OrderBy(QQN::NarroUserRole()->LanguageId, true, QQN::NarroUserRole()->ProjectId, true, QQN::NarroUserRole()->Role->RoleName, true)));
+
+            $strOutput = '<table width="100%">';
+            foreach($arrRoles as $objRole) {
+                $strOutput .= '<tr><td>' . $objRole->Language->LanguageName . '</td><td>' . $objRole->Project->ProjectName . '</td><td>' . NarroLink::RoleList($objRole->RoleId, 'user', t($objRole->Role->RoleName)) . '</td></tr>';
+            }
+            $strOutput .= '</table>';
+
+            return $strOutput;
+        }
+
+        public function dtgNarroUserList_PreferencesColumn_Render(NarroUser $objNarroUser) {
+            if (is_array(unserialize($objNarroUser->Data))) {
+                $arrPreferences = unserialize($objNarroUser->Data);
+
+                $strOutput = '<table width="100%">';
+                foreach($arrPreferences as $strPrefName=>$strPrefValue) {
+                    $strOutput .= '<tr><td>' . $strPrefName . '</td><td>' . $strPrefValue . '</td></tr>';
+                }
+                $strOutput .= '</table>';
+                return $strOutput;
+            }
+            else
+                return t('Not set yet');
         }
 
         public function dtgNarroUserList_ActionsColumn_Render(NarroUser $objNarroUser) {
             return
-                NarroLink::UserPreferences($objNarroUser->UserId, t('Preferences')) . ' | ' .
-                sprintf('<a href="narro_user_permission.php?l=%s&u=%d">%s</a>',
-                    QApplication::$Language->LanguageCode,
-                    $objNarroUser->UserId,
-                    QApplication::Translate('Permissions')
-                );
-            return '';
+                    NarroLink::UserPreferences($objNarroUser->UserId, t('Preferences')) . ' | ' .
+                    NarroLink::UserRole($objNarroUser->UserId, t('Roles'));
         }
 
         protected function dtgNarroUserList_Bind() {
