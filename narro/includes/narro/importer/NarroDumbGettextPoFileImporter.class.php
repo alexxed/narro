@@ -60,11 +60,17 @@
 
                     if (strpos($strLine, '#:') === 0) {
                         NarroLog::LogMessage(1, 'Found reference. <br />');
-                        $arrFields['Reference'] = $strLine;
+                        /**
+                         * Remove the line number from the source file
+                         */
+                        $arrFields['Reference'] = preg_replace('/:[0-9]+/', '', $strLine);
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
                             if (strpos($strLine, '#:') === 0)
-                                $arrFields['Reference'] .= $strLine;
+                                /**
+                                 * Remove the line number from the source file
+                                 */
+                                $arrFields['Reference'] .= preg_replace('/:[0-9]+/', '', $strLine);
                             else
                                 break;
                         }
