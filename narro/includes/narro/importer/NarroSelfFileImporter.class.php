@@ -150,7 +150,6 @@
                              */
                             $objFile = new NarroFile();
                             $objFile->FileName = $strDir;
-                            $objFile->Encoding = 'UTF-8';
                             $objFile->TypeId = NarroFileType::Folder;
                             if ($intParentId)
                                 $objFile->ParentId = $intParentId;
@@ -195,7 +194,6 @@
                         $objFile->ParentId = $intParentId;
                     $objFile->ProjectId = $this->objProject->ProjectId;
                     $objFile->Active = 1;
-                    $objFile->Encoding = 'UTF-8';
                     $objFile->Modified = date('Y-m-d H:i:s');
                     $objFile->Created = date('Y-m-d H:i:s');
                     $objFile->FilePath = $strFilePath;
@@ -236,7 +234,6 @@
                     $objFile->ParentId = $intParentId;
                 $objFile->ProjectId = $this->objProject->ProjectId;
                 $objFile->Active = 1;
-                $objFile->Encoding = 'UTF-8';
                 $objFile->Modified = date('Y-m-d H:i:s');
                 $objFile->Created = date('Y-m-d H:i:s');
                 $objFile->FilePath = $strFilePath;
