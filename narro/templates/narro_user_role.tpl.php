@@ -16,22 +16,22 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(t('%s\'s permissions'), $this->objUser->Username);
+    $strPageTitle = sprintf(t('%s\'s roles'), $this->objUser->Username);
 
     require('includes/header.inc.php');
 ?>
 
     <?php $this->RenderBegin() ?>
         <?php $this->pnlHeader->Render() ?>
-        <div class="title_action"><?php echo sprintf(t('%s\'s permissions'), $this->objUser->Username); ?></div>
+        <div class="title_action"><?php echo sprintf(t('%s\'s roles'), $this->objUser->Username); ?></div>
         <br class="item_divider" />
 
-        <?php $this->dtgNarroUserPermission->Render() ?>
+        <?php $this->dtgNarroUserRole->Render() ?>
         <hr />
         <?php echo t('Language') . ':'; $this->lstLanguage->Render() ?>
         <?php echo t('Project') . ':'; $this->lstProject->Render() ?>
-        <?php echo t('Permission') . ':'; $this->lstPermission->Render() ?>
-        <?php $this->btnAddPermission->Render() ?>
+        <?php echo t('Role') . ':'; $this->lstRole->Render() ?>
+        <?php $this->btnAddRole->Render() ?>
 
     <?php $this->RenderEnd() ?>
 
