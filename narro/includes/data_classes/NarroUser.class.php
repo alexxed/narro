@@ -82,9 +82,12 @@
             );
             if (!$objUser instanceof NarroUser)
                 return false;
-            $arrUserPermissions = NarroUserPermission::LoadArrayByUserId($objUser->intUserId);
-            foreach($arrUserPermissions as $objUserPermission) {
-                $objUser->arrPermissions[$objUserPermission->Permission->PermissionName . '-' . $objUserPermission->LanguageId . '-' . $objUserPermission->ProjectId] = $objUserPermission;
+
+            $arrUserRole = NarroUserRole::LoadArrayByUserId($objUser->intUserId);
+            foreach($arrUserRole as $objRole) {
+                $arrRolePermission = NarroRolePermission::LoadArrayByRoleId($objRole->RoleId);
+                foreach($arrRolePermission as $objRolePermission)
+                    $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
             }
 
             $objUser->arrPreferences = unserialize($objUser->Data);
@@ -107,9 +110,12 @@
 
         public static function LoadAnonymousUser() {
             $objUser = NarroUser::LoadByUserId(self::ANONYMOUS_USER_ID);
-            $arrUserPermissions = NarroUserPermission::LoadArrayByUserId(self::ANONYMOUS_USER_ID);
-            foreach($arrUserPermissions as $objUserPermission) {
-                $objUser->arrPermissions[$objUserPermission->Permission->PermissionName . '-' . $objUserPermission->LanguageId . '-' . $objUserPermission->ProjectId] = $objUserPermission;
+
+            $arrUserRole = NarroUserRole::LoadArrayByUserId(self::ANONYMOUS_USER_ID);
+            foreach($arrUserRole as $objRole) {
+                $arrRolePermission = NarroRolePermission::LoadArrayByRoleId($objRole->RoleId);
+                foreach($arrRolePermission as $objRolePermission)
+                    $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
             }
 
             $objUser->arrPreferences = unserialize($objUser->Data);
@@ -163,9 +169,12 @@
             );
             if (!$objUser instanceof NarroUser)
                 return false;
-            $arrUserPermissions = NarroUserPermission::LoadArrayByUserId($objUser->intUserId);
-            foreach($arrUserPermissions as $objUserPermission) {
-                $objUser->arrPermissions[$objUserPermission->Permission->PermissionName . '-' . $objUserPermission->LanguageId . '-' . $objUserPermission->ProjectId] = $objUserPermission;
+
+            $arrUserRole = NarroUserRole::LoadArrayByUserId($objUser->intUserId);
+            foreach($arrUserRole as $objRole) {
+                $arrRolePermission = NarroRolePermission::LoadArrayByRoleId($objRole->RoleId);
+                foreach($arrRolePermission as $objRolePermission)
+                    $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
             }
 
             $objUser->arrPreferences = unserialize($objUser->Data);
@@ -194,9 +203,12 @@
             );
             if (!$objUser instanceof NarroUser)
                 return false;
-            $arrUserPermissions = NarroUserPermission::LoadArrayByUserId($objUser->intUserId);
-            foreach($arrUserPermissions as $objUserPermission) {
-                $objUser->arrPermissions[$objUserPermission->Permission->PermissionName . '-' . $objUserPermission->LanguageId . '-' . $objUserPermission->ProjectId] = $objUserPermission;
+
+            $arrUserRole = NarroUserRole::LoadArrayByUserId($objUser->intUserId);
+            foreach($arrUserRole as $objRole) {
+                $arrRolePermission = NarroRolePermission::LoadArrayByRoleId($objRole->RoleId);
+                foreach($arrRolePermission as $objRolePermission)
+                    $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
             }
 
             $objUser->arrPreferences = unserialize($objUser->Data);
@@ -246,30 +258,18 @@
             }
 
             /**
-             * set up default permissions
+             * set up default roles
              */
-            if ($objUser->UserId == 1) {
-                /**
-                 * give super powers to the first user
-                 */
-                $arrPermissions = array();
-                $arrNarroPermissions = NarroPermission::LoadAll();
-                foreach($arrNarroPermissions as $objNarroPermission) {
-                    $arrPermissions[] = $objNarroPermission->PermissionId;
-                }
-            }
-            else
-                /**
-                 * registered users can suggest, vote and comment
-                 */
-                $arrPermissions = array(1, 2, 4);
 
-            foreach($arrPermissions as $intPermissionId) {
-                $objUserPermission = new NarroUserPermission();
-                $objUserPermission->PermissionId = $intPermissionId;
-                $objUserPermission->UserId = $objUser->UserId;
-                $objUserPermission->Save();
-            }
+            $objUserRole = new NarroUserRole();
+
+            if ($objUser->UserId == 1)
+                $objUserRole->RoleId = 5;
+            else
+                $objUserRole->RoleId = 2;
+
+            $objUserRole->UserId = $objUser->UserId;
+            $objUserRole->Save();
 
             return NarroUser::LoadByUsernameAndPassword($strUsername, md5($strPassword));
         }

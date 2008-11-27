@@ -389,6 +389,18 @@
 					$blnExpandedViaArray = true;
 				}
 
+				if ((array_key_exists($strAliasPrefix . 'narrouserroleasuser__user_role_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserroleasuser__user_role_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserRoleAsUserArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroUserRoleAsUserArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasuser__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroUserRoleAsUserArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroUserRoleAsUserArray, NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasuser__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -476,6 +488,14 @@
 					array_push($objToReturn->_objNarroUserPermissionAsUserArray, NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionasuser__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objNarroUserPermissionAsUser = NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionasuser__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroUserRoleAsUser Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserroleasuser__user_role_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrouserroleasuser__user_role_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroUserRoleAsUserArray, NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasuser__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroUserRoleAsUser = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasuser__', $strExpandAsArrayNodes);
 			}
 
 			return $objToReturn;
@@ -852,6 +872,22 @@
 					 * @return NarroUserPermission[]
 					 */
 					return (array) $this->_objNarroUserPermissionAsUserArray;
+
+				case '_NarroUserRoleAsUser':
+					/**
+					 * Gets the value for the private _objNarroUserRoleAsUser (Read-Only)
+					 * if set due to an expansion on the narro_user_role.user_id reverse relationship
+					 * @return NarroUserRole
+					 */
+					return $this->_objNarroUserRoleAsUser;
+
+				case '_NarroUserRoleAsUserArray':
+					/**
+					 * Gets the value for the private _objNarroUserRoleAsUserArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_user_role.user_id reverse relationship
+					 * @return NarroUserRole[]
+					 */
+					return (array) $this->_objNarroUserRoleAsUserArray;
 
 				default:
 					try {
@@ -2028,6 +2064,156 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for NarroUserRoleAsUser
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroUserRolesAsUser as an array of NarroUserRole objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroUserRole[]
+		*/ 
+		public function GetNarroUserRoleAsUserArray($objOptionalClauses = null) {
+			if ((is_null($this->intUserId)))
+				return array();
+
+			try {
+				return NarroUserRole::LoadArrayByUserId($this->intUserId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroUserRolesAsUser
+		 * @return int
+		*/ 
+		public function CountNarroUserRolesAsUser() {
+			if ((is_null($this->intUserId)))
+				return 0;
+
+			return NarroUserRole::CountByUserId($this->intUserId);
+		}
+
+		/**
+		 * Associates a NarroUserRoleAsUser
+		 * @param NarroUserRole $objNarroUserRole
+		 * @return void
+		*/ 
+		public function AssociateNarroUserRoleAsUser(NarroUserRole $objNarroUserRole) {
+			if ((is_null($this->intUserId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserRoleAsUser on this unsaved NarroUser.');
+			if ((is_null($objNarroUserRole->UserRoleId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserRoleAsUser on this NarroUser with an unsaved NarroUserRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroUser::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_role`
+				SET
+					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '
+				WHERE
+					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroUserRoleAsUser
+		 * @param NarroUserRole $objNarroUserRole
+		 * @return void
+		*/ 
+		public function UnassociateNarroUserRoleAsUser(NarroUserRole $objNarroUserRole) {
+			if ((is_null($this->intUserId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsUser on this unsaved NarroUser.');
+			if ((is_null($objNarroUserRole->UserRoleId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsUser on this NarroUser with an unsaved NarroUserRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroUser::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_role`
+				SET
+					`user_id` = null
+				WHERE
+					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . ' AND
+					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroUserRolesAsUser
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroUserRolesAsUser() {
+			if ((is_null($this->intUserId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsUser on this unsaved NarroUser.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroUser::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_role`
+				SET
+					`user_id` = null
+				WHERE
+					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroUserRoleAsUser
+		 * @param NarroUserRole $objNarroUserRole
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroUserRoleAsUser(NarroUserRole $objNarroUserRole) {
+			if ((is_null($this->intUserId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsUser on this unsaved NarroUser.');
+			if ((is_null($objNarroUserRole->UserRoleId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsUser on this NarroUser with an unsaved NarroUserRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroUser::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_user_role`
+				WHERE
+					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . ' AND
+					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroUserRolesAsUser
+		 * @return void
+		*/ 
+		public function DeleteAllNarroUserRolesAsUser() {
+			if ((is_null($this->intUserId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsUser on this unsaved NarroUser.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroUser::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_user_role`
+				WHERE
+					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '
+			');
+		}
+
 
 
 
@@ -2198,6 +2384,22 @@
 		private $_objNarroUserPermissionAsUserArray = array();
 
 		/**
+		 * Private member variable that stores a reference to a single NarroUserRoleAsUser object
+		 * (of type NarroUserRole), if this NarroUser object was restored with
+		 * an expansion on the narro_user_role association table.
+		 * @var NarroUserRole _objNarroUserRoleAsUser;
+		 */
+		private $_objNarroUserRoleAsUser;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroUserRoleAsUser objects
+		 * (of type NarroUserRole[]), if this NarroUser object was restored with
+		 * an ExpandAsArray on the narro_user_role association table.
+		 * @var NarroUserRole[] _objNarroUserRoleAsUserArray;
+		 */
+		private $_objNarroUserRoleAsUserArray = array();
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -2326,6 +2528,8 @@
 					return new QQReverseReferenceNodeNarroTextComment($this, 'narrotextcommentasuser', 'reverse_reference', 'user_id');
 				case 'NarroUserPermissionAsUser':
 					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionasuser', 'reverse_reference', 'user_id');
+				case 'NarroUserRoleAsUser':
+					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleasuser', 'reverse_reference', 'user_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('user_id', 'integer', $this);
@@ -2370,6 +2574,8 @@
 					return new QQReverseReferenceNodeNarroTextComment($this, 'narrotextcommentasuser', 'reverse_reference', 'user_id');
 				case 'NarroUserPermissionAsUser':
 					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionasuser', 'reverse_reference', 'user_id');
+				case 'NarroUserRoleAsUser':
+					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleasuser', 'reverse_reference', 'user_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('user_id', 'integer', $this);

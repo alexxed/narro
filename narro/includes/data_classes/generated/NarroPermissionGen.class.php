@@ -302,6 +302,18 @@
 					$strAliasPrefix = 'narro_permission__';
 
 
+				if ((array_key_exists($strAliasPrefix . 'narrorolepermissionaspermission__role_permission_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrorolepermissionaspermission__role_permission_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroRolePermissionAsPermissionArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroRolePermissionAsPermissionArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroRolePermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrorolepermissionaspermission__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroRolePermissionAsPermissionArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroRolePermissionAsPermissionArray, NarroRolePermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrorolepermissionaspermission__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
 				if ((array_key_exists($strAliasPrefix . 'narrouserpermissionaspermission__user_permission_id', $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserpermissionaspermission__user_permission_id')))) {
 					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserPermissionAsPermissionArray)) {
@@ -342,6 +354,14 @@
 
 
 
+
+			// Check for NarroRolePermissionAsPermission Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrorolepermissionaspermission__role_permission_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrorolepermissionaspermission__role_permission_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroRolePermissionAsPermissionArray, NarroRolePermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrorolepermissionaspermission__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroRolePermissionAsPermission = NarroRolePermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrorolepermissionaspermission__', $strExpandAsArrayNodes);
+			}
 
 			// Check for NarroUserPermissionAsPermission Virtual Binding
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserpermissionaspermission__user_permission_id'))) {
@@ -569,6 +589,22 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
+				case '_NarroRolePermissionAsPermission':
+					/**
+					 * Gets the value for the private _objNarroRolePermissionAsPermission (Read-Only)
+					 * if set due to an expansion on the narro_role_permission.permission_id reverse relationship
+					 * @return NarroRolePermission
+					 */
+					return $this->_objNarroRolePermissionAsPermission;
+
+				case '_NarroRolePermissionAsPermissionArray':
+					/**
+					 * Gets the value for the private _objNarroRolePermissionAsPermissionArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_role_permission.permission_id reverse relationship
+					 * @return NarroRolePermission[]
+					 */
+					return (array) $this->_objNarroRolePermissionAsPermissionArray;
+
 				case '_NarroUserPermissionAsPermission':
 					/**
 					 * Gets the value for the private _objNarroUserPermissionAsPermission (Read-Only)
@@ -651,6 +687,156 @@
 		///////////////////////////////
 		// ASSOCIATED OBJECTS
 		///////////////////////////////
+
+			
+		
+		// Related Objects' Methods for NarroRolePermissionAsPermission
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroRolePermissionsAsPermission as an array of NarroRolePermission objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroRolePermission[]
+		*/ 
+		public function GetNarroRolePermissionAsPermissionArray($objOptionalClauses = null) {
+			if ((is_null($this->intPermissionId)))
+				return array();
+
+			try {
+				return NarroRolePermission::LoadArrayByPermissionId($this->intPermissionId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroRolePermissionsAsPermission
+		 * @return int
+		*/ 
+		public function CountNarroRolePermissionsAsPermission() {
+			if ((is_null($this->intPermissionId)))
+				return 0;
+
+			return NarroRolePermission::CountByPermissionId($this->intPermissionId);
+		}
+
+		/**
+		 * Associates a NarroRolePermissionAsPermission
+		 * @param NarroRolePermission $objNarroRolePermission
+		 * @return void
+		*/ 
+		public function AssociateNarroRolePermissionAsPermission(NarroRolePermission $objNarroRolePermission) {
+			if ((is_null($this->intPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroRolePermissionAsPermission on this unsaved NarroPermission.');
+			if ((is_null($objNarroRolePermission->RolePermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroRolePermissionAsPermission on this NarroPermission with an unsaved NarroRolePermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroPermission::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_role_permission`
+				SET
+					`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId) . '
+				WHERE
+					`role_permission_id` = ' . $objDatabase->SqlVariable($objNarroRolePermission->RolePermissionId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroRolePermissionAsPermission
+		 * @param NarroRolePermission $objNarroRolePermission
+		 * @return void
+		*/ 
+		public function UnassociateNarroRolePermissionAsPermission(NarroRolePermission $objNarroRolePermission) {
+			if ((is_null($this->intPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroRolePermissionAsPermission on this unsaved NarroPermission.');
+			if ((is_null($objNarroRolePermission->RolePermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroRolePermissionAsPermission on this NarroPermission with an unsaved NarroRolePermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroPermission::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_role_permission`
+				SET
+					`permission_id` = null
+				WHERE
+					`role_permission_id` = ' . $objDatabase->SqlVariable($objNarroRolePermission->RolePermissionId) . ' AND
+					`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroRolePermissionsAsPermission
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroRolePermissionsAsPermission() {
+			if ((is_null($this->intPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroRolePermissionAsPermission on this unsaved NarroPermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroPermission::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_role_permission`
+				SET
+					`permission_id` = null
+				WHERE
+					`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroRolePermissionAsPermission
+		 * @param NarroRolePermission $objNarroRolePermission
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroRolePermissionAsPermission(NarroRolePermission $objNarroRolePermission) {
+			if ((is_null($this->intPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroRolePermissionAsPermission on this unsaved NarroPermission.');
+			if ((is_null($objNarroRolePermission->RolePermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroRolePermissionAsPermission on this NarroPermission with an unsaved NarroRolePermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroPermission::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_role_permission`
+				WHERE
+					`role_permission_id` = ' . $objDatabase->SqlVariable($objNarroRolePermission->RolePermissionId) . ' AND
+					`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroRolePermissionsAsPermission
+		 * @return void
+		*/ 
+		public function DeleteAllNarroRolePermissionsAsPermission() {
+			if ((is_null($this->intPermissionId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroRolePermissionAsPermission on this unsaved NarroPermission.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroPermission::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_role_permission`
+				WHERE
+					`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId) . '
+			');
+		}
 
 			
 		
@@ -827,6 +1013,22 @@
 
 
 		/**
+		 * Private member variable that stores a reference to a single NarroRolePermissionAsPermission object
+		 * (of type NarroRolePermission), if this NarroPermission object was restored with
+		 * an expansion on the narro_role_permission association table.
+		 * @var NarroRolePermission _objNarroRolePermissionAsPermission;
+		 */
+		private $_objNarroRolePermissionAsPermission;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroRolePermissionAsPermission objects
+		 * (of type NarroRolePermission[]), if this NarroPermission object was restored with
+		 * an ExpandAsArray on the narro_role_permission association table.
+		 * @var NarroRolePermission[] _objNarroRolePermissionAsPermissionArray;
+		 */
+		private $_objNarroRolePermissionAsPermissionArray = array();
+
+		/**
 		 * Private member variable that stores a reference to a single NarroUserPermissionAsPermission object
 		 * (of type NarroUserPermission), if this NarroPermission object was restored with
 		 * an expansion on the narro_user_permission association table.
@@ -942,6 +1144,8 @@
 					return new QQNode('permission_id', 'integer', $this);
 				case 'PermissionName':
 					return new QQNode('permission_name', 'string', $this);
+				case 'NarroRolePermissionAsPermission':
+					return new QQReverseReferenceNodeNarroRolePermission($this, 'narrorolepermissionaspermission', 'reverse_reference', 'permission_id');
 				case 'NarroUserPermissionAsPermission':
 					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionaspermission', 'reverse_reference', 'permission_id');
 
@@ -968,6 +1172,8 @@
 					return new QQNode('permission_id', 'integer', $this);
 				case 'PermissionName':
 					return new QQNode('permission_name', 'string', $this);
+				case 'NarroRolePermissionAsPermission':
+					return new QQReverseReferenceNodeNarroRolePermission($this, 'narrorolepermissionaspermission', 'reverse_reference', 'permission_id');
 				case 'NarroUserPermissionAsPermission':
 					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionaspermission', 'reverse_reference', 'permission_id');
 

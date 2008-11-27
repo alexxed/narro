@@ -12,9 +12,6 @@
 		static public function NarroFile() {
 			return new QQNodeNarroFile('narro_file', null);
 		}
-		static public function NarroFileHeader() {
-			return new QQNodeNarroFileHeader('narro_file_header', null);
-		}
 		static public function NarroLanguage() {
 			return new QQNodeNarroLanguage('narro_language', null);
 		}
@@ -23,6 +20,15 @@
 		}
 		static public function NarroProject() {
 			return new QQNodeNarroProject('narro_project', null);
+		}
+		static public function NarroProjectCategory() {
+			return new QQNodeNarroProjectCategory('narro_project_category', null);
+		}
+		static public function NarroRole() {
+			return new QQNodeNarroRole('narro_role', null);
+		}
+		static public function NarroRolePermission() {
+			return new QQNodeNarroRolePermission('narro_role_permission', null);
 		}
 		static public function NarroSuggestion() {
 			return new QQNodeNarroSuggestion('narro_suggestion', null);
@@ -44,6 +50,9 @@
 		}
 		static public function NarroUserPermission() {
 			return new QQNodeNarroUserPermission('narro_user_permission', null);
+		}
+		static public function NarroUserRole() {
+			return new QQNodeNarroUserRole('narro_user_role', null);
 		}
 	}
 ?>
