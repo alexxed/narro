@@ -65,7 +65,7 @@
                                 /**
                                  * search for the accesskey in the label
                                  */
-                                $intPos = mb_stripos( $strOriginalText, $strAccKey);
+                                $intPos = mb_strpos( $strOriginalText, $strAccKey);
                                 if ($intPos !== false) {
                                     $strNewAcc = mb_substr($strOriginalText, $intPos, 1);
                                     $arrAccKey[$strLabelCtx] = $strNewAcc;
