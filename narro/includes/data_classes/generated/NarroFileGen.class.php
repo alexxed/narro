@@ -271,10 +271,10 @@
 			$objBuilder->AddSelectItem($strTableName . '.`file_id` AS ' . $strAliasPrefix . 'file_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`file_name` AS ' . $strAliasPrefix . 'file_name`');
 			$objBuilder->AddSelectItem($strTableName . '.`file_path` AS ' . $strAliasPrefix . 'file_path`');
+			$objBuilder->AddSelectItem($strTableName . '.`file_md5` AS ' . $strAliasPrefix . 'file_md5`');
 			$objBuilder->AddSelectItem($strTableName . '.`parent_id` AS ' . $strAliasPrefix . 'parent_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`type_id` AS ' . $strAliasPrefix . 'type_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`project_id` AS ' . $strAliasPrefix . 'project_id`');
-			$objBuilder->AddSelectItem($strTableName . '.`encoding` AS ' . $strAliasPrefix . 'encoding`');
 			$objBuilder->AddSelectItem($strTableName . '.`context_count` AS ' . $strAliasPrefix . 'context_count`');
 			$objBuilder->AddSelectItem($strTableName . '.`active` AS ' . $strAliasPrefix . 'active`');
 			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
@@ -349,10 +349,10 @@
 			$objToReturn->intFileId = $objDbRow->GetColumn($strAliasPrefix . 'file_id', 'Integer');
 			$objToReturn->strFileName = $objDbRow->GetColumn($strAliasPrefix . 'file_name', 'VarChar');
 			$objToReturn->strFilePath = $objDbRow->GetColumn($strAliasPrefix . 'file_path', 'VarChar');
+			$objToReturn->strFileMd5 = $objDbRow->GetColumn($strAliasPrefix . 'file_md5', 'VarChar');
 			$objToReturn->intParentId = $objDbRow->GetColumn($strAliasPrefix . 'parent_id', 'Integer');
 			$objToReturn->intTypeId = $objDbRow->GetColumn($strAliasPrefix . 'type_id', 'Integer');
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasPrefix . 'project_id', 'Integer');
-			$objToReturn->strEncoding = $objDbRow->GetColumn($strAliasPrefix . 'encoding', 'VarChar');
 			$objToReturn->intContextCount = $objDbRow->GetColumn($strAliasPrefix . 'context_count', 'Integer');
 			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Bit');
 			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
@@ -378,16 +378,6 @@
 			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'project_id__project_id')))
 				$objToReturn->objProject = NarroProject::InstantiateDbRow($objDbRow, $strAliasPrefix . 'project_id__', $strExpandAsArrayNodes);
 
-
-			// Check for NarroFileHeader Unique ReverseReference Binding
-			if ($objDbRow->ColumnExists($strAliasPrefix . 'narrofileheader__file_id')) {
-				if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrofileheader__file_id')))
-					$objToReturn->objNarroFileHeader = NarroFileHeader::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileheader__', $strExpandAsArrayNodes);
-				else
-					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
-					// Let's set to FALSE so that the object knows not to try and re-query again
-					$objToReturn->objNarroFileHeader = false;
-			}
 
 
 
@@ -601,10 +591,10 @@
 						INSERT INTO `narro_file` (
 							`file_name`,
 							`file_path`,
+							`file_md5`,
 							`parent_id`,
 							`type_id`,
 							`project_id`,
-							`encoding`,
 							`context_count`,
 							`active`,
 							`created`,
@@ -612,10 +602,10 @@
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strFileName) . ',
 							' . $objDatabase->SqlVariable($this->strFilePath) . ',
+							' . $objDatabase->SqlVariable($this->strFileMd5) . ',
 							' . $objDatabase->SqlVariable($this->intParentId) . ',
 							' . $objDatabase->SqlVariable($this->intTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							' . $objDatabase->SqlVariable($this->strEncoding) . ',
 							' . $objDatabase->SqlVariable($this->intContextCount) . ',
 							' . $objDatabase->SqlVariable($this->blnActive) . ',
 							' . $objDatabase->SqlVariable($this->strCreated) . ',
@@ -637,10 +627,10 @@
 						SET
 							`file_name` = ' . $objDatabase->SqlVariable($this->strFileName) . ',
 							`file_path` = ' . $objDatabase->SqlVariable($this->strFilePath) . ',
+							`file_md5` = ' . $objDatabase->SqlVariable($this->strFileMd5) . ',
 							`parent_id` = ' . $objDatabase->SqlVariable($this->intParentId) . ',
 							`type_id` = ' . $objDatabase->SqlVariable($this->intTypeId) . ',
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding) . ',
 							`context_count` = ' . $objDatabase->SqlVariable($this->intContextCount) . ',
 							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
@@ -650,26 +640,6 @@
 					');
 				}
 
-		
-		
-				// Update the adjoined NarroFileHeader object (if applicable)
-				// TODO: Make this into hard-coded SQL queries
-				if ($this->blnDirtyNarroFileHeader) {
-					// Unassociate the old one (if applicable)
-					if ($objAssociated = NarroFileHeader::LoadByFileId($this->intFileId)) {
-						$objAssociated->FileId = null;
-						$objAssociated->Save();
-					}
-
-					// Associate the new one (if applicable)
-					if ($this->objNarroFileHeader) {
-						$this->objNarroFileHeader->FileId = $this->intFileId;
-						$this->objNarroFileHeader->Save();
-					}
-
-					// Reset the "Dirty" flag
-					$this->blnDirtyNarroFileHeader = false;
-				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -694,15 +664,6 @@
 			// Get the Database Object for this Class
 			$objDatabase = NarroFile::GetDatabase();
 
-			
-			
-			// Update the adjoined NarroFileHeader object (if applicable) and perform a delete
-
-			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
-			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
-			if ($objAssociated = NarroFileHeader::LoadByFileId($this->intFileId)) {
-				$objAssociated->Delete();
-			}
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
@@ -778,6 +739,13 @@
 					 */
 					return $this->strFilePath;
 
+				case 'FileMd5':
+					/**
+					 * Gets the value for strFileMd5 
+					 * @return string
+					 */
+					return $this->strFileMd5;
+
 				case 'ParentId':
 					/**
 					 * Gets the value for intParentId 
@@ -798,13 +766,6 @@
 					 * @return integer
 					 */
 					return $this->intProjectId;
-
-				case 'Encoding':
-					/**
-					 * Gets the value for strEncoding (Not Null)
-					 * @return string
-					 */
-					return $this->strEncoding;
 
 				case 'ContextCount':
 					/**
@@ -861,26 +822,6 @@
 						if ((!$this->objProject) && (!is_null($this->intProjectId)))
 							$this->objProject = NarroProject::Load($this->intProjectId);
 						return $this->objProject;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-		
-		
-				case 'NarroFileHeader':
-					/**
-					 * Gets the value for the NarroFileHeader object that uniquely references this NarroFile
-					 * by objNarroFileHeader (Unique)
-					 * @return NarroFileHeader
-					 */
-					try {
-						if ($this->objNarroFileHeader === false)
-							// We've attempted early binding -- and the reverse reference object does not exist
-							return null;
-						if (!$this->objNarroFileHeader)
-							$this->objNarroFileHeader = NarroFileHeader::LoadByFileId($this->intFileId);
-						return $this->objNarroFileHeader;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -973,6 +914,19 @@
 						throw $objExc;
 					}
 
+				case 'FileMd5':
+					/**
+					 * Sets the value for strFileMd5 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strFileMd5 = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'ParentId':
 					/**
 					 * Sets the value for intParentId 
@@ -1009,19 +963,6 @@
 					try {
 						$this->objProject = null;
 						return ($this->intProjectId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'Encoding':
-					/**
-					 * Sets the value for strEncoding (Not Null)
-					 * @param string $mixValue
-					 * @return string
-					 */
-					try {
-						return ($this->strEncoding = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1141,45 +1082,6 @@
 						// Update Local Member Variables
 						$this->objProject = $mixValue;
 						$this->intProjectId = $mixValue->ProjectId;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
-				case 'NarroFileHeader':
-					/**
-					 * Sets the value for the NarroFileHeader object referenced by objNarroFileHeader (Unique)
-					 * @param NarroFileHeader $mixValue
-					 * @return NarroFileHeader
-					 */
-					if (is_null($mixValue)) {
-						$this->objNarroFileHeader = null;
-
-						// Make sure we update the adjoined NarroFileHeader object the next time we call Save()
-						$this->blnDirtyNarroFileHeader = true;
-
-						return null;
-					} else {
-						// Make sure $mixValue actually is a NarroFileHeader object
-						try {
-							$mixValue = QType::Cast($mixValue, 'NarroFileHeader');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						}
-
-						// Are we setting objNarroFileHeader to a DIFFERENT $mixValue?
-						if ((!$this->NarroFileHeader) || ($this->NarroFileHeader->FileId != $mixValue->FileId)) {
-							// Yes -- therefore, set the "Dirty" flag to true
-							// to make sure we update the adjoined NarroFileHeader object the next time we call Save()
-							$this->blnDirtyNarroFileHeader = true;
-
-							// Update Local Member Variable
-							$this->objNarroFileHeader = $mixValue;
-						} else {
-							// Nope -- therefore, make no changes
-						}
 
 						// Return $mixValue
 						return $mixValue;
@@ -1547,6 +1449,15 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_file.file_md5
+		 * @var string strFileMd5
+		 */
+		protected $strFileMd5;
+		const FileMd5MaxLength = 32;
+		const FileMd5Default = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_file.parent_id
 		 * @var integer intParentId
 		 */
@@ -1571,15 +1482,6 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_file.encoding
-		 * @var string strEncoding
-		 */
-		protected $strEncoding;
-		const EncodingMaxLength = 16;
-		const EncodingDefault = null;
-
-
-		/**
 		 * Protected member variable that maps to the database column narro_file.context_count
 		 * @var integer intContextCount
 		 */
@@ -1600,7 +1502,6 @@
 		 * @var string strCreated
 		 */
 		protected $strCreated;
-		const CreatedMaxLength = 19;
 		const CreatedDefault = null;
 
 
@@ -1609,7 +1510,6 @@
 		 * @var string strModified
 		 */
 		protected $strModified;
-		const ModifiedMaxLength = 19;
 		const ModifiedDefault = null;
 
 
@@ -1686,24 +1586,6 @@
 		 */
 		protected $objProject;
 
-		/**
-		 * Protected member variable that contains the object which points to
-		 * this object by the reference in the unique database column narro_file_header.file_id.
-		 *
-		 * NOTE: Always use the NarroFileHeader property getter to correctly retrieve this NarroFileHeader object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var NarroFileHeader objNarroFileHeader
-		 */
-		protected $objNarroFileHeader = array();
-		
-		/**
-		 * Used internally to manage whether the adjoined NarroFileHeader object
-		 * needs to be updated on save.
-		 * 
-		 * NOTE: Do not manually update this value 
-		 */
-		protected $blnDirtyNarroFileHeader;
-
 
 
 
@@ -1718,10 +1600,10 @@
 			$strToReturn .= '<element name="FileId" type="xsd:int"/>';
 			$strToReturn .= '<element name="FileName" type="xsd:string"/>';
 			$strToReturn .= '<element name="FilePath" type="xsd:string"/>';
+			$strToReturn .= '<element name="FileMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="Parent" type="xsd1:NarroFile"/>';
 			$strToReturn .= '<element name="TypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Project" type="xsd1:NarroProject"/>';
-			$strToReturn .= '<element name="Encoding" type="xsd:string"/>';
 			$strToReturn .= '<element name="ContextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="Active" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Created" type="xsd:string"/>';
@@ -1756,6 +1638,8 @@
 				$objToReturn->strFileName = $objSoapObject->FileName;
 			if (property_exists($objSoapObject, 'FilePath'))
 				$objToReturn->strFilePath = $objSoapObject->FilePath;
+			if (property_exists($objSoapObject, 'FileMd5'))
+				$objToReturn->strFileMd5 = $objSoapObject->FileMd5;
 			if ((property_exists($objSoapObject, 'Parent')) &&
 				($objSoapObject->Parent))
 				$objToReturn->Parent = NarroFile::GetObjectFromSoapObject($objSoapObject->Parent);
@@ -1764,8 +1648,6 @@
 			if ((property_exists($objSoapObject, 'Project')) &&
 				($objSoapObject->Project))
 				$objToReturn->Project = NarroProject::GetObjectFromSoapObject($objSoapObject->Project);
-			if (property_exists($objSoapObject, 'Encoding'))
-				$objToReturn->strEncoding = $objSoapObject->Encoding;
 			if (property_exists($objSoapObject, 'ContextCount'))
 				$objToReturn->intContextCount = $objSoapObject->ContextCount;
 			if (property_exists($objSoapObject, 'Active'))
@@ -1824,6 +1706,8 @@
 					return new QQNode('file_name', 'string', $this);
 				case 'FilePath':
 					return new QQNode('file_path', 'string', $this);
+				case 'FileMd5':
+					return new QQNode('file_md5', 'string', $this);
 				case 'ParentId':
 					return new QQNode('parent_id', 'integer', $this);
 				case 'Parent':
@@ -1834,8 +1718,6 @@
 					return new QQNode('project_id', 'integer', $this);
 				case 'Project':
 					return new QQNodeNarroProject('project_id', 'integer', $this);
-				case 'Encoding':
-					return new QQNode('encoding', 'string', $this);
 				case 'ContextCount':
 					return new QQNode('context_count', 'integer', $this);
 				case 'Active':
@@ -1848,8 +1730,6 @@
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasfile', 'reverse_reference', 'file_id');
 				case 'ChildNarroFile':
 					return new QQReverseReferenceNodeNarroFile($this, 'childnarrofile', 'reverse_reference', 'parent_id');
-				case 'NarroFileHeader':
-					return new QQReverseReferenceNodeNarroFileHeader($this, 'narrofileheader', 'reverse_reference', 'file_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('file_id', 'integer', $this);
@@ -1876,6 +1756,8 @@
 					return new QQNode('file_name', 'string', $this);
 				case 'FilePath':
 					return new QQNode('file_path', 'string', $this);
+				case 'FileMd5':
+					return new QQNode('file_md5', 'string', $this);
 				case 'ParentId':
 					return new QQNode('parent_id', 'integer', $this);
 				case 'Parent':
@@ -1886,8 +1768,6 @@
 					return new QQNode('project_id', 'integer', $this);
 				case 'Project':
 					return new QQNodeNarroProject('project_id', 'integer', $this);
-				case 'Encoding':
-					return new QQNode('encoding', 'string', $this);
 				case 'ContextCount':
 					return new QQNode('context_count', 'integer', $this);
 				case 'Active':
@@ -1900,8 +1780,6 @@
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasfile', 'reverse_reference', 'file_id');
 				case 'ChildNarroFile':
 					return new QQReverseReferenceNodeNarroFile($this, 'childnarrofile', 'reverse_reference', 'parent_id');
-				case 'NarroFileHeader':
-					return new QQReverseReferenceNodeNarroFileHeader($this, 'narrofileheader', 'reverse_reference', 'file_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('file_id', 'integer', $this);

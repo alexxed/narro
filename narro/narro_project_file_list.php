@@ -300,17 +300,6 @@
             QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
 
-        protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            $objNarroFile = NarroFile::Load($strParameter);
-            if ($objNarroFile instanceof NarroFile) {
-                $objEncodingBox = $this->GetControl('fileenc' . $strParameter);
-                $objNarroFile->Encoding = $objEncodingBox->TextValue;
-                $objNarroFile->Modified = date('Y-m-d H:i:s');
-                $objNarroFile->Created = date('Y-m-d H:i:s');
-                $objNarroFile->Save();
-            }
-        }
-
         protected function btnExport_Click($strFormId, $strControlId, $strParameter) {
             $objFile = NarroFile::Load($strParameter);
             $objFileControl = $this->GetControl('fileExport' . $strParameter);
