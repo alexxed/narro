@@ -168,7 +168,6 @@
                 $objFile->ParentId = null;
                 $objFile->ProjectId = $this->objProject->ProjectId;
                 $objFile->ContextCount = 0;
-                $objFile->Encoding = 'UTF-8';
                 $objFile->Modified = date('Y-m-d H:i:s');
                 $objFile->Created = date('Y-m-d H:i:s');
                 NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), basename($this->strTranslationPath), dirname($this->strTranslationPath)));
@@ -317,7 +316,6 @@
                              */
                             $objFile = new NarroFile();
                             $objFile->FileName = $strDir;
-                            $objFile->Encoding = 'UTF-8';
                             $objFile->TypeId = NarroFileType::Folder;
                             if ($intParentId)
                                 $objFile->ParentId = $intParentId;
@@ -370,7 +368,6 @@
                     $objFile->ProjectId = $this->objProject->ProjectId;
                     $objFile->Active = 1;
                     $objFile->FilePath = $strFilePath;
-                    $objFile->Encoding = 'UTF-8';
                     $objFile->Modified = date('Y-m-d H:i:s');
                     $objFile->Created = date('Y-m-d H:i:s');
                     $objFile->Save();
@@ -641,8 +638,10 @@
         }
 
         public function ExportFile ($objFile, $strTemplateFile, $strTranslatedFile) {
-            if (!$objFile instanceof NarroFile)
+            if (!$objFile instanceof NarroFile) {
+                NarroLog::LogMessage(2, sprintf(t('Failed to find a corresponding file in the database for %s'), $strTemplateFile));
                 return false;
+            }
 
             switch($objFile->TypeId) {
                 case NarroFileType::MozillaDtd:
