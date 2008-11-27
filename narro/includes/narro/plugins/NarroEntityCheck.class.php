@@ -76,6 +76,8 @@
          * @return array with the same parameters given
          */
         public function ValidateSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
+            return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
+
             /**
              * replace CR, LF and tabs with a space
              */
@@ -83,17 +85,21 @@
             /**
              * usual sprintf placeholders catch
              */
-            self::RegisterEntityFormat('/%[a-zA-Z.0-9\$]+/');
-            self::RegisterEntityFormat('/[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}[\s\.\;$]/');
+            if (strstr($strOriginal, '%'))
+                self::RegisterEntityFormat('/%[a-zA-Z\.0-9\$]+/');
+            if (strstr($strOriginal, '$'))
+                self::RegisterEntityFormat('/[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}[\s\.\;$]/');
             if ($objProject->ProjectType != NarroProjectType::Gettext)
                 /**
                  * &entity; catch
                  */
-                self::RegisterEntityFormat('/&[a-zA-Z\-0-9]+\;/');
+                if (strstr($strOriginal, '&'))
+                    self::RegisterEntityFormat('/&[a-zA-Z\-0-9]+\;/');
 
             $strPreparedOriginal = self::StripIgnoreCharacters($strOriginal);
 
-            $arrEntities = self::GetEntities($strOriginal);
+            if (strstr($strOriginal, '%') || strstr($strOriginal, '$') || strstr($strOriginal, '&'))
+                $arrEntities = self::GetEntities($strOriginal);
             if (count($arrEntities)) {
                 foreach($arrEntities as $strEntity) {
                     if (strpos($strTranslation, trim($strEntity)) === false)
