@@ -120,7 +120,7 @@
 		protected function Form_PreRender() {}
 		protected function Form_Validate() {return true;}
 		protected function Form_Exit() {}
-		
+
 
 		public function VarExport($blnReturn = true) {
 			if ($this->objControlArray) foreach ($this->objControlArray as $objControl)
@@ -142,7 +142,7 @@
 				throw new QCallerException('Object is not a subclass of QForm (note, it can NOT be a subclass of QFormBase): ' . $strFormId);
 
 			// See if we can get a Form Class out of PostData
-			$objClass = null;			
+			$objClass = null;
 			if (array_key_exists('Qform__FormId', $_POST) && ($_POST['Qform__FormId'] == $strFormId) && array_key_exists('Qform__FormState', $_POST)) {
 				$strPostDataState = $_POST['Qform__FormState'];
 
@@ -169,7 +169,7 @@
 				$strModificationArray = explode("\n", trim($_POST['Qform__FormUpdates']));
 				if ($strModificationArray) foreach ($strModificationArray as $strModification) {
 					$strModification = trim($strModification);
-					
+
 					if ($strModification) {
 						$intPosition = strpos($strModification, ' ');
 						$strControlId = substr($strModification, 0, $intPosition);
@@ -183,7 +183,7 @@
 							$strProperty = $strModification;
 							$strValue = null;
 						}
-						
+
 						switch ($strProperty) {
 							case 'Parent':
 								if ($strValue) {
@@ -216,7 +216,7 @@
 					$objClass->blnRenderedCheckableControlArray[trim($strCheckableControl)] = true;
 				}
 
-				// Iterate through all the controls 
+				// Iterate through all the controls
 				foreach ($objClass->objControlArray as $objControl) {
 					// If they were rendered last time and are visible (and if ServerAction, enabled), then Parse its post data
 					if (($objControl->Visible) &&
@@ -337,7 +337,7 @@
 				$strToReturn .= $this->RenderAjaxHelper($objChildControl);
 			return $strToReturn;
 		}
-		
+
 		protected function RenderAjax() {
 			// Update the Status
 			$this->intFormStatus = QFormBase::FormStatusRenderBegun;
@@ -365,7 +365,7 @@
 				// Include any StyleSheets?  The control would have a
 				// comma-delimited list of stylesheet files to include (if applicable)
 				if ($strScriptArray = $this->ProcessStyleSheetList($objControl->StyleSheets))
-					$strStyleSheetToAddArray = array_merge($strStyleSheetArray, $strScriptArray);
+					$strStyleSheetToAddArray = array_merge($strStyleSheetToAddArray, $strScriptArray);
 
 				// Form Attributes?
 				if ($objControl->FormAttributes) {
@@ -478,7 +478,7 @@
 			$blnBackButtonFlag = true;
 			if ($strPreviousRequestMode == QRequestMode::Ajax)
 				$blnBackButtonFlag = false;
-			
+
 			// Create a Clone of the Form to Serialize
 			$objForm = clone($objForm);
 
@@ -561,7 +561,7 @@
 		public function GetAllControls() {
 			return $this->objControlArray;
 		}
-		
+
 		public function AddGrouping(QControlGrouping $objGrouping) {
 			$strGroupingId = $objGrouping->GroupingId;
 			if (array_key_exists($strGroupingId, $this->objGroupingArray))
@@ -577,18 +577,18 @@
 			else
 				return null;
 		}
-		
+
 		public function RemoveGrouping($strGroupingId) {
 			if (array_key_exists($strGroupingId, $this->objGroupingArray)) {
 				// Remove this Grouping
 				unset($this->objGroupingArray[$strGroupingId]);
 			}
 		}
-		
+
 		public function GetAllGroupings() {
 			return $this->objGroupingArray;
 		}
-		
+
 		public function GetChildControls($objParentObject) {
 			$objControlArrayToReturn = array();
 
@@ -766,7 +766,7 @@
 									$objActions = $objActionControl->GetAllActions($strEvent, 'QServerAction');
 									break;
 								default:
-									throw new Exception('Unknown Form CallType: ' . $this->strCallType);					
+									throw new Exception('Unknown Form CallType: ' . $this->strCallType);
 							}
 
 							if ($objActions) foreach ($objActions as $objAction) {
@@ -902,7 +902,7 @@
 		 * Primarily used by RenderBegin and by RenderAjax
 		 * Given a comma-delimited list of javascript files, this will return an array of file that NEED to still
 		 * be included because (1) it hasn't yet been included and (2) it hasn't been specified to be "ignored".
-		 * 
+		 *
 		 * This WILL update the internal $strIncludedJavaScriptFileArray array.
 		 *
 		 * @param string $strJavaScriptFileList
@@ -917,7 +917,7 @@
 
 				// Iterate through the list of JavaScriptFiles to Include...
 				foreach ($strScriptArray as $strScript)
-					if ($strScript = trim($strScript)) 
+					if ($strScript = trim($strScript))
 
 						// Include it if we're NOT ignoring it and it has NOT already been included
 						if ((array_search($strScript, $this->strIgnoreJavaScriptFileArray) === false) &&
@@ -937,7 +937,7 @@
 		 * Primarily used by RenderBegin and by RenderAjax
 		 * Given a comma-delimited list of stylesheet files, this will return an array of file that NEED to still
 		 * be included because (1) it hasn't yet been included and (2) it hasn't been specified to be "ignored".
-		 * 
+		 *
 		 * This WILL update the internal $strIncludedStyleSheetFileArray array.
 		 *
 		 * @param string $strStyleSheetFileList
@@ -952,7 +952,7 @@
 
 				// Iterate through the list of StyleSheetFiles to Include...
 				foreach ($strScriptArray as $strScript)
-					if ($strScript = trim($strScript)) 
+					if ($strScript = trim($strScript))
 
 						// Include it if we're NOT ignoring it and it has NOT already been included
 						if ((array_search($strScript, $this->strIgnoreStyleSheetFileArray) === false) &&
@@ -984,7 +984,7 @@
 
 			// Reflect this class
 			$objReflection = new ReflectionClass($this->strFormId);
-			
+
 			// Pull the properties in this class
 			$objPropertyArray = $objReflection->getProperties();
 
@@ -993,12 +993,12 @@
 				// Only check properties NOT declared in Form and FormBase
 				$strDeclaringClassName = $objProperty->getDeclaringClass()->getName();
 				if (($strDeclaringClassName != 'Form') && ($strDeclaringClassName != 'FormBase')) {
-					
+
 					// Get the property name and this object's value for that property
 					$strPropertyName = $objProperty->getName();
 					$mixValue = &$this->$strPropertyName;
 
-					if ($mixValue instanceof QControl) {						
+					if ($mixValue instanceof QControl) {
 						// This property IS a control -- add it to the return objControlArray
 						if (!array_key_exists($mixValue->ControlId, $objControlArray))
 							$objControlArray[$mixValue->ControlId] = $mixValue;
@@ -1037,7 +1037,7 @@
 			// Return the return array
 			return $objControlArray;
 		}
-*/		
+*/
 		public function IsPostBack() {
 			return ($this->strCallType != QCallType::None);
 		}
@@ -1045,7 +1045,7 @@
 		/**
 		 * Will return an array of Strings which will show all the error and warning messages
 		 * in all the controls in the form.
-		 * 
+		 *
 		 * @param bool $blnErrorsOnly Show only the errors (otherwise, show both warnings and errors)
 		 * @return string[] an array of strings representing the (multiple) errors and warnings
 		 */
@@ -1058,13 +1058,13 @@
 					if ($objControl->Warning)
 						array_push($strToReturn, $objControl->Warning);
 			}
-			
+
 			return $strToReturn;
 		}
 
 		/**
 		 * Will return an array of QControls from the form which have either an error or warning message.
-		 * 
+		 *
 		 * @param bool $blnErrorsOnly Return controls that have just errors (otherwise, show both warnings and errors)
 		 * @return QControl[] an array of controls representing the (multiple) errors and warnings
 		 */
@@ -1138,7 +1138,7 @@
 				// Include any StyleSheets?  The control would have a
 				// comma-delimited list of stylesheet files to include (if applicable)
 				if ($strScriptArray = $this->ProcessStyleSheetList($objControl->StyleSheets))
-					$strStyleSheetToAddArray = array_merge($strStyleSheetArray, $strScriptArray);
+					$strStyleSheetToAddArray = array_merge($strStyleSheetToAddArray, $strScriptArray);
 
 				// Form Attributes?
 				if ($objControl->FormAttributes) {
@@ -1223,7 +1223,7 @@
 				return $strToReturn;
 		}
 	}
-	
+
 	function __QForm_EvaluateTemplate_ObHandler($strBuffer) {
 		return $strBuffer;
 	}
