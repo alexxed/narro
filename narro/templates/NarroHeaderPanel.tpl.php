@@ -38,11 +38,12 @@
     ?>
     <?php echo NarroLink::UserPreferences(QApplication::$objUser->UserId, t('Preferences')) ?> |
     <?php echo NarroLink::ProjectList(t('Project list')) ?> |
-    <a href="narro_language_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('Language list') ?>"><?php echo t('Languages') ?></a>
+    <a href="narro_language_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('Language list') ?>"><?php echo t('Languages') ?></a> |
+    <a href="narro_user_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('User list') ?>"><?php echo t('Users') ?></a>
     <?php
     if (QApplication::$objUser->hasPermission('Can manage users')) {
     ?>
-        | <a href="narro_user_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('Manage users') ?>"><?php echo t('Users') ?></a>
+    | <a href="narro_role_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('Role list') ?>"><?php echo t('Roles') ?></a>
     <?php
     }
     ?>
