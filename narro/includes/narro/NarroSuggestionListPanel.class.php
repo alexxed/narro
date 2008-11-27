@@ -256,7 +256,7 @@
 
 
                 if ($this->objNarroContextInfo->SuggestionAccessKey != '')
-                    $intAccPos = mb_stripos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
+                    $intAccPos = mb_strpos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
                 else
                     $intAccPos = 0;
 
