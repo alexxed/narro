@@ -272,6 +272,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`language_name` AS ' . $strAliasPrefix . 'language_name`');
 			$objBuilder->AddSelectItem($strTableName . '.`language_code` AS ' . $strAliasPrefix . 'language_code`');
 			$objBuilder->AddSelectItem($strTableName . '.`country_code` AS ' . $strAliasPrefix . 'country_code`');
+			$objBuilder->AddSelectItem($strTableName . '.`dialect_code` AS ' . $strAliasPrefix . 'dialect_code`');
 			$objBuilder->AddSelectItem($strTableName . '.`encoding` AS ' . $strAliasPrefix . 'encoding`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_direction` AS ' . $strAliasPrefix . 'text_direction`');
 			$objBuilder->AddSelectItem($strTableName . '.`special_characters` AS ' . $strAliasPrefix . 'special_characters`');
@@ -380,6 +381,18 @@
 					$blnExpandedViaArray = true;
 				}
 
+				if ((array_key_exists($strAliasPrefix . 'narrouserroleaslanguage__user_role_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserroleaslanguage__user_role_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserRoleAsLanguageArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroUserRoleAsLanguageArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroUserRoleAsLanguageArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroUserRoleAsLanguageArray, NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleaslanguage__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -395,6 +408,7 @@
 			$objToReturn->strLanguageName = $objDbRow->GetColumn($strAliasPrefix . 'language_name', 'VarChar');
 			$objToReturn->strLanguageCode = $objDbRow->GetColumn($strAliasPrefix . 'language_code', 'VarChar');
 			$objToReturn->strCountryCode = $objDbRow->GetColumn($strAliasPrefix . 'country_code', 'VarChar');
+			$objToReturn->strDialectCode = $objDbRow->GetColumn($strAliasPrefix . 'dialect_code', 'VarChar');
 			$objToReturn->strEncoding = $objDbRow->GetColumn($strAliasPrefix . 'encoding', 'VarChar');
 			$objToReturn->strTextDirection = $objDbRow->GetColumn($strAliasPrefix . 'text_direction', 'VarChar');
 			$objToReturn->strSpecialCharacters = $objDbRow->GetColumn($strAliasPrefix . 'special_characters', 'VarChar');
@@ -461,6 +475,14 @@
 					array_push($objToReturn->_objNarroUserPermissionAsLanguageArray, NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionaslanguage__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objNarroUserPermissionAsLanguage = NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionaslanguage__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroUserRoleAsLanguage Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserroleaslanguage__user_role_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrouserroleaslanguage__user_role_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroUserRoleAsLanguageArray, NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleaslanguage__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroUserRoleAsLanguage = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleaslanguage__', $strExpandAsArrayNodes);
 			}
 
 			return $objToReturn;
@@ -570,6 +592,7 @@
 							`language_name`,
 							`language_code`,
 							`country_code`,
+							`dialect_code`,
 							`encoding`,
 							`text_direction`,
 							`special_characters`,
@@ -578,6 +601,7 @@
 							' . $objDatabase->SqlVariable($this->strLanguageName) . ',
 							' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
 							' . $objDatabase->SqlVariable($this->strCountryCode) . ',
+							' . $objDatabase->SqlVariable($this->strDialectCode) . ',
 							' . $objDatabase->SqlVariable($this->strEncoding) . ',
 							' . $objDatabase->SqlVariable($this->strTextDirection) . ',
 							' . $objDatabase->SqlVariable($this->strSpecialCharacters) . ',
@@ -600,6 +624,7 @@
 							`language_name` = ' . $objDatabase->SqlVariable($this->strLanguageName) . ',
 							`language_code` = ' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
 							`country_code` = ' . $objDatabase->SqlVariable($this->strCountryCode) . ',
+							`dialect_code` = ' . $objDatabase->SqlVariable($this->strDialectCode) . ',
 							`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding) . ',
 							`text_direction` = ' . $objDatabase->SqlVariable($this->strTextDirection) . ',
 							`special_characters` = ' . $objDatabase->SqlVariable($this->strSpecialCharacters) . ',
@@ -714,6 +739,13 @@
 					 * @return string
 					 */
 					return $this->strCountryCode;
+
+				case 'DialectCode':
+					/**
+					 * Gets the value for strDialectCode 
+					 * @return string
+					 */
+					return $this->strDialectCode;
 
 				case 'Encoding':
 					/**
@@ -849,6 +881,22 @@
 					 */
 					return (array) $this->_objNarroUserPermissionAsLanguageArray;
 
+				case '_NarroUserRoleAsLanguage':
+					/**
+					 * Gets the value for the private _objNarroUserRoleAsLanguage (Read-Only)
+					 * if set due to an expansion on the narro_user_role.language_id reverse relationship
+					 * @return NarroUserRole
+					 */
+					return $this->_objNarroUserRoleAsLanguage;
+
+				case '_NarroUserRoleAsLanguageArray':
+					/**
+					 * Gets the value for the private _objNarroUserRoleAsLanguageArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_user_role.language_id reverse relationship
+					 * @return NarroUserRole[]
+					 */
+					return (array) $this->_objNarroUserRoleAsLanguageArray;
+
 				default:
 					try {
 						return parent::__get($strName);
@@ -906,6 +954,19 @@
 					 */
 					try {
 						return ($this->strCountryCode = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DialectCode':
+					/**
+					 * Sets the value for strDialectCode 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strDialectCode = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1894,6 +1955,156 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for NarroUserRoleAsLanguage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroUserRolesAsLanguage as an array of NarroUserRole objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroUserRole[]
+		*/ 
+		public function GetNarroUserRoleAsLanguageArray($objOptionalClauses = null) {
+			if ((is_null($this->intLanguageId)))
+				return array();
+
+			try {
+				return NarroUserRole::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroUserRolesAsLanguage
+		 * @return int
+		*/ 
+		public function CountNarroUserRolesAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				return 0;
+
+			return NarroUserRole::CountByLanguageId($this->intLanguageId);
+		}
+
+		/**
+		 * Associates a NarroUserRoleAsLanguage
+		 * @param NarroUserRole $objNarroUserRole
+		 * @return void
+		*/ 
+		public function AssociateNarroUserRoleAsLanguage(NarroUserRole $objNarroUserRole) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserRoleAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroUserRole->UserRoleId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserRoleAsLanguage on this NarroLanguage with an unsaved NarroUserRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_role`
+				SET
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+				WHERE
+					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroUserRoleAsLanguage
+		 * @param NarroUserRole $objNarroUserRole
+		 * @return void
+		*/ 
+		public function UnassociateNarroUserRoleAsLanguage(NarroUserRole $objNarroUserRole) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroUserRole->UserRoleId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsLanguage on this NarroLanguage with an unsaved NarroUserRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_role`
+				SET
+					`language_id` = null
+				WHERE
+					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroUserRolesAsLanguage
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroUserRolesAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_user_role`
+				SET
+					`language_id` = null
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroUserRoleAsLanguage
+		 * @param NarroUserRole $objNarroUserRole
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroUserRoleAsLanguage(NarroUserRole $objNarroUserRole) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroUserRole->UserRoleId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsLanguage on this NarroLanguage with an unsaved NarroUserRole.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_user_role`
+				WHERE
+					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroUserRolesAsLanguage
+		 * @return void
+		*/ 
+		public function DeleteAllNarroUserRolesAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_user_role`
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
 
 
 
@@ -1934,6 +2145,15 @@
 		protected $strCountryCode;
 		const CountryCodeMaxLength = 64;
 		const CountryCodeDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_language.dialect_code
+		 * @var string strDialectCode
+		 */
+		protected $strDialectCode;
+		const DialectCodeMaxLength = 64;
+		const DialectCodeDefault = null;
 
 
 		/**
@@ -2069,6 +2289,22 @@
 		private $_objNarroUserPermissionAsLanguageArray = array();
 
 		/**
+		 * Private member variable that stores a reference to a single NarroUserRoleAsLanguage object
+		 * (of type NarroUserRole), if this NarroLanguage object was restored with
+		 * an expansion on the narro_user_role association table.
+		 * @var NarroUserRole _objNarroUserRoleAsLanguage;
+		 */
+		private $_objNarroUserRoleAsLanguage;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroUserRoleAsLanguage objects
+		 * (of type NarroUserRole[]), if this NarroLanguage object was restored with
+		 * an ExpandAsArray on the narro_user_role association table.
+		 * @var NarroUserRole[] _objNarroUserRoleAsLanguageArray;
+		 */
+		private $_objNarroUserRoleAsLanguageArray = array();
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -2104,6 +2340,7 @@
 			$strToReturn .= '<element name="LanguageName" type="xsd:string"/>';
 			$strToReturn .= '<element name="LanguageCode" type="xsd:string"/>';
 			$strToReturn .= '<element name="CountryCode" type="xsd:string"/>';
+			$strToReturn .= '<element name="DialectCode" type="xsd:string"/>';
 			$strToReturn .= '<element name="Encoding" type="xsd:string"/>';
 			$strToReturn .= '<element name="TextDirection" type="xsd:string"/>';
 			$strToReturn .= '<element name="SpecialCharacters" type="xsd:string"/>';
@@ -2138,6 +2375,8 @@
 				$objToReturn->strLanguageCode = $objSoapObject->LanguageCode;
 			if (property_exists($objSoapObject, 'CountryCode'))
 				$objToReturn->strCountryCode = $objSoapObject->CountryCode;
+			if (property_exists($objSoapObject, 'DialectCode'))
+				$objToReturn->strDialectCode = $objSoapObject->DialectCode;
 			if (property_exists($objSoapObject, 'Encoding'))
 				$objToReturn->strEncoding = $objSoapObject->Encoding;
 			if (property_exists($objSoapObject, 'TextDirection'))
@@ -2190,6 +2429,8 @@
 					return new QQNode('language_code', 'string', $this);
 				case 'CountryCode':
 					return new QQNode('country_code', 'string', $this);
+				case 'DialectCode':
+					return new QQNode('dialect_code', 'string', $this);
 				case 'Encoding':
 					return new QQNode('encoding', 'string', $this);
 				case 'TextDirection':
@@ -2210,6 +2451,8 @@
 					return new QQReverseReferenceNodeNarroTextComment($this, 'narrotextcommentaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroUserPermissionAsLanguage':
 					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroUserRoleAsLanguage':
+					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleaslanguage', 'reverse_reference', 'language_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('language_id', 'integer', $this);
@@ -2238,6 +2481,8 @@
 					return new QQNode('language_code', 'string', $this);
 				case 'CountryCode':
 					return new QQNode('country_code', 'string', $this);
+				case 'DialectCode':
+					return new QQNode('dialect_code', 'string', $this);
 				case 'Encoding':
 					return new QQNode('encoding', 'string', $this);
 				case 'TextDirection':
@@ -2258,6 +2503,8 @@
 					return new QQReverseReferenceNodeNarroTextComment($this, 'narrotextcommentaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroUserPermissionAsLanguage':
 					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroUserRoleAsLanguage':
+					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleaslanguage', 'reverse_reference', 'language_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('language_id', 'integer', $this);
