@@ -56,6 +56,39 @@
                 return $strLink;
         }
 
+        public static function UserRole($intUserId, $strLinkText = '') {
+            $strLink = sprintf('narro_user_role.php?l=%s&u=%d', QApplication::$Language->LanguageCode, $intUserId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function RoleList($intRoleId = 0, $strView = '', $strLinkText = '') {
+            switch($strView) {
+                case 'permission':
+                        $strExtraLink = '&view=permission';
+                        break;
+                case 'user':
+                        $strExtraLink = '&view=user';
+                        break;
+                default:
+                        $strExtraLink = '';
+            }
+
+            if ($intRoleId)
+                $strLink = sprintf('narro_role_list.php?l=%s&r=%d', QApplication::$Language->LanguageCode, $intRoleId);
+            else
+                $strLink = sprintf('narro_role_list.php?l=%s', QApplication::$Language->LanguageCode);
+
+            $strLink .= $strExtraLink;
+
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
         public static function UserPreferences($intUserId, $strLinkText = '') {
             $strLink = sprintf('narro_user_preferences.php?l=%s&u=%d', QApplication::$Language->LanguageCode, $intUserId);
             if ($strLinkText)
