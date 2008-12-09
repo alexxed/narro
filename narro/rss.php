@@ -446,12 +446,12 @@
 
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $strSqlQuery = sprintf(
-                        'SELECT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
+                        'SELECT DISTINCT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
                          $objProject->ProjectId,
                          QApplication::$Language->LanguageId
                     );
                 else
-                    $strSqlQuery = sprintf('SELECT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
+                    $strSqlQuery = sprintf('SELECT DISTINCT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
                          QApplication::$Language->LanguageId
                     );
 
