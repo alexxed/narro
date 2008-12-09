@@ -446,12 +446,12 @@
 
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $strSqlQuery = sprintf(
-                        'SELECT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
+                        'SELECT DISTINCT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
                          $objProject->ProjectId,
                          QApplication::$Language->LanguageId
                     );
                 else
-                    $strSqlQuery = sprintf('SELECT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
+                    $strSqlQuery = sprintf('SELECT DISTINCT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
                          QApplication::$Language->LanguageId
                     );
 
@@ -460,9 +460,10 @@
 
                 if ($objDbResult) {
                     $arrTextComment = NarroTextComment::InstantiateDbResult($objDbResult);
+
                     foreach($arrTextComment as $objTextComment) {
                         if (isset($objProject) && $objProject instanceof NarroProject) {
-                            $objContext = NarroContext::QuerySingle(
+                            $arrContext = NarroContext::QueryArray(
                                 QQ::AndCondition(
                                     QQ::Equal(QQN::NarroContext()->ProjectId, $objProject->ProjectId),
                                     QQ::Equal(QQN::NarroContext()->TextId, $objTextComment->TextId),
@@ -472,7 +473,7 @@
 
                         }
                         else {
-                            $objContext = NarroContext::QuerySingle(
+                            $arrContext = NarroContext::QueryArray(
                                 QQ::AndCondition(
                                     QQ::Equal(QQN::NarroContext()->TextId, $objTextComment->TextId),
                                     QQ::Equal(QQN::NarroContext()->Active, 1)
@@ -480,21 +481,69 @@
                             );
                         }
 
-                        if ($objContext) {
+                        if (count($arrContext)) {
                             $strDescription = sprintf('
                                 <span style="font-size:80%%;color:gray;">' . t('%s wrote on %s:') . '</span>
                                 <br />
-                                <span style="margin-left:5px;padding:3px;">%s</span>',
+                                <span style="margin-left:5px;padding:3px;">%s</span>
+                                <br />
+                                ' . t('The debated text is used in the following contexts:') . '
+                                <br />
+                                <ul>',
                                 NarroLink::UserProfile($objTextComment->UserId, '<b>' . $objTextComment->User->Username . '</b>'),
                                 $objTextComment->Created,
                                 nl2br($objTextComment->CommentText)
                             );
-                            $strLink = __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ .
-                                sprintf('/narro_context_suggest.php?l=%s&p=%d&c=%d#textcomments',
-                                    QApplication::$Language->LanguageCode,
-                                    $objContext->ProjectId,
-                                    $objContext->ContextId
-                                );
+
+                            foreach($arrContext as $objContext) {
+                                $strContextLink =
+                                        __HTTP_URL__ .
+                                        __VIRTUAL_DIRECTORY__ .
+                                        __SUBDIRECTORY__ .
+                                        '/' .
+                                        NarroLink::ContextSuggest(
+                                            $objContext->ProjectId,
+                                            $objContext->FileId,
+                                            $objContext->ContextId,
+                                            1,
+                                            2,
+                                            ''
+                                        )
+                                ;
+
+                                $strFileLink =
+                                        __HTTP_URL__ .
+                                        __VIRTUAL_DIRECTORY__ .
+                                        __SUBDIRECTORY__ .
+                                        '/' .
+                                        NarroLink::FileTextList(
+                                            $objContext->ProjectId,
+                                            $objContext->FileId,
+                                            1,
+                                            1,
+                                            ''
+                                        )
+                                ;
+
+                                $strProjectLink =
+                                        __HTTP_URL__ .
+                                        __VIRTUAL_DIRECTORY__ .
+                                        __SUBDIRECTORY__ .
+                                        '/' .
+                                        NarroLink::ProjectTextList(
+                                            $objContext->ProjectId,
+                                            1,
+                                            1,
+                                            ''
+                                        )
+                                ;
+
+                                $strDescription .= sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>, project <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objContext->Context), $strFileLink, $objContext->File->FileName, $strProjectLink, $objContext->Project->ProjectName);
+
+
+                            }
+
+                            $strDescription .= '</ul>';
 
                         }
                         else
@@ -504,9 +553,9 @@
                             (strlen($objTextComment->CommentText)>124)?
                                 substr($objTextComment->CommentText, 0, 124) . '...'
                                 :
-                                $objTextComment->CommentText,
-                            $strLink
+                                $objTextComment->CommentText
                         );
+
                         $objItem->Description = $strDescription;
                         $objItem->PubDate = new QDateTime($objTextComment->Created);
                         $objItem->Author = $objTextComment->User->Username;
