@@ -446,12 +446,12 @@
 
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $strSqlQuery = sprintf(
-                        'SELECT DISTINCT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
+                        'SELECT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
                          $objProject->ProjectId,
                          QApplication::$Language->LanguageId
                     );
                 else
-                    $strSqlQuery = sprintf('SELECT DISTINCT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
+                    $strSqlQuery = sprintf('SELECT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
                          QApplication::$Language->LanguageId
                     );
 
@@ -482,68 +482,61 @@
                         }
 
                         if (count($arrContext)) {
+                            $arrProjectLinks = array();
+                            $arrProjects = array();
+
                             $strDescription = sprintf('
                                 <span style="font-size:80%%;color:gray;">' . t('%s wrote on %s:') . '</span>
                                 <br />
-                                <span style="margin-left:5px;padding:3px;">%s</span>
-                                <br />
-                                ' . t('The debated text is used in the following contexts:') . '
-                                <br />
-                                <ul>',
+                                <span style="margin-left:5px;padding:3px;">%s</span>',
                                 NarroLink::UserProfile($objTextComment->UserId, '<b>' . $objTextComment->User->Username . '</b>'),
                                 $objTextComment->Created,
                                 nl2br($objTextComment->CommentText)
                             );
 
                             foreach($arrContext as $objContext) {
+                                $arrProjects[$objContext->ProjectId] = $objContext->Project->ProjectName;
                                 $strContextLink =
-                                        __HTTP_URL__ .
-                                        __VIRTUAL_DIRECTORY__ .
-                                        __SUBDIRECTORY__ .
-                                        '/' .
-                                        NarroLink::ContextSuggest(
-                                            $objContext->ProjectId,
-                                            $objContext->FileId,
-                                            $objContext->ContextId,
-                                            1,
-                                            2,
-                                            ''
-                                        )
-                                ;
-
-                                $strFileLink =
-                                        __HTTP_URL__ .
-                                        __VIRTUAL_DIRECTORY__ .
-                                        __SUBDIRECTORY__ .
-                                        '/' .
-                                        NarroLink::FileTextList(
-                                            $objContext->ProjectId,
-                                            $objContext->FileId,
-                                            1,
-                                            1,
-                                            ''
-                                        )
-                                ;
-
-                                $strProjectLink =
-                                        __HTTP_URL__ .
-                                        __VIRTUAL_DIRECTORY__ .
-                                        __SUBDIRECTORY__ .
-                                        '/' .
-                                        NarroLink::ProjectTextList(
-                                            $objContext->ProjectId,
-                                            1,
-                                            1,
-                                            ''
-                                        )
-                                ;
-
-                                $strDescription .= sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>, project <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objContext->Context), $strFileLink, $objContext->File->FileName, $strProjectLink, $objContext->Project->ProjectName);
-
-
+                                            __HTTP_URL__ .
+                                            __VIRTUAL_DIRECTORY__ .
+                                            __SUBDIRECTORY__ .
+                                            '/' .
+                                            NarroLink::ContextSuggest($objContext->ProjectId, $objContext->FileId, $objContext->ContextId, 1, 1, "'" . $objTextComment->Text->TextValue . "'") .
+                                            '#textcomments';
                             }
 
-                            $strDescription .= '</ul>';
+                            asort($arrProjects);
+
+                            if (count($arrProjects)) {
+                                $strDescription .= sprintf('
+                                <br />
+                                <small>
+                                ' . t('This is a debate on the text "%s", used in the following projects:') . '
+                                <br />',
+                                $objTextComment->Text->TextValue
+                                );
+
+                                foreach($arrProjects as $intProjectId=>$strProjectName) {
+                                    $strProjectLink =
+                                            __HTTP_URL__ .
+                                            __VIRTUAL_DIRECTORY__ .
+                                            __SUBDIRECTORY__ .
+                                            '/' .
+                                            NarroLink::ProjectTextList(
+                                                $intProjectId,
+                                                1,
+                                                1,
+                                                "'" . $objTextComment->Text->TextValue . "'"
+                                            )
+                                    ;
+
+                                    $arrProjectLinks[] = sprintf(t('<a href="%s">%s</a>'), $strProjectLink, $strProjectName);
+
+
+                                }
+
+                                $strDescription .= join(', ', $arrProjectLinks) . '</small>';
+                            }
 
                         }
                         else
@@ -553,7 +546,8 @@
                             (strlen($objTextComment->CommentText)>124)?
                                 substr($objTextComment->CommentText, 0, 124) . '...'
                                 :
-                                $objTextComment->CommentText
+                                $objTextComment->CommentText,
+                            $strContextLink
                         );
 
                         $objItem->Description = $strDescription;
