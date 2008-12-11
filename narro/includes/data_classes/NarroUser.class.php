@@ -231,6 +231,7 @@
 
         public function hasPermission($strPermissionName, $intProjectId = null, $intLanguageId = null) {
             if (
+                $this->intUserId == 1 ||
                 isset($this->arrPermissions[$strPermissionName . '-' . $intLanguageId . '-' . $intProjectId]) ||
                 isset($this->arrPermissions[$strPermissionName . '-' . $intLanguageId . '-']) ||
                 isset($this->arrPermissions[$strPermissionName . '--' . $intProjectId]) ||
