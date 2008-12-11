@@ -27,6 +27,7 @@
     define ('__HTTP_URL__', 'http://localhost');
     define ('__SUBDIRECTORY__', '/narro');
     define ('__URL_REWRITE__', 'none');
+    define ('__PHP_CLI_PATH__', '/usr/bin/php');
     define ('__DEVTOOLS_CLI__', __DOCROOT__ . __SUBDIRECTORY__ . '/_devtools_cli');
     define ('__INCLUDES__', __DOCROOT__ .  __SUBDIRECTORY__ . '/includes');
     define ('__QCODO__', __INCLUDES__ . '/qcodo');
