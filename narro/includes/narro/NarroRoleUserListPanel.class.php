@@ -61,7 +61,10 @@
         }
 
         public function dtgRoleUserList_UsernameColumn_Render(NarroUserRole $objNarroUserRole) {
-            return NarroLink::UserRole($objNarroUserRole->UserId, $objNarroUserRole->User->Username);
+            if ($objNarroUserRole->UserId != QApplication::$objUser->UserId)
+                return NarroLink::UserRole($objNarroUserRole->UserId, $objNarroUserRole->User->Username);
+            else
+                return $objNarroUserRole->User->Username;
         }
 
         public function dtgRoleUserList_Bind() {
