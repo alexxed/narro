@@ -139,7 +139,7 @@ INSERT INTO narro_permission (permission_id, permission_name) VALUES(21, 'Can ma
 INSERT INTO narro_permission (permission_id, permission_name) VALUES(7, 'Can manage users');
 INSERT INTO narro_permission (permission_id, permission_name) VALUES(1, 'Can suggest');
 INSERT INTO narro_permission (permission_id, permission_name) VALUES(20, 'Can upload project');
-INSERT INTO narro_permission (permission_id, permission_name) VALUES(3, 'Can validate');
+INSERT INTO narro_permission (permission_id, permission_name) VALUES(3, 'Can approve');
 INSERT INTO narro_permission (permission_id, permission_name) VALUES(2, 'Can vote');
 
 CREATE TABLE narro_project (

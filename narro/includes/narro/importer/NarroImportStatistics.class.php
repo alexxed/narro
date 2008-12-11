@@ -49,7 +49,7 @@
             'Texts without suggestions',
             'Skipped contexts',
             'Suggestions that kept the original text',
-            'Validated suggestions',
+            'Approved suggestions',
             'Reused suggestions',
             'Empty original texts',
             'Texts with no access key set, but fixed'

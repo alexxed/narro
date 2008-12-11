@@ -138,22 +138,22 @@
 
                 $btnVote->ActionParameter = $this->objNarroContextInfo->ValidSuggestionId;
 
-                $strControlId = 'btnCancelValidation';
+                $strControlId = 'btnCancelApproval';
 
-                $btnValidate = $this->objForm->GetControl($strControlId);
-                if (!$btnValidate) {
-                    $btnValidate = new QButton($this, $strControlId);
-                    $btnValidate->SetCustomStyle('float', 'right');
+                $btnApprove = $this->objForm->GetControl($strControlId);
+                if (!$btnApprove) {
+                    $btnApprove = new QButton($this, $strControlId);
+                    $btnApprove->SetCustomStyle('float', 'right');
                     if (QApplication::$blnUseAjax)
-                        $btnValidate->AddAction(new QClickEvent(), new QAjaxAction('btnValidate_Click'));
+                        $btnApprove->AddAction(new QClickEvent(), new QAjaxAction('btnApprove_Click'));
                     else
-                        $btnValidate->AddAction(new QClickEvent(), new QServerAction('btnValidate_Click')
+                        $btnApprove->AddAction(new QClickEvent(), new QServerAction('btnApprove_Click')
                     );
                 }
 
-                $btnValidate->Text = t('Cancel validation');
+                $btnApprove->Text = t('Disapprove');
 
-                $btnValidate->ActionParameter = $this->objNarroContextInfo->ValidSuggestionId;
+                $btnApprove->ActionParameter = $this->objNarroContextInfo->ValidSuggestionId;
 
                 $this->strText .= sprintf('<div style="color:gray;float:right;">%s, %s %s</div>%s<div class="green3dbg" style="border:1px dotted #DDDDDD;padding: 5px"><div style="float:right;">%s%s%s</div>%s</div><br/>',
                     sprintf(t('added by %s'), $this->dtgSuggestions_colAuthor_Render($this->objNarroContextInfo->ValidSuggestion)),
@@ -162,7 +162,7 @@
                     t('Approved translation:'),
                     $btnVote->Render(false),
                     $btnEdit->Render(false),
-                    ((QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))?$btnValidate->Render(false):'' ),
+                    ((QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))?$btnApprove->Render(false):'' ),
                     $this->dtgSuggestions_colSuggestion_Render($this->objNarroContextInfo->ValidSuggestion)
                 );
             }
@@ -265,7 +265,7 @@
                 else
                     $strDirControlChar = '';
 
-                if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+                if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
                     $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $strDirControlChar . $lstAccessKey->Render(false) . mb_substr($strSuggestionValue, $intAccPos + 1);
                 else
                     $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $strDirControlChar . '<u>' . mb_substr($strSuggestionValue, $intAccPos, 1) . '</u>' . mb_substr($strSuggestionValue, $intAccPos + 1);
@@ -346,7 +346,7 @@
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID) {
                 $objDateSpan = new QDateTimeSpan(time() - strtotime($this->objNarroContextInfo->Modified));
                 $strModifiedWhen = $objDateSpan->SimpleDisplay();
-                $strAuthorInfo .= ', ' . sprintf(sprintf(t('validated by %s'), NarroLink::UserProfile($this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username) . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
+                $strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by %s'), NarroLink::UserProfile($this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username) . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
             }
 
             return $strAuthorInfo;
@@ -430,21 +430,21 @@
 
             $btnVote->ActionParameter = $objNarroSuggestion->SuggestionId;
 
-            $strControlId = 'btnValidate' . $this->dtgSuggestions->CurrentRowIndex;
+            $strControlId = 'btnApprove' . $this->dtgSuggestions->CurrentRowIndex;
 
-            $btnValidate = $this->objForm->GetControl($strControlId);
-            if (!$btnValidate) {
-                $btnValidate = new QButton($this->dtgSuggestions, $strControlId);
+            $btnApprove = $this->objForm->GetControl($strControlId);
+            if (!$btnApprove) {
+                $btnApprove = new QButton($this->dtgSuggestions, $strControlId);
                 if (QApplication::$blnUseAjax)
-                    $btnValidate->AddAction(new QClickEvent(), new QAjaxAction('btnValidate_Click'));
+                    $btnApprove->AddAction(new QClickEvent(), new QAjaxAction('btnApprove_Click'));
                 else
-                    $btnValidate->AddAction(new QClickEvent(), new QServerAction('btnValidate_Click')
+                    $btnApprove->AddAction(new QClickEvent(), new QServerAction('btnApprove_Click')
                 );
             }
 
-            $btnValidate->Text = t('Validate');
+            $btnApprove->Text = t('Approve');
 
-            $btnValidate->ActionParameter = $objNarroSuggestion->SuggestionId;
+            $btnApprove->ActionParameter = $objNarroSuggestion->SuggestionId;
 
             $strText = '';
 
@@ -456,8 +456,8 @@
             }
             if (QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
                 $strText .= '&nbsp;' . $btnDelete->Render(false);
-            if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
-                $strText .= '&nbsp;' . $btnValidate->Render(false);
+            if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+                $strText .= '&nbsp;' . $btnApprove->Render(false);
 
             return '<div style="float:right">' . $strText . '</div>';
         }
@@ -684,7 +684,7 @@
                     }
                     if (isset($arrTexts) && count(array_keys($arrTexts))) {
                         $this->lblMessage->ForeColor = 'red';
-                        $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it is marked valid for the following contexts: %s. <br />You can cancel validation for all these contexts and try again. Click on the contexts to open them in new tabs or windows.'), join(', ', array_keys($arrTexts)));
+                        $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it is approved for the following contexts: %s. <br />You can cancel the approval for all these contexts and try again. Click on the contexts to open them in new tabs or windows.'), join(', ', array_keys($arrTexts)));
                         $this->MarkAsModified();
                         return true;
                     }

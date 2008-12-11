@@ -81,13 +81,13 @@
         public function dtgNarroProject_PercentTranslated_Render(NarroProject $objNarroProject) {
             $intTotalTexts = NarroCache::CountAllTextsByProjectAndLanguage($objNarroProject->ProjectId);
             $intTranslatedTexts = NarroCache::CountTranslatedTextsByProjectAndLanguage($objNarroProject->ProjectId);
-            $intValidatedTexts = NarroCache::CountValidatedTextsByProjectAndLanguage($objNarroProject->ProjectId);
+            $intApprovedTexts = NarroCache::CountApprovedTextsByProjectAndLanguage($objNarroProject->ProjectId);
 
             $objProgressBar = $this->GetControl('progressbar' . $objNarroProject->ProjectId);
             if (!$objProgressBar instanceof NarroTranslationProgressBar)
                 $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroProject, 'progressbar' . $objNarroProject->ProjectId);
             $objProgressBar->Total = $intTotalTexts;
-            $objProgressBar->Translated = $intValidatedTexts;
+            $objProgressBar->Translated = $intApprovedTexts;
             $objProgressBar->Fuzzy = $intTranslatedTexts;
 
             $strOutput .= $objProgressBar->Render(false);
@@ -101,7 +101,7 @@
                     1,
                     '',
                     0,
-                    $intTotalTexts - $intValidatedTexts - $intTranslatedTexts,
+                    $intTotalTexts - $intApprovedTexts - $intTranslatedTexts,
                     -1,
                     0,
                     $strOutput
@@ -111,7 +111,7 @@
         public function dtgNarroProject_ProjectNameColumn_Render(NarroProject $objNarroProject) {
             $intTotalTexts = NarroCache::CountAllTextsByProjectAndLanguage($objNarroProject->ProjectId);
             $intTranslatedTexts = NarroCache::CountTranslatedTextsByProjectAndLanguage($objNarroProject->ProjectId);
-            $intValidatedTexts = NarroCache::CountValidatedTextsByProjectAndLanguage($objNarroProject->ProjectId);
+            $intApprovedTexts = NarroCache::CountApprovedTextsByProjectAndLanguage($objNarroProject->ProjectId);
 
             return
                 NarroLink::ContextSuggest(
@@ -122,7 +122,7 @@
                     1,
                     '',
                     0,
-                    $intTotalTexts - $intValidatedTexts - $intTranslatedTexts,
+                    $intTotalTexts - $intApprovedTexts - $intTranslatedTexts,
                     -1,
                     0,
                     $objNarroProject->ProjectName

@@ -129,7 +129,7 @@
 
                     if ($objDbResult) {
                         $mixRow = $objDbResult->FetchArray();
-                        $intValidatedTexts = $mixRow['cnt'];
+                        $intApprovedTexts = $mixRow['cnt'];
                     }
 
                     $objProgressBar = $this->GetControl('progressbar' . $objNarroFile->FileId);
@@ -137,7 +137,7 @@
                         $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroFile, 'progressbar' . $objNarroFile->FileId);
 
                     $objProgressBar->Total = $intTotalTexts;
-                    $objProgressBar->Translated = $intValidatedTexts;
+                    $objProgressBar->Translated = $intApprovedTexts;
                     $objProgressBar->Fuzzy = $intTranslatedTexts;
 
                     $sOutput .= $objProgressBar->Render(false);
@@ -396,13 +396,13 @@
             $objFileImporter->CheckEqual = true;
             $objFileImporter->File = $objFile;
 
-            $objFileImporter->OnlySuggestions = !QApplication::$objUser->hasPermission('Can validate', $objFile->ProjectId, QApplication::$Language->LanguageId);
+            $objFileImporter->OnlySuggestions = !QApplication::$objUser->hasPermission('Can approve', $objFile->ProjectId, QApplication::$Language->LanguageId);
             $objFileImporter->DeactivateFiles = false;
             $objFileImporter->DeactivateContexts = false;
 
             NarroLog::$intMinLogLevel = 3;
 
-            $objFileImporter->Validate = QApplication::$objUser->hasPermission('Can validate', $objFile->ProjectId, QApplication::$Language->LanguageId);
+            $objFileImporter->Approve = QApplication::$objUser->hasPermission('Can approve', $objFile->ProjectId, QApplication::$Language->LanguageId);
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$Language->LanguageCode);
 

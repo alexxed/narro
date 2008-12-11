@@ -44,7 +44,7 @@
 
         protected $chkDoNotDeactivateFiles;
         protected $chkDoNotDeactivateContexts;
-        protected $chkValidate;
+        protected $chkApprove;
         protected $chkOnlySuggestions;
         protected $chkCheckEqual;
 
@@ -101,7 +101,7 @@
             $this->btnDelProjectFiles->AddAction(new QClickEvent(), new QServerAction('btnDelProjectFiles_Click'));
 
             $this->lstExportedSuggestion = new QListBox($this);
-            $this->lstExportedSuggestion->AddItem(t('The validated suggestion'), 1);
+            $this->lstExportedSuggestion->AddItem(t('The approved suggestion'), 1);
             $this->lstExportedSuggestion->AddItem(t('The most voted suggestion'), 2);
             $this->lstExportedSuggestion->AddItem(t('My suggestion'), 3);
             $this->lstExportedSuggestion->Enabled = false;
@@ -120,8 +120,8 @@
             $this->chkDoNotDeactivateContexts = new QCheckBox($this);
             $this->chkDoNotDeactivateContexts->Checked = true;
 
-            $this->chkValidate = new QCheckBox($this);
-            $this->chkValidate->Checked = true;
+            $this->chkApprove = new QCheckBox($this);
+            $this->chkApprove->Checked = true;
 
             $this->chkOnlySuggestions = new QCheckBox($this);
 
@@ -376,10 +376,10 @@
 
             if (function_exists('proc_open')) {
                 $strCommand = sprintf(
-                    '/usr/bin/php ' .
+                    __PHP_CLI_PATH__ . ' ' .
                         escapeshellarg('includes/narro/importer/importer.php').
                         ' --import --minloglevel %d --project %d --user %d ' .
-                        (($this->chkValidate->Checked)?'--validate ':'') .
+                        (($this->chkApprove->Checked)?'--approve ':'') .
                         (($this->chkForce->Checked)?'--force ':'') .
                         (($this->chkCheckEqual->Checked)?'--check-equal ':'') .
                         (($this->chkOnlySuggestions->Checked)?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
@@ -408,7 +408,7 @@
                 $objNarroImporter->DeactivateFiles = true;
                 $objNarroImporter->DeactivateContexts = true;
                 $objNarroImporter->CheckEqual = $this->chkCheckEqual->Checked;
-                $objNarroImporter->Validate = $this->chkValidate->Checked;
+                $objNarroImporter->Approve = $this->chkApprove->Checked;
                 $objNarroImporter->OnlySuggestions = $this->chkOnlySuggestions->Checked;
                 $objNarroImporter->MinLogLevel = $this->lstLogLevel->SelectedValue;
                 $objNarroImporter->Project = $this->objNarroProject;
@@ -547,10 +547,10 @@
 
             if (function_exists('proc_open')) {
                 $strCommand = sprintf(
-                    '/usr/bin/php ' .
+                    __PHP_CLI_PATH__ . ' ' .
                         escapeshellarg('includes/narro/importer/importer.php').
                         ' --export --minloglevel %d --project %d --user %d ' .
-                        (($this->chkValidate->Checked)?'--validate ':'') .
+                        (($this->chkApprove->Checked)?'--approve ':'') .
                         (($this->chkForce->Checked)?'--force ':'') .
                         (($this->chkOnlySuggestions->Checked)?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                         ' --check-equal --source-lang en-US --target-lang %s',

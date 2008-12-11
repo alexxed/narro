@@ -39,8 +39,8 @@
 
         const SHOW_ALL_TEXTS = 1;
         const SHOW_UNTRANSLATED_TEXTS = 2;
-        const SHOW_VALIDATED_TEXTS = 3;
-        const SHOW_TEXTS_THAT_REQUIRE_VALIDATION = 4;
+        const SHOW_APPROVED_TEXTS = 3;
+        const SHOW_TEXTS_THAT_REQUIRE_APPROVAL = 4;
 
         const SEARCH_TEXTS = 1;
         const SEARCH_SUGGESTIONS = 2;
@@ -48,7 +48,7 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             $this->SetupNarroObject();
 
             // Setup DataGrid Columns
@@ -70,7 +70,7 @@
                 )
             );
             $this->colOriginalText->HtmlEntities = false;
-            
+
             $this->colTranslatedText = new QDataGridColumn(
                 t('Translated text'),
                 '<?= $_FORM->dtgNarroContextInfo_TranslatedText_Render($_ITEM); ?>'
@@ -107,8 +107,8 @@
             $this->lstTextFilter = new QListBox($this);
             $this->lstTextFilter->AddItem(t('All texts'), self::SHOW_ALL_TEXTS, true);
             $this->lstTextFilter->AddItem(t('Untranslated texts'), self::SHOW_UNTRANSLATED_TEXTS);
-            $this->lstTextFilter->AddItem(t('Validated texts'), self::SHOW_VALIDATED_TEXTS);
-            $this->lstTextFilter->AddItem(t('Texts that require validation'), self::SHOW_TEXTS_THAT_REQUIRE_VALIDATION);
+            $this->lstTextFilter->AddItem(t('Approved texts'), self::SHOW_APPROVED_TEXTS);
+            $this->lstTextFilter->AddItem(t('Texts that require approval'), self::SHOW_TEXTS_THAT_REQUIRE_APPROVAL);
             if (QApplication::QueryString('tf') > 0)
                 $this->lstTextFilter->SelectedValue = QApplication::QueryString('tf');
             $this->lstTextFilter->AddAction(new QChangeEvent(), new QServerAction('lstTextFilter_Change'));
@@ -164,7 +164,7 @@
 
                 $strText = htmlentities($strText, null, 'utf-8');
 
-                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->ValidSuggestionId && QApplication::$objUser->hasPermission('Can validate', $objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->ValidSuggestionId && QApplication::$objUser->hasPermission('Can approve', $objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
                     $strText = preg_replace('/' . $objNarroContextInfo->TextAccessKey . '/', '<u>' . $objNarroContextInfo->TextAccessKey . '</u>', $strText, 1);
 
                 return $strText;

@@ -42,7 +42,7 @@
             $intValidSuggestionCount = $objDbResult->CountRows();
 
             if ($intSuggestionCount && $intValidSuggestionCount) {
-                echo sprintf(t('Out of a total of %d suggestions made by %s, %d were validated.'), $intSuggestionCount, $this->objUser->Username, $intValidSuggestionCount);
+                echo sprintf(t('Out of a total of %d suggestions made by %s, %d were approved.'), $intSuggestionCount, $this->objUser->Username, $intValidSuggestionCount);
             }
             echo '<br />';
             echo sprintf(t('Here are the suggestions that %s made so far') . ':', $this->objUser->Username);

@@ -26,7 +26,7 @@
 
         // Button Actions
         protected $btnSave;
-        protected $chkValidate;
+        protected $chkApprove;
         protected $btnSaveIgnore;
         protected $btnNext;
         protected $btnNext100;
@@ -146,7 +146,7 @@
             // Create/Setup Button Action controls
             $this->btnSave_Create();
             $this->btnSaveIgnore_Create();
-            $this->chkValidate_Create();
+            $this->chkApprove_Create();
 
             $this->btnNext_Create();
             $this->btnNext100_Create();
@@ -222,7 +222,7 @@
             (
                 !is_null($this->objNarroContextInfo->TextAccessKey) &&
                 !is_null($this->objNarroContextInfo->ValidSuggestionId) &&
-                QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)
+                QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)
             )
                 $this->pnlOriginalText->Text = NarroString::Replace(
                     $this->objNarroContextInfo->TextAccessKey,
@@ -314,11 +314,11 @@
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS:
                         $this->pnlNavigator->Text .= ' -> ' . t('Untranslated texts');
                         break;
-                case NarroTextListForm::SHOW_VALIDATED_TEXTS:
-                        $this->pnlNavigator->Text .= ' -> ' . t('Validated texts');
+                case NarroTextListForm::SHOW_APPROVED_TEXTS:
+                        $this->pnlNavigator->Text .= ' -> ' . t('Approved texts');
                         break;
-                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION:
-                        $this->pnlNavigator->Text .= ' -> ' . t('Texts that require validation');
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL:
+                        $this->pnlNavigator->Text .= ' -> ' . t('Texts that require approval');
                         break;
                 default:
 
@@ -372,6 +372,7 @@
         protected function chkGoToNext_Create() {
             $this->chkGoToNext = new QCheckBox($this);
             $this->chkGoToNext->Checked = true;
+            $this->chkGoToNext->Text = t('After approving, proceed to the next text');
         }
 
         // Create and Setup txtSuggestionValue
@@ -406,6 +407,7 @@
         protected function btnSave_Create() {
             $this->btnSave = new QButton($this);
             $this->btnSave->Text = t('Save');
+            $this->btnSave->AccessKey = 's';
             if (QApplication::$blnUseAjax)
                 $this->btnSave->AddAction(new QClickEvent(), new QAjaxAction('btnSave_Click'));
             else
@@ -429,14 +431,17 @@
             $this->btnSaveIgnore->TabIndex = 3;
             $this->btnSaveIgnore->Visible = false;
             $this->btnSaveIgnore->Display = QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId);
+            $this->btnSaveIgnore->AccessKey = 'i';
         }
 
-        // Setup chkValidate
-        protected function chkValidate_Create() {
-            $this->chkValidate = new QCheckBox($this);
-            //$this->chkValidate->TabIndex = 7;
-            $this->chkValidate->Display = QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId);
-            $this->chkValidate->Checked = QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId);
+        // Setup chkApprove
+        protected function chkApprove_Create() {
+            $this->chkApprove = new QCheckBox($this);
+            //$this->chkApprove->TabIndex = 7;
+            $this->chkApprove->Display = QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId);
+            $this->chkApprove->Checked = QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId);
+            $this->chkApprove->Text = t('Approve after saving');
+            $this->chkApprove->AccessKey = 'v';
         }
 
         // Setup btnNext
@@ -451,6 +456,7 @@
 
             $this->btnNext->CausesValidation = false;
             $this->btnNext->TabIndex = 4;
+            $this->btnNext->AccessKey = 'k';
         }
 
         // Setup btnNext100
@@ -464,6 +470,7 @@
                 $this->btnNext100->AddAction(new QClickEvent(), new QServerAction('btnNext100_Click'));
             $this->btnNext100->CausesValidation = false;
             $this->btnNext100->TabIndex = 5;
+            $this->btnNext100->AccessKey = 'h';
         }
 
         // Setup btnPrevious100
@@ -476,6 +483,7 @@
                 $this->btnPrevious100->AddAction(new QClickEvent(), new QServerAction('btnPrevious100_Click'));
             $this->btnPrevious100->CausesValidation = false;
             $this->btnPrevious100->TabIndex = 6;
+            $this->btnPrevious100->AccessKey = 'l';
         }
 
 
@@ -489,6 +497,7 @@
                 $this->btnPrevious->AddAction(new QClickEvent(), new QServerAction('btnPrevious_Click'));
             $this->btnPrevious->CausesValidation = false;
             $this->btnPrevious->TabIndex = 6;
+            $this->btnPrevious->AccessKey = 'j';
         }
 
         // Setup btnCopyOriginal
@@ -503,6 +512,7 @@
 
             $this->btnCopyOriginal->CausesValidation = false;
             $this->btnCopyOriginal->SetCustomStyle('float', 'right');
+            $this->btnCopyOriginal->AccessKey = 'c';
         }
 
         // Setup btnComments
@@ -628,7 +638,7 @@
             }
 
             $this->objNarroContextInfo->HasSuggestions = 1;
-            if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) && $this->chkValidate->Checked && $this->objNarroContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
+            if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) && $this->chkApprove->Checked && $this->objNarroContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
                 $this->objNarroContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
 
@@ -642,7 +652,7 @@
                 $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
                 $this->objNarroContextInfo->Save();
 
-                QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+                QApplication::$objPluginHandler->ApproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
                 NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId);
             }
 
@@ -830,8 +840,8 @@
             }
         }
 
-        public function btnValidate_Click($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+        public function btnApprove_Click($strFormId, $strControlId, $strParameter) {
+            if (!QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
               return false;
 
             if ($strParameter != $this->objNarroContextInfo->ValidSuggestionId) {
@@ -854,7 +864,7 @@
 
             $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
             $this->objNarroContextInfo->Save();
-            QApplication::$objPluginHandler->ValidateSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+            QApplication::$objPluginHandler->ApproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId);
 
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
@@ -867,6 +877,7 @@
 
         public function btnCopyOriginal_Click($strFormId, $strControlId, $strParameter) {
             $this->txtSuggestionValue->Text = $this->objNarroContextInfo->Context->Text->TextValue;
+            $this->txtSuggestionValue->Focus();
         }
 
         public function btnComments_Click($strFormId, $strControlId, $strParameter) {
@@ -884,7 +895,7 @@
         }
 
         public function lstAccessKey_Change($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+            if (!QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
               return false;
 
             $this->objNarroContextInfo->SuggestionAccessKey = $this->GetControl($strControlId)->SelectedValue;

@@ -44,6 +44,9 @@
         </div>
         <br />
         <?php $this->pnlSuggestionList->Render(); ?>
+        <?php if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)) { ?>
+            <?php $this->chkGoToNext->Render(); ?>
+        <?php } ?>
         <br />
         <?php if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)) { ?>
             <?php $this->pnlPluginMessages->Render(); ?>
@@ -57,12 +60,10 @@
             </td>
             <td width="40%" valign="top" style="padding-left:0px;border:0px">
                 <?php $this->btnSave->Render() ?>&nbsp;<?php $this->btnSaveIgnore->Render() ?>
-                <?php if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)) { ?>
+                <?php if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)) { ?>
                     <br />
-                    <?php $this->chkValidate->Render() ?> <label for="<?php echo $this->chkValidate->ControlId ?>"><?php echo t('Validate') ?></label>
+                    <?php $this->chkApprove->Render() ?>
                 <?php } ?>
-                <br />
-                <?php $this->chkGoToNext->Render() ?> <label for="<?php echo $this->chkGoToNext->ControlId ?>"><?php echo t('After, go to the next text') ?></label>
             </td>
             </tr>
             </table>

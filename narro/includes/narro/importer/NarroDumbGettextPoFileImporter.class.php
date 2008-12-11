@@ -570,7 +570,7 @@
         }
 
         /**
-         * A translation here consists of the project, file, text, translation, context, plurals, validation, ignore equals
+         * A translation here consists of the project, file, text, translation, context, plurals, approval, ignore equals
          *
          * @param string $strOriginal the original text
          * @param string $strOriginalAccKey access key for the original text

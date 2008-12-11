@@ -35,7 +35,7 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            if (!QApplication::$objUser->hasPermission('Can manage users'))
+            if (QApplication::QueryString('u') == QApplication::$objUser->UserId)
                 QApplication::Redirect(NarroLink::ProjectList());
 
             $this->objUser = NarroUser::Load(QApplication::QueryString('u'));
@@ -89,7 +89,7 @@
                 $this->lstRole->AddItem($objNarroRole->RoleName, $objNarroRole->RoleId);
 
             $this->btnAddRole = new QButton($this);
-            $this->btnAddRole->Text = t('Add permission');
+            $this->btnAddRole->Text = t('Add');
             $this->btnAddRole->AddAction(new QClickEvent(), new QServerAction('btnAddRole_Click'));
 
         }
@@ -138,11 +138,7 @@
             }
             $btnDelete->ActionParameter = $objNarroUserRole->UserRoleId;
 
-            if (QApplication::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId, $objNarroUserRole->LanguageId))
-                return
-                    $btnEdit->Render(false) . ' ' . $btnDelete->Render(false);
-            else
-                return '';
+            return $btnEdit->Render(false) . ' ' . $btnDelete->Render(false);
         }
 
         protected function dtgNarroUserRole_Bind() {
@@ -210,14 +206,13 @@
             else {
                 $objNarroUserRole = NarroUserRole::Load($strParameter);
 
-                if (!QApplication::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId, $objNarroUserRole->LanguageId))
-                    return false;
-
                 $this->lstLanguage->SelectedValue = $objNarroUserRole->LanguageId;
+                $this->lstLanguage->Enabled = QApplication::$objUser->hasPermission('Can manage users', null, $objNarroUserRole->LanguageId);
                 $this->lstProject->SelectedValue = $objNarroUserRole->ProjectId;
+                $this->lstProject->Enabled = QApplication::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId);
                 $this->lstRole->SelectedValue = $objNarroUserRole->RoleId;
 
-                $this->btnAddRole->Text = t('Save permission');
+                $this->btnAddRole->Text = t('Save');
                 $this->btnAddRole->ActionParameter = $strParameter;
 
                 $btnEdit->Text = t('Cancel edit');

@@ -39,9 +39,9 @@
          */
         protected $blnCheckEqual;
         /**
-         * whether to validate the imported suggestions
+         * whether to approve the imported suggestions
          */
-        protected $blnValidate;
+        protected $blnApprove;
         /**
          * whether to import only suggestions, that is don't add anything else than suggestions
          */
@@ -49,10 +49,10 @@
 
         /**
          * what suggestions are exported
-         * 1 = validated
-         * 2 = most voted and validated
-         * 3 = current user's suggestion and validated
-         * for 2 and 3 the fallback is to validated
+         * 1 = approved
+         * 2 = most voted and approved
+         * 3 = current user's suggestion and approved
+         * for 2 and 3 the fallback is to approved
          */
         protected $intExportedSuggestion = 1;
         /**
@@ -718,7 +718,7 @@
                 case "Project": return $this->objProject;
                 case "SourceLanguage": return $this->objSourceLanguage;
                 case "TargetLanguage": return $this->objTargetLanguage;
-                case "Validate": return $this->blnValidate;
+                case "Approve": return $this->blnApprove;
                 case "CheckEqual": return $this->blnCheckEqual;
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
                 case "DeactivateFiles": return $this->blnDeactivateFiles;
@@ -791,9 +791,9 @@
                     break;
 
 
-                case "Validate":
+                case "Approve":
                     try {
-                        $this->blnValidate = QType::Cast($mixValue, QType::Boolean);
+                        $this->blnApprove = QType::Cast($mixValue, QType::Boolean);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();

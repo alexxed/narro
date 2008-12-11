@@ -40,18 +40,18 @@
          */
         protected $blnCheckEqual = true;
         /**
-         * whether to validate the imported suggestions
+         * whether to approve the imported suggestions
          */
-        protected $blnValidate = true;
+        protected $blnApprove = true;
         /**
          * whether to import only suggestions, that is don't add anything else than suggestions
          */
         protected $blnOnlySuggestions = false;
         /**
          * what suggestions are exported
-         * 1 = validated
-         * 2 = validated and most voted
-         * 3 = validated and current user's suggestion
+         * 1 = approved
+         * 2 = approved and most voted
+         * 3 = approved and current user's suggestion
          */
         protected $intExportedSuggestion = 1;
 
@@ -64,7 +64,7 @@
                 $this->objTargetLanguage = $objImporter->TargetLanguage;
                 $this->objProject = $objImporter->Project;
                 $this->blnCheckEqual = $objImporter->CheckEqual;
-                $this->blnValidate = $objImporter->Validate;
+                $this->blnApprove = $objImporter->Approve;
                 $this->blnOnlySuggestions = $objImporter->OnlySuggestions;
             }
 
@@ -80,7 +80,7 @@
         }
 
         /**
-         * A translation here consists of the project, file, text, translation, context, validation, ignore equals
+         * A translation here consists of the project, file, text, translation, context, approval, ignore equals
          *
          * @param string $strOriginal the original text
          * @param string $strOriginalAccKey access key for the original text
@@ -249,13 +249,7 @@
                 NarroLog::LogMessage(1, sprintf(t('Added the context "%s" from the file "%s"'), $strContext, $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Imported contexts']++;
             }
-            elseif(!$objNarroContext instanceof NarroContext) {
-                /*
-                 * no context found = no go
-                 */
-                return false;
-            }
-            else {
+            elseif($objNarroContext instanceof NarroContext) {
                 NarroImportStatistics::$arrStatistics['Reused contexts']++;
             }
 
@@ -274,52 +268,50 @@
                 $objContextInfo->HasComments = 0;
                 $blnContextInfoChanged = true;
             }
-            elseif (!$objContextInfo instanceof NarroContextInfo) {
+            elseif ($objContextInfo instanceof NarroContextInfo) {
+                NarroImportStatistics::$arrStatistics['Reused context informations']++;
+            }
+
+            if ($objNarroContext instanceof NarroContext && $objNarroContextInfo instanceof NarroContextInfo) {
                 /**
-                 * no context info = no go
+                 * this lies outside the if/else if reusing contexts is activated, so if a context was moved in another file, we'll just update the file_id
                  */
-                return false;
-            }
-
-
-            /**
-             * this lies outside the if/else if reusing contexts is activated, so if a context was moved in another file, we'll just update the file_id
-             */
-            if ($objNarroContext->FileId != $this->objFile->FileId) {
-                $blnContextChanged = true;
-                $objNarroContext->FileId = $this->objFile->FileId;
-            }
-
-            if ($objContextInfo->TextAccessKey != $strOriginalAccKey) {
-                $blnContextInfoChanged = true;
-                $objContextInfo->TextAccessKey = $strOriginalAccKey;;
-            }
-
-            if (!$this->blnOnlySuggestions && trim($strComment) != '') {
-
-                $objContextComment = NarroContextComment::QuerySingle(
-                                        QQ::AndCondition(
-                                            QQ::Equal(QQN::NarroContextComment()->ContextId, $objNarroContext->ContextId),
-                                            QQ::Equal(QQN::NarroContextComment()->LanguageId, $this->objTargetLanguage->LanguageId),
-                                            QQ::Equal(QQN::NarroContextComment()->CommentTextMd5, md5($strComment))
-                                        )
-                );
-
-                if (!$objContextComment instanceof NarroContextComment) {
-                    $objContextComment = new NarroContextComment();
-                    $objContextComment->ContextId = $objNarroContext->ContextId;
-                    $objContextComment->UserId = $this->objUser->UserId;
-                    $objContextComment->LanguageId = $this->objTargetLanguage->LanguageId;
-                    $objContextComment->CommentText = $strComment;
-                    $objContextComment->CommentTextMd5 = md5($strComment);
-                    $objContextComment->Modified = date('Y-m-d H:i:s');
-                    $objContextComment->Created = date('Y-m-d H:i:s');
-                    $objContextComment->Save();
+                if ($objNarroContext->FileId != $this->objFile->FileId) {
+                    $blnContextChanged = true;
+                    $objNarroContext->FileId = $this->objFile->FileId;
                 }
 
+                if ($objContextInfo->TextAccessKey != $strOriginalAccKey) {
+                    $blnContextInfoChanged = true;
+                    $objContextInfo->TextAccessKey = $strOriginalAccKey;;
+                }
 
-                $objContextInfo->HasComments = 1;
-                $blnContextInfoChanged = true;
+                if (!$this->blnOnlySuggestions && trim($strComment) != '') {
+
+                    $objContextComment = NarroContextComment::QuerySingle(
+                                            QQ::AndCondition(
+                                                QQ::Equal(QQN::NarroContextComment()->ContextId, $objNarroContext->ContextId),
+                                                QQ::Equal(QQN::NarroContextComment()->LanguageId, $this->objTargetLanguage->LanguageId),
+                                                QQ::Equal(QQN::NarroContextComment()->CommentTextMd5, md5($strComment))
+                                            )
+                    );
+
+                    if (!$objContextComment instanceof NarroContextComment) {
+                        $objContextComment = new NarroContextComment();
+                        $objContextComment->ContextId = $objNarroContext->ContextId;
+                        $objContextComment->UserId = $this->objUser->UserId;
+                        $objContextComment->LanguageId = $this->objTargetLanguage->LanguageId;
+                        $objContextComment->CommentText = $strComment;
+                        $objContextComment->CommentTextMd5 = md5($strComment);
+                        $objContextComment->Modified = date('Y-m-d H:i:s');
+                        $objContextComment->Created = date('Y-m-d H:i:s');
+                        $objContextComment->Save();
+                    }
+
+
+                    $objContextInfo->HasComments = 1;
+                    $blnContextInfoChanged = true;
+                }
             }
 
             if  ( $strTranslation == '' ) {
@@ -369,7 +361,7 @@
                     /**
                      * update the HasSuggestions if it was 0 and we added a suggestion
                      */
-                    if ($objContextInfo->HasSuggestions == 0 && $objNarroSuggestion instanceof NarroSuggestion ) {
+                    if ($objContextInfo instanceof NarroContextInfo && $objContextInfo->HasSuggestions == 0 && $objNarroSuggestion instanceof NarroSuggestion ) {
                         $objContextInfo->HasSuggestions = 1;
                     }
 
@@ -379,21 +371,21 @@
                     NarroImportStatistics::$arrStatistics['Reused suggestions']++;
                 }
 
-                if ($this->blnValidate && $objContextInfo->ValidSuggestionId != $objNarroSuggestion->SuggestionId) {
+                if ($objContextInfo instanceof NarroContextInfo && $this->blnApprove && $objContextInfo->ValidSuggestionId != $objNarroSuggestion->SuggestionId) {
                     $objContextInfo->ValidSuggestionId = $objNarroSuggestion->SuggestionId;
                     $objContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
                     $blnContextInfoChanged = true;
-                    NarroImportStatistics::$arrStatistics['Validated suggestions']++;
+                    NarroImportStatistics::$arrStatistics['Approved suggestions']++;
                 }
 
-                if (!is_null($strTranslationAccKey) && $objContextInfo->SuggestionAccessKey != $strTranslationAccKey) {
+                if ($objContextInfo instanceof NarroContextInfo && !is_null($strTranslationAccKey) && $objContextInfo->SuggestionAccessKey != $strTranslationAccKey) {
                     $blnContextInfoChanged = true;
                     $objContextInfo->SuggestionAccessKey = $strTranslationAccKey;
                 }
 
             }
 
-            if ($objContextInfo->HasSuggestions == 0) {
+            if ($objContextInfo instanceof NarroContextInfo && $objContextInfo->HasSuggestions == 0) {
                 $intSuggestionCnt = NarroSuggestion::QueryCount(
                                         QQ::AndCondition(
                                             QQ::Equal(
@@ -439,7 +431,7 @@
                 }
             }
 
-            if ($blnContextInfoChanged) {
+            if ($blnContextInfoChanged && $objContextInfo instanceof NarroContextInfo) {
                 $objContextInfo->Modified = date('Y-m-d H:i:s');
                 try {
                     $objContextInfo->Save();
@@ -551,6 +543,23 @@
             }
         }
 
+        /**
+         * Get the most recent suggestion for a context
+         *
+         * @param integer $intTextId
+         * @return NarroSuggestion
+         */
+        public function GetMostRecentSuggestion($intTextId) {
+            return
+                NarroSuggestion::QuerySingle(
+                    QQ::AndCondition(
+                        QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId),
+                        QQ::Equal(QQN::NarroSuggestion()->LanguageId, $this->objTargetLanguage->LanguageId)
+                    ),
+                    array(QQ::OrderBy(QQN::NarroSuggestion()->Created, 0))
+                );
+        }
+
         /////////////////////////
         // Public Properties: GET
         /////////////////////////
@@ -560,7 +569,7 @@
                 case "Project": return $this->objProject;
                 case "SourceLanguage": return $this->objSourceLanguage;
                 case "TargetLanguage": return $this->objTargetLanguage;
-                case "Validate": return $this->blnValidate;
+                case "Approve": return $this->blnApprove;
                 case "CheckEqual": return $this->blnCheckEqual;
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
 
@@ -615,9 +624,9 @@
                     break;
 
 
-                case "Validate":
+                case "Approve":
                     try {
-                        $this->blnValidate = QType::Cast($mixValue, QType::Boolean);
+                        $this->blnApprove = QType::Cast($mixValue, QType::Boolean);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();

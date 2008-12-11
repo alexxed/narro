@@ -386,7 +386,7 @@
                         ) .
                         (
                             ($objNarroContextInfo->ValidSuggestionId)?
-                                sprintf('<p>' . t('Validated suggestion') . ': %s</p>',
+                                sprintf('<p>' . t('Approved suggestion') . ': %s</p>',
                                     (
                                         ($objNarroContextInfo->TextAccessKey)?
                                             NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', NarroString::HtmlEntities($objNarroContextInfo->ValidSuggestion->SuggestionValue), 1)
@@ -402,7 +402,7 @@
                             t('The text has no suggestions')) .
                         (
                             ($objNarroContextInfo->ValidSuggestionId && $objNarroContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID)?
-                                sprintf('<p>' . t('Validated by') . ': <a href="%s">%s</a>', $strUserLink, ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:''):
+                                sprintf('<p>' . t('Approved by') . ': <a href="%s">%s</a>', $strUserLink, ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:''):
                                 ''
                         );
 

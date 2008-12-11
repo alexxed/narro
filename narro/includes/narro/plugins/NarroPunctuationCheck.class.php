@@ -23,10 +23,10 @@
         }
 
         public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
-            return $this->ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
+            return $this->ApproveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
-        public function ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+        public function ApproveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
 
             preg_match('/[\.\!\?\:]+$/', $strOriginal, $arrOriginalTextMatches);
             preg_match('/[\.\!\?\:]+$/', $strTranslation, $arrSuggestionMatches);

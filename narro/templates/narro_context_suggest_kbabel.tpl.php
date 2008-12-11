@@ -58,8 +58,8 @@
                 <div style="float:right;padding-right:2%">
                 &nbsp;<?php $this->btnSave->Render(); ?>
                 &nbsp;<?php $this->btnSaveIgnore->Render(); ?>
-                <?php if (QApplication::$objUser->hasPermission('Can validate', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)) { ?>
-                    &nbsp;<?php $this->btnSaveValidate->Render()?>
+                <?php if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)) { ?>
+                    &nbsp;<?php $this->btnSaveApprove->Render()?>
                 <?php } ?>
                 </div>
                 <br style="clear:both"/>

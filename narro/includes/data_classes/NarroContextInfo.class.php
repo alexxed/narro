@@ -97,9 +97,9 @@
                 default:
                     if ($intFilter == NarroTextListForm::SHOW_UNTRANSLATED_TEXTS)
                         $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0));
-                    elseif ($intFilter == NarroTextListForm::SHOW_VALIDATED_TEXTS)
+                    elseif ($intFilter == NarroTextListForm::SHOW_APPROVED_TEXTS)
                         $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId));
-                    elseif ($intFilter == NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION)
+                    elseif ($intFilter == NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL)
                         $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
                     else
                         $objFilterCondition = $objExtraCondition;
@@ -125,7 +125,7 @@
                 $strSuggestionJoin = 'narro_context.text_id = narro_suggestion.text_id AND';
 
             switch($intFilter) {
-                case NarroTextListForm::SHOW_VALIDATED_TEXTS:
+                case NarroTextListForm::SHOW_APPROVED_TEXTS:
                     $strFilter = 'AND narro_context_info.valid_suggestion_id IS NOT NULL';
                     break;
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS:
@@ -133,7 +133,7 @@
                     $strSuggestionJoin = '';
                     $strFilter = 'AND narro_context_info.has_suggestions=0';
                     break;
-                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION:
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL:
                     $strFilter = 'AND narro_context_info.valid_suggestion_id IS NULL AND narro_context_info.has_suggestions=1';
                     break;
                 default:
@@ -260,10 +260,10 @@
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
                     $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
                     break;
-                case NarroTextListForm::SHOW_VALIDATED_TEXTS :
+                case NarroTextListForm::SHOW_APPROVED_TEXTS :
                     $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
                     break;
-                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION :
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
                     $objFilterCondition = QQ::AndCondition(QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1), QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId));
                     break;
                 default:
@@ -291,10 +291,10 @@
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
                     $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
                     break;
-                case NarroTextListForm::SHOW_VALIDATED_TEXTS :
+                case NarroTextListForm::SHOW_APPROVED_TEXTS :
                     $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
                     break;
-                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION :
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
                     $objFilterCondition = QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId);
                     break;
                 default:
@@ -328,10 +328,10 @@
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
                     $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
                     break;
-                case NarroTextListForm::SHOW_VALIDATED_TEXTS :
+                case NarroTextListForm::SHOW_APPROVED_TEXTS :
                     $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
                     break;
-                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION :
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
                     $objFilterCondition = QQ::AndCondition(QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
                     break;
                 default:
@@ -359,10 +359,10 @@
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
                     $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
                     break;
-                case NarroTextListForm::SHOW_VALIDATED_TEXTS :
+                case NarroTextListForm::SHOW_APPROVED_TEXTS :
                     $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
                     break;
-                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION :
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
                     $objFilterCondition = QQ::AndCondition(QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
                     break;
                 default:
@@ -396,10 +396,10 @@
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
                     $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
                     break;
-                case NarroTextListForm::SHOW_VALIDATED_TEXTS :
+                case NarroTextListForm::SHOW_APPROVED_TEXTS :
                     $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
                     break;
-                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION :
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
                     $objFilterCondition = QQ::AndCondition(QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
                     break;
                 default:
@@ -426,10 +426,10 @@
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
                     $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
                     break;
-                case NarroTextListForm::SHOW_VALIDATED_TEXTS :
+                case NarroTextListForm::SHOW_APPROVED_TEXTS :
                     $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
                     break;
-                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_VALIDATION :
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
                     $objFilterCondition = QQ::AndCondition(QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
                     break;
                 default:

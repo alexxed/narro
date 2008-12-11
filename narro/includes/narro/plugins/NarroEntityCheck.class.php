@@ -63,7 +63,7 @@
         }
 
         public function SaveSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            return $this->ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
+            return $this->ApproveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
         /**
@@ -75,7 +75,7 @@
          * @param $objProject
          * @return array with the same parameters given
          */
-        public function ValidateSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
+        public function ApproveSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
 
             /**

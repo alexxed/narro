@@ -69,13 +69,15 @@
 
             $this->dtgNarroUserList->AddColumn($this->colUsername);
 
-            if (QApplication::$objUser->hasPermission('Can manage users')) {
+            if (QApplication::$objUser->hasPermission('Administrator', null, QApplication::$Language->LanguageId)) {
                 $this->dtgNarroUserList->AddColumn($this->colEmail);
-                $this->dtgNarroUserList->AddColumn($this->colRoles);
                 $this->dtgNarroUserList->AddColumn($this->colPreferences);
-                $this->dtgNarroUserList->AddColumn($this->colActions);
             }
 
+            if (QApplication::$objUser->hasPermission('Can manage users', null, QApplication::$Language->LanguageId)) {
+                $this->dtgNarroUserList->AddColumn($this->colRoles);
+                $this->dtgNarroUserList->AddColumn($this->colActions);
+            }
 
         }
 
@@ -118,9 +120,12 @@
         }
 
         public function dtgNarroUserList_ActionsColumn_Render(NarroUser $objNarroUser) {
-            return
+            if ($objNarroUser->UserId != QApplication::$objUser->UserId)
+                return
                     NarroLink::UserPreferences($objNarroUser->UserId, t('Preferences')) . ' | ' .
                     NarroLink::UserRole($objNarroUser->UserId, t('Roles'));
+            else
+                return t('That\'s you!');
         }
 
         protected function dtgNarroUserList_Bind() {

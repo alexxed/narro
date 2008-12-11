@@ -30,12 +30,12 @@
                     "--source-lang                 source language code, optional, defaults to en-US\n" .
                     "--target-lang                 target language code\n" .
                     "--user                        user id that will be used for the added suggestions, optional, defaults to anonymous\n" .
-                    "--exported-suggestion         1 for validated, 2 - the most voted, 3 - the user's suggestion\n" .
+                    "--exported-suggestion         1 for approved, 2 - the most voted, 3 - the user's suggestion\n" .
                     "--force                       run the operation even if a previous operation is reported to be running\n" .
                     "--do-not-deactivate-files     do not deactivate project files before importing\n" .
                     "--do-not-deactivate-contexts  do not deactivate project contexts before importing\n" .
                     "--check-equal                 check if the translation is equal to the original text and don't import it\n" .
-                    "--validate                    validate the imported suggestions\n" .
+                    "--approve                     approve the imported suggestions\n" .
                     "--only-suggestions            import only suggestions, don't add files, texts or contexts\n"
                 ),
                 basename(__FILE__)
@@ -56,7 +56,7 @@
         $objNarroImporter->DeactivateFiles = !((bool) array_search('--do-not-deactivate-files', $argv));
         $objNarroImporter->DeactivateContexts = !((bool) array_search('--do-not-deactivate-contexts', $argv));
         $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
-        $objNarroImporter->Validate = (bool) array_search('--validate', $argv);
+        $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
         $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
 
         /**

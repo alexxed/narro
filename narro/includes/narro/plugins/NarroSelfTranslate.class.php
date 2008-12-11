@@ -25,7 +25,7 @@
             $this->strName = t('Narro self translator');
         }
 
-        public function ValidateSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
+        public function ApproveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
             self::UpdateTranslation($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
 
             return func_get_args();
@@ -64,7 +64,7 @@
             $arrTextSuggestions = QApplication::$Cache->load($strIdentifier);
 
             /**
-             * Take the validated suggestion
+             * Take the approved suggestion
              */
             $objContextInfo = NarroContextInfo::QuerySingle(
                 QQ::AndCondition(

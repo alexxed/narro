@@ -45,7 +45,7 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             $this->SetupNarroProject();
 
             // Setup DataGrid Columns
@@ -108,14 +108,14 @@
 
                 if ($objDbResult) {
                     $mixRow = $objDbResult->FetchArray();
-                    $intValidatedTexts = $mixRow['cnt'];
+                    $intApprovedTexts = $mixRow['cnt'];
                 }
 
                 $objProgressBar = $this->GetControl('progressbar' . $objNarroLanguage->LanguageId);
                 if (!$objProgressBar instanceof NarroTranslationProgressBar)
                     $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroLanguage, 'progressbar' . $objNarroLanguage->LanguageId);
                 $objProgressBar->Total = $intTotalTexts;
-                $objProgressBar->Translated = $intValidatedTexts;
+                $objProgressBar->Translated = $intApprovedTexts;
                 $objProgressBar->Fuzzy = $intTranslatedTexts;
 
                 $sOutput .= $objProgressBar->Render(false);

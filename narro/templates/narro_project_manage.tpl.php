@@ -57,9 +57,9 @@
             <div class="dotted_box_content">
             <?php if ($this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
                 <label for="<?php echo $this->chkCheckEqual->ControlId ?>"><?php echo $this->chkCheckEqual->Render(false) . ' ' . t('Do not import translations that are identical to the original text'); ?></label>
-                <p class="instructions"><?php echo t('Warning, if you uncheck this and choose to validate the imported suggestions all the translations identical to the original texts will be validated.'); ?></p>
-                <label for="<?php echo $this->chkValidate->ControlId ?>"><?php echo $this->chkValidate->Render(false) . ' ' . t('Validate the imported translations'); ?></label>
-                <p class="instructions"><?php echo t('Mark the imported suggestions as validated.'); ?></p>
+                <p class="instructions"><?php echo t('Warning, if you uncheck this and choose to approve the imported suggestions all the translations identical to the original texts will be approved.'); ?></p>
+                <label for="<?php echo $this->chkApprove->ControlId ?>"><?php echo $this->chkApprove->Render(false) . ' ' . t('Approve the imported translations'); ?></label>
+                <p class="instructions"><?php echo t('Mark the imported suggestions as approved.'); ?></p>
                 <label for="<?php echo $this->chkOnlySuggestions->ControlId ?>"><?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?></label>
                 <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
                 <?php if (QApplication::$objUser->hasPermission('Can upload project', null, QApplication::$Language->LanguageId)) { ?>
@@ -83,7 +83,7 @@
             <p class="instructions"><?php echo t('Choose the format of the exported archive.'); ?></p>
             <label for="<?php echo $this->lstExportedSuggestion->ControlId ?>"><?php echo t('Export translations using') . ': '; ?></label>
             <?php echo $this->lstExportedSuggestion->Render(false); ?>
-            <p class="instructions"><?php echo t('If you chose to use your suggestion or the most voted suggestion for each text, if you have no suggestion for a text or there aren\'t any votes, the validated suggestion will be exported instead.'); ?></p>
+            <p class="instructions"><?php echo t('If you chose to use your suggestion or the most voted suggestion for each text, if you have no suggestion for a text or there aren\'t any votes, the approved suggestion will be exported instead.'); ?></p>
             <?php $this->btnExport->Render(); $this->objExportProgress->Render();?>
             <?php $this->lblExport->Render(); ?>
             <p class="instructions"><?php echo sprintf(t('You will get an archive containing two directories, en-US and %s, each having the same file structure.'), QApplication::$Language->LanguageCode); ?></p>
@@ -97,15 +97,15 @@
             <div class="dotted_box_title">Project maintenance</div>
             <div class="dotted_box_content">
             <?php $this->btnDelProjectContexts->Render(); ?>
-            <p class="instructions"><?php _t('Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+            <p class="instructions"><?php _t('Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.
             You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.');?>
             </p>
             <?php $this->btnDelProjectContextInfos->Render(); ?>
-            <p class="instructions"><?php _t('Sometimes, it might help to delete the informations about contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+            <p class="instructions"><?php _t('Sometimes, it might help to delete the informations about contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.
             Translations and texts are kept, and you can import your project to recreate the context informations any time you want. This affects only the current language');?>
             </p>
             <?php $this->btnDelProjectFiles->Render(); ?>
-            <p class="instructions"><?php _t('Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your validations.
+            <p class="instructions"><?php _t('Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.
             You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.');?>
             </p>
 
