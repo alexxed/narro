@@ -101,10 +101,12 @@
             $this->btnDelProjectFiles->AddAction(new QClickEvent(), new QServerAction('btnDelProjectFiles_Click'));
 
             $this->lstExportedSuggestion = new QListBox($this);
-            $this->lstExportedSuggestion->AddItem(t('The approved suggestion'), 1);
-            $this->lstExportedSuggestion->AddItem(t('The most voted suggestion'), 2);
-            $this->lstExportedSuggestion->AddItem(t('My suggestion'), 3);
-            $this->lstExportedSuggestion->Enabled = false;
+
+            $this->lstExportedSuggestion->AddItem(t('Approved suggestion'), 1);
+            $this->lstExportedSuggestion->AddItem(t('Approved, then most voted suggestion'), 2);
+            $this->lstExportedSuggestion->AddItem(t('Approved, then most recent suggestion'), 3);
+            $this->lstExportedSuggestion->AddItem(t('Approved, then most voted and then most recent suggestion'), 4);
+            $this->lstExportedSuggestion->AddItem(t('Approved, then my suggestion'), 5);
 
             $this->lstLogLevel = new QListBox($this);
             $this->lstLogLevel->AddItem(1, 1);
@@ -553,11 +555,12 @@
                         (($this->chkApprove->Checked)?'--approve ':'') .
                         (($this->chkForce->Checked)?'--force ':'') .
                         (($this->chkOnlySuggestions->Checked)?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
-                        ' --check-equal --source-lang en-US --target-lang %s',
+                        ' --check-equal --source-lang en-US --target-lang %s --exported-suggestion %d',
                     $this->lstLogLevel->SelectedValue,
                     $this->objNarroProject->ProjectId,
                     QApplication::$objUser->UserId,
-                    QApplication::$Language->LanguageCode
+                    QApplication::$Language->LanguageCode,
+                    $this->lstExportedSuggestion->SelectedValue
                 );
 
                 proc_close(proc_open ("$strCommand &", array(), $foo));
@@ -576,6 +579,7 @@
                 $objNarroImporter->User = QApplication::$objUser;
                 $objNarroImporter->TranslationPath = $strExportPath . '/' . QApplication::$Language->LanguageCode;
                 $objNarroImporter->TemplatePath = $strExportPath . '/en-US';
+                $objNarroImporter->ExportedSuggestion = $this->lstExportedSuggestion->SelectedValue;
 
                 NarroLog::LogMessage(3, sprintf(t('Source language is %s'), $objNarroImporter->SourceLanguage->LanguageName));
                 NarroLog::LogMessage(3, sprintf(t('Target language is %s'), $objNarroImporter->TargetLanguage->LanguageName));

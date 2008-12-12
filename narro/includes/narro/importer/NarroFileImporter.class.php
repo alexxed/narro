@@ -68,6 +68,7 @@
                 $this->blnCheckEqual = $objImporter->CheckEqual;
                 $this->blnApprove = $objImporter->Approve;
                 $this->blnOnlySuggestions = $objImporter->OnlySuggestions;
+                $this->intExportedSuggestion = $objImporter->ExportedSuggestion;
             }
 
         }
@@ -656,7 +657,7 @@
 
                 case "ExportedSuggestion":
                     try {
-                        $this->intExportedSuggestion = QType::Cast($mixValue, QType::Boolean);
+                        $this->intExportedSuggestion = QType::Cast($mixValue, QType::Integer);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();

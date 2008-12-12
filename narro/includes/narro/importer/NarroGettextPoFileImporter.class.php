@@ -614,7 +614,7 @@
             if (!$objNarroContextInfo->ValidSuggestionId) {
                 switch($this->ExportedSuggestion) {
                     case 1:
-                        break;
+                        return '';
                     /**
                      * If there is no approved suggestion, export the most voted one (minimum 1 vote required)
                      */
@@ -624,9 +624,9 @@
                             $strSuggestionValue = $objSuggestion->SuggestionValue;
                             NarroLog::LogMessage(1, sprintf(t('Exporting most voted suggestion "%s" for "%s"'), $strSuggestionValue, $strOriginal));
                         }
-                        /**
-                         * else no translation
-                         */
+                        else {
+                            return '';
+                        }
                         break;
                     /**
                      * If there is no approved suggestion, export the most recent one added
@@ -637,9 +637,9 @@
                             $strSuggestionValue = $objSuggestion->SuggestionValue;
                             NarroLog::LogMessage(1, sprintf(t('Exporting most recent suggestion "%s" for "%s"'), $strSuggestionValue, $strOriginal));
                         }
-                        /**
-                         * else no translation
-                         */
+                        else {
+                            return '';
+                        }
                         break;
                     /**
                      * If there is no approved suggestion, export the most voted one (minimum 1 vote required)
@@ -657,9 +657,9 @@
                                 $strSuggestionValue = $objSuggestion->SuggestionValue;
                                 NarroLog::LogMessage(1, sprintf(t('Exporting most recent suggestion "%s" for "%s"'), $strSuggestionValue, $strOriginal));
                             }
-                            /**
-                             * else no translation
-                             */
+                            else {
+                                return '';
+                            }
                         }
                     case 5:
                         $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, QApplication::$objUser->UserId);
@@ -667,9 +667,9 @@
                             $strSuggestionValue = $objSuggestion->SuggestionValue;
                             NarroLog::LogMessage(1, sprintf(t('Exporting %s\'s suggestion "%s" for "%s"'), QApplication::$objUser->Username, $strSuggestionValue, $strOriginal));
                         }
-                        /**
-                         * else no translation
-                         */
+                        else {
+                            return '';
+                        }
                         break;
                     default:
                         return '';
@@ -702,6 +702,7 @@
                     return $strSuggestionValue;
             }
             else {
+                return '';
                 NarroLog::LogMessage(3, 'No context found for '.$strOriginal);
             }
         }

@@ -30,7 +30,7 @@
                     "--source-lang                 source language code, optional, defaults to en-US\n" .
                     "--target-lang                 target language code\n" .
                     "--user                        user id that will be used for the added suggestions, optional, defaults to anonymous\n" .
-                    "--exported-suggestion         1 for approved, 2 - the most voted, 3 - the user's suggestion\n" .
+                    "--exported-suggestion         1 for approved, 2 - approved, then most voted, 3 - approved, then most recent, 4 approved, most voted, most recent, 5 approved, my suggestion\n" .
                     "--force                       run the operation even if a previous operation is reported to be running\n" .
                     "--do-not-deactivate-files     do not deactivate project files before importing\n" .
                     "--do-not-deactivate-contexts  do not deactivate project contexts before importing\n" .

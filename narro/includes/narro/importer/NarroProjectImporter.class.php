@@ -50,9 +50,10 @@
         /**
          * what suggestions are exported
          * 1 = approved
-         * 2 = most voted and approved
-         * 3 = current user's suggestion and approved
-         * for 2 and 3 the fallback is to approved
+         * 2 = approved and most voted
+         * 3 = approved and most recent suggestion
+         * 4 = approved and most voted and most recent suggestion
+         * 5 = approved and current user's suggestion
          */
         protected $intExportedSuggestion = 1;
         /**
@@ -723,6 +724,7 @@
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
                 case "DeactivateFiles": return $this->blnDeactivateFiles;
                 case "DeactivateContexts": return $this->blnDeactivateContexts;
+                case "ExportedSuggestion": return $this->intExportedSuggestion;
 
                 default: return false;
             }
@@ -830,6 +832,15 @@
                 case "DeactivateFiles":
                     try {
                         $this->blnDeactivateFiles = QType::Cast($mixValue, QType::Boolean);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
+                case "ExportedSuggestion":
+                    try {
+                        $this->intExportedSuggestion = QType::Cast($mixValue, QType::Integer);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
