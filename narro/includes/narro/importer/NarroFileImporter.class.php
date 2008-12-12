@@ -51,7 +51,9 @@
          * what suggestions are exported
          * 1 = approved
          * 2 = approved and most voted
-         * 3 = approved and current user's suggestion
+         * 3 = approved and most recent suggestion
+         * 4 = approved and most voted and most recent suggestion
+         * 5 = approved and current user's suggestion
          */
         protected $intExportedSuggestion = 1;
 
@@ -572,6 +574,7 @@
                 case "Approve": return $this->blnApprove;
                 case "CheckEqual": return $this->blnCheckEqual;
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
+                case "ExportedSuggestion": return $this->intExportedSuggestion;
 
                 default: return false;
             }
@@ -645,6 +648,15 @@
                 case "OnlySuggestions":
                     try {
                         $this->blnOnlySuggestions = QType::Cast($mixValue, QType::Boolean);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
+                case "ExportedSuggestion":
+                    try {
+                        $this->intExportedSuggestion = QType::Cast($mixValue, QType::Boolean);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
