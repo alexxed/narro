@@ -111,4 +111,3 @@ ALTER TABLE `narro_user_role`
 
 UPDATE `narro`.`narro_permission` SET `permission_name` = 'Can approve' WHERE `narro_permission`.`permission_id` =3 LIMIT 1 ;
 
-'DROP TABLE `narro_user_permission` ;
