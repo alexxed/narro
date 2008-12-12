@@ -63,14 +63,14 @@
                         /**
                          * Remove the line number from the source file
                          */
-                        $arrFields['Reference'] = preg_replace('/(:[0-9]+)/', '', $strLine);
+                        $arrFields['Reference'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
                             if (strpos($strLine, '#:') === 0)
                                 /**
                                  * Remove the line number from the source file
                                  */
-                                $arrFields['Reference'] .= preg_replace('/(:[0-9]+)/', '', $strLine);
+                                $arrFields['Reference'] .= $strLine;
                             else
                                 break;
                         }
@@ -222,7 +222,10 @@
                         }
                     }
 
-                    $arrFields['Context'] = $arrFields['Reference'] . $arrFields['Flag'] . $arrFields['PreviousContext'] . $arrFields['PreviousUntranslated'] . $arrFields['PreviousUntranslatedPlural'] . $arrFields['MsgContext'];
+                    /**
+                     * Remove the source line numbers from the context, they change too often
+                     */
+                    $arrFields['Context'] = preg_replace('/(:[0-9]+)/m', '', $arrFields['Reference']) . $arrFields['Flag'] . $arrFields['PreviousContext'] . $arrFields['PreviousUntranslated'] . $arrFields['PreviousUntranslatedPlural'] . $arrFields['MsgContext'];
                     $arrFields['ContextComment'] = $arrFields['ExtractedComment'];
 
                     if (!is_null($arrFields['MsgId'])) $arrFields['MsgId'] = str_replace('\"', '"', $arrFields['MsgId']);
@@ -602,13 +605,79 @@
                     QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
                     QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5(trim($strContext))),
                     QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
-                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId),
-                    QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId)
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
                 )
             );
 
+            $strSuggestionValue = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
+
+            if (!$objNarroContextInfo->ValidSuggestionId) {
+                switch($this->ExportedSuggestion) {
+                    case 1:
+                        break;
+                    /**
+                     * If there is no approved suggestion, export the most voted one (minimum 1 vote required)
+                     */
+                    case 2:
+                        $objSuggestion = $this->GetMostVotedSuggestion($objNarroContextInfo->ContextId);
+                        if ($objSuggestion instanceof NarroSuggestion) {
+                            $strSuggestionValue = $objSuggestion->SuggestionValue;
+                            NarroLog::LogMessage(1, sprintf(t('Exporting most voted suggestion "%s" for "%s"'), $strSuggestionValue, $strOriginal));
+                        }
+                        /**
+                         * else no translation
+                         */
+                        break;
+                    /**
+                     * If there is no approved suggestion, export the most recent one added
+                     */
+                    case 3:
+                        $objSuggestion = $this->GetMostRecentSuggestion($objNarroContextInfo->Context->TextId);
+                        if ($objSuggestion instanceof NarroSuggestion) {
+                            $strSuggestionValue = $objSuggestion->SuggestionValue;
+                            NarroLog::LogMessage(1, sprintf(t('Exporting most recent suggestion "%s" for "%s"'), $strSuggestionValue, $strOriginal));
+                        }
+                        /**
+                         * else no translation
+                         */
+                        break;
+                    /**
+                     * If there is no approved suggestion, export the most voted one (minimum 1 vote required)
+                     * If there is no voted suggestion, export the most recent one
+                     */
+                    case 4:
+                        $objSuggestion = $this->GetMostVotedSuggestion($objNarroContextInfo->ContextId);
+                        if ($objSuggestion instanceof NarroSuggestion) {
+                            $strSuggestionValue = $objSuggestion->SuggestionValue;
+                            NarroLog::LogMessage(1, sprintf(t('Exporting most voted suggestion "%s" for "%s"'), $strSuggestionValue, $strOriginal));
+                        }
+                        else {
+                            $objSuggestion = $this->GetMostRecentSuggestion($objNarroContextInfo->Context->TextId);
+                            if ($objSuggestion instanceof NarroSuggestion) {
+                                $strSuggestionValue = $objSuggestion->SuggestionValue;
+                                NarroLog::LogMessage(1, sprintf(t('Exporting most recent suggestion "%s" for "%s"'), $strSuggestionValue, $strOriginal));
+                            }
+                            /**
+                             * else no translation
+                             */
+                        }
+                    case 5:
+                        $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, QApplication::$objUser->UserId);
+                        if ($objSuggestion instanceof NarroSuggestion) {
+                            $strSuggestionValue = $objSuggestion->SuggestionValue;
+                            NarroLog::LogMessage(1, sprintf(t('Exporting %s\'s suggestion "%s" for "%s"'), QApplication::$objUser->Username, $strSuggestionValue, $strOriginal));
+                        }
+                        /**
+                         * else no translation
+                         */
+                        break;
+                    default:
+                        return '';
+                }
+            }
+
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
-                $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginal, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $strContext, $this->objFile, $this->objProject);
+                $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[1]) != '' &&
@@ -617,26 +686,23 @@
                     $arrResult[3] == $this->objFile &&
                     $arrResult[4] == $this->objProject
                 ) {
-                $objNarroContextInfo->ValidSuggestion->SuggestionValue = $arrResult[1];
+                    $strSuggestionValue = $arrResult[1];
                 }
-            else
-            NarroLog::LogMessage(2, sprintf(t('A plugin returned an unexpected result while processing the suggestion "%s": %s'), $strTranslation, $strTranslation));
+                else
+                    NarroLog::LogMessage(2, sprintf(t('A plugin returned an unexpected result while processing the suggestion "%s": %s'), $strTranslation, $strTranslation));
 
                 if (!is_null($strOriginalAccKey) && !is_null($strOriginalAccKeyPrefix)) {
                     /**
                      * @todo don't export if there's no valid access key
                      */
-                    $strTextWithAccKey = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, $strOriginalAccKeyPrefix . $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, 1);
+                    $strTextWithAccKey = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, $strOriginalAccKeyPrefix . $objNarroContextInfo->SuggestionAccessKey, $strSuggestionValue, 1);
                     return $strTextWithAccKey;
                 }
                 else
-                    return $objNarroContextInfo->ValidSuggestion->SuggestionValue;
+                    return $strSuggestionValue;
             }
             else {
-                /**
-                 * leave it untranslated
-                 */
-                return "";
+                NarroLog::LogMessage(3, 'No context found for '.$strOriginal);
             }
         }
     }
