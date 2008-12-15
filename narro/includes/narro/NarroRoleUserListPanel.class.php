@@ -22,13 +22,17 @@
 
         // DataGrid Columns
         protected $colUsername;
+        protected $colProject;
+        protected $colLanguage;
 
         public function __construct($objParentObject, $strControlId = null) {
             parent::__construct($objParentObject, $strControlId);
 
             // Setup DataGrid Columns
-            $this->colUsername = new QDataGridColumn(QApplication::Translate('Permission'), '<?= $_CONTROL->ParentControl->dtgRoleUserList_UsernameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->User->Username), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->User->Username, false)));
+            $this->colUsername = new QDataGridColumn(QApplication::Translate('Username'), '<?= $_CONTROL->ParentControl->dtgRoleUserList_UsernameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->User->Username), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->User->Username, false)));
             $this->colUsername->HtmlEntities = false;
+            $this->colProject = new QDataGridColumn(QApplication::Translate('Project'), '<?= $_CONTROL->ParentControl->dtgRoleUserList_ProjectColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->ProjectId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->ProjectId, false)));
+            $this->colLanguage = new QDataGridColumn(QApplication::Translate('Language'), '<?= $_CONTROL->ParentControl->dtgRoleUserList_LanguageColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->LanguageId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->LanguageId, false)));
 
 
             // Setup DataGrid
@@ -50,6 +54,8 @@
             $this->dtgRoleUserList->SetDataBinder('dtgRoleUserList_Bind', $this);
 
             $this->dtgRoleUserList->AddColumn($this->colUsername);
+            $this->dtgRoleUserList->AddColumn($this->colProject);
+            $this->dtgRoleUserList->AddColumn($this->colLanguage);
 
             $this->dtgRoleUserList->SortColumnIndex = 0;
         }
@@ -65,6 +71,20 @@
                 return NarroLink::UserRole($objNarroUserRole->UserId, $objNarroUserRole->User->Username);
             else
                 return $objNarroUserRole->User->Username;
+        }
+
+        public function dtgRoleUserList_ProjectColumn_Render(NarroUserRole $objNarroUserRole) {
+            if ($objNarroUserRole->ProjectId)
+                return $objNarroUserRole->Project->ProjectName;
+            else
+                return t('Any');
+        }
+
+        public function dtgRoleUserList_LanguageColumn_Render(NarroUserRole $objNarroUserRole) {
+            if ($objNarroUserRole->LanguageId)
+                return $objNarroUserRole->Language->LanguageName;
+            else
+                return t('Any');
         }
 
         public function dtgRoleUserList_Bind() {
