@@ -744,6 +744,9 @@
             else {
                 $this->btnNext->Enabled = false;
                 $this->btnNext100->Enabled = false;
+                $this->UpdateData();
+                $this->UpdateNavigator();
+                QApplication::ExecuteJavaScript(sprintf('location.hash=\'#c%di%d\'', $this->objNarroContextInfo->ContextId, $this->intCurrentContext));
             }
 
         }
