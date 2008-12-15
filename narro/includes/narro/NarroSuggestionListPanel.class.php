@@ -160,8 +160,8 @@
                     $this->dtgSuggestions_colVote_Render($this->objNarroContextInfo->ValidSuggestion),
                     t('votes'),
                     t('Approved translation:'),
-                    $btnVote->Render(false),
                     $btnEdit->Render(false),
+                    $btnVote->Render(false),
                     ((QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))?$btnApprove->Render(false):'' ),
                     $this->dtgSuggestions_colSuggestion_Render($this->objNarroContextInfo->ValidSuggestion)
                 );
@@ -448,6 +448,8 @@
 
             $strText = '';
 
+            if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+                $strText .= '&nbsp;' . $btnApprove->Render(false);
             if (QApplication::$objUser->hasPermission('Can vote', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
                 $strText .= '&nbsp;' . $btnVote->Render(false);
             if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID )) {
@@ -456,8 +458,6 @@
             }
             if (QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
                 $strText .= '&nbsp;' . $btnDelete->Render(false);
-            if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
-                $strText .= '&nbsp;' . $btnApprove->Render(false);
 
             return '<div style="float:right">' . $strText . '</div>';
         }
