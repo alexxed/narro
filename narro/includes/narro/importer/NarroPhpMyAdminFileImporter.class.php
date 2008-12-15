@@ -44,7 +44,7 @@
                 }
             }
             else {
-                NarroLog::LogMessage(3, sprintf(t('Cannot open file "%s".'), $strFileToImport));
+                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Cannot open file "%s".', $strFileToImport));
             }
         }
 
@@ -82,7 +82,7 @@
                 }
             }
             else {
-                NarroLog::LogMessage(3, sprintf(t('Cannot open file "%s".'), $strFileToImport));
+                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Cannot open file "%s".', $strFileToImport));
             }
 
         }

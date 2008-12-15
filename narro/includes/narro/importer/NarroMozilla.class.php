@@ -53,7 +53,7 @@
                                 $strLabelCtx = $arrMatches[1];
                             else {
                                 $strLabelCtx = '';
-                                NarroLog::LogMessage(2, sprintf(t('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).'), $strAccKey, $strAccCtx, $arrMatches[1]));
+                                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
                                 continue;
                             }
 
@@ -72,11 +72,11 @@
                                     unset($arrTexts[$strAccCtx]);
                                 }
                                 elseif (preg_match('/[a-z]/i', $strOriginalText)) {
-                                    NarroLog::LogMessage(2, sprintf(t('Found access key %s does not exist in the label %s, using the first letter as accesskey'), $strAccKey, $arrTexts[$strLabelCtx]));
+                                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Found access key %s does not exist in the label %s, using the first letter as accesskey', $strAccKey, $arrTexts[$strLabelCtx]));
                                     $strNewAcc = mb_substr($arrTexts[$strLabelCtx], 0, 1);
                                     $arrAccKey[$strLabelCtx] = $strNewAcc;
                                     unset($arrTexts[$strAccCtx]);
-//                                    NarroLog::LogMessage(2, sprintf(t('Found access key %s does not exist in the label %s, dropping translation'), $strAccKey, $arrTexts[$strLabelCtx]));
+//                                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Found access key %s does not exist in the label %s, dropping translation', $strAccKey, $arrTexts[$strLabelCtx]));
 //                                    unset($arrTexts[$strAccCtx]);
 //                                    unset($arrTexts[$strLabelCtx]);
                                 }
@@ -121,11 +121,11 @@
                         else {
                             if (preg_match('/[a-zA-Z0-9]/', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches)) {
                                 $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $arrMatches[0];
-                                NarroLog::LogMessage(2, sprintf(t('No access key found for context %s, text %s, using "%s"'), $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches[0]));
+                                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('No access key found for context %s, text %s, using "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches[0]));
                                 NarroImportStatistics::$arrStatistics['Texts with no access key set, but fixed']++;
                             }
                             else {
-//                                NarroLog::LogMessage(2, sprintf(t('No access key found for context %s, text %s and could not find a valid letter to use, dropping translation.'), $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue));
+//                                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('No access key found for context %s, text %s and could not find a valid letter to use, dropping translation.', $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue));
 //                                unset($arrTranslation[$objNarroContextInfo->Context->Context]);
 //                                NarroImportStatistics::$arrStatistics['Texts without acceptable access keys']++;
 //                                NarroImportStatistics::$arrStatistics['Texts kept as original']++;
@@ -138,7 +138,7 @@
                         NarroImportStatistics::$arrStatistics["Texts that don't have access keys"]++;
                 }
                 else {
-                    NarroLog::LogMessage(1, sprintf(t('In file "%s", the context "%s" does not have a valid suggestion.'), $objFile->FileName, $objNarroContextInfo->Context->Context));
+                    NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('In file "%s", the context "%s" does not have a valid suggestion.', $objFile->FileName, $objNarroContextInfo->Context->Context));
                     NarroImportStatistics::$arrStatistics['Texts without valid suggestions']++;
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                 }

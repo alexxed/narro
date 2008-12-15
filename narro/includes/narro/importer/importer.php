@@ -84,10 +84,10 @@
          */
         $objUser = NarroUser::LoadByUserId($intUserId);
         if (!$objUser instanceof NarroUser) {
-            NarroLog::LogMessage(2, sprintf(t('User id=%s does not exist in the database, will try to use the anonymous user.'), $intUserId));
+            NarroLog::LogMessage(2, __FILE__, 'main', __LINE__, sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
             $objUser = NarroUser::LoadAnonymousUser();
             if (!$objUser instanceof NarroUser) {
-                NarroLog::LogMessage(3, sprintf(t('The anonymous user id=%s does not exist in the database.'), $intUserId));
+                NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
                 return false;
             }
         }
@@ -99,7 +99,7 @@
          */
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
-            NarroLog::LogMessage(3, sprintf(t('Project with id=%s does not exist in the database.'), $intProjectId));
+            NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('Project with id=%s does not exist in the database.', $intProjectId));
             return false;
         }
 
@@ -108,7 +108,7 @@
          */
         $objLanguage = NarroLanguage::LoadByLanguageCode($strTargetLanguage);
         if (!$objLanguage instanceof NarroLanguage) {
-            NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), $strTargetLanguage));
+            NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('Language %s does not exist in the database.', $strTargetLanguage));
             return false;
         }
 
@@ -116,18 +116,18 @@
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 
-        NarroLog::LogMessage(3, sprintf(t('Target language is %s'), $objNarroImporter->TargetLanguage->LanguageName));
+        NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
 
         /**
          * Load the specified source language
          */
         $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
         if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-            NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), $strSourceLanguage));
+            NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('Language %s does not exist in the database.', $strSourceLanguage));
             return false;
         }
 
-        NarroLog::LogMessage(3, sprintf(t('Source language is %s'), $objNarroImporter->SourceLanguage->LanguageName));
+        NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
 
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
@@ -144,13 +144,13 @@
             $objNarroImporter->ImportProject();
         }
         catch (Exception $objEx) {
-            NarroLog::LogMessage(3, sprintf(t('An error occured during import: %s'), $objEx->getMessage()));
+            NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('An error occured during import: %s', $objEx->getMessage()));
             $objNarroImporter->CleanImportDirectory();
             exit();
         }
 
         $objNarroImporter->CleanImportDirectory();
-        NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
+        NarroLog::LogMessage(2, __FILE__, 'main', __LINE__, var_export(NarroImportStatistics::$arrStatistics, true));
      }
      elseif (in_array('--export', $argv)) {
 
@@ -179,10 +179,10 @@
 
         $objUser = NarroUser::LoadByUserId($intUserId);
         if (!$objUser instanceof NarroUser) {
-            NarroLog::LogMessage(2, sprintf(t('User id=%s does not exist in the database, will try to use the anonymous user.'), $intUserId));
+            NarroLog::LogMessage(2, __FILE__, 'main', __LINE__, sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
             $objUser = NarroUser::LoadAnonymousUser();
             if (!$objUser instanceof NarroUser) {
-                NarroLog::LogMessage(3, sprintf(t('The anonymous user id=%s does not exist in the database.'), $intUserId));
+                NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
                 return false;
             }
         }
@@ -191,13 +191,13 @@
 
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
-            NarroLog::LogMessage(3, sprintf(t('Project with id=%s does not exist in the database.'), $intProjectId));
+            NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('Project with id=%s does not exist in the database.', $intProjectId));
             return false;
         }
 
         $objLanguage = NarroLanguage::LoadByLanguageCode($strTargetLanguage);
         if (!$objLanguage instanceof NarroLanguage) {
-            NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), $strTargetLanguage));
+            NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('Language %s does not exist in the database.', $strTargetLanguage));
             return false;
         }
 
@@ -205,15 +205,15 @@
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 
-        NarroLog::LogMessage(3, sprintf(t('Target language is %s'), $objNarroImporter->TargetLanguage->LanguageName));
+        NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
 
         $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
         if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-            NarroLog::LogMessage(3, sprintf(t('Language %s does not exist in the database.'), $strSourceLanguage));
+            NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('Language %s does not exist in the database.', $strSourceLanguage));
             return false;
         }
 
-        NarroLog::LogMessage(3, sprintf(t('Source language is %s'), $objNarroImporter->SourceLanguage->LanguageName));
+        NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
 
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
@@ -229,13 +229,13 @@
             $objNarroImporter->ExportProject();
         }
         catch (Exception $objEx) {
-            NarroLog::LogMessage(3, sprintf(t('An error occured during export: %s'), $objEx->getMessage()));
+            NarroLog::LogMessage(3, __FILE__, 'main', __LINE__, sprintf('An error occured during export: %s', $objEx->getMessage()));
             $objNarroImporter->CleanExportDirectory();
             exit();
         }
 
         $objNarroImporter->CleanExportDirectory();
-        NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
+        NarroLog::LogMessage(2, __FILE__, 'main', __LINE__, var_export(NarroImportStatistics::$arrStatistics, true));
 
      }
 

@@ -21,7 +21,7 @@
         public function ExportFile($strTemplateFile, $strTranslatedFile) {
             $hndTemplateFile = fopen($strTemplateFile, 'r');
             if (!$hndTemplateFile) {
-                NarroLog::LogMessage(3, __LINE__ . ':' . sprintf(t('Can\'t open file "%s" for reading'), $strTemplateFile));
+                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Can\'t open file "%s" for reading', $strTemplateFile));
                 return false;
             }
 
@@ -32,7 +32,7 @@
 
             $intTotalToProcess = NarroUtils::CountFileLines($strTemplateFile);
 
-            NarroLog::LogMessage(1, __LINE__ . ':' . sprintf(t('Starting to process file "%s" (%d texts), the result is written to "%s".'), $strTemplateFile, $intTotalToProcess, $strTranslatedFile));
+            NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Starting to process file "%s" (%d texts), the result is written to "%s".', $strTemplateFile, $intTotalToProcess, $strTranslatedFile));
 
             $intFileLineNr=0;
 
@@ -56,7 +56,7 @@
                 if ($arrColumn[0] == 'helpcontent2') continue;
 
                 if (count($arrColumn) != 15) {
-                    NarroLog::LogMessage(2, __LINE__ . ':' . sprintf('Skipped "%s" because splitting by tab does not give 14 columns.', $strFileLine));
+                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Skipped "%s" because splitting by tab does not give 14 columns.', $strFileLine));
                     continue;
                 }
 
@@ -88,46 +88,51 @@
 
                 $objNarroContextInfo = $this->GetContextInfo($strText, $strContext);
 
-                if ($objNarroContextInfo instanceof NarroContextInfo && $objNarroContextInfo->ValidSuggestionId) {
-                    $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strText, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $strContext, $objFile, $this->objProject);
-                    if
-                    (
-                        trim($arrResult[1]) != '' &&
-                        $arrResult[0] == $strText &&
-                        $arrResult[2] == $strContext &&
-                        $arrResult[3] == $objFile &&
-                        $arrResult[4] == $this->objProject
-                    ) {
-
-                        $objNarroContextInfo->ValidSuggestion->SuggestionValue = $arrResult[1];
-                    }
-                    else
-                        NarroLog::LogMessage(2, sprintf(t('A plugin returned an unexpected result while processing the suggestion "%s": %s'), $objNarroContextInfo->ValidSuggestion->SuggestionValue, print_r($arrResult, true)));
-
-                    if ($objNarroContextInfo->TextAccessKey != '' && $objNarroContextInfo->SuggestionAccessKey != '') {
-                        $objNarroContextInfo->ValidSuggestion->SuggestionValue = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '~' . $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, 1);
-                    }
-
-                    $arrTranslatedColumn[10] = str_replace(array("\n", "\r"), array("",""), $objNarroContextInfo->ValidSuggestion->SuggestionValue);
-                }
-                else {
-                    NarroLog::LogMessage(1, sprintf('Nothing found in the database for text %s and context %s', $strText, $strContext . ' ' . md5($strContext)));
+                if ($objNarroContextInfo instanceof NarroContextInfo)
+                    $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
+                else
                     continue;
+
+                if (!isset($strSuggestionValue) || !$strSuggestionValue)
+                    continue;
+
+                if ( $objNarroContextInfo->TextAccessKey != '') {
+                    if ($objNarroContextInfo->ValidSuggestionId && $objNarroContextInfo->SuggestionAccessKey != '')
+                        $strSuggestionValue = NarroString::Replace(
+                            $objNarroContextInfo->SuggestionAccessKey,
+                            '~' . $objNarroContextInfo->SuggestionAccessKey,
+                            $strSuggestionValue,
+                            1
+                        );
+                    else
+                        $strSuggestionValue = '~' . $strSuggestionValue;
                 }
+
+
+                $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strText, $strSuggestionValue, $strContext, new NarroFile(), $this->objProject);
+                if
+                (
+                    trim($arrResult[1]) != '' &&
+                    $arrResult[0] == $strText &&
+                    $arrResult[2] == $strContext &&
+                    $arrResult[3] == new NarroFile() &&
+                    $arrResult[4] == $this->objProject
+                ) {
+
+                    $strSuggestionValue = $arrResult[1];
+                }
+                else
+                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strSuggestionValue, print_r($arrResult, true)));
+
+                $arrTranslatedColumn[10] = str_replace(array("\n", "\r"), array("",""), $strSuggestionValue);
+
 
                 preg_match_all('/\\\\"/', $strText, $arrEscOrigMatches);
-                preg_match_all('/\\\\"/', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrEscTransMatches);
+                preg_match_all('/\\\\"/', $strSuggestionValue, $arrEscTransMatches);
 
-                if (isset($arrEscOrigMatches[0])) {
-                    if (!isset($arrEscTransMatches[0])) {
-                        NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Warning! The original text "%s" has some doube quotes but the translated text "%s" doesn\'t.', $strText, $objNarroContextInfo->ValidSuggestion->SuggestionValue));
-                        continue;
-                    }
-
-                    if (count($arrEscOrigMatches[0]) != count($arrEscTransMatches[0])) {
-                        NarroLog::LogMessage(3, __LINE__ . ':' . sprintf('Warning! The original text "%s" has some double quotes but the translated text "%s" has less or more of them.', $strText, $objNarroContextInfo->ValidSuggestion->SuggestionValue));
-                        continue;
-                    }
+                if (isset($arrEscOrigMatches[0]) && count($arrEscTransMatches[0]) % 2 != 0) {
+                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Warning! The translated text "%s" has unclosed double quotes.', $strSuggestionValue));
+                    continue;
                 }
 
                 fwrite($hndTranslatedFile, join("\t", $arrColumn));
@@ -148,7 +153,7 @@
             $hndFile = fopen($strTemplateFile, 'r');
 
             if (!$hndFile) {
-                NarroLog::LogMessage(3, sprintf(t('Cannot open input file "%s" for reading.'), $strTemplateFile));
+                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Cannot open input file "%s" for reading.', $strTemplateFile));
                 return false;
             }
 
@@ -249,7 +254,7 @@
                     }
                 }
                 else {
-                    NarroLog::LogMessage(2, sprintf(t('Skipped line "%s" because the language code found "%s" does not match the source or target language. Columns: %s'), $strFileLine, $strLangCode, print_r($arrColumn, true)));
+                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Skipped line "%s" because the language code found "%s" does not match the source or target language. Columns: %s', $strFileLine, $strLangCode, print_r($arrColumn, true)));
                     continue;
                 }
 
@@ -261,7 +266,7 @@
                     continue;
 
                 if (!preg_match('/[0-9]{4,4}[\-]?[0-9]{2,2}[\-]?[0-9]{2,2}\s[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}/', $strDate)) {
-                    NarroLog::LogMessage(2, var_export($strDate,true) . ' not good. Count: ' . count($arrColumn) . var_export($arrColumn, true));
+                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, var_export($strDate,true) . ' not good. Count: ' . count($arrColumn) . var_export($arrColumn, true));
                     continue;
                 }
 

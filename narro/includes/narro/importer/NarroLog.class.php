@@ -34,7 +34,7 @@
          */
         public static $intMinLogLevel;
 
-        public static function LogMessage($intMessageType, $strText) {
+        public static function LogMessage($intMessageType, $strFile, $strFunction, $strLine, $strText) {
             if ($intMessageType < self::$intMinLogLevel)
                 return false;
 
@@ -67,11 +67,11 @@
                 fclose($hndLogFile);
                 chmod(self::$strLogFile, 0666);
             }
-                
+
         }
 
         public static function SetLogFile($strLogFile, $blnClear = false) {
-            self::$strLogFile = $strLogFile;            
+            self::$strLogFile = $strLogFile;
 
             if ($blnClear)
                 self::ClearLog();

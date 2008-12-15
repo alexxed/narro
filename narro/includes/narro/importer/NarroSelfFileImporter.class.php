@@ -32,13 +32,13 @@
 
             $intTotalFilesToProcess = count($arrFiles);
 
-            NarroLog::LogMessage(1, sprintf(t('Starting to process files using directory %s'), $intTotalFilesToProcess, $strDirectory));
+            NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Starting to process files using directory %s', $intTotalFilesToProcess, $strDirectory));
 
             $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
-                NarroLog::LogMessage(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Error while executing sql query in file %s, line %d: %s', __FILE__, __LINE__ - 4, $objEx->getMessage()));
                 return false;
             }
 
@@ -46,7 +46,7 @@
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
-                NarroLog::LogMessage(3, sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Error while executing sql query in file %s, line %d: %s', __FILE__, __LINE__ - 4, $objEx->getMessage()));
                 return false;
             }
 
@@ -160,7 +160,7 @@
                             $objFile->Created = date('Y-m-d H:i:s');
                             $objFile->FilePath = $strFilePath;
                             $objFile->Save();
-                            NarroLog::LogMessage(1, sprintf(t('Added folder "%s" from "%s"'), $strDir, $strPath));
+                            NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Added folder "%s" from "%s"', $strDir, $strPath));
                             NarroImportStatistics::$arrStatistics['Imported folders']++;
                         }
                         $arrDirectories[$strPath] = $objFile->FileId;
@@ -198,14 +198,14 @@
                     $objFile->Created = date('Y-m-d H:i:s');
                     $objFile->FilePath = $strFilePath;
                     $objFile->Save();
-                    NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), $strFileName, $strPath));
+                    NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
 
                 $intTime = time();
                 $this->ImportFile($objFile, $strFileToImport);
                 $intElapsedTime = time() - $intTime;
-                NarroLog::LogMessage(1, sprintf(t('Processed file "%s" in %d seconds, %d files left'), str_replace($strDirectory, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intCurFile)));
+                NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($strDirectory, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intCurFile)));
             }
 
             $objFile = NarroFile::QuerySingle(
@@ -238,7 +238,7 @@
                 $objFile->Created = date('Y-m-d H:i:s');
                 $objFile->FilePath = $strFilePath;
                 $objFile->Save();
-                NarroLog::LogMessage(1, sprintf(t('Added file "%s" from "%s"'), $strFileName, $strPath));
+                NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
                 NarroImportStatistics::$arrStatistics['Imported files']++;
             }
 

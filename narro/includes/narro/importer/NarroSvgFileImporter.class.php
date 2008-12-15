@@ -23,21 +23,24 @@
             $this->objFile = $objFile;
 
             if ($strFileContents = file_get_contents($strTemplate)) {
-                if (preg_match_all('/<tspan[^>]+>([^<]+)<\/tspan>/', $strFileContents, $arrMatches)) {
+                if (preg_match_all('/<flowPara[^>]+>([^<]+)<\/flowPara>/', $strFileContents, $arrMatches)) {
                     foreach($arrMatches[0] as $intKey=>$strContext) {
                         $strOriginal = $arrMatches[1][$intKey];
-                        $strTranslation = $this->GetTranslation($strOriginal, $strContext);
-                        if ($strTranslation != $strOriginal) {
-                            $strTranslationContext = str_replace($strOriginal, $strTranslation, $strContext);
-                            $strFileContents = str_replace($strContext, $strTranslationContext, $strFileContents);
+                        if (trim($strOriginal) != '') {
+                            $strTranslation = $this->GetTranslation($strOriginal, $strContext);
+                            if ($strTranslation != $strOriginal) {
+                                $strTranslationContext = str_replace($strOriginal, $strTranslation, $strContext);
+                                $strFileContents = str_replace($strContext, $strTranslationContext, $strFileContents);
+                            }
                         }
                     }
                 }
 
                 file_put_contents($strTranslatedFile, $strFileContents);
+                chmod($strTranslatedFile, 0666);
             }
             else {
-                NarroLog::LogMessage(3, sprintf(t('Cannot open file "%s".'), $strFileToImport));
+                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Cannot open file "%s".', $strFileToImport));
             }
         }
 
@@ -45,19 +48,20 @@
             $this->objFile = $objFile;
 
             if ($strFileContents = file_get_contents($strFileToImport)) {
-                if (preg_match_all('/<tspan[^>]+>([^<]+)<\/tspan>/', $strFileContents, $arrMatches)) {
+                if (preg_match_all('/<flowPara[^>]+>([^<]+)<\/flowPara>/', $strFileContents, $arrMatches)) {
                     foreach($arrMatches[0] as $intKey=>$strContext) {
-                        $this->AddTranslation($objFile, $arrMatches[1][$intKey], null, null, null, $strContext);
+                        if (trim($arrMatches[1][$intKey]) != '')
+                            $this->AddTranslation($objFile, $arrMatches[1][$intKey], null, null, null, $strContext);
                     }
                 }
             }
             else {
-                NarroLog::LogMessage(3, sprintf(t('Cannot open file "%s".'), $strFileToImport));
+                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Cannot open file "%s".', $strFileToImport));
             }
         }
 
         /**
-         * A translation here consists of the project, file, text, translation, context, plurals, validation, ignore equals
+         * A translation here consists of the project, file, text, translation, context, plurals, approval, ignore equals
          *
          * @param string $strOriginal the original text
          * @param string $strOriginalAccKey access key for the original text
