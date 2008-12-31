@@ -526,7 +526,7 @@
                                                 $intProjectId,
                                                 1,
                                                 1,
-                                                "'" . $objTextComment->Text->TextValue . "'"
+                                                $objTextComment->Text->TextValue
                                             )
                                     ;
 
