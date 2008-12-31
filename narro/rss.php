@@ -501,7 +501,7 @@
                                             __VIRTUAL_DIRECTORY__ .
                                             __SUBDIRECTORY__ .
                                             '/' .
-                                            NarroLink::ContextSuggest($objContext->ProjectId, $objContext->FileId, $objContext->ContextId, 1, 1, "'" . $objTextComment->Text->TextValue . "'") .
+                                            NarroLink::ContextSuggest($objContext->ProjectId, $objContext->FileId, $objContext->ContextId, 1, 1, "%27" . $objTextComment->Text->TextValue . "%27") .
                                             '#textcomments';
                             }
 
