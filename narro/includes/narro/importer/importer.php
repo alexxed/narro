@@ -21,23 +21,32 @@
     if (!isset($argv[2])) {
         echo
             sprintf(
-                t(
                     "php %s [--import|--export] [options]\n" .
-                    "--import                      import a project\n" .
-                    "--export                      export a project\n" .
-                    "--minloglevel                 minimum level of errors logged, 1 gives the most information\n" .
-                    "--project                     project id from the database\n" .
-                    "--source-lang                 source language code, optional, defaults to en-US\n" .
-                    "--target-lang                 target language code\n" .
-                    "--user                        user id that will be used for the added suggestions, optional, defaults to anonymous\n" .
-                    "--exported-suggestion         1 for approved, 2 - approved, then most voted, 3 - approved, then most recent, 4 approved, most voted, most recent, 5 approved, my suggestion\n" .
-                    "--force                       run the operation even if a previous operation is reported to be running\n" .
-                    "--do-not-deactivate-files     do not deactivate project files before importing\n" .
-                    "--do-not-deactivate-contexts  do not deactivate project contexts before importing\n" .
-                    "--check-equal                 check if the translation is equal to the original text and don't import it\n" .
-                    "--approve                     approve the imported suggestions\n" .
-                    "--only-suggestions            import only suggestions, don't add files, texts or contexts\n"
-                ),
+                    "--import                     import a project\n" .
+                    "--export                     export a project\n" .
+                    "--minloglevel                minimum level of errors logged, 1 gives the most\n".
+                    "                             information\n" .
+                    "--project                    project id from the database\n" .
+                    "--source-lang                source language code, optional, defaults to en-US\n" .
+                    "--target-lang                target language code\n" .
+                    "--user                       user id that will be used for the added\n" .
+                    "                             suggestions, optional, defaults to anonymous\n" .
+                    "--exported-suggestion        1 for approved,\n" .
+                    "                             2 - approved, then most voted,\n" .
+                    "                             3 - approved, then most recent,\n" .
+                    "                             4 approved, most voted, most recent,\n" .
+                    "                             5 approved, my suggestion\n" .
+                    "--force                      run the operation even if a previous operation is\n" .
+                    "                             reported to be running\n" .
+                    "--do-not-deactivate-files    do not deactivate project files before importing\n" .
+                    "--do-not-deactivate-contexts do not deactivate project contexts before\n" .
+                    "                             importing\n" .
+                    "--check-equal                check if the translation is equal to the original\n" .
+                    "                             text and don't import it\n" .
+                    "--approve                    approve the imported suggestions\n" .
+                    "--copy-unhandled-files       copy unhandled files when exporting\n" .
+                    "--only-suggestions           import only suggestions, don't add files, texts\n" .
+                    "                             or contexts\n",
                 basename(__FILE__)
             )
         ;
@@ -217,6 +226,7 @@
 
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
+        $objNarroImporter->CopyUnhandledFiles = !((bool) array_search('--copy-unhandled-files', $argv));
 
         if (in_array('--force', $argv)) {
             $objNarroImporter->CleanExportDirectory();

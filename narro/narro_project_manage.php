@@ -55,6 +55,7 @@
         protected $flaExportFromFile;
         protected $objExportProgress;
         protected $lblExport;
+        protected $chkCopyUnhandledFiles;
 
         protected $lstExportedSuggestion;
         protected $lstExportArchiveType;
@@ -127,6 +128,10 @@
 
             $this->chkOnlySuggestions = new QCheckBox($this);
 
+            if (!(QApplication::$objUser->hasPermission('Can manage project'))) {
+                $this->chkOnlySuggestions->Enabled = false;
+                $this->chkOnlySuggestions->Checked = true;
+            }
 
             $this->flaImportFromFile = new QFileAsset($this);
             $this->flaImportFromFile->TemporaryUploadPath = __TMP_PATH__;
@@ -170,11 +175,13 @@
             $this->lblExport->Visible = false;
             $this->lblExport->HtmlEntities = false;
 
-
-
             $this->lstExportArchiveType = new QListBox($this);
             $this->lstExportArchiveType->AddItem('tar.gz', 'tar.gz');
             $this->lstExportArchiveType->AddItem('zip', 'zip');
+
+            $this->chkCopyUnhandledFiles = new QCheckBox($this);
+            $this->chkCopyUnhandledFiles->Checked = true;
+            $this->chkCopyUnhandledFiles->Text = t('Copy unhandled files');
 
             $this->chkForce = new QCheckBox($this);
             $this->chkForce->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('document.getElementById(\'%s\').disabled = false', $this->btnImport->ControlId)));
@@ -384,11 +391,11 @@
                         (($this->chkApprove->Checked)?'--approve ':'') .
                         (($this->chkForce->Checked)?'--force ':'') .
                         (($this->chkCheckEqual->Checked)?'--check-equal ':'') .
-                        (($this->chkOnlySuggestions->Checked)?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
+                        (($this->chkOnlySuggestions->Checked || !QApplication::$objUser->hasPermission('Can manage project'))?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                         ' --source-lang en-US --target-lang %s',
                     $this->lstLogLevel->SelectedValue,
                     $this->objNarroProject->ProjectId,
-                    QApplication::$objUser->UserId,
+                    0,
                     QApplication::$Language->LanguageCode
                 );
 
@@ -407,14 +414,19 @@
                 /**
                  * Get boolean options
                  */
-                $objNarroImporter->DeactivateFiles = true;
-                $objNarroImporter->DeactivateContexts = true;
+                $objNarroImporter->DeactivateFiles = QApplication::$objUser->hasPermission('Can manage project');
+                $objNarroImporter->DeactivateContexts = QApplication::$objUser->hasPermission('Can manage project');
                 $objNarroImporter->CheckEqual = $this->chkCheckEqual->Checked;
                 $objNarroImporter->Approve = $this->chkApprove->Checked;
-                $objNarroImporter->OnlySuggestions = $this->chkOnlySuggestions->Checked;
+
+                if (!QApplication::$objUser->hasPermission('Can manage project'))
+                    $objNarroImporter->OnlySuggestions = true;
+                else
+                    $objNarroImporter->OnlySuggestions = $this->chkOnlySuggestions->Checked;
+
                 $objNarroImporter->MinLogLevel = $this->lstLogLevel->SelectedValue;
                 $objNarroImporter->Project = $this->objNarroProject;
-                $objNarroImporter->User = QApplication::$objUser;
+                $objNarroImporter->User = NarroUser::LoadAnonymousUser();
                 $objNarroImporter->TargetLanguage = QApplication::$Language;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en-US');
                 $objNarroImporter->TranslationPath = $strImportPath . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
@@ -490,7 +502,6 @@
                             unlink($strExportPath . '/' . $strExportArchive);
 
                         $arrFiles = array_merge(
-                            NarroUtils::ListDirectory($strExportPath . '/en-US', null, '/CVS|\.svn|\.hg|port\.pid|port\.log|port\.status/', $strExportPath . '/', true),
                             NarroUtils::ListDirectory($strExportPath . '/' . QApplication::$Language->LanguageCode, null, '/CVS|\.svn|\.hg|port\.pid|port\.log|port\.status/', $strExportPath . '/', true)
                         );
 
@@ -553,6 +564,7 @@
                         escapeshellarg('includes/narro/importer/importer.php').
                         ' --export --minloglevel %d --project %d --user %d ' .
                         (($this->chkApprove->Checked)?'--approve ':'') .
+                        (($this->chkCopyUnhandledFiles->Checked)?'--copy-unhandled-files ':'') .
                         (($this->chkForce->Checked)?'--force ':'') .
                         (($this->chkOnlySuggestions->Checked)?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                         ' --check-equal --source-lang en-US --target-lang %s --exported-suggestion %d',
@@ -580,6 +592,7 @@
                 $objNarroImporter->TranslationPath = $strExportPath . '/' . QApplication::$Language->LanguageCode;
                 $objNarroImporter->TemplatePath = $strExportPath . '/en-US';
                 $objNarroImporter->ExportedSuggestion = $this->lstExportedSuggestion->SelectedValue;
+                $objNarroImporter->CopyUnhandledFiles = $this->chkCopyUnhandledFiles->Checked;
 
                 NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
                 NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));

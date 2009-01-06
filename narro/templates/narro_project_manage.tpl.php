@@ -79,6 +79,8 @@
             <div class="dotted_box">
             <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
             <div class="dotted_box_content">
+            <?php echo $this->chkCopyUnhandledFiles->Render();?>
+            <p class="instructions"><?php echo t('If you check this option, all the unhandled files will be copied from the source language.'); ?></p>
             <label for="<?php echo $this->lstExportArchiveType->ControlId ?>"><?php echo  t('Export archive format') . ' ' . $this->lstExportArchiveType->Render(false); ?></label>
             <p class="instructions"><?php echo t('Choose the format of the exported archive.'); ?></p>
             <label for="<?php echo $this->lstExportedSuggestion->ControlId ?>"><?php echo t('Export translations using') . ': '; ?></label>

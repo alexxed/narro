@@ -64,6 +64,10 @@
          * whether to make contexts inactive before import
          */
         protected $blnDeactivateContexts = true;
+        /**
+         * whether to copy unhandled files
+         */
+        protected $blnCopyUnhandledFiles = true;
 
         protected $strTranslationPath;
         protected $strTemplatePath;
@@ -88,6 +92,21 @@
 
         public function ImportProject() {
             $this->startTimer();
+            if (function_exists('system') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../import.sh')) {
+                NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__,
+                    system(
+                        sprintf(
+                            '/bin/sh %s %s %d %s %d %d',
+                            escapeshellarg(realpath($this->strTemplatePath . '/..') . '/import.sh'),
+                            escapeshellarg($this->objTargetLanguage->LanguageCode),
+                            $this->objTargetLanguage->LanguageId,
+                            escapeshellarg($this->objProject->ProjectName),
+                            $this->objProject->ProjectId,
+                            QApplication::$objUser->UserId
+                        )
+                    )
+                );
+            }
 
             switch ($this->objProject->ProjectType) {
                 case NarroProjectType::Narro:
@@ -454,6 +473,23 @@
                 $this->ExportToFile();
             else
                 throw new Exception(sprintf(t('%s does not exist or it is not a directory or file'), $this->strTemplatePath));
+
+            if (function_exists('system') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../export.sh')) {
+                NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__,
+                    system(
+                        sprintf(
+                            '/bin/sh %s %s %d %s %d %d',
+                            escapeshellarg(realpath($this->strTemplatePath . '/..') . '/export.sh'),
+                            escapeshellarg($this->objTargetLanguage->LanguageCode),
+                            $this->objTargetLanguage->LanguageId,
+                            escapeshellarg($this->objProject->ProjectName),
+                            $this->objProject->ProjectId,
+                            QApplication::$objUser->UserId
+                        )
+                    )
+                );
+            }
+
             $this->stopTimer();
 
             NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Export finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
@@ -606,10 +642,11 @@
                 }
 
                 if (!$intFileType = $this->GetFileType($strFileName)) {
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Copying unhandled file type: %s', $strFileToExport));
-                    NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
-                    if (!file_exists($strTranslatedFileToExport) && !copy($strFileToExport, $strTranslatedFileToExport))
+                    if ($this->blnCopyUnhandledFiles && !file_exists($strTranslatedFileToExport) && !copy($strFileToExport, $strTranslatedFileToExport)) {
+                        NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Copying unhandled file type: %s', $strFileToExport));
+                        NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
                         NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Failed to copy the file to %s', $strTranslatedFileToExport));
+                    }
                     continue;
                 }
 
@@ -725,6 +762,7 @@
                 case "DeactivateFiles": return $this->blnDeactivateFiles;
                 case "DeactivateContexts": return $this->blnDeactivateContexts;
                 case "ExportedSuggestion": return $this->intExportedSuggestion;
+                case "CopyUnhandledFiles": return $this->blnCopyUnhandledFiles;
 
                 default: return false;
             }
@@ -805,6 +843,15 @@
                 case "CheckEqual":
                     try {
                         $this->blnCheckEqual = QType::Cast($mixValue, QType::Boolean);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
+                case "CopyUnhandledFiles":
+                    try {
+                        $this->blnCopyUnhandledFiles = QType::Cast($mixValue, QType::Boolean);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();

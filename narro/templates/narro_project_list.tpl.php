@@ -33,11 +33,11 @@
         <table style="width:100%;padding-top:10px" cellpadding="0" cellspacing="0">
         <tr>
         <td>
-        <?php echo t('Top 10 translators') ?>
+        <?php echo sprintf(t('Top %d translators'), 20) ?>
         <?php $this->pnlTopUsers->Render() ?>
         </td>
         <td style="padding-left:10px">
-        <?php echo t('Newest 10 translators') ?>
+        <?php echo sprintf(t('Newest %d translators'), 20) ?>
         <?php $this->pnlNewUsers->Render() ?>
         </td>
         </tr>
