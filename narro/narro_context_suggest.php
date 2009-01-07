@@ -897,11 +897,11 @@
             }
         }
 
-        public function lstAccessKey_Change($strFormId, $strControlId, $strParameter) {
+        public function btnSaveAccessKey_Click($strFormId, $strControlId, $strParameter) {
             if (!QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
               return false;
 
-            $this->objNarroContextInfo->SuggestionAccessKey = $this->GetControl($strControlId)->SelectedValue;
+            $this->objNarroContextInfo->SuggestionAccessKey = $this->GetControl($strParameter)->Text;
             $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
             $this->objNarroContextInfo->Save();
 

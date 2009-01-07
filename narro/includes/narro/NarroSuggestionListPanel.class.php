@@ -31,7 +31,14 @@
         protected $colVote;
         protected $colActions;
 
-        protected $chkShowAllLanguages;
+        protected $txtAccessKey;
+        protected $btnSaveAccessKey;
+
+        /**
+         * move this somewhere to preferences so that you can choose which languages you actually want to see
+         * @var unknown_type
+         */
+        protected $chkShowOtherLanguages;
 
         protected $intEditSuggestionId;
 
@@ -45,7 +52,9 @@
             }
 
             $this->lblMessage_Create();
-            $this->chkShowAllLanguages_Create();
+            $this->chkShowOtherLanguages_Create();
+            $this->txtAccessKey_Create();
+            $this->btnSaveAccessKey_Create();
 
             $this->lblSuggestions = new QLabel($this);
 
@@ -87,6 +96,24 @@
             $this->dtgSuggestions->AddColumn($this->colActions);
         }
 
+        private function txtAccessKey_Create() {
+            $this->txtAccessKey = new QTextBox($this);
+            $this->txtAccessKey->MaxLength = 1;
+            $this->txtAccessKey->MinLength = 1;
+            $this->txtAccessKey->Columns = 1;
+        }
+
+        private function btnSaveAccessKey_Create() {
+            $this->btnSaveAccessKey = new QButton($this);
+            $this->btnSaveAccessKey->Text = t('Save');
+            $this->btnSaveAccessKey->ActionParameter = $this->txtAccessKey->ControlId;
+            if (QApplication::$blnUseAjax)
+                $this->btnSaveAccessKey->AddAction(new QClickEvent(), new QAjaxAction('btnSaveAccessKey_Click'));
+            else
+                $this->btnSaveAccessKey->AddAction(new QClickEvent(), new QServerAction('btnSaveAccessKey_Click')
+            );
+        }
+
         private function lblMessage_Create() {
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->ForeColor = 'green';
@@ -94,13 +121,13 @@
             $this->lblMessage->DisplayStyle = QDisplayStyle::Block;
         }
 
-        private function chkShowAllLanguages_Create() {
-            $this->chkShowAllLanguages = new QCheckBox($this);
-            $this->chkShowAllLanguages->Text = t('Show suggestions from all languages');
+        private function chkShowOtherLanguages_Create() {
+            $this->chkShowOtherLanguages = new QCheckBox($this);
+            $this->chkShowOtherLanguages->Text = t('Show suggestions from all languages');
             if (QApplication::$blnUseAjax)
-                $this->chkShowAllLanguages->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgSuggestions_Bind'));
+                $this->chkShowOtherLanguages->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgSuggestions_Bind'));
             else
-                $this->chkShowAllLanguages->AddAction(new QClickEvent(), new QServerControlAction($this, 'dtgSuggestions_Bind'));
+                $this->chkShowOtherLanguages->AddAction(new QClickEvent(), new QServerControlAction($this, 'dtgSuggestions_Bind'));
         }
 
         public function GetControlHtml() {
@@ -159,12 +186,21 @@
                     sprintf(t('added by %s'), $this->dtgSuggestions_colAuthor_Render($this->objNarroContextInfo->ValidSuggestion)),
                     $this->dtgSuggestions_colVote_Render($this->objNarroContextInfo->ValidSuggestion),
                     t('votes'),
-                    t('Approved translation:'),
+                    t('Approved translation') . ':',
                     $btnEdit->Render(false),
                     $btnVote->Render(false),
                     ((QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))?$btnApprove->Render(false):'' ),
                     $this->dtgSuggestions_colSuggestion_Render($this->objNarroContextInfo->ValidSuggestion)
                 );
+
+                if ($this->objNarroContextInfo->TextAccessKey && QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)) {
+                    $this->txtAccessKey->Text = $this->objNarroContextInfo->SuggestionAccessKey;
+                    $this->strText .= sprintf('%s<div class="green3dbg" style="border:1px dotted #DDDDDD;padding: 5px"><div style="float:right;">%s</div>%s</div><br/>',
+                        t('Access key') . ':',
+                        $this->btnSaveAccessKey->Render(false),
+                        $this->txtAccessKey->Render(false)
+                    );
+                }
             }
 
             if ($this->dtgSuggestions->TotalItemCount) {
@@ -183,7 +219,7 @@
             $this->strText .=
                 $this->lblSuggestions->Render(false) . '<br />' .
                 $this->dtgSuggestions->Render(false) . '<br />' .
-                '<div style="text-align:right;width:100%">' . $this->chkShowAllLanguages->Render(false) . '</div>';
+                '<div style="text-align:right;width:100%">' . $this->chkShowOtherLanguages->Render(false) . '</div>';
             $this->strText .= $this->lblMessage->Render(false);
             return $this->strText;
         }
@@ -199,64 +235,12 @@
             $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objNarroSuggestion->SuggestionValue);
             if (!$strSuggestionValue)
                 $strSuggestionValue = $objNarroSuggestion->SuggestionValue;
-            /**
-             * @todo Fix please. There are problems with html code.
-            if ($objNarroSuggestion->LanguageId == QApplication::$Language->LanguageId)
-                $arrWordSuggestions = QApplication::GetSpellSuggestions($objNarroSuggestion->SuggestionValue);
-            else*/
-                $arrWordSuggestions = array();
 
             $strSuggestionValue = NarroString::ShowLeadingAndTrailingSpaces(NarroString::HtmlEntities($strSuggestionValue));
 
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->TextAccessKey) {
-                /**
-                 * @todo clean this please
-                 */
-                $strSuggestionChars = mb_ereg_replace('[\s\\n\.,:;\\\!\?]+', '', $strSuggestionValue);
-                $strSuggestionChars = strip_tags($strSuggestionChars);
-                /**
-                 * mozilla entitites: &xxx;
-                 */
-                $strSuggestionChars = mb_ereg_replace('&[a-zA-Z\-0-9]+\;', '' , $strSuggestionChars);
-                /**
-                 * keyboard shortcuts
-                 */
-                $strSuggestionChars = mb_ereg_replace('[~&]', '' , $strSuggestionChars);
-                /**
-                 * openoffice entities: %xxx %%xxx %%%xxx #xxx and so on
-                 */
-                $strSuggestionChars = mb_ereg_replace('[\$\[\#\%]{1,3}[a-zA-Z\_\-0-9]+[\$\]\#\%]{0,3}', '', $strSuggestionChars);
-
-                /**
-                 * some characters that mess with the spellchecking
-                 */
-                $strSuggestionChars = mb_ereg_replace('[\(\)]+', '', $strSuggestionChars);
-
-                $arrAccKeys = array();
-                for($i=0; $i<mb_strlen($strSuggestionChars);$i++) {
-                    if (!in_array(mb_substr($strSuggestionChars, $i, 1), $arrAccKeys))
-                        $arrAccKeys[] = mb_substr($strSuggestionChars, $i, 1);
-                }
-
-                $strControlId = 'lstAccessKey' . $objNarroSuggestion->SuggestionId;
-                $lstAccessKey = $this->objForm->GetControl($strControlId);
-                if (!$lstAccessKey) {
-                    $lstAccessKey = new QListBox($this, $strControlId);
-                    foreach($arrAccKeys as $strKey) {
-                        $lstAccessKey->AddItem($strKey, $strKey, $this->objNarroContextInfo->SuggestionAccessKey == $strKey);
-                }
-                    //foreach
-                    if (QApplication::$blnUseAjax)
-                        $lstAccessKey->AddAction(new QChangeEvent(), new QAjaxAction('lstAccessKey_Change'));
-                    else
-                        $lstAccessKey->AddAction(new QChangeEvent(), new QServerAction('lstAccessKey_Change')
-                    );
-                }
-
-
-
                 if ($this->objNarroContextInfo->SuggestionAccessKey != '')
-                    $intAccPos = mb_strpos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
+                    $intAccPos = mb_stripos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
                 else
                     $intAccPos = 0;
 
@@ -265,15 +249,10 @@
                 else
                     $strDirControlChar = '';
 
-                if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
-                    $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $strDirControlChar . $lstAccessKey->Render(false) . mb_substr($strSuggestionValue, $intAccPos + 1);
-                else
+                if ($this->objNarroContextInfo->SuggestionAccessKey && mb_stristr($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey))
                     $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $strDirControlChar . '<u>' . mb_substr($strSuggestionValue, $intAccPos, 1) . '</u>' . mb_substr($strSuggestionValue, $intAccPos + 1);
-            }
-
-            if (is_array($arrWordSuggestions))
-            foreach($arrWordSuggestions as $strWord=>$arrSuggestion) {
-                $strSuggestionValue = str_replace($strWord, sprintf(t('<span style="color:red" title="Misspelled. Suggestions: %s">%s</span>'), addslashes(join(',', $arrSuggestion)), $strWord), $strSuggestionValue);
+                else
+                    $strSuggestionValue .= sprintf(' (%s)', $this->objNarroContextInfo->SuggestionAccessKey);
             }
 
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId)
@@ -306,7 +285,8 @@
                 $strCellValue = $txtEditSuggestion->Render(false);
 
             }
-            if ($this->chkShowAllLanguages->Checked)
+
+            if ($this->chkShowOtherLanguages->Checked)
                 return '<div style="color:gray;font-size:70%">' . t($objNarroSuggestion->Language->LanguageName) . '</div>' . $strCellValue;
             else
                 return $strCellValue;
@@ -464,7 +444,7 @@
 
         public function dtgSuggestions_Bind() {
             // Get Total Count b/c of Pagination
-            if ($this->chkShowAllLanguages->Checked)
+            if ($this->chkShowOtherLanguages->Checked)
                 $this->dtgSuggestions->TotalItemCount = NarroSuggestion::QueryCount(
                         QQ::AndCondition(
                             QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId),
@@ -488,7 +468,7 @@
             if ($objClause = $this->dtgSuggestions->LimitClause)
                 array_push($objClauses, $objClause);
 
-            if ($this->chkShowAllLanguages->Checked)
+            if ($this->chkShowOtherLanguages->Checked)
                 $this->dtgSuggestions->DataSource =
                     NarroSuggestion::QueryArray(
                             QQ::AndCondition(
