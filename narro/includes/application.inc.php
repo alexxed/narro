@@ -98,7 +98,6 @@
     Zend_Session::setOptions(
         array(
             'name'=>'NARRO_ID',
-            'save_path'=> __TMP_PATH__ . '/session',
             'cookie_lifetime'           => 31*24*3600,
             'cookie_path'               => __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
         )
