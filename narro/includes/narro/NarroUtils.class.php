@@ -88,7 +88,13 @@
                 }
                 return @chmod($strFilePath, $intDirMode);
             }
-            return @chmod($strFilePath, $intFileMode);
+            if (is_file($strFilePath))
+                return @chmod($strFilePath, $intFileMode);
+            else
+                /**
+                 * ignore symlinks and other non-regular files
+                 */
+                return true;
         }
 
         public static function RecursiveCopy( $source, $target ) {
