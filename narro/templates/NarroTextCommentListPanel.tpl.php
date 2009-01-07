@@ -17,7 +17,7 @@
      */
 ?>
     <?php if ($_CONTROL->NarroText->HasComments) { ?>
-    <p><?php echo sprintf(t('This is a debate on the text "<i>%s</i>"'), $_CONTROL->NarroText->TextValue); ?></p>
+    <p><?php echo sprintf(t('This is a debate on the text "<i>%s</i>"'), NarroString::HtmlEntities($_CONTROL->NarroText->TextValue)); ?></p>
     <?php } ?>
     <?php $_CONTROL->dtgNarroTextComment->Render() ?>
     <?php if (QApplication::$objUser->hasPermission('Can comment', QApplication::QueryString('p'), QApplication::$Language->LanguageId)) { ?>
