@@ -80,12 +80,12 @@
             <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
             <div class="dotted_box_content">
             <?php echo $this->chkCopyUnhandledFiles->Render();?>
-            <p class="instructions"><?php echo t('If you check this option, all the unhandled files will be copied from the source language.'); ?></p>
+            <p class="instructions"><?php echo t('If you check this option, all the unhandled files missing from your translation will be copied from the source language.'); ?></p>
             <label for="<?php echo $this->lstExportArchiveType->ControlId ?>"><?php echo  t('Export archive format') . ' ' . $this->lstExportArchiveType->Render(false); ?></label>
             <p class="instructions"><?php echo t('Choose the format of the exported archive.'); ?></p>
             <label for="<?php echo $this->lstExportedSuggestion->ControlId ?>"><?php echo t('Export translations using') . ': '; ?></label>
             <?php echo $this->lstExportedSuggestion->Render(false); ?>
-            <p class="instructions"><?php echo t('If you chose to use your suggestion or the most voted suggestion for each text, if you have no suggestion for a text or there aren\'t any votes, the approved suggestion will be exported instead.'); ?></p>
+            <p class="instructions"><?php echo t('If you want to export the suggestions that are not approved, you have here a few choices to do so'); ?></p>
             <?php $this->btnExport->Render(); $this->objExportProgress->Render();?>
             <?php $this->lblExport->Render(); ?>
             <p class="instructions"><?php echo sprintf(t('You will get an archive containing two directories, en-US and %s, each having the same file structure.'), QApplication::$Language->LanguageCode); ?></p>

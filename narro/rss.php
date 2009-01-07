@@ -513,7 +513,7 @@
                                 <small>
                                 ' . t('This is a debate on the text "%s", used in the following projects:') . '
                                 <br />',
-                                $objTextComment->Text->TextValue
+                                NarroString::HtmlEntities($objTextComment->Text->TextValue)
                                 );
 
                                 foreach($arrProjects as $intProjectId=>$strProjectName) {
