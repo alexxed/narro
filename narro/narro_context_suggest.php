@@ -371,7 +371,7 @@
         // Create and Setup chkGoToNext
         protected function chkGoToNext_Create() {
             $this->chkGoToNext = new QCheckBox($this);
-            $this->chkGoToNext->Checked = true;
+            $this->chkGoToNext->Checked = false;
             $this->chkGoToNext->Text = t('After approving, proceed to the next text');
         }
 
