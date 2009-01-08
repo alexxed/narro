@@ -64,8 +64,12 @@
                 <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
                 <?php if (QApplication::$objUser->hasPermission('Can upload project', null, QApplication::$Language->LanguageId)) { ?>
                     <?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>
-                    <p class="instructions"><?php echo sprintf(t('The archive must contain two directories, en-US and %s, each having the same file structure. Supported formats: %s'), QApplication::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
-                    <p class="instructions"><?php echo sprintf(t('If you don\'t upload an archive, the import will use the directory "%s", subdirectories "%s" and "%s". You could update those directories nightly from CVS, SVN or a web address.'), __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 'en-US', QApplication::$Language->LanguageCode); ?></p>
+                    <?php if (QApplication::$objUser->hasPermission('Can manage project')) {?>
+                        <p class="instructions"><?php echo sprintf(t('The archive can contain two directories, en-US and %s, but at least %s, each having the same file structure. Supported formats: %s'), QApplication::$Language->LanguageCode, QApplication::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
+                    <?php } else { ?>
+                        <p class="instructions"><?php echo sprintf(t('The archive must contain the directory %s with the same structure as en-US. Supported formats: %s'), QApplication::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
+                    <?php } ?>
+                        <p class="instructions"><?php echo sprintf(t('If you don\'t upload an archive, the import will use the directory "%s", subdirectories "%s" and "%s". You could update those directories nightly from CVS, SVN or a web address.'), __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 'en-US', QApplication::$Language->LanguageCode); ?></p>
                 <?php } ?>
             <?php } ?>
             <?php $this->btnImport->Render(); $this->objImportProgress->Render();?>
