@@ -60,9 +60,6 @@
 
                     if (strpos($strLine, '#:') === 0) {
                         NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found reference. <br />');
-                        /**
-                         * Remove the line number from the source file
-                         */
                         $arrFields['Reference'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -609,9 +606,9 @@
                 )
             );
 
-            $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
-
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
+                $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
+
                 $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
                 if
                 (

@@ -63,14 +63,14 @@
                         /**
                          * Remove the line number from the source file
                          */
-                        $arrFields['Reference'] = preg_replace('/:[0-9]+/', '', $strLine);
+                        $arrFields['Reference'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
                             if (strpos($strLine, '#:') === 0)
                                 /**
                                  * Remove the line number from the source file
                                  */
-                                $arrFields['Reference'] .= preg_replace('/:[0-9]+/', '', $strLine);
+                                $arrFields['Reference'] .= $strLine;
                             else
                                 break;
                         }
@@ -222,8 +222,11 @@
                         }
                     }
 
+                    /**
+                     * Remove the source line numbers from the context, they change too often
+                     */
                     $arrFields['Context'] = $arrFields['MsgId'];
-                    $arrFields['ContextComment'] = $arrFields['ExtractedComment'] . $arrFields['Reference'] . $arrFields['Flag'] . $arrFields['PreviousContext'] . $arrFields['PreviousUntranslated'] . $arrFields['PreviousUntranslatedPlural'] . $arrFields['MsgContext'];
+                    $arrFields['ContextComment'] = $arrFields['ExtractedComment'] . preg_replace('/(:[0-9]+)/m', '', $arrFields['Reference']) . $arrFields['Flag'] . $arrFields['PreviousContext'] . $arrFields['PreviousUntranslated'] . $arrFields['PreviousUntranslatedPlural'] . $arrFields['MsgContext'];
 
                     if (!is_null($arrFields['MsgId'])) $arrFields['MsgId'] = str_replace('\"', '"', $arrFields['MsgId']);
                     if (!is_null($arrFields['MsgStr'])) $arrFields['MsgStr'] = str_replace('\"', '"', $arrFields['MsgStr']);
@@ -463,6 +466,20 @@
                 else
                     $arrTranslatedFile[$strContext]['MsgStr'] = null;
 
+                if (strstr($arrTranslatedFile[$strContext]['Flag'], 'fuzzy')) {
+                    /**
+                     * if the string is marked fuzzy, don't import the translation and delete fuzzy flag
+                     */
+                    $arrTranslatedFile[$strContext]['MsgStr'] = '';
+
+                    $arrTranslatedFile[$strContext]['Flag'] = str_replace(', fuzzy', '', $arrTranslatedFile[$strContext]['Flag']);
+                    /**
+                     * if no other flags are found, just empty the variable
+                     */
+                    if (strlen(trim($arrTranslatedFile[$strContext]['Flag'])) < 4) $arrTranslatedFile[$strContext]['Flag'] = null;
+                }
+
+
                 for($intPluralId=0; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
                     if (strstr($arrTranslatedFile[$strContext]['Flag'], 'fuzzy')) {
                         /**
@@ -589,13 +606,14 @@
                     QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
                     QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5(trim($strContext))),
                     QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
-                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId),
-                    QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId)
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
                 )
             );
 
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
-                $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginal, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $strContext, $this->objFile, $this->objProject);
+                $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
+
+                $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[1]) != '' &&
@@ -604,7 +622,7 @@
                     $arrResult[3] == $this->objFile &&
                     $arrResult[4] == $this->objProject
                 ) {
-                $objNarroContextInfo->ValidSuggestion->SuggestionValue = $arrResult[1];
+                    $strSuggestionValue = $arrResult[1];
                 }
             else
             NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strTranslation, $strTranslation));
@@ -613,11 +631,11 @@
                     /**
                      * @todo don't export if there's no valid access key
                      */
-                    $strTextWithAccKey = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, $strOriginalAccKeyPrefix . $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, 1);
+                    $strTextWithAccKey = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, $strOriginalAccKeyPrefix . $objNarroContextInfo->SuggestionAccessKey, $strSuggestionValue, 1);
                     return $strTextWithAccKey;
                 }
                 else
-                    return $objNarroContextInfo->ValidSuggestion->SuggestionValue;
+                    return $strSuggestionValue;
             }
             else {
                 /**
