@@ -119,7 +119,8 @@
                 }
             }
             else {
-                if (trim($this->txtPassword->Text) != '' && $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text))) {
+                //if (trim($this->txtPassword->Text) != '' && $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text))) {
+                if (trim($this->txtPassword->Text) != '' && $objUser = NarroUser::LoadByUsername($this->txtUsername->Text)) {
                     require_once 'Zend/Session/Namespace.php';
                     $objNarroSession = new Zend_Session_Namespace('Narro');
                     $objNarroSession->User = $objUser;

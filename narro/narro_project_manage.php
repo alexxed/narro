@@ -32,6 +32,7 @@
          * common options
          */
         protected $chkForce;
+        protected $btnCleanLocaleDirectory;
         protected $lstLogLevel;
 
         /**
@@ -186,6 +187,11 @@
             $this->chkForce = new QCheckBox($this);
             $this->chkForce->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('document.getElementById(\'%s\').disabled = false', $this->btnImport->ControlId)));
             $this->chkForce->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('document.getElementById(\'%s\').disabled = false', $this->btnExport->ControlId)));
+
+            $this->btnCleanLocaleDirectory = new QButton($this);
+            $this->btnCleanLocaleDirectory->Text = t('Clean locale directory');
+            $this->btnCleanLocaleDirectory->AddAction(new QClickEvent(), new QConfirmAction(QApplication::Translate('Are you SURE you want to DELETE the files in your locale directory?\nThis operation has no effect on the data present in the application, but you might loose translated unhandled files, so you should backup first.')));
+            $this->btnCleanLocaleDirectory->AddAction(new QClickEvent(), new QServerAction('btnClearLocaleDirectory_Click'));
 
             $strImportPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
 
@@ -688,6 +694,22 @@
             }catch (Exception $objEx) {
                 throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
             }
+        }
+
+        protected function btnClearLocaleDirectory_Click($strFormId, $strControlId, $strParameter) {
+            NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, 'Clearing locale directory...');
+
+            if (!QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId))
+                QApplication::Redirect(NarroLink::ProjectList());
+            try {
+                NarroUtils::RecursiveDelete(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode . '/*');
+            } catch(Exception $objEx) {
+                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, $objEx->getMessage());
+            }
+
+            NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, 'Done!');
+
+            $this->showLog();
         }
     }
 
