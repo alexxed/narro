@@ -123,7 +123,7 @@
 
         private function chkShowOtherLanguages_Create() {
             $this->chkShowOtherLanguages = new QCheckBox($this);
-            $this->chkShowOtherLanguages->Text = t('Show suggestions from all languages');
+            $this->chkShowOtherLanguages->Text = t('Show suggestions from other languages');
             if (QApplication::$blnUseAjax)
                 $this->chkShowOtherLanguages->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgSuggestions_Bind'));
             else
@@ -443,12 +443,23 @@
         }
 
         public function dtgSuggestions_Bind() {
+            $objLangCondition = QQ::All();
+            if (QApplication::$objUser->getPreferenceValueByName('Other languages')) {
+                foreach(explode(' ', QApplication::$objUser->getPreferenceValueByName('Other languages')) as $strLangCode) {
+                    $arrConditions[] = QQ::Equal(QQN::NarroSuggestion()->Language->LanguageCode, $strLangCode);
+                }
+
+                if (isset($arrConditions))
+                    $objLangCondition = QQ::OrCondition($arrConditions);
+            }
+
             // Get Total Count b/c of Pagination
             if ($this->chkShowOtherLanguages->Checked)
                 $this->dtgSuggestions->TotalItemCount = NarroSuggestion::QueryCount(
                         QQ::AndCondition(
                             QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId),
-                            QQ::NotEqual(QQN::NarroSuggestion()->SuggestionId, $this->objNarroContextInfo->ValidSuggestionId)
+                            QQ::NotEqual(QQN::NarroSuggestion()->SuggestionId, $this->objNarroContextInfo->ValidSuggestionId),
+                            $objLangCondition
                         )
                 );
             else
@@ -473,7 +484,8 @@
                     NarroSuggestion::QueryArray(
                             QQ::AndCondition(
                                 QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId),
-                                QQ::NotEqual(QQN::NarroSuggestion()->SuggestionId, $this->objNarroContextInfo->ValidSuggestionId)
+                                QQ::NotEqual(QQN::NarroSuggestion()->SuggestionId, $this->objNarroContextInfo->ValidSuggestionId),
+                                $objLangCondition
                             ),
                             $objClauses
                     );

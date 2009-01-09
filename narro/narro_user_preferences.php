@@ -89,6 +89,14 @@
                                 $arrPref['description'] .= $strSelect;
                                 $txtTextPref->Width = 400;
                             }
+                            elseif ($strName == 'Other languages') {
+                                $strSelect = sprintf('<select onchange="document.getElementById(\'%s\').value+= \' \' + this.options[this.selectedIndex].value;">', $txtTextPref->ControlId);
+                                foreach(NarroLanguage::QueryArray(QQ::Equal(QQN::NarroLanguage()->Active, 1)) as $objLanguage)
+                                    $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, $objLanguage->LanguageName, $objLanguage->LanguageCode);
+                                $strSelect .= '</select>';
+                                $arrPref['description'] .= $strSelect;
+                                $txtTextPref->Width = 400;
+                            }
 
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $txtTextPref;
