@@ -47,11 +47,13 @@
         }
 
         private static function OutputLog($intMessageType, $strText) {
-            $hndLogFile = fopen(self::$strLogFile, 'a+');
+            if (self::$strLogFile)
+                $hndLogFile = fopen(self::$strLogFile, 'a+');
 
-            if ($hndLogFile)
+            if ($hndLogFile) {
                 if ($strText != '')
                     fputs($hndLogFile, $strText . "\n");
+            }
             else {
                 self::SetLogFile(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode);
                 $hndLogFile = fopen(self::$strLogFile, 'a+');
