@@ -553,6 +553,11 @@
                         $objItem->Description = $strDescription;
                         $objItem->PubDate = new QDateTime($objTextComment->Created);
                         $objItem->Author = $objTextComment->User->Username;
+                        /**
+                         * Damn Google Reader doesn't care about PubDate, so we need this
+                         */
+                        $objItem->Guid = NarroString::HtmlEntities($strContextLink);
+                        $objItem->GuidPermaLink = true;
                         $objRssFeed->AddItem($objItem);
                     }
                 }
