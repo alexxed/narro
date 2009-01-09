@@ -130,6 +130,7 @@
     QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', QApplication::QueryString('l'), array(QApplication::QueryString('l')));
     QApplication::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(QApplication::$Language))?QApplication::$Language->LanguageId:1, array((isset(QApplication::$Language))?QApplication::$Language->LanguageId:1));
     QApplication::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
+    QApplication::RegisterPreference('Other languages', 'text', 'Other languages that you want to check for suggestions, separated by spaces.', 'ro');
 
     if (isset($objNarroSession->User) && $objNarroSession->User instanceof NarroUser)
         QApplication::$objUser = $objNarroSession->User;
