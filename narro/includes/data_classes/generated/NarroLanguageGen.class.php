@@ -277,6 +277,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`text_direction` AS ' . $strAliasPrefix . 'text_direction`');
 			$objBuilder->AddSelectItem($strTableName . '.`special_characters` AS ' . $strAliasPrefix . 'special_characters`');
 			$objBuilder->AddSelectItem($strTableName . '.`plural_form` AS ' . $strAliasPrefix . 'plural_form`');
+			$objBuilder->AddSelectItem($strTableName . '.`active` AS ' . $strAliasPrefix . 'active`');
 		}
 
 
@@ -413,6 +414,7 @@
 			$objToReturn->strTextDirection = $objDbRow->GetColumn($strAliasPrefix . 'text_direction', 'VarChar');
 			$objToReturn->strSpecialCharacters = $objDbRow->GetColumn($strAliasPrefix . 'special_characters', 'VarChar');
 			$objToReturn->strPluralForm = $objDbRow->GetColumn($strAliasPrefix . 'plural_form', 'VarChar');
+			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Bit');
 
 			// Instantiate Virtual Attributes
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
@@ -596,7 +598,8 @@
 							`encoding`,
 							`text_direction`,
 							`special_characters`,
-							`plural_form`
+							`plural_form`,
+							`active`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strLanguageName) . ',
 							' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
@@ -605,7 +608,8 @@
 							' . $objDatabase->SqlVariable($this->strEncoding) . ',
 							' . $objDatabase->SqlVariable($this->strTextDirection) . ',
 							' . $objDatabase->SqlVariable($this->strSpecialCharacters) . ',
-							' . $objDatabase->SqlVariable($this->strPluralForm) . '
+							' . $objDatabase->SqlVariable($this->strPluralForm) . ',
+							' . $objDatabase->SqlVariable($this->blnActive) . '
 						)
 					');
 
@@ -628,7 +632,8 @@
 							`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding) . ',
 							`text_direction` = ' . $objDatabase->SqlVariable($this->strTextDirection) . ',
 							`special_characters` = ' . $objDatabase->SqlVariable($this->strSpecialCharacters) . ',
-							`plural_form` = ' . $objDatabase->SqlVariable($this->strPluralForm) . '
+							`plural_form` = ' . $objDatabase->SqlVariable($this->strPluralForm) . ',
+							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . '
 						WHERE
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 					');
@@ -774,6 +779,13 @@
 					 * @return string
 					 */
 					return $this->strPluralForm;
+
+				case 'Active':
+					/**
+					 * Gets the value for blnActive 
+					 * @return boolean
+					 */
+					return $this->blnActive;
 
 
 				///////////////////
@@ -1019,6 +1031,19 @@
 					 */
 					try {
 						return ($this->strPluralForm = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Active':
+					/**
+					 * Sets the value for blnActive 
+					 * @param boolean $mixValue
+					 * @return boolean
+					 */
+					try {
+						return ($this->blnActive = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2193,6 +2218,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_language.active
+		 * @var boolean blnActive
+		 */
+		protected $blnActive;
+		const ActiveDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single NarroContextCommentAsLanguage object
 		 * (of type NarroContextComment), if this NarroLanguage object was restored with
 		 * an expansion on the narro_context_comment association table.
@@ -2345,6 +2378,7 @@
 			$strToReturn .= '<element name="TextDirection" type="xsd:string"/>';
 			$strToReturn .= '<element name="SpecialCharacters" type="xsd:string"/>';
 			$strToReturn .= '<element name="PluralForm" type="xsd:string"/>';
+			$strToReturn .= '<element name="Active" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -2385,6 +2419,8 @@
 				$objToReturn->strSpecialCharacters = $objSoapObject->SpecialCharacters;
 			if (property_exists($objSoapObject, 'PluralForm'))
 				$objToReturn->strPluralForm = $objSoapObject->PluralForm;
+			if (property_exists($objSoapObject, 'Active'))
+				$objToReturn->blnActive = $objSoapObject->Active;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -2439,6 +2475,8 @@
 					return new QQNode('special_characters', 'string', $this);
 				case 'PluralForm':
 					return new QQNode('plural_form', 'string', $this);
+				case 'Active':
+					return new QQNode('active', 'boolean', $this);
 				case 'NarroContextCommentAsLanguage':
 					return new QQReverseReferenceNodeNarroContextComment($this, 'narrocontextcommentaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroContextInfoAsLanguage':
@@ -2491,6 +2529,8 @@
 					return new QQNode('special_characters', 'string', $this);
 				case 'PluralForm':
 					return new QQNode('plural_form', 'string', $this);
+				case 'Active':
+					return new QQNode('active', 'boolean', $this);
 				case 'NarroContextCommentAsLanguage':
 					return new QQReverseReferenceNodeNarroContextComment($this, 'narrocontextcommentaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroContextInfoAsLanguage':
