@@ -15,12 +15,12 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    class NarroMozilla {
+    class NarroMozillaFileImporter extends NarroFileImporter {
         /**
          * This function looks for accesskey entries and creates po style texts, e.g. &File
          * @param array $arrTexts an array with context as keys and texts as values
          */
-        public static function GetAccessKeys($arrTexts) {
+        public function GetAccessKeys($arrTexts) {
             $arrAccKey = array();
 
             if (is_array($arrTexts))
@@ -104,7 +104,7 @@
          * @param array $arrTranslation an array with context as keys and translations as values
          * @return array $arrTranslation an array with context as keys and translations as values
          */
-        public static function GetTranslations($objFile, $arrTemplate) {
+        public function GetTranslations($objFile, $arrTemplate) {
             $arrTranslation = array();
 
             $arrTranslationObjects =
@@ -117,34 +117,15 @@
                 );
 
             foreach($arrTranslationObjects as $objNarroContextInfo) {
-                if ($objNarroContextInfo->ValidSuggestionId > 0) {
-                    $arrTranslation[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
-                    if ($objNarroContextInfo->TextAccessKey) {
-                        if ($objNarroContextInfo->SuggestionAccessKey)
-                            $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->SuggestionAccessKey;
-                        else {
-                            if (preg_match('/[a-zA-Z0-9]/', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches)) {
-                                $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $arrMatches[0];
-                                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('No access key found for context %s, text %s, using "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches[0]));
-                                NarroImportStatistics::$arrStatistics['Texts with no access key set, but fixed']++;
-                            }
-                            else {
-//                                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('No access key found for context %s, text %s and could not find a valid letter to use, dropping translation.', $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue));
-//                                unset($arrTranslation[$objNarroContextInfo->Context->Context]);
-//                                NarroImportStatistics::$arrStatistics['Texts without acceptable access keys']++;
-//                                NarroImportStatistics::$arrStatistics['Texts kept as original']++;
-                            }
+                $arrTranslation[$objNarroContextInfo->Context->Context] = $this->GetExportedSuggestion($objNarroContextInfo);
+                if ($arrTranslation[$objNarroContextInfo->Context->Context] === false)
+                    $arrTranslation[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->Context->Text->TextValue;
 
-                        }
-                        NarroImportStatistics::$arrStatistics['Texts that have access keys']++;
-                    }
+                if ($objNarroContextInfo->TextAccessKey) {
+                    if ($objNarroContextInfo->SuggestionAccessKey)
+                        $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->SuggestionAccessKey;
                     else
-                        NarroImportStatistics::$arrStatistics["Texts that don't have access keys"]++;
-                }
-                else {
-                    NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('In file "%s", the context "%s" does not have a valid suggestion.', $objFile->FileName, $objNarroContextInfo->Context->Context));
-                    NarroImportStatistics::$arrStatistics['Texts without valid suggestions']++;
-                    NarroImportStatistics::$arrStatistics['Texts kept as original']++;
+                        $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->TextAccessKey;
                 }
             }
 

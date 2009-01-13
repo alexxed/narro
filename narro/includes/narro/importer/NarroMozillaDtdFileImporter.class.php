@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    class NarroMozillaDtdFileImporter extends NarroFileImporter {
+    class NarroMozillaDtdFileImporter extends NarroMozillaFileImporter {
 
         public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
             $intTime = time();
@@ -40,7 +40,7 @@
                             else
                                 $arrTranslation[$arrMatches[3][$intPos]] = $arrMatches[4][$intPos];
                         }
-                        list($arrTranslation, $arrTranslationAccKeys) = NarroMozilla::GetAccessKeys($arrTranslation);
+                        list($arrTranslation, $arrTranslationAccKeys) = $this->GetAccessKeys($arrTranslation);
 
                     }
                     else {
@@ -96,7 +96,7 @@
                          * add po style access keys instead of keeping separate entries for access keys
                          */
 
-                        list($arrTemplate, $arrTemplateKeys) = NarroMozilla::GetAccessKeys($arrTemplate);
+                        list($arrTemplate, $arrTemplateKeys) = $this->GetAccessKeys($arrTemplate);
 
                         $intElapsedTime = time() - $intTime;
                         if ($intElapsedTime > 0)
@@ -178,7 +178,7 @@
 
             $strTranslateContents = '';
 
-            $arrTranslation = NarroMozilla::GetTranslations($this->objFile, $arrTemplate);
+            $arrTranslation = $this->GetTranslations($this->objFile, $arrTemplate);
 
             foreach($arrTemplate as $strKey=>$strOriginalText) {
                 if (isset($arrTranslation[$strKey])) {

@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    class NarroMozillaIniFileImporter extends NarroFileImporter {
+    class NarroMozillaIniFileImporter extends NarroMozillaFileImporter {
 
         public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
             $intTime = time();
@@ -55,9 +55,9 @@
                     $strContext .= $strLine . "\n";
             }
 
-            list($arrTemplate, $arrTemplateAccKeys) = NarroMozilla::GetAccessKeys($arrTemplate);
+            list($arrTemplate, $arrTemplateAccKeys) = $this->GetAccessKeys($arrTemplate);
 
-            list($arrTranslation, $arrTranslationAccKeys) = NarroMozilla::GetAccessKeys($arrTranslation);
+            list($arrTranslation, $arrTranslationAccKeys) = $this->GetAccessKeys($arrTranslation);
 
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
@@ -116,7 +116,7 @@
                 return false;
             }
 
-            $arrTranslation = NarroMozilla::GetTranslations($this->objFile, $arrTemplate);
+            $arrTranslation = $this->GetTranslations($this->objFile, $arrTemplate);
 
             $strTranslateContents = $strTemplateContents;
 

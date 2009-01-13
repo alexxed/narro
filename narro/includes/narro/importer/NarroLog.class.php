@@ -50,7 +50,7 @@
             if (self::$strLogFile)
                 $hndLogFile = fopen(self::$strLogFile, 'a+');
 
-            if ($hndLogFile) {
+            if (isset($hndLogFile) && $hndLogFile) {
                 if ($strText != '')
                     fputs($hndLogFile, $strText . "\n");
             }

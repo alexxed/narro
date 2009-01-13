@@ -128,24 +128,16 @@
 
             foreach($arrTranslationObjects as $objNarroContextInfo) {
                 if ($objNarroContextInfo->ValidSuggestionId > 0) {
-                    $arrTranslation[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
+                    $arrTranslation[$objNarroContextInfo->Context->Context] = $this->GetExportedSuggestion($objNarroContextInfo);
+
+                    if ($arrTranslation[$objNarroContextInfo->Context->Context] === false)
+                        $arrTranslation[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->Context->Text->TextValue;
+
                     if ($objNarroContextInfo->TextAccessKey) {
                         if ($objNarroContextInfo->SuggestionAccessKey)
                             $strAccessKey = $objNarroContextInfo->SuggestionAccessKey;
-                        else {
-                            if (preg_match('/[a-zA-Z0-9]/', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches)) {
-                                $strAccessKey = $arrMatches[0];
-                                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('No access key found for context %s, text %s, using "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrMatches[0]));
-                                NarroImportStatistics::$arrStatistics['Texts with no access key set, but fixed']++;
-                            }
-                            else {
-                                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('No access key found for context %s, text %s and could not find a valid letter to use, dropping translation.', $objNarroContextInfo->Context->Context, $objNarroContextInfo->ValidSuggestion->SuggestionValue));
-                                unset($arrTranslation[$objNarroContextInfo->Context->Context]);
-                                NarroImportStatistics::$arrStatistics['Texts without acceptable access keys']++;
-                                NarroImportStatistics::$arrStatistics['Texts kept as original']++;
-                            }
-
-                        }
+                        else
+                            $strAccessKey = $objNarroContextInfo->TextAccessKey;
 
                         $arrTranslation[$objNarroContextInfo->Context->Context] = preg_replace('/' . $strAccessKey . '/', '&' . $strAccessKey, $arrTranslation[$objNarroContextInfo->Context->Context] , 1);
 
