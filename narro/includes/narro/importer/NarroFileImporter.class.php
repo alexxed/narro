@@ -275,7 +275,7 @@
                 NarroImportStatistics::$arrStatistics['Reused context informations']++;
             }
 
-            if ($objNarroContext instanceof NarroContext && $objNarroContextInfo instanceof NarroContextInfo) {
+            if ($objNarroContext instanceof NarroContext && $objContextInfo instanceof NarroContextInfo) {
                 /**
                  * this lies outside the if/else if reusing contexts is activated, so if a context was moved in another file, we'll just update the file_id
                  */
@@ -286,7 +286,7 @@
 
                 if ($objContextInfo->TextAccessKey != $strOriginalAccKey) {
                     $blnContextInfoChanged = true;
-                    $objContextInfo->TextAccessKey = $strOriginalAccKey;;
+                    $objContextInfo->TextAccessKey = $strOriginalAccKey;
                 }
 
                 if (!$this->blnOnlySuggestions && trim($strComment) != '') {
