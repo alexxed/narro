@@ -69,31 +69,9 @@ th.dtg_header_row a {
 
 div.graph {
 border:0px solid black;
-height:20px;
+height:15px;
 position:relative;
 width:130px;
-}
-
-div.translated {
-background:transparent url(../images/green-bar.png) repeat-x scroll 0pt 50%;
-height:100%;
-left:0%;
-position:absolute;
-top:0px;
-}
-
-div.fuzzy {
-background:transparent url(../images/orange-bar.png) repeat-x scroll 0pt 50%;
-height:100%;
-position:absolute;
-top:0px;
-}
-
-div.untranslated {
-background:transparent url(../images/red-bar.png) repeat-x scroll 0pt 50%;
-height:100%;
-position:absolute;
-top:0px;
 }
 
 #header {

@@ -39,10 +39,10 @@
 
             if ($this->intTranslated <= $this->intTotal) {
                 $intPercentTranslated = ceil(($this->intTranslated * 100)/$this->intTotal);
-                $strText .= sprintf('<div class="translated" style="width: %spx;"></div>', $intPercentTranslated);
+                $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/green-bar.png', $intPercentTranslated);
                 if ($this->intFuzzy > 0) {
                     $intPercentFuzzy = ceil(($this->intFuzzy * 100)/$this->intTotal);
-                    $strText .= sprintf('<div class="fuzzy" style="left:%spx;width: %spx;"></div>', $intPercentTranslated, $intPercentFuzzy);
+                    $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/orange-bar.png', $intPercentFuzzy);
                 }
                 else {
                     $intPercentFuzzy = 0;
@@ -50,10 +50,9 @@
 
             }
 
-            $strText .= sprintf('<div class="untranslated" style="left:%spx;width: %spx;"></div>', $intPercentTranslated + $intPercentFuzzy, 100 - $intPercentFuzzy - $intPercentTranslated);
+            $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/red-bar.png',  100 - $intPercentFuzzy - $intPercentTranslated);
 
-            //$strText .= sprintf('<div style="height:100%%;width:250px;position:absolute;top:0px;left:110px">%d%% (%d/%d/%d)</div></div>', $intPercentTranslated, $this->intTranslated, $this->intFuzzy, $this->intTotal);
-            $strText .= sprintf('<div style="height:100%%;width:25px;position:absolute;top:0px;left:110px">%d%%</div></div>', $intPercentTranslated);
+            $strText .= '</div>';
 
             return $strText;
         }
