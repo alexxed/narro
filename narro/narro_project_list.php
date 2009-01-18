@@ -144,7 +144,7 @@
             $strOutput =
                 NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')) .
                 ' | ' .
-                NarroLink::ProjectFileList($objNarroProject->ProjectId, 0, t('Files')) .
+                NarroLink::ProjectFileList($objNarroProject->ProjectId, null, t('Files')) .
                 sprintf(' | <a href="narro_project_language_list.php?l=%s&p=%d">%s</a>', QApplication::$Language->LanguageCode, $objNarroProject->ProjectId, t('Languages'));
 
             if (QApplication::$objUser->hasPermission('Can manage project', $objNarroProject->ProjectId, QApplication::$Language->LanguageId))

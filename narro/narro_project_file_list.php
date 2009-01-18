@@ -46,10 +46,16 @@
             } else
                 QApplication::Redirect(NarroLink::ProjectList());
 
-            $intParentId = QApplication::QueryString('pf');
+            $strPath = QApplication::QueryString('pf');
 
-            if ($intParentId)
-                $this->objParentFile = NarroFile::Load($intParentId);
+            if ($strPath)
+                $this->objParentFile = NarroFile::QuerySingle(
+                    QQ::AndCondition(
+                        QQ::Equal(QQN::NarroFile()->ProjectId, $intProjectId),
+                        QQ::Equal(QQN::NarroFile()->Active, 1),
+                        QQ::Equal(QQN::NarroFile()->FilePath, $strPath)
+                    )
+                );
 
         }
 
@@ -99,54 +105,68 @@
         }
 
         public function dtgNarroFile_PercentTranslated_Render(NarroFile $objNarroFile) {
-            if ($objNarroFile->TypeId != NarroFileType::Folder) {
-                $sOutput = '';
+            $sOutput = '';
 
-                $objDatabase = QApplication::$Database[1];
+            $objDatabase = QApplication::$Database[1];
 
+            if ($objNarroFile->TypeId == NarroFileType::Folder)
+                $strQuery = sprintf('SELECT COUNT(DISTINCT c.context_id) AS cnt FROM `narro_context` c, `narro_file` f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.project_id=%d AND c.active=1 AND f.file_path LIKE \'%s%%\'', $objNarroFile->ProjectId, $objNarroFile->FilePath);
+            else
                 $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c WHERE c.project_id=%d AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, $objNarroFile->FileId);
+
+            // Perform the Query
+            $objDbResult = $objDatabase->Query($strQuery);
+
+            if ($objDbResult) {
+                $mixRow = $objDbResult->FetchArray();
+                $intTotalTexts = $mixRow['cnt'];
+
+                if ($objNarroFile->TypeId == NarroFileType::Folder)
+                    $strQuery = sprintf('SELECT COUNT(DISTINCT c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1 AND f.file_path LIKE \'%s%%\'', $objNarroFile->ProjectId, QApplication::$Language->LanguageId, $objNarroFile->FilePath);
+                else
+                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, QApplication::$Language->LanguageId, $objNarroFile->FileId);
 
                 // Perform the Query
                 $objDbResult = $objDatabase->Query($strQuery);
 
                 if ($objDbResult) {
                     $mixRow = $objDbResult->FetchArray();
-                    $intTotalTexts = $mixRow['cnt'];
-
-                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, QApplication::$Language->LanguageId, $objNarroFile->FileId);
-
-                    // Perform the Query
-                    $objDbResult = $objDatabase->Query($strQuery);
-
-                    if ($objDbResult) {
-                        $mixRow = $objDbResult->FetchArray();
-                        $intTranslatedTexts = $mixRow['cnt'];
-                    }
-
-                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, QApplication::$Language->LanguageId, $objNarroFile->FileId);
-                    // Perform the Query
-                    $objDbResult = $objDatabase->Query($strQuery);
-
-                    if ($objDbResult) {
-                        $mixRow = $objDbResult->FetchArray();
-                        $intApprovedTexts = $mixRow['cnt'];
-                    }
-
-                    $objProgressBar = $this->GetControl('progressbar' . $objNarroFile->FileId);
-                    if (!$objProgressBar instanceof NarroTranslationProgressBar)
-                        $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroFile, 'progressbar' . $objNarroFile->FileId);
-
-                    $objProgressBar->Total = $intTotalTexts;
-                    $objProgressBar->Translated = $intApprovedTexts;
-                    $objProgressBar->Fuzzy = $intTranslatedTexts;
-
-                    $sOutput .= $objProgressBar->Render(false);
-
+                    $intNotApprovedTexts = $mixRow['cnt'];
                 }
-                return NarroLink::FileTextList($objNarroFile->ProjectId, $objNarroFile->FileId, 1, 1, '', $sOutput);
+
+                if ($objNarroFile->TypeId == NarroFileType::Folder)
+                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1 AND f.file_path LIKE \'%s%%\'', $objNarroFile->ProjectId, QApplication::$Language->LanguageId, $objNarroFile->FilePath);
+                else
+                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, QApplication::$Language->LanguageId, $objNarroFile->FileId);
+                // Perform the Query
+                $objDbResult = $objDatabase->Query($strQuery);
+
+                if ($objDbResult) {
+                    $mixRow = $objDbResult->FetchArray();
+                    $intApprovedTexts = $mixRow['cnt'];
+                }
+
+                $objProgressBar = $this->GetControl('progressbar' . $objNarroFile->FileId);
+                if (!$objProgressBar instanceof NarroTranslationProgressBar)
+                    $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroFile, 'progressbar' . $objNarroFile->FileId);
+
+                $objProgressBar->Total = $intTotalTexts;
+                $objProgressBar->Translated = $intApprovedTexts;
+                $objProgressBar->Fuzzy = $intNotApprovedTexts;
+
+                $sOutput .= $objProgressBar->Render(false);
+
             }
+
+            if ($objNarroFile->TypeId == NarroFileType::Folder)
+                return $sOutput;
+
+            if ($intApprovedTexts + $intNotApprovedTexts < $intTotalTexts)
+                return NarroLink::FileTextList($objNarroFile->ProjectId, $objNarroFile->FileId, NarroTextListForm::SHOW_UNTRANSLATED_TEXTS, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
+            elseif ($intApprovedTexts < $intTotalTexts)
+                return NarroLink::FileTextList($objNarroFile->ProjectId, $objNarroFile->FileId, NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
             else
-                return '';
+                return NarroLink::FileTextList($objNarroFile->ProjectId, $objNarroFile->FileId, NarroTextListForm::SHOW_ALL_TEXTS, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
 
         }
 
@@ -156,7 +176,7 @@
                     __IMAGE_ASSETS__ . '/folder.png',
                     NarroLink::ProjectFileList(
                         $this->objNarroProject->ProjectId,
-                        $objNarroFile->FileId,
+                        $objNarroFile->FilePath,
                         $objNarroFile->FileName
                     )
                 );

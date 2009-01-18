@@ -226,7 +226,7 @@
 
         public function dtgSuggestions_colProject_Render(NarroSuggestion $objNarroSuggestion) {
             if ($strProjectName = $this->objNarroContextInfo->Context->File->Project->ProjectName)
-                return NarroLink::ProjectFileList($this->objNarroContextInfo->Context->Project->ProjectId, 1, $strProjectName);
+                return NarroLink::ProjectFileList($this->objNarroContextInfo->Context->Project->ProjectId, null, $strProjectName);
         }
 
 

@@ -282,7 +282,7 @@
 
             $this->pnlNavigator->Text =
             NarroLink::ProjectList(t('Projects')) .
-            ' -> ' .
+            ' / ' .
             NarroLink::ProjectTextList(
                     $this->objNarroContextInfo->Context->File->Project->ProjectId,
                     $this->intTextFilter,
@@ -290,35 +290,44 @@
                     $this->strSearchText,
                     $this->objNarroProject->ProjectName
                 ) .
-            ' -> ' .
-            NarroLink::ProjectFileList($this->objNarroContextInfo->Context->Project->ProjectId, 0, t('Files')) .
-            ' -> ' .
-            NarroLink::ProjectFileList(
-                    $this->objNarroContextInfo->Context->File->Project->ProjectId,
-                    $this->objNarroContextInfo->Context->File->ParentId,
-                    '..'
-            ) .
-            ' -> ' .
-            NarroLink::FileTextList(
-                    $this->objNarroContextInfo->Context->File->Project->ProjectId,
-                    $this->objNarroContextInfo->Context->FileId,
-                    $this->intTextFilter,
-                    QApplication::QueryString('st'),
-                    $this->strSearchText,
-                    $this->objNarroContextInfo->Context->File->FileName
-            );
+            ' / ' .
+            NarroLink::ProjectFileList($this->objNarroContextInfo->Context->Project->ProjectId, null, t('Files'));
+
+            $arrPaths = explode('/', $this->objNarroContextInfo->Context->File->FilePath);
+            $strProgressivePath = '';
+            if (is_array($arrPaths))
+                foreach($arrPaths as $strPathPart) {
+                    if (!$strPathPart || $strPathPart == $this->objNarroContextInfo->Context->File->FileName) continue;
+                    $strProgressivePath .= '/' . $strPathPart;
+                    $this->pnlNavigator->Text .= ' / ' .
+                        NarroLink::ProjectFileList(
+                                $this->objNarroContextInfo->Context->ProjectId,
+                                $strProgressivePath,
+                                $strPathPart
+                        );
+                }
+
+            $this->pnlNavigator->Text .= ' / ' .
+                NarroLink::FileTextList(
+                        $this->objNarroContextInfo->Context->ProjectId,
+                        $this->objNarroContextInfo->Context->FileId,
+                        $this->intTextFilter,
+                        QApplication::QueryString('st'),
+                        $this->strSearchText,
+                        $this->objNarroContextInfo->Context->File->FileName
+                );
 
 
             $strFilter = '';
             switch ($this->intTextFilter) {
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS:
-                        $this->pnlNavigator->Text .= ' -> ' . t('Untranslated texts');
+                        $this->pnlNavigator->Text .= ' / ' . t('Untranslated texts');
                         break;
                 case NarroTextListForm::SHOW_APPROVED_TEXTS:
-                        $this->pnlNavigator->Text .= ' -> ' . t('Approved texts');
+                        $this->pnlNavigator->Text .= ' / ' . t('Approved texts');
                         break;
                 case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL:
-                        $this->pnlNavigator->Text .= ' -> ' . t('Texts that require approval');
+                        $this->pnlNavigator->Text .= ' / ' . t('Texts that require approval');
                         break;
                 default:
 
@@ -327,13 +336,13 @@
             if ($this->strSearchText != ''){
                 switch ($this->intSearchType) {
                     case NarroTextListForm::SEARCH_TEXTS:
-                        $this->pnlNavigator->Text .= ' -> ' . sprintf(t('Search in original texts for "%s"'), $this->strSearchText);
+                        $this->pnlNavigator->Text .= ' / ' . sprintf(t('Search in original texts for "%s"'), $this->strSearchText);
                         break;
                     case NarroTextListForm::SEARCH_SUGGESTIONS:
-                        $this->pnlNavigator->Text .= ' -> ' . sprintf(t('Search in suggestions for "%s"'), $this->strSearchText);
+                        $this->pnlNavigator->Text .= ' / ' . sprintf(t('Search in suggestions for "%s"'), $this->strSearchText);
                         break;
                     case NarroTextListForm::SEARCH_CONTEXTS:
-                        $this->pnlNavigator->Text .= ' -> ' . sprintf(t('Search in contexts for "%s"'), $this->strSearchText);
+                        $this->pnlNavigator->Text .= ' / ' . sprintf(t('Search in contexts for "%s"'), $this->strSearchText);
                         break;
                     default:
                 }
@@ -347,7 +356,7 @@
                 sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
                 (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($strText, 0, 30) . '...':$strText);
 
-            $this->pnlNavigator->Text .=  ' -> ' . $strPageTitle;
+            $this->pnlNavigator->Text .=  ' / ' . $strPageTitle;
             $this->pnlNavigator->MarkAsModified();
             if ($this->intContextsCount) {
                 $this->lblProgress->Text = sprintf('%d/%d', $this->intCurrentContext, $this->intContextsCount);

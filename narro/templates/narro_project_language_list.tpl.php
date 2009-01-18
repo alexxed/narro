@@ -27,10 +27,10 @@
         <div>
         <?php echo
         NarroLink::ProjectList(t('Projects')) .
-        ' -> ' .
+        ' / ' .
         NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName) .
-        ' -> ' .
-        NarroLink::ProjectFileList($this->objNarroProject->ProjectId, 0, t('Files'));
+        ' / ' .
+        NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'));
         ?>
         </div>
         <h3><?php echo sprintf(t('Language list for %s'), $this->objNarroProject->ProjectName); ?></h3>

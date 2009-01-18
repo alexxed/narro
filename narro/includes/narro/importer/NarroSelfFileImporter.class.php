@@ -141,6 +141,7 @@
                             NarroImportStatistics::$arrStatistics['Kept folders']++;
                             $objFile->Active = 1;
                             $objFile->ContextCount = 0;
+                            $objFile->FilePath = $strFilePath;
                             $objFile->Modified = date('Y-m-d H:i:s');
                             $objFile->Save();
                         }
@@ -180,6 +181,7 @@
                     $objFile->Active = 1;
                     $objFile->TypeId = NarroFileType::Narro;
                     $objFile->Modified = date('Y-m-d H:i:s');
+                    $objFile->FilePath = $strFilePath;
                     $objFile->Save();
                     NarroImportStatistics::$arrStatistics['Kept files']++;
                 }

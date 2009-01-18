@@ -29,9 +29,9 @@
         <?php
             echo
                 NarroLink::ProjectList(t('Projects')) .
-                ' -> ' .
+                ' / ' .
                 NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName) .
-                ' -> ' .
+                ' / ' .
                 t('Manage');
         ?>
         </div>

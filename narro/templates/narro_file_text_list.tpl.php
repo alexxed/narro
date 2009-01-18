@@ -25,12 +25,26 @@
         <div>
         <?php echo
         NarroLink::ProjectList(t('Projects')) .
-        ' -> ' . 
+        ' / ' .
         NarroLink::ProjectTextList($this->objNarroFile->Project->ProjectId, 1, 1, '', $this->objNarroFile->Project->ProjectName) .
-        ' -> ' . 
-        NarroLink::ProjectFileList($this->objNarroFile->Project->ProjectId, 0, t('Files')) .
-        (($this->objNarroFile->ParentId)? ' -> ' . NarroLink::ProjectFileList($this->objNarroFile->Project->ProjectId, $this->objNarroFile->ParentId, '..'):'') .
-        ' -> ' . $this->objNarroFile->FileName; ?>
+        ' / ' .
+        NarroLink::ProjectFileList($this->objNarroFile->Project->ProjectId, null, t('Files'));
+        if ($this->objNarroFile) {
+            $arrPaths = explode('/', $this->objNarroFile->FilePath);
+            $strProgressivePath = '';
+            if (is_array($arrPaths))
+                foreach($arrPaths as $strPathPart) {
+                    if (!$strPathPart || $strPathPart == $this->objNarroFile->FileName) continue;
+                    $strProgressivePath .= '/' . $strPathPart;
+                    echo ' / ' .
+                        NarroLink::ProjectFileList(
+                                $this->objNarroFile->ProjectId,
+                                $strProgressivePath,
+                                $strPathPart
+                        );
+                }
+        }
+        echo ' / ' . $this->objNarroFile->FileName; ?>
         </div>
         <br />
         <div style="text-align:right">
