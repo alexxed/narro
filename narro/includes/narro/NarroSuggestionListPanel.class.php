@@ -219,8 +219,9 @@
             $this->strText .=
                 $this->lblSuggestions->Render(false) . '<br />' .
                 $this->dtgSuggestions->Render(false) . '<br />' .
+                $this->lblMessage->Render(false) .
                 '<div style="text-align:right;width:100%">' . $this->chkShowOtherLanguages->Render(false) . '</div>';
-            $this->strText .= $this->lblMessage->Render(false);
+
             return $this->strText;
         }
 
