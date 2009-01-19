@@ -36,9 +36,14 @@
                 if ($this->objParentFile) {
                     $arrPaths = explode('/', $this->objParentFile->FilePath);
                     $strProgressivePath = '';
-                    if (is_array($arrPaths))
-                        foreach($arrPaths as $strPathPart) {
-                            if (!$strPathPart || $strPathPart == $this->objParentFile->FileName) continue;
+                    if (is_array($arrPaths)) {
+                        /**
+                         * remove the first part that is empty because paths begin with /
+                         * and the last part that will be displayed unlinked
+                         */
+                        unset($arrPaths[count($arrPaths) - 1]);
+                        unset($arrPaths[0]);
+                        foreach($arrPaths as $intCnt =>$strPathPart) {
                             $strProgressivePath .= '/' . $strPathPart;
                             $strText .= ' / ' .
                                 NarroLink::ProjectFileList(
@@ -47,6 +52,7 @@
                                         $strPathPart
                                 );
                         }
+                    }
                 }
 
                 echo $strText . ' / ' . $this->objParentFile->FileName;

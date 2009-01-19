@@ -32,9 +32,14 @@
         if ($this->objNarroFile) {
             $arrPaths = explode('/', $this->objNarroFile->FilePath);
             $strProgressivePath = '';
-            if (is_array($arrPaths))
+            if (is_array($arrPaths)) {
+                /**
+                 * remove the first part that is empty because paths begin with /
+                 * and the last part that will be displayed unlinked
+                 */
+                unset($arrPaths[count($arrPaths) - 1]);
+                unset($arrPaths[0]);
                 foreach($arrPaths as $strPathPart) {
-                    if (!$strPathPart || $strPathPart == $this->objNarroFile->FileName) continue;
                     $strProgressivePath .= '/' . $strPathPart;
                     echo ' / ' .
                         NarroLink::ProjectFileList(
@@ -43,6 +48,7 @@
                                 $strPathPart
                         );
                 }
+            }
         }
         echo ' / ' . $this->objNarroFile->FileName; ?>
         </div>
