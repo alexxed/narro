@@ -52,7 +52,7 @@
 
             $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/red-bar.png',  100 - $intPercentFuzzy - $intPercentTranslated);
 
-            $strText .= '</div>';
+            $strText .= sprintf(' %d%%</div>', $intPercentTranslated);
 
             return $strText;
         }
