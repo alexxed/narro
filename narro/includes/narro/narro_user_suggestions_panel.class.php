@@ -21,6 +21,7 @@
         protected $colText;
         protected $colSuggestion;
         protected $colLanguage;
+        protected $colProjects;
 
         protected $intUserId;
 
@@ -38,6 +39,8 @@
             $this->colSuggestion = new QDataGridColumn(t('Translated text'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
             $this->colText = new QDataGridColumn(t('Original text'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colText_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Text->TextValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Text->TextValue, false)));
             $this->colLanguage = new QDataGridColumn(t('Language'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colLanguage_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->LanguageId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->LanguageId, false)));
+            $this->colProjects = new QDataGridColumn(t('Projects'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colProjects_Render($_ITEM); ?>');
+            $this->colProjects->HtmlEntities = false;
 
             // Setup DataGrid
             $this->dtgSuggestions = new QDataGrid($this);
@@ -58,6 +61,7 @@
             $this->dtgSuggestions->AddColumn($this->colText);
             $this->dtgSuggestions->AddColumn($this->colSuggestion);
             $this->dtgSuggestions->AddColumn($this->colLanguage);
+            $this->dtgSuggestions->AddColumn($this->colProjects);
         }
 
         public function dtgSuggestions_colSuggestion_Render( NarroSuggestion $objNarroSuggestion ) {
@@ -70,6 +74,17 @@
 
         public function dtgSuggestions_colLanguage_Render( NarroSuggestion $objNarroSuggestion ) {
             return t($objNarroSuggestion->Language->LanguageName);
+        }
+
+        public function dtgSuggestions_colProjects_Render( NarroSuggestion $objNarroSuggestion ) {
+            $objDatabase = QApplication::$Database[1];
+            $strQuery = sprintf('SELECT DISTINCT narro_project.* FROM narro_project, narro_context WHERE narro_context.project_id=narro_project.project_id AND narro_context.text_id=%d ORDER BY narro_project.project_name ASC', $objNarroSuggestion->TextId);
+            $arrProjects = NarroProject::InstantiateDbResult($objDatabase->Query($strQuery));
+            foreach($arrProjects as $objProject) {
+                $arrProjectLinks[] = NarroLink::ProjectTextList($objProject->ProjectId, 1, 1, "'" . $objNarroSuggestion->Text->TextValue . "'", $objProject->ProjectName);
+            }
+
+            return join(', ', $arrProjectLinks);
         }
 
         public function dtgSuggestions_Bind() {
