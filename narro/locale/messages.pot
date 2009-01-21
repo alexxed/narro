@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 0.9.3\n"
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2009-21-01 12:59+0200\n"
-"PO-Revision-Date: 2009-21-01 12:59+0200\n"
+"POT-Creation-Date: 2009-21-01 16:49+0200\n"
+"PO-Revision-Date: 2009-21-01 16:49+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -317,6 +317,10 @@ msgstr ""
 msgid "Original text"
 msgstr ""
 
+#: /includes/narro/narro_user_suggestions_panel.class.php /narro_context_suggest.php /templates/narro_file_text_list.tpl.php /templates/narro_project_file_list.tpl.php /templates/narro_project_language_list.tpl.php /templates/narro_project_manage.tpl.php /templates/narro_project_text_list.tpl.php
+msgid "Projects"
+msgstr ""
+
 #: /includes/narro/plugins/NarroCedillaComma.class.php
 msgid "Cedill/Comma issue solver"
 msgstr ""
@@ -561,16 +565,12 @@ msgstr ""
 msgid "Start a debate"
 msgstr ""
 
-#: /narro_context_suggest.php /templates/narro_context_suggest.tpl.php /templates/narro_context_suggest_kbabel.tpl.php
+#: /narro_context_suggest.php /templates/narro_context_suggest.tpl.php
 msgid "Translate \"%s\""
 msgstr ""
 
-#: /narro_context_suggest.php /templates/narro_context_suggest.tpl.php /templates/narro_context_suggest_kbabel.tpl.php
+#: /narro_context_suggest.php /templates/narro_context_suggest.tpl.php
 msgid "See suggestions for \"%s\""
-msgstr ""
-
-#: /narro_context_suggest.php /templates/narro_file_text_list.tpl.php /templates/narro_project_file_list.tpl.php /templates/narro_project_language_list.tpl.php /templates/narro_project_manage.tpl.php /templates/narro_project_text_list.tpl.php
-msgid "Projects"
 msgstr ""
 
 #: /narro_context_suggest.php /narro_project_list.php /templates/narro_file_text_list.tpl.php /templates/narro_project_file_list.tpl.php /templates/narro_project_language_list.tpl.php /templates/narro_project_text_list.tpl.php
@@ -1203,26 +1203,6 @@ msgstr ""
 
 #: /templates/narro_context_suggest.tpl.php
 msgid "You can add suggestions if you are logged in. <a href=\"%s\">Register</a> or <a href=\"%s\">Log in</a> if you already have an account or an OpenId."
-msgstr ""
-
-#: /templates/narro_context_suggest_kbabel.tpl.php
-msgid "Original string"
-msgstr ""
-
-#: /templates/narro_context_suggest_kbabel.tpl.php
-msgid "Translated string"
-msgstr ""
-
-#: /templates/narro_context_suggest_kbabel.tpl.php
-msgid "After clicking buttons, automatically go to the next text"
-msgstr ""
-
-#: /templates/narro_context_suggest_kbabel.tpl.php
-msgid "Context information"
-msgstr ""
-
-#: /templates/narro_context_suggest_kbabel.tpl.php
-msgid "Found in: %s"
 msgstr ""
 
 #: /templates/narro_file_text_list.tpl.php
