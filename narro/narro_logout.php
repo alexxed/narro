@@ -15,9 +15,7 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    session_name('NARRO_ID');
-    session_save_path(dirname(__FILE__) . '/data/tmp/session');
-    session_start();
+    require_once 'includes/prepend.inc.php';
     session_destroy();
     header('Location: narro_project_list.php');
 ?>

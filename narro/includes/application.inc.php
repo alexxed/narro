@@ -24,6 +24,7 @@
         public static $arrFormats;
         public static $Cache;
         public static $Language;
+        public static $TranslationEngine;
 
         /**
         * This is called by the PHP5 Autoloader.  This method overrides the
@@ -55,16 +56,23 @@
             self::$arrFileFormats[$strName] = $strPluginName;
         }
 
-        public static function Translate($strText) {
-            if (class_exists('NarroSelfTranslate'))
-                return NarroSelfTranslate::Translate($strText);
+        /**
+         * Translation function, no plural suport yet in Zend_Translate
+         * @param $strText
+         * @param $strPlural
+         * @param $intCnt
+         * @return string
+         */
+        public static function Translate($strText, $strPlural = null, $intCnt = null) {
+            if (isset(QApplication::$TranslationEngine))
+                return QApplication::$TranslationEngine->_($strText);
             else
                 return $strText;
         }
     }
 
-    function t($strText) {
-        return QApplication::Translate($strText);
+    function t($strText, $strPlural = null, $intCnt = null) {
+        return QApplication::Translate($strText, $strPlural, $intCnt);
     }
 
     ///////////////////////
@@ -97,9 +105,11 @@
     require_once 'Zend/Session.php';
     Zend_Session::setOptions(
         array(
-            'name'=>'NARRO_ID',
-            'cookie_lifetime'           => 31*24*3600,
-            'cookie_path'               => __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
+            'name'              => 'NARRO_ID',
+            'cookie_lifetime'   => 31*24*3600,
+            'gc_maxlifetime'    => 31*24*3600,
+            'save_path'         => __TMP_PATH__ . '/session',
+            'cookie_path'       => __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
         )
     );
 
@@ -145,6 +155,18 @@
         QApplication::$Language = QApplication::$objUser->Language;
 
     QApplication::$LanguageCode = QApplication::$Language->LanguageCode;
+
+    require_once 'Zend/Translate.php';
+    define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$Language->LanguageCode . '/LC_MESSAGES');
+    if (!file_exists(__LOCALE_DIRECTORY__)) {
+        if (!mkdir(__LOCALE_DIRECTORY__, 0777, true))
+            die(sprintf('Could not create a directory. Please create the directory "%s" and give it write permissions for everyone (chmod 777)', __LOCALE_DIRECTORY__));
+        else
+            NarroUtils::RecursiveChmod(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$Language->LanguageCode);
+    }
+
+    if (file_exists(__LOCALE_DIRECTORY__ . '/narro.mo'))
+        QApplication::$TranslationEngine = new Zend_Translate('gettext', __LOCALE_DIRECTORY__ . '/narro.mo', QApplication::$Language->LanguageCode);
 
     QApplication::$objPluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
 

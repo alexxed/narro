@@ -90,8 +90,6 @@
                     $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
             }
 
-            $objUser->arrPreferences = unserialize($objUser->Data);
-
             if (isset($objUser->Preferences['Language'])) {
                 $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->Preferences['Language']);
 
@@ -117,8 +115,6 @@
                 foreach($arrRolePermission as $objRolePermission)
                     $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
             }
-
-            $objUser->arrPreferences = unserialize($objUser->Data);
 
             if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
                 if (strstr($_SERVER['HTTP_ACCEPT_LANGUAGE'], ';')) {
@@ -177,8 +173,6 @@
                     $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
             }
 
-            $objUser->arrPreferences = unserialize($objUser->Data);
-
             if (isset($objUser->Preferences['Language'])) {
                 $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->Preferences['Language']);
 
@@ -210,8 +204,6 @@
                 foreach($arrRolePermission as $objRolePermission)
                     $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
             }
-
-            $objUser->arrPreferences = unserialize($objUser->Data);
 
             if (isset($objUser->Preferences['Language'])) {
                 $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->Preferences['Language']);
@@ -275,73 +267,12 @@
             return NarroUser::LoadByUsernameAndPassword($strUsername, md5($strPassword));
         }
 
-
-
-        // Override or Create New Load/Count methods
-        // (For obvious reasons, these methods are commented out...
-        // but feel free to use these as a starting point)
-/*
-        public static function LoadArrayBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-            // This will return an array of NarroUser objects
-            return NarroUser::QueryArray(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroUser()->Param1, $strParam1),
-                    QQ::GreaterThan(QQN::NarroUser()->Param2, $intParam2)
-                ),
-                $objOptionalClauses
-            );
+        public static function InstantiateDbRow($objDbRow, $strAliasPrefix = null, $strExpandAsArrayNodes = null, $objPreviousItem = null) {
+            $objUser = parent::InstantiateDbRow($objDbRow, $strAliasPrefix, $strExpandAsArrayNodes, $objPreviousItem);
+            if ($objUser->Data)
+                $objUser->arrPreferences = unserialize($objUser->Data);
+            return $objUser;
         }
-
-        public static function LoadBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-            // This will return a single NarroUser object
-            return NarroUser::QuerySingle(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroUser()->Param1, $strParam1),
-                    QQ::GreaterThan(QQN::NarroUser()->Param2, $intParam2)
-                ),
-                $objOptionalClauses
-            );
-        }
-
-        public static function CountBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-            // This will return a count of NarroUser objects
-            return NarroUser::QueryCount(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroUser()->Param1, $strParam1),
-                    QQ::Equal(QQN::NarroUser()->Param2, $intParam2)
-                ),
-                $objOptionalClauses
-            );
-        }
-
-        public static function LoadArrayBySample($strParam1, $intParam2, $objOptionalClauses) {
-            // Performing the load manually (instead of using Qcodo Query)
-
-            // Get the Database Object for this Class
-            $objDatabase = NarroUser::GetDatabase();
-
-            // Properly Escape All Input Parameters using Database->SqlVariable()
-            $strParam1 = $objDatabase->SqlVariable($strParam1);
-            $intParam2 = $objDatabase->SqlVariable($intParam2);
-
-            // Setup the SQL Query
-            $strQuery = sprintf('
-                SELECT
-                    `narro_user`.*
-                FROM
-                    `narro_user` AS `narro_user`
-                WHERE
-                    param_1 = %s AND
-                    param_2 < %s',
-                $strParam1, $intParam2);
-
-            // Perform the Query and Instantiate the Result
-            $objDbResult = $objDatabase->Query($strQuery);
-            return NarroUser::InstantiateDbResult($objDbResult);
-        }
-*/
-
-
 
         public function __get($strName) {
             switch ($strName) {

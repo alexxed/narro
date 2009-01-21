@@ -414,12 +414,12 @@
                     if ($arrTemplateFields['MsgId'] == '' && strstr($arrTemplateFields['MsgStr'], 'Project-Id-Version'))
                         fputs($hndExportFile, sprintf('msgstr "%s"' . "\n", $arrTemplateFields['MsgStr']));
                     else
-                        fputs($hndExportFile, sprintf('msgstr "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgStr'])));
+                        fputs($hndExportFile, sprintf('msgstr "%s"' . "\n", str_replace(array('"', "\n"), array('\"', '"' . "\n" . '"'), $arrTemplateFields['MsgStr'])));
                 }
 
                 for($intPluralId=0; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
                     if (!is_null($arrTemplateFields['MsgStr' . $intPluralId]))
-                        fputs($hndExportFile, sprintf('msgstr[%d] "%s"' . "\n", $intPluralId, str_replace('"', '\"', $arrTemplateFields['MsgStr' . $intPluralId])));
+                        fputs($hndExportFile, sprintf('msgstr[%d] "%s"' . "\n", $intPluralId, str_replace(array('"', "\n"), array('\"', '"' . "\n" . '"'), $arrTemplateFields['MsgStr' . $intPluralId])));
                 }
 
                 fputs($hndExportFile, "\n");
@@ -444,6 +444,19 @@
             if (file_exists($strTranslatedFile . '~')) {
                 unlink($strTranslatedFile);
                 copy($strTranslatedFile . '~', $strTranslatedFile);
+            }
+
+            unlink($strTranslatedFile . '~');
+            chmod($strTranslatedFile, 0666);
+
+            if ($this->objProject->ProjectName == 'Narro') {
+                $strLastLine = system(
+                    sprintf(
+                        'msgfmt -cv %s -o %s',
+                        $strTranslatedFile,
+                        __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/narro.mo'
+                    )
+                );
             }
         }
 
