@@ -41,7 +41,7 @@
                 $strFileLine = fgets($hndTemplateFile, 4096);
                 $intFileLineNr++;
 
-                NarroProgress::SetProgress((int) ceil(($intFileLineNr*100)/$intTotalToProcess));
+                //NarroProgress::SetProgress((int) ceil(($intFileLineNr*100)/$intTotalToProcess));
 
                 $arrColumn = preg_split('/\t/', $strFileLine);
 
@@ -68,8 +68,11 @@
                 $strPossibleContext = '';
                 /**
                  * positions 8, 9 and 10 contain a number, the language code and the text/translation
+                 * positions 1 and 2 contain path info
+                 * position 3 contains a number
+                 * position 14 contains a date
                  */
-                foreach(array(1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14) as $intPos) {
+                foreach(array(3, 4, 5, 6, 7, 11, 12, 13) as $intPos) {
                     if (trim($arrColumn[$intPos]) != '' && !is_numeric($arrColumn[$intPos]))
                         $strPossibleContext .= $arrColumn[$intPos] ."\n";
                 }
@@ -166,7 +169,7 @@
             while(!feof($hndFile)) {
                 $strFileLine = fgets($hndFile, 16384);
                 $intProcessedSoFar++;
-                NarroProgress::SetProgress((int) ceil(($intProcessedSoFar*100)/$intTotalToProcess));
+                //NarroProgress::SetProgress((int) ceil(($intProcessedSoFar*100)/$intTotalToProcess));
 
                 /**
                  * OpenOffice uses tab separated values
@@ -183,8 +186,11 @@
                 $strPossibleContext = '';
                 /**
                  * positions 8, 9 and 10 contain a number, the language code and the text/translation
+                 * positions 1 and 2 contain path info
+                 * position 3 contains a number
+                 * position 14 contains a date
                  */
-                foreach(array(1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14) as $intPos) {
+                foreach(array(3, 4, 5, 6, 7, 11, 12, 13) as $intPos) {
                     if (trim($arrColumn[$intPos]) != '' && !is_numeric($arrColumn[$intPos]))
                         $strPossibleContext .= $arrColumn[$intPos] ."\n";
                 }
@@ -273,6 +279,47 @@
                 $this->AddTranslation($strText, $strTextAccKey, $strTranslation, $strTranslationAccKey, $strContext);
             }
             fclose($hndFile);
+        }
+
+        public static function SplitFile($strFile) {
+            $hndFile = fopen($strFile, 'r');
+
+            if (!$hndFile) {
+                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Cannot open input file "%s" for reading.', $strFile));
+                return false;
+            }
+
+            /**
+             * read the template file line by line
+             */
+            while(!feof($hndFile)) {
+                $strFileLine = fgets($hndFile, 16384);
+
+                /**
+                 * OpenOffice uses tab separated values
+                 */
+                $arrColumn = preg_split('/\t/', $strFileLine);
+
+                if (count($arrColumn) < 14) continue;
+
+                /**
+                 * skip help
+                 */
+                if ($arrColumn[0] == 'helpcontent2') continue;
+
+                $strFilePath = dirname($strFile) . '/' . $arrColumn[0] . '/' . str_replace('\\', '/', $arrColumn[1]) . '.sdf';
+
+                if (!file_exists($strFilePath)) {
+                    if (!file_exists(dirname($strFilePath)))
+                        mkdir(dirname($strFilePath), 0777, true);
+                }
+
+                $hndSplitFile = fopen($strFilePath, 'a+');
+                fputs($hndSplitFile, $strFileLine);
+                fclose($hndSplitFile);
+            }
+
+            NarroUtils::RecursiveChmod(dirname($strFile));
         }
     }
 ?>

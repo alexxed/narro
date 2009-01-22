@@ -109,16 +109,6 @@
             }
 
             switch ($this->objProject->ProjectType) {
-                case NarroProjectType::Narro:
-                    NarroProgress::SetProgressFile($this->strTranslationPath  . '/import.progress');
-
-                    $objNarroImporter = new NarroSelfFileImporter();
-                    $objNarroImporter->Project = NarroProject::LoadByProjectName('Narro');
-
-                    $objNarroImporter->SourceLanguage = $this->objSourceLanguage;
-                    $objNarroImporter->TargetLanguage = $this->objTargetLanguage;
-                    $objNarroImporter->Import();
-                    break;
                 default:
 
                     if (!file_exists($this->strTemplatePath))
@@ -232,7 +222,7 @@
             NarroLog::SetLogFile($this->strTranslationPath . '/import.log');
 
             if (file_exists($this->strTranslationPath . '/import.pid'))
-                throw new Exception(sprintf(t('An export process is already running in the directory "%s" with pid %d'), $this->strTranslationPath, file_get_contents($this->strTranslationPath  . '/import.pid')));
+                throw new Exception(sprintf(t('An import process is already running in the directory "%s" with pid %d'), $this->strTranslationPath, file_get_contents($this->strTranslationPath  . '/import.pid')));
 
             $hndPidFile = fopen($this->strTranslationPath  . '/import.pid', 'w');
 

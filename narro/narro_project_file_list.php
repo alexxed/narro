@@ -340,6 +340,9 @@
                 case NarroFileType::DumbGettextPo:
                     $objFileImporter = new NarroDumbGettextPoFileImporter();
                     break;
+                case NarroFileType::OpenOfficeSdf:
+                    $objFileImporter = new NarroOpenOfficeSdfFileImporter();
+                    break;
                 case NarroFileType::Svg:
                     $objFileImporter = new NarroSvgFileImporter();
                     break;
