@@ -429,18 +429,23 @@
 
             $strText = '';
 
-            if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
-                $strText .= '&nbsp;' . $btnApprove->Render(false);
-            if (QApplication::$objUser->hasPermission('Can vote', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
-                $strText .= '&nbsp;' . $btnVote->Render(false);
-            if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID )) {
-                $strText .= '&nbsp;' . $btnEdit->Render(false);
-                if ($blnCanEdit) $strText .= '&nbsp;' . $btnSaveIgnoreSuggestion->Render(false);
-            }
-            if (QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
-                $strText .= '&nbsp;' . $btnDelete->Render(false);
+            if (QApplication::$objUser->Language->LanguageId == $objNarroSuggestion->LanguageId) {
+                if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+                    $strText .= '&nbsp;' . $btnApprove->Render(false);
+                if (QApplication::$objUser->hasPermission('Can vote', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+                    $strText .= '&nbsp;' . $btnVote->Render(false);
+                if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID )) {
+                    $strText .= '&nbsp;' . $btnEdit->Render(false);
+                    if ($blnCanEdit) $strText .= '&nbsp;' . $btnSaveIgnoreSuggestion->Render(false);
+                }
+                if (QApplication::$objUser->hasPermission('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) || ($objNarroSuggestion->UserId == QApplication::$objUser->UserId && QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID ))
+                    $strText .= '&nbsp;' . $btnDelete->Render(false);
 
-            return '<div style="float:right">' . $strText . '</div>';
+                return '<div style="float:right">' . $strText . '</div>';
+            }
+            else {
+                return '';
+            }
         }
 
         public function dtgSuggestions_Bind() {
