@@ -278,7 +278,6 @@
             QApplication::ExecuteJavaScript(sprintf('document.title="%s"', str_replace(array('\\', '"', "\n"), array('\\\\', '\\"', ' '), $strPageTitle)));
 
             $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectList(t('Projects')),
                 NarroLink::ProjectTextList(
                         $this->objNarroContextInfo->Context->File->Project->ProjectId,
                         $this->intTextFilter,
