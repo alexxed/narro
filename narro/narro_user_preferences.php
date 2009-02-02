@@ -91,7 +91,7 @@
                             }
                             elseif ($strName == 'Other languages') {
                                 $strSelect = sprintf('<select onchange="document.getElementById(\'%s\').value+= \' \' + this.options[this.selectedIndex].value;">', $txtTextPref->ControlId);
-                                foreach(NarroLanguage::LoadAllActive(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName))) as $objLanguage)
+                                foreach(NarroLanguage::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName))) as $objLanguage)
                                     $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, $objLanguage->LanguageName, $objLanguage->LanguageCode);
                                 $strSelect .= '</select>';
                                 $arrPref['description'] .= $strSelect;
@@ -111,7 +111,7 @@
                                 }
                             }
                             elseif ($strName == 'Application language') {
-                                $arrLanguages = NarroLanguage::LoadAllActive(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
+                                $arrLanguages = NarroLanguage::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
                                 foreach($arrLanguages as $objLanguage) {
                                     $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageId, ($objLanguage->LanguageId == $this->objUser->getPreferenceValueByName($strName)));
                                 }

@@ -29,6 +29,7 @@
         protected $colTextDirection;
         protected $colSpecialCharacters;
         protected $colPluralForm;
+        protected $colActive;
 
         protected $colActions;
 
@@ -44,6 +45,7 @@
             $this->colTextDirection = new QDataGridColumn(t('Text Direction'), '<?= $_FORM->dtgNarroLanguage_TextDirectionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->TextDirection), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->TextDirection, false)));
             $this->colSpecialCharacters = new QDataGridColumn(t('Special Characters'), '<?= $_FORM->dtgNarroLanguage_SpecialCharactersColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));
             $this->colPluralForm = new QDataGridColumn(t('Plural Forms'), '<?= $_FORM->dtgNarroLanguage_PluralFormColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));
+            $this->colActive = new QDataGridColumn(t('Active'), '<?= $_FORM->dtgNarroLanguage_ActiveColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->Active), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->Active, false)));
 
             $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_FORM->dtgNarroLanguage_Actions_Render($_ITEM) ?>');
             $this->colActions->HtmlEntities = false;
@@ -68,6 +70,7 @@
             $this->dtgNarroLanguage->AddColumn($this->colTextDirection);
             $this->dtgNarroLanguage->AddColumn($this->colSpecialCharacters);
             $this->dtgNarroLanguage->AddColumn($this->colPluralForm);
+            $this->dtgNarroLanguage->AddColumn($this->colActive);
 
             $this->dtgNarroLanguage->AddColumn($this->colActions);
 
@@ -102,6 +105,10 @@
             return $objNarroLanguage->SpecialCharacters;
         }
 
+        public function dtgNarroLanguage_ActiveColumn_Render(NarroLanguage $objNarroLanguage) {
+            return $objNarroLanguage->Active?t('Yes'):t('No');
+        }
+
         public function dtgNarroLanguage_Actions_Render(NarroLanguage $objNarroLanguage) {
             if (QApplication::$objUser->hasPermission('Can edit language', null, QApplication::$Language->LanguageId))
                 return sprintf('<a href="narro_language_edit.php?l=%s&lid=%d">%s</a>', QApplication::$Language->LanguageCode, $objNarroLanguage->LanguageId, t('Edit'));
@@ -110,7 +117,7 @@
         protected function dtgNarroLanguage_Bind() {
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
-            $this->dtgNarroLanguage->TotalItemCount = NarroLanguage::CountAll();
+            $this->dtgNarroLanguage->TotalItemCount = NarroLanguage::QueryCount(QQ::All());
 
             if ($this->dtgNarroLanguage->TotalItemCount == 0)
                 QApplication::Redirect('narro_language_edit.php');
@@ -127,7 +134,7 @@
             if ($objClause = $this->dtgNarroLanguage->LimitClause)
                 array_push($objClauses, $objClause);
 
-            $this->dtgNarroLanguage->DataSource = NarroLanguage::LoadAllActive($objClauses);
+            $this->dtgNarroLanguage->DataSource = NarroLanguage::QueryArray(QQ::All(), $objClauses);
 
             QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
