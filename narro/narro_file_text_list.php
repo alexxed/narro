@@ -36,6 +36,35 @@
                 QApplication::Redirect(NarroLink::ProjectFileList($intProjectId));
 
             $this->objNarroProject = $this->objNarroFile->Project;
+
+            $this->pnlBreadcrumb->setElements(
+                NarroLink::ProjectTextList($this->objNarroFile->Project->ProjectId, 1, 1, '', $this->objNarroFile->Project->ProjectName),
+                NarroLink::ProjectFileList($this->objNarroFile->Project->ProjectId, null, t('Files'))
+            );
+
+            if ($this->objNarroFile) {
+                $arrPaths = explode('/', $this->objNarroFile->FilePath);
+                $strProgressivePath = '';
+                if (is_array($arrPaths)) {
+                    /**
+                     * remove the first part that is empty because paths begin with /
+                     * and the last part that will be displayed unlinked
+                     */
+                    unset($arrPaths[count($arrPaths) - 1]);
+                    unset($arrPaths[0]);
+                    foreach($arrPaths as $strPathPart) {
+                        $strProgressivePath .= '/' . $strPathPart;
+                        $this->pnlBreadcrumb->addElement(
+                            NarroLink::ProjectFileList(
+                                    $this->objNarroFile->ProjectId,
+                                    $strProgressivePath,
+                                    $strPathPart
+                            )
+                        );
+                    }
+                }
+            }
+            $this->pnlBreadcrumb->addElement($this->objNarroFile->FileName);
         }
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {

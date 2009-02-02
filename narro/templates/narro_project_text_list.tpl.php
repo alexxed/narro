@@ -23,26 +23,16 @@
 
     <?php $this->RenderBegin() ?>
         <?php $this->pnlHeader->Render() ?>
-        <div>
-        <?php echo
-        NarroLink::ProjectList(t('Projects')) .
-        ' / ' .
-        NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName) .
-        ' / ' .
-        NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'));
-        ?>
-        </div>
+        <?php $this->pnlBreadcrumb->Render(); ?>
         <br />
         <?php $this->lblMessage->Render(); ?>
-        <br />
-        <div style="text-align:right">
+        <div style="text-align:right;padding:3px;">
             <?php echo t('Show') ?>: <?php $this->lstTextFilter->Render() ?>
             &nbsp;&nbsp;&nbsp;
             <?php echo t('Search') ?>: <?php $this->txtSearch->Render();?>&nbsp;
             <?php $this->lstSearchType->Render();?>&nbsp;
             <?php $this->btnSearch->Render(); ?>
         </div>
-        <br />
         <?php $this->dtgNarroContextInfo->Render() ?>
         <?php QApplication::ExecuteJavaScript("if (location.hash.match('p')) qc.pA('NarroProjectTextListForm', '" . $this->dtgNarroContextInfo->Paginator->ControlId . "', 'QClickEvent', location.hash.replace('#p', ''), '');"); ?>
     <?php $this->RenderEnd() ?>

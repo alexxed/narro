@@ -25,7 +25,7 @@
     <?php $this->RenderBegin() ?>
         <?php QApplication::ExecuteJavaScript(sprintf("if (location.hash.match('/c[0-9]+/')) {iContext=location.hash.replace(/i[0-9]+/,'');iContext=iContext.replace('#c','');iPos=location.hash.replace(/#c[0-9]+i/,'');sLocation=location.href.replace('&c=%d', '&c=' + iContext);sLocation=sLocation.replace('&ci=%d', '&ci=' + iPos);sLocation=sLocation.replace(location.hash,'');location.hash='';location.replace(sLocation);};", $this->objNarroContextInfo->ContextId, $this->intCurrentContext)); ?>
         <?php $this->pnlHeader->Render() ?>
-        <?php $this->pnlNavigator->Render(); ?>
+        <?php $this->pnlBreadcrumb->Render(); ?>
         <br class="item_divider" />
 
         <?php echo t('Text to translate'); ?>:

@@ -42,6 +42,11 @@
 
             } else
                 QApplication::Redirect(NarroLink::ProjectList());
+
+            $this->pnlBreadcrumb->setElements(
+                NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName),
+                NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
+            );
         }
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {

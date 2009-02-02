@@ -57,6 +57,36 @@
                     )
                 );
 
+            $this->pnlBreadcrumb->setElements(
+                NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName),
+                NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
+            );
+
+            if ($this->objParentFile) {
+                $arrPaths = explode('/', $this->objParentFile->FilePath);
+                $strProgressivePath = '';
+                if (is_array($arrPaths)) {
+                    /**
+                     * remove the first part that is empty because paths begin with /
+                     * and the last part that will be displayed unlinked
+                     */
+                    unset($arrPaths[count($arrPaths) - 1]);
+                    unset($arrPaths[0]);
+                    foreach($arrPaths as $intCnt =>$strPathPart) {
+                        $strProgressivePath .= '/' . $strPathPart;
+                        $this->pnlBreadcrumb->addElement(
+                            NarroLink::ProjectFileList(
+                                    $this->objNarroProject->ProjectId,
+                                    $strProgressivePath,
+                                    $strPathPart
+                            )
+                        );
+                    }
+                }
+            }
+
+            $this->pnlBreadcrumb->addElement($this->objParentFile->FileName);
+
         }
 
         protected function Form_Create() {

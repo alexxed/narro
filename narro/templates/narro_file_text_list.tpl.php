@@ -22,36 +22,7 @@
 
     <?php $this->RenderBegin() ?>
         <?php $this->pnlHeader->Render() ?>
-        <div>
-        <?php echo
-        NarroLink::ProjectList(t('Projects')) .
-        ' / ' .
-        NarroLink::ProjectTextList($this->objNarroFile->Project->ProjectId, 1, 1, '', $this->objNarroFile->Project->ProjectName) .
-        ' / ' .
-        NarroLink::ProjectFileList($this->objNarroFile->Project->ProjectId, null, t('Files'));
-        if ($this->objNarroFile) {
-            $arrPaths = explode('/', $this->objNarroFile->FilePath);
-            $strProgressivePath = '';
-            if (is_array($arrPaths)) {
-                /**
-                 * remove the first part that is empty because paths begin with /
-                 * and the last part that will be displayed unlinked
-                 */
-                unset($arrPaths[count($arrPaths) - 1]);
-                unset($arrPaths[0]);
-                foreach($arrPaths as $strPathPart) {
-                    $strProgressivePath .= '/' . $strPathPart;
-                    echo ' / ' .
-                        NarroLink::ProjectFileList(
-                                $this->objNarroFile->ProjectId,
-                                $strProgressivePath,
-                                $strPathPart
-                        );
-                }
-            }
-        }
-        echo ' / ' . $this->objNarroFile->FileName; ?>
-        </div>
+        <?php $this->pnlBreadcrumb->Render(); ?>
         <br />
         <div style="text-align:right">
             <?php echo t('Show') ?>: <?php $this->lstTextFilter->Render() ?> &nbsp;&nbsp;&nbsp;<?php echo t('Search') ?>: <?php $this->txtSearch->Render(); $this->lstSearchType->Render(); ?>&nbsp;

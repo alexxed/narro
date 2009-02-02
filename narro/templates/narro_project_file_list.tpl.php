@@ -25,50 +25,14 @@
 
     <?php $this->RenderBegin() ?>
         <?php $this->pnlHeader->Render() ?>
-        <div>
-            <div style="text-align:left">
-            <?php
-                $strText =
-                    NarroLink::ProjectList(t('Projects')) .
-                    ' / ' . NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName) .
-                    ' / ' . NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'));
-
-                if ($this->objParentFile) {
-                    $arrPaths = explode('/', $this->objParentFile->FilePath);
-                    $strProgressivePath = '';
-                    if (is_array($arrPaths)) {
-                        /**
-                         * remove the first part that is empty because paths begin with /
-                         * and the last part that will be displayed unlinked
-                         */
-                        unset($arrPaths[count($arrPaths) - 1]);
-                        unset($arrPaths[0]);
-                        foreach($arrPaths as $intCnt =>$strPathPart) {
-                            $strProgressivePath .= '/' . $strPathPart;
-                            $strText .= ' / ' .
-                                NarroLink::ProjectFileList(
-                                        $this->objNarroProject->ProjectId,
-                                        $strProgressivePath,
-                                        $strPathPart
-                                );
-                        }
-                    }
-                }
-
-                echo $strText . ' / ' . $this->objParentFile->FileName;
-            ?>
-            </div>
-            <div style="text-align:right;">
-                <?php $this->chkShowHierarchy->Render();?> <label for="<?php echo $this->chkShowHierarchy->ControlId; ?>"><?php echo t('Show hierarchy') ?></label>
-                &nbsp;&nbsp;&nbsp;
-                <?php $this->chkShowFolders->Render();?>  <label for="<?php echo $this->chkShowFolders->ControlId; ?>"><?php echo t('Show folders') ?></label>
-            </div>
-            <br />
-        </div>
+        <?php $this->pnlBreadcrumb->Render(); ?>
         <br />
-
+        <div style="text-align:right;">
+            <?php $this->chkShowHierarchy->Render();?> <label for="<?php echo $this->chkShowHierarchy->ControlId; ?>"><?php echo t('Show hierarchy') ?></label>
+            &nbsp;&nbsp;&nbsp;
+            <?php $this->chkShowFolders->Render();?>  <label for="<?php echo $this->chkShowFolders->ControlId; ?>"><?php echo t('Show folders') ?></label>
+        </div>
         <?php $this->dtgNarroFile->Render() ?>
-
     <?php $this->RenderEnd() ?>
 
 <?php require('includes/footer.inc.php'); ?>
