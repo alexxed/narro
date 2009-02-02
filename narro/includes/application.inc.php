@@ -191,6 +191,7 @@
     QApplicationBase::$ClassFile['Archive_Tar'] = __INCLUDES__ . '/PEAR/Archive/Tar.php';
     QApplicationBase::$ClassFile['NarroDiacriticsPanel'] = __INCLUDES__ . '/narro/narro_diacritics_panel.class.php';
     QApplicationBase::$ClassFile['NarroHeaderPanel'] = __INCLUDES__ . '/narro/NarroHeaderPanel.class.php';
+    QApplicationBase::$ClassFile['NarroBreadcrumbPanel'] = __INCLUDES__ . '/narro/NarroBreadcrumbPanel.class.php';
     QApplicationBase::$ClassFile['NarroTextCommentListPanel'] = __INCLUDES__ . '/narro/NarroTextCommentListPanel.class.php';
     QApplicationBase::$ClassFile['NarroTextListForm'] = 'narro_text_list.php';
     QApplicationBase::$ClassFile['NarroLink'] = __INCLUDES__ . '/narro/NarroLink.class.php';

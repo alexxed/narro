@@ -172,7 +172,7 @@
             $this->pnlPluginMessages->Visible = false;
             $this->pnlPluginMessages->SetCustomStyle('padding', '5px');
 
-            $this->pnlNavigator = new QPanel($this);
+            $this->pnlNavigator = new NarroBreadcrumbPanel($this);
 
             $this->pnlProgress = new QPanel($this);
             $this->pnlProgress->Display = QApplication::$objUser->hasPermission('Can suggest');
@@ -278,20 +278,19 @@
             $strPageTitle = sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
                             (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($this->objNarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->objNarroContextInfo->Context->Text->TextValue);
 
-            QApplication::ExecuteJavaScript(sprintf('document.title="%s"', str_replace(array('"', "\n"), array('\\"', ' '), $strPageTitle)));
+            QApplication::ExecuteJavaScript(sprintf('document.title="%s"', str_replace(array('\\', '"', "\n"), array('\\\\', '\\"', ' '), $strPageTitle)));
 
-            $this->pnlNavigator->Text =
-            NarroLink::ProjectList(t('Projects')) .
-            ' / ' .
-            NarroLink::ProjectTextList(
-                    $this->objNarroContextInfo->Context->File->Project->ProjectId,
-                    $this->intTextFilter,
-                    QApplication::QueryString('st'),
-                    $this->strSearchText,
-                    $this->objNarroProject->ProjectName
-                ) .
-            ' / ' .
-            NarroLink::ProjectFileList($this->objNarroContextInfo->Context->Project->ProjectId, null, t('Files'));
+            $this->pnlNavigator->setElements(
+                NarroLink::ProjectList(t('Projects')),
+                NarroLink::ProjectTextList(
+                        $this->objNarroContextInfo->Context->File->Project->ProjectId,
+                        $this->intTextFilter,
+                        QApplication::QueryString('st'),
+                        $this->strSearchText,
+                        $this->objNarroProject->ProjectName
+                    ),
+                NarroLink::ProjectFileList($this->objNarroContextInfo->Context->Project->ProjectId, null, t('Files'))
+            );
 
             $arrPaths = explode('/', $this->objNarroContextInfo->Context->File->FilePath);
             $strProgressivePath = '';
@@ -304,16 +303,17 @@
                 unset($arrPaths[0]);
                 foreach($arrPaths as $strPathPart) {
                     $strProgressivePath .= '/' . $strPathPart;
-                    $this->pnlNavigator->Text .= ' / ' .
+                    $this->pnlNavigator->addElement(
                         NarroLink::ProjectFileList(
                                 $this->objNarroContextInfo->Context->ProjectId,
                                 $strProgressivePath,
                                 $strPathPart
-                        );
+                        )
+                    );
                 }
             }
 
-            $this->pnlNavigator->Text .= ' / ' .
+            $this->pnlNavigator->addElement(
                 NarroLink::FileTextList(
                         $this->objNarroContextInfo->Context->ProjectId,
                         $this->objNarroContextInfo->Context->FileId,
@@ -321,19 +321,20 @@
                         QApplication::QueryString('st'),
                         $this->strSearchText,
                         $this->objNarroContextInfo->Context->File->FileName
-                );
+                )
+            );
 
 
             $strFilter = '';
             switch ($this->intTextFilter) {
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS:
-                        $this->pnlNavigator->Text .= ' / ' . t('Untranslated texts');
+                        $this->pnlNavigator->addElement(t('Untranslated texts'));
                         break;
                 case NarroTextListForm::SHOW_APPROVED_TEXTS:
-                        $this->pnlNavigator->Text .= ' / ' . t('Approved texts');
+                        $this->pnlNavigator->addElement(t('Approved texts'));
                         break;
                 case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL:
-                        $this->pnlNavigator->Text .= ' / ' . t('Texts that require approval');
+                        $this->pnlNavigator->addElement(t('Texts that require approval'));
                         break;
                 default:
 
@@ -342,13 +343,13 @@
             if ($this->strSearchText != ''){
                 switch ($this->intSearchType) {
                     case NarroTextListForm::SEARCH_TEXTS:
-                        $this->pnlNavigator->Text .= ' / ' . sprintf(t('Search in original texts for "%s"'), $this->strSearchText);
+                        $this->pnlNavigator->addElement(sprintf(t('Search in original texts for "%s"'), $this->strSearchText));
                         break;
                     case NarroTextListForm::SEARCH_SUGGESTIONS:
-                        $this->pnlNavigator->Text .= ' / ' . sprintf(t('Search in suggestions for "%s"'), $this->strSearchText);
+                        $this->pnlNavigator->addElement(sprintf(t('Search in suggestions for "%s"'), $this->strSearchText));
                         break;
                     case NarroTextListForm::SEARCH_CONTEXTS:
-                        $this->pnlNavigator->Text .= ' / ' . sprintf(t('Search in contexts for "%s"'), $this->strSearchText);
+                        $this->pnlNavigator->addElement(sprintf(t('Search in contexts for "%s"'), $this->strSearchText));
                         break;
                     default:
                 }
@@ -362,7 +363,7 @@
                 sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
                 (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($strText, 0, 30) . '...':$strText);
 
-            $this->pnlNavigator->Text .=  ' / ' . $strPageTitle;
+            $this->pnlNavigator->addElement($strPageTitle);
             $this->pnlNavigator->MarkAsModified();
             if ($this->intContextsCount) {
                 $this->lblProgress->Text = sprintf('%d/%d', $this->intCurrentContext, $this->intContextsCount);

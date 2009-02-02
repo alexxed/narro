@@ -112,6 +112,13 @@ th.datagrid_header {
     border-right: 1px solid #DDDDDD;
 }
 
+div.breadcrumb {
+    background: #DDDDDD url(../images/bg_td1.jpg) repeat-x;
+    padding: 4px;
+    text-align: left;
+    border: 1px solid #DDDDDD;
+}
+
 th.datagrid_header a{
     color: #000000;
 }
