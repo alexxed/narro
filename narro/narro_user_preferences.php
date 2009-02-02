@@ -91,7 +91,7 @@
                             }
                             elseif ($strName == 'Other languages') {
                                 $strSelect = sprintf('<select onchange="document.getElementById(\'%s\').value+= \' \' + this.options[this.selectedIndex].value;">', $txtTextPref->ControlId);
-                                foreach(NarroLanguage::QueryArray(QQ::Equal(QQN::NarroLanguage()->Active, 1)) as $objLanguage)
+                                foreach(NarroLanguage::LoadAllActive(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName))) as $objLanguage)
                                     $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, $objLanguage->LanguageName, $objLanguage->LanguageCode);
                                 $strSelect .= '</select>';
                                 $arrPref['description'] .= $strSelect;
@@ -105,13 +105,13 @@
                             $lstOption = new QListBox($this);
                             $lstOption->Name = $strName;
                             if ($strName == 'Language') {
-                                $arrLanguages = NarroLanguage::LoadAll(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
+                                $arrLanguages = NarroLanguage::LoadAllActive(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
                                 foreach($arrLanguages as $objLanguage) {
                                     $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
                                 }
                             }
                             elseif ($strName == 'Application language') {
-                                $arrLanguages = NarroLanguage::LoadAll(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
+                                $arrLanguages = NarroLanguage::LoadAllActive(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
                                 foreach($arrLanguages as $objLanguage) {
                                     $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageId, ($objLanguage->LanguageId == $this->objUser->getPreferenceValueByName($strName)));
                                 }

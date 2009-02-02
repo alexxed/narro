@@ -127,7 +127,7 @@
             if ($objClause = $this->dtgNarroLanguage->LimitClause)
                 array_push($objClauses, $objClause);
 
-            $this->dtgNarroLanguage->DataSource = NarroLanguage::LoadAll($objClauses);
+            $this->dtgNarroLanguage->DataSource = NarroLanguage::LoadAllActive($objClauses);
 
             QApplication::ExecuteJavaScript('highlight_datagrid();');
         }

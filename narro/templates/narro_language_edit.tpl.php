@@ -82,6 +82,14 @@
         </td>
         </tr>
         <tr>
+        <td>
+        <label for="<?php echo $this->chkActive->ControlId ?>"><?php _t('Active') ?></label>
+        </td>
+        <td>
+        <?php $this->chkActive->Render(); ?>
+        </td>
+        </tr>
+        <tr>
         <td colspan="2" align="right">
         <?php $this->btnSave->Render() ?>
         &nbsp;&nbsp;&nbsp;

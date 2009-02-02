@@ -32,6 +32,7 @@
         protected $lstTextDirection;
         protected $txtSpecialCharacters;
         protected $txtPluralForm;
+        protected $chkActive;
 
         // Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -74,6 +75,7 @@
             $this->lstTextDirection_Create();
             $this->txtSpecialCharacters_Create();
             $this->txtPluralForm_Create();
+            $this->chkActive_Create();
 
             // Create/Setup ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -156,6 +158,13 @@
             $this->txtPluralForm->MaxLength = NarroLanguage::PluralFormMaxLength;
         }
 
+        // Create and Setup chkActive
+        protected function chkActive_Create() {
+            $this->chkActive = new QCheckBox($this);
+            $this->chkActive->Name = QApplication::Translate('Active');
+            $this->chkActive->Checked = $this->objNarroLanguage->Active;
+        }
+
         // Setup btnSave
         protected function btnSave_Create() {
             $this->btnSave = new QButton($this);
@@ -198,6 +207,7 @@
             $this->objNarroLanguage->TextDirection = $this->lstTextDirection->SelectedValue;
             $this->objNarroLanguage->SpecialCharacters = $this->txtSpecialCharacters->Text;
             $this->objNarroLanguage->PluralForm = $this->txtPluralForm->Text;
+            $this->objNarroLanguage->Active = $this->chkActive->Checked;
         }
 
 

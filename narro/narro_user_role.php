@@ -72,7 +72,7 @@
 
             $this->lstLanguage = new QListBox($this);
             $this->lstLanguage->AddItem('Any');
-            foreach(NarroLanguage::LoadAll() as $objNarroLanguage) {
+            foreach(NarroLanguage::LoadAllActive() as $objNarroLanguage) {
                 if (QApplication::$objUser->hasPermission('Can manage users', null, $objNarroLanguage->LanguageId))
                     $this->lstLanguage->AddItem($objNarroLanguage->LanguageName, $objNarroLanguage->LanguageId);
             }

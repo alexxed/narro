@@ -18,7 +18,7 @@
     echo
         sprintf(
             t('<i>Translating in: %s</i>'),
-            $_CONTROL->lstLanguage->Render(false)
+            ($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name
         ) . ' | ';
 
     if (QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID) {

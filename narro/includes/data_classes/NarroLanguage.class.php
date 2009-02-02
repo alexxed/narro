@@ -61,9 +61,31 @@
             $arrLanguage = QApplication::$Cache->load('narrolanguage_loadall');
 
             if (!$arrLanguage && $objOptionalClauses == QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName))) {
-                $arrLanguage = parent::LoadAll($objOptionalClauses);
+                $arrLanguage = parent::QueryArray(
+                    QQ::Equal(QQN::NarroLanguage()->LanguageCode, 'en-US'),
+                    $objOptionalClauses
+                );
                 if ($arrLanguage) {
                     QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadall');
+                }
+            }
+
+            return $arrLanguage;
+        }
+
+        public static function LoadAllActive($objOptionalClauses = null) {
+            $arrLanguage = QApplication::$Cache->load('narrolanguage_loadallactive');
+
+            if (!$arrLanguage && $objOptionalClauses == QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName))) {
+                $arrLanguage = parent::QueryArray(
+                    QQ::AndCondition(
+                        QQ::NotEqual(QQN::NarroLanguage()->LanguageCode, 'en-US'),
+                        QQ::Equal(QQN::NarroLanguage()->Active, 1)
+                    ),
+                    $objOptionalClauses
+                );
+                if ($arrLanguage) {
+                    QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadallactive');
                 }
             }
 
@@ -74,9 +96,29 @@
             $intCount = QApplication::$Cache->load('narrolanguage_countall');
 
             if (!$intCount) {
-                $intCount = parent::CountAll();
+                $intCount = parent::QueryCount(
+                    QQ::NotEqual(QQN::NarroLanguage()->LanguageCode, 'en-US')
+                );
                 if ($intCount) {
                     QApplication::$Cache->save($intCount, 'narrolanguage_countall');
+                }
+            }
+
+            return $intCount;
+        }
+
+        public static function CountAllActive() {
+            $intCount = QApplication::$Cache->load('narrolanguage_countallactive');
+
+            if (!$intCount) {
+                $intCount = parent::QueryCount(
+                    QQ::AndCondition(
+                        QQ::NotEqual(QQN::NarroLanguage()->LanguageCode, 'en-US'),
+                        QQ::Equal(QQN::NarroLanguage()->Active, 1)
+                    )
+                );
+                if ($intCount) {
+                    QApplication::$Cache->save($intCount, 'narrolanguage_countallactive');
                 }
             }
 

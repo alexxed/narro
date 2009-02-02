@@ -25,7 +25,7 @@
 
             $this->lstLanguage = new QListBox($this);
             $this->lstLanguage->AddAction(new QChangeEvent(), new QServerControlAction($this, 'lstLanguage_Change'));
-            $arrLanguages = NarroLanguage::LoadAll(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
+            $arrLanguages = NarroLanguage::LoadAllActive(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
             foreach($arrLanguages as $objLanguage) {
                 $this->lstLanguage->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == QApplication::$Language->LanguageCode));
             }

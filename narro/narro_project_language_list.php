@@ -131,7 +131,7 @@
         protected function dtgNarroLanguage_Bind() {
             $this->dtgNarroLanguage->TotalItemCount = NarroLanguage::CountAll();
 
-            $this->dtgNarroLanguage->DataSource = NarroLanguage::LoadAll(QQ::Clause(
+            $this->dtgNarroLanguage->DataSource = NarroLanguage::LoadAllActive(QQ::Clause(
                 $this->dtgNarroLanguage->OrderByClause,
                 $this->dtgNarroLanguage->LimitClause
             ));
