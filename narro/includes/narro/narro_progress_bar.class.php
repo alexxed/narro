@@ -38,10 +38,10 @@
             $strText = sprintf(sprintf('<div class="graph" title="%s">', t('%d with suggestions, %d approved, %d untranslated, %d in total')), $this->intFuzzy, $this->intTranslated, $this->intTotal - $this->intFuzzy - $this->intTranslated, $this->intTotal);
 
             if ($this->intTranslated <= $this->intTotal) {
-                $intPercentTranslated = floor(($this->intTranslated * 100)/$this->intTotal);
+                $intPercentTranslated = round(($this->intTranslated * 100)/$this->intTotal);
                 $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/green-bar.png', $intPercentTranslated);
                 if ($this->intFuzzy > 0) {
-                    $intPercentFuzzy = floor(($this->intFuzzy * 100)/$this->intTotal);
+                    $intPercentFuzzy = round(($this->intFuzzy * 100)/$this->intTotal);
                     $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/orange-bar.png', $intPercentFuzzy);
                 }
                 else {
