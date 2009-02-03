@@ -569,7 +569,7 @@ class Archive_Tar extends PEAR
     // {{{ _error()
     function _error($p_message)
     {
-        NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, $p_message);
+        NarroLog::LogMessage(2, $p_message);
         // ----- To be completed
         $this->raiseError($p_message);
     }

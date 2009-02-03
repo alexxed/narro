@@ -53,12 +53,12 @@
                                 $strLabelCtx = $arrMatches[1];
                             else {
                                 $strLabelCtx = '';
-                                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
+                                NarroLog::LogMessage(2, sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
                                 continue;
                             }
 
                             if ($strLabelCtx) {
-                                NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Found label context "%s", looking for an acceptable access key', $strLabelCtx));
+                                NarroLog::LogMessage(1, sprintf('Found label context "%s", looking for an acceptable access key', $strLabelCtx));
                                 /**
                                  * strip mozilla entities when looking for an acceptable access key
                                  */
@@ -70,21 +70,21 @@
                                 if ($intPos !== false) {
                                     $arrAccKey[$strLabelCtx] = mb_substr($strOriginalText, $intPos, 1);
                                     unset($arrTexts[$strAccCtx]);
-                                    NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Found access key %s, using it', $arrAccKey[$strLabelCtx]));
+                                    NarroLog::LogMessage(1, sprintf('Found access key %s, using it', $arrAccKey[$strLabelCtx]));
                                 }
                                 elseif (preg_match('/[a-z]/i', $strOriginalText, $arrPossibleKeyMatches)) {
                                     $arrAccKey[$strLabelCtx] = $arrPossibleKeyMatches[0];
                                     unset($arrTexts[$strAccCtx]);
-                                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Found access key %s does not exist in the label %s, using the first ascii character as accesskey: "%s"', $strAccKey, $arrTexts[$strLabelCtx], $arrPossibleKeyMatches[0]));
+                                    NarroLog::LogMessage(3, sprintf('Found access key %s does not exist in the label %s, using the first ascii character as accesskey: "%s"', $strAccKey, $arrTexts[$strLabelCtx], $arrPossibleKeyMatches[0]));
                                 }
                                 else {
                                     $arrAccKey[$strLabelCtx] = $strAccKey;
                                     unset($arrTexts[$strAccCtx]);
-                                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
+                                    NarroLog::LogMessage(2, sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
                                 }
                             }
                             else {
-                                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
+                                NarroLog::LogMessage(2, sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
                                 continue;
                             }
                         }

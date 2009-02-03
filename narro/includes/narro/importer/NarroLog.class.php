@@ -34,7 +34,7 @@
          */
         public static $intMinLogLevel;
 
-        public static function LogMessage($intMessageType, $strFile, $strFunction, $strLine, $strText) {
+        public static function LogMessage($intMessageType, $strText) {
             if ($intMessageType < self::$intMinLogLevel)
                 return false;
 
@@ -47,33 +47,30 @@
         }
 
         private static function OutputLog($intMessageType, $strText) {
-            if (self::$strLogFile)
-                $hndLogFile = fopen(self::$strLogFile, 'a+');
+            if (!self::$strLogFile) {
+                self::$strLogFile = __TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log';
+            }
+
+            $hndLogFile = fopen(self::$strLogFile, 'a+');
 
             if (isset($hndLogFile) && $hndLogFile) {
                 if ($strText != '')
                     fputs($hndLogFile, $strText . "\n");
             }
             else {
-                self::SetLogFile(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode);
-                $hndLogFile = fopen(self::$strLogFile, 'a+');
-                if ($hndLogFile)
-                    if ($strText != '')
-                        fputs($hndLogFile, $strText . "\n");
-                else
-                    if ($strText != '')
-                        error_log($strText);
+                if ($strText != '')
+                    error_log($strText);
             }
 
             if ($hndLogFile) {
                 fclose($hndLogFile);
-                chmod(self::$strLogFile, 0666);
+                @chmod(self::$strLogFile, 0666);
             }
 
         }
 
         public static function SetLogFile($strLogFile, $blnClear = false) {
-            self::$strLogFile = $strLogFile;
+            self::$strLogFile = __TMP_PATH__ . '/' . $strLogFile;
 
             if ($blnClear)
                 self::ClearLog();
@@ -84,20 +81,16 @@
             if (file_exists(self::$strLogFile)) {
                 unlink(self::$strLogFile);
             }
-
-            if (file_exists(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode)) {
-                unlink(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode);
-            }
         }
 
         public static function GetLogContents() {
 
             if (file_exists(self::$strLogFile))
                 return file_get_contents(self::$strLogFile);
-            elseif (file_exists(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode))
-                return file_get_contents(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode);
+            elseif (file_exists(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log'))
+                return file_get_contents(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log');
             else
-                return sprintf(t('No log found, check the server log. Log file is set in Narro to: "%s"'), self::$strLogFile);
+                return 'No log found, check the server log.'';
         }
     }
 ?>

@@ -208,28 +208,26 @@
                 }
             }
 
-            if (file_exists($strImportPath . '/' . QApplication::$Language->LanguageCode . '/import.pid')) {
+            if (NarroUtils::IsProcessRunning('import', $this->objNarroProject->ProjectId)) {
                 $this->btnImport->Enabled = false;
                 $this->objImportProgress->Visible = true;
-                NarroProgress::SetProgressFile($strImportPath . '/' . QApplication::$Language->LanguageCode . '/import.progress');
-                $this->objImportProgress->Translated = NarroProgress::GetProgress();
+                $this->objImportProgress->Translated = NarroProgress::GetProgress($this->objNarroProject->ProjectId, 'import');
                 QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->FormId, $this->btnImport->ControlId, 2000));
             }
             else {
-                NarroLog::SetLogFile($strImportPath . '/' . QApplication::$Language->LanguageCode . '/import.log');
+                NarroLog::SetLogFile($this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import.log');
                 NarroLog::ClearLog();
             }
 
 
-            if (file_exists($strImportPath . '/' . QApplication::$Language->LanguageCode . '/export.pid')) {
+            if (NarroUtils::IsProcessRunning('export', $this->objNarroProject->ProjectId)) {
                 $this->btnExport->Enabled = false;
                 $this->objExportProgress->Visible = true;
-                NarroProgress::SetProgressFile($strImportPath . '/' . QApplication::$Language->LanguageCode . '/export.progress');
-                $this->objExportProgress->Translated = NarroProgress::GetProgress();
+                $this->objExportProgress->Translated = NarroProgress::GetProgress($this->objNarroProject->ProjectId, 'import');
                 QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->FormId, $this->btnExport->ControlId, 2000));
             }
             else {
-                NarroLog::SetLogFile($strImportPath . '/' . QApplication::$Language->LanguageCode . '/export.log');
+                NarroLog::SetLogFile($this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export.log');
                 NarroLog::ClearLog();
             }
 
@@ -246,8 +244,7 @@
                 return false;
 
             $strImportPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
-            NarroProgress::SetProgressFile($strImportPath . '/' . QApplication::$Language->LanguageCode . '/import.progress');
-            NarroLog::SetLogFile($strImportPath . '/' . QApplication::$Language->LanguageCode . '/import.log');
+            NarroLog::SetLogFile($this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import.log');
 
             if ($strParameter != 1) {
                 $this->btnImport->Enabled = false;
@@ -263,7 +260,7 @@
                             NarroUtils::RecursiveDelete($strWorkDir);
                         }
                         catch(Exception $objEx) {
-                            NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, $objEx->getMessage());
+                            NarroLog::LogMessage(3, $objEx->getMessage());
                         }
 
                     mkdir($strWorkDir);
@@ -279,20 +276,20 @@
                         case 'gz':
                             $objArchiver = new Archive_Tar($this->flaImportFromFile->File, $strExt);
                             if (!$objArchiver->extract($strWorkDir))
-                                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Failed to uncompress %s', $this->flaImportFromFile->FileName));
+                                NarroLog::LogMessage(3, sprintf('Failed to uncompress %s', $this->flaImportFromFile->FileName));
                             break;
                         case 'zip':
                             $objArchiver = new ZipArchive();
 
                             if ($objArchiver->open($this->flaImportFromFile->File) === true) {
                                 if (!$objArchiver->extractTo($strWorkDir))
-                                    NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Failed to uncompress %s', $this->flaImportFromFile->FileName));
+                                    NarroLog::LogMessage(3, sprintf('Failed to uncompress %s', $this->flaImportFromFile->FileName));
                             }
                             else
-                                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Can\'t open %s as a zip file', $this->flaImportFromFile->FileName));
+                                NarroLog::LogMessage(3, sprintf('Can\'t open %s as a zip file', $this->flaImportFromFile->FileName));
                             break;
                         default:
-                            NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Unsupported extension: %s. Supported archives are: %s', $strExt, 'tar.gz, zip'));
+                            NarroLog::LogMessage(3, sprintf('Unsupported extension: %s. Supported archives are: %s', $strExt, 'tar.gz, zip'));
                     }
 
                     if (isset($objArchiver)) {
@@ -300,19 +297,19 @@
                             NarroUtils::RecursiveChmod($strWorkDir);
                         }
                         catch(Exception $objEx) {
-                            NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, $objEx->getMessage());
+                            NarroLog::LogMessage(3, $objEx->getMessage());
                         }
 
                     }
 
                     if (!file_exists($strWorkDir . '/en-US') && !file_exists($strWorkDir . '/' . QApplication::$Language->LanguageCode)) {
-                        NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('The uploaded archive should have at least one directory named "en-US" or one named "%s" that contains the files with the original texts', QApplication::$Language->LanguageCode));
+                        NarroLog::LogMessage(3, sprintf('The uploaded archive should have at least one directory named "en-US" or one named "%s" that contains the files with the original texts', QApplication::$Language->LanguageCode));
                         $this->lblImport->Text = t('Import failed.');
                         try {
                             NarroUtils::RecursiveDelete($strWorkDir);
                         }
                         catch(Exception $objEx) {
-                            NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, $objEx->getMessage());
+                            NarroLog::LogMessage(3, $objEx->getMessage());
                         }
 
                         if (file_exists($this->flaImportFromFile->File))
@@ -331,7 +328,7 @@
                                 NarroUtils::RecursiveChmod(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US');
                             }
                             catch(Exception $objEx) {
-                                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, $objEx->getMessage());
+                                NarroLog::LogMessage(3, $objEx->getMessage());
                             }
                         }
 
@@ -342,7 +339,7 @@
                                 NarroUtils::RecursiveChmod(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode);
                             }
                             catch(Exception $objEx) {
-                                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, $objEx->getMessage());
+                                NarroLog::LogMessage(3, $objEx->getMessage());
                             }
                         }
 
@@ -350,10 +347,10 @@
                             NarroUtils::RecursiveDelete($strWorkDir);
                         }
                         catch(Exception $objEx) {
-                            NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, $objEx->getMessage());
+                            NarroLog::LogMessage(3, $objEx->getMessage());
                         }
 
-                        NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('The directories "%s" and "%s" from the uploaded archive were extracted to "%s"', 'en-US', QApplication::$Language->LanguageCode, __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId));
+                        NarroLog::LogMessage(3, sprintf('The directories "%s" and "%s" from the uploaded archive were extracted to "%s"', 'en-US', QApplication::$Language->LanguageCode, __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId));
                     }
 
                 }
@@ -365,7 +362,7 @@
                     QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $strFormId, $strControlId, 2000));
             }
             else {
-                if (!file_exists($strImportPath . '/' . QApplication::$Language->LanguageCode . '/import.pid')) {
+                if (!NarroUtils::IsProcessRunning('import', $this->objNarroProject->ProjectId)) {
                     $this->lblImport->Text = t('Import finished.');
 
                     if (file_exists($this->flaImportFromFile->File))
@@ -381,7 +378,7 @@
                     $this->objImportProgress->Visible = false;
                 }
                 else {
-                    $this->objImportProgress->Translated = NarroProgress::GetProgress();
+                    $this->objImportProgress->Translated = NarroProgress::GetProgress($this->objNarroProject->ProjectId, 'import');
                     $this->objImportProgress->MarkAsModified();
                 }
                 return true;
@@ -390,6 +387,8 @@
             chdir(__DOCROOT__ . __SUBDIRECTORY__);
 
             if (function_exists('proc_open')) {
+                if (!file_exists(__PHP_CLI_PATH__))
+                    NarroLog::LogMessage(3, 'Please set __PHP_CLI_PATH__ in includes/configuration.inc.php to a valid path to a php executable');
                 $strCommand = sprintf(
                     __PHP_CLI_PATH__ . ' ' .
                         escapeshellarg('includes/narro/importer/importer.php').
@@ -440,9 +439,9 @@
 
                 NarroLog::$intMinLogLevel = $this->lstLogLevel->SelectedValue;
 
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Importing using templates from %s', $strImportPath . '/' . $objNarroImporter->SourceLanguage->LanguageCode));
+                NarroLog::LogMessage(3, sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
+                NarroLog::LogMessage(3, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
+                NarroLog::LogMessage(3, sprintf('Importing using templates from %s', $strImportPath . '/' . $objNarroImporter->SourceLanguage->LanguageCode));
 
                 if ($this->chkForce->Checked)
                     $objNarroImporter->CleanImportDirectory();
@@ -451,7 +450,7 @@
                     $objNarroImporter->ImportProject();
                 }
                 catch (Exception $objEx) {
-                    NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('An error occured during import: %s', $objEx->getMessage()));
+                    NarroLog::LogMessage(3, sprintf('An error occured during import: %s', $objEx->getMessage()));
                     $objNarroImporter->CleanImportDirectory();
                     $this->lblImport->Text = t('Import failed.');
                     $this->showLog();
@@ -460,7 +459,7 @@
                 $this->showLog();
 
                 $objNarroImporter->CleanImportDirectory();
-                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, var_export(NarroImportStatistics::$arrStatistics, true));
+                NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
 
                 $this->btnImport_Click($strFormId, $strControlId, 1);
             }
@@ -471,8 +470,7 @@
                 return false;
 
             $strExportPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
-            NarroProgress::SetProgressFile($strExportPath . '/' . QApplication::$Language->LanguageCode . '/export.progress');
-            NarroLog::SetLogFile($strExportPath . '/' . QApplication::$Language->LanguageCode . '/export.log');
+            NarroLog::SetLogFile($this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export.log');
 
             if ($strParameter != 1) {
                 $this->btnExport->Enabled = false;
@@ -488,7 +486,7 @@
                 }
             }
             else {
-                if (!file_exists($strExportPath . '/' . QApplication::$Language->LanguageCode . '/export.pid')) {
+                if (!NarroUtils::IsProcessRunning('export', $this->objNarroProject->ProjectId)) {
                     $this->lblExport->Text = t('Export finished.');
                     QApplication::ExecuteJavaScript('if (typeof lastExportId != \'undefined\') clearInterval(lastExportId)');
 
@@ -508,7 +506,7 @@
                             unlink($strExportPath . '/' . $strExportArchive);
 
                         $arrFiles = array_merge(
-                            NarroUtils::ListDirectory($strExportPath . '/' . QApplication::$Language->LanguageCode, null, '/CVS|\.svn|\.hg|port\.pid|port\.log|port\.status/', $strExportPath . '/', true)
+                            NarroUtils::ListDirectory($strExportPath . '/' . QApplication::$Language->LanguageCode, null, '/CVS|\.svn|\.hg|\.git/', $strExportPath . '/', true)
                         );
 
 
@@ -555,7 +553,7 @@
                     }
                 }
                 else {
-                    $this->objExportProgress->Translated = NarroProgress::GetProgress();
+                    $this->objExportProgress->Translated = NarroProgress::GetProgress($this->objNarroProject->ProjectId, 'export');
                     $this->objExportProgress->MarkAsModified();
                 }
 
@@ -565,6 +563,9 @@
             chdir(__DOCROOT__ . __SUBDIRECTORY__);
 
             if (function_exists('proc_open')) {
+                if (!file_exists(__PHP_CLI_PATH__))
+                    NarroLog::LogMessage(3, 'Please set __PHP_CLI_PATH__ in includes/configuration.inc.php to a valid path to a php executable');
+
                 $strCommand = sprintf(
                     __PHP_CLI_PATH__ . ' ' .
                         escapeshellarg('includes/narro/importer/importer.php').
@@ -600,9 +601,9 @@
                 $objNarroImporter->ExportedSuggestion = $this->lstExportedSuggestion->SelectedValue;
                 $objNarroImporter->CopyUnhandledFiles = $this->chkCopyUnhandledFiles->Checked;
 
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Exporting using templates from %s', $strExportPath . '/en-US'));
+                NarroLog::LogMessage(3, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
+                NarroLog::LogMessage(3, sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
+                NarroLog::LogMessage(3, sprintf('Exporting using templates from %s', $strExportPath . '/en-US'));
 
                 if ($this->chkForce->Checked)
                     $objNarroImporter->CleanExportDirectory();
@@ -611,14 +612,14 @@
                     $objNarroImporter->ExportProject();
                 }
                 catch (Exception $objEx) {
-                    NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('An error occured during export: %s', $objEx->getMessage()));
+                    NarroLog::LogMessage(3, sprintf('An error occured during export: %s', $objEx->getMessage()));
                     $objNarroImporter->CleanExportDirectory();
                     $this->lblExport->Text = t('Export failed.');
                     $this->showLog();
                 }
 
                 $objNarroImporter->CleanExportDirectory();
-                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, var_export(NarroImportStatistics::$arrStatistics, true));
+                NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
                 $this->showLog();
 
                 $this->btnExport_Click($strFormId, $strControlId, 1);
@@ -697,17 +698,17 @@
         }
 
         protected function btnClearLocaleDirectory_Click($strFormId, $strControlId, $strParameter) {
-            NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, 'Clearing locale directory...');
+            NarroLog::LogMessage(3, 'Clearing locale directory...');
 
             if (!QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId))
                 QApplication::Redirect(NarroLink::ProjectList());
             try {
                 NarroUtils::RecursiveDelete(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode . '/*');
             } catch(Exception $objEx) {
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, $objEx->getMessage());
+                NarroLog::LogMessage(3, $objEx->getMessage());
             }
 
-            NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, 'Done!');
+            NarroLog::LogMessage(3, 'Done!');
 
             $this->showLog();
         }

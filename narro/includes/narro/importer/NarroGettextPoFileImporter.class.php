@@ -31,9 +31,9 @@
                     $arrFields = array();
 
                     $strLine = fgets($hndFile, 8192);
-                    NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, "Processing " . $strLine . "<br />");
+                    NarroLog::LogMessage(1, "Processing " . $strLine . "<br />");
                     if (strpos($strLine, '# ') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found translator comment. <br />');
+                        NarroLog::LogMessage(1, 'Found translator comment. <br />');
                         $arrFields['TranslatorComment'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -46,7 +46,7 @@
                     }
 
                     if (strpos($strLine, '#.') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found extracted comment. <br />');
+                        NarroLog::LogMessage(1, 'Found extracted comment. <br />');
                         $arrFields['ExtractedComment'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -59,7 +59,7 @@
                     }
 
                     if (strpos($strLine, '#:') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found reference. <br />');
+                        NarroLog::LogMessage(1, 'Found reference. <br />');
                         $arrFields['Reference'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -74,7 +74,7 @@
                     }
 
                     if (strpos($strLine, '#,') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found flag. <br />');
+                        NarroLog::LogMessage(1, 'Found flag. <br />');
                         $arrFields['Flag'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -86,7 +86,7 @@
                     }
 
                     if (strpos($strLine, '#| msgctxt') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found previous context. <br />');
+                        NarroLog::LogMessage(1, 'Found previous context. <br />');
                         $arrFields['PreviousContext'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -98,7 +98,7 @@
                     }
 
                     if (strpos($strLine, '#| msgid') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found previous translated string. <br />');
+                        NarroLog::LogMessage(1, 'Found previous translated string. <br />');
                         $arrFields['PreviousUntranslated'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -110,7 +110,7 @@
                     }
 
                     if (strpos($strLine, '#| msgid_plural') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found previous translated plural string. <br />');
+                        NarroLog::LogMessage(1, 'Found previous translated plural string. <br />');
                         $arrFields['PreviousUntranslatedPlural'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -122,7 +122,7 @@
                     }
 
                     if (strpos($strLine, 'msgctxt ') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found string. <br />');
+                        NarroLog::LogMessage(1, 'Found string. <br />');
                         preg_match('/msgctxt\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgContext'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -136,7 +136,7 @@
                     }
 
                     if (strpos($strLine, 'msgid ') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found msgid. <br />');
+                        NarroLog::LogMessage(1, 'Found msgid. <br />');
                         preg_match('/msgid\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgId'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -150,7 +150,7 @@
                     }
 
                     if (strpos($strLine, 'msgid_plural') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found plural string. <br />');
+                        NarroLog::LogMessage(1, 'Found plural string. <br />');
                         preg_match('/msgid_plural\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgPluralId'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -164,7 +164,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr ') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found translation. <br />');
+                        NarroLog::LogMessage(1, 'Found translation. <br />');
                         preg_match('/msgstr\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -178,7 +178,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[0]') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found translation plural 1. <br />');
+                        NarroLog::LogMessage(1, 'Found translation plural 1. <br />');
                         preg_match('/msgstr\[0\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr0'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -192,7 +192,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[1]') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found translation plural 2. <br />');
+                        NarroLog::LogMessage(1, 'Found translation plural 2. <br />');
                         preg_match('/msgstr\[1\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr1'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -206,7 +206,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[2]') === 0) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, 'Found translation plural 3. <br />');
+                        NarroLog::LogMessage(1, 'Found translation plural 3. <br />');
                         preg_match('/msgstr\[2\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr2'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -254,7 +254,7 @@
                 }
             }
             else {
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Cannot read "%s".', $strFile));
+                NarroLog::LogMessage(3, sprintf('Cannot read "%s".', $strFile));
             }
 
             return $arrGroupFields;
@@ -263,7 +263,7 @@
         public function ExportFile($strTemplate, $strTranslatedFile = null) {
             $hndExportFile = fopen($strTranslatedFile, 'w');
             if (!$hndExportFile) {
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Cannot create or write to "%s".', $strTranslatedFile));
+                NarroLog::LogMessage(3, sprintf('Cannot create or write to "%s".', $strTranslatedFile));
                 return false;
             }
 
@@ -634,7 +634,7 @@
                     $strSuggestionValue = $arrResult[1];
                 }
                 else
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strTranslation, $strTranslation));
+                    NarroLog::LogMessage(2, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strTranslation, $strTranslation));
 
                 if (!is_null($strOriginalAccKey) && !is_null($strOriginalAccKeyPrefix)) {
                     /**
@@ -648,7 +648,7 @@
             }
             else {
                 return '';
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, 'No context found for '.$strOriginal);
+                NarroLog::LogMessage(3, 'No context found for '.$strOriginal);
             }
         }
     }

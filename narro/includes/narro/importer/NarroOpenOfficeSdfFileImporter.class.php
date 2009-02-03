@@ -21,7 +21,7 @@
         public function ExportFile($strTemplateFile, $strTranslatedFile) {
             $hndTemplateFile = fopen($strTemplateFile, 'r');
             if (!$hndTemplateFile) {
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Can\'t open file "%s" for reading', $strTemplateFile));
+                NarroLog::LogMessage(3, sprintf('Can\'t open file "%s" for reading', $strTemplateFile));
                 return false;
             }
 
@@ -32,7 +32,7 @@
 
             $intTotalToProcess = NarroUtils::CountFileLines($strTemplateFile);
 
-            NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Starting to process file "%s" (%d texts), the result is written to "%s".', $strTemplateFile, $intTotalToProcess, $strTranslatedFile));
+            NarroLog::LogMessage(1, sprintf('Starting to process file "%s" (%d texts), the result is written to "%s".', $strTemplateFile, $intTotalToProcess, $strTranslatedFile));
 
             $intFileLineNr=0;
 
@@ -40,8 +40,6 @@
 
                 $strFileLine = fgets($hndTemplateFile, 4096);
                 $intFileLineNr++;
-
-                //NarroProgress::SetProgress((int) ceil(($intFileLineNr*100)/$intTotalToProcess));
 
                 $arrColumn = preg_split('/\t/', $strFileLine);
 
@@ -56,7 +54,7 @@
                 if ($arrColumn[0] == 'helpcontent2') continue;
 
                 if (count($arrColumn) != 15) {
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Skipped "%s" because splitting by tab does not give 14 columns.', $strFileLine));
+                    NarroLog::LogMessage(2, sprintf('Skipped "%s" because splitting by tab does not give 14 columns.', $strFileLine));
                     continue;
                 }
 
@@ -125,7 +123,7 @@
                     $strSuggestionValue = $arrResult[1];
                 }
                 else
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strSuggestionValue, print_r($arrResult, true)));
+                    NarroLog::LogMessage(2, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strSuggestionValue, print_r($arrResult, true)));
 
                 $arrTranslatedColumn[10] = str_replace(array("\n", "\r"), array("",""), $strSuggestionValue);
 
@@ -134,7 +132,7 @@
                 preg_match_all('/\\\\"/', $strSuggestionValue, $arrEscTransMatches);
 
                 if (isset($arrEscOrigMatches[0]) && count($arrEscTransMatches[0]) % 2 != 0) {
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Warning! The translated text "%s" has unclosed double quotes.', $strSuggestionValue));
+                    NarroLog::LogMessage(2, sprintf('Warning! The translated text "%s" has unclosed double quotes.', $strSuggestionValue));
                     continue;
                 }
 
@@ -156,7 +154,7 @@
             $hndFile = fopen($strTemplateFile, 'r');
 
             if (!$hndFile) {
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Cannot open input file "%s" for reading.', $strTemplateFile));
+                NarroLog::LogMessage(3, sprintf('Cannot open input file "%s" for reading.', $strTemplateFile));
                 return false;
             }
 
@@ -169,7 +167,6 @@
             while(!feof($hndFile)) {
                 $strFileLine = fgets($hndFile, 16384);
                 $intProcessedSoFar++;
-                //NarroProgress::SetProgress((int) ceil(($intProcessedSoFar*100)/$intTotalToProcess));
 
                 /**
                  * OpenOffice uses tab separated values
@@ -260,7 +257,7 @@
                     }
                 }
                 else {
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Skipped line "%s" because the language code found "%s" does not match the source or target language. Columns: %s', $strFileLine, $strLangCode, print_r($arrColumn, true)));
+                    NarroLog::LogMessage(2, sprintf('Skipped line "%s" because the language code found "%s" does not match the source or target language. Columns: %s', $strFileLine, $strLangCode, print_r($arrColumn, true)));
                     continue;
                 }
 
@@ -272,7 +269,7 @@
                     continue;
 
                 if (!preg_match('/[0-9]{4,4}[\-]?[0-9]{2,2}[\-]?[0-9]{2,2}\s[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}/', $strDate)) {
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, var_export($strDate,true) . ' not good. Count: ' . count($arrColumn) . var_export($arrColumn, true));
+                    NarroLog::LogMessage(2, var_export($strDate,true) . ' not good. Count: ' . count($arrColumn) . var_export($arrColumn, true));
                     continue;
                 }
 
@@ -285,7 +282,7 @@
             $hndFile = fopen($strFile, 'r');
 
             if (!$hndFile) {
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Cannot open input file "%s" for reading.', $strFile));
+                NarroLog::LogMessage(3, sprintf('Cannot open input file "%s" for reading.', $strFile));
                 return false;
             }
 

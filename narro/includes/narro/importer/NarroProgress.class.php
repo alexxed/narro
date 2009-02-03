@@ -16,29 +16,19 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroProgress {
-        public static $strProgressFile;
-        
-        public static function SetProgressFile($strFile) {
-            self::$strProgressFile = $strFile;
-        }
-        
-        public static function GetProgress() {
-            if (file_exists(self::$strProgressFile))            
-                return trim(file_get_contents(self::$strProgressFile));
+
+        public static function GetProgress($intProjectId, $strOperation) {
+            if (file_exists(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId))
+                return trim(file_get_contents(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId));
             else
                 return 0;
         }
-        
-        public static function SetProgress($intValue) {
-            $intOldValue = self::GetProgress();
-                
-//            if ($intOldValue > $intValue)
-//                throw new Exception(sprintf(t('Tried to set a progress value (%s) smaller than what it was (%s)'), $intValue, $intOldValue));
-                
-            $intRetVal = @file_put_contents(self::$strProgressFile, $intValue);
-            
-//            if (!$intRetVal)
-//                throw new Exception(sprintf(t('Could not write "%s" in progress file "%s"'), self::$strProgressFile, $intValue));
+
+        public static function SetProgress($intValue, $intProjectId, $strOperation) {
+            if (!@file_put_contents(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId, $intValue)) {
+                NarroLog::LogMessage(2, sprintf('Can\'t write progress file %s', __TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId));
+            }
         }
+
     }
 ?>

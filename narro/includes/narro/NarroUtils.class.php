@@ -24,18 +24,12 @@
                         if ($strFileName == '.' || $strFileName == '..')
                             continue;
 
-                        if (!self::RecursiveDelete($strFilePath.'/'.$strFileName)) {
-                            throw new Exception(
-                                            sprintf('%s/%s could not be deleted. File owner: %s, file permissions %s',
-                                                $strFilePath,
-                                                $strFileName,
-                                                fileowner($strFilePath . '/' . $strFileName),
-                                                fileperms($strFilePath . '/' . $strFileName)
-                                            )
-                            );
-                        }
+                        self::RecursiveDelete($strFilePath.'/'.$strFileName);
                     }
                     closedir($hndDir);
+                }
+                else {
+                    throw new Exception(sprintf('Can\'t open directory %s for reading, maybe %s doesn\'t have execute permissions on it.', $strFilePath, get_current_user()));
                 }
             }
             else {
@@ -45,22 +39,41 @@
                             if ($strFileName == '.' || $strFileName == '..') {
                                 continue;
                             }
-                            if (!self::RecursiveDelete($strFilePath.'/'.$strFileName)) {
-                                throw new Exception(
-                                                sprintf('%s/%s could not be deleted. File owner: %s, file permissions %s',
-                                                    $strFilePath,
-                                                    $strFileName,
-                                                    fileowner($strFilePath . '/' . $strFileName),
-                                                    fileperms($strFilePath . '/' . $strFileName)
-                                                )
-                                );
-                            }
+                            self::RecursiveDelete($strFilePath.'/'.$strFileName);
                         }
                         closedir($hndDir);
                     }
-                    return rmdir($strFilePath);
+                    else {
+                        throw new Exception(sprintf('Can\'t open directory %s for reading, maybe %s doesn\'t have execute permissions on it.', $strFilePath, get_current_user()));
+                    }
+
+                    if (!@rmdir($strFilePath)) {
+                        if (file_exists($strFilePath . '/..') && is_writable($strFilePath . '/..'))
+                            $strError = sprintf('Maybe "%s" is not empty.', realpath($strFilePath . '/..'));
+                        elseif (file_exists($strFilePath . '/..') && !is_writable($strFilePath . '/..'))
+                            $strError = sprintf('Parent directory, "%s", is not writable.', realpath($strFilePath . '/..'));
+                        else
+                            $strError = 'Unknown error.';
+
+                        throw new Exception(sprintf('Could not delete directory %s: %s', $strFilePath, $strError));
+
+                        return false;
+                    }
+                    else
+                        return true;
                 }
-                return unlink($strFilePath);
+                if (!@unlink($strFilePath)) {
+                    if (!is_writable($strFilePath))
+                        $strError = sprintf('"%s" is not writable by "%s".', realpath($strFilePath . '/..'), get_current_user());
+                    else
+                        $strError = 'Unknown error.';
+
+                    throw new Exception(sprintf('Could not delete file %s: %s', $strFilePath, $strError));
+
+                    return false;
+                }
+                else
+                    return true;
             }
         }
 
@@ -73,23 +86,43 @@
                             continue;
                         }
 
-                        if (!self::RecursiveChmod($strFilePath.'/'.$strFileName, $intFileMode, $intDirMode)) {
-                                throw new Exception(
-                                                sprintf('%s/%s could not be chmoded. File owner: %s, file permissions %s',
-                                                    $strFilePath,
-                                                    $strFileName,
-                                                    fileowner($strFilePath . '/' . $strFileName),
-                                                    fileperms($strFilePath . '/' . $strFileName)
-                                                )
-                                );
-                        }
+                        self::RecursiveChmod($strFilePath.'/'.$strFileName, $intFileMode, $intDirMode);
                     }
                     closedir($hndDir);
                 }
-                return @chmod($strFilePath, $intDirMode);
+                else {
+                    throw new Exception(sprintf('Can\'t open directory %s for reading, maybe %s doesn\'t have execute permissions on it.', $strFilePath, get_current_user()));
+                }
+
+                if (!@chmod($strFilePath, $intDirMode)) {
+                    /**
+                     * If it's writable, we don't care if chmod failed, it's probably due to selinux
+                     */
+                    if (!is_writable($strFilePath)) {
+                        $strError = sprintf('"%s" is not writable by "%s".', $strFilePath, get_current_user());
+                        throw new Exception(sprintf('Could not chmod file %s: %s', $strFilePath, $strError));
+                    }
+
+                    return false;
+                }
+                else
+                    return true;
             }
+
             if (is_file($strFilePath))
-                return @chmod($strFilePath, $intFileMode);
+                if (!@chmod($strFilePath, $intFileMode)) {
+                    /**
+                     * If it's writable, we don't care if chmod failed, it's probably due to selinux
+                     */
+                    if (!is_writable($strFilePath)) {
+                        $strError = sprintf('"%s" is not writable by "%s".', $strFilePath, get_current_user());
+                        throw new Exception(sprintf('Could not chmod file %s: %s', $strFilePath, $strError));
+                    }
+
+                    return false;
+                }
+                else
+                    return true;
             else
                 /**
                  * ignore symlinks and other non-regular files
@@ -99,7 +132,23 @@
 
         public static function RecursiveCopy( $source, $target ) {
             if ( is_dir( $source ) ) {
-                @mkdir( $target );
+                if (!@mkdir( $target, 0777 )) {
+                    if (is_writable($target))
+                        throw new Exception(
+                                    sprintf('Could not create directory %s. The parent directory has owner %s and permissions %s',
+                                        $target,
+                                        fileowner('.'),
+                                        fileperms('.')
+                                    )
+                        );
+                    else
+                        throw new Exception(
+                                    sprintf('Could not create directory %s. The parent directory is not writable by %s',
+                                        $target,
+                                        get_current_user()
+                                    )
+                        );
+                }
 
                 $d = dir( $source );
 
@@ -112,12 +161,54 @@
                         self::RecursiveCopy( $Entry, $target . '/' . $entry );
                         continue;
                     }
-                    copy( $Entry, $target . '/' . $entry );
+                    if (!@copy( $Entry, $target . '/' . $entry )) {
+                        if (file_exists($target) && !is_writable($target))
+                            throw new Exception(
+                                sprintf('Could not overwrite %s. The target file exists with owner %s, but I am %s',
+                                    $source,
+                                    $target,
+                                    fileowner($target),
+                                    get_current_user()
+                                )
+                            );
+                        elseif (!is_writable(dirname($target)))
+                            throw new Exception(
+                                sprintf('Could not copy %s to %s. The directory %s is not writable by %s',
+                                    $source,
+                                    $target,
+                                    dirname($target),
+                                    get_current_user()
+                                )
+                            );
+                        else
+                            throw new Exception('Could not copy %s to %s. Unknown error.');
+                    }
                 }
 
                 $d->close();
             } else {
-                copy( $source, $target );
+                if (!@copy( $source, $target )) {
+                    if (file_exists($target) && !is_writable($target))
+                        throw new Exception(
+                            sprintf('Could not overwrite %s. The target file exists with owner %s, but I am %s',
+                                $source,
+                                $target,
+                                fileowner($target),
+                                get_current_user()
+                            )
+                        );
+                    elseif (!is_writable(dirname($target)))
+                        throw new Exception(
+                            sprintf('Could not copy %s to %s. The directory %s is not writable by %s',
+                                $source,
+                                $target,
+                                dirname($target),
+                                get_current_user()
+                            )
+                        );
+                    else
+                        throw new Exception('Could not copy %s to %s. Unknown error.');
+                }
             }
         }
 
@@ -180,6 +271,31 @@
                 $arrFiles = false;
             }
             return $arrFiles;
+        }
+
+        public static function IsProcessRunning($strOperation, $intProjectId) {
+            $strSearchCmd = sprintf('egrep -e "php --%s.*--project %d"', $strOperation, $intProjectId);
+            $strPsFindCmd = 'ps aux | ' . $strSearchCmd;
+            $arrCmdLines = explode("\n", `$strPsFindCmd`);
+
+            if (is_array($arrCmdLines))
+                foreach($arrCmdLines as $strCmdLine)
+                {
+                    if(preg_match("/(\S{1,})(\s{1,})(\d{1,})/", $strCmdLine, $arrMatches))
+                    {
+                        if (strstr($strCmdLine, 'egrep') || $arrMatches[3] == 0)
+                            continue;
+                        else {
+                            error_log($arrMatches[3] . ':' . $strCmdLine);
+                            return $arrMatches[3];
+                        }
+                    }
+                }
+            /**
+             * If exec functions are disabled, return false, surely no process is running in background
+             */
+
+            return false;
         }
     }
 ?>

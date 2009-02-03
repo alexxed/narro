@@ -100,7 +100,7 @@
              * First, let the plug-ins process the data
              */
             if ($strOriginal == '') {
-                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('In file "%s", the context "%s" was skipped because the original text "%s" was empty.', $this->objFile->FileName, $strContext, $strOriginal));
+                NarroLog::LogMessage(2, sprintf('In file "%s", the context "%s" was skipped because the original text "%s" was empty.', $this->objFile->FileName, $strContext, $strOriginal));
                 NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Skipped texts']++;
@@ -121,7 +121,7 @@
                     $strOriginal = $arrResult[0];
                 }
                 else
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('A plug-in returned an unexpected result while processing the text "%s": %s', $strOriginal, print_r($arrResult, true)));
+                    NarroLog::LogMessage(2, sprintf('A plug-in returned an unexpected result while processing the text "%s": %s', $strOriginal, print_r($arrResult, true)));
             }
 
             if ($strTranslation != '') {
@@ -137,11 +137,11 @@
                     $strTranslation = $arrResult[1];
                 }
                 else
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('A plug-in returned an unexpected result while processing the translation "%s": %s', $strTranslation, print_r($arrResult, true)));
+                    NarroLog::LogMessage(2, sprintf('A plug-in returned an unexpected result while processing the translation "%s": %s', $strTranslation, print_r($arrResult, true)));
             }
 
             if ($strContext == '') {
-                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('In file "%s", the context "%s" was skipped because it was empty.', $this->objFile->FileName, $strContext));
+                NarroLog::LogMessage(2, sprintf('In file "%s", the context "%s" was skipped because it was empty.', $this->objFile->FileName, $strContext));
                 NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Skipped texts']++;
@@ -162,7 +162,7 @@
                     $strContext = $arrResult[2];
                 }
                 else
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('A plug-in returned an unexpected result while processing the context "%s": %s', $strContext, print_r($arrResult, true)));
+                    NarroLog::LogMessage(2, sprintf('A plug-in returned an unexpected result while processing the context "%s": %s', $strContext, print_r($arrResult, true)));
             }
 
             if (!is_null($strComment) && trim($strComment) != '') {
@@ -180,7 +180,7 @@
                     $strComment = $arrResult[3];
                 }
                 else
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('A plug-in returned an unexpected result while processing the comment "%s": %s', $strComment, print_r($arrResult, true)));
+                    NarroLog::LogMessage(2, sprintf('A plug-in returned an unexpected result while processing the comment "%s": %s', $strComment, print_r($arrResult, true)));
             }
 
             /**
@@ -200,10 +200,10 @@
 
                 try {
                     $objNarroText->Save();
-                    NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Added text "%s" from the file "%s"', $strOriginal, $this->objFile->FileName));
+                    NarroLog::LogMessage(1, sprintf('Added text "%s" from the file "%s"', $strOriginal, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Imported texts']++;
                 } catch(Exception $objExc) {
-                    NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Error while adding "%s": %s', $strOriginal, $objExc->getMessage()));
+                    NarroLog::LogMessage(3, sprintf('Error while adding "%s": %s', $strOriginal, $objExc->getMessage()));
                     NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                     NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                     NarroImportStatistics::$arrStatistics['Skipped texts']++;
@@ -249,7 +249,7 @@
                 $objNarroContext->Created = date('Y-m-d H:i:s');
                 $objNarroContext->Save();
 
-                NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Added the context "%s" from the file "%s"', $strContext, $this->objFile->FileName));
+                NarroLog::LogMessage(1, sprintf('Added the context "%s" from the file "%s"', $strContext, $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Imported contexts']++;
             }
             elseif($objNarroContext instanceof NarroContext) {
@@ -329,7 +329,7 @@
              */
             elseif ($this->blnCheckEqual && strlen($strOriginal)>1 && $strOriginal == $strTranslation)
             {
-                NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Skipped "%s" because "%s" has the same value. From "%s".', $strOriginal, $strTranslation, $this->objFile->FileName));
+                NarroLog::LogMessage(1, sprintf('Skipped "%s" because "%s" has the same value. From "%s".', $strOriginal, $strTranslation, $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Suggestions that kept the original text']++;
             }
@@ -429,7 +429,7 @@
                     $objNarroContext->Modified = date('Y-m-d H:i:s');
                     $objNarroContext->Save();
                 } catch(Exception $objExc) {
-                    NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Error while setting context "%s" to active: %s', $strContext, $objExc->getMessage()));
+                    NarroLog::LogMessage(3, sprintf('Error while setting context "%s" to active: %s', $strContext, $objExc->getMessage()));
                     NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                 }
             }
@@ -439,7 +439,7 @@
                 try {
                     $objContextInfo->Save();
                 } catch(Exception $objExc) {
-                    NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, sprintf('Error while saving context info for context %s: %s', $strContext, $objExc->getMessage()));
+                    NarroLog::LogMessage(3, sprintf('Error while saving context info for context %s: %s', $strContext, $objExc->getMessage()));
                     NarroImportStatistics::$arrStatistics['Skipped context infos']++;
                 }
             }
@@ -530,7 +530,7 @@
             $objDatabase = QApplication::$Database[1];
 
             if (!$objDbResult = $objDatabase->Query($strQuery)) {
-                NarroLog::LogMessage(3, __FILE__, __METHOD__, __LINE__, 'db_query failed. $strQuery=' . $strQuery);
+                NarroLog::LogMessage(3, 'db_query failed. $strQuery=' . $strQuery);
                 return false;
             }
             else {
@@ -540,7 +540,7 @@
                     return NarroSuggestion::Load($arrDbRow['suggestion_id']);
                 }
                 else {
-                    NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('There are no votes recorded for context_id=%d', $intContextId));
+                    NarroLog::LogMessage(2, sprintf('There are no votes recorded for context_id=%d', $intContextId));
                     return false;
                 }
             }
@@ -581,7 +581,7 @@
                 case 2:
                     $objSuggestion = $this->GetMostVotedSuggestion($objNarroContextInfo->ContextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        NarroLog::LogMessage(1, sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -593,7 +593,7 @@
                 case 3:
                     $objSuggestion = $this->GetMostRecentSuggestion($objNarroContextInfo->Context->TextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        NarroLog::LogMessage(1, sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -606,13 +606,13 @@
                 case 4:
                     $objSuggestion = $this->GetMostVotedSuggestion($objNarroContextInfo->ContextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        NarroLog::LogMessage(1, sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
                         $objSuggestion = $this->GetMostRecentSuggestion($objNarroContextInfo->Context->TextId);
                         if ($objSuggestion instanceof NarroSuggestion) {
-                            NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                            NarroLog::LogMessage(1, sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                             return $objSuggestion->SuggestionValue;
                         }
                         else {
@@ -622,7 +622,7 @@
                 case 5:
                     $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, QApplication::$objUser->UserId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$objUser->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        NarroLog::LogMessage(1, sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$objUser->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {

@@ -66,9 +66,9 @@
 
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
-                NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Inc file %s preprocessing took %d seconds.', $this->objFile->FileName, $intElapsedTime));
+                NarroLog::LogMessage(1, sprintf('Inc file %s preprocessing took %d seconds.', $this->objFile->FileName, $intElapsedTime));
 
-            NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Found %d contexts in file %s.', count($arrTemplate), $this->objFile->FileName));
+            NarroLog::LogMessage(1, sprintf('Found %d contexts in file %s.', count($arrTemplate), $this->objFile->FileName));
 
             if (is_array($arrTemplate))
                 foreach($arrTemplate as $strKey=>$strVal) {
@@ -82,7 +82,7 @@
                     );
                 }
             else {
-                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                NarroLog::LogMessage(2, sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 chmod($strTranslatedFile, 0666);
             }
@@ -93,7 +93,7 @@
             $strTemplateContents = file_get_contents($strTemplateFile);
 
             if (!$strTemplateContents) {
-                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                NarroLog::LogMessage(2, sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 chmod($strTranslatedFile, 0666);
                 return false;
@@ -110,7 +110,7 @@
                     $arrTemplateLines[trim($arrMatches[1])] = $arrMatches[0];
                 }
                 elseif (trim($strLine) != '' && $strLine[0] != '#')
-                    NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Skipped line "%s" from the template "%s".', $strLine, $this->objFile->FileName));
+                    NarroLog::LogMessage(1, sprintf('Skipped line "%s" from the template "%s".', $strLine, $this->objFile->FileName));
             }
 
             $strTranslateContents = '';
@@ -147,7 +147,7 @@
                         NarroImportStatistics::$arrStatistics["Texts that don't have access keys"]++;
                 }
                 else {
-                    NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('In file "%s", the context "%s" does not have a valid suggestion.', $this->objFile->FileName, $objNarroContextInfo->Context->Context));
+                    NarroLog::LogMessage(1, sprintf('In file "%s", the context "%s" does not have a valid suggestion.', $this->objFile->FileName, $objNarroContextInfo->Context->Context));
                     NarroImportStatistics::$arrStatistics['Texts without valid suggestions']++;
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                 }
@@ -174,30 +174,30 @@
                         $arrTranslation[$strKey] = $arrResult[1];
                     }
                     else
-                        NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $arrTranslation[$strKey], var_export($arrResult, true)));
+                        NarroLog::LogMessage(2, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $arrTranslation[$strKey], var_export($arrResult, true)));
 
                     if (strstr($strTranslateContents, sprintf('#define %s %s', $strKey, $strOriginalText)))
                         $strTranslateContents = str_replace(sprintf('#define %s %s', $strKey, $strOriginalText), sprintf('#define %s %s', $strKey, $arrTranslation[$strKey]), $strTranslateContents);
                     else
-                        NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Can\'t find "%s" in the file "%s"'), $strKey . $strGlue . $strOriginalText, $this->objFile->FileName);
+                        NarroLog::LogMessage(2, sprintf('Can\'t find "%s" in the file "%s"'), $strKey . $strGlue . $strOriginalText, $this->objFile->FileName);
 
                     if (strstr($arrTranslation[$strKey], "\n")) {
-                        NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Skpping translation "%s" because it has a newline in it'), $arrTranslation[$strKey]);
+                        NarroLog::LogMessage(2, sprintf('Skpping translation "%s" because it has a newline in it'), $arrTranslation[$strKey]);
                         continue;
                     }
 
                 }
                 else {
-                    NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__, sprintf('Couldn\'t find the key "%s" in the translations, using the original text.', $strKey, $this->objFile->FileName));
+                    NarroLog::LogMessage(1, sprintf('Couldn\'t find the key "%s" in the translations, using the original text.', $strKey, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                 }
             }
 
             if (file_exists($strTranslatedFile) && !unlink($strTranslatedFile)) {
-                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
+                NarroLog::LogMessage(2, sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
             }
             if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
-                NarroLog::LogMessage(2, __FILE__, __METHOD__, __LINE__, sprintf('Can\'t write to file "%s"', $strTranslatedFile));
+                NarroLog::LogMessage(2, sprintf('Can\'t write to file "%s"', $strTranslatedFile));
             }
 
             chmod($strTranslatedFile, 0666);
