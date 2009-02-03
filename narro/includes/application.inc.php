@@ -179,7 +179,6 @@
     QApplicationBase::$ClassFile['NarroMozillaIncFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaIncFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroMozillaDtdFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaDtdFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroOpenOfficeSdfFileImporter'] = __INCLUDES__ . '/narro/importer/NarroOpenOfficeSdfFileImporter.class.php';
-    QApplicationBase::$ClassFile['NarroSelfFileImporter'] = __INCLUDES__ . '/narro/importer/NarroSelfFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroSvgFileImporter'] = __INCLUDES__ . '/narro/importer/NarroSvgFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroMozillaFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaFileImporter.class.php';
     QApplicationBase::$ClassFile['NarroImportStatistics'] = __INCLUDES__ . '/narro/importer/NarroImportStatistics.class.php';
