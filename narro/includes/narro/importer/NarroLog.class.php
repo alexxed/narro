@@ -90,7 +90,7 @@
             elseif (file_exists(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log'))
                 return file_get_contents(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log');
             else
-                return 'No log found, check the server log.'';
+                return 'No log found, check the server log.';
         }
     }
 ?>
