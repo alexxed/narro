@@ -38,19 +38,30 @@
             $strText = sprintf(sprintf('<div class="graph" title="%s">', t('%d with suggestions, %d approved, %d untranslated, %d in total')), $this->intFuzzy, $this->intTranslated, $this->intTotal - $this->intFuzzy - $this->intTranslated, $this->intTotal);
 
             if ($this->intTranslated <= $this->intTotal) {
-                $intPercentTranslated = round(($this->intTranslated * 100)/$this->intTotal);
+
+                if ($this->intTranslated>0)
+                    $intPercentTranslated = floor(($this->intTranslated * 100)/$this->intTotal);
+                else
+                    $intPercentTranslated = 0;
+
                 $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/green-bar.png', $intPercentTranslated);
-                if ($this->intFuzzy > 0) {
-                    $intPercentFuzzy = round(($this->intFuzzy * 100)/$this->intTotal);
-                    $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/orange-bar.png', $intPercentFuzzy);
-                }
-                else {
+
+                if ($this->intFuzzy > 0)
+                    $intPercentFuzzy = ceil(($this->intFuzzy * 100)/$this->intTotal);
+                else
                     $intPercentFuzzy = 0;
-                }
+
+                $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/orange-bar.png', $intPercentFuzzy);
 
             }
 
-            $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/red-bar.png',  100 - $intPercentFuzzy - $intPercentTranslated);
+            if ($this->intTotal > $this->intFuzzy + $this->intTranslated )
+                $intPercentUntranslated = 100 - $intPercentFuzzy - $intPercentTranslated;
+            else
+                $intPercentUntranslated = 0;
+
+            $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/red-bar.png',  $intPercentUntranslated);
+
 
             $strText .= sprintf(' %d%%</div>', $intPercentTranslated);
 
