@@ -16,6 +16,30 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroLink {
+        public static function ProjectManage($intProjectId, $strLinkText = '') {
+            $strLink = sprintf('narro_project_manage.php?l=%s&p=%d', QApplication::$Language->LanguageCode, $intProjectId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function ProjectEdit($intProjectId, $strLinkText = '') {
+            $strLink = sprintf('narro_project_edit.php?l=%s&p=%d', QApplication::$Language->LanguageCode, $intProjectId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function ProjectLanguages($intProjectId, $strLinkText = '') {
+            $strLink = sprintf('narro_project_language_list.php?l=%s&p=%d', QApplication::$Language->LanguageCode, $intProjectId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
         public static function ProjectList($strLinkText = '') {
             $strLink = sprintf('narro_project_list.php?l=%s', QApplication::$Language->LanguageCode);
             if ($strLinkText)

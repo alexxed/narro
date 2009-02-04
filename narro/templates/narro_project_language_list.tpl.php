@@ -24,15 +24,7 @@
 
     <?php $this->RenderBegin() ?>
         <?php $this->pnlHeader->Render() ?>
-        <div>
-        <?php echo
-        NarroLink::ProjectList(t('Projects')) .
-        ' / ' .
-        NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName) .
-        ' / ' .
-        NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'));
-        ?>
-        </div>
+        <?php $this->pnlBreadcrumb->Render() ?>
         <h3><?php echo sprintf(t('Language list for %s'), $this->objNarroProject->ProjectName); ?></h3>
         <p><?php echo sprintf(t('This is a list of languages that %s is translated in.'), $this->objNarroProject->ProjectName); ?></p>
         <br />

@@ -58,7 +58,7 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             // Call SetupNarroProject to either Load/Edit Existing or Create New
             $this->SetupNarroProject();
 
@@ -74,6 +74,25 @@
             $this->btnSave_Create();
             $this->btnCancel_Create();
             $this->btnDelete_Create();
+
+            if ($this->objNarroProject->ProjectId) {
+                $this->pnlBreadcrumb->strSeparator = ' | ';
+
+                $this->pnlBreadcrumb->setElements(
+                    NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName),
+                    NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
+                );
+
+                if (QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId))
+                    $this->pnlBreadcrumb->addElement(NarroLink::ProjectManage($this->objNarroProject->ProjectId, t('Manage')));
+
+                $this->pnlBreadcrumb->addElement(t('Edit'));
+
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectLanguages($this->objNarroProject->ProjectId, t('Languages')));
+            }
+            else {
+                $this->pnlBreadcrumb->DisplayStyle = QDisplayStyle::None;
+            }
         }
 
         // Protected Create Methods

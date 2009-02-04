@@ -23,18 +23,9 @@
 
     <?php $this->RenderBegin() ?>
         <?php $this->pnlHeader->Render() ?>
+        <?php $this->pnlBreadcrumb->Render() ?>
         <h3><?php echo t('Project management') ?></h3>
         <p><?php echo t('Here you can edit project properties or do management related tasks.'); ?></p>
-        <div style="text-align:left">
-        <?php
-            echo
-                NarroLink::ProjectList(t('Projects')) .
-                ' / ' .
-                NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName) .
-                ' / ' .
-                t('Manage');
-        ?>
-        </div>
         <?php if (QApplication::$objUser->hasPermission('Can import project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) || QApplication::$objUser->hasPermission('Can export project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId)) { ?>
             <br />
             <?php $this->pnlLogViewer->Render(); ?>

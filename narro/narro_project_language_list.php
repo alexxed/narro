@@ -76,6 +76,22 @@
             $this->dtgNarroLanguage->AddColumn($this->colPercentTranslated);
 
             $this->dtgNarroLanguage->SortColumnIndex = 0;
+
+            $this->pnlBreadcrumb->strSeparator = ' | ';
+
+            $this->pnlBreadcrumb->setElements(
+                NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName),
+                NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
+            );
+
+            if (QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId))
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectManage($this->objNarroProject->ProjectId, t('Manage')));
+
+            if (QApplication::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId))
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($this->objNarroProject->ProjectId, t('Edit')));
+
+            $this->pnlBreadcrumb->addElement(t('Languages'));
+
         }
 
         public function dtgNarroLanguage_PercentTranslated_Render(NarroLanguage $objNarroLanguage) {

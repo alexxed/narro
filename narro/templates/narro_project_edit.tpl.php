@@ -23,9 +23,10 @@
 
     <?php $this->RenderBegin() ?>
         <?php $this->pnlHeader->Render() ?>
+        <?php $this->pnlBreadcrumb->Render() ?>
         <h3><?php echo $strPageTitle ?></h3>
         <br class="item_divider" />
-        
+
         <table>
         <tr>
         <td>
@@ -35,7 +36,7 @@
         <?php $this->txtProjectName->Render(); ?>
         </td>
         </tr>
-        
+
         <tr>
         <td>
         <label for="<?php echo $this->lstProjectTypeObject->ControlId ?>"><?php _t('Project Type') ?> : </label>
@@ -44,7 +45,7 @@
         <?php $this->lstProjectTypeObject->Render(); ?>
         </td>
         </tr>
-        
+
         <tr>
         <td></td>
         <td>

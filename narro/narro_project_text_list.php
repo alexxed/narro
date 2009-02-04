@@ -43,10 +43,20 @@
             } else
                 QApplication::Redirect(NarroLink::ProjectList());
 
+            $this->pnlBreadcrumb->strSeparator = ' | ';
+
             $this->pnlBreadcrumb->setElements(
                 NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName),
                 NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
             );
+
+            if (QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) && QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) )
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectManage($intProjectId, t('Manage')));
+
+            if (QApplication::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) && QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) )
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($intProjectId, t('Edit')));
+
+            $this->pnlBreadcrumb->addElement(NarroLink::ProjectLanguages($intProjectId, t('Languages')));
         }
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {
