@@ -16,7 +16,8 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('narro_text_list.php');
+    require_once('includes/prepend.inc.php');
+
     class NarroFileTextListForm extends NarroTextListForm {
 
         protected $objNarroFile;
@@ -102,6 +103,8 @@
 
 
         protected function dtgNarroContextInfo_Bind() {
+            $this->arrSuggestionList = array();
+
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
             $objCommonCondition = QQ::AndCondition(

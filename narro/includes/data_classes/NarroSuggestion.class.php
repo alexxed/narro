@@ -44,6 +44,25 @@
             return sprintf('NarroSuggestion Object %s',  $this->intSuggestionId);
         }
 
+        public function LoadArrayByTextIdForCurrentLanguage($intTextId, $objOptionalClauses = null) {
+            return self::QueryArray(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$Language->LanguageId),
+                    QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId)
+                ),
+                $objOptionalClauses
+            );
+        }
+
+        public function CountByTextIdForCurrentLanguage($intTextId) {
+            return self::QueryCount(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$Language->LanguageId),
+                    QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId)
+                )
+            );
+        }
+
 
 
         // Override or Create New Load/Count methods

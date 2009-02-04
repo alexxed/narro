@@ -34,6 +34,9 @@
         protected $txtSearch;
         protected $lstSearchType;
         protected $btnSearch;
+        protected $btnMultiApprove;
+
+        protected $arrSuggestionList;
 
         protected $lblMessage;
 
@@ -136,6 +139,69 @@
             $this->lblMessage->Padding = 3;
             $this->lblMessage->ForeColor = 'white';
             $this->lblMessage->DisplayStyle = QDisplayStyle::Block;
+
+            $this->btnMultiApprove = new QButton($this);
+            $this->btnMultiApprove->Text = t('Mass approve');
+            $this->btnMultiApprove->Display = QApplication::$objUser->hasPermission('Can mass approve', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId);
+            $this->btnMultiApprove->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
+
+        }
+
+        protected function btnMultiApprove_Click($strFormId, $strControlId, $strParameter) {
+            if (!QApplication::$objUser->hasPermission('Can mass approve', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId))
+              return false;
+
+            if ($this->btnMultiApprove->Text == t('Mass approve')) {
+                $this->btnMultiApprove->Text = t('Approve all selected suggestions');
+                $this->SetMessage(t('Mass approve mode is the quick way to approve short translations. Leave empty to disapprove.'));
+                if (QApplication::QueryString('st') != 3)
+                    $this->dtgNarroContextInfo->AddColumnAt(0, $this->colContext);
+                $this->dtgNarroContextInfo->RemoveColumnByName(t('Actions'));
+                $this->dtgNarroContextInfo->MarkAsModified();
+
+            }
+            else {
+                $this->btnMultiApprove->Text = t('Mass approve');
+                /**
+                 * Approve changes
+                 */
+                if (is_array($this->arrSuggestionList)) {
+                    $intProcessed = 0;
+                    $intModified = 0;
+                    foreach($this->arrSuggestionList as $intContextInfoId=>$objSuggestionList) {
+                        $intProcessed++;
+                        $objContextInfo = NarroContextInfo::Load($intContextInfoId);
+                        if ($objContextInfo->ValidSuggestionId != $objSuggestionList->SelectedValue) {
+                            $objContextInfo->ValidSuggestionId = $objSuggestionList->SelectedValue;
+                            $objContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
+                            try {
+                                $objContextInfo->Save();
+                            }
+                            catch (Exception $objEx) {
+                                $this->SetMessage(
+                                sprintf(t('Saved %d changes.'), $intModified) . ' ' .
+                                sprintf(t('An error ocurred: %s'), $objEx->GetMessage()) . ' ' .
+                                sprintf(t('Aborting.'))
+                                );
+                                return false;
+                            }
+                            $intModified++;
+                        }
+                    }
+
+                    if ($intModified > 0)
+                        $this->SetMessage(sprintf(t('Saved %d changes.'), $intModified));
+                    else
+                        $this->SetMessage(t('No changes.'));
+                }
+
+                if (QApplication::QueryString('st') != 3)
+                    $this->dtgNarroContextInfo->RemoveColumnByName(t('Context'));
+
+                $this->dtgNarroContextInfo->AddColumn($this->colActions);
+                $this->dtgNarroContextInfo->MarkAsModified();
+            }
+
         }
 
         protected function SetMessage($strText) {
@@ -184,7 +250,21 @@
                 return '<div width="100%" style="background:gray">&nbsp;</div>';
         }
 
+        public function dtgNarroContextInfo_EditTranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
+            $this->arrSuggestionList[$objNarroContextInfo->ContextInfoId] = new QListBox($this->dtgNarroContextInfo);
+            $this->arrSuggestionList[$objNarroContextInfo->ContextInfoId]->AddItem('', '');
+            foreach(NarroSuggestion::LoadArrayByTextIdForCurrentLanguage($objNarroContextInfo->Context->TextId) as $objSuggestion) {
+                $this->arrSuggestionList[$objNarroContextInfo->ContextInfoId]->AddItem($objSuggestion->SuggestionValue, $objSuggestion->SuggestionId, ($objNarroContextInfo->ValidSuggestionId == $objSuggestion->SuggestionId));
+            }
+
+            return $this->arrSuggestionList[$objNarroContextInfo->ContextInfoId]->Render(false);
+        }
+
+
         public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
+            if ($this->btnMultiApprove->Text != t('Mass approve') && $objNarroContextInfo->HasSuggestions && !$objNarroContextInfo->TextAccessKey && $objNarroContextInfo->Context->Text->TextCharCount < 100) {
+                return $this->dtgNarroContextInfo_EditTranslatedText_Render($objNarroContextInfo);
+            }
             /**
             * if there is a valid suggestion, show it
             * if not and a user has made a suggestion, show it in green

@@ -32,6 +32,8 @@
             <?php echo t('Search') ?>: <?php $this->txtSearch->Render();?>&nbsp;
             <?php $this->lstSearchType->Render();?>&nbsp;
             <?php $this->btnSearch->Render(); ?>
+            <br />
+            <?php $this->btnMultiApprove->Render(); ?>
         </div>
         <?php $this->dtgNarroContextInfo->Render() ?>
         <?php QApplication::ExecuteJavaScript("if (location.hash.match('p')) qc.pA('NarroProjectTextListForm', '" . $this->dtgNarroContextInfo->Paginator->ControlId . "', 'QClickEvent', location.hash.replace('#p', ''), '');"); ?>

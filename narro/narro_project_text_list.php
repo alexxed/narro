@@ -15,8 +15,8 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
+    require_once('includes/prepend.inc.php');
 
-    require_once('narro_text_list.php');
     class NarroProjectTextListForm extends NarroTextListForm {
 
         protected function Form_Create() {
@@ -85,6 +85,8 @@
 
 
         protected function dtgNarroContextInfo_Bind() {
+            $this->arrSuggestionList = array();
+
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
             $objCommonCondition = QQ::AndCondition(
