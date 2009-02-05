@@ -173,9 +173,9 @@
             $this->btnSave->PrimaryButton = true;
             $this->btnSave->CausesValidation = true;
             if ($this->blnEditMode)
-                $this->btnSave->Visible = NarroApp::$objUser->hasPermission('Can edit language', null, NarroApp::$Language->LanguageId);
+                $this->btnSave->Visible = NarroApp::HasPermissionForThisLang('Can edit language', null);
             else
-                $this->btnSave->Visible = NarroApp::$objUser->hasPermission('Can add language');
+                $this->btnSave->Visible = NarroApp::HasPermission('Can add language');
         }
 
         // Setup btnCancel
@@ -195,7 +195,7 @@
             $this->btnDelete->CausesValidation = false;
             if (!$this->blnEditMode)
                 $this->btnDelete->Visible = false;
-            $this->btnDelete->Visible = NarroApp::$objUser->hasPermission('Can delete language', null, NarroApp::$Language->LanguageId);
+            $this->btnDelete->Visible = NarroApp::HasPermissionForThisLang('Can delete language', null);
         }
 
         // Protected Update Methods
@@ -213,10 +213,10 @@
 
         // Control ServerActions
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            if ($this->blnEditMode && !NarroApp::$objUser->hasPermission('Can edit language', null, NarroApp::$Language->LanguageId))
+            if ($this->blnEditMode && !NarroApp::HasPermissionForThisLang('Can edit language', null))
                 $this->RedirectToListPage();
 
-            if (!$this->blnEditMode && !NarroApp::$objUser->hasPermission('Can add language'))
+            if (!$this->blnEditMode && !NarroApp::HasPermission('Can add language'))
                 $this->RedirectToListPage();
 
             $this->UpdateNarroLanguageFields();
@@ -231,7 +231,7 @@
         }
 
         protected function btnDelete_Click($strFormId, $strControlId, $strParameter) {
-            if (!NarroApp::$objUser->hasPermission('Can delete language', null, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can delete language', null))
                 $this->RedirectToListPage();
 
             $this->objNarroLanguage->Delete();

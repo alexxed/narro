@@ -286,7 +286,7 @@ class NarroDiacriticsPanel extends QPanel {
 
     public function GetControlHtml() {
         $this->strText = '';
-        $strSpecialChars = NarroApp::$objUser->getPreferenceValueByName('Special characters');
+        $strSpecialChars = NarroApp::$User->getPreferenceValueByName('Special characters');
 
         foreach(split(' ', $strSpecialChars) as $strChar) {
             $objLabel = new QLabel($this);

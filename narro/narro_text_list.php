@@ -91,7 +91,7 @@
 
             // Datagrid Paginator
             $this->dtgNarroContextInfo->Paginator = new QPaginator($this->dtgNarroContextInfo);
-            $this->dtgNarroContextInfo->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroContextInfo->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
 
             $this->dtgNarroContextInfo->PaginatorAlternate = new QPaginator($this->dtgNarroContextInfo);
 
@@ -142,13 +142,13 @@
 
             $this->btnMultiApprove = new QButton($this);
             $this->btnMultiApprove->Text = t('Mass approve');
-            $this->btnMultiApprove->Display = NarroApp::$objUser->hasPermission('Can mass approve', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId);
+            $this->btnMultiApprove->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId);
             $this->btnMultiApprove->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
 
         }
 
         protected function btnMultiApprove_Click($strFormId, $strControlId, $strParameter) {
-            if (!NarroApp::$objUser->hasPermission('Can mass approve', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId))
               return false;
 
             if ($this->btnMultiApprove->Text == t('Mass approve')) {
@@ -173,7 +173,7 @@
                         $objContextInfo = NarroContextInfo::Load($intContextInfoId);
                         if ($objContextInfo->ValidSuggestionId != $objSuggestionList->SelectedValue) {
                             $objContextInfo->ValidSuggestionId = $objSuggestionList->SelectedValue;
-                            $objContextInfo->ValidatorUserId = NarroApp::$objUser->UserId;
+                            $objContextInfo->ValidatorUserId = NarroApp::GetUserId();
                             try {
                                 $objContextInfo->Save();
                             }
@@ -222,7 +222,7 @@
 
         public function dtgNarroContextInfo_OriginalText_Render(NarroContextInfo $objNarroContextInfo) {
             if (!is_null($objNarroContextInfo->Context->Text)) {
-                $strText = NarroApp::$objPluginHandler->DisplayText($objNarroContextInfo->Context->Text->TextValue);
+                $strText = NarroApp::$PluginHandler->DisplayText($objNarroContextInfo->Context->Text->TextValue);
 
                 if (!$strText)
                     $strText = $objNarroContextInfo->Context->Text->TextValue;
@@ -230,7 +230,7 @@
 
                 $strText = htmlentities($strText, null, 'utf-8');
 
-                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->ValidSuggestionId && NarroApp::$objUser->hasPermission('Can approve', $objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
+                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->ValidSuggestionId && NarroApp::HasPermissionForThisLang('Can approve', $objNarroContextInfo->Context->ProjectId))
                     $strText = preg_replace('/' . $objNarroContextInfo->TextAccessKey . '/', '<u>' . $objNarroContextInfo->TextAccessKey . '</u>', $strText, 1);
 
                 return $strText;
@@ -241,7 +241,7 @@
 
         public function dtgNarroContextInfo_Context_Render(NarroContextInfo $objNarroContextInfo) {
             if (!is_null($objNarroContextInfo->Context->Context)) {
-                $strContext = NarroApp::$objPluginHandler->DisplayContext($objNarroContextInfo->Context->Context);
+                $strContext = NarroApp::$PluginHandler->DisplayContext($objNarroContextInfo->Context->Context);
                 if (!$strContext)
                     $strContext = $objNarroContextInfo->Context->Context;
                 return (strlen($strContext)>100)?substr($strContext, 0, 100) . '...':$strContext;
@@ -271,7 +271,7 @@
             * if not, show the most voted suggestion
             */
             if (!is_null($objNarroContextInfo->ValidSuggestion)) {
-                $strSuggestionValue = NarroApp::$objPluginHandler->DisplaySuggestion($objNarroContextInfo->ValidSuggestion->SuggestionValue);
+                $strSuggestionValue = NarroApp::$PluginHandler->DisplaySuggestion($objNarroContextInfo->ValidSuggestion->SuggestionValue);
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
 
@@ -290,12 +290,12 @@
                          NarroSuggestion::QuerySingle(
                              QQ::AndCondition(
                                  QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId),
-                                 QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::$Language->LanguageId),
-                                 QQ::Equal(QQN::NarroSuggestion()->UserId, NarroApp::$objUser->UserId)
+                                 QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::GetLanguageId()),
+                                 QQ::Equal(QQN::NarroSuggestion()->UserId, NarroApp::GetUserId())
                              )
                          )
                    ) {
-                $strSuggestionValue = NarroApp::$objPluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
+                $strSuggestionValue = NarroApp::$PluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objSuggestion->SuggestionValue;
 
@@ -308,7 +308,7 @@
                         NarroSuggestion::QueryArray(
                             QQ::AndCondition(
                                 QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId),
-                                QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::$Language->LanguageId)
+                                QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::GetLanguageId())
                             )
                         )
                    ) {
@@ -322,7 +322,7 @@
                     }
                 }
 
-                $strSuggestionValue = NarroApp::$objPluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
+                $strSuggestionValue = NarroApp::$PluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objSuggestion->SuggestionValue;
 

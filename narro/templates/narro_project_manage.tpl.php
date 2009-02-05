@@ -26,7 +26,7 @@
         <?php $this->pnlBreadcrumb->Render() ?>
         <h3><?php echo t('Project management') ?></h3>
         <p><?php echo t('Here you can edit project properties or do management related tasks.'); ?></p>
-        <?php if (NarroApp::$objUser->hasPermission('Can import project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) || NarroApp::$objUser->hasPermission('Can export project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId)) { ?>
+        <?php if (NarroApp::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId) || NarroApp::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId)) { ?>
             <br />
             <?php $this->pnlLogViewer->Render(); ?>
             <br />
@@ -43,7 +43,7 @@
             </div>
         <?php } ?>
 
-        <?php if (NarroApp::$objUser->hasPermission('Can import project', $this->objNarroProject->ProjectId , NarroApp::$Language->LanguageId)) { ?>
+        <?php if (NarroApp::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId )) { ?>
             <br />
             <div class="dotted_box">
             <div class="dotted_box_title"><?php echo t('Import project'); ?></div>
@@ -55,9 +55,9 @@
                 <p class="instructions"><?php echo t('Mark the imported suggestions as approved.'); ?></p>
                 <label for="<?php echo $this->chkOnlySuggestions->ControlId ?>"><?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?></label>
                 <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
-                <?php if (NarroApp::$objUser->hasPermission('Can upload project', null, NarroApp::$Language->LanguageId)) { ?>
+                <?php if (NarroApp::HasPermissionForThisLang('Can upload project', null)) { ?>
                     <?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>
-                    <?php if (NarroApp::$objUser->hasPermission('Can manage project')) {?>
+                    <?php if (NarroApp::HasPermission('Can manage project')) {?>
                         <p class="instructions"><?php echo sprintf(t('The archive can contain two directories, en-US and %s, but at least %s, each having the same file structure. Supported formats: %s'), NarroApp::$Language->LanguageCode, NarroApp::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
                     <?php } else { ?>
                         <p class="instructions"><?php echo sprintf(t('The archive must contain the directory %s with the same structure as en-US. Supported formats: %s'), NarroApp::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
@@ -71,7 +71,7 @@
             </div>
         <?php } ?>
 
-        <?php if (NarroApp::$objUser->hasPermission('Can export project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) && $this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
+        <?php if (NarroApp::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId) && $this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
             <br />
             <div class="dotted_box">
             <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
@@ -90,7 +90,7 @@
             </div>
         <?php } ?>
 
-        <?php if (NarroApp::$objUser->hasPermission('Can delete project', $this->objNarroProject->ProjectId)) { ?>
+        <?php if (NarroApp::HasPermission('Can delete project', $this->objNarroProject->ProjectId)) { ?>
             <br />
             <div class="dotted_box">
             <div class="dotted_box_title">Project maintenance</div>

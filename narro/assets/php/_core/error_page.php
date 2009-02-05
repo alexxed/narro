@@ -21,7 +21,7 @@
     $__exc_objFileArray = file($__exc_strFilename);
 
 
-    if ($_SERVER['HTTP_HOST'] != 'localhost' && !NarroApp::$objUser->hasPermission('Administrator')) {
+    if ($_SERVER['HTTP_HOST'] != 'localhost' && !NarroApp::HasPermission('Administrator')) {
         $objEmailMessage = new QEmailMessage();
         $objEmailMessage->From = ADMIN_EMAIL_ADDRESS;
         $objEmailMessage->To = ADMIN_EMAIL_ADDRESS;
@@ -42,8 +42,8 @@
         <div>
             <span><?php _p($__exc_strMessageBody, false); ?></span><br />
 
-                <b>Username:</b> <?php _p(NarroApp::$objUser->Username) ?> <br />
-                <b>Email:</b> <?php _p(NarroApp::$objUser->Email) ?> <br />
+                <b>Username:</b> <?php _p(NarroApp::$User->Username) ?> <br />
+                <b>Email:</b> <?php _p(NarroApp::$User->Email) ?> <br />
                 <b><?php _p($__exc_strType); ?> Type:</b>&nbsp;&nbsp;
                 <?php _p($__exc_strObjectType); ?>
                 <br /><br />
@@ -178,8 +178,8 @@ else {
         <span class="title"><?php _p($__exc_strMessageBody, false); ?></span><br />
         <form method="post" action="<?php _p(__VIRTUAL_DIRECTORY__ . __PHP_ASSETS__) ;?>/_core/error_already_rendered_page.php" target="blank" name="rendered"><input type="hidden" name="strHtml" value=""></form>
 
-            <b>Username:</b> <?php _p(NarroApp::$objUser->Username) ?> <br />
-            <b>Email:</b> <?php _p(NarroApp::$objUser->Email) ?> <br />
+            <b>Username:</b> <?php _p(NarroApp::$User->Username) ?> <br />
+            <b>Email:</b> <?php _p(NarroApp::$User->Email) ?> <br />
             <b><?php _p($__exc_strType); ?> Type:</b>&nbsp;&nbsp;
             <?php _p($__exc_strObjectType); ?>
             <br /><br />

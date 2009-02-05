@@ -78,7 +78,7 @@
             }
 
             if ($intContextId) {
-                $this->objNarroContextInfo = NarroContextInfo::LoadByContextIdLanguageId($intContextId, NarroApp::$Language->LanguageId);
+                $this->objNarroContextInfo = NarroContextInfo::LoadByContextIdLanguageId($intContextId, NarroApp::GetLanguageId());
             }
 
             if (!$intContextId || !$this->objNarroContextInfo instanceof NarroContextInfo) {
@@ -89,7 +89,7 @@
 
                 $objExtraCondition = QQ::AndCondition(
                     QQ::GreaterThan(QQN::NarroContextInfo()->ContextId, 1),
-                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
                     $objFilterCodition,
                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
                 );
@@ -169,7 +169,7 @@
             $this->pnlPluginMessages->SetCustomStyle('padding', '5px');
 
             $this->pnlProgress = new QPanel($this);
-            $this->pnlProgress->Display = NarroApp::$objUser->hasPermission('Can suggest');
+            $this->pnlProgress->Display = NarroApp::HasPermission('Can suggest');
 
             $this->lblProgress = new QLabel($this);
 
@@ -216,7 +216,7 @@
             (
                 !is_null($this->objNarroContextInfo->TextAccessKey) &&
                 !is_null($this->objNarroContextInfo->ValidSuggestionId) &&
-                NarroApp::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId)
+                NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId)
             )
                 $this->pnlOriginalText->Text = NarroString::Replace(
                     $this->objNarroContextInfo->TextAccessKey,
@@ -245,7 +245,7 @@
                 NarroContextComment::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextComment()->ContextId, $this->objNarroContextInfo->ContextId),
-                        QQ::Equal(QQN::NarroContextComment()->LanguageId, NarroApp::$Language->LanguageId)
+                        QQ::Equal(QQN::NarroContextComment()->LanguageId, NarroApp::GetLanguageId())
                     )
                 )
             ) {
@@ -263,13 +263,13 @@
 
             $this->lblMessage->Text = '';
 
-            if (NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
+            if (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))
                 $this->txtSuggestionValue->Focus();
 
         }
 
         protected function UpdateNavigator() {
-            $strPageTitle = sprintf((NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
+            $strPageTitle = sprintf((NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))?t('Translate "%s"'):t('See suggestions for "%s"'),
                             (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($this->objNarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->objNarroContextInfo->Context->Text->TextValue);
 
             NarroApp::ExecuteJavaScript(sprintf('document.title="%s"', str_replace(array('\\', '"', "\n"), array('\\\\', '\\"', ' '), $strPageTitle)));
@@ -353,7 +353,7 @@
 
             $strText = NarroString::HtmlEntities($this->objNarroContextInfo->Context->Text->TextValue);
             $strPageTitle =
-                sprintf((NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
+                sprintf((NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))?t('Translate "%s"'):t('See suggestions for "%s"'),
                 (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($strText, 0, 30) . '...':$strText);
 
             $this->pnlBreadcrumb->addElement($strPageTitle);
@@ -409,7 +409,7 @@
             $strOrigText = $this->objNarroContextInfo->Context->Text;
             //$this->txtSuggestionComment->MaxLength = strlen($strOrigText) + ceil(20 * strlen($strOrigText) / 100 );
             $this->txtSuggestionComment->TabIndex = 2;
-            $this->txtSuggestionComment->Display = NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId);
+            $this->txtSuggestionComment->Display = NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId);
         }
 
         // Setup btnSave
@@ -417,14 +417,14 @@
             $this->btnSave = new QButton($this);
             $this->btnSave->Text = t('Save');
             $this->btnSave->AccessKey = 's';
-            if (NarroApp::$blnUseAjax)
+            if (NarroApp::$UseAjax)
                 $this->btnSave->AddAction(new QClickEvent(), new QAjaxAction('btnSave_Click'));
             else
                 $this->btnSave->AddAction(new QClickEvent(), new QServerAction('btnSave_Click'));
             //$this->btnSave->PrimaryButton = true;
             $this->btnSave->CausesValidation = true;
             $this->btnSave->TabIndex = 3;
-            $this->btnSave->Display = NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId);
+            $this->btnSave->Display = NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId);
             //$this->btnSave->DisplayStyle = QDisplayStyle::None;
         }
 
@@ -432,14 +432,14 @@
         protected function btnSaveIgnore_Create() {
             $this->btnSaveIgnore = new QButton($this);
             $this->btnSaveIgnore->Text = t('Ignore and save');
-            if (NarroApp::$blnUseAjax)
+            if (NarroApp::$UseAjax)
                 $this->btnSaveIgnore->AddAction(new QClickEvent(), new QAjaxAction('btnSave_Click'));
             else
                 $this->btnSaveIgnore->AddAction(new QClickEvent(), new QServerAction('btnSave_Click'));
             $this->btnSaveIgnore->CausesValidation = true;
             $this->btnSaveIgnore->TabIndex = 3;
             $this->btnSaveIgnore->Visible = false;
-            $this->btnSaveIgnore->Display = NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId);
+            $this->btnSaveIgnore->Display = NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId);
             $this->btnSaveIgnore->AccessKey = 'i';
         }
 
@@ -447,8 +447,8 @@
         protected function chkApprove_Create() {
             $this->chkApprove = new QCheckBox($this);
             //$this->chkApprove->TabIndex = 7;
-            $this->chkApprove->Display = NarroApp::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId);
-            $this->chkApprove->Checked = NarroApp::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId);
+            $this->chkApprove->Display = NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId);
+            $this->chkApprove->Checked = NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId);
             $this->chkApprove->Text = t('Approve after saving');
             $this->chkApprove->AccessKey = 'v';
         }
@@ -458,7 +458,7 @@
             $this->btnNext = new QButton($this);
             $this->btnNext->Text = t('Next');
 
-            if (NarroApp::$blnUseAjax)
+            if (NarroApp::$UseAjax)
                 $this->btnNext->AddAction(new QClickEvent(), new QAjaxAction('btnNext_Click'));
             else
                 $this->btnNext->AddAction(new QClickEvent(), new QServerAction('btnNext_Click'));
@@ -473,7 +473,7 @@
             $this->btnNext100 = new QButton($this);
             $this->btnNext100->Text = t('100 forward');
 
-            if (NarroApp::$blnUseAjax)
+            if (NarroApp::$UseAjax)
                 $this->btnNext100->AddAction(new QClickEvent(), new QAjaxAction('btnNext100_Click'));
             else
                 $this->btnNext100->AddAction(new QClickEvent(), new QServerAction('btnNext100_Click'));
@@ -486,7 +486,7 @@
         protected function btnPrevious100_Create() {
             $this->btnPrevious100 = new QButton($this);
             $this->btnPrevious100->Text = t('100 back');
-            if (NarroApp::$blnUseAjax)
+            if (NarroApp::$UseAjax)
                 $this->btnPrevious100->AddAction(new QClickEvent(), new QAjaxAction('btnPrevious100_Click'));
             else
                 $this->btnPrevious100->AddAction(new QClickEvent(), new QServerAction('btnPrevious100_Click'));
@@ -500,7 +500,7 @@
         protected function btnPrevious_Create() {
             $this->btnPrevious = new QButton($this);
             $this->btnPrevious->Text = t('Previous');
-            if (NarroApp::$blnUseAjax)
+            if (NarroApp::$UseAjax)
                 $this->btnPrevious->AddAction(new QClickEvent(), new QAjaxAction('btnPrevious_Click'));
             else
                 $this->btnPrevious->AddAction(new QClickEvent(), new QServerAction('btnPrevious_Click'));
@@ -514,7 +514,7 @@
             $this->btnCopyOriginal = new QButton($this);
             $this->btnCopyOriginal->Text = t('Copy');
 
-            if (NarroApp::$blnUseAjax)
+            if (NarroApp::$UseAjax)
                 $this->btnCopyOriginal->AddAction(new QClickEvent(), new QAjaxAction('btnCopyOriginal_Click'));
             else
                 $this->btnCopyOriginal->AddAction(new QClickEvent(), new QServerAction('btnCopyOriginal_Click'));
@@ -532,7 +532,7 @@
             else
                 $this->btnComments->Text = t('Start a debate');
 
-            if (NarroApp::$blnUseAjax)
+            if (NarroApp::$UseAjax)
                 $this->btnComments->AddAction(new QClickEvent(), new QAjaxAction('btnComments_Click'));
             else
                 $this->btnComments->AddAction(new QClickEvent(), new QServerAction('btnComments_Click'));
@@ -543,8 +543,8 @@
 
         public function ShowPluginErrors() {
             $this->pnlPluginMessages->Text = '';
-            if (NarroApp::$objPluginHandler->Error) {
-                foreach(NarroApp::$objPluginHandler->PluginErrors as $strPluginName=>$arrErors) {
+            if (NarroApp::$PluginHandler->Error) {
+                foreach(NarroApp::$PluginHandler->PluginErrors as $strPluginName=>$arrErors) {
                     $this->pnlPluginMessages->Text .= $strPluginName . '<div style="padding-left:10px;border:1px dotted black;">' . join('<br />', $arrErors) . '</div><br />';
                 }
                 $this->pnlPluginMessages->Visible = true;
@@ -574,7 +574,7 @@
             /**
              * Update the data only if we remain on the same page (button save was clicked)
              */
-            if ($blnResult && !$this->chkGoToNext->Checked && NarroApp::$blnUseAjax)
+            if ($blnResult && !$this->chkGoToNext->Checked && NarroApp::$UseAjax)
                 $this->UpdateData();
 
             if ($blnResult && $this->chkGoToNext->Checked )
@@ -584,16 +584,16 @@
         }
 
         protected function SaveSuggestion($blnIgnorePluginErrors = false) {
-            if (!NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))
                 return false;
 
-            $arrResult = NarroApp::$objPluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+            $arrResult = NarroApp::$PluginHandler->SaveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             if (is_array($arrResult) && isset($arrResult[1]))
                 $strSuggestionValue = $arrResult[1];
             else
                 $strSuggestionValue = $this->txtSuggestionValue->Text;
 
-            if (!$blnIgnorePluginErrors && NarroApp::$objPluginHandler->Error) {
+            if (!$blnIgnorePluginErrors && NarroApp::$PluginHandler->Error) {
                 $this->btnSaveIgnore->Visible = true;
                 $this->ShowPluginErrors();
                 return false;
@@ -610,8 +610,8 @@
             $this->btnSaveIgnore->Visible = false;
 
             $objSuggestion = new NarroSuggestion();
-            $objSuggestion->UserId = NarroApp::$objUser->UserId;
-            $objSuggestion->LanguageId = NarroApp::$Language->LanguageId;
+            $objSuggestion->UserId = NarroApp::GetUserId();
+            $objSuggestion->LanguageId = NarroApp::GetLanguageId();
             $objSuggestion->TextId = $this->objNarroContextInfo->Context->TextId;
             $objSuggestion->Created = date('Y-m-d H:i:s');
             $objSuggestion->SuggestionValue = $strSuggestionValue;
@@ -634,7 +634,7 @@
             $arrNarroText = NarroText::QueryArray(QQ::Equal(QQN::NarroText()->TextValue, $this->objNarroContextInfo->Context->Text->TextValue));
             if (count($arrNarroText)) {
                 foreach($arrNarroText as $objNarroText) {
-                    $arrNarroContextInfo = NarroContextInfo::QueryArray(QQ::AndCondition(QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId), QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $objNarroText->TextId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0)));
+                    $arrNarroContextInfo = NarroContextInfo::QueryArray(QQ::AndCondition(QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()), QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $objNarroText->TextId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0)));
                         if (count($arrNarroContextInfo)) {
                             foreach($arrNarroContextInfo as $objNarroContextInfo) {
                                 $objNarroContextInfo->HasSuggestions = 1;
@@ -647,9 +647,9 @@
             }
 
             $this->objNarroContextInfo->HasSuggestions = 1;
-            if (NarroApp::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId) && $this->chkApprove->Checked && $this->objNarroContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
+            if (NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId) && $this->chkApprove->Checked && $this->objNarroContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
-                $this->objNarroContextInfo->ValidatorUserId = NarroApp::$objUser->UserId;
+                $this->objNarroContextInfo->ValidatorUserId = NarroApp::GetUserId();
 
                 if (mb_stripos($strSuggestionValue, $this->objNarroContextInfo->TextAccessKey) === false)
                     $this->objNarroContextInfo->SuggestionAccessKey = mb_substr($strSuggestionValue, 0, 1);
@@ -661,7 +661,7 @@
                 $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
                 $this->objNarroContextInfo->Save();
 
-                NarroApp::$objPluginHandler->ApproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+                NarroApp::$PluginHandler->ApproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
                 NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId);
             }
 
@@ -689,7 +689,7 @@
 
             $objExtraCondition = QQ::AndCondition(
                                     QQ::LessThan(QQN::NarroContextInfo()->ContextId, $this->objNarroContextInfo->ContextId),
-                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
+                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
                                     $objFilterCodition,
                                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
@@ -728,7 +728,7 @@
 
             $objExtraCondition = QQ::AndCondition(
                                     QQ::GreaterThan(QQN::NarroContextInfo()->ContextId, $this->objNarroContextInfo->ContextId),
-                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
+                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
                                     $objFilterCodition,
                                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
@@ -771,7 +771,7 @@
 
             $objExtraCondition = QQ::AndCondition(
                                     QQ::GreaterThan(QQN::NarroContextInfo()->ContextId, $this->objNarroContextInfo->ContextId  + 100),
-                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
+                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
                                     $objFilterCodition,
                                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
@@ -811,7 +811,7 @@
 
             $objExtraCondition = QQ::AndCondition(
                                     QQ::LessThan(QQN::NarroContextInfo()->ContextId, $this->objNarroContextInfo->ContextId - 100),
-                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
+                                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
                                     $objFilterCodition,
                                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
@@ -840,7 +840,7 @@
         }
 
         protected function GoToContext($objContext) {
-            if (NarroApp::$blnUseAjax) {
+            if (NarroApp::$UseAjax) {
                 $this->objNarroContextInfo = $objContext;
                 $this->UpdateData();
                 $this->UpdateNavigator();
@@ -853,12 +853,12 @@
         }
 
         public function btnApprove_Click($strFormId, $strControlId, $strParameter) {
-            if (!NarroApp::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId))
               return false;
 
             if ($strParameter != $this->objNarroContextInfo->ValidSuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = (int) $strParameter;
-                $this->objNarroContextInfo->ValidatorUserId = NarroApp::$objUser->UserId;
+                $this->objNarroContextInfo->ValidatorUserId = NarroApp::GetUserId();
             }
             else {
                 $this->objNarroContextInfo->ValidSuggestionId = null;
@@ -876,7 +876,7 @@
 
             $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
             $this->objNarroContextInfo->Save();
-            NarroApp::$objPluginHandler->ApproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
+            NarroApp::$PluginHandler->ApproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId);
 
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
@@ -907,7 +907,7 @@
         }
 
         public function btnSaveAccessKey_Click($strFormId, $strControlId, $strParameter) {
-            if (!NarroApp::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId))
               return false;
 
             $this->objNarroContextInfo->SuggestionAccessKey = $this->GetControl($strParameter)->Text;
@@ -932,7 +932,7 @@
 
     }
 
-    switch(NarroApp::$objUser->getPreferenceValueByName('Theme')) {
+    switch(NarroApp::$User->getPreferenceValueByName('Theme')) {
         case 'KBabel' :
             NarroContextSuggestForm::Run('NarroContextSuggestForm', 'templates/narro_context_suggest_kbabel.tpl.php');
             break;

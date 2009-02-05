@@ -38,7 +38,7 @@
         }
 
         protected function Convert($strText) {
-            $strPref = NarroApp::$objUser->getPreferenceValueByName('Cedilla or comma');
+            $strPref = NarroApp::$User->getPreferenceValueByName('Cedilla or comma');
 
             if ( $strPref  && $strPref == 'comma' )
                 return $this->ConvertToComma($strText);
@@ -95,9 +95,9 @@
                 )
             )
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
-            elseif (NarroApp::$objUser->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
+            elseif (NarroApp::$User->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
-            elseif (NarroApp::$objUser->getPreferenceValueByName('Cedilla or comma') == 'comma')
+            elseif (NarroApp::$User->getPreferenceValueByName('Cedilla or comma') == 'comma')
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
             else
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);

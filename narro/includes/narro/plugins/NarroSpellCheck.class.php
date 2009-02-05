@@ -24,7 +24,7 @@
         }
 
         public static function GetSpellSuggestions($strText) {
-            if (NarroApp::$objUser->getPreferenceValueByName('Spellchecking') == 'I don\'t need it')
+            if (NarroApp::$User->getPreferenceValueByName('Spellchecking') == 'I don\'t need it')
                 return true;
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strText);
             $strCleanText = strip_tags($strCleanText);
@@ -46,7 +46,7 @@
              */
             $strCleanText = mb_ereg_replace('[\(\)]+', ' ', $strCleanText);
 
-            $strSpellLang = NarroApp::$objUser->getPreferenceValueByName('Language');
+            $strSpellLang = NarroApp::$User->getPreferenceValueByName('Language');
 
             return self::GetSpellSuggestionsWithPspell($strCleanText, $strSpellLang);
         }

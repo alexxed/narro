@@ -82,7 +82,7 @@
 
                     $objNarroSession->User = $objUser;
 
-                    NarroApp::$objUser = $objUser;
+                    NarroApp::$User = $objUser;
                     if ($this->txtPreviousUrl)
                         NarroApp::Redirect($this->txtPreviousUrl);
                     else
@@ -124,7 +124,7 @@
                     $objNarroSession = new Zend_Session_Namespace('Narro');
                     $objNarroSession->User = $objUser;
 
-                    NarroApp::$objUser = $objUser;
+                    NarroApp::$User = $objUser;
                     if ($this->txtPreviousUrl)
                         NarroApp::Redirect($this->txtPreviousUrl);
                     else

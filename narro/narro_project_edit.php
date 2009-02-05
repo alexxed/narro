@@ -83,7 +83,7 @@
                     NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
                 );
 
-                if (NarroApp::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+                if (NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
                     $this->pnlBreadcrumb->addElement(NarroLink::ProjectManage($this->objNarroProject->ProjectId, t('Manage')));
 
                 $this->pnlBreadcrumb->addElement(t('Edit'));
@@ -140,9 +140,9 @@
             $this->btnSave->PrimaryButton = true;
             $this->btnSave->CausesValidation = true;
             if ($this->blnEditMode)
-                $this->btnSave->Visible = NarroApp::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId);
+                $this->btnSave->Visible = NarroApp::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId);
             else
-                $this->btnSave->Visible = NarroApp::$objUser->hasPermission('Can add project', null, NarroApp::$Language->LanguageId);
+                $this->btnSave->Visible = NarroApp::HasPermissionForThisLang('Can add project', null);
         }
 
         // Setup btnCancel
@@ -164,7 +164,7 @@
             if (!$this->blnEditMode)
                 $this->btnDelete->Visible = false;
 
-            $this->btnDelete->Visible = NarroApp::$objUser->hasPermission('Can delete project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId);
+            $this->btnDelete->Visible = NarroApp::HasPermissionForThisLang('Can delete project', $this->objNarroProject->ProjectId);
         }
 
         // Protected Update Methods
@@ -177,10 +177,10 @@
 
         // Control ServerActions
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            if ($this->blnEditMode && !NarroApp::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if ($this->blnEditMode && !NarroApp::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId))
                 NarroApp::Redirect(NarroLink::ProjectList());
 
-            if (!$this->blnEditMode && !NarroApp::$objUser->hasPermission('Can add project', null, NarroApp::$Language->LanguageId))
+            if (!$this->blnEditMode && !NarroApp::HasPermissionForThisLang('Can add project', null))
                 NarroApp::Redirect(NarroLink::ProjectList());
 
             $this->UpdateNarroProjectFields();
@@ -197,7 +197,7 @@
         }
 
         protected function btnDelete_Click($strFormId, $strControlId, $strParameter) {
-            if (!NarroApp::$objUser->hasPermission('Can delete project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can delete project', $this->objNarroProject->ProjectId))
                 NarroApp::Redirect(NarroLink::ProjectList());
 
             $objDatabase = NarroApp::$Database[1];

@@ -50,7 +50,7 @@
                     $objProjectCondition = QQ::All();
 
                 $arrNarroSuggestion = NarroSuggestion::LoadArrayByLanguageId(
-                    NarroApp::$Language->LanguageId,
+                    NarroApp::GetLanguageId(),
                     array(
                         QQ::OrderBy(QQN::NarroSuggestion()->Created, 0),
                         QQ::LimitInfo(20, 0)
@@ -65,7 +65,7 @@
 
                     $arrNarroContextInfo = NarroContextInfo::QueryArray(
                         QQ::AndCondition(
-                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
+                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
                             QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $objNarroSuggestion->TextId),
                             QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1),
                             $objProjectCondition
@@ -183,7 +183,7 @@
                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1),
                         $objProjectCondition,
                         QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId),
-                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId)
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId())
                     ),
                     array(
                         QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->Created, 0),
@@ -313,7 +313,7 @@
                     $objCondition = QQ::AndCondition(
                                             QQ::Equal(
                                                 QQN::NarroContextInfo()->LanguageId,
-                                                NarroApp::$Language->LanguageId
+                                                NarroApp::GetLanguageId()
                                             ),
                                             QQ::Equal(
                                                 QQN::NarroContextInfo()->Context->ProjectId,
@@ -321,7 +321,7 @@
                                             )
                     );
                 else
-                    $objCondition = QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId);
+                    $objCondition = QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId());
 
                 foreach(NarroContextInfo::QueryArray($objCondition, array(QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0), QQ::LimitInfo(20, 0))) as $intKey=>$objNarroContextInfo) {
                     $strContextLink = sprintf(
@@ -398,7 +398,7 @@
                                 ''
                         ) .
                         (($objNarroContextInfo->HasSuggestions)?
-                            sprintf(t('The text has %s suggestions'), NarroSuggestion::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId), QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::$Language->LanguageId)))):
+                            sprintf(t('The text has %s suggestions'), NarroSuggestion::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId), QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::GetLanguageId())))):
                             t('The text has no suggestions')) .
                         (
                             ($objNarroContextInfo->ValidSuggestionId && $objNarroContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID)?
@@ -448,11 +448,11 @@
                     $strSqlQuery = sprintf(
                         'SELECT DISTINCT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
                          $objProject->ProjectId,
-                         NarroApp::$Language->LanguageId
+                         NarroApp::GetLanguageId()
                     );
                 else
                     $strSqlQuery = sprintf('SELECT DISTINCT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
-                         NarroApp::$Language->LanguageId
+                         NarroApp::GetLanguageId()
                     );
 
                 $objDatabase = NarroApp::$Database[1];

@@ -25,8 +25,8 @@
         <br />
         <span style="margin-left:5px;padding:3px;">
         <?php
-        $strResult = NarroApp::$objPluginHandler->DisplayTextComment($_ITEM->CommentText);
-        if (!NarroApp::$objPluginHandler->Error)
+        $strResult = NarroApp::$PluginHandler->DisplayTextComment($_ITEM->CommentText);
+        if (!NarroApp::$PluginHandler->Error)
             echo nl2br($strResult);
         else
             echo nl2br($_ITEM->CommentText);

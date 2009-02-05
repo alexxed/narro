@@ -69,11 +69,11 @@
         }
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {
-            if (NarroApp::$objUser->hasPermission('Can suggest', $objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId) && NarroApp::$objUser->hasPermission('Can vote', $objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
+            if (NarroApp::HasPermissionForThisLang('Can suggest', $objNarroContextInfo->Context->ProjectId) && NarroApp::HasPermissionForThisLang('Can vote', $objNarroContextInfo->Context->ProjectId))
                 $strText = t('Suggest / Vote');
-            elseif (NarroApp::$objUser->hasPermission('Can suggest', $objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
+            elseif (NarroApp::HasPermissionForThisLang('Can suggest', $objNarroContextInfo->Context->ProjectId))
                 $strText = t('Suggest');
-            elseif (NarroApp::$objUser->hasPermission('Can vote', $objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
+            elseif (NarroApp::HasPermissionForThisLang('Can vote', $objNarroContextInfo->Context->ProjectId))
                 $strText = t('Vote');
             else
                 $strText = t('Details');
@@ -109,7 +109,7 @@
 
             $objCommonCondition = QQ::AndCondition(
                 QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objNarroFile->FileId),
-                QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
+                QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
                 QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
 

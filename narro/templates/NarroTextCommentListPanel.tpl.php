@@ -20,7 +20,7 @@
     <p><?php echo sprintf(t('This is a debate on the text "<i>%s</i>"'), NarroString::HtmlEntities($_CONTROL->NarroText->TextValue)); ?></p>
     <?php } ?>
     <?php $_CONTROL->dtgNarroTextComment->Render() ?>
-    <?php if (NarroApp::$objUser->hasPermission('Can comment', NarroApp::QueryString('p'), NarroApp::$Language->LanguageId)) { ?>
+    <?php if (NarroApp::HasPermissionForThisLang('Can comment', NarroApp::QueryString('p'))) { ?>
     <p>
         <?php _t('If you want to debate this text, add your opinion below.'); ?>
         <br />
@@ -30,7 +30,7 @@
         <br />
         <?php $_CONTROL->btnAddTextComment->Render(); ?>
     </p>
-    <?php } elseif (NarroApp::$objUser->UserId == 0) {
+    <?php } elseif (NarroApp::GetUserId() == 0) {
               echo '<p>' . sprintf(t('You can debate texts if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . NarroApp::$Language->LanguageCode, 'narro_login.php?l=' . NarroApp::$Language->LanguageCode) . '</p>';
           }
     ?>

@@ -26,7 +26,7 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            if (NarroApp::$objUser->UserId == NarroUser::ANONYMOUS_USER_ID) {
+            if (NarroApp::GetUserId() == NarroUser::ANONYMOUS_USER_ID) {
                 $strPassHash = NarroApp::QueryString('h');
                 $strUsername = NarroApp::QueryString('u');
                 if ($strPassHash && $strUsername) {
@@ -34,7 +34,7 @@
                         require_once 'Zend/Session/Namespace.php';
                         $objNarroSession = new Zend_Session_Namespace('Narro');
                         $objNarroSession->User = $objUser;
-                        NarroApp::$objUser = $objUser;
+                        NarroApp::$User = $objUser;
                     }
                     else
                         NarroApp::Redirect('narro_login.php');
@@ -55,10 +55,10 @@
         }
 
         protected function btnChangePassword_Click($strFormId, $strControlId, $strParameter) {
-            NarroApp::$objUser->Password = md5($this->txtPassword->Text);
+            NarroApp::$User->Password = md5($this->txtPassword->Text);
 
             try {
-                NarroApp::$objUser->Save();
+                NarroApp::$User->Save();
             } catch (Exception $objEx) {
                 $this->lblMessage->ForeColor = 'red';
                 $this->lblMessage->Text = t('Failed to change the password.');
@@ -66,7 +66,7 @@
 
             require_once 'Zend/Session/Namespace.php';
             $objNarroSession = new Zend_Session_Namespace('Narro');
-            $objNarroSession->User = NarroApp::$objUser;
+            $objNarroSession->User = NarroApp::$User;
             $this->lblMessage->ForeColor = 'green';
             $this->lblMessage->Text = t('Password changed succesfully.');
 

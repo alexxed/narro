@@ -50,21 +50,21 @@
                 NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
             );
 
-            if (NarroApp::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) && NarroApp::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) )
+            if (NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId) && NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroProject->ProjectId) )
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectManage($intProjectId, t('Manage')));
 
-            if (NarroApp::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) && NarroApp::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) )
+            if (NarroApp::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId) && NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroProject->ProjectId) )
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($intProjectId, t('Edit')));
 
             $this->pnlBreadcrumb->addElement(NarroLink::ProjectLanguages($intProjectId, t('Languages')));
         }
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {
-            if (NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) && NarroApp::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) )
+            if (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroProject->ProjectId) && NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroProject->ProjectId) )
                 $strText = t('Suggest/Vote');
-            elseif (NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            elseif (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroProject->ProjectId))
                 $strText = t('Suggest');
-            elseif (NarroApp::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            elseif (NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroProject->ProjectId))
                 $strText = t('Vote');
             else
                 $strText = t('Details');
@@ -101,7 +101,7 @@
 
             $objCommonCondition = QQ::AndCondition(
                 QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
-                QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
+                QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
                 QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
 

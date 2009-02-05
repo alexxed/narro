@@ -35,7 +35,7 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            if (NarroApp::QueryString('u') == NarroApp::$objUser->UserId)
+            if (NarroApp::QueryString('u') == NarroApp::GetUserId())
                 NarroApp::Redirect(NarroLink::ProjectList());
 
             $this->objUser = NarroUser::Load(NarroApp::QueryString('u'));
@@ -73,14 +73,14 @@
             $this->lstLanguage = new QListBox($this);
             $this->lstLanguage->AddItem('Any');
             foreach(NarroLanguage::LoadAllActive() as $objNarroLanguage) {
-                if (NarroApp::$objUser->hasPermission('Can manage users', null, $objNarroLanguage->LanguageId))
+                if (NarroApp::HasPermission('Can manage users', null, $objNarroLanguage->LanguageId))
                     $this->lstLanguage->AddItem($objNarroLanguage->LanguageName, $objNarroLanguage->LanguageId);
             }
 
             $this->lstProject = new QListBox($this);
             $this->lstProject->AddItem('Any');
             foreach(NarroProject::QueryArray(QQ::Equal(QQN::NarroProject()->Active, 1)) as $objNarroProject) {
-                if (NarroApp::$objUser->hasPermission('Can manage users', $objNarroProject->ProjectId))
+                if (NarroApp::HasPermission('Can manage users', $objNarroProject->ProjectId))
                     $this->lstProject->AddItem($objNarroProject->ProjectName, $objNarroProject->ProjectId);
             }
 
@@ -118,7 +118,7 @@
             if (!$btnEdit) {
                 $btnEdit = new QButton($this->dtgNarroUserRole, $strControlId);
                 $btnEdit->Text = t('Edit');
-                if (NarroApp::$blnUseAjax)
+                if (NarroApp::$UseAjax)
                     $btnEdit->AddAction(new QClickEvent(), new QAjaxAction('btnEditRole_Click'));
                 else
                     $btnEdit->AddAction(new QClickEvent(), new QServerAction('btnEditRole_Click'));
@@ -131,7 +131,7 @@
                 $btnDelete = new QButton($this->dtgNarroUserRole, $strControlId);
                 $btnDelete->Text = t('Delete');
                 $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to revoke this role for this user?')));
-                if (NarroApp::$blnUseAjax)
+                if (NarroApp::$UseAjax)
                     $btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDeleteRole_Click'));
                 else
                     $btnDelete->AddAction(new QClickEvent(), new QServerAction('btnDeleteRole_Click'));
@@ -175,7 +175,7 @@
                 $objNarroUserRole->UserId = $this->objUser->UserId;
             }
 
-            if (!NarroApp::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId, $objNarroUserRole->LanguageId))
+            if (!NarroApp::HasPermission('Can manage users', $objNarroUserRole->ProjectId, $objNarroUserRole->LanguageId))
                 return false;
 
             $objNarroUserRole->LanguageId = $this->lstLanguage->SelectedValue;
@@ -207,9 +207,9 @@
                 $objNarroUserRole = NarroUserRole::Load($strParameter);
 
                 $this->lstLanguage->SelectedValue = $objNarroUserRole->LanguageId;
-                $this->lstLanguage->Enabled = NarroApp::$objUser->hasPermission('Can manage users', null, $objNarroUserRole->LanguageId);
+                $this->lstLanguage->Enabled = NarroApp::HasPermission('Can manage users', null, $objNarroUserRole->LanguageId);
                 $this->lstProject->SelectedValue = $objNarroUserRole->ProjectId;
-                $this->lstProject->Enabled = NarroApp::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId);
+                $this->lstProject->Enabled = NarroApp::HasPermission('Can manage users', $objNarroUserRole->ProjectId);
                 $this->lstRole->SelectedValue = $objNarroUserRole->RoleId;
 
                 $this->btnAddRole->Text = t('Save');
@@ -222,7 +222,7 @@
         public function btnDeleteRole_Click($strFormId, $strControlId, $strParameter) {
             $objNarroUserRole = NarroUserRole::Load($strParameter);
 
-            if (!NarroApp::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId, $objNarroUserRole->LanguageId))
+            if (!NarroApp::HasPermission('Can manage users', $objNarroUserRole->ProjectId, $objNarroUserRole->LanguageId))
                 return false;
 
             $objNarroUserRole->Delete();

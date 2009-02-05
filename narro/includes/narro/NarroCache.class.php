@@ -17,7 +17,7 @@
      */
     class NarroCache {
         public static function ClearAllTextsCount($intProjectId, $intLanguageId = null) {
-            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::GetLanguageId();
 
             NarroApp::$Cache->remove('total_texts_' . $intProjectId . '_' . $intLanguageId);
             NarroApp::$Cache->remove('translated_texts_' . $intProjectId . '_' . $intLanguageId);
@@ -26,7 +26,7 @@
 
         public static function UpdateAllTextsByProjectAndLanguage($intValue, $intProjectId, $intLanguageId = null) {
             $objDatabase = NarroApp::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::GetLanguageId();
 
             $intTotalTexts = NarroApp::$Cache->load('total_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false)
@@ -38,7 +38,7 @@
 
         public static function UpdateTranslatedTextsByProjectAndLanguage($intValue, $intProjectId, $intLanguageId = null) {
             $objDatabase = NarroApp::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::GetLanguageId();
 
             $intTotalTexts = NarroApp::$Cache->load('translated_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false)
@@ -50,7 +50,7 @@
 
         public static function UpdateApprovedTextsByProjectAndLanguage($intValue, $intProjectId, $intLanguageId = null) {
             $objDatabase = NarroApp::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::GetLanguageId();
 
             $intTotalTexts = NarroApp::$Cache->load('approved_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false)
@@ -62,7 +62,7 @@
 
         public static function CountAllTextsByProjectAndLanguage($intProjectId, $intLanguageId = null) {
             $objDatabase = NarroApp::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::GetLanguageId();
 
             $intTotalTexts = NarroApp::$Cache->load('total_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false) {
@@ -85,7 +85,7 @@
         public static function CountTranslatedTextsByProjectAndLanguage($intProjectId, $intLanguageId = null) {
             $objDatabase = NarroApp::$Database[1];
 
-            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::GetLanguageId();
             $intTranslatedTexts = NarroApp::$Cache->load('translated_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTranslatedTexts === false) {
 
@@ -107,7 +107,7 @@
         public static function CountApprovedTextsByProjectAndLanguage($intProjectId, $intLanguageId = null) {
             $objDatabase = NarroApp::$Database[1];
 
-            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::GetLanguageId();
             $intApprovedTexts = NarroApp::$Cache->load('approved_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intApprovedTexts === false) {
 

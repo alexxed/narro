@@ -121,7 +121,7 @@
                 NarroContextInfo::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
-                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
                     )
                 );
@@ -160,7 +160,7 @@
 
                 if (isset($arrTranslation[$strKey])) {
 
-                    $arrResult = NarroApp::$objPluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
+                    $arrResult = NarroApp::$PluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
 
                     if
                     (

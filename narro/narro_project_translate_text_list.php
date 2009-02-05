@@ -96,7 +96,7 @@
 
             // Datagrid Paginator
             $this->dtgNarroContextInfo->Paginator = new QPaginator($this->dtgNarroContextInfo);
-            $this->dtgNarroContextInfo->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroContextInfo->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
 
             $this->dtgNarroContextInfo->PaginatorAlternate = new QPaginator($this->dtgNarroContextInfo);
 
@@ -115,7 +115,7 @@
 
             $objCommonCondition = QQ::AndCondition(
                 QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
-                QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
+                QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
                 QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
 

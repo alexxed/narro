@@ -61,10 +61,10 @@
 
             // Datagrid Paginator
             $this->dtgNarroRole->Paginator = new QPaginator($this->dtgNarroRole);
-            $this->dtgNarroRole->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroRole->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroRole->UseAjax = NarroApp::$blnUseAjax;
+            $this->dtgNarroRole->UseAjax = NarroApp::$UseAjax;
 
             // Specify the local databind method this datagrid will use
             $this->dtgNarroRole->SetDataBinder('dtgNarroRole_Bind');
@@ -102,7 +102,7 @@
             if (!$btnEdit) {
                 $btnEdit = new QButton($this->dtgNarroRole, $strControlId);
                 $btnEdit->Text = t('Edit');
-                if (NarroApp::$blnUseAjax)
+                if (NarroApp::$UseAjax)
                     $btnEdit->AddAction(new QClickEvent(), new QAjaxAction('btnEditRole_Click'));
                 else
                     $btnEdit->AddAction(new QClickEvent(), new QServerAction('btnEditRole_Click'));
@@ -115,7 +115,7 @@
                 $btnDelete = new QButton($this->dtgNarroRole, $strControlId);
                 $btnDelete->Text = t('Delete');
                 $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this role?')));
-                if (NarroApp::$blnUseAjax)
+                if (NarroApp::$UseAjax)
                     $btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDeleteRole_Click'));
                 else
                     $btnDelete->AddAction(new QClickEvent(), new QServerAction('btnDeleteRole_Click'));
@@ -127,7 +127,7 @@
             if (!$btnPermissions) {
                 $btnPermissions = new QButton($this->dtgNarroRole, $strControlId);
                 $btnPermissions->Text = t('Permissions');
-                if (NarroApp::$blnUseAjax)
+                if (NarroApp::$UseAjax)
                     $btnPermissions->AddAction(new QClickEvent(), new QAjaxAction('btnPermissions_Click'));
                 else
                     $btnPermissions->AddAction(new QClickEvent(), new QServerAction('btnPermissions_Click'));
@@ -139,7 +139,7 @@
             if (!$btnViewUsers) {
                 $btnViewUsers = new QButton($this->dtgNarroRole, $strControlId);
                 $btnViewUsers->Text = t('View users');
-                if (NarroApp::$blnUseAjax)
+                if (NarroApp::$UseAjax)
                     $btnViewUsers->AddAction(new QClickEvent(), new QAjaxAction('btnViewUsers_Click'));
                 else
                     $btnViewUsers->AddAction(new QClickEvent(), new QServerAction('btnViewUsers_Click'));

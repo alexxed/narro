@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf((NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
+    $strPageTitle = sprintf((NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))?t('Translate "%s"'):t('See suggestions for "%s"'),
         (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($this->objNarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->objNarroContextInfo->Context->Text->TextValue);
 
     require('includes/header.inc.php')
@@ -39,11 +39,11 @@
         </div>
         <br />
         <?php $this->pnlSuggestionList->Render(); ?>
-        <?php if (NarroApp::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId)) { ?>
+        <?php if (NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId)) { ?>
             <?php $this->chkGoToNext->Render(); ?>
         <?php } ?>
         <br />
-        <?php if (NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId)) { ?>
+        <?php if (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId)) { ?>
             <?php $this->pnlPluginMessages->Render(); ?>
             <br />
             <?php echo t('Your suggestion'); ?>:
@@ -55,7 +55,7 @@
             </td>
             <td width="40%" valign="top" style="padding-left:0px;border:0px">
                 <?php $this->btnSave->Render() ?>&nbsp;<?php $this->btnSaveIgnore->Render() ?>
-                <?php if (NarroApp::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId)) { ?>
+                <?php if (NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId)) { ?>
                     <br />
                     <?php $this->chkApprove->Render() ?>
                 <?php } ?>
@@ -82,7 +82,7 @@
         <br />
         <?php $this->pnlComments->Render() ?>
 
-        <?php if(NarroApp::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID && $this->txtSuggestionValue->Display) $this->txtSuggestionValue->Focus(); ?>
+        <?php if(NarroApp::GetUserId() != NarroUser::ANONYMOUS_USER_ID && $this->txtSuggestionValue->Display) $this->txtSuggestionValue->Focus(); ?>
     <?php $this->RenderEnd() ?>
 
 <?php require('includes/footer.inc.php'); ?>

@@ -62,7 +62,7 @@
             // Datagrid Paginator
             $this->dtgNarroLanguage->Paginator = new QPaginator($this->dtgNarroLanguage);
             $this->dtgNarroLanguage->PaginatorAlternate = new QPaginator($this->dtgNarroLanguage);
-            $this->dtgNarroLanguage->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroLanguage->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
             $this->dtgNarroLanguage->SortColumnIndex = 0;
 
             // Specify Whether or Not to Refresh using Ajax
@@ -83,10 +83,10 @@
                 NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
             );
 
-            if (NarroApp::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectManage($this->objNarroProject->ProjectId, t('Manage')));
 
-            if (NarroApp::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (NarroApp::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId))
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($this->objNarroProject->ProjectId, t('Edit')));
 
             $this->pnlBreadcrumb->addElement(t('Languages'));

@@ -38,7 +38,7 @@
             $this->dtgNarroTextComment->Display = QDisplayStyle::Block;
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroTextComment->UseAjax = NarroApp::$blnUseAjax;
+            $this->dtgNarroTextComment->UseAjax = NarroApp::$UseAjax;
 
             // Specify the local databind method this datagrid will use
             $this->dtgNarroTextComment->SetDataBinder('dtgNarroTextComment_Bind', $this);
@@ -61,16 +61,16 @@
 
         public function btnAddTextComment_Click($strFormId, $strControlId, $strParameter) {
             if (trim($this->txtNarroTextComment->Text) == '') return false;
-            if (!NarroApp::$objUser->hasPermission('Can comment', NarroApp::QueryString('p'), NarroApp::$Language->LanguageId)) return false;
+            if (!NarroApp::HasPermissionForThisLang('Can comment', NarroApp::QueryString('p'))) return false;
 
             $objNarroTextComment = new NarroTextComment();
             $objNarroTextComment->TextId = $this->objNarroText->TextId;
-            $objNarroTextComment->UserId = NarroApp::$objUser->UserId;
-            $objNarroTextComment->LanguageId = NarroApp::$Language->LanguageId;
+            $objNarroTextComment->UserId = NarroApp::GetUserId();
+            $objNarroTextComment->LanguageId = NarroApp::GetLanguageId();
             $objNarroTextComment->Created = date('Y-m-d H:i:s');
 
-            $strResult = NarroApp::$objPluginHandler->SaveTextComment($this->txtNarroTextComment->Text);
-            if (!NarroApp::$objPluginHandler->Error)
+            $strResult = NarroApp::$PluginHandler->SaveTextComment($this->txtNarroTextComment->Text);
+            if (!NarroApp::$PluginHandler->Error)
                 $objNarroTextComment->CommentText = $strResult;
             else
                 $objNarroTextComment->CommentText = $this->txtNarroTextComment->Text;
@@ -97,7 +97,7 @@
             $this->dtgNarroTextComment->DataSource =
                 NarroTextComment::QueryArray(
                     QQ::AndCondition(
-                        QQ::Equal(QQN::NarroTextComment()->LanguageId, NarroApp::$Language->LanguageId),
+                        QQ::Equal(QQN::NarroTextComment()->LanguageId, NarroApp::GetLanguageId()),
                         QQ::Equal(QQN::NarroTextComment()->TextId, $this->objNarroText->TextId)
                     ),
                     array(QQ::OrderBy(QQN::NarroTextComment()->Created, 1))

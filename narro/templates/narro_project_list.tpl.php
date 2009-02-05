@@ -26,7 +26,7 @@
         <?php $this->pnlHeader->Render() ?>
         <h3><?php echo t('Project list') ?></h3>
         <p><?php echo t('This is a list of projects that are being translated here. You can help too. Click on any project name to start translating.'); ?></p>
-        <?php if (NarroApp::$objUser->hasPermission('Can add project', null, NarroApp::$Language->LanguageId)) { ?>
+        <?php if (NarroApp::HasPermissionForThisLang('Can add project', null)) { ?>
             <p align="right"><a href="narro_project_edit.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php _t('Add project') ?></a></p>
         <?php } ?>
         <?php $this->dtgNarroProject->Render() ?>

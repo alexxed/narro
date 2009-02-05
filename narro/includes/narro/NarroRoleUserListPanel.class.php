@@ -45,10 +45,10 @@
 
             // Datagrid Paginator
             $this->dtgRoleUserList->Paginator = new QPaginator($this->dtgRoleUserList);
-            $this->dtgRoleUserList->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgRoleUserList->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgRoleUserList->UseAjax = NarroApp::$blnUseAjax;
+            $this->dtgRoleUserList->UseAjax = NarroApp::$UseAjax;
 
             // Specify the local databind method this datagrid will use
             $this->dtgRoleUserList->SetDataBinder('dtgRoleUserList_Bind', $this);
@@ -67,7 +67,7 @@
         }
 
         public function dtgRoleUserList_UsernameColumn_Render(NarroUserRole $objNarroUserRole) {
-            if ($objNarroUserRole->UserId != NarroApp::$objUser->UserId)
+            if ($objNarroUserRole->UserId != NarroApp::GetUserId())
                 return NarroLink::UserRole($objNarroUserRole->UserId, $objNarroUserRole->User->Username);
             else
                 return $objNarroUserRole->User->Username;

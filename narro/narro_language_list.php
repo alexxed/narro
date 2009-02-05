@@ -55,7 +55,7 @@
 
             // Datagrid Paginator
             $this->dtgNarroLanguage->Paginator = new QPaginator($this->dtgNarroLanguage);
-            $this->dtgNarroLanguage->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroLanguage->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgNarroLanguage->UseAjax = false;
@@ -110,7 +110,7 @@
         }
 
         public function dtgNarroLanguage_Actions_Render(NarroLanguage $objNarroLanguage) {
-            if (NarroApp::$objUser->hasPermission('Can edit language', null, NarroApp::$Language->LanguageId))
+            if (NarroApp::HasPermissionForThisLang('Can edit language', null))
                 return sprintf('<a href="narro_language_edit.php?l=%s&lid=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroLanguage->LanguageId, t('Edit'));
         }
 

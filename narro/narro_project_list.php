@@ -52,7 +52,7 @@
 
             // Datagrid Paginator
             $this->dtgNarroProject->Paginator = new QPaginator($this->dtgNarroProject);
-            $this->dtgNarroProject->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroProject->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgNarroProject->UseAjax = false;
@@ -62,7 +62,7 @@
 
             $this->dtgNarroProject->AddColumn($this->colProjectName);
 
-            if (NarroApp::$objUser->hasPermission('Can manage project', null, NarroApp::$Language->LanguageId)) {
+            if (NarroApp::HasPermissionForThisLang('Can manage project', null)) {
                 $this->dtgNarroProject->AddColumn($this->colProjectType);
                 $this->dtgNarroProject->AddColumn($this->colActive);
             }
@@ -146,11 +146,11 @@
                 NarroLink::ProjectFileList($objNarroProject->ProjectId, null, t('Files')) .
                 sprintf(' | <a href="narro_project_language_list.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Languages'));
 
-            if (NarroApp::$objUser->hasPermission('Can manage project', $objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (NarroApp::HasPermissionForThisLang('Can manage project', $objNarroProject->ProjectId))
                 $strOutput .=
                     sprintf(' | <a href="narro_project_manage.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Manage'));
 
-            if (NarroApp::$objUser->hasPermission('Can edit project', $objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (NarroApp::HasPermissionForThisLang('Can edit project', $objNarroProject->ProjectId))
                 $strOutput .=
                     sprintf(' | <a href="narro_project_edit.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Edit'));
 
@@ -161,12 +161,12 @@
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
             // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-            if (NarroApp::$objUser->hasPermission('Can manage project', null, NarroApp::$Language->LanguageId))
+            if (NarroApp::HasPermissionForThisLang('Can manage project', null))
                 $this->dtgNarroProject->TotalItemCount = NarroProject::CountAll();
             else
                 $this->dtgNarroProject->TotalItemCount = NarroProject::QueryCount(QQ::Equal(QQN::NarroProject()->Active, 1));
 
-            if ($this->dtgNarroProject->TotalItemCount == 0 && NarroApp::$objUser->hasPermission('Can manage project', null, NarroApp::$Language->LanguageId))
+            if ($this->dtgNarroProject->TotalItemCount == 0 && NarroApp::HasPermissionForThisLang('Can manage project', null))
                 NarroApp::Redirect(sprintf('narro_project_edit.php?l=%s', NarroApp::$Language->LanguageCode));
 
             // Setup the $objClauses Array
@@ -182,7 +182,7 @@
                 array_push($objClauses, $objClause);
 
             // Set the DataSource to be the array of all NarroProject objects, given the clauses above
-            if (NarroApp::$objUser->hasPermission('Can manage project', null, NarroApp::$Language->LanguageId))
+            if (NarroApp::HasPermissionForThisLang('Can manage project', null))
                 $this->dtgNarroProject->DataSource = NarroProject::LoadAll($objClauses);
             else
                 $this->dtgNarroProject->DataSource = NarroProject::QueryArray(QQ::Equal(QQN::NarroProject()->Active, 1), $objClauses);

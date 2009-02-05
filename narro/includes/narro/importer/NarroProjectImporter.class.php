@@ -96,7 +96,7 @@
                             $this->objTargetLanguage->LanguageId,
                             escapeshellarg($this->objProject->ProjectName),
                             $this->objProject->ProjectId,
-                            NarroApp::$objUser->UserId
+                            NarroApp::GetUserId()
                         )
                     )
                 );
@@ -432,7 +432,7 @@
                             $this->objTargetLanguage->LanguageId,
                             escapeshellarg($this->objProject->ProjectName),
                             $this->objProject->ProjectId,
-                            NarroApp::$objUser->UserId
+                            NarroApp::GetUserId()
                         )
                     )
                 );

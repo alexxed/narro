@@ -69,7 +69,7 @@
             require_once 'Zend/Session/Namespace.php';
             $objNarroSession = new Zend_Session_Namespace('Narro');
             $objNarroSession->User = $objUser;
-            NarroApp::$objUser = $objUser;
+            NarroApp::$User = $objUser;
             NarroApp::Redirect(NarroLink::UserPreferences($objUser->UserId));
         }
     }

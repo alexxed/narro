@@ -80,7 +80,7 @@
 
             $this->SetupNarroProject();
 
-            if (!NarroApp::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
                 NarroApp::Redirect(NarroLink::ProjectList());
 
             $this->pnlLogViewer = new QPanel($this);
@@ -128,7 +128,7 @@
 
             $this->chkOnlySuggestions = new QCheckBox($this);
 
-            if (!(NarroApp::$objUser->hasPermission('Can manage project'))) {
+            if (!(NarroApp::HasPermission('Can manage project'))) {
                 $this->chkOnlySuggestions->Enabled = false;
                 $this->chkOnlySuggestions->Checked = true;
             }
@@ -144,7 +144,7 @@
             $this->btnImport = new QButton($this);
             $this->btnImport->Text = t('Import');
             $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('document.getElementById(\'%s\').disabled=true;document.getElementById(\'%s\_ctl\').visible=true;', $this->btnImport->ControlId, $this->objImportProgress->ControlId)));
-            if (function_exists('proc_open') && NarroApp::$blnUseAjax)
+            if (function_exists('proc_open') && NarroApp::$UseAjax)
                 $this->btnImport->AddAction(new QClickEvent(), new QAjaxAction('btnImport_Click'));
             else
                 $this->btnImport->AddAction(new QClickEvent(), new QServerAction('btnImport_Click'));
@@ -162,7 +162,7 @@
                 function_exists('proc_open') &&
                 function_exists('escapeshellarg') &&
                 function_exists('escapeshellcmd') &&
-                NarroApp::$blnUseAjax)
+                NarroApp::$UseAjax)
                 $this->btnExport->AddAction(new QClickEvent(), new QAjaxAction('btnExport_Click'));
             else
                 $this->btnExport->AddAction(new QClickEvent(), new QServerAction('btnExport_Click'));
@@ -242,7 +242,7 @@
 
             $this->pnlBreadcrumb->addElement(t('Manage'));
 
-            if (NarroApp::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (NarroApp::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId))
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($this->objNarroProject->ProjectId, t('Edit')));
 
             $this->pnlBreadcrumb->addElement(NarroLink::ProjectLanguages($this->objNarroProject->ProjectId, t('Languages')));
@@ -252,7 +252,7 @@
         }
 
         public function btnImport_Click($strFormId, $strControlId, $strParameter) {
-            if (!NarroApp::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
                 return false;
 
             $strImportPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
@@ -370,7 +370,7 @@
                 /**
                  * refresh the page to show the progress. keep the interval id as a global variable (no var before it) to clear it afterwards
                  */
-                if (function_exists('proc_open') && NarroApp::$blnUseAjax)
+                if (function_exists('proc_open') && NarroApp::$UseAjax)
                     NarroApp::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $strFormId, $strControlId, 2000));
             }
             else {
@@ -408,7 +408,7 @@
                         (($this->chkApprove->Checked)?'--approve ':'') .
                         (($this->chkForce->Checked)?'--force ':'') .
                         (($this->chkCheckEqual->Checked)?'--check-equal ':'') .
-                        (($this->chkOnlySuggestions->Checked || !NarroApp::$objUser->hasPermission('Can manage project'))?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
+                        (($this->chkOnlySuggestions->Checked || !NarroApp::HasPermission('Can manage project'))?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                         ' --source-lang en-US --target-lang %s',
                     $this->lstLogLevel->SelectedValue,
                     $this->objNarroProject->ProjectId,
@@ -431,12 +431,12 @@
                 /**
                  * Get boolean options
                  */
-                $objNarroImporter->DeactivateFiles = NarroApp::$objUser->hasPermission('Can manage project');
-                $objNarroImporter->DeactivateContexts = NarroApp::$objUser->hasPermission('Can manage project');
+                $objNarroImporter->DeactivateFiles = NarroApp::HasPermission('Can manage project');
+                $objNarroImporter->DeactivateContexts = NarroApp::HasPermission('Can manage project');
                 $objNarroImporter->CheckEqual = $this->chkCheckEqual->Checked;
                 $objNarroImporter->Approve = $this->chkApprove->Checked;
 
-                if (!NarroApp::$objUser->hasPermission('Can manage project'))
+                if (!NarroApp::HasPermission('Can manage project'))
                     $objNarroImporter->OnlySuggestions = true;
                 else
                     $objNarroImporter->OnlySuggestions = $this->chkOnlySuggestions->Checked;
@@ -478,7 +478,7 @@
         }
 
         public function btnExport_Click($strFormId, $strControlId, $strParameter) {
-            if (!NarroApp::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
                 return false;
 
             $strExportPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
@@ -492,7 +492,7 @@
                 /**
                  * refresh the page to show the progress. keep the interval id as a global variable (no var before it) to clear it afterwards
                  */
-                if (function_exists('proc_open') && NarroApp::$blnUseAjax) {
+                if (function_exists('proc_open') && NarroApp::$UseAjax) {
                     $this->objExportProgress->Visible = true;
                     NarroApp::ExecuteJavaScript(sprintf('lastExportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $strFormId, $strControlId, 2000));
                 }
@@ -589,7 +589,7 @@
                         ' --check-equal --source-lang en-US --target-lang %s --exported-suggestion %d',
                     $this->lstLogLevel->SelectedValue,
                     $this->objNarroProject->ProjectId,
-                    NarroApp::$objUser->UserId,
+                    NarroApp::GetUserId(),
                     NarroApp::$Language->LanguageCode,
                     $this->lstExportedSuggestion->SelectedValue
                 );
@@ -607,7 +607,7 @@
                 $objNarroImporter->TargetLanguage = NarroApp::$Language;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en-US');
                 $objNarroImporter->Project = $this->objNarroProject;
-                $objNarroImporter->User = NarroApp::$objUser;
+                $objNarroImporter->User = NarroApp::$User;
                 $objNarroImporter->TranslationPath = $strExportPath . '/' . NarroApp::$Language->LanguageCode;
                 $objNarroImporter->TemplatePath = $strExportPath . '/en-US';
                 $objNarroImporter->ExportedSuggestion = $this->lstExportedSuggestion->SelectedValue;
@@ -647,19 +647,19 @@
         }
 
         protected function btnDelProjectContextInfos_Click($strFormId, $strControlId, $strParameter) {
-            if (!NarroApp::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
                 NarroApp::Redirect(NarroLink::ProjectList());
 
             $objDatabase = NarroApp::$Database[1];
 
-            $strQuery = sprintf("DELETE FROM narro_context_comment USING narro_context_comment LEFT JOIN narro_context ON narro_context_comment.context_id=narro_context.context_id WHERE narro_context_comment.language_id=%d AND narro_context.project_id=%d", NarroApp::$Language->LanguageId, $this->objNarroProject->ProjectId);
+            $strQuery = sprintf("DELETE FROM narro_context_comment USING narro_context_comment LEFT JOIN narro_context ON narro_context_comment.context_id=narro_context.context_id WHERE narro_context_comment.language_id=%d AND narro_context.project_id=%d", NarroApp::GetLanguageId(), $this->objNarroProject->ProjectId);
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
                 throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
             }
 
-            $strQuery = sprintf("DELETE FROM narro_context_info USING narro_context_info LEFT JOIN narro_context ON narro_context_info.context_id=narro_context.context_id WHERE narro_context_info.language_id=%d AND narro_context.project_id=%d", NarroApp::$Language->LanguageId, $this->objNarroProject->ProjectId);
+            $strQuery = sprintf("DELETE FROM narro_context_info USING narro_context_info LEFT JOIN narro_context ON narro_context_info.context_id=narro_context.context_id WHERE narro_context_info.language_id=%d AND narro_context.project_id=%d", NarroApp::GetLanguageId(), $this->objNarroProject->ProjectId);
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
@@ -668,7 +668,7 @@
         }
 
         protected function btnDelProjectContexts_Click($strFormId, $strControlId, $strParameter) {
-            if (!NarroApp::$objUser->hasPermission('Can delete project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can delete project', $this->objNarroProject->ProjectId))
                 NarroApp::Redirect(NarroLink::ProjectList());
 
             $objDatabase = NarroApp::$Database[1];
@@ -682,7 +682,7 @@
         }
 
         protected function btnDelProjectFiles_Click($strFormId, $strControlId, $strParameter) {
-            if (!NarroApp::$objUser->hasPermission('Can delete project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can delete project', $this->objNarroProject->ProjectId))
                 NarroApp::Redirect(NarroLink::ProjectList());
 
             $objDatabase = NarroApp::$Database[1];
@@ -712,7 +712,7 @@
         protected function btnClearLocaleDirectory_Click($strFormId, $strControlId, $strParameter) {
             NarroLog::LogMessage(3, 'Clearing locale directory...');
 
-            if (!NarroApp::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
+            if (!NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
                 NarroApp::Redirect(NarroLink::ProjectList());
             try {
                 NarroUtils::RecursiveDelete(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroApp::$Language->LanguageCode . '/*');

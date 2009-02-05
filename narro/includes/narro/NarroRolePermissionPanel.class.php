@@ -40,7 +40,7 @@
             $this->dtgNarroPermission->GridLines = QGridLines::Both;
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroPermission->UseAjax = NarroApp::$blnUseAjax;
+            $this->dtgNarroPermission->UseAjax = NarroApp::$UseAjax;
 
             // Specify the local databind method this datagrid will use
             $this->dtgNarroPermission->SetDataBinder('dtgNarroPermission_Bind', $this);
@@ -73,7 +73,7 @@
                     )
                 )
             );
-            if (NarroApp::$blnUseAjax)
+            if (NarroApp::$UseAjax)
                 $chkPermission->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkPermission_Click'));
             else
                 $chkPermission->AddAction(new QClickEvent(), new QServerControlAction($this, 'chkPermission_Click'));

@@ -58,7 +58,7 @@
 
             // Datagrid Paginator
             $this->dtgNarroUserList->Paginator = new QPaginator($this->dtgNarroUserList);
-            $this->dtgNarroUserList->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroUserList->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
 
 
             // Specify Whether or Not to Refresh using Ajax
@@ -69,12 +69,12 @@
 
             $this->dtgNarroUserList->AddColumn($this->colUsername);
 
-            if (NarroApp::$objUser->hasPermission('Administrator', null, NarroApp::$Language->LanguageId)) {
+            if (NarroApp::HasPermissionForThisLang('Administrator', null)) {
                 $this->dtgNarroUserList->AddColumn($this->colEmail);
                 $this->dtgNarroUserList->AddColumn($this->colPreferences);
             }
 
-            if (NarroApp::$objUser->hasPermission('Can manage users', null, NarroApp::$Language->LanguageId)) {
+            if (NarroApp::HasPermissionForThisLang('Can manage users', null)) {
                 $this->dtgNarroUserList->AddColumn($this->colRoles);
                 $this->dtgNarroUserList->AddColumn($this->colActions);
             }
@@ -120,7 +120,7 @@
         }
 
         public function dtgNarroUserList_ActionsColumn_Render(NarroUser $objNarroUser) {
-            if ($objNarroUser->UserId != NarroApp::$objUser->UserId)
+            if ($objNarroUser->UserId != NarroApp::GetUserId())
                 return
                     NarroLink::UserPreferences($objNarroUser->UserId, t('Preferences')) . ' | ' .
                     NarroLink::UserRole($objNarroUser->UserId, t('Roles'));

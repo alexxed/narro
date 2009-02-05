@@ -108,7 +108,7 @@
                 return false;
             }
             else {
-                $arrResult = NarroApp::$objPluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                $arrResult = NarroApp::$PluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[0]) != '' &&
@@ -125,7 +125,7 @@
             }
 
             if ($strTranslation != '') {
-                $arrResult = NarroApp::$objPluginHandler->SaveSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                $arrResult = NarroApp::$PluginHandler->SaveSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[1]) != '' &&
@@ -149,7 +149,7 @@
             }
             else {
                 $strContext = trim($strContext);
-                $arrResult = NarroApp::$objPluginHandler->SaveContext($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                $arrResult = NarroApp::$PluginHandler->SaveContext($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[2]) != '' &&
@@ -166,7 +166,7 @@
             }
 
             if (!is_null($strComment) && trim($strComment) != '') {
-                $arrResult = NarroApp::$objPluginHandler->SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $this->objFile, $this->objProject);
+                $arrResult = NarroApp::$PluginHandler->SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[3]) != '' &&
@@ -377,7 +377,7 @@
 
                 if ($objContextInfo instanceof NarroContextInfo && $this->blnApprove && $objContextInfo->ValidSuggestionId != $objNarroSuggestion->SuggestionId) {
                     $objContextInfo->ValidSuggestionId = $objNarroSuggestion->SuggestionId;
-                    $objContextInfo->ValidatorUserId = NarroApp::$objUser->UserId;
+                    $objContextInfo->ValidatorUserId = NarroApp::GetUserId();
                     $blnContextInfoChanged = true;
                     NarroImportStatistics::$arrStatistics['Approved suggestions']++;
                 }
@@ -621,9 +621,9 @@
                         }
                     }
                 case 5:
-                    $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, NarroApp::$objUser->UserId);
+                    $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, NarroApp::GetUserId());
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        NarroLog::LogMessage(1, sprintf('Exporting %s\'s suggestion "%s" for "%s"', NarroApp::$objUser->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        NarroLog::LogMessage(1, sprintf('Exporting %s\'s suggestion "%s" for "%s"', NarroApp::$User->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {

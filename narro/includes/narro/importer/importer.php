@@ -101,7 +101,7 @@
             }
         }
 
-        NarroApp::$objUser = $objUser;
+        NarroApp::$User = $objUser;
 
         /**
          * Load the specified project
@@ -202,7 +202,7 @@
             }
         }
 
-        NarroApp::$objUser = $objUser;
+        NarroApp::$User = $objUser;
 
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {

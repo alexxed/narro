@@ -49,13 +49,13 @@
             $this->btnCancel->Text = t('Cancel');
             $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
 
-            if (NarroApp::$objUser->UserId != NarroApp::QueryString('u') && NarroApp::$objUser->hasPermission('Can manage users')) {
+            if (NarroApp::GetUserId() != NarroApp::QueryString('u') && NarroApp::HasPermission('Can manage users')) {
                 $this->objUser = NarroUser::LoadByUserId(NarroApp::QueryString('u'));
                 $this->lblMessage->ForeColor = 'red';
                 $this->lblMessage->Text = t('Warning, you are editing another user\'s preferences!');
             }
             else {
-                $this->objUser = NarroApp::$objUser;
+                $this->objUser = NarroApp::$User;
             }
 
         }
@@ -158,12 +158,12 @@
             /**
              * Don't save the preferences for the anonymous user in the database
              */
-            if ($this->objUser->UserId == 0 && (!is_numeric(NarroApp::QueryString('u')) || !NarroApp::$objUser->hasPermission('Can manage users')))
+            if ($this->objUser->UserId == 0 && (!is_numeric(NarroApp::QueryString('u')) || !NarroApp::HasPermission('Can manage users')))
                 return true;
 
             try {
                 $this->objUser->Save();
-                if (NarroApp::$objUser->UserId != NarroApp::QueryString('u') && NarroApp::$objUser->hasPermission('Can manage users'))
+                if (NarroApp::GetUserId() != NarroApp::QueryString('u') && NarroApp::HasPermission('Can manage users'))
                     $this->lblMessage->Text = sprintf(t('Preferences for %s were saved successfuly.'), $this->objUser->Username);
                 else
                     $this->lblMessage->Text = t('Your preferences were saved successfuly.');

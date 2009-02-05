@@ -17,9 +17,9 @@
      */
 
     class NarroApp extends QApplication {
-        public static $blnUseAjax = true;
-        public static $objUser;
-        public static $objPluginHandler;
+        public static $UseAjax = true;
+        public static $User;
+        public static $PluginHandler;
         public static $arrPreferences;
         public static $arrFormats;
         public static $Cache;
@@ -36,6 +36,22 @@
 
         public static function RegisterFormat($strName, $strPluginName) {
             self::$arrFileFormats[$strName] = $strPluginName;
+        }
+
+        public static function GetUserId() {
+            return self::$User->UserId;
+        }
+
+        public static function GetLanguageId() {
+            return self::$Language->LanguageId;
+        }
+
+        public static function HasPermissionForThisLang($strPermissionName, $intProjectId = null) {
+            return self::$User->hasPermission($strPermissionName, $intProjectId, self::GetLanguageId());
+        }
+
+        public static function HasPermission($strPermissionName, $intProjectId = null, $intLanguageId = null) {
+            return self::$User->hasPermission($strPermissionName, $intProjectId, $intLanguageId);
         }
 
         /**
@@ -120,21 +136,21 @@
     NarroApp::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     NarroApp::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
     NarroApp::RegisterPreference('Language', 'option', 'The language you are translating to.', NarroApp::QueryString('l'), array(NarroApp::QueryString('l')));
-    NarroApp::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(NarroApp::$Language))?NarroApp::$Language->LanguageId:1, array((isset(NarroApp::$Language))?NarroApp::$Language->LanguageId:1));
+    NarroApp::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(NarroApp::$Language))?NarroApp::GetLanguageId():1, array((isset(NarroApp::$Language))?NarroApp::GetLanguageId():1));
     NarroApp::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
     NarroApp::RegisterPreference('Other languages', 'text', 'Other languages that you want to check for suggestions, separated by spaces.', 'ro');
 
     if (isset($objNarroSession->User) && $objNarroSession->User instanceof NarroUser)
-        NarroApp::$objUser = $objNarroSession->User;
+        NarroApp::$User = $objNarroSession->User;
     else
-        NarroApp::$objUser = NarroUser::LoadAnonymousUser();
+        NarroApp::$User = NarroUser::LoadAnonymousUser();
 
-    if (!NarroApp::$objUser instanceof NarroUser)
+    if (!NarroApp::$User instanceof NarroUser)
         // @todo add handling here
         throw Exception('Could not create an instance of NarroUser');
 
     if (!isset(NarroApp::$Language))
-        NarroApp::$Language = NarroApp::$objUser->Language;
+        NarroApp::$Language = NarroApp::$User->Language;
 
     NarroApp::$LanguageCode = NarroApp::$Language->LanguageCode;
 
@@ -186,5 +202,5 @@
     NarroApp::$ClassFile['NarroUserSuggestionsPanel'] = __INCLUDES__ . '/narro/NarroUserSuggestionsPanel.class.php';
     NarroApp::$ClassFile['NarroUtils'] = __INCLUDES__ . '/narro/NarroUtils.class.php';
 
-    NarroApp::$objPluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
+    NarroApp::$PluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
 ?>

@@ -110,7 +110,7 @@
                 }
 
 
-                $arrResult = NarroApp::$objPluginHandler->ExportSuggestion($strText, $strSuggestionValue, $strContext, new NarroFile(), $this->objProject);
+                $arrResult = NarroApp::$PluginHandler->ExportSuggestion($strText, $strSuggestionValue, $strContext, new NarroFile(), $this->objProject);
                 if
                 (
                     trim($arrResult[1]) != '' &&
