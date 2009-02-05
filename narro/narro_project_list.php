@@ -41,7 +41,7 @@
             $this->colProjectType = new QDataGridColumn(t('Type'), '<?= $_FORM->dtgNarroProject_ProjectTypeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectType), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectType, false)));
             $this->colActive = new QDataGridColumn(t('Active'), '<?= $_FORM->dtgNarroProject_ActiveColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->Active), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->Active, false)));
 
-            $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>');
+            $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProgressPercent), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProgressPercent, false)));
             $this->colPercentTranslated->HtmlEntities = false;
 
             $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_FORM->dtgNarroProject_Actions_Render($_ITEM) ?>');
@@ -78,9 +78,9 @@
         }
 
         public function dtgNarroProject_PercentTranslated_Render(NarroProject $objNarroProject) {
-            $intTotalTexts = NarroCache::CountAllTextsByProjectAndLanguage($objNarroProject->ProjectId);
-            $intTranslatedTexts = NarroCache::CountTranslatedTextsByProjectAndLanguage($objNarroProject->ProjectId);
-            $intApprovedTexts = NarroCache::CountApprovedTextsByProjectAndLanguage($objNarroProject->ProjectId);
+            $intTotalTexts = $objNarroProject->CountAllTextsByLanguage();
+            $intTranslatedTexts = $objNarroProject->CountTranslatedTextsByLanguage();
+            $intApprovedTexts = $objNarroProject->CountApprovedTextsByLanguage();
 
             $objProgressBar = $this->GetControl('progressbar' . $objNarroProject->ProjectId);
             if (!$objProgressBar instanceof NarroTranslationProgressBar)
@@ -108,9 +108,9 @@
         }
 
         public function dtgNarroProject_ProjectNameColumn_Render(NarroProject $objNarroProject) {
-            $intTotalTexts = NarroCache::CountAllTextsByProjectAndLanguage($objNarroProject->ProjectId);
-            $intTranslatedTexts = NarroCache::CountTranslatedTextsByProjectAndLanguage($objNarroProject->ProjectId);
-            $intApprovedTexts = NarroCache::CountApprovedTextsByProjectAndLanguage($objNarroProject->ProjectId);
+            $intTotalTexts = $objNarroProject->CountAllTextsByLanguage();
+            $intTranslatedTexts = $objNarroProject->CountTranslatedTextsByLanguage();
+            $intApprovedTexts = $objNarroProject->CountApprovedTextsByLanguage();
 
             return
                 NarroLink::ContextSuggest(

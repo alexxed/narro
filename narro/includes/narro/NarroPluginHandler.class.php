@@ -21,6 +21,10 @@
         protected $arrPluginReturnValues;
         protected $arrPlugins;
         protected $arrKnownMethods = array(
+            'AddText',
+            'AddSuggestion',
+            'ActivateFile',
+            'ActivateFolder',
             'SaveSuggestion',
             'SaveText',
             'SaveContext',
@@ -28,6 +32,7 @@
             'SaveContextComment',
             'DeleteSuggestion',
             'ApproveSuggestion',
+            'DisapproveSuggestion',
             'ApproveSuggestionComment',
             'ApproveContextComment',
             'DisplaySuggestion',

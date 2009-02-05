@@ -417,10 +417,6 @@
                 );
 
                 proc_close(proc_open ("$strCommand &", array(), $foo));
-                /**
-                 * give the process a few seconds to start
-                 */
-                sleep(3);
             } elseif ($strParameter != 1) {
                 set_time_limit(0);
 
@@ -471,7 +467,7 @@
                 $this->showLog();
 
                 $objNarroImporter->CleanImportDirectory();
-                NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
+                NarroLog::LogMessage(3, var_export(NarroImportStatistics::$arrStatistics, true));
 
                 $this->btnImport_Click($strFormId, $strControlId, 1);
             }
@@ -631,7 +627,7 @@
                 }
 
                 $objNarroImporter->CleanExportDirectory();
-                NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
+                NarroLog::LogMessage(3, var_export(NarroImportStatistics::$arrStatistics, true));
                 $this->showLog();
 
                 $this->btnExport_Click($strFormId, $strControlId, 1);

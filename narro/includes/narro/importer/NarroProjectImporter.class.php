@@ -113,84 +113,12 @@
 
                     if (is_dir($this->strTemplatePath))
                         $this->ImportFromDirectory();
-                    elseif (is_file($this->strTemplatePath))
-                        $this->ImportFromFile();
                     else
-                        throw new Exception(sprintf(t('"%s" is not a file or a directory.'), $this->strTemplatePath));
+                        throw new Exception(sprintf('"%s" is not a directory.', $this->strTemplatePath));
             }
 
             $this->stopTimer();
             NarroLog::LogMessage(3, sprintf('Import finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
-        }
-
-        public function ImportFromFile() {
-
-            $objDatabase = NarroApp::$Database[1];
-
-            NarroLog::SetLogFile($this->objProject->ProjectId . '-' . $this->objTargetLanguage->LanguageCode . '-import.log');;
-
-            if (!$intFileType = $this->GetFileType($this->strTranslationPath))
-                throw new Exception(t('Unrecognizable file type given for import.'));
-
-
-            $objFile = NarroFile::QuerySingle(
-                            QQ::AndCondition(
-                                QQ::Equal(
-                                    QQN::NarroFile()->ProjectId,
-                                    $this->objProject->ProjectId
-                                ),
-                                QQ::Equal(
-                                    QQN::NarroFile()->FileName,
-                                    basename($this->strTranslationPath)
-                                ),
-                                QQ::IsNull(
-                                    QQN::NarroFile()->ParentId
-                                )
-                            )
-            );
-
-            if (!$objFile instanceof NarroFile) {
-                /**
-                 * add the file
-                 */
-                $objFile = new NarroFile();
-                $objFile->FileName = basename($this->strTranslationPath);
-                $objFile->TypeId = $intFileType;
-                $objFile->ParentId = null;
-                $objFile->ProjectId = $this->objProject->ProjectId;
-                $objFile->Modified = date('Y-m-d H:i:s');
-                $objFile->Created = date('Y-m-d H:i:s');
-                NarroLog::LogMessage(1, sprintf('Added file "%s" from "%s"', basename($this->strTranslationPath), dirname($this->strTranslationPath)));
-                NarroImportStatistics::$arrStatistics['Imported files']++;
-            }
-            else {
-                $objFile->Modified = date('Y-m-d H:i:s');
-            }
-
-            $objFile->Active = 1;
-            $objFile->Save();
-
-            if ($this->blnDeactivateFiles) {
-                $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d AND file_id=%d", $this->objProject->ProjectId, $objFile->FileId);
-                try {
-                    $objDatabase->NonQuery($strQuery);
-                }catch (Exception $objEx) {
-                    throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-                }
-            }
-
-            if ($this->blnDeactivateContexts) {
-                $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d AND file_id=%d AND active=1", $this->objProject->ProjectId, $objFile->FileId);
-                try {
-                    $objDatabase->NonQuery($strQuery);
-                }catch (Exception $objEx) {
-                    throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-                }
-            }
-
-            chdir(dirname($this->strTranslationPath));
-            $this->ImportFile($objFile, $this->strTemplatePath, $this->strTranslationPath);
-
         }
 
         public function ImportFromDirectory() {
@@ -283,6 +211,7 @@
                             $objFile->FilePath = $strPath;
                             $objFile->Modified = date('Y-m-d H:i:s');
                             $objFile->Save();
+                            NarroApp::$PluginHandler->ActivateFolder($objFile, $this->objProject);
                         }
                         else {
                             /**
@@ -344,6 +273,7 @@
                     $objFile->Modified = date('Y-m-d H:i:s');
                     $objFile->Created = date('Y-m-d H:i:s');
                     $objFile->Save();
+                    NarroApp::$PluginHandler->ActivateFile($objFile, $this->objProject);
                     NarroLog::LogMessage(1, sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
@@ -363,11 +293,6 @@
                 NarroProgress::SetProgress((int) ceil(($intFileNo*100)/$intTotalFilesToProcess), $this->objProject->ProjectId, 'import');
 
             }
-
-            /**
-             * clear the progress cache
-             */
-            NarroCache::ClearAllTextsCount($this->objProject->ProjectId, $this->objTargetLanguage->LanguageId);
 
         }
 
@@ -417,10 +342,8 @@
 
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
                 $this->ExportFromDirectory();
-            elseif (is_file($this->strTemplatePath))
-                $this->ExportToFile();
             else
-                throw new Exception(sprintf(t('%s does not exist or it is not a directory or file'), $this->strTemplatePath));
+                throw new Exception(sprintf('%s does not exist or it is not a directory', $this->strTemplatePath));
 
             if (function_exists('system') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../export.sh')) {
                 NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__,
@@ -443,54 +366,6 @@
             NarroLog::LogMessage(3, sprintf('Export finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
         }
 
-        public function ExportToFile() {
-            $strDirectory = dirname($this->strTemplatePath);
-
-            chdir($strDirectory);
-
-            NarroLog::SetLogFile($this->objProject->ProjectId . '-' . $this->objTargetLanguage->LanguageCode . '-export.log');
-
-            NarroLog::LogMessage(1, sprintf('Exporting to "%s" using template "%s"', $this->strTranslationPath, $this->strTemplatePath));
-
-            $objFile = NarroFile::QuerySingle(
-                            QQ::AndCondition(
-                                QQ::Equal(
-                                    QQN::NarroFile()->ProjectId,
-                                    $this->objProject->ProjectId
-                                ),
-                                QQ::Equal(
-                                    QQN::NarroFile()->FileName,
-                                    basename($this->strTemplatePath)
-                                ),
-                                QQ::IsNull(
-                                    QQN::NarroFile()->ParentId
-                                )
-                            )
-            );
-
-            if (!$objFile instanceof NarroFile) {
-                $objFile = NarroFile::QuerySingle(
-                            QQ::AndCondition(
-                                QQ::Equal(
-                                    QQN::NarroFile()->ProjectId,
-                                    $this->objProject->ProjectId
-                                ),
-                                QQ::IsNotNull(
-                                    QQN::NarroFile()->ParentId
-                                )
-                            )
-                );
-
-                if (!$objFile instanceof NarroFile)
-                    throw new Exception(t('There are no files in the database for this project.'));
-            }
-
-
-            $this->ExportFile($objFile, $this->strTemplatePath, $this->strTranslationPath);
-
-            NarroImportStatistics::$arrStatistics['Exported files']++;
-
-        }
 
         public function ExportFromDirectory() {
 

@@ -521,7 +521,6 @@
                   return false;
 
                 $objSuggestion->Delete();
-                NarroCache::ClearAllTextsCount($this->objNarroContextInfo->Context->ProjectId);
 
                 if (NarroSuggestion::QueryCount(QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId)) == 0) {
                     $arrCtx = NarroContextInfo::QueryArray(QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $this->objNarroContextInfo->Context->TextId));

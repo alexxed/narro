@@ -27,6 +27,8 @@
         <div style="text-align:right">
             <?php echo t('Show') ?>: <?php $this->lstTextFilter->Render() ?> &nbsp;&nbsp;&nbsp;<?php echo t('Search') ?>: <?php $this->txtSearch->Render(); $this->lstSearchType->Render(); ?>&nbsp;
             <?php $this->btnSearch->Render(); ?>
+            <br />
+            <?php $this->btnMultiApprove->Render(); ?>
         </div>
         <br />
         <?php $this->dtgNarroContextInfo->Render() ?>

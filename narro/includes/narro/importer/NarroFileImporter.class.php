@@ -198,6 +198,8 @@
                 $objNarroText->Modified = date('Y-m-d H:i:s');
                 $objNarroText->Created = date('Y-m-d H:i:s');
 
+                NarroApp::$PluginHandler->AddText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+
                 try {
                     $objNarroText->Save();
                     NarroLog::LogMessage(1, sprintf('Added text "%s" from the file "%s"', $strOriginal, $this->objFile->FileName));
@@ -362,6 +364,9 @@
                     $objNarroSuggestion->Modified = date('Y-m-d H:i:s');
                     $objNarroSuggestion->Created = date('Y-m-d H:i:s');
                     $objNarroSuggestion->Save();
+
+                    NarroApp::$PluginHandler->AddSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+
                     /**
                      * update the HasSuggestions if it was 0 and we added a suggestion
                      */

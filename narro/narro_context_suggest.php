@@ -629,7 +629,7 @@
                 }
             }
 
-            NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId);
+            NarroApp::$PluginHandler->AddSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $strSuggestionValue, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
 
             $arrNarroText = NarroText::QueryArray(QQ::Equal(QQN::NarroText()->TextValue, $this->objNarroContextInfo->Context->Text->TextValue));
             if (count($arrNarroText)) {
@@ -662,7 +662,6 @@
                 $this->objNarroContextInfo->Save();
 
                 NarroApp::$PluginHandler->ApproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
-                NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId);
             }
 
 
@@ -859,9 +858,11 @@
             if ($strParameter != $this->objNarroContextInfo->ValidSuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = (int) $strParameter;
                 $this->objNarroContextInfo->ValidatorUserId = NarroApp::GetUserId();
+                NarroApp::$PluginHandler->ApproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             }
             else {
                 $this->objNarroContextInfo->ValidSuggestionId = null;
+                NarroApp::$PluginHandler->DisapproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             }
 
             $objSuggestion = NarroSuggestion::Load($strParameter);
@@ -876,8 +877,6 @@
 
             $this->objNarroContextInfo->Modified = date('Y-m-d H:i:s');
             $this->objNarroContextInfo->Save();
-            NarroApp::$PluginHandler->ApproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
-            NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId);
 
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();

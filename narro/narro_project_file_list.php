@@ -97,7 +97,7 @@
             $this->colFileName = new QDataGridColumn(t('File name'), '<?= $_FORM->dtgNarroFile_FileNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName, false)));
             $this->colFileName->HtmlEntities = false;
 
-            $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroFile_PercentTranslated_Render($_ITEM); ?>');
+            $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroFile_PercentTranslated_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->ProgressPercent), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->ProgressPercent, false)));
             $this->colPercentTranslated->HtmlEntities = false;
             $this->colPercentTranslated->Width = 160;
 
@@ -134,58 +134,15 @@
         }
 
         public function dtgNarroFile_PercentTranslated_Render(NarroFile $objNarroFile) {
-            $sOutput = '';
+            $objProgressBar = $this->GetControl('progressbar' . $objNarroFile->FileId);
+            if (!$objProgressBar instanceof NarroTranslationProgressBar)
+                $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroFile, 'progressbar' . $objNarroFile->FileId);
 
-            $objDatabase = NarroApp::$Database[1];
+            $objProgressBar->Total = $objNarroFile->CountAllTextsByLanguage();
+            $objProgressBar->Translated = $objNarroFile->CountApprovedTextsByLanguage();
+            $objProgressBar->Fuzzy = $objNarroFile->CountTranslatedTextsByLanguage();
 
-            if ($objNarroFile->TypeId == NarroFileType::Folder)
-                $strQuery = sprintf('SELECT COUNT(DISTINCT c.context_id) AS cnt FROM `narro_context` c, `narro_file` f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.project_id=%d AND c.active=1 AND f.file_path LIKE \'%s%%\'', $objNarroFile->ProjectId, $objNarroFile->FilePath);
-            else
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c WHERE c.project_id=%d AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, $objNarroFile->FileId);
-
-            // Perform the Query
-            $objDbResult = $objDatabase->Query($strQuery);
-
-            if ($objDbResult) {
-                $mixRow = $objDbResult->FetchArray();
-                $intTotalTexts = $mixRow['cnt'];
-
-                if ($objNarroFile->TypeId == NarroFileType::Folder)
-                    $strQuery = sprintf('SELECT COUNT(DISTINCT c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1 AND f.file_path LIKE \'%s%%\'', $objNarroFile->ProjectId, NarroApp::GetLanguageId(), $objNarroFile->FilePath);
-                else
-                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, NarroApp::GetLanguageId(), $objNarroFile->FileId);
-
-                // Perform the Query
-                $objDbResult = $objDatabase->Query($strQuery);
-
-                if ($objDbResult) {
-                    $mixRow = $objDbResult->FetchArray();
-                    $intNotApprovedTexts = $mixRow['cnt'];
-                }
-
-                if ($objNarroFile->TypeId == NarroFileType::Folder)
-                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1 AND f.file_path LIKE \'%s%%\'', $objNarroFile->ProjectId, NarroApp::GetLanguageId(), $objNarroFile->FilePath);
-                else
-                    $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1 AND c.file_id=%d', $objNarroFile->ProjectId, NarroApp::GetLanguageId(), $objNarroFile->FileId);
-                // Perform the Query
-                $objDbResult = $objDatabase->Query($strQuery);
-
-                if ($objDbResult) {
-                    $mixRow = $objDbResult->FetchArray();
-                    $intApprovedTexts = $mixRow['cnt'];
-                }
-
-                $objProgressBar = $this->GetControl('progressbar' . $objNarroFile->FileId);
-                if (!$objProgressBar instanceof NarroTranslationProgressBar)
-                    $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroFile, 'progressbar' . $objNarroFile->FileId);
-
-                $objProgressBar->Total = $intTotalTexts;
-                $objProgressBar->Translated = $intApprovedTexts;
-                $objProgressBar->Fuzzy = $intNotApprovedTexts;
-
-                $sOutput .= $objProgressBar->Render(false);
-
-            }
+            $sOutput = $objProgressBar->Render(false);
 
             if ($objNarroFile->TypeId == NarroFileType::Folder)
                 return $sOutput;
@@ -460,10 +417,6 @@
 
             $objFileImporter->ImportFile(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US' . $objFile->FilePath, $objFileControl->File);
 
-            /**
-             * clear the progress cache
-             */
-            NarroCache::ClearAllTextsCount($this->objNarroProject->ProjectId, NarroApp::GetLanguageId());
         }
 
     }

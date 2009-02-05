@@ -172,7 +172,15 @@
                         $intProcessed++;
                         $objContextInfo = NarroContextInfo::Load($intContextInfoId);
                         if ($objContextInfo->ValidSuggestionId != $objSuggestionList->SelectedValue) {
-                            $objContextInfo->ValidSuggestionId = $objSuggestionList->SelectedValue;
+                            if ($objSuggestionList->SelectedValue) {
+                                $objContextInfo->ValidSuggestionId = $objSuggestionList->SelectedValue;
+                                NarroApp::$PluginHandler->ApproveSuggestion($objContextInfo->Context->Text->TextValue, $objSuggestionList->SelectedName, $objContextInfo->Context->Context, $objContextInfo->Context->File, $objContextInfo->Context->Project);
+                            }
+                            else {
+                                $objContextInfo->ValidSuggestionId = null;
+                                NarroApp::$PluginHandler->DisapproveSuggestion($objContextInfo->Context->Text->TextValue, $objSuggestionList->SelectedName, $objContextInfo->Context->Context, $objContextInfo->Context->File, $objContextInfo->Context->Project);
+                            }
+
                             $objContextInfo->ValidatorUserId = NarroApp::GetUserId();
                             try {
                                 $objContextInfo->Save();
