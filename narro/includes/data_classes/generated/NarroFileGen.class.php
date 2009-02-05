@@ -275,7 +275,10 @@
 			$objBuilder->AddSelectItem($strTableName . '.`parent_id` AS ' . $strAliasPrefix . 'parent_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`type_id` AS ' . $strAliasPrefix . 'type_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`project_id` AS ' . $strAliasPrefix . 'project_id`');
-			$objBuilder->AddSelectItem($strTableName . '.`context_count` AS ' . $strAliasPrefix . 'context_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`total_text_count` AS ' . $strAliasPrefix . 'total_text_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`fuzzy_text_count` AS ' . $strAliasPrefix . 'fuzzy_text_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`approved_text_count` AS ' . $strAliasPrefix . 'approved_text_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`progress_percent` AS ' . $strAliasPrefix . 'progress_percent`');
 			$objBuilder->AddSelectItem($strTableName . '.`active` AS ' . $strAliasPrefix . 'active`');
 			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
 			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
@@ -353,7 +356,10 @@
 			$objToReturn->intParentId = $objDbRow->GetColumn($strAliasPrefix . 'parent_id', 'Integer');
 			$objToReturn->intTypeId = $objDbRow->GetColumn($strAliasPrefix . 'type_id', 'Integer');
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasPrefix . 'project_id', 'Integer');
-			$objToReturn->intContextCount = $objDbRow->GetColumn($strAliasPrefix . 'context_count', 'Integer');
+			$objToReturn->intTotalTextCount = $objDbRow->GetColumn($strAliasPrefix . 'total_text_count', 'Integer');
+			$objToReturn->intFuzzyTextCount = $objDbRow->GetColumn($strAliasPrefix . 'fuzzy_text_count', 'Integer');
+			$objToReturn->intApprovedTextCount = $objDbRow->GetColumn($strAliasPrefix . 'approved_text_count', 'Integer');
+			$objToReturn->intProgressPercent = $objDbRow->GetColumn($strAliasPrefix . 'progress_percent', 'Integer');
 			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Bit');
 			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
 			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
@@ -595,7 +601,10 @@
 							`parent_id`,
 							`type_id`,
 							`project_id`,
-							`context_count`,
+							`total_text_count`,
+							`fuzzy_text_count`,
+							`approved_text_count`,
+							`progress_percent`,
 							`active`,
 							`created`,
 							`modified`
@@ -606,7 +615,10 @@
 							' . $objDatabase->SqlVariable($this->intParentId) . ',
 							' . $objDatabase->SqlVariable($this->intTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							' . $objDatabase->SqlVariable($this->intContextCount) . ',
+							' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
+							' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
+							' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
+							' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
 							' . $objDatabase->SqlVariable($this->blnActive) . ',
 							' . $objDatabase->SqlVariable($this->strCreated) . ',
 							' . $objDatabase->SqlVariable($this->strModified) . '
@@ -631,7 +643,10 @@
 							`parent_id` = ' . $objDatabase->SqlVariable($this->intParentId) . ',
 							`type_id` = ' . $objDatabase->SqlVariable($this->intTypeId) . ',
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							`context_count` = ' . $objDatabase->SqlVariable($this->intContextCount) . ',
+							`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
+							`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
+							`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
+							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
 							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
 							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
@@ -767,12 +782,33 @@
 					 */
 					return $this->intProjectId;
 
-				case 'ContextCount':
+				case 'TotalTextCount':
 					/**
-					 * Gets the value for intContextCount 
+					 * Gets the value for intTotalTextCount 
 					 * @return integer
 					 */
-					return $this->intContextCount;
+					return $this->intTotalTextCount;
+
+				case 'FuzzyTextCount':
+					/**
+					 * Gets the value for intFuzzyTextCount 
+					 * @return integer
+					 */
+					return $this->intFuzzyTextCount;
+
+				case 'ApprovedTextCount':
+					/**
+					 * Gets the value for intApprovedTextCount 
+					 * @return integer
+					 */
+					return $this->intApprovedTextCount;
+
+				case 'ProgressPercent':
+					/**
+					 * Gets the value for intProgressPercent 
+					 * @return integer
+					 */
+					return $this->intProgressPercent;
 
 				case 'Active':
 					/**
@@ -968,14 +1004,53 @@
 						throw $objExc;
 					}
 
-				case 'ContextCount':
+				case 'TotalTextCount':
 					/**
-					 * Sets the value for intContextCount 
+					 * Sets the value for intTotalTextCount 
 					 * @param integer $mixValue
 					 * @return integer
 					 */
 					try {
-						return ($this->intContextCount = QType::Cast($mixValue, QType::Integer));
+						return ($this->intTotalTextCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'FuzzyTextCount':
+					/**
+					 * Sets the value for intFuzzyTextCount 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intFuzzyTextCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ApprovedTextCount':
+					/**
+					 * Sets the value for intApprovedTextCount 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intApprovedTextCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ProgressPercent':
+					/**
+					 * Sets the value for intProgressPercent 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intProgressPercent = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1482,11 +1557,35 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_file.context_count
-		 * @var integer intContextCount
+		 * Protected member variable that maps to the database column narro_file.total_text_count
+		 * @var integer intTotalTextCount
 		 */
-		protected $intContextCount;
-		const ContextCountDefault = null;
+		protected $intTotalTextCount;
+		const TotalTextCountDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_file.fuzzy_text_count
+		 * @var integer intFuzzyTextCount
+		 */
+		protected $intFuzzyTextCount;
+		const FuzzyTextCountDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_file.approved_text_count
+		 * @var integer intApprovedTextCount
+		 */
+		protected $intApprovedTextCount;
+		const ApprovedTextCountDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_file.progress_percent
+		 * @var integer intProgressPercent
+		 */
+		protected $intProgressPercent;
+		const ProgressPercentDefault = null;
 
 
 		/**
@@ -1604,7 +1703,10 @@
 			$strToReturn .= '<element name="Parent" type="xsd1:NarroFile"/>';
 			$strToReturn .= '<element name="TypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Project" type="xsd1:NarroProject"/>';
-			$strToReturn .= '<element name="ContextCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="TotalTextCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="FuzzyTextCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="ApprovedTextCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="ProgressPercent" type="xsd:int"/>';
 			$strToReturn .= '<element name="Active" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Created" type="xsd:string"/>';
 			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
@@ -1648,8 +1750,14 @@
 			if ((property_exists($objSoapObject, 'Project')) &&
 				($objSoapObject->Project))
 				$objToReturn->Project = NarroProject::GetObjectFromSoapObject($objSoapObject->Project);
-			if (property_exists($objSoapObject, 'ContextCount'))
-				$objToReturn->intContextCount = $objSoapObject->ContextCount;
+			if (property_exists($objSoapObject, 'TotalTextCount'))
+				$objToReturn->intTotalTextCount = $objSoapObject->TotalTextCount;
+			if (property_exists($objSoapObject, 'FuzzyTextCount'))
+				$objToReturn->intFuzzyTextCount = $objSoapObject->FuzzyTextCount;
+			if (property_exists($objSoapObject, 'ApprovedTextCount'))
+				$objToReturn->intApprovedTextCount = $objSoapObject->ApprovedTextCount;
+			if (property_exists($objSoapObject, 'ProgressPercent'))
+				$objToReturn->intProgressPercent = $objSoapObject->ProgressPercent;
 			if (property_exists($objSoapObject, 'Active'))
 				$objToReturn->blnActive = $objSoapObject->Active;
 			if (property_exists($objSoapObject, 'Created'))
@@ -1718,8 +1826,14 @@
 					return new QQNode('project_id', 'integer', $this);
 				case 'Project':
 					return new QQNodeNarroProject('project_id', 'integer', $this);
-				case 'ContextCount':
-					return new QQNode('context_count', 'integer', $this);
+				case 'TotalTextCount':
+					return new QQNode('total_text_count', 'integer', $this);
+				case 'FuzzyTextCount':
+					return new QQNode('fuzzy_text_count', 'integer', $this);
+				case 'ApprovedTextCount':
+					return new QQNode('approved_text_count', 'integer', $this);
+				case 'ProgressPercent':
+					return new QQNode('progress_percent', 'integer', $this);
 				case 'Active':
 					return new QQNode('active', 'boolean', $this);
 				case 'Created':
@@ -1768,8 +1882,14 @@
 					return new QQNode('project_id', 'integer', $this);
 				case 'Project':
 					return new QQNodeNarroProject('project_id', 'integer', $this);
-				case 'ContextCount':
-					return new QQNode('context_count', 'integer', $this);
+				case 'TotalTextCount':
+					return new QQNode('total_text_count', 'integer', $this);
+				case 'FuzzyTextCount':
+					return new QQNode('fuzzy_text_count', 'integer', $this);
+				case 'ApprovedTextCount':
+					return new QQNode('approved_text_count', 'integer', $this);
+				case 'ProgressPercent':
+					return new QQNode('progress_percent', 'integer', $this);
 				case 'Active':
 					return new QQNode('active', 'boolean', $this);
 				case 'Created':

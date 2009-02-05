@@ -273,6 +273,10 @@
 			$objBuilder->AddSelectItem($strTableName . '.`project_name` AS ' . $strAliasPrefix . 'project_name`');
 			$objBuilder->AddSelectItem($strTableName . '.`project_type` AS ' . $strAliasPrefix . 'project_type`');
 			$objBuilder->AddSelectItem($strTableName . '.`project_description` AS ' . $strAliasPrefix . 'project_description`');
+			$objBuilder->AddSelectItem($strTableName . '.`total_text_count` AS ' . $strAliasPrefix . 'total_text_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`fuzzy_text_count` AS ' . $strAliasPrefix . 'fuzzy_text_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`approved_text_count` AS ' . $strAliasPrefix . 'approved_text_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`progress_percent` AS ' . $strAliasPrefix . 'progress_percent`');
 			$objBuilder->AddSelectItem($strTableName . '.`active` AS ' . $strAliasPrefix . 'active`');
 		}
 
@@ -370,6 +374,10 @@
 			$objToReturn->strProjectName = $objDbRow->GetColumn($strAliasPrefix . 'project_name', 'VarChar');
 			$objToReturn->intProjectType = $objDbRow->GetColumn($strAliasPrefix . 'project_type', 'Integer');
 			$objToReturn->strProjectDescription = $objDbRow->GetColumn($strAliasPrefix . 'project_description', 'VarChar');
+			$objToReturn->intTotalTextCount = $objDbRow->GetColumn($strAliasPrefix . 'total_text_count', 'Integer');
+			$objToReturn->intFuzzyTextCount = $objDbRow->GetColumn($strAliasPrefix . 'fuzzy_text_count', 'Integer');
+			$objToReturn->intApprovedTextCount = $objDbRow->GetColumn($strAliasPrefix . 'approved_text_count', 'Integer');
+			$objToReturn->intProgressPercent = $objDbRow->GetColumn($strAliasPrefix . 'progress_percent', 'Integer');
 			$objToReturn->intActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Integer');
 
 			// Instantiate Virtual Attributes
@@ -583,12 +591,20 @@
 							`project_name`,
 							`project_type`,
 							`project_description`,
+							`total_text_count`,
+							`fuzzy_text_count`,
+							`approved_text_count`,
+							`progress_percent`,
 							`active`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intProjectCategoryId) . ',
 							' . $objDatabase->SqlVariable($this->strProjectName) . ',
 							' . $objDatabase->SqlVariable($this->intProjectType) . ',
 							' . $objDatabase->SqlVariable($this->strProjectDescription) . ',
+							' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
+							' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
+							' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
+							' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
 							' . $objDatabase->SqlVariable($this->intActive) . '
 						)
 					');
@@ -609,6 +625,10 @@
 							`project_name` = ' . $objDatabase->SqlVariable($this->strProjectName) . ',
 							`project_type` = ' . $objDatabase->SqlVariable($this->intProjectType) . ',
 							`project_description` = ' . $objDatabase->SqlVariable($this->strProjectDescription) . ',
+							`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
+							`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
+							`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
+							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
 							`active` = ' . $objDatabase->SqlVariable($this->intActive) . '
 						WHERE
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
@@ -727,6 +747,34 @@
 					 * @return string
 					 */
 					return $this->strProjectDescription;
+
+				case 'TotalTextCount':
+					/**
+					 * Gets the value for intTotalTextCount 
+					 * @return integer
+					 */
+					return $this->intTotalTextCount;
+
+				case 'FuzzyTextCount':
+					/**
+					 * Gets the value for intFuzzyTextCount 
+					 * @return integer
+					 */
+					return $this->intFuzzyTextCount;
+
+				case 'ApprovedTextCount':
+					/**
+					 * Gets the value for intApprovedTextCount 
+					 * @return integer
+					 */
+					return $this->intApprovedTextCount;
+
+				case 'ProgressPercent':
+					/**
+					 * Gets the value for intProgressPercent 
+					 * @return integer
+					 */
+					return $this->intProgressPercent;
 
 				case 'Active':
 					/**
@@ -894,6 +942,58 @@
 					 */
 					try {
 						return ($this->strProjectDescription = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'TotalTextCount':
+					/**
+					 * Sets the value for intTotalTextCount 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intTotalTextCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'FuzzyTextCount':
+					/**
+					 * Sets the value for intFuzzyTextCount 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intFuzzyTextCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ApprovedTextCount':
+					/**
+					 * Sets the value for intApprovedTextCount 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intApprovedTextCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ProgressPercent':
+					/**
+					 * Sets the value for intProgressPercent 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intProgressPercent = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1625,6 +1725,38 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_project.total_text_count
+		 * @var integer intTotalTextCount
+		 */
+		protected $intTotalTextCount;
+		const TotalTextCountDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_project.fuzzy_text_count
+		 * @var integer intFuzzyTextCount
+		 */
+		protected $intFuzzyTextCount;
+		const FuzzyTextCountDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_project.approved_text_count
+		 * @var integer intApprovedTextCount
+		 */
+		protected $intApprovedTextCount;
+		const ApprovedTextCountDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_project.progress_percent
+		 * @var integer intProgressPercent
+		 */
+		protected $intProgressPercent;
+		const ProgressPercentDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_project.active
 		 * @var integer intActive
 		 */
@@ -1743,6 +1875,10 @@
 			$strToReturn .= '<element name="ProjectName" type="xsd:string"/>';
 			$strToReturn .= '<element name="ProjectType" type="xsd:int"/>';
 			$strToReturn .= '<element name="ProjectDescription" type="xsd:string"/>';
+			$strToReturn .= '<element name="TotalTextCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="FuzzyTextCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="ApprovedTextCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="ProgressPercent" type="xsd:int"/>';
 			$strToReturn .= '<element name="Active" type="xsd:int"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -1778,6 +1914,14 @@
 				$objToReturn->intProjectType = $objSoapObject->ProjectType;
 			if (property_exists($objSoapObject, 'ProjectDescription'))
 				$objToReturn->strProjectDescription = $objSoapObject->ProjectDescription;
+			if (property_exists($objSoapObject, 'TotalTextCount'))
+				$objToReturn->intTotalTextCount = $objSoapObject->TotalTextCount;
+			if (property_exists($objSoapObject, 'FuzzyTextCount'))
+				$objToReturn->intFuzzyTextCount = $objSoapObject->FuzzyTextCount;
+			if (property_exists($objSoapObject, 'ApprovedTextCount'))
+				$objToReturn->intApprovedTextCount = $objSoapObject->ApprovedTextCount;
+			if (property_exists($objSoapObject, 'ProgressPercent'))
+				$objToReturn->intProgressPercent = $objSoapObject->ProgressPercent;
 			if (property_exists($objSoapObject, 'Active'))
 				$objToReturn->intActive = $objSoapObject->Active;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -1832,6 +1976,14 @@
 					return new QQNode('project_type', 'integer', $this);
 				case 'ProjectDescription':
 					return new QQNode('project_description', 'string', $this);
+				case 'TotalTextCount':
+					return new QQNode('total_text_count', 'integer', $this);
+				case 'FuzzyTextCount':
+					return new QQNode('fuzzy_text_count', 'integer', $this);
+				case 'ApprovedTextCount':
+					return new QQNode('approved_text_count', 'integer', $this);
+				case 'ProgressPercent':
+					return new QQNode('progress_percent', 'integer', $this);
 				case 'Active':
 					return new QQNode('active', 'integer', $this);
 				case 'NarroContextAsProject':
@@ -1874,6 +2026,14 @@
 					return new QQNode('project_type', 'integer', $this);
 				case 'ProjectDescription':
 					return new QQNode('project_description', 'string', $this);
+				case 'TotalTextCount':
+					return new QQNode('total_text_count', 'integer', $this);
+				case 'FuzzyTextCount':
+					return new QQNode('fuzzy_text_count', 'integer', $this);
+				case 'ApprovedTextCount':
+					return new QQNode('approved_text_count', 'integer', $this);
+				case 'ProgressPercent':
+					return new QQNode('progress_percent', 'integer', $this);
 				case 'Active':
 					return new QQNode('active', 'integer', $this);
 				case 'NarroContextAsProject':

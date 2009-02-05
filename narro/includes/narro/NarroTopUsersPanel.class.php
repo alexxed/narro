@@ -81,7 +81,7 @@
 
 
         public function dtgUsers_Bind() {
-            $objDatabase = QApplication::$Database[1];
+            $objDatabase = NarroApp::$Database[1];
 
             $strQuery = sprintf('SELECT u.username, u.user_id, u.data, COUNT(s.suggestion_id) as suggestion_cnt, SUM(s.suggestion_char_count) AS char_cnt FROM narro_user u LEFT JOIN narro_suggestion s ON u.user_id=s.user_id WHERE u.user_id<>%d GROUP BY u.user_id ORDER BY suggestion_cnt DESC LIMIT 0,%d', NarroUser::ANONYMOUS_USER_ID, $this->intLimit);
 
@@ -90,7 +90,7 @@
 
             $this->dtgUsers->DataSource = $objDbResult->GetRows();
 
-            QApplication::ExecuteJavaScript('highlight_datagrid();');
+            NarroApp::ExecuteJavaScript('highlight_datagrid();');
 
         }
 

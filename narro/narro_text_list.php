@@ -79,7 +79,7 @@
                 '<?= $_FORM->dtgNarroContextInfo_TranslatedText_Render($_ITEM); ?>'
             );
             $this->colTranslatedText->HtmlEntities = false;
-            $this->colTranslatedText->CssClass = QApplication::$Language->TextDirection;
+            $this->colTranslatedText->CssClass = NarroApp::$Language->TextDirection;
             $this->colActions = new QDataGridColumn(
                 t('Actions'),
                 '<?= $_FORM->dtgNarroContextInfo_Actions_Render($_ITEM, $_CONTROL->CurrentRowIndex + 1); ?>'
@@ -91,7 +91,7 @@
 
             // Datagrid Paginator
             $this->dtgNarroContextInfo->Paginator = new QPaginator($this->dtgNarroContextInfo);
-            $this->dtgNarroContextInfo->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroContextInfo->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
 
             $this->dtgNarroContextInfo->PaginatorAlternate = new QPaginator($this->dtgNarroContextInfo);
 
@@ -101,7 +101,7 @@
             // Specify the local databind method this datagrid will use
             $this->dtgNarroContextInfo->SetDataBinder('dtgNarroContextInfo_Bind');
 
-            if (QApplication::QueryString('st') == 3)
+            if (NarroApp::QueryString('st') == 3)
                 $this->dtgNarroContextInfo->AddColumn($this->colContext);
             $this->dtgNarroContextInfo->AddColumn($this->colOriginalText);
             $this->dtgNarroContextInfo->AddColumn($this->colTranslatedText);
@@ -112,20 +112,20 @@
             $this->lstTextFilter->AddItem(t('Untranslated texts'), self::SHOW_UNTRANSLATED_TEXTS);
             $this->lstTextFilter->AddItem(t('Approved texts'), self::SHOW_APPROVED_TEXTS);
             $this->lstTextFilter->AddItem(t('Texts that require approval'), self::SHOW_TEXTS_THAT_REQUIRE_APPROVAL);
-            if (QApplication::QueryString('tf') > 0)
-                $this->lstTextFilter->SelectedValue = QApplication::QueryString('tf');
+            if (NarroApp::QueryString('tf') > 0)
+                $this->lstTextFilter->SelectedValue = NarroApp::QueryString('tf');
             $this->lstTextFilter->AddAction(new QChangeEvent(), new QServerAction('lstTextFilter_Change'));
 
             $this->txtSearch = new QTextBox($this);
-            $this->txtSearch->Text = QApplication::QueryString('s');
+            $this->txtSearch->Text = NarroApp::QueryString('s');
 
             $this->lstSearchType = new QListBox($this);
             $this->lstSearchType->AddItem(t('original texts'), self::SEARCH_TEXTS, true);
             $this->lstSearchType->AddItem(t('translations'), self::SEARCH_SUGGESTIONS);
             $this->lstSearchType->AddItem(t('contexts'), self::SEARCH_CONTEXTS);
-            $this->lstSearchType->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('qc.getControl(\'%s\').className=((this.selectedIndex == 1)?\'%s\':\'ltr\');', $this->txtSearch->ControlId, QApplication::$Language->TextDirection)));
-            if (QApplication::QueryString('st') > 0)
-                $this->lstSearchType->SelectedValue = QApplication::QueryString('st');
+            $this->lstSearchType->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('qc.getControl(\'%s\').className=((this.selectedIndex == 1)?\'%s\':\'ltr\');', $this->txtSearch->ControlId, NarroApp::$Language->TextDirection)));
+            if (NarroApp::QueryString('st') > 0)
+                $this->lstSearchType->SelectedValue = NarroApp::QueryString('st');
 
             $this->btnSearch = new QButton($this);
             $this->btnSearch->Text = t('Search');
@@ -142,19 +142,19 @@
 
             $this->btnMultiApprove = new QButton($this);
             $this->btnMultiApprove->Text = t('Mass approve');
-            $this->btnMultiApprove->Display = QApplication::$objUser->hasPermission('Can mass approve', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId);
+            $this->btnMultiApprove->Display = NarroApp::$objUser->hasPermission('Can mass approve', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId);
             $this->btnMultiApprove->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
 
         }
 
         protected function btnMultiApprove_Click($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::$objUser->hasPermission('Can mass approve', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId))
+            if (!NarroApp::$objUser->hasPermission('Can mass approve', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
               return false;
 
             if ($this->btnMultiApprove->Text == t('Mass approve')) {
                 $this->btnMultiApprove->Text = t('Approve all selected suggestions');
                 $this->SetMessage(t('Mass approve mode is the quick way to approve short translations. Leave empty to disapprove.'));
-                if (QApplication::QueryString('st') != 3)
+                if (NarroApp::QueryString('st') != 3)
                     $this->dtgNarroContextInfo->AddColumnAt(0, $this->colContext);
                 $this->dtgNarroContextInfo->RemoveColumnByName(t('Actions'));
                 $this->dtgNarroContextInfo->MarkAsModified();
@@ -173,7 +173,7 @@
                         $objContextInfo = NarroContextInfo::Load($intContextInfoId);
                         if ($objContextInfo->ValidSuggestionId != $objSuggestionList->SelectedValue) {
                             $objContextInfo->ValidSuggestionId = $objSuggestionList->SelectedValue;
-                            $objContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
+                            $objContextInfo->ValidatorUserId = NarroApp::$objUser->UserId;
                             try {
                                 $objContextInfo->Save();
                             }
@@ -195,7 +195,7 @@
                         $this->SetMessage(t('No changes.'));
                 }
 
-                if (QApplication::QueryString('st') != 3)
+                if (NarroApp::QueryString('st') != 3)
                     $this->dtgNarroContextInfo->RemoveColumnByName(t('Context'));
 
                 $this->dtgNarroContextInfo->AddColumn($this->colActions);
@@ -222,7 +222,7 @@
 
         public function dtgNarroContextInfo_OriginalText_Render(NarroContextInfo $objNarroContextInfo) {
             if (!is_null($objNarroContextInfo->Context->Text)) {
-                $strText = QApplication::$objPluginHandler->DisplayText($objNarroContextInfo->Context->Text->TextValue);
+                $strText = NarroApp::$objPluginHandler->DisplayText($objNarroContextInfo->Context->Text->TextValue);
 
                 if (!$strText)
                     $strText = $objNarroContextInfo->Context->Text->TextValue;
@@ -230,7 +230,7 @@
 
                 $strText = htmlentities($strText, null, 'utf-8');
 
-                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->ValidSuggestionId && QApplication::$objUser->hasPermission('Can approve', $objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->ValidSuggestionId && NarroApp::$objUser->hasPermission('Can approve', $objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
                     $strText = preg_replace('/' . $objNarroContextInfo->TextAccessKey . '/', '<u>' . $objNarroContextInfo->TextAccessKey . '</u>', $strText, 1);
 
                 return $strText;
@@ -241,7 +241,7 @@
 
         public function dtgNarroContextInfo_Context_Render(NarroContextInfo $objNarroContextInfo) {
             if (!is_null($objNarroContextInfo->Context->Context)) {
-                $strContext = QApplication::$objPluginHandler->DisplayContext($objNarroContextInfo->Context->Context);
+                $strContext = NarroApp::$objPluginHandler->DisplayContext($objNarroContextInfo->Context->Context);
                 if (!$strContext)
                     $strContext = $objNarroContextInfo->Context->Context;
                 return (strlen($strContext)>100)?substr($strContext, 0, 100) . '...':$strContext;
@@ -271,7 +271,7 @@
             * if not, show the most voted suggestion
             */
             if (!is_null($objNarroContextInfo->ValidSuggestion)) {
-                $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objNarroContextInfo->ValidSuggestion->SuggestionValue);
+                $strSuggestionValue = NarroApp::$objPluginHandler->DisplaySuggestion($objNarroContextInfo->ValidSuggestion->SuggestionValue);
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
 
@@ -290,12 +290,12 @@
                          NarroSuggestion::QuerySingle(
                              QQ::AndCondition(
                                  QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId),
-                                 QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$Language->LanguageId),
-                                 QQ::Equal(QQN::NarroSuggestion()->UserId, QApplication::$objUser->UserId)
+                                 QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::$Language->LanguageId),
+                                 QQ::Equal(QQN::NarroSuggestion()->UserId, NarroApp::$objUser->UserId)
                              )
                          )
                    ) {
-                $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
+                $strSuggestionValue = NarroApp::$objPluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objSuggestion->SuggestionValue;
 
@@ -308,7 +308,7 @@
                         NarroSuggestion::QueryArray(
                             QQ::AndCondition(
                                 QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId),
-                                QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::$Language->LanguageId)
+                                QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::$Language->LanguageId)
                             )
                         )
                    ) {
@@ -322,7 +322,7 @@
                     }
                 }
 
-                $strSuggestionValue = QApplication::$objPluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
+                $strSuggestionValue = NarroApp::$objPluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objSuggestion->SuggestionValue;
 

@@ -110,7 +110,7 @@
                 }
 
 
-                $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strText, $strSuggestionValue, $strContext, new NarroFile(), $this->objProject);
+                $arrResult = NarroApp::$objPluginHandler->ExportSuggestion($strText, $strSuggestionValue, $strContext, new NarroFile(), $this->objProject);
                 if
                 (
                     trim($arrResult[1]) != '' &&
@@ -147,7 +147,7 @@
         }
 
         public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
-            $objDatabase = QApplication::$Database[1];
+            $objDatabase = NarroApp::$Database[1];
             /**
              * Open the template file
              */

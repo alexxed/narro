@@ -108,7 +108,7 @@
                 return false;
             }
             else {
-                $arrResult = QApplication::$objPluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                $arrResult = NarroApp::$objPluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[0]) != '' &&
@@ -125,7 +125,7 @@
             }
 
             if ($strTranslation != '') {
-                $arrResult = QApplication::$objPluginHandler->SaveSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                $arrResult = NarroApp::$objPluginHandler->SaveSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[1]) != '' &&
@@ -149,7 +149,7 @@
             }
             else {
                 $strContext = trim($strContext);
-                $arrResult = QApplication::$objPluginHandler->SaveContext($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                $arrResult = NarroApp::$objPluginHandler->SaveContext($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[2]) != '' &&
@@ -166,7 +166,7 @@
             }
 
             if (!is_null($strComment) && trim($strComment) != '') {
-                $arrResult = QApplication::$objPluginHandler->SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $this->objFile, $this->objProject);
+                $arrResult = NarroApp::$objPluginHandler->SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[3]) != '' &&
@@ -213,6 +213,7 @@
                      */
                     return false;
                 }
+
             }
             elseif (!$objNarroText instanceof NarroText) {
                 /**
@@ -376,7 +377,7 @@
 
                 if ($objContextInfo instanceof NarroContextInfo && $this->blnApprove && $objContextInfo->ValidSuggestionId != $objNarroSuggestion->SuggestionId) {
                     $objContextInfo->ValidSuggestionId = $objNarroSuggestion->SuggestionId;
-                    $objContextInfo->ValidatorUserId = QApplication::$objUser->UserId;
+                    $objContextInfo->ValidatorUserId = NarroApp::$objUser->UserId;
                     $blnContextInfoChanged = true;
                     NarroImportStatistics::$arrStatistics['Approved suggestions']++;
                 }
@@ -527,7 +528,7 @@
                 'LIMIT 1',
                 $intContextId
             );
-            $objDatabase = QApplication::$Database[1];
+            $objDatabase = NarroApp::$Database[1];
 
             if (!$objDbResult = $objDatabase->Query($strQuery)) {
                 NarroLog::LogMessage(3, 'db_query failed. $strQuery=' . $strQuery);
@@ -620,9 +621,9 @@
                         }
                     }
                 case 5:
-                    $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, QApplication::$objUser->UserId);
+                    $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, NarroApp::$objUser->UserId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        NarroLog::LogMessage(1, sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$objUser->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        NarroLog::LogMessage(1, sprintf('Exporting %s\'s suggestion "%s" for "%s"', NarroApp::$objUser->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {

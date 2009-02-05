@@ -16,8 +16,8 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-	class NarroTextCommentListPanel extends QPanel {
-		protected $strTemplate = 'templates/NarroTextCommentListPanel.tpl.php';
+    class NarroTextCommentListPanel extends QPanel {
+        protected $strTemplate = 'templates/NarroTextCommentListPanel.tpl.php';
         public $dtgNarroTextComment;
         public $txtNarroTextComment;
         public $btnAddTextComment;
@@ -38,7 +38,7 @@
             $this->dtgNarroTextComment->Display = QDisplayStyle::Block;
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroTextComment->UseAjax = QApplication::$blnUseAjax;
+            $this->dtgNarroTextComment->UseAjax = NarroApp::$blnUseAjax;
 
             // Specify the local databind method this datagrid will use
             $this->dtgNarroTextComment->SetDataBinder('dtgNarroTextComment_Bind', $this);
@@ -47,7 +47,7 @@
 
             $this->txtNarroTextComment = new QTextBox($this);
             $this->txtNarroTextComment->Text = '';
-            $this->txtNarroTextComment->CssClass = QApplication::$Language->TextDirection . ' green3dbg';
+            $this->txtNarroTextComment->CssClass = NarroApp::$Language->TextDirection . ' green3dbg';
             $this->txtNarroTextComment->Width = '60%';
             $this->txtNarroTextComment->Height = 85;
             $this->txtNarroTextComment->TextMode = QTextMode::MultiLine;
@@ -61,16 +61,16 @@
 
         public function btnAddTextComment_Click($strFormId, $strControlId, $strParameter) {
             if (trim($this->txtNarroTextComment->Text) == '') return false;
-            if (!QApplication::$objUser->hasPermission('Can comment', QApplication::QueryString('p'), QApplication::$Language->LanguageId)) return false;
+            if (!NarroApp::$objUser->hasPermission('Can comment', NarroApp::QueryString('p'), NarroApp::$Language->LanguageId)) return false;
 
             $objNarroTextComment = new NarroTextComment();
             $objNarroTextComment->TextId = $this->objNarroText->TextId;
-            $objNarroTextComment->UserId = QApplication::$objUser->UserId;
-            $objNarroTextComment->LanguageId = QApplication::$Language->LanguageId;
+            $objNarroTextComment->UserId = NarroApp::$objUser->UserId;
+            $objNarroTextComment->LanguageId = NarroApp::$Language->LanguageId;
             $objNarroTextComment->Created = date('Y-m-d H:i:s');
 
-            $strResult = QApplication::$objPluginHandler->SaveTextComment($this->txtNarroTextComment->Text);
-            if (!QApplication::$objPluginHandler->Error)
+            $strResult = NarroApp::$objPluginHandler->SaveTextComment($this->txtNarroTextComment->Text);
+            if (!NarroApp::$objPluginHandler->Error)
                 $objNarroTextComment->CommentText = $strResult;
             else
                 $objNarroTextComment->CommentText = $this->txtNarroTextComment->Text;
@@ -97,7 +97,7 @@
             $this->dtgNarroTextComment->DataSource =
                 NarroTextComment::QueryArray(
                     QQ::AndCondition(
-                        QQ::Equal(QQN::NarroTextComment()->LanguageId, QApplication::$Language->LanguageId),
+                        QQ::Equal(QQN::NarroTextComment()->LanguageId, NarroApp::$Language->LanguageId),
                         QQ::Equal(QQN::NarroTextComment()->TextId, $this->objNarroText->TextId)
                     ),
                     array(QQ::OrderBy(QQN::NarroTextComment()->Created, 1))
@@ -139,5 +139,5 @@
                     }
             }
         }
-	}
+    }
 ?>

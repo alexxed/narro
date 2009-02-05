@@ -29,10 +29,10 @@
             parent::__construct($objParentObject, $strControlId);
 
             // Setup DataGrid Columns
-            $this->colUsername = new QDataGridColumn(QApplication::Translate('Username'), '<?= $_CONTROL->ParentControl->dtgRoleUserList_UsernameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->User->Username), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->User->Username, false)));
+            $this->colUsername = new QDataGridColumn(NarroApp::Translate('Username'), '<?= $_CONTROL->ParentControl->dtgRoleUserList_UsernameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->User->Username), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->User->Username, false)));
             $this->colUsername->HtmlEntities = false;
-            $this->colProject = new QDataGridColumn(QApplication::Translate('Project'), '<?= $_CONTROL->ParentControl->dtgRoleUserList_ProjectColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->ProjectId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->ProjectId, false)));
-            $this->colLanguage = new QDataGridColumn(QApplication::Translate('Language'), '<?= $_CONTROL->ParentControl->dtgRoleUserList_LanguageColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->LanguageId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->LanguageId, false)));
+            $this->colProject = new QDataGridColumn(NarroApp::Translate('Project'), '<?= $_CONTROL->ParentControl->dtgRoleUserList_ProjectColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->ProjectId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->ProjectId, false)));
+            $this->colLanguage = new QDataGridColumn(NarroApp::Translate('Language'), '<?= $_CONTROL->ParentControl->dtgRoleUserList_LanguageColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->LanguageId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->LanguageId, false)));
 
 
             // Setup DataGrid
@@ -45,10 +45,10 @@
 
             // Datagrid Paginator
             $this->dtgRoleUserList->Paginator = new QPaginator($this->dtgRoleUserList);
-            $this->dtgRoleUserList->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgRoleUserList->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgRoleUserList->UseAjax = QApplication::$blnUseAjax;
+            $this->dtgRoleUserList->UseAjax = NarroApp::$blnUseAjax;
 
             // Specify the local databind method this datagrid will use
             $this->dtgRoleUserList->SetDataBinder('dtgRoleUserList_Bind', $this);
@@ -67,7 +67,7 @@
         }
 
         public function dtgRoleUserList_UsernameColumn_Render(NarroUserRole $objNarroUserRole) {
-            if ($objNarroUserRole->UserId != QApplication::$objUser->UserId)
+            if ($objNarroUserRole->UserId != NarroApp::$objUser->UserId)
                 return NarroLink::UserRole($objNarroUserRole->UserId, $objNarroUserRole->User->Username);
             else
                 return $objNarroUserRole->User->Username;
@@ -107,7 +107,7 @@
             // Set the DataSource to be the array of all NarroUser objects, given the clauses above
             $this->dtgRoleUserList->DataSource = NarroUserRole::LoadArrayByRoleId($this->objRole->RoleId, $objClauses);
 
-            QApplication::ExecuteJavaScript('highlight_datagrid();');
+            NarroApp::ExecuteJavaScript('highlight_datagrid();');
         }
 
         public function chkPermission_Click($strFormId, $strControlId, $strParameter) {

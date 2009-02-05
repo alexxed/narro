@@ -101,7 +101,7 @@
             }
         }
 
-        QApplication::$objUser = $objUser;
+        NarroApp::$objUser = $objUser;
 
         /**
          * Load the specified project
@@ -121,7 +121,7 @@
             return false;
         }
 
-        QApplication::$Language = $objLanguage;
+        NarroApp::$Language = $objLanguage;
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 
@@ -202,7 +202,7 @@
             }
         }
 
-        QApplication::$objUser = $objUser;
+        NarroApp::$objUser = $objUser;
 
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
@@ -216,7 +216,7 @@
             return false;
         }
 
-        QApplication::$Language = $objLanguage;
+        NarroApp::$Language = $objLanguage;
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 

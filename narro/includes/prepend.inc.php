@@ -20,38 +20,92 @@
         // Ensure prepend.inc is only executed once
         define('__PREPEND_INCLUDED__', 1);
 
+
+        ///////////////////////////////////
+        // Define Server-specific constants
+        ///////////////////////////////////
+        /*
+        * This assumes that the configuration include file is in the same directory
+        * as this prepend include file.  For security reasons, you can feel free
+        * to move the configuration file anywhere you want.  But be sure to provide
+        * a relative or absolute path to the file.
+        */
         require(dirname(__FILE__) . '/configuration.inc.php');
 
-        if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data'))
-            die(sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__));
 
-        foreach (array('cache', 'cache/i18n', 'cache/zend', 'dictionaries', 'import', 'tmp', 'tmp/session', 'tmp/qform_state') as $strDirName) {
-            if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName)) {
-                if (!mkdir(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName))
-                    die(sprintf('Could not create a directory. Please create the directory "%s" and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName));
-                else
-                    chmod(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName, 0777);
-            }
-        }
-
-        $arrConData = unserialize(DB_CONNECTION_1);
-
-        $link = mysql_connect($arrConData['server'].(($arrConData['port'])?':' . $arrConData['port']:''), $arrConData['username'], $arrConData['password']);
-        if (!$link) {
-            print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php') . '<br />');
-            print(sprintf('Error: "%s"', mysql_error()));
-            die();
-        }
-
-        if (!mysql_select_db($arrConData['database'], $link)) {
-            print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php') . '<br />');
-            print(sprintf('Error: "%s"', mysql_error()));
-            die();
-        }
-
-
-
+        //////////////////////////////
+        // Include the Qcodo Framework
+        //////////////////////////////
         require(__QCODO_CORE__ . '/qcodo.inc.php');
+
+
+        ///////////////////////////////
+        // Define the Application Class
+        ///////////////////////////////
+        /**
+        * The Application class is an abstract class that statically provides
+        * information and global utilities for the entire web application.
+        *
+        * Custom constants for this webapp, as well as global variables and global
+        * methods should be declared in this abstract class (declared statically).
+        *
+        * This Application class should extend from the ApplicationBase class in
+        * the framework.
+        */
+        abstract class QApplication extends QApplicationBase {
+            /**
+            * This is called by the PHP5 Autoloader.  This method overrides the
+            * one in ApplicationBase.
+            *
+            * @return void
+            */
+            public static function Autoload($strClassName) {
+                // First use the Qcodo Autoloader
+                parent::Autoload($strClassName);
+
+                // TODO: Run any custom autoloading functionality (if any) here...
+            }
+
+            ////////////////////////////
+            // QApplication Customizations (e.g. EncodingType, etc.)
+            ////////////////////////////
+            // public static $EncodingType = 'ISO-8859-1';
+
+            ////////////////////////////
+            // Additional Static Methods
+            ////////////////////////////
+            // TODO: Define any other custom global WebApplication functions (if any) here...
+        }
+
+
+        //////////////////////////
+        // Custom Global Functions
+        //////////////////////////
+        // TODO: Define any custom global functions (if any) here...
+
+
+        ////////////////
+        // Include Files
+        ////////////////
+        // TODO: Include any other include files (if any) here...
+
         require_once(dirname(__FILE__) . '/application.inc.php');
+
+
+        ///////////////////////
+        // Setup Error Handling
+        ///////////////////////
+        /*
+        * Set Error/Exception Handling to the default
+        * Qcodo HandleError and HandlException functions
+        * (Only in non CLI mode)
+        *
+        * Feel free to change, if needed, to your own
+        * custom error handling script(s).
+        */
+        if (array_key_exists('SERVER_PROTOCOL', $_SERVER)) {
+            set_error_handler('QcodoHandleError');
+            set_exception_handler('QcodoHandleException');
+        }
     }
 ?>

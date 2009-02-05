@@ -59,9 +59,9 @@
         }
 
         public static function CacheTranslation($strText) {
-            $strIdentifier = sprintf('narro_%d', QApplication::$objUser->getPreferenceValueByName('Application language'));
+            $strIdentifier = sprintf('narro_%d', NarroApp::$objUser->getPreferenceValueByName('Application language'));
 
-            $arrTextSuggestions = QApplication::$Cache->load($strIdentifier);
+            $arrTextSuggestions = NarroApp::$Cache->load($strIdentifier);
 
             /**
              * Take the approved suggestion
@@ -69,7 +69,7 @@
             $objContextInfo = NarroContextInfo::QuerySingle(
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroContextInfo()->Context->Project->ProjectName, 'Narro'),
-                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$objUser->getPreferenceValueByName('Application language')),
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$objUser->getPreferenceValueByName('Application language')),
                     QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strText)),
                     QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId)
                 )
@@ -83,7 +83,7 @@
             }
 
             if (isset($arrTextSuggestions))
-                QApplication::$Cache->save($arrTextSuggestions, $strIdentifier);
+                NarroApp::$Cache->save($arrTextSuggestions, $strIdentifier);
 
             if (isset($arrTextSuggestions[md5($strText)]))
                 return $arrTextSuggestions[md5($strText)];
@@ -94,9 +94,9 @@
 
         public static function Translate($strText) {
             if (!count(self::$arrTranslations)) {
-                $strIdentifier = sprintf('narro_%d', QApplication::$objUser->getPreferenceValueByName('Application language'));
+                $strIdentifier = sprintf('narro_%d', NarroApp::$objUser->getPreferenceValueByName('Application language'));
 
-                $arrTextSuggestions = QApplication::$Cache->load($strIdentifier);
+                $arrTextSuggestions = NarroApp::$Cache->load($strIdentifier);
 
                 if (is_array($arrTextSuggestions))
                     self::$arrTranslations = $arrTextSuggestions;

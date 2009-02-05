@@ -30,12 +30,12 @@
         protected function Form_Create() {
             parent::Form_Create();
             $this->pnlRolePermissions = new NarroRolePermissionPanel($this);
-            $this->pnlRolePermissions->Role = NarroRole::Load(QApplication::QueryString('r'));
+            $this->pnlRolePermissions->Role = NarroRole::Load(NarroApp::QueryString('r'));
 
             $this->pnlRoleUsers = new NarroRoleUserListPanel($this);
             $this->pnlRoleUsers->Role = $this->pnlRolePermissions->Role;
 
-            switch(QApplication::QueryString('view')) {
+            switch(NarroApp::QueryString('view')) {
                 case 'permission':
                         $this->pnlRolePermissions->Display = QDisplayStyle::Inline;
                         $this->pnlRoleUsers->Display = QDisplayStyle::None;
@@ -61,10 +61,10 @@
 
             // Datagrid Paginator
             $this->dtgNarroRole->Paginator = new QPaginator($this->dtgNarroRole);
-            $this->dtgNarroRole->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroRole->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroRole->UseAjax = QApplication::$blnUseAjax;
+            $this->dtgNarroRole->UseAjax = NarroApp::$blnUseAjax;
 
             // Specify the local databind method this datagrid will use
             $this->dtgNarroRole->SetDataBinder('dtgNarroRole_Bind');
@@ -102,7 +102,7 @@
             if (!$btnEdit) {
                 $btnEdit = new QButton($this->dtgNarroRole, $strControlId);
                 $btnEdit->Text = t('Edit');
-                if (QApplication::$blnUseAjax)
+                if (NarroApp::$blnUseAjax)
                     $btnEdit->AddAction(new QClickEvent(), new QAjaxAction('btnEditRole_Click'));
                 else
                     $btnEdit->AddAction(new QClickEvent(), new QServerAction('btnEditRole_Click'));
@@ -115,7 +115,7 @@
                 $btnDelete = new QButton($this->dtgNarroRole, $strControlId);
                 $btnDelete->Text = t('Delete');
                 $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this role?')));
-                if (QApplication::$blnUseAjax)
+                if (NarroApp::$blnUseAjax)
                     $btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDeleteRole_Click'));
                 else
                     $btnDelete->AddAction(new QClickEvent(), new QServerAction('btnDeleteRole_Click'));
@@ -127,7 +127,7 @@
             if (!$btnPermissions) {
                 $btnPermissions = new QButton($this->dtgNarroRole, $strControlId);
                 $btnPermissions->Text = t('Permissions');
-                if (QApplication::$blnUseAjax)
+                if (NarroApp::$blnUseAjax)
                     $btnPermissions->AddAction(new QClickEvent(), new QAjaxAction('btnPermissions_Click'));
                 else
                     $btnPermissions->AddAction(new QClickEvent(), new QServerAction('btnPermissions_Click'));
@@ -139,7 +139,7 @@
             if (!$btnViewUsers) {
                 $btnViewUsers = new QButton($this->dtgNarroRole, $strControlId);
                 $btnViewUsers->Text = t('View users');
-                if (QApplication::$blnUseAjax)
+                if (NarroApp::$blnUseAjax)
                     $btnViewUsers->AddAction(new QClickEvent(), new QAjaxAction('btnViewUsers_Click'));
                 else
                     $btnViewUsers->AddAction(new QClickEvent(), new QServerAction('btnViewUsers_Click'));
@@ -157,11 +157,11 @@
         }
 
         public function btnPermissions_Click($strFormId, $strControlId, $strParameter) {
-            QApplication::Redirect(NarroLink::RoleList($strParameter, 'permission'));
+            NarroApp::Redirect(NarroLink::RoleList($strParameter, 'permission'));
         }
 
         public function btnViewUsers_Click($strFormId, $strControlId, $strParameter) {
-            QApplication::Redirect(NarroLink::RoleList($strParameter, 'user'));
+            NarroApp::Redirect(NarroLink::RoleList($strParameter, 'user'));
         }
 
         public function btnEditRole_Click($strFormId, $strControlId, $strParameter) {
@@ -217,7 +217,7 @@
             // Set the DataSource to be the array of all NarroRole objects, given the clauses above
             $this->dtgNarroRole->DataSource = NarroRole::LoadAll($objClauses);
 
-            QApplication::ExecuteJavaScript('highlight_datagrid();');
+            NarroApp::ExecuteJavaScript('highlight_datagrid();');
         }
     }
 

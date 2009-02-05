@@ -50,7 +50,7 @@
 
             // Datagrid Paginator
             $this->dtgSuggestions->Paginator = new QPaginator($this->dtgSuggestions);
-            $this->dtgSuggestions->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgSuggestions->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgSuggestions->UseAjax = true;
@@ -77,7 +77,7 @@
         }
 
         public function dtgSuggestions_colProjects_Render( NarroSuggestion $objNarroSuggestion ) {
-            $objDatabase = QApplication::$Database[1];
+            $objDatabase = NarroApp::$Database[1];
             $strQuery = sprintf('SELECT DISTINCT narro_project.* FROM narro_project, narro_context WHERE narro_context.project_id=narro_project.project_id AND narro_context.text_id=%d ORDER BY narro_project.project_name ASC', $objNarroSuggestion->TextId);
             $arrProjects = NarroProject::InstantiateDbResult($objDatabase->Query($strQuery));
             foreach($arrProjects as $objProject) {
@@ -104,7 +104,7 @@
             $this->dtgSuggestions->TotalItemCount = NarroSuggestion::CountByUserId($this->intUserId);
             $this->dtgSuggestions->DataSource = NarroSuggestion::LoadArrayByUserId($this->intUserId, $objClauses);
 
-            QApplication::ExecuteJavaScript('highlight_datagrid();');
+            NarroApp::ExecuteJavaScript('highlight_datagrid();');
         }
 
         protected function GetControlHtml() {

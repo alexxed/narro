@@ -17,7 +17,7 @@
  */
 
 class NarroDiacriticsPanel extends QPanel {
-    public static $arrEntities = array(        
+    public static $arrEntities = array(
         'AElig'=>"\xc3\x86",
         'Aacute'=>"\xc3\x81",
         'Acirc'=>"\xc3\x82",
@@ -286,7 +286,7 @@ class NarroDiacriticsPanel extends QPanel {
 
     public function GetControlHtml() {
         $this->strText = '';
-        $strSpecialChars = QApplication::$objUser->getPreferenceValueByName('Special characters');
+        $strSpecialChars = NarroApp::$objUser->getPreferenceValueByName('Special characters');
 
         foreach(split(' ', $strSpecialChars) as $strChar) {
             $objLabel = new QLabel($this);

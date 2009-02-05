@@ -33,15 +33,15 @@
 
         protected function SetupNarroObject() {
             // Lookup Object PK information from Query String (if applicable)
-            $intProjectId = QApplication::QueryString('p');
+            $intProjectId = NarroApp::QueryString('p');
             if (($intProjectId)) {
                 $this->objNarroProject = NarroProject::Load(($intProjectId));
 
                 if (!$this->objNarroProject)
-                    QApplication::Redirect(NarroLink::ProjectList());
+                    NarroApp::Redirect(NarroLink::ProjectList());
 
             } else
-                QApplication::Redirect(NarroLink::ProjectList());
+                NarroApp::Redirect(NarroLink::ProjectList());
 
             $this->pnlBreadcrumb->strSeparator = ' | ';
 
@@ -50,21 +50,21 @@
                 NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
             );
 
-            if (QApplication::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) && QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) )
+            if (NarroApp::$objUser->hasPermission('Can manage project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) && NarroApp::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) )
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectManage($intProjectId, t('Manage')));
 
-            if (QApplication::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) && QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) )
+            if (NarroApp::$objUser->hasPermission('Can edit project', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) && NarroApp::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) )
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($intProjectId, t('Edit')));
 
             $this->pnlBreadcrumb->addElement(NarroLink::ProjectLanguages($intProjectId, t('Languages')));
         }
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {
-            if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) && QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId) )
+            if (NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) && NarroApp::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId) )
                 $strText = t('Suggest/Vote');
-            elseif (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId))
+            elseif (NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
                 $strText = t('Suggest');
-            elseif (QApplication::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, QApplication::$Language->LanguageId))
+            elseif (NarroApp::$objUser->hasPermission('Can vote', $this->objNarroProject->ProjectId, NarroApp::$Language->LanguageId))
                 $strText = t('Vote');
             else
                 $strText = t('Details');
@@ -86,11 +86,11 @@
         }
 
         public function lstTextFilter_Change() {
-            QApplication::Redirect(NarroLink::ProjectTextList($this->objNarroProject->ProjectId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
+            NarroApp::Redirect(NarroLink::ProjectTextList($this->objNarroProject->ProjectId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
         }
 
         public function btnSearch_Click() {
-            QApplication::Redirect(NarroLink::ProjectTextList($this->objNarroProject->ProjectId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
+            NarroApp::Redirect(NarroLink::ProjectTextList($this->objNarroProject->ProjectId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
         }
 
 
@@ -101,7 +101,7 @@
 
             $objCommonCondition = QQ::AndCondition(
                 QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
-                QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$Language->LanguageId),
+                QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
                 QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
 
@@ -176,7 +176,7 @@
                     break;
             }
 
-            QApplication::ExecuteJavaScript('highlight_datagrid();');
+            NarroApp::ExecuteJavaScript('highlight_datagrid();');
         }
 
     }

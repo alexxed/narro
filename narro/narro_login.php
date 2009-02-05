@@ -77,22 +77,22 @@
                         }
 
                         $objNarroSession->User = $objUser;
-                        QApplication::Redirect(NarroLink::UserPreferences($objUser->UserId));
+                        NarroApp::Redirect(NarroLink::UserPreferences($objUser->UserId));
                     }
 
                     $objNarroSession->User = $objUser;
 
-                    QApplication::$objUser = $objUser;
+                    NarroApp::$objUser = $objUser;
                     if ($this->txtPreviousUrl)
-                        QApplication::Redirect($this->txtPreviousUrl);
+                        NarroApp::Redirect($this->txtPreviousUrl);
                     else
-                        QApplication::Redirect(NarroLink::ProjectList());
+                        NarroApp::Redirect(NarroLink::ProjectList());
                 }
             }
         }
 
         protected function btnRecoverPassword_Click($strFormId, $strControlId, $strParameter) {
-            QApplication::Redirect('narro_recover_password.php');
+            NarroApp::Redirect('narro_recover_password.php');
         }
 
         protected function btnLogin_Click($strFormId, $strControlId, $strParameter) {
@@ -124,11 +124,11 @@
                     $objNarroSession = new Zend_Session_Namespace('Narro');
                     $objNarroSession->User = $objUser;
 
-                    QApplication::$objUser = $objUser;
+                    NarroApp::$objUser = $objUser;
                     if ($this->txtPreviousUrl)
-                        QApplication::Redirect($this->txtPreviousUrl);
+                        NarroApp::Redirect($this->txtPreviousUrl);
                     else
-                        QApplication::Redirect(NarroLink::ProjectList());
+                        NarroApp::Redirect(NarroLink::ProjectList());
                 }
                 else {
                     $this->lblMessage->ForeColor = 'red';

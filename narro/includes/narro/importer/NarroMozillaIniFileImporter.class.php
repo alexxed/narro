@@ -124,7 +124,7 @@
 
                 if (isset($arrTranslation[$strKey])) {
 
-                    $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
+                    $arrResult = NarroApp::$objPluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
 
                     if
                     (

@@ -17,7 +17,7 @@
      */
 
     $strPageTitle = sprintf(t('%s :: File list'), $this->objNarroProject->ProjectName);
-    if (QApplication::QueryString('pf')>0)
+    if (NarroApp::QueryString('pf')>0)
         $strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objNarroProject->ProjectName, $this->objParentFile->FileName);
 
     require('includes/header.inc.php')

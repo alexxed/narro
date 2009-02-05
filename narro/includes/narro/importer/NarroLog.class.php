@@ -48,7 +48,7 @@
 
         private static function OutputLog($intMessageType, $strText) {
             if (!self::$strLogFile) {
-                self::$strLogFile = __TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log';
+                self::$strLogFile = __TMP_PATH__ . '/narro-' . NarroApp::$Language->LanguageCode . '.log';
             }
 
             $hndLogFile = fopen(self::$strLogFile, 'a+');
@@ -87,8 +87,8 @@
 
             if (file_exists(self::$strLogFile))
                 return file_get_contents(self::$strLogFile);
-            elseif (file_exists(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log'))
-                return file_get_contents(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log');
+            elseif (file_exists(__TMP_PATH__ . '/narro-' . NarroApp::$Language->LanguageCode . '.log'))
+                return file_get_contents(__TMP_PATH__ . '/narro-' . NarroApp::$Language->LanguageCode . '.log');
             else
                 return 'No log found, check the server log.';
         }

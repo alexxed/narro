@@ -22,7 +22,7 @@
             $this->blnEnable = false;
             $this->strName = t('Cedill/Comma issue solver');
             if ($this->blnEnable)
-                QApplication::RegisterPreference('Cedilla or comma', 'option', 'Select wether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
+                NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select wether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
         }
 
         protected function ConvertToSedilla($strText) {
@@ -38,7 +38,7 @@
         }
 
         protected function Convert($strText) {
-            $strPref = QApplication::$objUser->getPreferenceValueByName('Cedilla or comma');
+            $strPref = NarroApp::$objUser->getPreferenceValueByName('Cedilla or comma');
 
             if ( $strPref  && $strPref == 'comma' )
                 return $this->ConvertToComma($strText);
@@ -95,9 +95,9 @@
                 )
             )
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
-            elseif (QApplication::$objUser->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
+            elseif (NarroApp::$objUser->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
-            elseif (QApplication::$objUser->getPreferenceValueByName('Cedilla or comma') == 'comma')
+            elseif (NarroApp::$objUser->getPreferenceValueByName('Cedilla or comma') == 'comma')
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
             else
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);

@@ -16,14 +16,14 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf((QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
+    $strPageTitle = sprintf((NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))?t('Translate "%s"'):t('See suggestions for "%s"'),
         (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($this->objNarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->objNarroContextInfo->Context->Text->TextValue);
 
     require('includes/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
-        <?php QApplication::ExecuteJavaScript(sprintf("if (location.hash.match('/c[0-9]+/')) {iContext=location.hash.replace(/i[0-9]+/,'');iContext=iContext.replace('#c','');iPos=location.hash.replace(/#c[0-9]+i/,'');sLocation=location.href.replace('&c=%d', '&c=' + iContext);sLocation=sLocation.replace('&ci=%d', '&ci=' + iPos);sLocation=sLocation.replace(location.hash,'');location.hash='';location.replace(sLocation);};", $this->objNarroContextInfo->ContextId, $this->intCurrentContext)); ?>
+        <?php NarroApp::ExecuteJavaScript(sprintf("if (location.hash.match('/c[0-9]+/')) {iContext=location.hash.replace(/i[0-9]+/,'');iContext=iContext.replace('#c','');iPos=location.hash.replace(/#c[0-9]+i/,'');sLocation=location.href.replace('&c=%d', '&c=' + iContext);sLocation=sLocation.replace('&ci=%d', '&ci=' + iPos);sLocation=sLocation.replace(location.hash,'');location.hash='';location.replace(sLocation);};", $this->objNarroContextInfo->ContextId, $this->intCurrentContext)); ?>
         <?php $this->pnlHeader->Render() ?>
         <?php $this->pnlBreadcrumb->Render(); ?>
         <br class="item_divider" />
@@ -39,11 +39,11 @@
         </div>
         <br />
         <?php $this->pnlSuggestionList->Render(); ?>
-        <?php if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)) { ?>
+        <?php if (NarroApp::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId)) { ?>
             <?php $this->chkGoToNext->Render(); ?>
         <?php } ?>
         <br />
-        <?php if (QApplication::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)) { ?>
+        <?php if (NarroApp::$objUser->hasPermission('Can suggest', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId)) { ?>
             <?php $this->pnlPluginMessages->Render(); ?>
             <br />
             <?php echo t('Your suggestion'); ?>:
@@ -55,7 +55,7 @@
             </td>
             <td width="40%" valign="top" style="padding-left:0px;border:0px">
                 <?php $this->btnSave->Render() ?>&nbsp;<?php $this->btnSaveIgnore->Render() ?>
-                <?php if (QApplication::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId)) { ?>
+                <?php if (NarroApp::$objUser->hasPermission('Can approve', $this->objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId)) { ?>
                     <br />
                     <?php $this->chkApprove->Render() ?>
                 <?php } ?>
@@ -63,7 +63,7 @@
             </tr>
             </table>
         <?php } else
-                  echo sprintf(t('You can add suggestions if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . QApplication::$Language->LanguageCode, 'narro_login.php?l=' . QApplication::$Language->LanguageCode) . '<br /><br />';
+                  echo sprintf(t('You can add suggestions if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . NarroApp::$Language->LanguageCode, 'narro_login.php?l=' . NarroApp::$Language->LanguageCode) . '<br /><br />';
         ?>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <?php $this->btnPrevious100->Render() ?>
@@ -82,7 +82,7 @@
         <br />
         <?php $this->pnlComments->Render() ?>
 
-        <?php if(QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID && $this->txtSuggestionValue->Display) $this->txtSuggestionValue->Focus(); ?>
+        <?php if(NarroApp::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID && $this->txtSuggestionValue->Display) $this->txtSuggestionValue->Focus(); ?>
     <?php $this->RenderEnd() ?>
 
 <?php require('includes/footer.inc.php'); ?>

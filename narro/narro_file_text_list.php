@@ -25,16 +25,16 @@
 
         protected function SetupNarroObject() {
             // Lookup Object PK information from Query String (if applicable)
-            $intFileId = QApplication::QueryString('f');
-            $intProjectId = QApplication::QueryString('p');
+            $intFileId = NarroApp::QueryString('f');
+            $intProjectId = NarroApp::QueryString('p');
             if (($intFileId)) {
                 $this->objNarroFile = NarroFile::Load(($intFileId));
 
                 if (!$this->objNarroFile)
-                    QApplication::Redirect(NarroLink::ProjectFileList($intProjectId));
+                    NarroApp::Redirect(NarroLink::ProjectFileList($intProjectId));
 
             } else
-                QApplication::Redirect(NarroLink::ProjectFileList($intProjectId));
+                NarroApp::Redirect(NarroLink::ProjectFileList($intProjectId));
 
             $this->objNarroProject = $this->objNarroFile->Project;
 
@@ -69,11 +69,11 @@
         }
 
         public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {
-            if (QApplication::$objUser->hasPermission('Can suggest', $objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId) && QApplication::$objUser->hasPermission('Can vote', $objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+            if (NarroApp::$objUser->hasPermission('Can suggest', $objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId) && NarroApp::$objUser->hasPermission('Can vote', $objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
                 $strText = t('Suggest / Vote');
-            elseif (QApplication::$objUser->hasPermission('Can suggest', $objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+            elseif (NarroApp::$objUser->hasPermission('Can suggest', $objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
                 $strText = t('Suggest');
-            elseif (QApplication::$objUser->hasPermission('Can vote', $objNarroContextInfo->Context->ProjectId, QApplication::$Language->LanguageId))
+            elseif (NarroApp::$objUser->hasPermission('Can vote', $objNarroContextInfo->Context->ProjectId, NarroApp::$Language->LanguageId))
                 $strText = t('Vote');
             else
                 $strText = t('Details');
@@ -94,11 +94,11 @@
         }
 
         public function lstTextFilter_Change() {
-            QApplication::Redirect(NarroLink::FileTextList($this->objNarroFile->ProjectId, $this->objNarroFile->FileId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
+            NarroApp::Redirect(NarroLink::FileTextList($this->objNarroFile->ProjectId, $this->objNarroFile->FileId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
         }
 
         public function btnSearch_Click() {
-            QApplication::Redirect(NarroLink::FileTextList($this->objNarroFile->ProjectId, $this->objNarroFile->FileId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
+            NarroApp::Redirect(NarroLink::FileTextList($this->objNarroFile->ProjectId, $this->objNarroFile->FileId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
         }
 
 
@@ -109,7 +109,7 @@
 
             $objCommonCondition = QQ::AndCondition(
                 QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objNarroFile->FileId),
-                QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$Language->LanguageId),
+                QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
                 QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
 
@@ -181,7 +181,7 @@
                     break;
             }
 
-            QApplication::ExecuteJavaScript('highlight_datagrid();');
+            NarroApp::ExecuteJavaScript('highlight_datagrid();');
 
         }
 

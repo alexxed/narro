@@ -20,11 +20,11 @@
         public function __construct() {
             parent::__construct();
             $this->strName = t('Spell check');
-            QApplication::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don\'t need it', 'Yes, please'));
+            NarroApp::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don\'t need it', 'Yes, please'));
         }
 
         public static function GetSpellSuggestions($strText) {
-            if (QApplication::$objUser->getPreferenceValueByName('Spellchecking') == 'I don\'t need it')
+            if (NarroApp::$objUser->getPreferenceValueByName('Spellchecking') == 'I don\'t need it')
                 return true;
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strText);
             $strCleanText = strip_tags($strCleanText);
@@ -46,7 +46,7 @@
              */
             $strCleanText = mb_ereg_replace('[\(\)]+', ' ', $strCleanText);
 
-            $strSpellLang = QApplication::$objUser->getPreferenceValueByName('Language');
+            $strSpellLang = NarroApp::$objUser->getPreferenceValueByName('Language');
 
             return self::GetSpellSuggestionsWithPspell($strCleanText, $strSpellLang);
         }

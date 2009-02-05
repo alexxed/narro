@@ -345,7 +345,7 @@
                         else
                             $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strCharsetLine ;
 
-                        $strTranslatorLine = sprintf('Last-Translator: %s <%s>\n', QApplication::$objUser->Username, QApplication::$objUser->Email);
+                        $strTranslatorLine = sprintf('Last-Translator: %s <%s>\n', NarroApp::$objUser->Username, NarroApp::$objUser->Email);
 
                         if (strstr($arrTemplateFields['MsgStr'], '"Last-Translator:'))
                             $arrTemplateFields['MsgStr'] = preg_replace('/Last\-Translator:[^"]+/mi', $strTranslatorLine, $arrTemplateFields['MsgStr']);
@@ -622,7 +622,7 @@
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
                 $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
 
-                $arrResult = QApplication::$objPluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
+                $arrResult = NarroApp::$objPluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[1]) != '' &&

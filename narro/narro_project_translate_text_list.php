@@ -48,35 +48,35 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            $intProjectId = QApplication::QueryString('p');
+            $intProjectId = NarroApp::QueryString('p');
             if (($intProjectId)) {
                 $this->objNarroProject = NarroProject::Load(($intProjectId));
 
                 if (!$this->objNarroProject)
-                    QApplication::Redirect(NarroLink::ProjectList());
+                    NarroApp::Redirect(NarroLink::ProjectList());
 
             } else
-                QApplication::Redirect(NarroLink::ProjectList());
+                NarroApp::Redirect(NarroLink::ProjectList());
 
             $this->lstTextFilter = new QListBox($this);
             $this->lstTextFilter->AddItem(t('All texts'), self::SHOW_ALL_TEXTS, true);
             $this->lstTextFilter->AddItem(t('Untranslated texts'), self::SHOW_UNTRANSLATED_TEXTS);
             $this->lstTextFilter->AddItem(t('Approved texts'), self::SHOW_APPROVED_TEXTS);
             $this->lstTextFilter->AddItem(t('Texts that require approval'), self::SHOW_TEXTS_THAT_REQUIRE_APPROVAL);
-            if (QApplication::QueryString('tf') > 0)
-                $this->lstTextFilter->SelectedValue = QApplication::QueryString('tf');
+            if (NarroApp::QueryString('tf') > 0)
+                $this->lstTextFilter->SelectedValue = NarroApp::QueryString('tf');
             $this->lstTextFilter->AddAction(new QChangeEvent(), new QServerAction('lstTextFilter_Change'));
 
             $this->txtSearch = new QTextBox($this);
-            $this->txtSearch->Text = QApplication::QueryString('s');
+            $this->txtSearch->Text = NarroApp::QueryString('s');
 
             $this->lstSearchType = new QListBox($this);
             $this->lstSearchType->AddItem(t('original texts'), self::SEARCH_TEXTS, true);
             $this->lstSearchType->AddItem(t('translations'), self::SEARCH_SUGGESTIONS);
             $this->lstSearchType->AddItem(t('contexts'), self::SEARCH_CONTEXTS);
-            $this->lstSearchType->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('qc.getControl(\'%s\').className=((this.selectedIndex == 1)?\'%s\':\'ltr\');', $this->txtSearch->ControlId, QApplication::$Language->TextDirection)));
-            if (QApplication::QueryString('st') > 0)
-                $this->lstSearchType->SelectedValue = QApplication::QueryString('st');
+            $this->lstSearchType->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('qc.getControl(\'%s\').className=((this.selectedIndex == 1)?\'%s\':\'ltr\');', $this->txtSearch->ControlId, NarroApp::$Language->TextDirection)));
+            if (NarroApp::QueryString('st') > 0)
+                $this->lstSearchType->SelectedValue = NarroApp::QueryString('st');
 
             $this->btnSearch = new QButton($this);
             $this->btnSearch->Text = t('Search');
@@ -96,7 +96,7 @@
 
             // Datagrid Paginator
             $this->dtgNarroContextInfo->Paginator = new QPaginator($this->dtgNarroContextInfo);
-            $this->dtgNarroContextInfo->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroContextInfo->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
 
             $this->dtgNarroContextInfo->PaginatorAlternate = new QPaginator($this->dtgNarroContextInfo);
 
@@ -115,7 +115,7 @@
 
             $objCommonCondition = QQ::AndCondition(
                 QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
-                QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$Language->LanguageId),
+                QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::$Language->LanguageId),
                 QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
             );
 
@@ -175,7 +175,7 @@
                     break;
             }
 
-            QApplication::ExecuteJavaScript('highlight_datagrid();');
+            NarroApp::ExecuteJavaScript('highlight_datagrid();');
         }
 
     }

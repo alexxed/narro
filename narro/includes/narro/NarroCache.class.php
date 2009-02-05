@@ -17,54 +17,54 @@
      */
     class NarroCache {
         public static function ClearAllTextsCount($intProjectId, $intLanguageId = null) {
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
 
-            QApplication::$Cache->remove('total_texts_' . $intProjectId . '_' . $intLanguageId);
-            QApplication::$Cache->remove('translated_texts_' . $intProjectId . '_' . $intLanguageId);
-            QApplication::$Cache->remove('approved_texts_' . $intProjectId . '_' . $intLanguageId);
+            NarroApp::$Cache->remove('total_texts_' . $intProjectId . '_' . $intLanguageId);
+            NarroApp::$Cache->remove('translated_texts_' . $intProjectId . '_' . $intLanguageId);
+            NarroApp::$Cache->remove('approved_texts_' . $intProjectId . '_' . $intLanguageId);
         }
 
         public static function UpdateAllTextsByProjectAndLanguage($intValue, $intProjectId, $intLanguageId = null) {
-            $objDatabase = QApplication::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
+            $objDatabase = NarroApp::$Database[1];
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
 
-            $intTotalTexts = QApplication::$Cache->load('total_texts_' . $intProjectId . '_' . $intLanguageId);
+            $intTotalTexts = NarroApp::$Cache->load('total_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false)
                 $intTotalTexts = self::CountAllTextsByProjectAndLanguage($intProjectId, $intLanguageId);
             $intTotalTexts += $intValue;
 
-            QApplication::$Cache->save($intTotalTexts, 'total_texts_' . $intProjectId . '_' . $intLanguageId);
+            NarroApp::$Cache->save($intTotalTexts, 'total_texts_' . $intProjectId . '_' . $intLanguageId);
         }
 
         public static function UpdateTranslatedTextsByProjectAndLanguage($intValue, $intProjectId, $intLanguageId = null) {
-            $objDatabase = QApplication::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
+            $objDatabase = NarroApp::$Database[1];
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
 
-            $intTotalTexts = QApplication::$Cache->load('translated_texts_' . $intProjectId . '_' . $intLanguageId);
+            $intTotalTexts = NarroApp::$Cache->load('translated_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false)
                 $intTotalTexts = self::CountTranslatedTextsByProjectAndLanguage($intProjectId, $intLanguageId);
             $intTotalTexts += $intValue;
 
-            QApplication::$Cache->save($intTotalTexts, 'translated_texts_' . $intProjectId . '_' . $intLanguageId);
+            NarroApp::$Cache->save($intTotalTexts, 'translated_texts_' . $intProjectId . '_' . $intLanguageId);
         }
 
         public static function UpdateApprovedTextsByProjectAndLanguage($intValue, $intProjectId, $intLanguageId = null) {
-            $objDatabase = QApplication::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
+            $objDatabase = NarroApp::$Database[1];
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
 
-            $intTotalTexts = QApplication::$Cache->load('approved_texts_' . $intProjectId . '_' . $intLanguageId);
+            $intTotalTexts = NarroApp::$Cache->load('approved_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false)
                 $intTotalTexts = self::CountApprovedTextsByProjectAndLanguage($intProjectId, $intLanguageId);
             $intTotalTexts += $intValue;
 
-            QApplication::$Cache->save($intTotalTexts, 'approved_texts_' . $intProjectId . '_' . $intLanguageId);
+            NarroApp::$Cache->save($intTotalTexts, 'approved_texts_' . $intProjectId . '_' . $intLanguageId);
         }
 
         public static function CountAllTextsByProjectAndLanguage($intProjectId, $intLanguageId = null) {
-            $objDatabase = QApplication::$Database[1];
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
+            $objDatabase = NarroApp::$Database[1];
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
 
-            $intTotalTexts = QApplication::$Cache->load('total_texts_' . $intProjectId . '_' . $intLanguageId);
+            $intTotalTexts = NarroApp::$Cache->load('total_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTotalTexts === false) {
 
                 $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND c.active=1', $intProjectId, $intLanguageId);
@@ -75,7 +75,7 @@
                 if ($objDbResult) {
                     $mixRow = $objDbResult->FetchArray();
                     $intTotalTexts = $mixRow['cnt'];
-                    QApplication::$Cache->save($intTotalTexts, 'total_texts_' . $intProjectId . '_' . $intLanguageId);
+                    NarroApp::$Cache->save($intTotalTexts, 'total_texts_' . $intProjectId . '_' . $intLanguageId);
                 }
             }
 
@@ -83,10 +83,10 @@
         }
 
         public static function CountTranslatedTextsByProjectAndLanguage($intProjectId, $intLanguageId = null) {
-            $objDatabase = QApplication::$Database[1];
+            $objDatabase = NarroApp::$Database[1];
 
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
-            $intTranslatedTexts = QApplication::$Cache->load('translated_texts_' . $intProjectId . '_' . $intLanguageId);
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
+            $intTranslatedTexts = NarroApp::$Cache->load('translated_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intTranslatedTexts === false) {
 
                 $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1', $intProjectId, $intLanguageId);
@@ -97,7 +97,7 @@
                 if ($objDbResult) {
                     $mixRow = $objDbResult->FetchArray();
                     $intTranslatedTexts = $mixRow['cnt'];
-                    QApplication::$Cache->save($intTranslatedTexts, 'translated_texts_' . $intProjectId . '_' . $intLanguageId);
+                    NarroApp::$Cache->save($intTranslatedTexts, 'translated_texts_' . $intProjectId . '_' . $intLanguageId);
                 }
             }
 
@@ -105,10 +105,10 @@
         }
 
         public static function CountApprovedTextsByProjectAndLanguage($intProjectId, $intLanguageId = null) {
-            $objDatabase = QApplication::$Database[1];
+            $objDatabase = NarroApp::$Database[1];
 
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::$Language->LanguageId;
-            $intApprovedTexts = QApplication::$Cache->load('approved_texts_' . $intProjectId . '_' . $intLanguageId);
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::$Language->LanguageId;
+            $intApprovedTexts = NarroApp::$Cache->load('approved_texts_' . $intProjectId . '_' . $intLanguageId);
             if ($intApprovedTexts === false) {
 
                 $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1', $intProjectId, $intLanguageId);
@@ -118,7 +118,7 @@
                 if ($objDbResult) {
                     $mixRow = $objDbResult->FetchArray();
                     $intApprovedTexts = $mixRow['cnt'];
-                    QApplication::$Cache->save($intApprovedTexts, 'approved_texts_' . $intProjectId . '_' . $intLanguageId);
+                    NarroApp::$Cache->save($intApprovedTexts, 'approved_texts_' . $intProjectId . '_' . $intLanguageId);
                 }
             }
 

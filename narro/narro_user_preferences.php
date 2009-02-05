@@ -49,13 +49,13 @@
             $this->btnCancel->Text = t('Cancel');
             $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
 
-            if (QApplication::$objUser->UserId != QApplication::QueryString('u') && QApplication::$objUser->hasPermission('Can manage users')) {
-                $this->objUser = NarroUser::LoadByUserId(QApplication::QueryString('u'));
+            if (NarroApp::$objUser->UserId != NarroApp::QueryString('u') && NarroApp::$objUser->hasPermission('Can manage users')) {
+                $this->objUser = NarroUser::LoadByUserId(NarroApp::QueryString('u'));
                 $this->lblMessage->ForeColor = 'red';
                 $this->lblMessage->Text = t('Warning, you are editing another user\'s preferences!');
             }
             else {
-                $this->objUser = QApplication::$objUser;
+                $this->objUser = NarroApp::$objUser;
             }
 
         }
@@ -63,7 +63,7 @@
         protected function GetControlHtml() {
             $strOutput = $this->lblMessage->Render(false) . '<br /><table style="border: 1px solid #DDDDDD" cellspacing="0">';
 
-            foreach(QApplication::$arrPreferences as $strName=>$arrPref) {
+            foreach(NarroApp::$arrPreferences as $strName=>$arrPref) {
                 switch($arrPref['type']) {
                     case 'number':
                             $txtNumber = new QIntegerTextBox($this);
@@ -134,7 +134,7 @@
 
         public function btnSave_Click($strFormId, $strControlId, $strParameter) {
             foreach($this->arrControls as $strName=>$objControl) {
-                switch(QApplication::$arrPreferences[$strName]['type']) {
+                switch(NarroApp::$arrPreferences[$strName]['type']) {
                     case 'number':
                             $this->objUser->setPreferenceValueByName($strName, $objControl->Text);
                             break;
@@ -149,7 +149,7 @@
 
             $this->objUser->Data = serialize($this->objUser->Preferences);
 
-            if (QApplication::QueryString('u') == $this->objUser->UserId) {
+            if (NarroApp::QueryString('u') == $this->objUser->UserId) {
                 require_once 'Zend/Session/Namespace.php';
                 $objNarroSession = new Zend_Session_Namespace('Narro');
                 $objNarroSession->User = $this->objUser;
@@ -158,12 +158,12 @@
             /**
              * Don't save the preferences for the anonymous user in the database
              */
-            if ($this->objUser->UserId == 0 && (!is_numeric(QApplication::QueryString('u')) || !QApplication::$objUser->hasPermission('Can manage users')))
+            if ($this->objUser->UserId == 0 && (!is_numeric(NarroApp::QueryString('u')) || !NarroApp::$objUser->hasPermission('Can manage users')))
                 return true;
 
             try {
                 $this->objUser->Save();
-                if (QApplication::$objUser->UserId != QApplication::QueryString('u') && QApplication::$objUser->hasPermission('Can manage users'))
+                if (NarroApp::$objUser->UserId != NarroApp::QueryString('u') && NarroApp::$objUser->hasPermission('Can manage users'))
                     $this->lblMessage->Text = sprintf(t('Preferences for %s were saved successfuly.'), $this->objUser->Username);
                 else
                     $this->lblMessage->Text = t('Your preferences were saved successfuly.');
@@ -175,7 +175,7 @@
         }
 
         public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
-            QApplication::Redirect(NarroLink::ProjectList());
+            NarroApp::Redirect(NarroLink::ProjectList());
         }
 
         public function __get($strName) {

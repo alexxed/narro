@@ -21,36 +21,36 @@
             ($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name
         ) . ' | ';
 
-    if (QApplication::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID) {
+    if (NarroApp::$objUser->UserId != NarroUser::ANONYMOUS_USER_ID) {
         echo
             sprintf(
                 t('<i>Logged in as <a href="%s" style="color:green;font-weight:bold">%s</a></i>'),
-                NarroLink::UserProfile(QApplication::$objUser->UserId),
-                QApplication::$objUser->Username
+                NarroLink::UserProfile(NarroApp::$objUser->UserId),
+                NarroApp::$objUser->Username
             ) . ' | '
             ;
     } else {
     ?>
-        <a href="narro_register.php?l=<?php echo QApplication::$Language->LanguageCode ?>"><?php echo t('Register') ?></a> |
-        <a href="narro_login.php?l=<?php echo QApplication::$Language->LanguageCode ?>"><?php echo t('Login') ?></a> |
+        <a href="narro_register.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php echo t('Register') ?></a> |
+        <a href="narro_login.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php echo t('Login') ?></a> |
     <?php
     }
     ?>
-    <?php echo NarroLink::UserPreferences(QApplication::$objUser->UserId, t('Preferences')) ?> |
+    <?php echo NarroLink::UserPreferences(NarroApp::$objUser->UserId, t('Preferences')) ?> |
     <?php echo NarroLink::ProjectList(t('Projects')) ?> |
-    <a href="narro_language_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('Languages') ?>"><?php echo t('Languages') ?></a> |
-    <a href="narro_user_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('Users') ?>"><?php echo t('Users') ?></a>
+    <a href="narro_language_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>" title="<?php echo t('Languages') ?>"><?php echo t('Languages') ?></a> |
+    <a href="narro_user_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>" title="<?php echo t('Users') ?>"><?php echo t('Users') ?></a>
     <?php
-    if (QApplication::$objUser->hasPermission('Can manage users')) {
+    if (NarroApp::$objUser->hasPermission('Can manage users')) {
     ?>
-    | <a href="narro_role_list.php?l=<?php echo QApplication::$Language->LanguageCode ?>" title="<?php echo t('Roles') ?>"><?php echo t('Roles') ?></a>
+    | <a href="narro_role_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>" title="<?php echo t('Roles') ?>"><?php echo t('Roles') ?></a>
     <?php
     }
     ?>
     <?php
-    if (QApplication::$objUser->UserId > 0) {
+    if (NarroApp::$objUser->UserId > 0) {
     ?>
-        | <a href="narro_logout.php?l=<?php echo QApplication::$Language->LanguageCode ?>"><?php echo t('Logout') ?></a>
+        | <a href="narro_logout.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php echo t('Logout') ?></a>
     <?php
     }
     ?>

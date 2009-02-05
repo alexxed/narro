@@ -70,7 +70,7 @@
             if (isset($this->arrPreferences[$strName]))
                 return $this->arrPreferences[$strName];
             else
-                return QApplication::$arrPreferences[$strName]['default'];
+                return NarroApp::$arrPreferences[$strName]['default'];
         }
 
         public static function LoadByUsernameAndPassword($strUsername, $strPassword) {

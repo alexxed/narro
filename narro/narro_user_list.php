@@ -32,19 +32,19 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            $this->objUser = NarroUser::Load(QApplication::QueryString('u'));
+            $this->objUser = NarroUser::Load(NarroApp::QueryString('u'));
 
             // Setup DataGrid Columns
-            $this->colUsername = new QDataGridColumn(QApplication::Translate('Username'), '<?= $_FORM->dtgNarroUserList_UsernameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUser()->Username), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUser()->Username, false)));
+            $this->colUsername = new QDataGridColumn(NarroApp::Translate('Username'), '<?= $_FORM->dtgNarroUserList_UsernameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUser()->Username), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUser()->Username, false)));
             $this->colUsername->HtmlEntities = false;
-            $this->colEmail = new QDataGridColumn(QApplication::Translate('Email'), '<?= $_FORM->dtgNarroUserList_EmailColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUser()->Email), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUser()->Email, false)));
+            $this->colEmail = new QDataGridColumn(NarroApp::Translate('Email'), '<?= $_FORM->dtgNarroUserList_EmailColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUser()->Email), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUser()->Email, false)));
             $this->colEmail->HtmlEntities = false;
-            $this->colRoles = new QDataGridColumn(QApplication::Translate('Roles'), '<?= $_FORM->dtgNarroUserList_RolesColumn_Render($_ITEM) ?>');
+            $this->colRoles = new QDataGridColumn(NarroApp::Translate('Roles'), '<?= $_FORM->dtgNarroUserList_RolesColumn_Render($_ITEM) ?>');
             $this->colRoles->HtmlEntities = false;
-            $this->colPreferences = new QDataGridColumn(QApplication::Translate('Preferences'), '<?= $_FORM->dtgNarroUserList_PreferencesColumn_Render($_ITEM) ?>');
+            $this->colPreferences = new QDataGridColumn(NarroApp::Translate('Preferences'), '<?= $_FORM->dtgNarroUserList_PreferencesColumn_Render($_ITEM) ?>');
             $this->colPreferences->HtmlEntities = false;
 
-            $this->colActions = new QDataGridColumn(QApplication::Translate('Actions'), '<?= $_FORM->dtgNarroUserList_ActionsColumn_Render($_ITEM) ?>');
+            $this->colActions = new QDataGridColumn(NarroApp::Translate('Actions'), '<?= $_FORM->dtgNarroUserList_ActionsColumn_Render($_ITEM) ?>');
             $this->colActions->HtmlEntities = false;
 
 
@@ -58,7 +58,7 @@
 
             // Datagrid Paginator
             $this->dtgNarroUserList->Paginator = new QPaginator($this->dtgNarroUserList);
-            $this->dtgNarroUserList->ItemsPerPage = QApplication::$objUser->getPreferenceValueByName('Items per page');
+            $this->dtgNarroUserList->ItemsPerPage = NarroApp::$objUser->getPreferenceValueByName('Items per page');
 
 
             // Specify Whether or Not to Refresh using Ajax
@@ -69,12 +69,12 @@
 
             $this->dtgNarroUserList->AddColumn($this->colUsername);
 
-            if (QApplication::$objUser->hasPermission('Administrator', null, QApplication::$Language->LanguageId)) {
+            if (NarroApp::$objUser->hasPermission('Administrator', null, NarroApp::$Language->LanguageId)) {
                 $this->dtgNarroUserList->AddColumn($this->colEmail);
                 $this->dtgNarroUserList->AddColumn($this->colPreferences);
             }
 
-            if (QApplication::$objUser->hasPermission('Can manage users', null, QApplication::$Language->LanguageId)) {
+            if (NarroApp::$objUser->hasPermission('Can manage users', null, NarroApp::$Language->LanguageId)) {
                 $this->dtgNarroUserList->AddColumn($this->colRoles);
                 $this->dtgNarroUserList->AddColumn($this->colActions);
             }
@@ -120,7 +120,7 @@
         }
 
         public function dtgNarroUserList_ActionsColumn_Render(NarroUser $objNarroUser) {
-            if ($objNarroUser->UserId != QApplication::$objUser->UserId)
+            if ($objNarroUser->UserId != NarroApp::$objUser->UserId)
                 return
                     NarroLink::UserPreferences($objNarroUser->UserId, t('Preferences')) . ' | ' .
                     NarroLink::UserRole($objNarroUser->UserId, t('Roles'));

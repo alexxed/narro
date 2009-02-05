@@ -44,18 +44,18 @@
         protected function SetupNarroLanguage() {
             // Lookup Object PK information from Query String (if applicable)
             // Set mode to Edit or New depending on what's found
-            $intLanguageId = QApplication::QueryString('lid');
+            $intLanguageId = NarroApp::QueryString('lid');
             if (($intLanguageId)) {
                 $this->objNarroLanguage = NarroLanguage::Load(($intLanguageId));
 
                 if (!$this->objNarroLanguage)
                     throw new Exception('Could not find a NarroLanguage object with PK arguments: ' . $intLanguageId);
 
-                $this->strTitleVerb = QApplication::Translate('Edit');
+                $this->strTitleVerb = NarroApp::Translate('Edit');
                 $this->blnEditMode = true;
             } else {
                 $this->objNarroLanguage = new NarroLanguage();
-                $this->strTitleVerb = QApplication::Translate('Create');
+                $this->strTitleVerb = NarroApp::Translate('Create');
                 $this->blnEditMode = false;
             }
         }
@@ -89,7 +89,7 @@
         // Create and Setup lblLanguageId
         protected function lblLanguageId_Create() {
             $this->lblLanguageId = new QLabel($this);
-            $this->lblLanguageId->Name = QApplication::Translate('Language Id');
+            $this->lblLanguageId->Name = NarroApp::Translate('Language Id');
             if ($this->blnEditMode)
                 $this->lblLanguageId->Text = $this->objNarroLanguage->LanguageId;
             else
@@ -99,7 +99,7 @@
         // Create and Setup txtLanguageName
         protected function txtLanguageName_Create() {
             $this->txtLanguageName = new QTextBox($this);
-            $this->txtLanguageName->Name = QApplication::Translate('Language Name');
+            $this->txtLanguageName->Name = NarroApp::Translate('Language Name');
             $this->txtLanguageName->Text = $this->objNarroLanguage->LanguageName;
             $this->txtLanguageName->Required = true;
             $this->txtLanguageName->MaxLength = NarroLanguage::LanguageNameMaxLength;
@@ -108,7 +108,7 @@
         // Create and Setup txtLanguageCode
         protected function txtLanguageCode_Create() {
             $this->txtLanguageCode = new QTextBox($this);
-            $this->txtLanguageCode->Name = QApplication::Translate('Language Code');
+            $this->txtLanguageCode->Name = NarroApp::Translate('Language Code');
             $this->txtLanguageCode->Text = $this->objNarroLanguage->LanguageCode;
             $this->txtLanguageCode->Required = true;
             $this->txtLanguageCode->MaxLength = NarroLanguage::LanguageCodeMaxLength;
@@ -117,7 +117,7 @@
         // Create and Setup txtCountryCode
         protected function txtCountryCode_Create() {
             $this->txtCountryCode = new QTextBox($this);
-            $this->txtCountryCode->Name = QApplication::Translate('Country Code');
+            $this->txtCountryCode->Name = NarroApp::Translate('Country Code');
             $this->txtCountryCode->Text = $this->objNarroLanguage->CountryCode;
             $this->txtCountryCode->Required = true;
             $this->txtCountryCode->MaxLength = NarroLanguage::CountryCodeMaxLength;
@@ -126,7 +126,7 @@
         // Create and Setup txtEncoding
         protected function txtEncoding_Create() {
             $this->txtEncoding = new QTextBox($this);
-            $this->txtEncoding->Name = QApplication::Translate('Encoding');
+            $this->txtEncoding->Name = NarroApp::Translate('Encoding');
             $this->txtEncoding->Text = $this->objNarroLanguage->Encoding;
             $this->txtEncoding->Required = true;
             $this->txtEncoding->MaxLength = NarroLanguage::EncodingMaxLength;
@@ -135,7 +135,7 @@
         // Create and Setup lstTextDirection
         protected function lstTextDirection_Create() {
             $this->lstTextDirection = new QListBox($this);
-            $this->lstTextDirection->Name = QApplication::Translate('Text Direction');
+            $this->lstTextDirection->Name = NarroApp::Translate('Text Direction');
             $this->lstTextDirection->Required = true;
             $this->lstTextDirection->AddItem(t('Left to right'), 'ltr');
             $this->lstTextDirection->AddItem(t('Right to left'), 'rtl');
@@ -144,7 +144,7 @@
         // Create and Setup txtSpecialCharacters
         protected function txtSpecialCharacters_Create() {
             $this->txtSpecialCharacters = new QTextBox($this);
-            $this->txtSpecialCharacters->Name = QApplication::Translate('Special Characters');
+            $this->txtSpecialCharacters->Name = NarroApp::Translate('Special Characters');
             $this->txtSpecialCharacters->Text = $this->objNarroLanguage->SpecialCharacters;
             $this->txtSpecialCharacters->MaxLength = NarroLanguage::SpecialCharactersMaxLength;
         }
@@ -152,7 +152,7 @@
         // Create and Setup txtPluralForm
         protected function txtPluralForm_Create() {
             $this->txtPluralForm = new QTextBox($this);
-            $this->txtPluralForm->Name = QApplication::Translate('Plural formula');
+            $this->txtPluralForm->Name = NarroApp::Translate('Plural formula');
             $this->txtPluralForm->Text = $this->objNarroLanguage->PluralForm;
             $this->txtPluralForm->Width = 800;
             $this->txtPluralForm->MaxLength = NarroLanguage::PluralFormMaxLength;
@@ -161,27 +161,27 @@
         // Create and Setup chkActive
         protected function chkActive_Create() {
             $this->chkActive = new QCheckBox($this);
-            $this->chkActive->Name = QApplication::Translate('Active');
+            $this->chkActive->Name = NarroApp::Translate('Active');
             $this->chkActive->Checked = $this->objNarroLanguage->Active;
         }
 
         // Setup btnSave
         protected function btnSave_Create() {
             $this->btnSave = new QButton($this);
-            $this->btnSave->Text = QApplication::Translate('Save');
+            $this->btnSave->Text = NarroApp::Translate('Save');
             $this->btnSave->AddAction(new QClickEvent(), new QServerAction('btnSave_Click'));
             $this->btnSave->PrimaryButton = true;
             $this->btnSave->CausesValidation = true;
             if ($this->blnEditMode)
-                $this->btnSave->Visible = QApplication::$objUser->hasPermission('Can edit language', null, QApplication::$Language->LanguageId);
+                $this->btnSave->Visible = NarroApp::$objUser->hasPermission('Can edit language', null, NarroApp::$Language->LanguageId);
             else
-                $this->btnSave->Visible = QApplication::$objUser->hasPermission('Can add language');
+                $this->btnSave->Visible = NarroApp::$objUser->hasPermission('Can add language');
         }
 
         // Setup btnCancel
         protected function btnCancel_Create() {
             $this->btnCancel = new QButton($this);
-            $this->btnCancel->Text = QApplication::Translate('Cancel');
+            $this->btnCancel->Text = NarroApp::Translate('Cancel');
             $this->btnCancel->AddAction(new QClickEvent(), new QServerAction('btnCancel_Click'));
             $this->btnCancel->CausesValidation = false;
         }
@@ -189,13 +189,13 @@
         // Setup btnDelete
         protected function btnDelete_Create() {
             $this->btnDelete = new QButton($this);
-            $this->btnDelete->Text = QApplication::Translate('Delete');
-            $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'), 'NarroLanguage')));
+            $this->btnDelete->Text = NarroApp::Translate('Delete');
+            $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(NarroApp::Translate('Are you SURE you want to DELETE this %s?'), 'NarroLanguage')));
             $this->btnDelete->AddAction(new QClickEvent(), new QServerAction('btnDelete_Click'));
             $this->btnDelete->CausesValidation = false;
             if (!$this->blnEditMode)
                 $this->btnDelete->Visible = false;
-            $this->btnDelete->Visible = QApplication::$objUser->hasPermission('Can delete language', null, QApplication::$Language->LanguageId);
+            $this->btnDelete->Visible = NarroApp::$objUser->hasPermission('Can delete language', null, NarroApp::$Language->LanguageId);
         }
 
         // Protected Update Methods
@@ -213,10 +213,10 @@
 
         // Control ServerActions
         protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            if ($this->blnEditMode && !QApplication::$objUser->hasPermission('Can edit language', null, QApplication::$Language->LanguageId))
+            if ($this->blnEditMode && !NarroApp::$objUser->hasPermission('Can edit language', null, NarroApp::$Language->LanguageId))
                 $this->RedirectToListPage();
 
-            if (!$this->blnEditMode && !QApplication::$objUser->hasPermission('Can add language'))
+            if (!$this->blnEditMode && !NarroApp::$objUser->hasPermission('Can add language'))
                 $this->RedirectToListPage();
 
             $this->UpdateNarroLanguageFields();
@@ -231,7 +231,7 @@
         }
 
         protected function btnDelete_Click($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::$objUser->hasPermission('Can delete language', null, QApplication::$Language->LanguageId))
+            if (!NarroApp::$objUser->hasPermission('Can delete language', null, NarroApp::$Language->LanguageId))
                 $this->RedirectToListPage();
 
             $this->objNarroLanguage->Delete();
@@ -240,7 +240,7 @@
         }
 
         protected function RedirectToListPage() {
-            QApplication::Redirect('narro_language_list.php?l=' . QApplication::$Language->LanguageCode);
+            NarroApp::Redirect('narro_language_list.php?l=' . NarroApp::$Language->LanguageCode);
         }
     }
 

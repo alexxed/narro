@@ -35,19 +35,19 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            if (QApplication::QueryString('u') == QApplication::$objUser->UserId)
-                QApplication::Redirect(NarroLink::ProjectList());
+            if (NarroApp::QueryString('u') == NarroApp::$objUser->UserId)
+                NarroApp::Redirect(NarroLink::ProjectList());
 
-            $this->objUser = NarroUser::Load(QApplication::QueryString('u'));
+            $this->objUser = NarroUser::Load(NarroApp::QueryString('u'));
 
             // Setup DataGrid Columns
-            $this->colLanguage = new QDataGridColumn(QApplication::Translate('Language'), '<?= $_FORM->dtgNarroUserRole_LanguageColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Language->LanguageName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Language->LanguageName, false)));
+            $this->colLanguage = new QDataGridColumn(NarroApp::Translate('Language'), '<?= $_FORM->dtgNarroUserRole_LanguageColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Language->LanguageName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Language->LanguageName, false)));
             $this->colLanguage->HtmlEntities = false;
-            $this->colProject = new QDataGridColumn(QApplication::Translate('Project'), '<?= $_FORM->dtgNarroUserRole_ProjectColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Project->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Project->ProjectName, false)));
+            $this->colProject = new QDataGridColumn(NarroApp::Translate('Project'), '<?= $_FORM->dtgNarroUserRole_ProjectColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Project->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Project->ProjectName, false)));
             $this->colProject->HtmlEntities = false;
-            $this->colRole = new QDataGridColumn(QApplication::Translate('Roles'), '<?= $_FORM->dtgNarroUserRole_RoleColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Role->RoleName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Role->RoleName, false)));
+            $this->colRole = new QDataGridColumn(NarroApp::Translate('Roles'), '<?= $_FORM->dtgNarroUserRole_RoleColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Role->RoleName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUserRole()->Role->RoleName, false)));
             $this->colRole->HtmlEntities = false;
-            $this->colActions = new QDataGridColumn(QApplication::Translate('Actions'), '<?= $_FORM->dtgNarroUserRole_ActionsColumn_Render($_ITEM) ?>');
+            $this->colActions = new QDataGridColumn(NarroApp::Translate('Actions'), '<?= $_FORM->dtgNarroUserRole_ActionsColumn_Render($_ITEM) ?>');
             $this->colActions->HtmlEntities = false;
 
 
@@ -73,14 +73,14 @@
             $this->lstLanguage = new QListBox($this);
             $this->lstLanguage->AddItem('Any');
             foreach(NarroLanguage::LoadAllActive() as $objNarroLanguage) {
-                if (QApplication::$objUser->hasPermission('Can manage users', null, $objNarroLanguage->LanguageId))
+                if (NarroApp::$objUser->hasPermission('Can manage users', null, $objNarroLanguage->LanguageId))
                     $this->lstLanguage->AddItem($objNarroLanguage->LanguageName, $objNarroLanguage->LanguageId);
             }
 
             $this->lstProject = new QListBox($this);
             $this->lstProject->AddItem('Any');
             foreach(NarroProject::QueryArray(QQ::Equal(QQN::NarroProject()->Active, 1)) as $objNarroProject) {
-                if (QApplication::$objUser->hasPermission('Can manage users', $objNarroProject->ProjectId))
+                if (NarroApp::$objUser->hasPermission('Can manage users', $objNarroProject->ProjectId))
                     $this->lstProject->AddItem($objNarroProject->ProjectName, $objNarroProject->ProjectId);
             }
 
@@ -118,7 +118,7 @@
             if (!$btnEdit) {
                 $btnEdit = new QButton($this->dtgNarroUserRole, $strControlId);
                 $btnEdit->Text = t('Edit');
-                if (QApplication::$blnUseAjax)
+                if (NarroApp::$blnUseAjax)
                     $btnEdit->AddAction(new QClickEvent(), new QAjaxAction('btnEditRole_Click'));
                 else
                     $btnEdit->AddAction(new QClickEvent(), new QServerAction('btnEditRole_Click'));
@@ -131,7 +131,7 @@
                 $btnDelete = new QButton($this->dtgNarroUserRole, $strControlId);
                 $btnDelete->Text = t('Delete');
                 $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to revoke this role for this user?')));
-                if (QApplication::$blnUseAjax)
+                if (NarroApp::$blnUseAjax)
                     $btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDeleteRole_Click'));
                 else
                     $btnDelete->AddAction(new QClickEvent(), new QServerAction('btnDeleteRole_Click'));
@@ -175,7 +175,7 @@
                 $objNarroUserRole->UserId = $this->objUser->UserId;
             }
 
-            if (!QApplication::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId, $objNarroUserRole->LanguageId))
+            if (!NarroApp::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId, $objNarroUserRole->LanguageId))
                 return false;
 
             $objNarroUserRole->LanguageId = $this->lstLanguage->SelectedValue;
@@ -207,9 +207,9 @@
                 $objNarroUserRole = NarroUserRole::Load($strParameter);
 
                 $this->lstLanguage->SelectedValue = $objNarroUserRole->LanguageId;
-                $this->lstLanguage->Enabled = QApplication::$objUser->hasPermission('Can manage users', null, $objNarroUserRole->LanguageId);
+                $this->lstLanguage->Enabled = NarroApp::$objUser->hasPermission('Can manage users', null, $objNarroUserRole->LanguageId);
                 $this->lstProject->SelectedValue = $objNarroUserRole->ProjectId;
-                $this->lstProject->Enabled = QApplication::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId);
+                $this->lstProject->Enabled = NarroApp::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId);
                 $this->lstRole->SelectedValue = $objNarroUserRole->RoleId;
 
                 $this->btnAddRole->Text = t('Save');
@@ -222,7 +222,7 @@
         public function btnDeleteRole_Click($strFormId, $strControlId, $strParameter) {
             $objNarroUserRole = NarroUserRole::Load($strParameter);
 
-            if (!QApplication::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId, $objNarroUserRole->LanguageId))
+            if (!NarroApp::$objUser->hasPermission('Can manage users', $objNarroUserRole->ProjectId, $objNarroUserRole->LanguageId))
                 return false;
 
             $objNarroUserRole->Delete();

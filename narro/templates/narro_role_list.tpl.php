@@ -35,7 +35,7 @@
         </td>
         <td width="50%" valign="top">
         <?php
-            switch(QApplication::QueryString('view')) {
+            switch(NarroApp::QueryString('view')) {
                 case 'permission':
                         $this->pnlRolePermissions->Render();
                         break;

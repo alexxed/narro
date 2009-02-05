@@ -26,21 +26,21 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            if (QApplication::$objUser->UserId == NarroUser::ANONYMOUS_USER_ID) {
-                $strPassHash = QApplication::QueryString('h');
-                $strUsername = QApplication::QueryString('u');
+            if (NarroApp::$objUser->UserId == NarroUser::ANONYMOUS_USER_ID) {
+                $strPassHash = NarroApp::QueryString('h');
+                $strUsername = NarroApp::QueryString('u');
                 if ($strPassHash && $strUsername) {
                     if ($objUser = NarroUser::LoadByUsernameAndPassword($strUsername, $strPassHash)) {
                         require_once 'Zend/Session/Namespace.php';
                         $objNarroSession = new Zend_Session_Namespace('Narro');
                         $objNarroSession->User = $objUser;
-                        QApplication::$objUser = $objUser;
+                        NarroApp::$objUser = $objUser;
                     }
                     else
-                        QApplication::Redirect('narro_login.php');
+                        NarroApp::Redirect('narro_login.php');
                 }
                 else
-                    QApplication::Redirect('narro_login.php');
+                    NarroApp::Redirect('narro_login.php');
             }
 
             $this->lblMessage = new QLabel($this);
@@ -55,10 +55,10 @@
         }
 
         protected function btnChangePassword_Click($strFormId, $strControlId, $strParameter) {
-            QApplication::$objUser->Password = md5($this->txtPassword->Text);
+            NarroApp::$objUser->Password = md5($this->txtPassword->Text);
 
             try {
-                QApplication::$objUser->Save();
+                NarroApp::$objUser->Save();
             } catch (Exception $objEx) {
                 $this->lblMessage->ForeColor = 'red';
                 $this->lblMessage->Text = t('Failed to change the password.');
@@ -66,7 +66,7 @@
 
             require_once 'Zend/Session/Namespace.php';
             $objNarroSession = new Zend_Session_Namespace('Narro');
-            $objNarroSession->User = QApplication::$objUser;
+            $objNarroSession->User = NarroApp::$objUser;
             $this->lblMessage->ForeColor = 'green';
             $this->lblMessage->Text = t('Password changed succesfully.');
 

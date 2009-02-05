@@ -27,7 +27,7 @@
             parent::__construct($objParentObject, $strControlId);
 
             // Setup DataGrid Columns
-            $this->colPermission = new QDataGridColumn(QApplication::Translate('Permission'), '<?= $_CONTROL->ParentControl->dtgNarroPermission_PermissionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName, false)));
+            $this->colPermission = new QDataGridColumn(NarroApp::Translate('Permission'), '<?= $_CONTROL->ParentControl->dtgNarroPermission_PermissionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName, false)));
             $this->colPermission->HtmlEntities = false;
 
 
@@ -40,7 +40,7 @@
             $this->dtgNarroPermission->GridLines = QGridLines::Both;
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroPermission->UseAjax = QApplication::$blnUseAjax;
+            $this->dtgNarroPermission->UseAjax = NarroApp::$blnUseAjax;
 
             // Specify the local databind method this datagrid will use
             $this->dtgNarroPermission->SetDataBinder('dtgNarroPermission_Bind', $this);
@@ -73,7 +73,7 @@
                     )
                 )
             );
-            if (QApplication::$blnUseAjax)
+            if (NarroApp::$blnUseAjax)
                 $chkPermission->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkPermission_Click'));
             else
                 $chkPermission->AddAction(new QClickEvent(), new QServerControlAction($this, 'chkPermission_Click'));

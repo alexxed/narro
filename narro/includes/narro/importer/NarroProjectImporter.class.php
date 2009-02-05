@@ -96,7 +96,7 @@
                             $this->objTargetLanguage->LanguageId,
                             escapeshellarg($this->objProject->ProjectName),
                             $this->objProject->ProjectId,
-                            QApplication::$objUser->UserId
+                            NarroApp::$objUser->UserId
                         )
                     )
                 );
@@ -125,7 +125,7 @@
 
         public function ImportFromFile() {
 
-            $objDatabase = QApplication::$Database[1];
+            $objDatabase = NarroApp::$Database[1];
 
             NarroLog::SetLogFile($this->objProject->ProjectId . '-' . $this->objTargetLanguage->LanguageCode . '-import.log');;
 
@@ -158,7 +158,6 @@
                 $objFile->TypeId = $intFileType;
                 $objFile->ParentId = null;
                 $objFile->ProjectId = $this->objProject->ProjectId;
-                $objFile->ContextCount = 0;
                 $objFile->Modified = date('Y-m-d H:i:s');
                 $objFile->Created = date('Y-m-d H:i:s');
                 NarroLog::LogMessage(1, sprintf('Added file "%s" from "%s"', basename($this->strTranslationPath), dirname($this->strTranslationPath)));
@@ -196,7 +195,7 @@
 
         public function ImportFromDirectory() {
 
-            $objDatabase = QApplication::$Database[1];
+            $objDatabase = NarroApp::$Database[1];
 
             NarroLog::SetLogFile($this->objProject->ProjectId . '-' . $this->objTargetLanguage->LanguageCode . '-import.log');
 
@@ -281,7 +280,6 @@
                         if ($objFile instanceof NarroFile) {
                             NarroImportStatistics::$arrStatistics['Kept folders']++;
                             $objFile->Active = 1;
-                            $objFile->ContextCount = 0;
                             $objFile->FilePath = $strPath;
                             $objFile->Modified = date('Y-m-d H:i:s');
                             $objFile->Save();
@@ -296,7 +294,6 @@
                             if ($intParentId)
                                 $objFile->ParentId = $intParentId;
                             $objFile->ProjectId = $this->objProject->ProjectId;
-                            $objFile->ContextCount = 0;
                             $objFile->FilePath = $strPath;
                             $objFile->Modified = date('Y-m-d H:i:s');
                             $objFile->Created = date('Y-m-d H:i:s');
@@ -435,7 +432,7 @@
                             $this->objTargetLanguage->LanguageId,
                             escapeshellarg($this->objProject->ProjectName),
                             $this->objProject->ProjectId,
-                            QApplication::$objUser->UserId
+                            NarroApp::$objUser->UserId
                         )
                     )
                 );

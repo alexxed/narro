@@ -25,8 +25,8 @@
         <br />
         <span style="margin-left:5px;padding:3px;">
         <?php
-        $strResult = QApplication::$objPluginHandler->DisplayTextComment($_ITEM->CommentText);
-        if (!QApplication::$objPluginHandler->Error)
+        $strResult = NarroApp::$objPluginHandler->DisplayTextComment($_ITEM->CommentText);
+        if (!NarroApp::$objPluginHandler->Error)
             echo nl2br($strResult);
         else
             echo nl2br($_ITEM->CommentText);

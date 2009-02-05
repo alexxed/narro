@@ -19,22 +19,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=<?php _p(QApplication::$EncodingType); ?>" />
+        <meta http-equiv="Content-Type" content="text/html; charset=<?php _p(NarroApp::$EncodingType); ?>" />
         <?php if (isset($strPageTitle)) { ?>
             <title><?php _p($strPageTitle); ?></title>
         <?php } ?>
         <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/style.css" />
-        <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/font-<?php echo QApplication::$objUser->getPreferenceValueByName('Font size') ?>.css" />
-        <?php if (QApplication::QueryString('p')) { ?>
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context changes for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Texts to translate for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=text&l=<?php echo QApplication::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Debates on texts from %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Translations for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
+        <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __CSS_ASSETS__); ?>/font-<?php echo NarroApp::$objUser->getPreferenceValueByName('Font size') ?>.css" />
+        <?php if (NarroApp::QueryString('p')) { ?>
+            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context changes for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo NarroApp::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Texts to translate for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=text&l=<?php echo NarroApp::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Debates on texts from %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=textcomment&l=<?php echo NarroApp::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Translations for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=suggestion&l=<?php echo NarroApp::$Language->LanguageId ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
         <?php } ?>
-        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Context changes for all projects') ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::$Language->LanguageId ?>" />
-        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Texts to translate for all projects') ?>" href="rss.php?t=text&l=<?php echo QApplication::$Language->LanguageId ?>" />
-        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Debates on texts from all projects') ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::$Language->LanguageId ?>" />
-        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Translations for all projects') ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::$Language->LanguageId ?>" />
+        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Context changes for all projects') ?>" href="rss.php?t=context_info_changes&l=<?php echo NarroApp::$Language->LanguageId ?>" />
+        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Texts to translate for all projects') ?>" href="rss.php?t=text&l=<?php echo NarroApp::$Language->LanguageId ?>" />
+        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Debates on texts from all projects') ?>" href="rss.php?t=textcomment&l=<?php echo NarroApp::$Language->LanguageId ?>" />
+        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Translations for all projects') ?>" href="rss.php?t=suggestion&l=<?php echo NarroApp::$Language->LanguageId ?>" />
         <link type="image/x-icon" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ ?>/narro.ico" rel="shortcut icon"/>
         <link type="image/x-icon" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ ?>/narro.ico" rel="icon"/>
         <script type="text/javascript" src="<?php echo __JS_ASSETS__ ?>/table_row_highlight.js"></script>
