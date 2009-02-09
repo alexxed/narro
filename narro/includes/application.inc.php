@@ -172,7 +172,7 @@
     NarroApp::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
     NarroApp::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
     NarroApp::RegisterPreference('Language', 'option', 'The language you are translating to.', NarroApp::QueryString('l'), array(NarroApp::QueryString('l')));
-    NarroApp::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(NarroApp::$Language))?NarroApp::GetLanguageId():1, array((isset(NarroApp::$Language))?NarroApp::GetLanguageId():1));
+    NarroApp::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US', array((isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US'));
     NarroApp::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
     NarroApp::RegisterPreference('Other languages', 'text', 'Other languages that you want to check for suggestions, separated by spaces.', 'ro');
 
