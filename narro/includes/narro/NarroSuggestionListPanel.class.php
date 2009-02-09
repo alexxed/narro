@@ -240,20 +240,19 @@
             $strSuggestionValue = NarroString::ShowLeadingAndTrailingSpaces(NarroString::HtmlEntities($strSuggestionValue));
 
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->TextAccessKey) {
-                if ($this->objNarroContextInfo->SuggestionAccessKey != '')
-                    $intAccPos = mb_stripos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
-                else
-                    $intAccPos = 0;
+                if ($this->objNarroContextInfo->SuggestionAccessKey != '') {
+                    $intAccPos = mb_strpos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
 
-                if (NarroApp::$Language->TextDirection == 'rtl' && $intAccPos == 0)
-                    $strDirControlChar = "\xE2\x80\x8E"; //ltr = \xE2\x80\x8F"
-                else
-                    $strDirControlChar = '';
+                    if (NarroApp::$Language->TextDirection == 'rtl' && $intAccPos == 0)
+                        $strDirControlChar = "\xE2\x80\x8E"; //ltr = \xE2\x80\x8F"
+                    else
+                        $strDirControlChar = '';
 
-                if ($this->objNarroContextInfo->SuggestionAccessKey && mb_stristr($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey))
-                    $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $strDirControlChar . '<u>' . mb_substr($strSuggestionValue, $intAccPos, 1) . '</u>' . mb_substr($strSuggestionValue, $intAccPos + 1);
-                else
-                    $strSuggestionValue .= sprintf(' (%s)', $this->objNarroContextInfo->SuggestionAccessKey);
+                    if ($this->objNarroContextInfo->SuggestionAccessKey && mb_stristr($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey))
+                        $strSuggestionValue = mb_substr($strSuggestionValue, 0, $intAccPos) . $strDirControlChar . '<u>' . mb_substr($strSuggestionValue, $intAccPos, 1) . '</u>' . mb_substr($strSuggestionValue, $intAccPos + 1);
+                    else
+                        $strSuggestionValue .= sprintf(' (%s)', $this->objNarroContextInfo->SuggestionAccessKey);
+                }
             }
 
             if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId)
