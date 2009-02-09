@@ -164,7 +164,7 @@
     }
 
     if (file_exists(__LOCALE_DIRECTORY__ . '/narro.mo'))
-        NarroApp::$TranslationEngine = new Zend_Translate('gettext', __LOCALE_DIRECTORY__ . '/narro.mo', NarroApp::$Language->LanguageCode);
+        NarroApp::$TranslationEngine = new Zend_Translate('gettext', __LOCALE_DIRECTORY__ . '/narro.mo', NarroApp::$User->Language->LanguageCode);
 
     NarroApp::$ClassFile['NarroFileImporter'] = __INCLUDES__ . '/narro/importer/NarroFileImporter.class.php';
     NarroApp::$ClassFile['NarroDumbGettextPoFileImporter'] = __INCLUDES__ . '/narro/importer/NarroDumbGettextPoFileImporter.class.php';
