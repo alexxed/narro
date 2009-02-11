@@ -116,7 +116,7 @@
             switch ($this->objProject->ProjectType) {
                 case NarroProjectType::Narro:
                         $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
-                        $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->Languagecode . '/LC_MESSAGES/';
+                        $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/';
                     break;
                 default:
             }
@@ -362,7 +362,7 @@
             switch ($this->objProject->ProjectType) {
                 case NarroProjectType::Narro:
                         $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
-                        $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->Languagecode . '/LC_MESSAGES/';
+                        $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/';
                     break;
                 default:
             }

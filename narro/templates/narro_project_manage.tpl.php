@@ -48,22 +48,20 @@
             <div class="dotted_box">
             <div class="dotted_box_title"><?php echo t('Import project'); ?></div>
             <div class="dotted_box_content">
-            <?php if ($this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
-                <label for="<?php echo $this->chkCheckEqual->ControlId ?>"><?php echo $this->chkCheckEqual->Render(false) . ' ' . t('Do not import translations that are identical to the original text'); ?></label>
-                <p class="instructions"><?php echo t('Warning, if you uncheck this and choose to approve the imported suggestions all the translations identical to the original texts will be approved.'); ?></p>
-                <label for="<?php echo $this->chkApprove->ControlId ?>"><?php echo $this->chkApprove->Render(false) . ' ' . t('Approve the imported translations'); ?></label>
-                <p class="instructions"><?php echo t('Mark the imported suggestions as approved.'); ?></p>
-                <label for="<?php echo $this->chkOnlySuggestions->ControlId ?>"><?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?></label>
-                <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
-                <?php if (NarroApp::HasPermissionForThisLang('Can upload project', null)) { ?>
-                    <?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>
-                    <?php if (NarroApp::HasPermission('Can manage project')) {?>
-                        <p class="instructions"><?php echo sprintf(t('The archive can contain two directories, en-US and %s, but at least %s, each having the same file structure. Supported formats: %s'), NarroApp::$Language->LanguageCode, NarroApp::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
-                    <?php } else { ?>
-                        <p class="instructions"><?php echo sprintf(t('The archive must contain the directory %s with the same structure as en-US. Supported formats: %s'), NarroApp::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
-                    <?php } ?>
-                        <p class="instructions"><?php echo sprintf(t('If you don\'t upload an archive, the import will use the directory "%s", subdirectories "%s" and "%s". You could update those directories nightly from CVS, SVN or a web address.'), __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 'en-US', NarroApp::$Language->LanguageCode); ?></p>
+            <label for="<?php echo $this->chkCheckEqual->ControlId ?>"><?php echo $this->chkCheckEqual->Render(false) . ' ' . t('Do not import translations that are identical to the original text'); ?></label>
+            <p class="instructions"><?php echo t('Warning, if you uncheck this and choose to approve the imported suggestions all the translations identical to the original texts will be approved.'); ?></p>
+            <label for="<?php echo $this->chkApprove->ControlId ?>"><?php echo $this->chkApprove->Render(false) . ' ' . t('Approve the imported translations'); ?></label>
+            <p class="instructions"><?php echo t('Mark the imported suggestions as approved.'); ?></p>
+            <label for="<?php echo $this->chkOnlySuggestions->ControlId ?>"><?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?></label>
+            <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
+            <?php if (NarroApp::HasPermissionForThisLang('Can upload project', null)) { ?>
+                <?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>
+                <?php if (NarroApp::HasPermission('Can manage project')) {?>
+                    <p class="instructions"><?php echo sprintf(t('The archive can contain two directories, en-US and %s, but at least %s, each having the same file structure. Supported formats: %s'), NarroApp::$Language->LanguageCode, NarroApp::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
+                <?php } else { ?>
+                    <p class="instructions"><?php echo sprintf(t('The archive must contain the directory %s with the same structure as en-US. Supported formats: %s'), NarroApp::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
                 <?php } ?>
+                    <p class="instructions"><?php echo sprintf(t('If you don\'t upload an archive, the import will use the directory "%s", subdirectories "%s" and "%s". You could update those directories nightly from CVS, SVN or a web address.'), __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 'en-US', NarroApp::$Language->LanguageCode); ?></p>
             <?php } ?>
             <?php $this->btnImport->Render(); $this->objImportProgress->Render();?>
             <?php $this->lblImport->Render(); ?>
@@ -71,7 +69,7 @@
             </div>
         <?php } ?>
 
-        <?php if (NarroApp::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId) && $this->objNarroProject->ProjectType != NarroProjectType::Narro) { ?>
+        <?php if (NarroApp::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId)) { ?>
             <br />
             <div class="dotted_box">
             <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
