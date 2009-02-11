@@ -1,0 +1,1583 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Narro 0.9.3\n"
+"Report-Msgid-Bugs-To: alexxed@gmail.com\n"
+"POT-Creation-Date: 2009-02-02 01:53-0800\n"
+"PO-Revision-Date: 2009-02-02 01:53-0800\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Narro\n"
+
+#: /assets/php/_core/error_page.php
+msgid "An error occured in the application you were using. A detailed report was sent to developers."
+msgstr ""
+
+#: /assets/php/_core/error_page.php
+msgid "Click <a href=\"%s\">here</a> to start over."
+msgstr ""
+
+#: /includes/application.inc.php
+msgid "Items per page"
+msgstr ""
+
+#: /includes/application.inc.php
+msgid "Font size"
+msgstr ""
+
+#: /includes/application.inc.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroNewUsersPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroRoleUserListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroTopUsersPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/narro_user_suggestions_panel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_project_language_list.php /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_user_role.tpl.php
+msgid "Language"
+msgstr ""
+
+#: /includes/application.inc.php
+msgid "Application language"
+msgstr ""
+
+#: /includes/application.inc.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_edit.tpl.php
+msgid "Special characters"
+msgstr ""
+
+#: /includes/application.inc.php
+msgid "Other languages"
+msgstr ""
+
+#: /includes/application.inc.php
+msgid "How many items are displayed per page"
+msgstr ""
+
+#: /includes/application.inc.php
+msgid "The application font size"
+msgstr ""
+
+#: /includes/application.inc.php
+msgid "The language you are translating to."
+msgstr ""
+
+#: /includes/application.inc.php
+msgid "The language you want to see Narro in."
+msgstr ""
+
+#: /includes/application.inc.php
+msgid "Characters that are not on your keyboard, separated by spaces."
+msgstr ""
+
+#: /includes/application.inc.php /includes/data_classes/NarroLanguage.class.php
+msgid "Other languages that you want to check for suggestions, separated by spaces."
+msgstr ""
+
+#: 
+msgid "English US"
+msgstr ""
+
+#: 
+msgid "French"
+msgstr ""
+
+#: 
+msgid "German"
+msgstr ""
+
+#: 
+msgid "Italian"
+msgstr ""
+
+#: 
+msgid "Romanian"
+msgstr ""
+
+#: 
+msgid "Spanish"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/data_classes/NarroUser.class.php /port/home/alex/www/html/narro-fresh/narro//includes/data_classes/generated/NarroLanguageGen.class.php
+msgid "Language should be set with an instance of NarroLanguage"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/footer.inc.php
+msgid "%s, version %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/header.inc.php
+msgid "Context changes for %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/header.inc.php /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Texts to translate for %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/header.inc.php /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Debates on texts from %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/header.inc.php /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Translations for %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/header.inc.php
+msgid "Context changes for all projects"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/header.inc.php
+msgid "Texts to translate for all projects"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/header.inc.php
+msgid "Debates on texts from all projects"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/header.inc.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroHeaderPanel.class.php /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Translations for all projects"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroNewUsersPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroRoleUserListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroTopUsersPanel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_user_list.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_recover_password.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "Username"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroNewUsersPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroTopUsersPanel.class.php
+msgid "Translations"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroNewUsersPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroTopUsersPanel.class.php
+msgid "Characters"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroNewUsersPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroTopUsersPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroDumbGettextPoFileImporter.class.php
+msgid "Unknown"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroRolePermissionPanel.class.php
+msgid "Permission"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroRolePermissionPanel.class.php
+msgid "%s's permissions"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroRoleUserListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php /port/home/alex/www/html/narro-fresh/narro//rss.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_user_role.tpl.php
+msgid "Project"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroRoleUserListPanel.class.php
+msgid "Users with \"%s\" role"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroRoleUserListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php
+msgid "Any"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Translation"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Author"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Votes"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_language_list.php /port/home/alex/www/html/narro-fresh/narro//narro_project_file_list.php /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php /port/home/alex/www/html/narro-fresh/narro//narro_role_list.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_user_list.php /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php
+msgid "Actions"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroTextCommentListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_role_list.php /port/home/alex/www/html/narro-fresh/narro//narro_user_preferences.php /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php
+msgid "Save"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Show suggestions from other languages"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Copy"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_file_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_project_text_list.php
+msgid "Vote"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Disapprove"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "added by %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "votes"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Approved translation"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Access key"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Translations for this text:"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "No other suggestions yet."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "No suggestions yet."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "%s ago"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "approved by %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Ignore and save"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_language_list.php /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php /port/home/alex/www/html/narro-fresh/narro//narro_role_list.php /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php
+msgid "Edit"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/qform/QFileAsset.class.php /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_role_list.php /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php
+msgid "Delete"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Are you sure you want to delete this suggestion?"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Approve"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Suggestion succesfully deleted."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Thank you for your vote. You can change it anytime by voting another suggestion."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "Your changes were saved succesfully."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "The text you are trying to save already exists."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "You cannot alter this suggestion because it is approved for the following contexts: %s. <br />You can cancel the approval for all these contexts and try again. Click on the contexts to open them in new tabs or windows."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "You cannot alter this suggestion because it has %d vote(s)."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroSuggestionListPanel.class.php
+msgid "You cannot alter this suggestion because it has %d comment(s)."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/NarroTextCommentListPanel.class.php
+msgid "NarroText should be set with an instance of NarroText"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroFileImporter.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "User should be set with an instance of NarroUser"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroFileImporter.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "Project should be set with an instance of NarroProject"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroFileImporter.class.php
+msgid "File should be set with an instance of NarroFile"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroFileImporter.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "TargetLanguage should be set with an instance of NarroLanguage"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroFileImporter.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroGettextPoFileImporter.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroSelfFileImporter.class.php /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/importer.php
+msgid "SourceLanguage should be set with an instance of NarroLanguage"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroLog.class.php
+msgid "No log found, check the server log. Log file is set in Narro to: \"%s\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProgress.class.php
+msgid "Tried to set a progress value (%s) smaller than what it was (%s)"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProgress.class.php
+msgid "Could not write \"%s\" in progress file \"%s\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "%s does not exist."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "\"%s\" is not a file or a directory."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "Unrecognizable file type given for import."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Error while executing sql query in file %s, line %d: %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "An import process is already running in the directory \"%s\" with pid %d"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "Cannot create %s in %s."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "Starting export for the project %s using as template %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "%s does not exist or it is not a directory or file"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "An export process is already running in the directory \"%s\" with pid %d"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "There are no files in the database for this project."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/importer/NarroProjectImporter.class.php
+msgid "TranslationPath \"%s\" does not exist."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/narro_diacritics_panel.class.php
+msgid "Special characters that might not be on your keyboard"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/narro_progress_bar.class.php
+msgid "No texts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/narro_progress_bar.class.php
+msgid "%d with suggestions, %d approved, %d untranslated, %d in total"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/narro_user_suggestions_panel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php
+msgid "Translated text"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/narro_user_suggestions_panel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Original text"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/narro_user_suggestions_panel.class.php /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_file_text_list.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_file_list.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_language_list.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_text_list.tpl.php
+msgid "Projects"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroCedillaComma.class.php
+msgid "Cedill/Comma issue solver"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroCedillaComma.class.php
+msgid "Cedilla or comma"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroCedillaComma.class.php
+msgid "Select wether you want to see s and t with comma or cedilla undernieth"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroEntityCheck.class.php
+msgid "Entity check"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroEntityCheck.class.php
+msgid "You translated or forgot some variables that should have been left as they were: <span style=\"color:red;font-size:large\">%s</span>"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "Punctuation check"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "<span style=\"color:red\">Did you forget the ending \"<span style=\"color:red;font-size:large\">%s</span>\"?</span>"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text ends with %d space character(s), please correct your suggestion."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text does not end with \"<span style=\"color:red;font-size:large\">%s</span>\"."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text ends with \"<span style=\"color:green;font-size:large\">%s</span>\", but your suggestion ends in \"<span style=\"color:red;font-size:large\">%s</span>\"."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text has %d leading spaces and %d trailing spaces, your suggestion has %d leading spaces and %d trailing spaces."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text has %d leading spaces, your suggestion has %d."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text has %d trailing spaces, your suggestion has %d."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroSelfTranslate.class.php
+msgid "Narro self translator"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroSpellCheck.class.php
+msgid "Spell check"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroSpellCheck.class.php
+msgid "<span class=\"mispelled_word\">%s</span> seems to be mispelled. Maybe you meant %s."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroSpellCheck.class.php
+msgid "<span class=\"mispelled_word\">%s</span> seems to be mispelled."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroSpellCheck.class.php
+msgid "Spellchecking"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/narro/plugins/NarroSpellCheck.class.php
+msgid "Spellcheck support if possible, or just disable it"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "about %s years"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "a year"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "about %s months"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "a month"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "about %s days"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "a day"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "about %s hours"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "an hour"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "%s minutes"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "a minute"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "%s seconds"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgid "a second"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QCalendar.class.php /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/qform/QListBox.class.php
+msgid "Reset"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QCalendar.class.php /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QListBoxBase.class.php /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "%s is required"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QDataGridBase.class.php
+msgid "<b>Results:</b> No %s found."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QDataGridBase.class.php
+msgid "<b>Results:</b> 1 %s found."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QDataGridBase.class.php
+msgid "<b>Results:</b> %s %s found."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QDataGridBase.class.php
+msgid "<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgid " is required"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QFileAssetBase.class.php /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QListBoxBase.class.php /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "Required"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgid "Must be a JPG, PNG or GIF"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgid "Must be a PDF"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgid "Must be a valid document (Image, PDF, etc.)"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QFloatTextBox.class.php
+msgid "Invalid Float"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QFloatTextBox.class.php /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QIntegerTextBox.class.php
+msgid "Value must be less than %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QFloatTextBox.class.php /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QIntegerTextBox.class.php
+msgid "Value must be greater than %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QIntegerTextBox.class.php
+msgid "Invalid Integer"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QPaginatedControl.class.php
+msgid "item"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QPaginatedControl.class.php
+msgid "items"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "%s must have at least %s characters"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "Must have at least %s characters"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "%s must have at most %s characters"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgid "Must have at most %s characters"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/_core/qform/QWriteBox.class.php
+msgid "Tags &lt;b&gt; &lt;u&gt; &lt;i&gt; &lt;br&gt; &lt;code&gt; and &lt;http://...&gt; are allowed.  Use ** at the beginning of any line for a bulleted list."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/qform/QFileAsset.class.php
+msgid "Upload"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/qform/QFileAsset.class.php /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_user_preferences.php
+msgid "Cancel"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/qform/QPaginator.class.php /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Previous"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//includes/qcodo/qform/QPaginator.class.php /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Next"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_change_password.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_change_password.tpl.php
+msgid "Change password"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_change_password.php
+msgid "Failed to change the password."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_change_password.php
+msgid "Password changed succesfully."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Other suggestions so far"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Details about the place where the text is used"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Hide debate"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Show debate"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Start a debate"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_context_suggest.tpl.php
+msgid "Translate \"%s\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_context_suggest.tpl.php
+msgid "See suggestions for \"%s\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_file_text_list.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_file_list.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_language_list.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_text_list.tpl.php
+msgid "Files"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php /port/home/alex/www/html/narro-fresh/narro//narro_project_translate_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php
+msgid "Untranslated texts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php /port/home/alex/www/html/narro-fresh/narro//narro_project_translate_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php
+msgid "Approved texts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php /port/home/alex/www/html/narro-fresh/narro//narro_project_translate_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php
+msgid "Texts that require approval"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Search in original texts for \"%s\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Search in suggestions for \"%s\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Search in contexts for \"%s\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "You are now translating a batch of %d texts. The bar below shows your progress through this batch"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "After approving, proceed to the next text"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Suggestion comment (optional):"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "Approve after saving"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "100 forward"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_context_suggest.php
+msgid "100 back"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_file_text_list.php
+msgid "Suggest / Vote"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_file_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_project_text_list.php
+msgid "Suggest"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_file_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_project_text_list.php
+msgid "Details"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php
+msgid "Create"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php
+msgid "Language Id"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_language_list.php
+msgid "Language Name"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_language_list.php
+msgid "Language Code"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_language_list.php
+msgid "Country Code"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_language_list.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_edit.tpl.php
+msgid "Encoding"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_language_list.php
+msgid "Text Direction"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php
+msgid "Left to right"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php
+msgid "Right to left"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_language_list.php
+msgid "Special Characters"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_edit.tpl.php
+msgid "Plural formula"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_edit.php
+msgid "Are you SURE you want to DELETE this %s?"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_language_list.php
+msgid "Plural Forms"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_login.php /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_login.tpl.php
+msgid "Login"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_login.php
+msgid "Lost password or username"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_login.php
+msgid "Failed to create an associated user for this OpenId"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_login.php
+msgid "Bad username or password"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php
+msgid "Project Id"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_edit.tpl.php
+msgid "Project Name"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php
+msgid "Project Type Object"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_edit.tpl.php
+msgid "Active"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_edit.php
+msgid "Are you SURE you want to DELETE the project \"%s\"?\nThis operation might take a while and will delete:\n - user permissions related to this project\n - project contexts and associated comments\n - votes for contexts belonging to this project\n - project's files.\nTexts and suggestions are not deleted."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_file_list.php
+msgid "File name"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_file_list.php /port/home/alex/www/html/narro-fresh/narro//narro_project_language_list.php /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php
+msgid "Progress"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_file_list.php /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Export"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_file_list.php /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Import"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_file_list.php
+msgid "File to import"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_file_list.php
+msgid "Model to use"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_file_list.php
+msgid "Tried to export an unknown file type: %d"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_file_list.php
+msgid "Tried to import an unknown file type: %d"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php
+msgid "Name"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php
+msgid "Type"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php
+msgid "Yes"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php
+msgid "No"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php
+msgid "Texts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php
+msgid "Languages"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_list.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Manage"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Delete project contexts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Are you SURE you want to DELETE the contexts for the project \"%s\"?\nThis operation might take a while and will delete:\n - project contexts and associated comments\n - votes for contexts belonging to this project\nTexts and suggestions are not deleted."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Delete context informations in %s for this project"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Are you SURE you want to DELETE the context information for the project \"%s\", language \"%s\"?\nThis operation might take a while and will delete:\n - context information for the current language\nYou can recreate this deleted information by doing an import for this project and current language\nProject's contexts are not deleted, only this language is affected\nTexts and suggestions are not deleted."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Delete project files"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Are you SURE you want to DELETE the files for the project \"%s\"?\nThis operation might take a while and will delete:\n - project contexts and associated comments\n - votes for contexts belonging to this project\n - project's files.\nTexts and suggestions are not deleted."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Approved suggestion"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Approved, then most voted suggestion"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Approved, then most recent suggestion"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Approved, then most voted and then most recent suggestion"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Approved, then my suggestion"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Copy unhandled files"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Clean locale directory"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Are you SURE you want to DELETE the files in your locale directory?\nThis operation has no effect on the data present in the application, but you might loose translated unhandled files, so you should backup first."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "or <a href=\"%s\">%s</a>, exported %s ago"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Link to last export: <a href=\"%s\">%s</a>, exported %s ago"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Import failed."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Import finished."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Export finished."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Download link: <a href=\"%s\">%s</a>"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Failed to create an archive for download"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Export failed."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_manage.php
+msgid "Operation log"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_text_list.php
+msgid "Note that, since you're searching suggestions, you won't see the texts without suggestions."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_text_list.php
+msgid "Suggest/Vote"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_translate_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php
+msgid "All texts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_translate_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php
+msgid "original texts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_translate_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php
+msgid "translations"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_translate_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php
+msgid "contexts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_project_translate_text_list.php /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_file_text_list.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_text_list.tpl.php
+msgid "Search"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_recover_password.php
+msgid "Proceed"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_recover_password.php
+msgid "Please enter a username or email to continue."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_recover_password.php
+msgid "Hey, the anonymous user doesn't have a password. What are you trying to do?"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_recover_password.php
+msgid "Password recovery for \"%s\" on \"%s\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_recover_password.php
+msgid "Somebody, probably you, requested a password recovery for \"%s\" on \"%s\". To change your password, please follow this link: %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_recover_password.php
+msgid "Failed to send email. This may be a server issue. Please try again later."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_recover_password.php
+msgid "Bad username or/and email"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_recover_password.php
+msgid "You should have a new email message with instructions. Check your spam/bulk directory too."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_register.php /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "Register"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_register.php
+msgid "It's just three fields, don't leave one empty please."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_register.php
+msgid "Seems like the username or email is already in use."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_role_list.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_user_role.tpl.php
+msgid "Role"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_role_list.php
+msgid "Are you sure you want to delete this role?"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_role_list.php
+msgid "Permissions"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_role_list.php
+msgid "View users"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_text_list.php /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Context"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_list.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_recover_password.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "Email"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_list.php /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php
+msgid "Roles"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_list.php /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php
+msgid "Preferences"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_list.php
+msgid "Anonymous"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_list.php
+msgid "Not set yet"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_list.php
+msgid "That's you!"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_preferences.php
+msgid "Warning, you are editing another user's preferences!"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_preferences.php
+msgid "Click <a href=\"%s\">here</a> to return to the page you were."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_preferences.php
+msgid "Preferences for %s were saved successfuly."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_preferences.php
+msgid "Your preferences were saved successfuly."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_preferences.php
+msgid "An error occured while trying to save your preferences."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php
+msgid "Add"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php
+msgid "Are you sure you want to revoke this role for this user?"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//narro_user_role.php
+msgid "Cancel edit"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Get the latest translation suggestions in %s for %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Get the latest translation suggestions in %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "<a href=\"%s\">%s</a> from the file <a href=\"%s\">%s</a>, project <a href=\"%s\">%s</a>"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Contexts where the suggestion can be used:"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Click on the context to use the suggestion, on the file name or project name to search for the suggestion in them."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Narro - Translate, we're open!"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Get the latest texts to translate for the project %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Texts to translate"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Get the latest texts to translate"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Click on any context to translate the text, on the file name or project name to see all the untranslated texts from that file or project."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Used in the following contexts:"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Contexts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Used in the project <a href=\"%s\">%s</a>, in the following contexts:"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "<a href=\"%s\">%s</a> from the file <a href=\"%s\">%s</a>"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Context changes in %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Get the latest context information changes in %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "The text has %s suggestions"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "The text has no suggestions"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Approved by"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "%d comments"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Get the latest debates on texts from the project %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Debates on texts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "Get the latest debates on texts"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "%s wrote on %s:"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "This is a debate on the text \"%s\", used in the following projects:"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//rss.php
+msgid "<a href=\"%s\">%s</a>"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php
+msgid "<i>Translating in: %s</i>"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php
+msgid "<i>Logged in as <a href=\"%s\" style=\"color:green;font-weight:bold\">%s</a></i>"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_list.tpl.php
+msgid "Project list"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_list.tpl.php
+msgid "Language list"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_user_list.tpl.php
+msgid "User list"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php
+msgid "Users"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_role_list.tpl.php
+msgid "Role list"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroHeaderPanel.tpl.php
+msgid "Logout"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroTextComment.tpl.php
+msgid "%s wrote %s ago:"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroTextCommentListPanel.tpl.php
+msgid "This is a debate on the text \"<i>%s</i>\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroTextCommentListPanel.tpl.php
+msgid "If you want to debate this text, add your opinion below."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroTextCommentListPanel.tpl.php
+msgid "Don't forget to subscribe via RSS if you want to receive notifications of future comments."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/NarroTextCommentListPanel.tpl.php
+msgid "You can debate texts if you are logged in. <a href=\"%s\">Register</a> or <a href=\"%s\">Log in</a> if you already have an account or an OpenId."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_change_password.tpl.php
+msgid "Here you can change your password. Just type the new password and hit the button."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_change_password.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_login.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "Password"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_context_suggest.tpl.php
+msgid "Text to translate"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_context_suggest.tpl.php
+msgid "Details about the place where the text appears"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_context_suggest.tpl.php
+msgid "Your suggestion"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_context_suggest.tpl.php
+msgid "You can add suggestions if you are logged in. <a href=\"%s\">Register</a> or <a href=\"%s\">Log in</a> if you already have an account or an OpenId."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_file_text_list.tpl.php
+msgid "Texts from the file \"%s\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_file_text_list.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_text_list.tpl.php
+msgid "Show"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_edit.tpl.php
+msgid "Edit language"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_edit.tpl.php /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_list.tpl.php
+msgid "Add language"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_edit.tpl.php
+msgid "Language name"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_edit.tpl.php
+msgid "Language code"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_edit.tpl.php
+msgid "Country code"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_edit.tpl.php
+msgid "Text direction"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_language_list.tpl.php
+msgid "This is a list of languages that projects can be translated in."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_login.tpl.php
+msgid "Please login so everyone else knows who is adding those great suggestions that you will add."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_login.tpl.php
+msgid "Username or <a href=\"http://www.openid.net\">OpenID</a>"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_edit.tpl.php
+msgid "Edit project"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_edit.tpl.php
+msgid "Create project"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_edit.tpl.php
+msgid "Project Type"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_file_list.tpl.php
+msgid "%s :: File list"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_file_list.tpl.php
+msgid "%s :: %s :: File list"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_file_list.tpl.php
+msgid "Show hierarchy"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_file_list.tpl.php
+msgid "Show folders"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_language_list.tpl.php
+msgid "Project language list"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_language_list.tpl.php
+msgid "Language list for %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_language_list.tpl.php
+msgid "This is a list of languages that %s is translated in."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_list.tpl.php
+msgid "This is a list of projects that are being translated here. You can help too. Click on any project name to start translating."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_list.tpl.php
+msgid "Add project"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_list.tpl.php
+msgid "Top %d translators"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_list.tpl.php
+msgid "Newest %d translators"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Project management"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Here you can edit project properties or do management related tasks."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Import and export options"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Minimum logged error level"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Lower values give more verbosity"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Force operation even if a previous operation is reported to be running"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Cleanup the files that are used during an import or export and allow starting another operation"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Delete all the files in the locale directory to get a fresh export. Be sure to backup any files not imported in the application."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Import project"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Do not import translations that are identical to the original text"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Warning, if you uncheck this and choose to approve the imported suggestions all the translations identical to the original texts will be approved."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Approve the imported translations"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Mark the imported suggestions as approved."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Import only suggestions"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "From an archive"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "The archive can contain two directories, en-US and %s, but at least %s, each having the same file structure. Supported formats: %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "The archive must contain the directory %s with the same structure as en-US. Supported formats: %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "If you don't upload an archive, the import will use the directory \"%s\", subdirectories \"%s\" and \"%s\". You could update those directories nightly from CVS, SVN or a web address."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Export project"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "If you check this option, all the unhandled files missing from your translation will be copied from the source language."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Export archive format"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Choose the format of the exported archive."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Export translations using"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "If you want to export the suggestions that are not approved, you have here a few choices to do so"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "You will get an archive containing two directories, en-US and %s, each having the same file structure."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.\n            You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Sometimes, it might help to delete the informations about contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.\n            Translations and texts are kept, and you can import your project to recreate the context informations any time you want. This affects only the current language"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_manage.tpl.php
+msgid "Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.\n            You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_project_text_list.tpl.php
+msgid "Texts from the project \"%s\""
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_recover_password.tpl.php
+msgid "Recover password"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_recover_password.tpl.php
+msgid "If you remember your username or email address, we can send you a link at the email address you registered with to change your password."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "Here are a few benefits for a registered user"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "Be famous for your suggestions. Everyone will see that you added that cool suggestion."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "Vote for your favourite suggestion."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "Set your preferences and maintain your user profile."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "Alright, you don't have to type it twice, but please type it carefully."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_register.tpl.php
+msgid "This is used for password recovery and opt-in notifications."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_role_list.tpl.php
+msgid "Here you can manage the roles used on this website."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_role_list.tpl.php
+msgid "Roles list"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_user_preferences.tpl.php
+msgid "Preferences for %s"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_user_preferences.tpl.php
+msgid "Here you can set your preferences."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_user_profile.tpl.php
+msgid "%s's translations"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_user_profile.tpl.php
+msgid "Out of a total of %d suggestions made by %s, %d were approved."
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_user_profile.tpl.php
+msgid "Here are the suggestions that %s made so far"
+msgstr ""
+
+#: /port/home/alex/www/html/narro-fresh/narro//templates/narro_user_role.tpl.php
+msgid "%s's roles"
+msgstr ""
+

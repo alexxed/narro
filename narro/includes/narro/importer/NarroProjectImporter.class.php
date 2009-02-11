@@ -109,28 +109,34 @@
                 }
                 if (pclose($fp))
                     NarroLog::LogMessage(3, "Before import script failed:\n" . $strOutput);
+                else
+                    NarroLog::LogMessage(3, "Before import script finished successfully:\n" . $strOutput);
             }
 
             switch ($this->objProject->ProjectType) {
+                case NarroProjectType::Narro:
+                        $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
+                        $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->Languagecode . '/LC_MESSAGES/';
+                    break;
                 default:
-
-                    if (!file_exists($this->strTemplatePath))
-                        throw new Exception(sprintf(t('%s does not exist.'), $this->strTemplatePath));
-
-                    NarroLog::LogMessage(3, sprintf('Starting import for the project %s from the directory %s', $this->objProject->ProjectName, realpath($this->strTemplatePath . '/..')));
-
-
-                    if (is_dir($this->strTemplatePath))
-                        if ($this->ImportFromDirectory()) {
-                            $this->stopTimer();
-                            NarroLog::LogMessage(3, sprintf('Import finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
-                        }
-                        else {
-                            NarroLog::LogMessage(3, 'Import failed. See any messages above for details.');
-                        }
-                    else
-                        throw new Exception(sprintf('"%s" is not a directory.', $this->strTemplatePath));
             }
+
+            if (!file_exists($this->strTemplatePath))
+                throw new Exception(sprintf('%s does not exist.', $this->strTemplatePath));
+
+            NarroLog::LogMessage(3, sprintf('Starting import for the project %s from the directory %s', $this->objProject->ProjectName, realpath($this->strTemplatePath . '/..')));
+
+
+            if (is_dir($this->strTemplatePath))
+                if ($this->ImportFromDirectory()) {
+                    $this->stopTimer();
+                    NarroLog::LogMessage(3, sprintf('Import finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
+                }
+                else {
+                    NarroLog::LogMessage(3, 'Import failed. See any messages above for details.');
+                }
+            else
+                throw new Exception(sprintf('"%s" is not a directory.', $this->strTemplatePath));
         }
 
         public function ImportFromDirectory() {
@@ -353,6 +359,14 @@
 
             $this->startTimer();
 
+            switch ($this->objProject->ProjectType) {
+                case NarroProjectType::Narro:
+                        $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
+                        $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->Languagecode . '/LC_MESSAGES/';
+                    break;
+                default:
+            }
+
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
                 if ($this->ExportFromDirectory()) {
                     $this->stopTimer();
@@ -387,6 +401,8 @@
                 }
                 if (pclose($fp))
                     NarroLog::LogMessage(3, "After export script failed:\n" . $strOutput);
+                else
+                    NarroLog::LogMessage(3, "After export script finished successfully:\n" . $strOutput);
             }
 
         }
