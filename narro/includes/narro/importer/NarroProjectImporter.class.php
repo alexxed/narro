@@ -169,6 +169,8 @@
             $arrDirectories = array();
             if (is_array($arrFiles))
             foreach($arrFiles as $intFileNo=>$strFileToImport) {
+                if (preg_match('/\/CVS|\/\.svn|\/\.hg|\/\.git/', $strFileToImport)) continue;
+
                 $strFilePath = str_replace($this->strTemplatePath, '', $strFileToImport);
                 $arrFileParts = split('/', $strFilePath);
                 $strFileName = $arrFileParts[count($arrFileParts)-1];

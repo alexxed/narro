@@ -12,6 +12,9 @@
 		static public function NarroFile() {
 			return new QQNodeNarroFile('narro_file', null);
 		}
+		static public function NarroFileProgress() {
+			return new QQNodeNarroFileProgress('narro_file_progress', null);
+		}
 		static public function NarroLanguage() {
 			return new QQNodeNarroLanguage('narro_language', null);
 		}
@@ -23,6 +26,9 @@
 		}
 		static public function NarroProjectCategory() {
 			return new QQNodeNarroProjectCategory('narro_project_category', null);
+		}
+		static public function NarroProjectProgress() {
+			return new QQNodeNarroProjectProgress('narro_project_progress', null);
 		}
 		static public function NarroRole() {
 			return new QQNodeNarroRole('narro_role', null);

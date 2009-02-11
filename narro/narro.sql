@@ -64,10 +64,6 @@ CREATE TABLE narro_file (
   parent_id int(10) unsigned default NULL,
   type_id tinyint(3) unsigned NOT NULL,
   project_id int(10) unsigned NOT NULL,
-  total_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
-  fuzzy_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
-  approved_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
-  progress_percent INT( 10 ) UNSIGNED NULL DEFAULT '0',
   active tinyint(1) NOT NULL default '1',
   created timestamp NOT NULL default '0000-00-00 00:00:00',
   modified timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -152,10 +148,6 @@ CREATE TABLE narro_project (
   project_name varchar(255) NOT NULL,
   project_type smallint(5) unsigned NOT NULL,
   project_description varchar(255) default NULL,
-  total_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
-  fuzzy_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
-  approved_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
-  progress_percent INT( 10 ) UNSIGNED NULL DEFAULT '0',
   active tinyint(3) unsigned NOT NULL default '1',
   PRIMARY KEY  (project_id),
   UNIQUE KEY project_name (project_name),
@@ -358,6 +350,43 @@ CREATE TABLE narro_user_role (
   KEY language_id (language_id),
   KEY user_id_2 (user_id)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS `narro_file_progress` (
+  `file_progress_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `file_id` int(10) unsigned NOT NULL,
+  `language_id` int(10) unsigned NOT NULL,
+  `total_text_count` int(10) DEFAULT '0',
+  `approved_text_count` int(10) DEFAULT '0',
+  `fuzzy_text_count` int(10) DEFAULT '0',
+  `progress_percent` int(10) DEFAULT '0',
+  PRIMARY KEY (`file_progress_id`),
+  UNIQUE KEY `file_id` (`file_id`,`language_id`),
+  KEY `language_id` (`language_id`),
+  KEY `file_id_2` (`file_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `narro_project_progress` (
+  `project_progress_id` int(10) NOT NULL AUTO_INCREMENT,
+  `project_id` int(10) unsigned NOT NULL,
+  `language_id` int(10) unsigned NOT NULL,
+  `total_text_count` int(10) DEFAULT '0',
+  `fuzzy_text_count` int(10) DEFAULT '0',
+  `approved_text_count` int(10) DEFAULT '0',
+  `progress_percent` int(10) DEFAULT '0',
+  PRIMARY KEY (`project_progress_id`),
+  UNIQUE KEY `project_id` (`project_id`,`language_id`),
+  KEY `language_id` (`language_id`),
+  KEY `project_id_2` (`project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ALTER TABLE `narro_file_progress`
+  ADD CONSTRAINT `narro_file_progress_ibfk_1` FOREIGN KEY (`file_id`) REFERENCES `narro_file` (`file_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `narro_file_progress_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_project_progress`
+  ADD CONSTRAINT `narro_project_progress_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `narro_project_progress_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 
 ALTER TABLE `narro_context`
   ADD CONSTRAINT narro_context_ibfk_13 FOREIGN KEY (text_id) REFERENCES narro_text (text_id),

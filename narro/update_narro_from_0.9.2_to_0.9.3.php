@@ -17,7 +17,7 @@
      */
     require_once('includes/prepend.inc.php');
 
-    if (QApplication::$objUser->hasPermission('Administrator')) {
+    if (NarroApp::HasPermission('Administrator')) {
         foreach(NarroUser::LoadAll() as $objUser) {
             $arrUserPermissions = array();
             foreach(NarroUserPermission::LoadArrayByUserId($objUser->UserId) as $objUserPermission) {
@@ -73,6 +73,6 @@
         }
     }
     else {
-        QApplication::Redirect('narro_login.php');
+        NarroApp::Redirect('narro_login.php');
     }
 ?>

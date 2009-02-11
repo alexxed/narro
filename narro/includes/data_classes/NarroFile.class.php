@@ -110,10 +110,23 @@
                 if ($objDbResult) {
                     $mixRow = $objDbResult->FetchArray();
                     $intTotalTexts = $mixRow['cnt'];
-                    $this->TotalTextCount = $intTotalTexts;
-                    if ($this->TotalTextCount)
-                        $this->ProgressPercent = floor($this->ApprovedTextCount*100/$this->TotalTextCount);
-                    $this->Save();
+                    $objFileProgress = NarroFileProgress::LoadByFileIdLanguageId($this->FileId, $intLanguageId);
+
+                    if (!$objFileProgress instanceof NarroFileProgress) {
+                        $objFileProgress = new NarroFileProgress();
+                        $objFileProgress->FileId = $this->FileId;
+                        $objFileProgress->LanguageId = $intLanguageId;
+                        $objFileProgress->TotalTextCount = 0;
+                        $objFileProgress->ApprovedTextCount = 0;
+                        $objFileProgress->FuzzyTextCount = 0;
+                        $objFileProgress->ProgressPercent = 0;
+                    }
+
+                    $objFileProgress->TotalTextCount = $intTotalTexts;
+                    if ($objFileProgress->TotalTextCount)
+                        $objFileProgress->ProgressPercent = floor($objFileProgress->ApprovedTextCount*100/$objFileProgress->TotalTextCount);
+                    $objFileProgress->Save();
+
                     NarroApp::$Cache->save($intTotalTexts, 'total_texts_file_' . $this->FileId . '_' . $intLanguageId);
                 }
             }
@@ -141,8 +154,21 @@
                 if ($objDbResult) {
                     $mixRow = $objDbResult->FetchArray();
                     $intTranslatedTexts = $mixRow['cnt'];
-                    $this->FuzzyTextCount = $intTranslatedTexts;
-                    $this->Save();
+
+                    $objFileProgress = NarroFileProgress::LoadByFileIdLanguageId($this->FileId, $intLanguageId);
+
+                    if (!$objFileProgress instanceof NarroFileProgress) {
+                        $objFileProgress = new NarroFileProgress();
+                        $objFileProgress->FileId = $this->FileId;
+                        $objFileProgress->LanguageId = $intLanguageId;
+                        $objFileProgress->TotalTextCount = 0;
+                        $objFileProgress->ApprovedTextCount = 0;
+                        $objFileProgress->FuzzyTextCount = 0;
+                        $objFileProgress->ProgressPercent = 0;
+                    }
+
+                    $objFileProgress->FuzzyTextCount = $intTranslatedTexts;
+                    $objFileProgress->Save();
                     NarroApp::$Cache->save($intTranslatedTexts, 'translated_texts_file_' . $this->FileId . '_' . $intLanguageId);
                 }
             }
@@ -170,10 +196,23 @@
                 if ($objDbResult) {
                     $mixRow = $objDbResult->FetchArray();
                     $intApprovedTexts = $mixRow['cnt'];
-                    $this->ApprovedTextCount = $intApprovedTexts;
-                    if ($this->TotalTextCount)
-                        $this->ProgressPercent = floor($this->ApprovedTextCount*100/$this->TotalTextCount);
-                    $this->Save();
+                    $objFileProgress = NarroFileProgress::LoadByFileIdLanguageId($this->FileId, $intLanguageId);
+
+                    if (!$objFileProgress instanceof NarroFileProgress) {
+                        $objFileProgress = new NarroFileProgress();
+                        $objFileProgress->FileId = $this->FileId;
+                        $objFileProgress->LanguageId = $intLanguageId;
+                        $objFileProgress->TotalTextCount = 0;
+                        $objFileProgress->ApprovedTextCount = 0;
+                        $objFileProgress->FuzzyTextCount = 0;
+                        $objFileProgress->ProgressPercent = 0;
+                    }
+
+                    $objFileProgress->ApprovedTextCount = $intApprovedTexts;
+                    if ($objFileProgress->TotalTextCount)
+                        $objFileProgress->ProgressPercent = floor($objFileProgress->ApprovedTextCount*100/$objFileProgress->TotalTextCount);
+
+                    $objFileProgress->Save();
                     NarroApp::$Cache->save($intApprovedTexts, 'approved_texts_file_' . $this->FileId . '_' . $intLanguageId);
                 }
             }
@@ -181,112 +220,5 @@
             return $intApprovedTexts;
         }
 
-        // Override or Create New Load/Count methods
-        // (For obvious reasons, these methods are commented out...
-        // but feel free to use these as a starting point)
-/*
-        public static function LoadArrayBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-            // This will return an array of NarroFile objects
-            return NarroFile::QueryArray(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroFile()->Param1, $strParam1),
-                    QQ::GreaterThan(QQN::NarroFile()->Param2, $intParam2)
-                ),
-                $objOptionalClauses
-            );
-        }
-
-        public static function LoadBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-            // This will return a single NarroFile object
-            return NarroFile::QuerySingle(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroFile()->Param1, $strParam1),
-                    QQ::GreaterThan(QQN::NarroFile()->Param2, $intParam2)
-                ),
-                $objOptionalClauses
-            );
-        }
-
-        public static function CountBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-            // This will return a count of NarroFile objects
-            return NarroFile::QueryCount(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroFile()->Param1, $strParam1),
-                    QQ::Equal(QQN::NarroFile()->Param2, $intParam2)
-                ),
-                $objOptionalClauses
-            );
-        }
-
-        public static function LoadArrayBySample($strParam1, $intParam2, $objOptionalClauses) {
-            // Performing the load manually (instead of using Qcodo Query)
-
-            // Get the Database Object for this Class
-            $objDatabase = NarroFile::GetDatabase();
-
-            // Properly Escape All Input Parameters using Database->SqlVariable()
-            $strParam1 = $objDatabase->SqlVariable($strParam1);
-            $intParam2 = $objDatabase->SqlVariable($intParam2);
-
-            // Setup the SQL Query
-            $strQuery = sprintf('
-                SELECT
-                    `narro_file`.*
-                FROM
-                    `narro_file` AS `narro_file`
-                WHERE
-                    param_1 = %s AND
-                    param_2 < %s',
-                $strParam1, $intParam2);
-
-            // Perform the Query and Instantiate the Result
-            $objDbResult = $objDatabase->Query($strQuery);
-            return NarroFile::InstantiateDbResult($objDbResult);
-        }
-*/
-
-
-
-        // Override or Create New Properties and Variables
-        // For performance reasons, these variables and __set and __get override methods
-        // are commented out.  But if you wish to implement or override any
-        // of the data generated properties, please feel free to uncomment them.
-/*
-        protected $strSomeNewProperty;
-
-        public function __get($strName) {
-            switch ($strName) {
-                case 'SomeNewProperty': return $this->strSomeNewProperty;
-
-                default:
-                    try {
-                        return parent::__get($strName);
-                    } catch (QCallerException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
-            }
-        }
-
-        public function __set($strName, $mixValue) {
-            switch ($strName) {
-                case 'SomeNewProperty':
-                    try {
-                        return ($this->strSomeNewProperty = QType::Cast($mixValue, QType::String));
-                    } catch (QInvalidCastException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
-
-                default:
-                    try {
-                        return (parent::__set($strName, $mixValue));
-                    } catch (QCallerException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
-            }
-        }
-*/
     }
 ?>

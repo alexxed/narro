@@ -275,10 +275,6 @@
 			$objBuilder->AddSelectItem($strTableName . '.`parent_id` AS ' . $strAliasPrefix . 'parent_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`type_id` AS ' . $strAliasPrefix . 'type_id`');
 			$objBuilder->AddSelectItem($strTableName . '.`project_id` AS ' . $strAliasPrefix . 'project_id`');
-			$objBuilder->AddSelectItem($strTableName . '.`total_text_count` AS ' . $strAliasPrefix . 'total_text_count`');
-			$objBuilder->AddSelectItem($strTableName . '.`fuzzy_text_count` AS ' . $strAliasPrefix . 'fuzzy_text_count`');
-			$objBuilder->AddSelectItem($strTableName . '.`approved_text_count` AS ' . $strAliasPrefix . 'approved_text_count`');
-			$objBuilder->AddSelectItem($strTableName . '.`progress_percent` AS ' . $strAliasPrefix . 'progress_percent`');
 			$objBuilder->AddSelectItem($strTableName . '.`active` AS ' . $strAliasPrefix . 'active`');
 			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
 			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
@@ -338,6 +334,18 @@
 					$blnExpandedViaArray = true;
 				}
 
+				if ((array_key_exists($strAliasPrefix . 'narrofileprogressasfile__file_progress_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrofileprogressasfile__file_progress_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroFileProgressAsFileArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroFileProgressAsFileArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressasfile__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroFileProgressAsFileArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroFileProgressAsFileArray, NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressasfile__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
 				// Either return false to signal array expansion, or check-to-reset the Alias prefix and move on
 				if ($blnExpandedViaArray)
 					return false;
@@ -356,10 +364,6 @@
 			$objToReturn->intParentId = $objDbRow->GetColumn($strAliasPrefix . 'parent_id', 'Integer');
 			$objToReturn->intTypeId = $objDbRow->GetColumn($strAliasPrefix . 'type_id', 'Integer');
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasPrefix . 'project_id', 'Integer');
-			$objToReturn->intTotalTextCount = $objDbRow->GetColumn($strAliasPrefix . 'total_text_count', 'Integer');
-			$objToReturn->intFuzzyTextCount = $objDbRow->GetColumn($strAliasPrefix . 'fuzzy_text_count', 'Integer');
-			$objToReturn->intApprovedTextCount = $objDbRow->GetColumn($strAliasPrefix . 'approved_text_count', 'Integer');
-			$objToReturn->intProgressPercent = $objDbRow->GetColumn($strAliasPrefix . 'progress_percent', 'Integer');
 			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasPrefix . 'active', 'Bit');
 			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
 			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
@@ -401,6 +405,14 @@
 					array_push($objToReturn->_objChildNarroFileArray, NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childnarrofile__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objChildNarroFile = NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childnarrofile__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroFileProgressAsFile Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrofileprogressasfile__file_progress_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrofileprogressasfile__file_progress_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroFileProgressAsFileArray, NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressasfile__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroFileProgressAsFile = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressasfile__', $strExpandAsArrayNodes);
 			}
 
 			return $objToReturn;
@@ -601,10 +613,6 @@
 							`parent_id`,
 							`type_id`,
 							`project_id`,
-							`total_text_count`,
-							`fuzzy_text_count`,
-							`approved_text_count`,
-							`progress_percent`,
 							`active`,
 							`created`,
 							`modified`
@@ -615,10 +623,6 @@
 							' . $objDatabase->SqlVariable($this->intParentId) . ',
 							' . $objDatabase->SqlVariable($this->intTypeId) . ',
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
-							' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
-							' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
-							' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
 							' . $objDatabase->SqlVariable($this->blnActive) . ',
 							' . $objDatabase->SqlVariable($this->strCreated) . ',
 							' . $objDatabase->SqlVariable($this->strModified) . '
@@ -643,10 +647,6 @@
 							`parent_id` = ' . $objDatabase->SqlVariable($this->intParentId) . ',
 							`type_id` = ' . $objDatabase->SqlVariable($this->intTypeId) . ',
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
-							`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
-							`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
-							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
 							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
 							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
@@ -782,34 +782,6 @@
 					 */
 					return $this->intProjectId;
 
-				case 'TotalTextCount':
-					/**
-					 * Gets the value for intTotalTextCount 
-					 * @return integer
-					 */
-					return $this->intTotalTextCount;
-
-				case 'FuzzyTextCount':
-					/**
-					 * Gets the value for intFuzzyTextCount 
-					 * @return integer
-					 */
-					return $this->intFuzzyTextCount;
-
-				case 'ApprovedTextCount':
-					/**
-					 * Gets the value for intApprovedTextCount 
-					 * @return integer
-					 */
-					return $this->intApprovedTextCount;
-
-				case 'ProgressPercent':
-					/**
-					 * Gets the value for intProgressPercent 
-					 * @return integer
-					 */
-					return $this->intProgressPercent;
-
 				case 'Active':
 					/**
 					 * Gets the value for blnActive (Not Null)
@@ -900,6 +872,22 @@
 					 * @return NarroFile[]
 					 */
 					return (array) $this->_objChildNarroFileArray;
+
+				case '_NarroFileProgressAsFile':
+					/**
+					 * Gets the value for the private _objNarroFileProgressAsFile (Read-Only)
+					 * if set due to an expansion on the narro_file_progress.file_id reverse relationship
+					 * @return NarroFileProgress
+					 */
+					return $this->_objNarroFileProgressAsFile;
+
+				case '_NarroFileProgressAsFileArray':
+					/**
+					 * Gets the value for the private _objNarroFileProgressAsFileArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_file_progress.file_id reverse relationship
+					 * @return NarroFileProgress[]
+					 */
+					return (array) $this->_objNarroFileProgressAsFileArray;
 
 				default:
 					try {
@@ -999,58 +987,6 @@
 					try {
 						$this->objProject = null;
 						return ($this->intProjectId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'TotalTextCount':
-					/**
-					 * Sets the value for intTotalTextCount 
-					 * @param integer $mixValue
-					 * @return integer
-					 */
-					try {
-						return ($this->intTotalTextCount = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'FuzzyTextCount':
-					/**
-					 * Sets the value for intFuzzyTextCount 
-					 * @param integer $mixValue
-					 * @return integer
-					 */
-					try {
-						return ($this->intFuzzyTextCount = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'ApprovedTextCount':
-					/**
-					 * Sets the value for intApprovedTextCount 
-					 * @param integer $mixValue
-					 * @return integer
-					 */
-					try {
-						return ($this->intApprovedTextCount = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'ProgressPercent':
-					/**
-					 * Sets the value for intProgressPercent 
-					 * @param integer $mixValue
-					 * @return integer
-					 */
-					try {
-						return ($this->intProgressPercent = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1490,6 +1426,156 @@
 			');
 		}
 
+			
+		
+		// Related Objects' Methods for NarroFileProgressAsFile
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroFileProgressesAsFile as an array of NarroFileProgress objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroFileProgress[]
+		*/ 
+		public function GetNarroFileProgressAsFileArray($objOptionalClauses = null) {
+			if ((is_null($this->intFileId)))
+				return array();
+
+			try {
+				return NarroFileProgress::LoadArrayByFileId($this->intFileId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroFileProgressesAsFile
+		 * @return int
+		*/ 
+		public function CountNarroFileProgressesAsFile() {
+			if ((is_null($this->intFileId)))
+				return 0;
+
+			return NarroFileProgress::CountByFileId($this->intFileId);
+		}
+
+		/**
+		 * Associates a NarroFileProgressAsFile
+		 * @param NarroFileProgress $objNarroFileProgress
+		 * @return void
+		*/ 
+		public function AssociateNarroFileProgressAsFile(NarroFileProgress $objNarroFileProgress) {
+			if ((is_null($this->intFileId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroFileProgressAsFile on this unsaved NarroFile.');
+			if ((is_null($objNarroFileProgress->FileProgressId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroFileProgressAsFile on this NarroFile with an unsaved NarroFileProgress.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroFile::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_file_progress`
+				SET
+					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
+				WHERE
+					`file_progress_id` = ' . $objDatabase->SqlVariable($objNarroFileProgress->FileProgressId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroFileProgressAsFile
+		 * @param NarroFileProgress $objNarroFileProgress
+		 * @return void
+		*/ 
+		public function UnassociateNarroFileProgressAsFile(NarroFileProgress $objNarroFileProgress) {
+			if ((is_null($this->intFileId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsFile on this unsaved NarroFile.');
+			if ((is_null($objNarroFileProgress->FileProgressId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsFile on this NarroFile with an unsaved NarroFileProgress.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroFile::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_file_progress`
+				SET
+					`file_id` = null
+				WHERE
+					`file_progress_id` = ' . $objDatabase->SqlVariable($objNarroFileProgress->FileProgressId) . ' AND
+					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroFileProgressesAsFile
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroFileProgressesAsFile() {
+			if ((is_null($this->intFileId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsFile on this unsaved NarroFile.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroFile::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_file_progress`
+				SET
+					`file_id` = null
+				WHERE
+					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroFileProgressAsFile
+		 * @param NarroFileProgress $objNarroFileProgress
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroFileProgressAsFile(NarroFileProgress $objNarroFileProgress) {
+			if ((is_null($this->intFileId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsFile on this unsaved NarroFile.');
+			if ((is_null($objNarroFileProgress->FileProgressId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsFile on this NarroFile with an unsaved NarroFileProgress.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroFile::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_file_progress`
+				WHERE
+					`file_progress_id` = ' . $objDatabase->SqlVariable($objNarroFileProgress->FileProgressId) . ' AND
+					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroFileProgressesAsFile
+		 * @return void
+		*/ 
+		public function DeleteAllNarroFileProgressesAsFile() {
+			if ((is_null($this->intFileId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsFile on this unsaved NarroFile.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroFile::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_file_progress`
+				WHERE
+					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
+			');
+		}
+
 
 
 
@@ -1557,38 +1643,6 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_file.total_text_count
-		 * @var integer intTotalTextCount
-		 */
-		protected $intTotalTextCount;
-		const TotalTextCountDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column narro_file.fuzzy_text_count
-		 * @var integer intFuzzyTextCount
-		 */
-		protected $intFuzzyTextCount;
-		const FuzzyTextCountDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column narro_file.approved_text_count
-		 * @var integer intApprovedTextCount
-		 */
-		protected $intApprovedTextCount;
-		const ApprovedTextCountDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column narro_file.progress_percent
-		 * @var integer intProgressPercent
-		 */
-		protected $intProgressPercent;
-		const ProgressPercentDefault = null;
-
-
-		/**
 		 * Protected member variable that maps to the database column narro_file.active
 		 * @var boolean blnActive
 		 */
@@ -1643,6 +1697,22 @@
 		 * @var NarroFile[] _objChildNarroFileArray;
 		 */
 		private $_objChildNarroFileArray = array();
+
+		/**
+		 * Private member variable that stores a reference to a single NarroFileProgressAsFile object
+		 * (of type NarroFileProgress), if this NarroFile object was restored with
+		 * an expansion on the narro_file_progress association table.
+		 * @var NarroFileProgress _objNarroFileProgressAsFile;
+		 */
+		private $_objNarroFileProgressAsFile;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroFileProgressAsFile objects
+		 * (of type NarroFileProgress[]), if this NarroFile object was restored with
+		 * an ExpandAsArray on the narro_file_progress association table.
+		 * @var NarroFileProgress[] _objNarroFileProgressAsFileArray;
+		 */
+		private $_objNarroFileProgressAsFileArray = array();
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -1703,10 +1773,6 @@
 			$strToReturn .= '<element name="Parent" type="xsd1:NarroFile"/>';
 			$strToReturn .= '<element name="TypeId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Project" type="xsd1:NarroProject"/>';
-			$strToReturn .= '<element name="TotalTextCount" type="xsd:int"/>';
-			$strToReturn .= '<element name="FuzzyTextCount" type="xsd:int"/>';
-			$strToReturn .= '<element name="ApprovedTextCount" type="xsd:int"/>';
-			$strToReturn .= '<element name="ProgressPercent" type="xsd:int"/>';
 			$strToReturn .= '<element name="Active" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Created" type="xsd:string"/>';
 			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
@@ -1750,14 +1816,6 @@
 			if ((property_exists($objSoapObject, 'Project')) &&
 				($objSoapObject->Project))
 				$objToReturn->Project = NarroProject::GetObjectFromSoapObject($objSoapObject->Project);
-			if (property_exists($objSoapObject, 'TotalTextCount'))
-				$objToReturn->intTotalTextCount = $objSoapObject->TotalTextCount;
-			if (property_exists($objSoapObject, 'FuzzyTextCount'))
-				$objToReturn->intFuzzyTextCount = $objSoapObject->FuzzyTextCount;
-			if (property_exists($objSoapObject, 'ApprovedTextCount'))
-				$objToReturn->intApprovedTextCount = $objSoapObject->ApprovedTextCount;
-			if (property_exists($objSoapObject, 'ProgressPercent'))
-				$objToReturn->intProgressPercent = $objSoapObject->ProgressPercent;
 			if (property_exists($objSoapObject, 'Active'))
 				$objToReturn->blnActive = $objSoapObject->Active;
 			if (property_exists($objSoapObject, 'Created'))
@@ -1826,14 +1884,6 @@
 					return new QQNode('project_id', 'integer', $this);
 				case 'Project':
 					return new QQNodeNarroProject('project_id', 'integer', $this);
-				case 'TotalTextCount':
-					return new QQNode('total_text_count', 'integer', $this);
-				case 'FuzzyTextCount':
-					return new QQNode('fuzzy_text_count', 'integer', $this);
-				case 'ApprovedTextCount':
-					return new QQNode('approved_text_count', 'integer', $this);
-				case 'ProgressPercent':
-					return new QQNode('progress_percent', 'integer', $this);
 				case 'Active':
 					return new QQNode('active', 'boolean', $this);
 				case 'Created':
@@ -1844,6 +1894,8 @@
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasfile', 'reverse_reference', 'file_id');
 				case 'ChildNarroFile':
 					return new QQReverseReferenceNodeNarroFile($this, 'childnarrofile', 'reverse_reference', 'parent_id');
+				case 'NarroFileProgressAsFile':
+					return new QQReverseReferenceNodeNarroFileProgress($this, 'narrofileprogressasfile', 'reverse_reference', 'file_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('file_id', 'integer', $this);
@@ -1882,14 +1934,6 @@
 					return new QQNode('project_id', 'integer', $this);
 				case 'Project':
 					return new QQNodeNarroProject('project_id', 'integer', $this);
-				case 'TotalTextCount':
-					return new QQNode('total_text_count', 'integer', $this);
-				case 'FuzzyTextCount':
-					return new QQNode('fuzzy_text_count', 'integer', $this);
-				case 'ApprovedTextCount':
-					return new QQNode('approved_text_count', 'integer', $this);
-				case 'ProgressPercent':
-					return new QQNode('progress_percent', 'integer', $this);
 				case 'Active':
 					return new QQNode('active', 'boolean', $this);
 				case 'Created':
@@ -1900,6 +1944,8 @@
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasfile', 'reverse_reference', 'file_id');
 				case 'ChildNarroFile':
 					return new QQReverseReferenceNodeNarroFile($this, 'childnarrofile', 'reverse_reference', 'parent_id');
+				case 'NarroFileProgressAsFile':
+					return new QQReverseReferenceNodeNarroFileProgress($this, 'narrofileprogressasfile', 'reverse_reference', 'file_id');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('file_id', 'integer', $this);
