@@ -113,12 +113,9 @@
                     NarroLog::LogMessage(3, "Before import script finished successfully:\n" . $strOutput);
             }
 
-            switch ($this->objProject->ProjectType) {
-                case NarroProjectType::Narro:
-                        $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
-                        $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/';
-                    break;
-                default:
+            if ($this->objProject->ProjectName == 'Narro') {
+                $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
+                $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/';
             }
 
             if (!file_exists($this->strTemplatePath))
@@ -359,12 +356,9 @@
 
             $this->startTimer();
 
-            switch ($this->objProject->ProjectType) {
-                case NarroProjectType::Narro:
-                        $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
-                        $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/';
-                    break;
-                default:
+            if ($this->objProject->ProjectName == 'Narro') {
+                $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
+                $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/';
             }
 
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
@@ -404,6 +398,30 @@
                 else
                     NarroLog::LogMessage(3, "After export script finished successfully:\n" . $strOutput);
             }
+
+            if ($this->objProject->ProjectName == 'Narro') {
+                $fp = popen(
+                    sprintf(
+                        'msgfmt -cv %s -o %s 2>&1',
+                        $this->strTranslationPath . '/narro.po',
+                        __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/narro.mo'
+                    ),
+                    'r'
+                );
+
+                $strOutput = '';
+
+                while(!feof($fp)) {
+                    $strOutput .= fread($fp, 1024);
+                }
+                if (pclose($fp))
+                    NarroLog::LogMessage(3, "Exporting Narro's translation failed:\n" . $strOutput);
+                else
+                    NarroLog::LogMessage(3, "Exported Narro's translation succesfully:\n" . $strOutput);
+
+                chmod(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/narro.mo', 0666);
+            }
+
 
         }
 

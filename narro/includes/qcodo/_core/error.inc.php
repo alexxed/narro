@@ -110,6 +110,7 @@
                 break;
             case E_USER_NOTICE:
                 $__exc_strObjectType = "E_USER_NOTICE";
+                return true;
                 break;
             default:
                 $__exc_strObjectType = "Unknown";

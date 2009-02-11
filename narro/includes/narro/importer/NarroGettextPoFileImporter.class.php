@@ -448,16 +448,6 @@
 
             unlink($strTranslatedFile . '~');
             chmod($strTranslatedFile, 0666);
-
-            if ($this->objProject->ProjectName == 'Narro') {
-                $strLastLine = system(
-                    sprintf(
-                        'msgfmt -cv %s -o %s',
-                        $strTranslatedFile,
-                        __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/narro.mo'
-                    )
-                );
-            }
         }
 
         public function ImportFile($strTemplate, $strTranslatedFile = null) {
