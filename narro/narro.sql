@@ -64,7 +64,10 @@ CREATE TABLE narro_file (
   parent_id int(10) unsigned default NULL,
   type_id tinyint(3) unsigned NOT NULL,
   project_id int(10) unsigned NOT NULL,
-  context_count int(10) unsigned default '0',
+  total_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
+  fuzzy_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
+  approved_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
+  progress_percent INT( 10 ) UNSIGNED NULL DEFAULT '0',
   active tinyint(1) NOT NULL default '1',
   created timestamp NOT NULL default '0000-00-00 00:00:00',
   modified timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -141,6 +144,7 @@ INSERT INTO narro_permission (permission_id, permission_name) VALUES(1, 'Can sug
 INSERT INTO narro_permission (permission_id, permission_name) VALUES(20, 'Can upload project');
 INSERT INTO narro_permission (permission_id, permission_name) VALUES(3, 'Can approve');
 INSERT INTO narro_permission (permission_id, permission_name) VALUES(2, 'Can vote');
+INSERT INTO narro_permission (permission_id ,permission_name) VALUES (22 , 'Can mass approve');
 
 CREATE TABLE narro_project (
   project_id int(10) unsigned NOT NULL auto_increment,
@@ -148,12 +152,19 @@ CREATE TABLE narro_project (
   project_name varchar(255) NOT NULL,
   project_type smallint(5) unsigned NOT NULL,
   project_description varchar(255) default NULL,
+  total_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
+  fuzzy_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
+  approved_text_count INT( 10 ) UNSIGNED NULL DEFAULT '0',
+  progress_percent INT( 10 ) UNSIGNED NULL DEFAULT '0',
   active tinyint(3) unsigned NOT NULL default '1',
   PRIMARY KEY  (project_id),
   UNIQUE KEY project_name (project_name),
   KEY project_type (project_type),
   KEY project_category_id (project_category_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `narro_project` (`project_id`, `project_category_id`, `project_name`, `project_type`, `project_description`, `total_text_count`, `fuzzy_text_count`, `approved_text_count`, `progress_percent`, `active`) VALUES
+(1, NULL, 'Narro', 4, NULL, 0, 0, 0, 0, 1);
 
 CREATE TABLE narro_project_category (
   project_category_id int(11) unsigned NOT NULL auto_increment,

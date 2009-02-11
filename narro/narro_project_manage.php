@@ -418,9 +418,12 @@
                 $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . NarroApp::$Language->LanguageCode . '-import-process.log';
                 if (file_exists($strProcLogFile) && is_writable($strProcLogFile))
                     unlink($strProcLogFile);
+
                 $intRetVal = proc_close(proc_open("$strCommand &", array(2 => array("file", $strProcLogFile, 'a')), $foo));
 
-                    NarroLog::LogMessage(3, sprintf('Failed to launch a background process: %d, %s', $intRetVal, file_get_contents(__TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . NarroApp::$Language->LanguageCode . '-import-process.log')));
+                if (file_exists($strProcLogFile) && filesize($strProcLogFile))
+                    NarroLog::LogMessage(3, sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+
             } elseif ($strParameter != 1) {
                 set_time_limit(0);
 
@@ -594,7 +597,14 @@
                     $this->lstExportedSuggestion->SelectedValue
                 );
 
-                proc_close(proc_open ("$strCommand &", array(), $foo));
+                $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . NarroApp::$Language->LanguageCode . '-export-process.log';
+                if (file_exists($strProcLogFile) && is_writable($strProcLogFile))
+                    unlink($strProcLogFile);
+
+                $intRetVal = proc_close(proc_open("$strCommand &", array(2 => array("file", $strProcLogFile, 'a')), $foo));
+
+                if (file_exists($strProcLogFile) && filesize($strProcLogFile))
+                    NarroLog::LogMessage(3, sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
             }
             elseif($strParameter != 1) {
                 set_time_limit(0);
