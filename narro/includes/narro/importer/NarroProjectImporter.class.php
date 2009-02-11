@@ -473,7 +473,7 @@
                             );
 
                         if (!$objFile instanceof NarroFile) {
-                            NarroLog::LogMessage(3, sprintf('Could not find folder "%s" with parent id "%d" in the database.', $strDir, $intParentId));
+                            NarroLog::LogMessage(2, sprintf('Could not find folder "%s" with parent id "%d" in the database.', $strDir, $intParentId));
                             continue;
                         }
 
