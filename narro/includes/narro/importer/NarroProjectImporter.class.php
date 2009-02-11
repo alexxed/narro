@@ -474,6 +474,7 @@
                         NarroLog::LogMessage(2, sprintf('Failed to create the parent directories for the file %s', $strFileToExport));
                         return false;
                     }
+                    NarroUtils::RecursiveChmod(dirname($strTranslatedFileToExport));
                 }
 
                 if (!$intFileType = $this->GetFileType($strFileName)) {
@@ -623,6 +624,8 @@
                             $this->strTranslationPath = $mixValue;
                         else
                             throw new Exception(sprintf(t('TranslationPath "%s" does not exist.'), $mixValue));
+
+                        NarroUtils::RecursiveChmod($mixValue);
                     }
 
                     break;
@@ -635,6 +638,8 @@
                             $this->strTranslationPath = $mixValue;
                         else
                             throw new Exception(sprintf(t('TranslationPath "%s" does not exist.'), $mixValue));
+
+                        NarroUtils::RecursiveChmod($mixValue);
                     }
 
                     break;

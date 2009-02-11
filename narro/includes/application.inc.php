@@ -191,16 +191,29 @@
     NarroApp::$LanguageCode = NarroApp::$Language->LanguageCode;
 
     require_once 'Zend/Translate.php';
+
     define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . NarroApp::$User->getPreferenceValueByName('Application language') . '/LC_MESSAGES');
+    if (!is_writable(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/'))
+        die(sprintf('Please give write permissions for everyone (chmod 777) to the directory "%s"', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/'));
+
     if (!file_exists(__LOCALE_DIRECTORY__)) {
         if (!mkdir(__LOCALE_DIRECTORY__, 0777, true))
             die(sprintf('Could not create a directory. Please create the directory "%s" and give it write permissions for everyone (chmod 777)', __LOCALE_DIRECTORY__));
         else
-            NarroUtils::RecursiveChmod(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . NarroApp::$User->getPreferenceValueByName('Application language'));
+            NarroUtils::RecursiveChmod(__LOCALE_DIRECTORY__);
     }
 
     if (file_exists(__LOCALE_DIRECTORY__ . '/narro.mo'))
         NarroApp::$TranslationEngine = new Zend_Translate('gettext', __LOCALE_DIRECTORY__ . '/narro.mo', NarroApp::$User->getPreferenceValueByName('Application language'));
+
+    if (!extension_loaded('mbstring'))
+        die('This version of Narro needs php-mbstring, please install it');
+
+    if (!function_exists('mb_stripos'))
+        die('This version of Narro needs mb_stripos, that\'s available only in php versions bigger than 5.2.0');
+
+    if (!extension_loaded('gd'))
+        die('This version of Narro needs php-gd, please install it');
 
     NarroApp::$PluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
 ?>

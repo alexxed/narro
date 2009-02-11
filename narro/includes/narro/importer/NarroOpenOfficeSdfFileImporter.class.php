@@ -307,8 +307,10 @@
                 $strFilePath = dirname($strFile) . '/' . $arrColumn[0] . '/' . str_replace('\\', '/', $arrColumn[1]) . '.sdf';
 
                 if (!file_exists($strFilePath)) {
-                    if (!file_exists(dirname($strFilePath)))
+                    if (!file_exists(dirname($strFilePath))) {
                         mkdir(dirname($strFilePath), 0777, true);
+                        NarroUtils::RecursiveChmod(dirname($strFilePath));
+                    }
                 }
 
                 $hndSplitFile = fopen($strFilePath, 'a+');

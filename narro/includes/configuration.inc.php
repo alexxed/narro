@@ -20,6 +20,7 @@
     /**
      * Paths that may need changing
      */
+    define ('__DOCROOT__', realpath(dirname(__FILE__) . '/../..'));
     define ('__VIRTUAL_DIRECTORY__', '');
     define ('__HTTP_URL__', 'http://localhost');
     define ('__SUBDIRECTORY__', '/narro');
@@ -49,7 +50,6 @@
     }
 
     define ('NARRO_VERSION', '0.9.3');
-    define ('__DOCROOT__', realpath(dirname(__FILE__) . '/../..'));
     define ('ALLOW_REMOTE_ADMIN', false);
     define ('__URL_REWRITE__', 'none');
 

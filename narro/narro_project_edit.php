@@ -186,8 +186,10 @@
             $this->UpdateNarroProjectFields();
             $this->objNarroProject->Save();
 
-            if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroApp::$Language->LanguageCode))
+            if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroApp::$Language->LanguageCode)) {
                 mkdir(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroApp::$Language->LanguageCode, 0777, true);
+                NarroUtils::RecursiveChmod(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroApp::$Language->LanguageCode);
+            }
 
             NarroApp::Redirect(sprintf('narro_project_manage.php?p=%d', $this->objNarroProject->ProjectId));
         }
