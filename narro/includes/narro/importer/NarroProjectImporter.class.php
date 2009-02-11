@@ -86,20 +86,29 @@
 
         public function ImportProject() {
             $this->startTimer();
-            if (function_exists('system') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../import.sh')) {
-                NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__,
-                    system(
+
+            if (function_exists('popen') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../import.sh')) {
+                NarroLog::LogMessage(3, 'Found a before import script, trying to run it.');
+                 $fp = popen(
                         sprintf(
-                            '/bin/sh %s %s %d %s %d %d',
+                            '/bin/sh %s %s %d %s %d %d 2>&1',
                             escapeshellarg(realpath($this->strTemplatePath . '/..') . '/import.sh'),
                             escapeshellarg($this->objTargetLanguage->LanguageCode),
                             $this->objTargetLanguage->LanguageId,
                             escapeshellarg($this->objProject->ProjectName),
                             $this->objProject->ProjectId,
                             NarroApp::GetUserId()
-                        )
-                    )
+                        ),
+                        'r'
                 );
+
+                $strOutput = '';
+
+                while(!feof($fp)) {
+                    $strOutput .= fread($fp, 1024);
+                }
+                if (pclose($fp))
+                    NarroLog::LogMessage(3, "Before import script failed:\n" . $strOutput);
             }
 
             switch ($this->objProject->ProjectType) {
@@ -112,13 +121,16 @@
 
 
                     if (is_dir($this->strTemplatePath))
-                        $this->ImportFromDirectory();
+                        if ($this->ImportFromDirectory()) {
+                            $this->stopTimer();
+                            NarroLog::LogMessage(3, sprintf('Import finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
+                        }
+                        else {
+                            NarroLog::LogMessage(3, 'Import failed. See any messages above for details.');
+                        }
                     else
                         throw new Exception(sprintf('"%s" is not a directory.', $this->strTemplatePath));
             }
-
-            $this->stopTimer();
-            NarroLog::LogMessage(3, sprintf('Import finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
         }
 
         public function ImportFromDirectory() {
@@ -294,6 +306,7 @@
 
             }
 
+            return true;
         }
 
         public function ImportFile ($objFile, $strTemplateFile, $strTranslatedFile = false) {
@@ -341,29 +354,41 @@
             $this->startTimer();
 
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
-                $this->ExportFromDirectory();
+                if ($this->ExportFromDirectory()) {
+                    $this->stopTimer();
+                    NarroLog::LogMessage(3, sprintf('Export finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
+                }
+                else {
+                    NarroLog::LogMessage(3, 'Export failed.');
+                }
+
             else
                 throw new Exception(sprintf('%s does not exist or it is not a directory', $this->strTemplatePath));
 
-            if (function_exists('system') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../export.sh')) {
-                NarroLog::LogMessage(1, __FILE__, __METHOD__, __LINE__,
-                    system(
+            if (function_exists('popen') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../export.sh')) {
+                NarroLog::LogMessage(3, 'Found an after export script, trying to run it.');
+                 $fp = popen(
                         sprintf(
-                            '/bin/sh %s %s %d %s %d %d',
+                            '/bin/sh %s %s %d %s %d %d 2>&1',
                             escapeshellarg(realpath($this->strTemplatePath . '/..') . '/export.sh'),
                             escapeshellarg($this->objTargetLanguage->LanguageCode),
                             $this->objTargetLanguage->LanguageId,
                             escapeshellarg($this->objProject->ProjectName),
                             $this->objProject->ProjectId,
                             NarroApp::GetUserId()
-                        )
-                    )
+                        ),
+                        'r'
                 );
+
+                $strOutput = '';
+
+                while(!feof($fp)) {
+                    $strOutput .= fread($fp, 1024);
+                }
+                if (pclose($fp))
+                    NarroLog::LogMessage(3, "After export script failed:\n" . $strOutput);
             }
 
-            $this->stopTimer();
-
-            NarroLog::LogMessage(3, sprintf('Export finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
         }
 
 
@@ -418,7 +443,7 @@
                             );
 
                         if (!$objFile instanceof NarroFile) {
-                            NarroLog::LogMessage(2, sprintf('Could not find folder "%s" with parent id "%d" in the database.', $strDir, $intParentId));
+                            NarroLog::LogMessage(3, sprintf('Could not find folder "%s" with parent id "%d" in the database.', $strDir, $intParentId));
                             continue;
                         }
 
@@ -431,16 +456,22 @@
                 if (!file_exists(dirname($strTranslatedFileToExport))) {
                     if (!mkdir(dirname($strTranslatedFileToExport), 0777, true)) {
                         NarroLog::LogMessage(2, sprintf('Failed to create the parent directories for the file %s', $strFileToExport));
-                        continue;
+                        return false;
                     }
                 }
 
                 if (!$intFileType = $this->GetFileType($strFileName)) {
-                    if ($this->blnCopyUnhandledFiles && !file_exists($strTranslatedFileToExport) && !copy($strFileToExport, $strTranslatedFileToExport)) {
-                        NarroLog::LogMessage(2, sprintf('Copying unhandled file type: %s', $strFileToExport));
-                        NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
-                        NarroLog::LogMessage(2, sprintf('Failed to copy the file to %s', $strTranslatedFileToExport));
+                    if ($this->blnCopyUnhandledFiles && !file_exists($strTranslatedFileToExport)) {
+                        if (@copy($strFileToExport, $strTranslatedFileToExport)) {
+                            NarroLog::LogMessage(2, sprintf('Copying unhandled file type: %s', $strFileToExport));
+                            NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
+                            chmod($strTranslatedFileToExport, 0666);
+                        } else {
+                            NarroLog::LogMessage(2, sprintf('Failed to copy the unhandled file to %s', $strTranslatedFileToExport));
+                            return false;
+                        }
                     }
+
                     continue;
                 }
 
@@ -466,7 +497,7 @@
 
             }
 
-            $this->stopTimer();
+            return true;
         }
 
         public function ExportFile ($objFile, $strTemplateFile, $strTranslatedFile) {

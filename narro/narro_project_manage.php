@@ -370,7 +370,7 @@
                 /**
                  * refresh the page to show the progress. keep the interval id as a global variable (no var before it) to clear it afterwards
                  */
-                if (function_exists('proc_open') && NarroApp::$UseAjax)
+                if (function_exists('proc_open'))
                     NarroApp::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $strFormId, $strControlId, 2000));
             }
             else {
@@ -415,8 +415,12 @@
                     0,
                     NarroApp::$Language->LanguageCode
                 );
+                $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . NarroApp::$Language->LanguageCode . '-import-process.log';
+                if (file_exists($strProcLogFile) && is_writable($strProcLogFile))
+                    unlink($strProcLogFile);
+                $intRetVal = proc_close(proc_open("$strCommand &", array(2 => array("file", $strProcLogFile, 'a')), $foo));
 
-                proc_close(proc_open ("$strCommand &", array(), $foo));
+                    NarroLog::LogMessage(3, sprintf('Failed to launch a background process: %d, %s', $intRetVal, file_get_contents(__TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . NarroApp::$Language->LanguageCode . '-import-process.log')));
             } elseif ($strParameter != 1) {
                 set_time_limit(0);
 

@@ -286,7 +286,6 @@
                         if (strstr($strCmdLine, 'egrep') || $arrMatches[3] == 0)
                             continue;
                         else {
-                            error_log($arrMatches[3] . ':' . $strCmdLine);
                             return $arrMatches[3];
                         }
                     }

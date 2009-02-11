@@ -193,11 +193,11 @@
                 }
             }
 
-            if (file_exists($strTranslatedFile) && !unlink($strTranslatedFile)) {
-                NarroLog::LogMessage(2, sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
+            if (file_exists($strTranslatedFile) && !is_writable($strTranslatedFile) && !unlink($strTranslatedFile)) {
+                NarroLog::LogMessage(3, sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
             }
             if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
-                NarroLog::LogMessage(2, sprintf('Can\'t write to file "%s"', $strTranslatedFile));
+                NarroLog::LogMessage(3, sprintf('Can\'t write to file "%s"', $strTranslatedFile));
             }
 
             chmod($strTranslatedFile, 0666);

@@ -65,8 +65,9 @@
                                 $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]);
                                 /**
                                  * search for the accesskey in the label
+                                 * the case of the access keys doesn't matter in Mozilla, so it's a insensitive search
                                  */
-                                $intPos = @mb_strpos( $strOriginalText, $strAccKey);
+                                $intPos = @mb_stripos( $strOriginalText, $strAccKey);
                                 if ($intPos !== false) {
                                     $arrAccKey[$strLabelCtx] = mb_substr($strOriginalText, $intPos, 1);
                                     unset($arrTexts[$strAccCtx]);
