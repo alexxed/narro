@@ -113,10 +113,8 @@
                     NarroLog::LogMessage(3, "Before import script finished successfully:\n" . $strOutput);
             }
 
-            if ($this->objProject->ProjectName == 'Narro') {
+            if ($this->objProject->ProjectName == 'Narro')
                 $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
-                $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/';
-            }
 
             if (!file_exists($this->strTemplatePath))
                 throw new Exception(sprintf('%s does not exist.', $this->strTemplatePath));
@@ -356,10 +354,8 @@
 
             $this->startTimer();
 
-            if ($this->objProject->ProjectName == 'Narro') {
+            if ($this->objProject->ProjectName == 'Narro')
                 $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
-                $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/';
-            }
 
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
                 if ($this->ExportFromDirectory()) {
