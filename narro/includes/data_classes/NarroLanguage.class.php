@@ -143,6 +143,9 @@
             NarroApp::$Cache->remove('narrolanguage_' . $this->LanguageId);
             NarroApp::$Cache->remove('narrolanguage_loadall');
             NarroApp::$Cache->remove('narrolanguage_countall');
+            NarroApp::$Cache->remove('narrolanguage_loadallactive');
+            NarroApp::$Cache->remove('narrolanguage_countallactive');
+
             parent::Save($blnForceInsert, $blnForceUpdate);
         }
 
@@ -151,6 +154,9 @@
             NarroApp::$Cache->remove('narrolanguage_' . $this->LanguageId);
             NarroApp::$Cache->remove('narrolanguage_loadall');
             NarroApp::$Cache->remove('narrolanguage_countall');
+            NarroApp::$Cache->remove('narrolanguage_loadallactive');
+            NarroApp::$Cache->remove('narrolanguage_countallactive');
+
             parent::Delete();
         }
 

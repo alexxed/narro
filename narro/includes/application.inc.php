@@ -109,6 +109,9 @@
     NarroApp::$ClassFile['NarroUserSuggestionsPanel'] = __INCLUDES__ . '/narro/NarroUserSuggestionsPanel.class.php';
     NarroApp::$ClassFile['NarroUtils'] = __INCLUDES__ . '/narro/NarroUtils.class.php';
 
+    NarroApp::$ClassFile['FirePHP'] = __INCLUDES__ . '/PEAR/FirePHPCore/FirePHP.class.php';
+    NarroApp::$ClassFile['FB'] = __INCLUDES__ . '/PEAR/FirePHPCore/fb.php';
+
     ///////////////////////
     // Setup Error Handling
     ///////////////////////

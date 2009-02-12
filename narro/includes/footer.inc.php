@@ -23,6 +23,11 @@
 <?php
     if (NarroApp::$Database[1]->EnableProfiling)
         NarroApp::$Database[1]->OutputProfiling();
+    if (SERVER_INSTANCE == 'dev') {
+        global $arrQuery;
+        $objFirePhp = FirePHP::getInstance(true);
+        $objFirePhp->table('SQL queries', $arrQuery);
+    }
 ?>
 <?php
     /**

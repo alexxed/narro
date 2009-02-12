@@ -54,6 +54,10 @@
 
         // Call to display the Error Page (as defined in configuration.inc.php)
         require(__DOCROOT__ . ERROR_PAGE_PATH);
+        if (SERVER_INSTANCE == 'dev') {
+            $objFirePhp = FirePHP::getInstance(true);
+            $objFirePhp->exceptionHandler($__exc_objException);
+        }
         exit;
     }
 
@@ -146,6 +150,11 @@
 
         // Call to display the Error Page (as defined in configuration.inc.php)
         require(__DOCROOT__ . ERROR_PAGE_PATH);
+        if (SERVER_INSTANCE == 'dev') {
+            $objFirePhp = FirePHP::getInstance(true);
+            $objFirePhp->errorHandler($__exc_errno, $__exc_errstr, $__exc_errfile, $__exc_errline);
+        }
+
         exit;
     }
 

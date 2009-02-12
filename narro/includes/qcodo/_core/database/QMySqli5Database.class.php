@@ -43,15 +43,32 @@
             // Log Query (for Profiling, if applicable)
             $this->LogQuery($strQuery);
 
-            $intTime = microtime();
+            $intTime = time();
             // Perform the Query
             $objResult = $this->objMySqli->query($strQuery);
-            $intElapsedTime = microtime() - $intTime;
-            if ($intElapsedTime > 0.5)
-                error_log($intElapsedTime . 's: ' . $strQuery);
+            $intElapsedTime = time() - $intTime;
 
-            if ($this->blnEnableProfiling && $intTime > 0)
-                $this->strProfileArray[count($this->strProfileArray) - 1] .= ' ' . $intTime . 'ms';
+            if (SERVER_INSTANCE == 'dev') {
+                global $arrQuery;
+                if (!is_array($arrQuery)) {
+                    $arrQuery = array();
+                    $arrQuery[] = array('Query','Time','Trace');
+                }
+                else {
+                    $strTrace = '';
+                    foreach(debug_backtrace() as $arrTrace) {
+                        if (isset($arrTrace['class']))
+                            $strTrace .= $arrTrace['class'] . '->' . $arrTrace['function'] . ', ';
+                        else
+                            $strTrace .= basename($arrTrace['file']) . ':' . $arrTrace['line'] . ', ';
+                    }
+
+                    $arrQuery[] = array($strQuery, $intElapsedTime, $strTrace);
+                }
+            }
+
+            if ($this->blnEnableProfiling && $intElapsedTime > 0)
+                $this->strProfileArray[count($this->strProfileArray) - 1] .= ' ' . $intElapsedTime . 'ms';
             if ($this->objMySqli->error)
                 throw new QMySqliDatabaseException($this->objMySqli->error, $this->objMySqli->errno, $strQuery);
 
