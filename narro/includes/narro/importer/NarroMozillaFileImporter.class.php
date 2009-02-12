@@ -123,8 +123,20 @@
                     $arrTranslation[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->Context->Text->TextValue;
 
                 if ($objNarroContextInfo->TextAccessKey) {
-                    if ($objNarroContextInfo->SuggestionAccessKey)
-                        $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->SuggestionAccessKey;
+                    if ($objNarroContextInfo->SuggestionAccessKey) {
+                        if (!preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->SuggestionAccessKey)) {
+                            if (preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches)) {
+                                $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $arrPossibleKeyMatches[0];
+                                NarroLog::LogMessage(3, sprintf('For context "%s", found access key "%s" is not a ascii character, using the first ascii character as accesskey: "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $arrPossibleKeyMatches[0]));
+                            }
+                            else {
+                                $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->TextAccessKey;
+                                NarroLog::LogMessage(3, sprintf('For context "%s", found access key "%s" is not a ascii character, and no ascii characters were found in "%s", keeping the original access key "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches[0]));
+                            }
+                        }
+                        else
+                            $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->SuggestionAccessKey;
+                    }
                     else
                         $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->TextAccessKey;
                 }
