@@ -225,7 +225,7 @@
                     1
                 );
 
-            $this->pnlContext->Text = nl2br(NarroString::HtmlEntities($this->objNarroContextInfo->Context->Context));
+            $this->pnlContext->Text = nl2br(NarroString::HtmlEntities(str_replace('\n', "\n", $this->objNarroContextInfo->Context->Context)));
             $this->pnlComments->NarroText = $this->objNarroContextInfo->Context->Text;
 
             if ($this->objNarroContextInfo->Context->Text->HasComments)

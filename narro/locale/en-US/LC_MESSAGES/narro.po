@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 0.9.3\n"
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2009-12-02 06:15-0800\n"
-"PO-Revision-Date: 2009-12-02 06:15-0800\n"
+"POT-Creation-Date: 2009-12-02 07:25-0800\n"
+"PO-Revision-Date: 2009-12-02 07:25-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -13,2419 +13,2405 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Narro\n"
 
-#. echo t('An error occured in the application you were using. A detailed report was sent to developers.');
 #: assets/php/_core/error_page.php
+msgctxt "echo t('An error occured in the application you were using. A detailed report was sent to developers.');"
 msgid "An error occured in the application you were using. A detailed report was sent to developers."
 msgstr ""
 
-#. echo sprintf(t('Click <a href="%s">here</a> to start over.'), NarroLink::ProjectList());
 #: assets/php/_core/error_page.php
+msgctxt "echo sprintf(t('Click <a href=\"%s\">here</a> to start over.'), NarroLink::ProjectList());"
 msgid "Click <a href=\"%s\">here</a> to start over."
 msgstr ""
 
-#. Preference name
-#. NarroApp::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
 #: includes/application.inc.php
+msgctxt "Preference name\n"
+"NarroApp::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);"
 msgid "Items per page"
 msgstr ""
 
-#. Preference name
-#. NarroApp::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
 #: includes/application.inc.php
+msgctxt "Preference name\n"
+"NarroApp::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));"
 msgid "Font size"
 msgstr ""
 
-#. <?php echo t('Language') . ':'; $this->lstLanguage->Render() ?>
 #: includes/application.inc.php includes/narro/NarroNewUsersPanel.class.php includes/narro/NarroRoleUserListPanel.class.php includes/narro/NarroTopUsersPanel.class.php includes/narro/NarroUserSuggestionsPanel.class.php narro_project_language_list.php narro_user_role.php templates/narro_user_role.tpl.php
+msgctxt "<?php echo t('Language') . ':'; $this->lstLanguage->Render() ?>"
 msgid "Language"
 msgstr ""
 
-#. Preference name
-#. NarroApp::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US', array((isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US'));
 #: includes/application.inc.php
+msgctxt "Preference name\n"
+"NarroApp::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US', array((isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US'));"
 msgid "Application language"
 msgstr ""
 
-#. <label for="<?php echo $this->txtSpecialCharacters->ControlId ?>"><?php _t('Special characters') ?></label>
 #: includes/application.inc.php templates/narro_language_edit.tpl.php
+msgctxt "<label for=\"<?php echo $this->txtSpecialCharacters->ControlId ?>\"><?php _t('Special characters') ?></label>"
 msgid "Special characters"
 msgstr ""
 
-#. Preference name
-#. NarroApp::RegisterPreference('Other languages', 'text', 'Other languages that you want to check for suggestions, separated by spaces.', 'ro');
 #: includes/application.inc.php
+msgctxt "Preference name\n"
+"NarroApp::RegisterPreference('Other languages', 'text', 'Other languages that you want to check for suggestions, separated by spaces.', 'ro');"
 msgid "Other languages"
 msgstr ""
 
-#. Preference description
-#. NarroApp::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
 #: includes/application.inc.php
+msgctxt "Preference description\n"
+"NarroApp::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);"
 msgid "How many items are displayed per page"
 msgstr ""
 
-#. Preference description
-#. NarroApp::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
 #: includes/application.inc.php
+msgctxt "Preference description\n"
+"NarroApp::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));"
 msgid "The application font size"
 msgstr ""
 
-#. Preference description
-#. NarroApp::RegisterPreference('Language', 'option', 'The language you are translating to.', NarroApp::QueryString('l'), array(NarroApp::QueryString('l')));
 #: includes/application.inc.php
+msgctxt "Preference description\n"
+"NarroApp::RegisterPreference('Language', 'option', 'The language you are translating to.', NarroApp::QueryString('l'), array(NarroApp::QueryString('l')));"
 msgid "The language you are translating to."
 msgstr ""
 
-#. Preference description
-#. NarroApp::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US', array((isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US'));
 #: includes/application.inc.php
+msgctxt "Preference description\n"
+"NarroApp::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US', array((isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US'));"
 msgid "The language you want to see Narro in."
 msgstr ""
 
-#. Preference description
-#. NarroApp::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
 #: includes/application.inc.php
+msgctxt "Preference description\n"
+"NarroApp::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');"
 msgid "Characters that are not on your keyboard, separated by spaces."
 msgstr ""
 
-#. Preference description
-#. NarroApp::RegisterPreference('Other languages', 'text', 'Other languages that you want to check for suggestions, separated by spaces.', 'ro');
 #: includes/application.inc.php
+msgctxt "Preference description\n"
+"NarroApp::RegisterPreference('Other languages', 'text', 'Other languages that you want to check for suggestions, separated by spaces.', 'ro');"
 msgid "Other languages that you want to check for suggestions, separated by spaces."
 msgstr ""
 
-#. throw new Exception(t('Language should be set with an instance of NarroLanguage'));
 #: includes/data_classes/NarroUser.class.php
+msgctxt "throw new Exception(t('Language should be set with an instance of NarroLanguage'));"
 msgid "Language should be set with an instance of NarroLanguage"
 msgstr ""
 
-#. <p align="center" style="font-size:small"><a target="_blank" href="http://code.google.com/p/narro/wiki/About"><?php echo sprintf(t('%s, version %s'), 'Narro', NARRO_VERSION) ?></a></p>
 #: includes/footer.inc.php
+msgctxt "<p align=\"center\" style=\"font-size:small\"><a target=\"_blank\" href=\"http://code.google.com/p/narro/wiki/About\"><?php echo sprintf(t('%s, version %s'), 'Narro', NARRO_VERSION) ?></a></p>"
 msgid "%s, version %s"
 msgstr ""
 
-#. <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context changes for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo NarroApp::GetLanguageId() ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
 #: includes/header.inc.php
+msgctxt "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"<?php echo sprintf(t('Context changes for %s'), $this->objNarroProject->ProjectName) ?>\" href=\"rss.php?t=context_info_changes&l=<?php echo NarroApp::GetLanguageId() ?>&p=<?php echo $this->objNarroProject->ProjectId ?>\" />"
 msgid "Context changes for %s"
 msgstr ""
 
-#. sprintf(t('Texts to translate for %s'), $objProject->ProjectName),
 #: includes/header.inc.php rss.php
+msgctxt "sprintf(t('Texts to translate for %s'), $objProject->ProjectName),"
 msgid "Texts to translate for %s"
 msgstr ""
 
-#. sprintf(t('Debates on texts from %s'), $objProject->ProjectName),
 #: includes/header.inc.php rss.php
+msgctxt "sprintf(t('Debates on texts from %s'), $objProject->ProjectName),"
 msgid "Debates on texts from %s"
 msgstr ""
 
-#. sprintf(t('Translations for %s'), $objProject->ProjectName),
 #: includes/header.inc.php rss.php
+msgctxt "sprintf(t('Translations for %s'), $objProject->ProjectName),"
 msgid "Translations for %s"
 msgstr ""
 
-#. <link rel="alternate" type="application/rss+xml" title="<?php echo t('Context changes for all projects') ?>" href="rss.php?t=context_info_changes&l=<?php echo NarroApp::GetLanguageId() ?>" />
 #: includes/header.inc.php
+msgctxt "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"<?php echo t('Context changes for all projects') ?>\" href=\"rss.php?t=context_info_changes&l=<?php echo NarroApp::GetLanguageId() ?>\" />"
 msgid "Context changes for all projects"
 msgstr ""
 
-#. <link rel="alternate" type="application/rss+xml" title="<?php echo t('Texts to translate for all projects') ?>" href="rss.php?t=text&l=<?php echo NarroApp::GetLanguageId() ?>" />
 #: includes/header.inc.php
+msgctxt "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"<?php echo t('Texts to translate for all projects') ?>\" href=\"rss.php?t=text&l=<?php echo NarroApp::GetLanguageId() ?>\" />"
 msgid "Texts to translate for all projects"
 msgstr ""
 
-#. <link rel="alternate" type="application/rss+xml" title="<?php echo t('Debates on texts from all projects') ?>" href="rss.php?t=textcomment&l=<?php echo NarroApp::GetLanguageId() ?>" />
 #: includes/header.inc.php
+msgctxt "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"<?php echo t('Debates on texts from all projects') ?>\" href=\"rss.php?t=textcomment&l=<?php echo NarroApp::GetLanguageId() ?>\" />"
 msgid "Debates on texts from all projects"
 msgstr ""
 
-#. sprintf(t('Translations for all projects'), t(NarroApp::$Language->LanguageName)),
 #: includes/header.inc.php rss.php
+msgctxt "sprintf(t('Translations for all projects'), t(NarroApp::$Language->LanguageName)),"
 msgid "Translations for all projects"
 msgstr ""
 
-#. $this->SetCustomStyle('title', t('Special characters that might not be on your keyboard'));
 #: includes/narro/NarroDiacriticsPanel.class.php
+msgctxt "$this->SetCustomStyle('title', t('Special characters that might not be on your keyboard'));"
 msgid "Special characters that might not be on your keyboard"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Afrikaans"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Albanian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Amharic"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Arabic"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Armenian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Basque"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Belarusian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Bosnian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Bulgarian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Catalan"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Chinese Simplified, China"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Chinese Traditional, Taiwan"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Czech"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Danish"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Dutch"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Dzongkha"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "English (South African)"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "English US"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "English, UK"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Finnish"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "French"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Frisian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Georgian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "German"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Greek"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Gujarati"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Hebrew"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Hungarian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Irish"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Italian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Japanese"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Kabyle"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Kazakh"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Korean"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Kurdish"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Latvian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Lithuanian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Macedonian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Malayalam"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Mayan"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Mongolian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Ndebele"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Northern Sotho"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Norwegian bokmaal"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Norwegian nynorsk"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Persian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Polish"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Portuguese, Brazil"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Portuguese, Portugal"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Punjabi"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Romanian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Russian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Serbian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Slovak"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Slovenian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Southern Sotho"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Spanish"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Spanish, Argentina"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Spanish, Chile"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Spanish, Mexico"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Swati"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Swedish"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Tsonga"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Tswana"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Turkish"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Ukrainian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Urdu (Pakistan)"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Uyghur"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Valencian"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Venda"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Vietnamese"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Xhosa"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Zapotec"
 msgstr ""
 
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/NarroHeaderPanel.class.php narro_user_preferences.php
+msgctxt "$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));\n"
+"$lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));"
 msgid "Zulu"
 msgstr ""
 
-#. <td><?php echo t('Username') ?>:</td>
 #: includes/narro/NarroNewUsersPanel.class.php includes/narro/NarroRoleUserListPanel.class.php includes/narro/NarroTopUsersPanel.class.php narro_user_list.php templates/narro_recover_password.tpl.php templates/narro_register.tpl.php
+msgctxt "<td><?php echo t('Username') ?>:</td>"
 msgid "Username"
 msgstr ""
 
-#. $this->colSuggestionCnt = new QDataGridColumn(t('Translations'), '<?= $_CONTROL->ParentControl->dtgUsers_colSuggestionCnt_Render($_ITEM); ?>');
 #: includes/narro/NarroNewUsersPanel.class.php includes/narro/NarroTopUsersPanel.class.php
+msgctxt "$this->colSuggestionCnt = new QDataGridColumn(t('Translations'), '<?= $_CONTROL->ParentControl->dtgUsers_colSuggestionCnt_Render($_ITEM); ?>');"
 msgid "Translations"
 msgstr ""
 
-#. $this->colCharCnt = new QDataGridColumn(t('Characters'), '<?= $_CONTROL->ParentControl->dtgUsers_colCharCnt_Render($_ITEM); ?>');
 #: includes/narro/NarroNewUsersPanel.class.php includes/narro/NarroTopUsersPanel.class.php
+msgctxt "$this->colCharCnt = new QDataGridColumn(t('Characters'), '<?= $_CONTROL->ParentControl->dtgUsers_colCharCnt_Render($_ITEM); ?>');"
 msgid "Characters"
 msgstr ""
 
-#. return t('Unknown');
 #: includes/narro/NarroNewUsersPanel.class.php includes/narro/NarroSuggestionListPanel.class.php includes/narro/NarroTopUsersPanel.class.php
+msgctxt "return t('Unknown');"
 msgid "Unknown"
 msgstr ""
 
-#. $this->colPermission = new QDataGridColumn(NarroApp::Translate('Permission'), '<?= $_CONTROL->ParentControl->dtgNarroPermission_PermissionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName, false)));
 #: includes/narro/NarroRolePermissionPanel.class.php
+msgctxt "$this->colPermission = new QDataGridColumn(NarroApp::Translate('Permission'), '<?= $_CONTROL->ParentControl->dtgNarroPermission_PermissionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName, false)));"
 msgid "Permission"
 msgstr ""
 
-#.
 #: includes/narro/NarroRolePermissionPanel.class.php
+msgctxt ""
 msgid "%s's permissions"
 msgstr ""
 
-#. <?php echo t('Project') . ':'; $this->lstProject->Render() ?>
 #: includes/narro/NarroRoleUserListPanel.class.php narro_user_role.php rss.php templates/narro_user_role.tpl.php
+msgctxt "<?php echo t('Project') . ':'; $this->lstProject->Render() ?>"
 msgid "Project"
 msgstr ""
 
-#. '<div class="title_action">' . sprintf(t('Users with "%s" role'), $this->objRole->RoleName) . '</div><br class="item_divider" />' .
 #: includes/narro/NarroRoleUserListPanel.class.php
+msgctxt "'<div class=\"title_action\">' . sprintf(t('Users with \"%s\" role'), $this->objRole->RoleName) . '</div><br class=\"item_divider\" />' ."
 msgid "Users with \"%s\" role"
 msgstr ""
 
-#. return t('Any');
-#. return t('Any');
 #: includes/narro/NarroRoleUserListPanel.class.php narro_user_role.php
+msgctxt "return t('Any');\n"
+"return t('Any');"
 msgid "Any"
 msgstr ""
 
-#. '<p>' . t('Translation') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->SuggestionValue) . '</p>' .
 #: includes/narro/NarroSuggestionListPanel.class.php rss.php
+msgctxt "'<p>' . t('Translation') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->SuggestionValue) . '</p>' ."
 msgid "Translation"
 msgstr ""
 
-#. '<p>' . t('Author') . ': ' . sprintf('<a href="%s">%s</a>', $strUserLink, $objNarroSuggestion->User->Username) . '</p>' .
 #: includes/narro/NarroSuggestionListPanel.class.php rss.php
+msgctxt "'<p>' . t('Author') . ': ' . sprintf('<a href=\"%s\">%s</a>', $strUserLink, $objNarroSuggestion->User->Username) . '</p>' ."
 msgid "Author"
 msgstr ""
 
-#. $this->colVote = new QDataGridColumn(t('Votes'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colVote_Render($_ITEM); ?>');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->colVote = new QDataGridColumn(t('Votes'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colVote_Render($_ITEM); ?>');"
 msgid "Votes"
 msgstr ""
 
-#. $this->colActions = new QDataGridColumn(NarroApp::Translate('Actions'), '<?= $_FORM->dtgNarroUserRole_ActionsColumn_Render($_ITEM) ?>');
 #: includes/narro/NarroSuggestionListPanel.class.php narro_language_list.php narro_project_file_list.php narro_project_list.php narro_role_list.php narro_text_list.php narro_user_list.php narro_user_role.php
+msgctxt "$this->colActions = new QDataGridColumn(NarroApp::Translate('Actions'), '<?= $_FORM->dtgNarroUserRole_ActionsColumn_Render($_ITEM) ?>');"
 msgid "Actions"
 msgstr ""
 
-#. $this->btnAddRole->Text = t('Save');
 #: includes/narro/NarroSuggestionListPanel.class.php includes/narro/NarroTextCommentListPanel.class.php narro_context_suggest.php narro_language_edit.php narro_project_edit.php narro_role_list.php narro_user_preferences.php narro_user_role.php
+msgctxt "$this->btnAddRole->Text = t('Save');"
 msgid "Save"
 msgstr ""
 
-#. $this->chkShowOtherLanguages->Text = t('Show suggestions from other languages');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->chkShowOtherLanguages->Text = t('Show suggestions from other languages');"
 msgid "Show suggestions from other languages"
 msgstr ""
 
-#. $this->btnCopyOriginal->Text = t('Copy');
 #: includes/narro/NarroSuggestionListPanel.class.php narro_context_suggest.php
+msgctxt "$this->btnCopyOriginal->Text = t('Copy');"
 msgid "Copy"
 msgstr ""
 
-#. $strText = t('Vote');
 #: includes/narro/NarroSuggestionListPanel.class.php narro_file_text_list.php narro_project_text_list.php
+msgctxt "$strText = t('Vote');"
 msgid "Vote"
 msgstr ""
 
-#. $btnApprove->Text = t('Disapprove');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$btnApprove->Text = t('Disapprove');"
 msgid "Disapprove"
 msgstr ""
 
-#. sprintf(t('added by %s'), $this->dtgSuggestions_colAuthor_Render($this->objNarroContextInfo->ValidSuggestion)),
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "sprintf(t('added by %s'), $this->dtgSuggestions_colAuthor_Render($this->objNarroContextInfo->ValidSuggestion)),"
 msgid "added by %s"
 msgstr ""
 
-#. t('votes'),
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "t('votes'),"
 msgid "votes"
 msgstr ""
 
-#. t('Approved translation') . ':',
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "t('Approved translation') . ':',"
 msgid "Approved translation"
 msgstr ""
 
-#. t('Access key') . ':',
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "t('Access key') . ':',"
 msgid "Access key"
 msgstr ""
 
-#. $this->lblSuggestions->Text = t('Translations for this text:');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->lblSuggestions->Text = t('Translations for this text:');"
 msgid "Translations for this text:"
 msgstr ""
 
-#. $this->lblSuggestions->Text = t('No other suggestions yet.');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->lblSuggestions->Text = t('No other suggestions yet.');"
 msgid "No other suggestions yet."
 msgstr ""
 
-#. $this->lblSuggestions->Text = t('No suggestions yet.');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->lblSuggestions->Text = t('No suggestions yet.');"
 msgid "No suggestions yet."
 msgstr ""
 
-#. $strAuthorInfo = sprintf(t('%s ago'), $strModifiedWhen);
-#. $strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by %s'), NarroLink::UserProfile($this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username) . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$strAuthorInfo = sprintf(t('%s ago'), $strModifiedWhen);\n"
+"$strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by %s'), NarroLink::UserProfile($this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username) . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));"
 msgid "%s ago"
 msgstr ""
 
-#. $strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by %s'), NarroLink::UserProfile($this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username) . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by %s'), NarroLink::UserProfile($this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username) . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));"
 msgid "approved by %s"
 msgstr ""
 
-#. $this->btnSaveIgnore->Text = t('Ignore and save');
 #: includes/narro/NarroSuggestionListPanel.class.php narro_context_suggest.php
+msgctxt "$this->btnSaveIgnore->Text = t('Ignore and save');"
 msgid "Ignore and save"
 msgstr ""
 
-#. $btnEdit->Text = t('Edit');
-#. $btnEdit->Text = t('Edit');
-#. $btnEdit->Text = t('Edit');
 #: includes/narro/NarroSuggestionListPanel.class.php narro_language_edit.php narro_language_list.php narro_project_edit.php narro_project_language_list.php narro_project_list.php narro_project_manage.php narro_project_text_list.php narro_role_list.php narro_user_role.php
+msgctxt "$btnEdit->Text = t('Edit');\n"
+"$btnEdit->Text = t('Edit');\n"
+"$btnEdit->Text = t('Edit');"
 msgid "Edit"
 msgstr ""
 
-#. $btnDelete->Text = t('Delete');
 #: includes/narro/NarroSuggestionListPanel.class.php includes/qcodo/qform/QFileAsset.class.php narro_language_edit.php narro_project_edit.php narro_role_list.php narro_user_role.php
+msgctxt "$btnDelete->Text = t('Delete');"
 msgid "Delete"
 msgstr ""
 
-#. $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this suggestion?')));
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this suggestion?')));"
 msgid "Are you sure you want to delete this suggestion?"
 msgstr ""
 
-#. $btnApprove->Text = t('Approve');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$btnApprove->Text = t('Approve');"
 msgid "Approve"
 msgstr ""
 
-#. $this->lblMessage->Text = t('Suggestion succesfully deleted.');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->lblMessage->Text = t('Suggestion succesfully deleted.');"
 msgid "Suggestion succesfully deleted."
 msgstr ""
 
-#. $this->lblMessage->Text = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->lblMessage->Text = t('Thank you for your vote. You can change it anytime by voting another suggestion.');"
 msgid "Thank you for your vote. You can change it anytime by voting another suggestion."
 msgstr ""
 
-#. $this->lblMessage->Text = t('Your changes were saved succesfully.');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->lblMessage->Text = t('Your changes were saved succesfully.');"
 msgid "Your changes were saved succesfully."
 msgstr ""
 
-#. $this->lblMessage->Text = t('The text you are trying to save already exists.');
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->lblMessage->Text = t('The text you are trying to save already exists.');"
 msgid "The text you are trying to save already exists."
 msgstr ""
 
-#. $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it is approved for the following contexts: %s. <br />You can cancel the approval for all these contexts and try again. Click on the contexts to open them in new tabs or windows.'), join(', ', array_keys($arrTexts)));
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it is approved for the following contexts: %s. <br />You can cancel the approval for all these contexts and try again. Click on the contexts to open them in new tabs or windows.'), join(', ', array_keys($arrTexts)));"
 msgid "You cannot alter this suggestion because it is approved for the following contexts: %s. <br />You can cancel the approval for all these contexts and try again. Click on the contexts to open them in new tabs or windows."
 msgstr ""
 
-#. $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it has %d vote(s).'), $intVoteCount);
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it has %d vote(s).'), $intVoteCount);"
 msgid "You cannot alter this suggestion because it has %d vote(s)."
 msgstr ""
 
-#. $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it has %d comment(s).'), $intVoteCount);
 #: includes/narro/NarroSuggestionListPanel.class.php
+msgctxt "$this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it has %d comment(s).'), $intVoteCount);"
 msgid "You cannot alter this suggestion because it has %d comment(s)."
 msgstr ""
 
-#. throw new Exception(t('NarroText should be set with an instance of NarroText'));
 #: includes/narro/NarroTextCommentListPanel.class.php
+msgctxt "throw new Exception(t('NarroText should be set with an instance of NarroText'));"
 msgid "NarroText should be set with an instance of NarroText"
 msgstr ""
 
-#. return t('No texts');
 #: includes/narro/NarroTranslationProgressBar.class.php
+msgctxt "return t('No texts');"
 msgid "No texts"
 msgstr ""
 
-#. $strText = sprintf(sprintf('<div class="graph" title="%s">', t('%d with suggestions, %d approved, %d untranslated, %d in total')), $this->intFuzzy, $this->intTranslated, $this->intTotal - $this->intFuzzy - $this->intTranslated, $this->intTotal);
 #: includes/narro/NarroTranslationProgressBar.class.php
+msgctxt "$strText = sprintf(sprintf('<div class=\"graph\" title=\"%s\">', t('%d with suggestions, %d approved, %d untranslated, %d in total')), $this->intFuzzy, $this->intTranslated, $this->intTotal - $this->intFuzzy - $this->intTranslated, $this->intTotal);"
 msgid "%d with suggestions, %d approved, %d untranslated, %d in total"
 msgstr ""
 
-#. t('Translated text'),
 #: includes/narro/NarroUserSuggestionsPanel.class.php narro_text_list.php
+msgctxt "t('Translated text'),"
 msgid "Translated text"
 msgstr ""
 
-#. '<p>' . t('Original text') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->Text->TextValue) . '</p>' .
-#. sprintf('<p>' . t('Original text') . ': %s</p>',
 #: includes/narro/NarroUserSuggestionsPanel.class.php narro_context_suggest.php narro_text_list.php rss.php
+msgctxt "'<p>' . t('Original text') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->Text->TextValue) . '</p>' .\n"
+"sprintf('<p>' . t('Original text') . ': %s</p>',"
 msgid "Original text"
 msgstr ""
 
-#. <?php echo NarroLink::ProjectList(t('Projects')) ?> |
 #: includes/narro/NarroUserSuggestionsPanel.class.php templates/NarroHeaderPanel.tpl.php
+msgctxt "<?php echo NarroLink::ProjectList(t('Projects')) ?> |"
 msgid "Projects"
 msgstr ""
 
-#. throw new Exception(t('User should be set with an instance of NarroUser'));
 #: includes/narro/importer/NarroFileImporter.class.php includes/narro/importer/NarroProjectImporter.class.php
+msgctxt "throw new Exception(t('User should be set with an instance of NarroUser'));"
 msgid "User should be set with an instance of NarroUser"
 msgstr ""
 
-#. throw new Exception(t('Project should be set with an instance of NarroProject'));
 #: includes/narro/importer/NarroFileImporter.class.php includes/narro/importer/NarroProjectImporter.class.php
+msgctxt "throw new Exception(t('Project should be set with an instance of NarroProject'));"
 msgid "Project should be set with an instance of NarroProject"
 msgstr ""
 
-#. throw new Exception(t('File should be set with an instance of NarroFile'));
 #: includes/narro/importer/NarroFileImporter.class.php
+msgctxt "throw new Exception(t('File should be set with an instance of NarroFile'));"
 msgid "File should be set with an instance of NarroFile"
 msgstr ""
 
-#. throw new Exception(t('TargetLanguage should be set with an instance of NarroLanguage'));
 #: includes/narro/importer/NarroFileImporter.class.php includes/narro/importer/NarroProjectImporter.class.php
+msgctxt "throw new Exception(t('TargetLanguage should be set with an instance of NarroLanguage'));"
 msgid "TargetLanguage should be set with an instance of NarroLanguage"
 msgstr ""
 
-#. throw new Exception(t('SourceLanguage should be set with an instance of NarroLanguage'));
 #: includes/narro/importer/NarroFileImporter.class.php includes/narro/importer/NarroProjectImporter.class.php
+msgctxt "throw new Exception(t('SourceLanguage should be set with an instance of NarroLanguage'));"
 msgid "SourceLanguage should be set with an instance of NarroLanguage"
 msgstr ""
 
-#. throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-#. throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-#. throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-#. throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-#. throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-#. throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
 #: includes/narro/importer/NarroProjectImporter.class.php narro_project_edit.php narro_project_manage.php
+msgctxt "throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));\n"
+"throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));\n"
+"throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));\n"
+"throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));\n"
+"throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));\n"
+"throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));"
 msgid "Error while executing sql query in file %s, line %d: %s"
 msgstr ""
 
-#. NarroLog::LogMessage(3, sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
 #: includes/narro/importer/NarroProjectImporter.class.php
+msgctxt "NarroLog::LogMessage(3, sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));"
 msgid "Starting export for the project %s using as template %s"
 msgstr ""
 
-#. throw new Exception(sprintf(t('TranslationPath "%s" does not exist.'), $mixValue));
-#. throw new Exception(sprintf(t('TranslationPath "%s" does not exist.'), $mixValue));
 #: includes/narro/importer/NarroProjectImporter.class.php
+msgctxt "throw new Exception(sprintf(t('TranslationPath \"%s\" does not exist.'), $mixValue));\n"
+"throw new Exception(sprintf(t('TranslationPath \"%s\" does not exist.'), $mixValue));"
 msgid "TranslationPath \"%s\" does not exist."
 msgstr ""
 
-#. $this->strName = t('Narro cache');
 #: includes/narro/plugins/NarroCache.class.php
+msgctxt "$this->strName = t('Narro cache');"
 msgid "Narro cache"
 msgstr ""
 
-#. $this->strName = t('Cedill/Comma issue solver');
 #: includes/narro/plugins/NarroCedillaComma.class.php
+msgctxt "$this->strName = t('Cedill/Comma issue solver');"
 msgid "Cedill/Comma issue solver"
 msgstr ""
 
-#. Preference name
-#. NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
 #: includes/narro/plugins/NarroCedillaComma.class.php
+msgctxt "Preference name\n"
+"NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));"
 msgid "Cedilla or comma"
 msgstr ""
 
-#. Preference description
-#. NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
 #: includes/narro/plugins/NarroCedillaComma.class.php
+msgctxt "Preference description\n"
+"NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));"
 msgid "Select whether you want to see s and t with comma or cedilla undernieth"
 msgstr ""
 
-#. $this->strName = t('Entity check');
 #: includes/narro/plugins/NarroEntityCheck.class.php
+msgctxt "$this->strName = t('Entity check');"
 msgid "Entity check"
 msgstr ""
 
-#. t(
-#.                                 'You translated or forgot some variables that should have been left as they were: <span style="color:red;font-size:large">%s</span>'),
 #: includes/narro/plugins/NarroEntityCheck.class.php
+msgctxt "t(\n                                'You translated or forgot some variables that should have been left as they were: <span style=\"color:red;font-size:large\">%s</span>'),"
 msgid "You translated or forgot some variables that should have been left as they were: <span style=\"color:red;font-size:large\">%s</span>"
 msgstr ""
 
-#. $this->strName = t('Punctuation check');
 #: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgctxt "$this->strName = t('Punctuation check');"
 msgid "Punctuation check"
 msgstr ""
 
-#. t('<span style="color:red">Did you forget the ending "<span style="color:red;font-size:large">%s</span>"?</span>'),
 #: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgctxt "t('<span style=\"color:red\">Did you forget the ending \"<span style=\"color:red;font-size:large\">%s</span>\"?</span>'),"
 msgid "<span style=\"color:red\">Did you forget the ending \"<span style=\"color:red;font-size:large\">%s</span>\"?</span>"
 msgstr ""
 
-#. t('The original text ends with %d space character(s), please correct your suggestion.'
-#.                             ),
 #: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgctxt "t('The original text ends with %d space character(s), please correct your suggestion.'\n                            ),"
 msgid "The original text ends with %d space character(s), please correct your suggestion."
 msgstr ""
 
-#. t('The original text does not end with "<span style="color:red;font-size:large">%s</span>".'
-#.                             ),
 #: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgctxt "t('The original text does not end with \"<span style=\"color:red;font-size:large\">%s</span>\".'\n                            ),"
 msgid "The original text does not end with \"<span style=\"color:red;font-size:large\">%s</span>\"."
 msgstr ""
 
-#. t(
-#.                                 'The original text ends with "<span style="color:green;font-size:large">%s</span>", but your suggestion ends in "<span style="color:red;font-size:large">%s</span>".'
-#.                             ),
 #: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgctxt "t(\n                                'The original text ends with \"<span style=\"color:green;font-size:large\">%s</span>\", but your suggestion ends in \"<span style=\"color:red;font-size:large\">%s</span>\".'\n                            ),"
 msgid "The original text ends with \"<span style=\"color:green;font-size:large\">%s</span>\", but your suggestion ends in \"<span style=\"color:red;font-size:large\">%s</span>\"."
 msgstr ""
 
-#. t(
-#.                                 'The original text has %d leading spaces and %d trailing spaces, your suggestion has %d leading spaces and %d trailing spaces.'
-#.                             ),
 #: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgctxt "t(\n                                'The original text has %d leading spaces and %d trailing spaces, your suggestion has %d leading spaces and %d trailing spaces.'\n                            ),"
 msgid "The original text has %d leading spaces and %d trailing spaces, your suggestion has %d leading spaces and %d trailing spaces."
 msgstr ""
 
-#. t(
-#.                                 'The original text has %d leading spaces, your suggestion has %d.'
-#.                             ),
 #: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgctxt "t(\n                                'The original text has %d leading spaces, your suggestion has %d.'\n                            ),"
 msgid "The original text has %d leading spaces, your suggestion has %d."
 msgstr ""
 
-#. t(
-#.                                 'The original text has %d trailing spaces, your suggestion has %d.'
-#.                             ),
 #: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgctxt "t(\n                                'The original text has %d trailing spaces, your suggestion has %d.'\n                            ),"
 msgid "The original text has %d trailing spaces, your suggestion has %d."
 msgstr ""
 
-#. $this->strName = t('Spell check');
 #: includes/narro/plugins/NarroSpellCheck.class.php
+msgctxt "$this->strName = t('Spell check');"
 msgid "Spell check"
 msgstr ""
 
-#. t('<span class="mispelled_word">%s</span> seems to be mispelled. Maybe you meant %s.'),
 #: includes/narro/plugins/NarroSpellCheck.class.php
+msgctxt "t('<span class=\"mispelled_word\">%s</span> seems to be mispelled. Maybe you meant %s.'),"
 msgid "<span class=\"mispelled_word\">%s</span> seems to be mispelled. Maybe you meant %s."
 msgstr ""
 
-#. t('<span class="mispelled_word">%s</span> seems to be mispelled.'),
 #: includes/narro/plugins/NarroSpellCheck.class.php
+msgctxt "t('<span class=\"mispelled_word\">%s</span> seems to be mispelled.'),"
 msgid "<span class=\"mispelled_word\">%s</span> seems to be mispelled."
 msgstr ""
 
-#. Preference name
-#. NarroApp::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don&&&escapedsimplequote&&&t need it', 'Yes, please'));
 #: includes/narro/plugins/NarroSpellCheck.class.php
+msgctxt "Preference name\n"
+"NarroApp::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don&&&escapedsimplequote&&&t need it', 'Yes, please'));"
 msgid "Spellchecking"
 msgstr ""
 
-#. Preference description
-#. NarroApp::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don&&&escapedsimplequote&&&t need it', 'Yes, please'));
 #: includes/narro/plugins/NarroSpellCheck.class.php
+msgctxt "Preference description\n"
+"NarroApp::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don&&&escapedsimplequote&&&t need it', 'Yes, please'));"
 msgid "Spellcheck support if possible, or just disable it"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Years'] != 1) ? QApplication::Translate('about %s years') :  QApplication::Translate('a year');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Years'] != 1) ? QApplication::Translate('about %s years') :  QApplication::Translate('a year');"
 msgid "about %s years"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Years'] != 1) ? QApplication::Translate('about %s years') :  QApplication::Translate('a year');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Years'] != 1) ? QApplication::Translate('about %s years') :  QApplication::Translate('a year');"
 msgid "a year"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Months'] != 1) ? QApplication::Translate('about %s months') : QApplication::Translate('a month');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Months'] != 1) ? QApplication::Translate('about %s months') : QApplication::Translate('a month');"
 msgid "about %s months"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Months'] != 1) ? QApplication::Translate('about %s months') : QApplication::Translate('a month');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Months'] != 1) ? QApplication::Translate('about %s months') : QApplication::Translate('a month');"
 msgid "a month"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Days'] != 1) ? QApplication::Translate('about %s days') : QApplication::Translate('a day');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Days'] != 1) ? QApplication::Translate('about %s days') : QApplication::Translate('a day');"
 msgid "about %s days"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Days'] != 1) ? QApplication::Translate('about %s days') : QApplication::Translate('a day');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Days'] != 1) ? QApplication::Translate('about %s days') : QApplication::Translate('a day');"
 msgid "a day"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Hours'] != 1) ? QApplication::Translate('about %s hours') : QApplication::Translate('an hour');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Hours'] != 1) ? QApplication::Translate('about %s hours') : QApplication::Translate('an hour');"
 msgid "about %s hours"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Hours'] != 1) ? QApplication::Translate('about %s hours') : QApplication::Translate('an hour');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Hours'] != 1) ? QApplication::Translate('about %s hours') : QApplication::Translate('an hour');"
 msgid "an hour"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Minutes'] != 1) ? QApplication::Translate('%s minutes') : QApplication::Translate('a minute');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Minutes'] != 1) ? QApplication::Translate('%s minutes') : QApplication::Translate('a minute');"
 msgid "%s minutes"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Minutes'] != 1) ? QApplication::Translate('%s minutes') : QApplication::Translate('a minute');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Minutes'] != 1) ? QApplication::Translate('%s minutes') : QApplication::Translate('a minute');"
 msgid "a minute"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Seconds'] != 1) ? QApplication::Translate('%s seconds') : QApplication::Translate('a second');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Seconds'] != 1) ? QApplication::Translate('%s seconds') : QApplication::Translate('a second');"
 msgid "%s seconds"
 msgstr ""
 
-#. $strFormat = ($arrTimearray['Seconds'] != 1) ? QApplication::Translate('%s seconds') : QApplication::Translate('a second');
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
+msgctxt "$strFormat = ($arrTimearray['Seconds'] != 1) ? QApplication::Translate('%s seconds') : QApplication::Translate('a second');"
 msgid "a second"
 msgstr ""
 
-#. QApplication::Translate('Reset'));
 #: includes/qcodo/_core/qform/QCalendar.class.php includes/qcodo/qform/QListBox.class.php
+msgctxt "QApplication::Translate('Reset'));"
 msgid "Reset"
 msgstr ""
 
-#. $this->strLabelForRequired = QApplication::Translate('%s is required');
 #: includes/qcodo/_core/qform/QCalendar.class.php includes/qcodo/_core/qform/QListBoxBase.class.php includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgctxt "$this->strLabelForRequired = QApplication::Translate('%s is required');"
 msgid "%s is required"
 msgstr ""
 
-#. $this->strLabelForNoneFound = QApplication::Translate('<b>Results:</b> No %s found.');
 #: includes/qcodo/_core/qform/QDataGridBase.class.php
+msgctxt "$this->strLabelForNoneFound = QApplication::Translate('<b>Results:</b> No %s found.');"
 msgid "<b>Results:</b> No %s found."
 msgstr ""
 
-#. $this->strLabelForOneFound = QApplication::Translate('<b>Results:</b> 1 %s found.');
 #: includes/qcodo/_core/qform/QDataGridBase.class.php
+msgctxt "$this->strLabelForOneFound = QApplication::Translate('<b>Results:</b> 1 %s found.');"
 msgid "<b>Results:</b> 1 %s found."
 msgstr ""
 
-#. $this->strLabelForMultipleFound = QApplication::Translate('<b>Results:</b> %s %s found.');
 #: includes/qcodo/_core/qform/QDataGridBase.class.php
+msgctxt "$this->strLabelForMultipleFound = QApplication::Translate('<b>Results:</b> %s %s found.');"
 msgid "<b>Results:</b> %s %s found."
 msgstr ""
 
-#. $this->strLabelForPaginated = QApplication::Translate('<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s.');
 #: includes/qcodo/_core/qform/QDataGridBase.class.php
+msgctxt "$this->strLabelForPaginated = QApplication::Translate('<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s.');"
 msgid "<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s."
 msgstr ""
 
-#. $this->strValidationError = $this->strName . QApplication::Translate(' is required');
 #: includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgctxt "$this->strValidationError = $this->strName . QApplication::Translate(' is required');"
 msgid " is required"
 msgstr ""
 
-#. $this->strLabelForRequiredUnnamed = QApplication::Translate('Required');
 #: includes/qcodo/_core/qform/QFileAssetBase.class.php includes/qcodo/_core/qform/QListBoxBase.class.php includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgctxt "$this->strLabelForRequiredUnnamed = QApplication::Translate('Required');"
 msgid "Required"
 msgstr ""
 
-#. $this->strUnacceptableMessage = QApplication::Translate('Must be a JPG, PNG or GIF');
 #: includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgctxt "$this->strUnacceptableMessage = QApplication::Translate('Must be a JPG, PNG or GIF');"
 msgid "Must be a JPG, PNG or GIF"
 msgstr ""
 
-#. $this->strUnacceptableMessage = QApplication::Translate('Must be a PDF');
 #: includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgctxt "$this->strUnacceptableMessage = QApplication::Translate('Must be a PDF');"
 msgid "Must be a PDF"
 msgstr ""
 
-#. $this->strUnacceptableMessage = QApplication::Translate('Must be a valid document (Image, PDF, etc.)');
 #: includes/qcodo/_core/qform/QFileAssetBase.class.php
+msgctxt "$this->strUnacceptableMessage = QApplication::Translate('Must be a valid document (Image, PDF, etc.)');"
 msgid "Must be a valid document (Image, PDF, etc.)"
 msgstr ""
 
-#. $this->strLabelForInvalid = QApplication::Translate('Invalid Float');
 #: includes/qcodo/_core/qform/QFloatTextBox.class.php
+msgctxt "$this->strLabelForInvalid = QApplication::Translate('Invalid Float');"
 msgid "Invalid Float"
 msgstr ""
 
-#. $this->strLabelForLess = QApplication::Translate('Value must be less than %s');
 #: includes/qcodo/_core/qform/QFloatTextBox.class.php includes/qcodo/_core/qform/QIntegerTextBox.class.php
+msgctxt "$this->strLabelForLess = QApplication::Translate('Value must be less than %s');"
 msgid "Value must be less than %s"
 msgstr ""
 
-#. $this->strLabelForGreater = QApplication::Translate('Value must be greater than %s');
 #: includes/qcodo/_core/qform/QFloatTextBox.class.php includes/qcodo/_core/qform/QIntegerTextBox.class.php
+msgctxt "$this->strLabelForGreater = QApplication::Translate('Value must be greater than %s');"
 msgid "Value must be greater than %s"
 msgstr ""
 
-#. $this->strLabelForInvalid = QApplication::Translate('Invalid Integer');
 #: includes/qcodo/_core/qform/QIntegerTextBox.class.php
+msgctxt "$this->strLabelForInvalid = QApplication::Translate('Invalid Integer');"
 msgid "Invalid Integer"
 msgstr ""
 
-#. $this->strNoun = QApplication::Translate('item');
 #: includes/qcodo/_core/qform/QPaginatedControl.class.php
+msgctxt "$this->strNoun = QApplication::Translate('item');"
 msgid "item"
 msgstr ""
 
-#. $this->strNounPlural = QApplication::Translate('items');
 #: includes/qcodo/_core/qform/QPaginatedControl.class.php
+msgctxt "$this->strNounPlural = QApplication::Translate('items');"
 msgid "items"
 msgstr ""
 
-#. $this->strLabelForTooShort = QApplication::Translate('%s must have at least %s characters');
 #: includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgctxt "$this->strLabelForTooShort = QApplication::Translate('%s must have at least %s characters');"
 msgid "%s must have at least %s characters"
 msgstr ""
 
-#. $this->strLabelForTooShortUnnamed = QApplication::Translate('Must have at least %s characters');
 #: includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgctxt "$this->strLabelForTooShortUnnamed = QApplication::Translate('Must have at least %s characters');"
 msgid "Must have at least %s characters"
 msgstr ""
 
-#. $this->strLabelForTooLong = QApplication::Translate('%s must have at most %s characters');
 #: includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgctxt "$this->strLabelForTooLong = QApplication::Translate('%s must have at most %s characters');"
 msgid "%s must have at most %s characters"
 msgstr ""
 
-#. $this->strLabelForTooLongUnnamed = QApplication::Translate('Must have at most %s characters');
 #: includes/qcodo/_core/qform/QTextBoxBase.class.php
+msgctxt "$this->strLabelForTooLongUnnamed = QApplication::Translate('Must have at most %s characters');"
 msgid "Must have at most %s characters"
 msgstr ""
 
-#. $this->strInstructions = QApplication::Translate('Tags &lt;b&gt; &lt;u&gt; &lt;i&gt; &lt;br&gt; &lt;code&gt; and &lt;http://...&gt; are allowed.  Use ** at the beginning of any line for a bulleted list.');
 #: includes/qcodo/_core/qform/QWriteBox.class.php
+msgctxt "$this->strInstructions = QApplication::Translate('Tags &lt;b&gt; &lt;u&gt; &lt;i&gt; &lt;br&gt; &lt;code&gt; and &lt;http://...&gt; are allowed.  Use ** at the beginning of any line for a bulleted list.');"
 msgid "Tags &lt;b&gt; &lt;u&gt; &lt;i&gt; &lt;br&gt; &lt;code&gt; and &lt;http://...&gt; are allowed.  Use ** at the beginning of any line for a bulleted list."
 msgstr ""
 
-#. $this->UploadText = QApplication::Translate('Upload');
-#. $this->btnUpload->Text = '<img src="' . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/add.png" alt="' . QApplication::Translate('Upload') . '" border="0"/> ' . QApplication::Translate('Upload');
 #: includes/qcodo/qform/QFileAsset.class.php
+msgctxt "$this->UploadText = QApplication::Translate('Upload');\n"
+"$this->btnUpload->Text = '<img src=\"' . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/add.png\" alt=\"' . QApplication::Translate('Upload') . '\" border=\"0\"/> ' . QApplication::Translate('Upload');"
 msgid "Upload"
 msgstr ""
 
-#. $this->btnCancel->Text = t('Cancel');
 #: includes/qcodo/qform/QFileAsset.class.php narro_language_edit.php narro_project_edit.php narro_user_preferences.php
+msgctxt "$this->btnCancel->Text = t('Cancel');"
 msgid "Cancel"
 msgstr ""
 
-#. $this->btnPrevious->Text = t('Previous');
 #: includes/qcodo/qform/QPaginator.class.php narro_context_suggest.php
+msgctxt "$this->btnPrevious->Text = t('Previous');"
 msgid "Previous"
 msgstr ""
 
-#. $this->btnNext->Text = t('Next');
 #: includes/qcodo/qform/QPaginator.class.php narro_context_suggest.php
+msgctxt "$this->btnNext->Text = t('Next');"
 msgid "Next"
 msgstr ""
 
-#. $strPageTitle = t('Change password');
-#. <h3><?php echo t('Change password') ?></h3>
 #: narro_change_password.php templates/narro_change_password.tpl.php
+msgctxt "$strPageTitle = t('Change password');\n"
+"<h3><?php echo t('Change password') ?></h3>"
 msgid "Change password"
 msgstr ""
 
-#. $this->lblMessage->Text = t('Failed to change the password.');
 #: narro_change_password.php
+msgctxt "$this->lblMessage->Text = t('Failed to change the password.');"
 msgid "Failed to change the password."
 msgstr ""
 
-#. $this->lblMessage->Text = t('Password changed succesfully.');
 #: narro_change_password.php
+msgctxt "$this->lblMessage->Text = t('Password changed succesfully.');"
 msgid "Password changed succesfully."
 msgstr ""
 
-#. $this->pnlSuggestionList->ToolTip = t('Other suggestions so far');
 #: narro_context_suggest.php
+msgctxt "$this->pnlSuggestionList->ToolTip = t('Other suggestions so far');"
 msgid "Other suggestions so far"
 msgstr ""
 
-#. $this->pnlContext->ToolTip = t('Details about the place where the text is used');
 #: narro_context_suggest.php
+msgctxt "$this->pnlContext->ToolTip = t('Details about the place where the text is used');"
 msgid "Details about the place where the text is used"
 msgstr ""
 
-#. $this->btnComments->Text = t('Hide debate');
-#. $this->btnComments->Text = t('Hide debate');
-#. $this->btnComments->Text = t('Hide debate');
 #: narro_context_suggest.php
+msgctxt "$this->btnComments->Text = t('Hide debate');\n"
+"$this->btnComments->Text = t('Hide debate');\n"
+"$this->btnComments->Text = t('Hide debate');"
 msgid "Hide debate"
 msgstr ""
 
-#. $this->btnComments->Text = t('Show debate');
-#. $this->btnComments->Text = t('Show debate');
 #: narro_context_suggest.php
+msgctxt "$this->btnComments->Text = t('Show debate');\n"
+"$this->btnComments->Text = t('Show debate');"
 msgid "Show debate"
 msgstr ""
 
-#. $this->btnComments->Text = t('Start a debate');
-#. $this->btnComments->Text = t('Start a debate');
-#. $this->btnComments->Text = t('Start a debate');
 #: narro_context_suggest.php
+msgctxt "$this->btnComments->Text = t('Start a debate');\n"
+"$this->btnComments->Text = t('Start a debate');\n"
+"$this->btnComments->Text = t('Start a debate');"
 msgid "Start a debate"
 msgstr ""
 
-#. $strPageTitle = sprintf((NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))?t('Translate "%s"'):t('See suggestions for "%s"'),
 #: narro_context_suggest.php templates/narro_context_suggest.tpl.php
+msgctxt "$strPageTitle = sprintf((NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))?t('Translate \"%s\"'):t('See suggestions for \"%s\"'),"
 msgid "Translate \"%s\""
 msgstr ""
 
-#. $strPageTitle = sprintf((NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))?t('Translate "%s"'):t('See suggestions for "%s"'),
 #: narro_context_suggest.php templates/narro_context_suggest.tpl.php
+msgctxt "$strPageTitle = sprintf((NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))?t('Translate \"%s\"'):t('See suggestions for \"%s\"'),"
 msgid "See suggestions for \"%s\""
 msgstr ""
 
-#. NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
 #: narro_context_suggest.php narro_file_text_list.php narro_project_edit.php narro_project_file_list.php narro_project_language_list.php narro_project_list.php narro_project_manage.php narro_project_text_list.php
+msgctxt "NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))"
 msgid "Files"
 msgstr ""
 
-#. $this->lstTextFilter->AddItem(t('Untranslated texts'), self::SHOW_UNTRANSLATED_TEXTS);
 #: narro_context_suggest.php narro_project_translate_text_list.php narro_text_list.php
+msgctxt "$this->lstTextFilter->AddItem(t('Untranslated texts'), self::SHOW_UNTRANSLATED_TEXTS);"
 msgid "Untranslated texts"
 msgstr ""
 
-#. $this->lstTextFilter->AddItem(t('Approved texts'), self::SHOW_APPROVED_TEXTS);
 #: narro_context_suggest.php narro_project_translate_text_list.php narro_text_list.php
+msgctxt "$this->lstTextFilter->AddItem(t('Approved texts'), self::SHOW_APPROVED_TEXTS);"
 msgid "Approved texts"
 msgstr ""
 
-#. $this->lstTextFilter->AddItem(t('Texts that require approval'), self::SHOW_TEXTS_THAT_REQUIRE_APPROVAL);
 #: narro_context_suggest.php narro_project_translate_text_list.php narro_text_list.php
+msgctxt "$this->lstTextFilter->AddItem(t('Texts that require approval'), self::SHOW_TEXTS_THAT_REQUIRE_APPROVAL);"
 msgid "Texts that require approval"
 msgstr ""
 
-#. $this->pnlBreadcrumb->addElement(sprintf(t('Search in original texts for "%s"'), $this->strSearchText));
 #: narro_context_suggest.php
+msgctxt "$this->pnlBreadcrumb->addElement(sprintf(t('Search in original texts for \"%s\"'), $this->strSearchText));"
 msgid "Search in original texts for \"%s\""
 msgstr ""
 
-#. $this->pnlBreadcrumb->addElement(sprintf(t('Search in suggestions for "%s"'), $this->strSearchText));
 #: narro_context_suggest.php
+msgctxt "$this->pnlBreadcrumb->addElement(sprintf(t('Search in suggestions for \"%s\"'), $this->strSearchText));"
 msgid "Search in suggestions for \"%s\""
 msgstr ""
 
-#. $this->pnlBreadcrumb->addElement(sprintf(t('Search in contexts for "%s"'), $this->strSearchText));
 #: narro_context_suggest.php
+msgctxt "$this->pnlBreadcrumb->addElement(sprintf(t('Search in contexts for \"%s\"'), $this->strSearchText));"
 msgid "Search in contexts for \"%s\""
 msgstr ""
 
-#. sprintf(t('You are now translating a batch of %d texts. The bar below shows your progress through this batch'), $this->intContextsCount),
 #: narro_context_suggest.php
+msgctxt "sprintf(t('You are now translating a batch of %d texts. The bar below shows your progress through this batch'), $this->intContextsCount),"
 msgid "You are now translating a batch of %d texts. The bar below shows your progress through this batch"
 msgstr ""
 
-#. $this->chkGoToNext->Text = t('After approving, proceed to the next text');
 #: narro_context_suggest.php
+msgctxt "$this->chkGoToNext->Text = t('After approving, proceed to the next text');"
 msgid "After approving, proceed to the next text"
 msgstr ""
 
-#. $this->txtSuggestionComment->Name = t('Suggestion comment (optional):');
 #: narro_context_suggest.php
+msgctxt "$this->txtSuggestionComment->Name = t('Suggestion comment (optional):');"
 msgid "Suggestion comment (optional):"
 msgstr ""
 
-#. $this->chkApprove->Text = t('Approve after saving');
 #: narro_context_suggest.php
+msgctxt "$this->chkApprove->Text = t('Approve after saving');"
 msgid "Approve after saving"
 msgstr ""
 
-#. $this->btnNext100->Text = t('100 forward');
 #: narro_context_suggest.php
+msgctxt "$this->btnNext100->Text = t('100 forward');"
 msgid "100 forward"
 msgstr ""
 
-#. $this->btnPrevious100->Text = t('100 back');
 #: narro_context_suggest.php
+msgctxt "$this->btnPrevious100->Text = t('100 back');"
 msgid "100 back"
 msgstr ""
 
-#. $strText = t('Suggest / Vote');
 #: narro_file_text_list.php
+msgctxt "$strText = t('Suggest / Vote');"
 msgid "Suggest / Vote"
 msgstr ""
 
-#. $strText = t('Suggest');
 #: narro_file_text_list.php narro_project_text_list.php
+msgctxt "$strText = t('Suggest');"
 msgid "Suggest"
 msgstr ""
 
-#. $strText = t('Details');
 #: narro_file_text_list.php narro_project_text_list.php
+msgctxt "$strText = t('Details');"
 msgid "Details"
 msgstr ""
 
-#. $this->strTitleVerb = NarroApp::Translate('Create');
 #: narro_language_edit.php narro_project_edit.php
+msgctxt "$this->strTitleVerb = NarroApp::Translate('Create');"
 msgid "Create"
 msgstr ""
 
-#. $this->lblLanguageId->Name = NarroApp::Translate('Language Id');
 #: narro_language_edit.php
+msgctxt "$this->lblLanguageId->Name = NarroApp::Translate('Language Id');"
 msgid "Language Id"
 msgstr ""
 
-#. $this->colLanguageName = new QDataGridColumn(t('Language Name'), '<?= $_FORM->dtgNarroLanguage_LanguageNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName, false)));
 #: narro_language_edit.php narro_language_list.php
+msgctxt "$this->colLanguageName = new QDataGridColumn(t('Language Name'), '<?= $_FORM->dtgNarroLanguage_LanguageNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName, false)));"
 msgid "Language Name"
 msgstr ""
 
-#. $this->colLanguageCode = new QDataGridColumn(t('Language Code'), '<?= $_FORM->dtgNarroLanguage_LanguageCodeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageCode), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageCode, false)));
 #: narro_language_edit.php narro_language_list.php
+msgctxt "$this->colLanguageCode = new QDataGridColumn(t('Language Code'), '<?= $_FORM->dtgNarroLanguage_LanguageCodeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageCode), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageCode, false)));"
 msgid "Language Code"
 msgstr ""
 
-#. $this->colCountryCode = new QDataGridColumn(t('Country Code'), '<?= $_FORM->dtgNarroLanguage_CountryCodeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->CountryCode), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->CountryCode, false)));
 #: narro_language_edit.php narro_language_list.php
+msgctxt "$this->colCountryCode = new QDataGridColumn(t('Country Code'), '<?= $_FORM->dtgNarroLanguage_CountryCodeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->CountryCode), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->CountryCode, false)));"
 msgid "Country Code"
 msgstr ""
 
-#. <label for="<?php echo $this->txtEncoding->ControlId ?>"><?php _t('Encoding') ?></label>
 #: narro_language_edit.php narro_language_list.php templates/narro_language_edit.tpl.php
+msgctxt "<label for=\"<?php echo $this->txtEncoding->ControlId ?>\"><?php _t('Encoding') ?></label>"
 msgid "Encoding"
 msgstr ""
 
-#. $this->colTextDirection = new QDataGridColumn(t('Text Direction'), '<?= $_FORM->dtgNarroLanguage_TextDirectionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->TextDirection), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->TextDirection, false)));
 #: narro_language_edit.php narro_language_list.php
+msgctxt "$this->colTextDirection = new QDataGridColumn(t('Text Direction'), '<?= $_FORM->dtgNarroLanguage_TextDirectionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->TextDirection), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->TextDirection, false)));"
 msgid "Text Direction"
 msgstr ""
 
-#. $this->lstTextDirection->AddItem(t('Left to right'), 'ltr');
 #: narro_language_edit.php
+msgctxt "$this->lstTextDirection->AddItem(t('Left to right'), 'ltr');"
 msgid "Left to right"
 msgstr ""
 
-#. $this->lstTextDirection->AddItem(t('Right to left'), 'rtl');
 #: narro_language_edit.php
+msgctxt "$this->lstTextDirection->AddItem(t('Right to left'), 'rtl');"
 msgid "Right to left"
 msgstr ""
 
-#. $this->colSpecialCharacters = new QDataGridColumn(t('Special Characters'), '<?= $_FORM->dtgNarroLanguage_SpecialCharactersColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));
 #: narro_language_edit.php narro_language_list.php
+msgctxt "$this->colSpecialCharacters = new QDataGridColumn(t('Special Characters'), '<?= $_FORM->dtgNarroLanguage_SpecialCharactersColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));"
 msgid "Special Characters"
 msgstr ""
 
-#. <label for="<?php echo $this->txtPluralForm->ControlId ?>"><?php _t('Plural formula') ?></label>
 #: narro_language_edit.php templates/narro_language_edit.tpl.php
+msgctxt "<label for=\"<?php echo $this->txtPluralForm->ControlId ?>\"><?php _t('Plural formula') ?></label>"
 msgid "Plural formula"
 msgstr ""
 
-#. <label for="<?php echo $this->chkActive->ControlId ?>"><?php _t('Active') ?></label>
 #: narro_language_edit.php narro_language_list.php narro_project_edit.php narro_project_list.php templates/narro_language_edit.tpl.php templates/narro_project_edit.tpl.php
+msgctxt "<label for=\"<?php echo $this->chkActive->ControlId ?>\"><?php _t('Active') ?></label>"
 msgid "Active"
 msgstr ""
 
-#. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(NarroApp::Translate('Are you SURE you want to DELETE this %s?'), 'NarroLanguage')));
 #: narro_language_edit.php
+msgctxt "$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(NarroApp::Translate('Are you SURE you want to DELETE this %s?'), 'NarroLanguage')));"
 msgid "Are you SURE you want to DELETE this %s?"
 msgstr ""
 
-#. $this->colPluralForm = new QDataGridColumn(t('Plural Forms'), '<?= $_FORM->dtgNarroLanguage_PluralFormColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));
 #: narro_language_list.php
+msgctxt "$this->colPluralForm = new QDataGridColumn(t('Plural Forms'), '<?= $_FORM->dtgNarroLanguage_PluralFormColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));"
 msgid "Plural Forms"
 msgstr ""
 
-#. return t('Yes');
 #: narro_language_list.php narro_project_list.php
+msgctxt "return t('Yes');"
 msgid "Yes"
 msgstr ""
 
-#. return t('No');
 #: narro_language_list.php narro_project_list.php
+msgctxt "return t('No');"
 msgid "No"
 msgstr ""
 
-#. $strPageTitle = t('Login');
-#. <h3><?php echo t('Login') ?></h3>
 #: narro_login.php templates/NarroHeaderPanel.tpl.php templates/narro_login.tpl.php
+msgctxt "$strPageTitle = t('Login');\n"
+"<h3><?php echo t('Login') ?></h3>"
 msgid "Login"
 msgstr ""
 
-#. $this->btnRecoverPassword->Text = t('Lost password or username');
 #: narro_login.php
+msgctxt "$this->btnRecoverPassword->Text = t('Lost password or username');"
 msgid "Lost password or username"
 msgstr ""
 
-#. $this->lblMessage->Text = t('Failed to create an associated user for this OpenId') . $objEx->getMessage() . var_export($auth->getIdentity(), true);
 #: narro_login.php
+msgctxt "$this->lblMessage->Text = t('Failed to create an associated user for this OpenId') . $objEx->getMessage() . var_export($auth->getIdentity(), true);"
 msgid "Failed to create an associated user for this OpenId"
 msgstr ""
 
-#. $this->lblMessage->Text = t('Bad username or password');
 #: narro_login.php
+msgctxt "$this->lblMessage->Text = t('Bad username or password');"
 msgid "Bad username or password"
 msgstr ""
 
-#. $strPageTitle = sprintf('%s :: ' . t('Manage'), $this->objNarroProject->ProjectName);
 #: narro_project_edit.php narro_project_language_list.php narro_project_list.php narro_project_manage.php narro_project_text_list.php templates/narro_project_manage.tpl.php
+msgctxt "$strPageTitle = sprintf('%s :: ' . t('Manage'), $this->objNarroProject->ProjectName);"
 msgid "Manage"
 msgstr ""
 
-#. <a href="narro_language_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>" title="<?php echo t('Languages') ?>"><?php echo t('Languages') ?></a> |
 #: narro_project_edit.php narro_project_language_list.php narro_project_list.php narro_project_manage.php narro_project_text_list.php templates/NarroHeaderPanel.tpl.php
+msgctxt "<a href=\"narro_language_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>\" title=\"<?php echo t('Languages') ?>\"><?php echo t('Languages') ?></a> |"
 msgid "Languages"
 msgstr ""
 
-#. $this->lblProjectId->Name = NarroApp::Translate('Project Id');
 #: narro_project_edit.php
+msgctxt "$this->lblProjectId->Name = NarroApp::Translate('Project Id');"
 msgid "Project Id"
 msgstr ""
 
-#. <label for="<?php echo $this->txtProjectName->ControlId ?>"><?php _t('Project Name') ?> : </label>
 #: narro_project_edit.php templates/narro_project_edit.tpl.php
+msgctxt "<label for=\"<?php echo $this->txtProjectName->ControlId ?>\"><?php _t('Project Name') ?> : </label>"
 msgid "Project Name"
 msgstr ""
 
-#. $this->lstProjectTypeObject->Name = NarroApp::Translate('Project Type Object');
 #: narro_project_edit.php
+msgctxt "$this->lstProjectTypeObject->Name = NarroApp::Translate('Project Type Object');"
 msgid "Project Type Object"
 msgstr ""
 
-#.
 #: narro_project_edit.php
+msgctxt ""
 msgid "Are you SURE you want to DELETE the project \"%s\"?\nThis operation might take a while and will delete:\n - user permissions related to this project\n - project contexts and associated comments\n - votes for contexts belonging to this project\n - project's files.\nTexts and suggestions are not deleted."
 msgstr ""
 
-#. $this->colFileName = new QDataGridColumn(t('File name'), '<?= $_FORM->dtgNarroFile_FileNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName, false)));
 #: narro_project_file_list.php
+msgctxt "$this->colFileName = new QDataGridColumn(t('File name'), '<?= $_FORM->dtgNarroFile_FileNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName, false)));"
 msgid "File name"
 msgstr ""
 
-#. $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, true, QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, true), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, false, QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, false)));
 #: narro_project_file_list.php narro_project_language_list.php narro_project_list.php
+msgctxt "$this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, true, QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, true), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, false, QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, false)));"
 msgid "Progress"
 msgstr ""
 
-#. $this->btnExport->Text = t('Export');
 #: narro_project_file_list.php narro_project_manage.php
+msgctxt "$this->btnExport->Text = t('Export');"
 msgid "Export"
 msgstr ""
 
-#. $this->btnImport->Text = t('Import');
 #: narro_project_file_list.php narro_project_manage.php
+msgctxt "$this->btnImport->Text = t('Import');"
 msgid "Import"
 msgstr ""
 
-#. $strImportAction = t('File to import') . ': ' . $objImportFile->Render(false) . $objImportButton->Render(false);
 #: narro_project_file_list.php
+msgctxt "$strImportAction = t('File to import') . ': ' . $objImportFile->Render(false) . $objImportButton->Render(false);"
 msgid "File to import"
 msgstr ""
 
-#. $strExportAction = t('Model to use') . ': ' . $objExportFile->Render(false) . $objExportButton->Render(false);
 #: narro_project_file_list.php
+msgctxt "$strExportAction = t('Model to use') . ': ' . $objExportFile->Render(false) . $objExportButton->Render(false);"
 msgid "Model to use"
 msgstr ""
 
-#. throw new Exception(sprintf(t('Tried to export an unknown file type: %d'), $strParameter));
 #: narro_project_file_list.php
+msgctxt "throw new Exception(sprintf(t('Tried to export an unknown file type: %d'), $strParameter));"
 msgid "Tried to export an unknown file type: %d"
 msgstr ""
 
-#. throw new Exception(sprintf(t('Tried to import an unknown file type: %d'), $strParameter));
 #: narro_project_file_list.php
+msgctxt "throw new Exception(sprintf(t('Tried to import an unknown file type: %d'), $strParameter));"
 msgid "Tried to import an unknown file type: %d"
 msgstr ""
 
-#. $this->colProjectName = new QDataGridColumn(t('Name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
 #: narro_project_list.php
+msgctxt "$this->colProjectName = new QDataGridColumn(t('Name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));"
 msgid "Name"
 msgstr ""
 
-#. $this->colProjectType = new QDataGridColumn(t('Type'), '<?= $_FORM->dtgNarroProject_ProjectTypeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectType), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectType, false)));
 #: narro_project_list.php
+msgctxt "$this->colProjectType = new QDataGridColumn(t('Type'), '<?= $_FORM->dtgNarroProject_ProjectTypeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectType), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectType, false)));"
 msgid "Type"
 msgstr ""
 
-#. NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')) .
 #: narro_project_list.php
+msgctxt "NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')) ."
 msgid "Texts"
 msgstr ""
 
-#. $this->btnDelProjectContexts->Text = t('Delete project contexts');
 #: narro_project_manage.php
+msgctxt "$this->btnDelProjectContexts->Text = t('Delete project contexts');"
 msgid "Delete project contexts"
 msgstr ""
 
-#. $this->btnDelProjectContexts->AddAction(new QClickEvent(), new QConfirmAction(sprintf(NarroApp::Translate('Are you SURE you want to DELETE the contexts for the project "%s"?\nThis operation might take a while and will delete:\n - project contexts and associated comments\n - votes for contexts belonging to this project\nTexts and suggestions are not deleted.'), $this->objNarroProject->ProjectName)));
 #: narro_project_manage.php
+msgctxt "$this->btnDelProjectContexts->AddAction(new QClickEvent(), new QConfirmAction(sprintf(NarroApp::Translate('Are you SURE you want to DELETE the contexts for the project \"%s\"?\nThis operation might take a while and will delete:\n - project contexts and associated comments\n - votes for contexts belonging to this project\nTexts and suggestions are not deleted.'), $this->objNarroProject->ProjectName)));"
 msgid "Are you SURE you want to DELETE the contexts for the project \"%s\"?\nThis operation might take a while and will delete:\n - project contexts and associated comments\n - votes for contexts belonging to this project\nTexts and suggestions are not deleted."
 msgstr ""
 
-#. $this->btnDelProjectContextInfos->Text = sprintf(t('Delete context informations in %s for this project'), NarroApp::$Language->LanguageName);
 #: narro_project_manage.php
+msgctxt "$this->btnDelProjectContextInfos->Text = sprintf(t('Delete context informations in %s for this project'), NarroApp::$Language->LanguageName);"
 msgid "Delete context informations in %s for this project"
 msgstr ""
 
-#.
 #: narro_project_manage.php
+msgctxt ""
 msgid "Are you SURE you want to DELETE the context information for the project \"%s\", language \"%s\"?\nThis operation might take a while and will delete:\n - context information for the current language\nYou can recreate this deleted information by doing an import for this project and current language\nProject's contexts are not deleted, only this language is affected\nTexts and suggestions are not deleted."
 msgstr ""
 
-#. $this->btnDelProjectFiles->Text = t('Delete project files');
 #: narro_project_manage.php
+msgctxt "$this->btnDelProjectFiles->Text = t('Delete project files');"
 msgid "Delete project files"
 msgstr ""
 
-#.
 #: narro_project_manage.php
+msgctxt ""
 msgid "Are you SURE you want to DELETE the files for the project \"%s\"?\nThis operation might take a while and will delete:\n - project contexts and associated comments\n - votes for contexts belonging to this project\n - project's files.\nTexts and suggestions are not deleted."
 msgstr ""
 
-#. sprintf('<p>' . t('Approved suggestion') . ': %s</p>',
 #: narro_project_manage.php rss.php
+msgctxt "sprintf('<p>' . t('Approved suggestion') . ': %s</p>',"
 msgid "Approved suggestion"
 msgstr ""
 
-#. $this->lstExportedSuggestion->AddItem(t('Approved, then most voted suggestion'), 2);
 #: narro_project_manage.php
+msgctxt "$this->lstExportedSuggestion->AddItem(t('Approved, then most voted suggestion'), 2);"
 msgid "Approved, then most voted suggestion"
 msgstr ""
 
-#. $this->lstExportedSuggestion->AddItem(t('Approved, then most recent suggestion'), 3);
 #: narro_project_manage.php
+msgctxt "$this->lstExportedSuggestion->AddItem(t('Approved, then most recent suggestion'), 3);"
 msgid "Approved, then most recent suggestion"
 msgstr ""
 
-#. $this->lstExportedSuggestion->AddItem(t('Approved, then most voted and then most recent suggestion'), 4);
 #: narro_project_manage.php
+msgctxt "$this->lstExportedSuggestion->AddItem(t('Approved, then most voted and then most recent suggestion'), 4);"
 msgid "Approved, then most voted and then most recent suggestion"
 msgstr ""
 
-#. $this->lstExportedSuggestion->AddItem(t('Approved, then my suggestion'), 5);
 #: narro_project_manage.php
+msgctxt "$this->lstExportedSuggestion->AddItem(t('Approved, then my suggestion'), 5);"
 msgid "Approved, then my suggestion"
 msgstr ""
 
-#. $this->chkCopyUnhandledFiles->Text = t('Copy unhandled files');
 #: narro_project_manage.php
+msgctxt "$this->chkCopyUnhandledFiles->Text = t('Copy unhandled files');"
 msgid "Copy unhandled files"
 msgstr ""
 
-#. $this->btnCleanLocaleDirectory->Text = t('Clean locale directory');
 #: narro_project_manage.php
+msgctxt "$this->btnCleanLocaleDirectory->Text = t('Clean locale directory');"
 msgid "Clean locale directory"
 msgstr ""
 
-#. $this->btnCleanLocaleDirectory->AddAction(new QClickEvent(), new QConfirmAction(NarroApp::Translate('Are you SURE you want to DELETE the files in your locale directory?\nThis operation has no effect on the data present in the application, but you might loose translated unhandled files, so you should backup first.')));
 #: narro_project_manage.php
+msgctxt "$this->btnCleanLocaleDirectory->AddAction(new QClickEvent(), new QConfirmAction(NarroApp::Translate('Are you SURE you want to DELETE the files in your locale directory?\nThis operation has no effect on the data present in the application, but you might loose translated unhandled files, so you should backup first.')));"
 msgid "Are you SURE you want to DELETE the files in your locale directory?\nThis operation has no effect on the data present in the application, but you might loose translated unhandled files, so you should backup first."
 msgstr ""
 
-#. $this->lblExport->Text .= ', ' . sprintf(t('or <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
 #: narro_project_manage.php
+msgctxt "$this->lblExport->Text .= ', ' . sprintf(t('or <a href=\"%s\">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());"
 msgid "or <a href=\"%s\">%s</a>, exported %s ago"
 msgstr ""
 
-#. $this->lblExport->Text = sprintf(t('Link to last export: <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
 #: narro_project_manage.php
+msgctxt "$this->lblExport->Text = sprintf(t('Link to last export: <a href=\"%s\">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());"
 msgid "Link to last export: <a href=\"%s\">%s</a>, exported %s ago"
 msgstr ""
 
-#. $this->lblImport->Text = t('Import failed.');
-#. $this->lblImport->Text = t('Import failed.');
 #: narro_project_manage.php
+msgctxt "$this->lblImport->Text = t('Import failed.');\n"
+"$this->lblImport->Text = t('Import failed.');"
 msgid "Import failed."
 msgstr ""
 
-#. $this->lblImport->Text = t('Import finished.');
 #: narro_project_manage.php
+msgctxt "$this->lblImport->Text = t('Import finished.');"
 msgid "Import finished."
 msgstr ""
 
-#. $this->lblExport->Text = t('Export finished.');
 #: narro_project_manage.php
+msgctxt "$this->lblExport->Text = t('Export finished.');"
 msgid "Export finished."
 msgstr ""
 
-#. $this->lblExport->Text .= ' ' . sprintf(t('Download link: <a href="%s">%s</a>'), $strDownloadUrl, $strExportArchive);
 #: narro_project_manage.php
+msgctxt "$this->lblExport->Text .= ' ' . sprintf(t('Download link: <a href=\"%s\">%s</a>'), $strDownloadUrl, $strExportArchive);"
 msgid "Download link: <a href=\"%s\">%s</a>"
 msgstr ""
 
-#. $this->lblExport->Text .= ' ' . t('Failed to create an archive for download');
 #: narro_project_manage.php
+msgctxt "$this->lblExport->Text .= ' ' . t('Failed to create an archive for download');"
 msgid "Failed to create an archive for download"
 msgstr ""
 
-#. $this->lblExport->Text = t('Export failed.');
 #: narro_project_manage.php
+msgctxt "$this->lblExport->Text = t('Export failed.');"
 msgid "Export failed."
 msgstr ""
 
-#. <div class="dotted_box_title">' . t('Operation log') . '</div>
 #: narro_project_manage.php
+msgctxt "<div class=\"dotted_box_title\">' . t('Operation log') . '</div>"
 msgid "Operation log"
 msgstr ""
 
-#.
 #: narro_project_text_list.php
+msgctxt ""
 msgid "Note that, since you're searching suggestions, you won't see the texts without suggestions."
 msgstr ""
 
-#. $strText = t('Suggest/Vote');
 #: narro_project_text_list.php
+msgctxt "$strText = t('Suggest/Vote');"
 msgid "Suggest/Vote"
 msgstr ""
 
-#. $this->lstTextFilter->AddItem(t('All texts'), self::SHOW_ALL_TEXTS, true);
 #: narro_project_translate_text_list.php narro_text_list.php
+msgctxt "$this->lstTextFilter->AddItem(t('All texts'), self::SHOW_ALL_TEXTS, true);"
 msgid "All texts"
 msgstr ""
 
-#. $this->lstSearchType->AddItem(t('original texts'), self::SEARCH_TEXTS, true);
 #: narro_project_translate_text_list.php narro_text_list.php
+msgctxt "$this->lstSearchType->AddItem(t('original texts'), self::SEARCH_TEXTS, true);"
 msgid "original texts"
 msgstr ""
 
-#. $this->lstSearchType->AddItem(t('translations'), self::SEARCH_SUGGESTIONS);
 #: narro_project_translate_text_list.php narro_text_list.php
+msgctxt "$this->lstSearchType->AddItem(t('translations'), self::SEARCH_SUGGESTIONS);"
 msgid "translations"
 msgstr ""
 
-#. $this->lstSearchType->AddItem(t('contexts'), self::SEARCH_CONTEXTS);
 #: narro_project_translate_text_list.php narro_text_list.php
+msgctxt "$this->lstSearchType->AddItem(t('contexts'), self::SEARCH_CONTEXTS);"
 msgid "contexts"
 msgstr ""
 
-#. <?php echo t('Search') ?>: <?php $this->txtSearch->Render();?>&nbsp;
 #: narro_project_translate_text_list.php narro_text_list.php templates/narro_file_text_list.tpl.php templates/narro_project_text_list.tpl.php
+msgctxt "<?php echo t('Search') ?>: <?php $this->txtSearch->Render();?>&nbsp;"
 msgid "Search"
 msgstr ""
 
-#. $this->btnRecoverPassword->Text = t('Proceed');
 #: narro_recover_password.php
+msgctxt "$this->btnRecoverPassword->Text = t('Proceed');"
 msgid "Proceed"
 msgstr ""
 
-#. $this->lblMessage->Text = t('Please enter a username or email to continue.');
 #: narro_recover_password.php
+msgctxt "$this->lblMessage->Text = t('Please enter a username or email to continue.');"
 msgid "Please enter a username or email to continue."
 msgstr ""
 
-#.
 #: narro_recover_password.php
+msgctxt ""
 msgid "Hey, the anonymous user doesn't have a password. What are you trying to do?"
 msgstr ""
 
-#. $objEmailMessage->Subject = sprintf(t('Password recovery for "%s" on "%s"'), $objUser->Username, $_SERVER['HTTP_HOST']);
 #: narro_recover_password.php
+msgctxt "$objEmailMessage->Subject = sprintf(t('Password recovery for \"%s\" on \"%s\"'), $objUser->Username, $_SERVER['HTTP_HOST']);"
 msgid "Password recovery for \"%s\" on \"%s\""
 msgstr ""
 
-#. $objEmailMessage->Body = sprintf(t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this link: %s'),
 #: narro_recover_password.php
+msgctxt "$objEmailMessage->Body = sprintf(t('Somebody, probably you, requested a password recovery for \"%s\" on \"%s\". To change your password, please follow this link: %s'),"
 msgid "Somebody, probably you, requested a password recovery for \"%s\" on \"%s\". To change your password, please follow this link: %s"
 msgstr ""
 
-#. $this->lblMessage->Text = t('Failed to send email. This may be a server issue. Please try again later.');
 #: narro_recover_password.php
+msgctxt "$this->lblMessage->Text = t('Failed to send email. This may be a server issue. Please try again later.');"
 msgid "Failed to send email. This may be a server issue. Please try again later."
 msgstr ""
 
-#. $this->lblMessage->Text = t('Bad username or/and email');
 #: narro_recover_password.php
+msgctxt "$this->lblMessage->Text = t('Bad username or/and email');"
 msgid "Bad username or/and email"
 msgstr ""
 
-#. $this->lblMessage->Text = t('You should have a new email message with instructions. Check your spam/bulk directory too.');
 #: narro_recover_password.php
+msgctxt "$this->lblMessage->Text = t('You should have a new email message with instructions. Check your spam/bulk directory too.');"
 msgid "You should have a new email message with instructions. Check your spam/bulk directory too."
 msgstr ""
 
-#. $strPageTitle = t('Register');
-#. <h3><?php echo t('Register') ?></h3>
 #: narro_register.php templates/NarroHeaderPanel.tpl.php templates/narro_register.tpl.php
+msgctxt "$strPageTitle = t('Register');\n"
+"<h3><?php echo t('Register') ?></h3>"
 msgid "Register"
 msgstr ""
 
-#. $this->lblMessage->Text = t("It's just three fields, don't leave one empty please.");
 #: narro_register.php
+msgctxt "$this->lblMessage->Text = t(\"It's just three fields, don't leave one empty please.\");"
 msgid "It's just three fields, don't leave one empty please."
 msgstr ""
 
-#. $this->lblMessage->Text = t("Seems like the username or email is already in use.") . $objEx->getMessage();
 #: narro_register.php
+msgctxt "$this->lblMessage->Text = t(\"Seems like the username or email is already in use.\") . $objEx->getMessage();"
 msgid "Seems like the username or email is already in use."
 msgstr ""
 
-#. <?php echo t('Role') . ':'; $this->lstRole->Render() ?>
 #: narro_role_list.php templates/narro_user_role.tpl.php
+msgctxt "<?php echo t('Role') . ':'; $this->lstRole->Render() ?>"
 msgid "Role"
 msgstr ""
 
-#. $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this role?')));
 #: narro_role_list.php
+msgctxt "$btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this role?')));"
 msgid "Are you sure you want to delete this role?"
 msgstr ""
 
-#. $btnPermissions->Text = t('Permissions');
 #: narro_role_list.php
+msgctxt "$btnPermissions->Text = t('Permissions');"
 msgid "Permissions"
 msgstr ""
 
-#. $btnViewUsers->Text = t('View users');
 #: narro_role_list.php
+msgctxt "$btnViewUsers->Text = t('View users');"
 msgid "View users"
 msgstr ""
 
-#. sprintf('<p>' . t('Context') . ': <a href="%s">%s</a></p>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context)) .
 #: narro_text_list.php rss.php
+msgctxt "sprintf('<p>' . t('Context') . ': <a href=\"%s\">%s</a></p>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context)) ."
 msgid "Context"
 msgstr ""
 
-#. $this->btnMultiApprove->Text = t('Mass approve');
-#. if ($this->btnMultiApprove->Text == t('Mass approve')) {
-#. $this->btnMultiApprove->Text = t('Mass approve');
-#. if ($this->btnMultiApprove->Text != t('Mass approve') && $objNarroContextInfo->HasSuggestions && !$objNarroContextInfo->TextAccessKey && $objNarroContextInfo->Context->Text->TextCharCount < 100) {
 #: narro_text_list.php
+msgctxt "$this->btnMultiApprove->Text = t('Mass approve');\n"
+"if ($this->btnMultiApprove->Text == t('Mass approve')) {\n"
+"$this->btnMultiApprove->Text = t('Mass approve');\n"
+"if ($this->btnMultiApprove->Text != t('Mass approve') && $objNarroContextInfo->HasSuggestions && !$objNarroContextInfo->TextAccessKey && $objNarroContextInfo->Context->Text->TextCharCount < 100) {"
 msgid "Mass approve"
 msgstr ""
 
-#. $this->btnMultiApprove->Text = t('Approve all selected suggestions');
 #: narro_text_list.php
+msgctxt "$this->btnMultiApprove->Text = t('Approve all selected suggestions');"
 msgid "Approve all selected suggestions"
 msgstr ""
 
-#. $this->SetMessage(t('Mass approve mode is the quick way to approve short translations. Leave empty to disapprove.'));
 #: narro_text_list.php
+msgctxt "$this->SetMessage(t('Mass approve mode is the quick way to approve short translations. Leave empty to disapprove.'));"
 msgid "Mass approve mode is the quick way to approve short translations. Leave empty to disapprove."
 msgstr ""
 
-#. sprintf(t('Saved %d changes.'), $intModified) . ' ' .
-#. $this->SetMessage(sprintf(t('Saved %d changes.'), $intModified));
 #: narro_text_list.php
+msgctxt "sprintf(t('Saved %d changes.'), $intModified) . ' ' .\n"
+"$this->SetMessage(sprintf(t('Saved %d changes.'), $intModified));"
 msgid "Saved %d changes."
 msgstr ""
 
-#. sprintf(t('An error ocurred: %s'), $objEx->GetMessage()) . ' ' .
 #: narro_text_list.php
+msgctxt "sprintf(t('An error ocurred: %s'), $objEx->GetMessage()) . ' ' ."
 msgid "An error ocurred: %s"
 msgstr ""
 
-#. sprintf(t('Aborting.'))
 #: narro_text_list.php
+msgctxt "sprintf(t('Aborting.'))"
 msgid "Aborting."
 msgstr ""
 
-#. $this->SetMessage(t('No changes.'));
 #: narro_text_list.php
+msgctxt "$this->SetMessage(t('No changes.'));"
 msgid "No changes."
 msgstr ""
 
-#. <td><?php echo t('Email') ?>:</td>
 #: narro_user_list.php templates/narro_recover_password.tpl.php templates/narro_register.tpl.php
+msgctxt "<td><?php echo t('Email') ?>:</td>"
 msgid "Email"
 msgstr ""
 
-#. | <a href="narro_role_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>" title="<?php echo t('Roles') ?>"><?php echo t('Roles') ?></a>
 #: narro_user_list.php narro_user_role.php templates/NarroHeaderPanel.tpl.php
+msgctxt "| <a href=\"narro_role_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>\" title=\"<?php echo t('Roles') ?>\"><?php echo t('Roles') ?></a>"
 msgid "Roles"
 msgstr ""
 
-#. <?php echo NarroLink::UserPreferences(NarroApp::GetUserId(), t('Preferences')) ?> |
 #: narro_user_list.php templates/NarroHeaderPanel.tpl.php
+msgctxt "<?php echo NarroLink::UserPreferences(NarroApp::GetUserId(), t('Preferences')) ?> |"
 msgid "Preferences"
 msgstr ""
 
-#. return t('Anonymous');
 #: narro_user_list.php
+msgctxt "return t('Anonymous');"
 msgid "Anonymous"
 msgstr ""
 
-#. return t('Not set yet');
 #: narro_user_list.php
+msgctxt "return t('Not set yet');"
 msgid "Not set yet"
 msgstr ""
 
-#.
 #: narro_user_list.php
+msgctxt ""
 msgid "That's you!"
 msgstr ""
 
-#.
 #: narro_user_preferences.php
+msgctxt ""
 msgid "Warning, you are editing another user's preferences!"
 msgstr ""
 
-#. $strOutput .= '<p>' . sprintf(t('Click <a href="%s">here</a> to return to the page you were.'), $this->txtPreviousUrl) . '</p>';
 #: narro_user_preferences.php
+msgctxt "$strOutput .= '<p>' . sprintf(t('Click <a href=\"%s\">here</a> to return to the page you were.'), $this->txtPreviousUrl) . '</p>';"
 msgid "Click <a href=\"%s\">here</a> to return to the page you were."
 msgstr ""
 
-#. $this->lblMessage->Text = sprintf(t('Preferences for %s were saved successfuly.'), $this->objUser->Username);
 #: narro_user_preferences.php
+msgctxt "$this->lblMessage->Text = sprintf(t('Preferences for %s were saved successfuly.'), $this->objUser->Username);"
 msgid "Preferences for %s were saved successfuly."
 msgstr ""
 
-#. $this->lblMessage->Text = t('Your preferences were saved successfuly.');
 #: narro_user_preferences.php
+msgctxt "$this->lblMessage->Text = t('Your preferences were saved successfuly.');"
 msgid "Your preferences were saved successfuly."
 msgstr ""
 
-#. $this->lblMessage->Text = t('An error occured while trying to save your preferences.');
 #: narro_user_preferences.php
+msgctxt "$this->lblMessage->Text = t('An error occured while trying to save your preferences.');"
 msgid "An error occured while trying to save your preferences."
 msgstr ""
 
-#. $this->btnAddRole->Text = t('Add');
-#. $this->btnAddRole->Text = t('Add');
-#. $this->btnAddRole->Text = t('Add');
 #: narro_user_role.php
+msgctxt "$this->btnAddRole->Text = t('Add');\n"
+"$this->btnAddRole->Text = t('Add');\n"
+"$this->btnAddRole->Text = t('Add');"
 msgid "Add"
 msgstr ""
 
-#. $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to revoke this role for this user?')));
 #: narro_user_role.php
+msgctxt "$btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to revoke this role for this user?')));"
 msgid "Are you sure you want to revoke this role for this user?"
 msgstr ""
 
-#. if ($btnEdit->Text == t('Cancel edit')) {
-#. $btnEdit->Text = t('Cancel edit');
 #: narro_user_role.php
+msgctxt "if ($btnEdit->Text == t('Cancel edit')) {\n"
+"$btnEdit->Text = t('Cancel edit');"
 msgid "Cancel edit"
 msgstr ""
 
-#. sprintf(t('Get the latest translation suggestions in %s for %s'), t(NarroApp::$Language->LanguageName), $objProject->ProjectName)
 #: rss.php
+msgctxt "sprintf(t('Get the latest translation suggestions in %s for %s'), t(NarroApp::$Language->LanguageName), $objProject->ProjectName)"
 msgid "Get the latest translation suggestions in %s for %s"
 msgstr ""
 
-#. sprintf(t('Get the latest translation suggestions in %s'), t(NarroApp::$Language->LanguageName))
 #: rss.php
+msgctxt "sprintf(t('Get the latest translation suggestions in %s'), t(NarroApp::$Language->LanguageName))"
 msgid "Get the latest translation suggestions in %s"
 msgstr ""
 
-#. $strDescription = sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>, project <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName, $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName);
 #: rss.php
+msgctxt "$strDescription = sprintf('<li>' . t('<a href=\"%s\">%s</a> from the file <a href=\"%s\">%s</a>, project <a href=\"%s\">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName, $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName);"
 msgid "<a href=\"%s\">%s</a> from the file <a href=\"%s\">%s</a>, project <a href=\"%s\">%s</a>"
 msgstr ""
 
-#. '<p>' . t('Contexts where the suggestion can be used:') . '</p>' .
 #: rss.php
+msgctxt "'<p>' . t('Contexts where the suggestion can be used:') . '</p>' ."
 msgid "Contexts where the suggestion can be used:"
 msgstr ""
 
-#. t('Click on the context to use the suggestion, on the file name or project name to search for the suggestion in them.')
 #: rss.php
+msgctxt "t('Click on the context to use the suggestion, on the file name or project name to search for the suggestion in them.')"
 msgid "Click on the context to use the suggestion, on the file name or project name to search for the suggestion in them."
 msgstr ""
 
-#.
 #: rss.php
+msgctxt ""
 msgid "Narro - Translate, we're open!"
 msgstr ""
 
-#. sprintf(t('Get the latest texts to translate for the project %s'), $objProject->ProjectName)
 #: rss.php
+msgctxt "sprintf(t('Get the latest texts to translate for the project %s'), $objProject->ProjectName)"
 msgid "Get the latest texts to translate for the project %s"
 msgstr ""
 
-#. t('Texts to translate'),
 #: rss.php
+msgctxt "t('Texts to translate'),"
 msgid "Texts to translate"
 msgstr ""
 
-#. t('Get the latest texts to translate')
 #: rss.php
+msgctxt "t('Get the latest texts to translate')"
 msgid "Get the latest texts to translate"
 msgstr ""
 
-#. $objItem->Description = $strDescription . '</ul><p>' . t('Click on any context to translate the text, on the file name or project name to see all the untranslated texts from that file or project.'). '</p>';
 #: rss.php
+msgctxt "$objItem->Description = $strDescription . '</ul><p>' . t('Click on any context to translate the text, on the file name or project name to see all the untranslated texts from that file or project.'). '</p>';"
 msgid "Click on any context to translate the text, on the file name or project name to see all the untranslated texts from that file or project."
 msgstr ""
 
-#. $strDescription .= sprintf(t('Used in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));
 #: rss.php
+msgctxt "$strDescription .= sprintf(t('Used in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));"
 msgid "Used in the following contexts:"
 msgstr ""
 
-#. $strDescription .= sprintf(t('Used in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));
-#. $strDescription .= sprintf(t('Used in the project <a href="%s">%s</a>, in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));
 #: rss.php
+msgctxt "$strDescription .= sprintf(t('Used in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));\n"
+"$strDescription .= sprintf(t('Used in the project <a href=\"%s\">%s</a>, in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));"
 msgid "Contexts"
 msgstr ""
 
-#. $strDescription .= sprintf(t('Used in the project <a href="%s">%s</a>, in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));
 #: rss.php
+msgctxt "$strDescription .= sprintf(t('Used in the project <a href=\"%s\">%s</a>, in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));"
 msgid "Used in the project <a href=\"%s\">%s</a>, in the following contexts:"
 msgstr ""
 
-#. $strDescription .= sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName);
 #: rss.php
+msgctxt "$strDescription .= sprintf('<li>' . t('<a href=\"%s\">%s</a> from the file <a href=\"%s\">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName);"
 msgid "<a href=\"%s\">%s</a> from the file <a href=\"%s\">%s</a>"
 msgstr ""
 
-#. t('Context changes in %s'),
 #: rss.php
+msgctxt "t('Context changes in %s'),"
 msgid "Context changes in %s"
 msgstr ""
 
-#. t('Get the latest context information changes in %s'),
 #: rss.php
+msgctxt "t('Get the latest context information changes in %s'),"
 msgid "Get the latest context information changes in %s"
 msgstr ""
 
-#. sprintf(t('The text has %s suggestions'), NarroSuggestion::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId), QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::GetLanguageId())))):
 #: rss.php
+msgctxt "sprintf(t('The text has %s suggestions'), NarroSuggestion::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId), QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::GetLanguageId())))):"
 msgid "The text has %s suggestions"
 msgstr ""
 
-#. t('The text has no suggestions')) .
 #: rss.php
+msgctxt "t('The text has no suggestions')) ."
 msgid "The text has no suggestions"
 msgstr ""
 
-#. sprintf('<p>' . t('Approved by') . ': <a href="%s">%s</a>', $strUserLink, ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:''):
 #: rss.php
+msgctxt "sprintf('<p>' . t('Approved by') . ': <a href=\"%s\">%s</a>', $strUserLink, ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:''):"
 msgid "Approved by"
 msgstr ""
 
-#. $objItem->Comments = sprintf(t('%d comments'), NarroContextComment::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroContextComment()->ContextId, $objNarroContextInfo->ContextId), QQ::Equal(QQN::NarroContextComment()->LanguageId, $objNarroContextInfo->LanguageId))));
 #: rss.php
+msgctxt "$objItem->Comments = sprintf(t('%d comments'), NarroContextComment::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroContextComment()->ContextId, $objNarroContextInfo->ContextId), QQ::Equal(QQN::NarroContextComment()->LanguageId, $objNarroContextInfo->LanguageId))));"
 msgid "%d comments"
 msgstr ""
 
-#. sprintf(t('Get the latest debates on texts from the project %s'), $objProject->ProjectName)
 #: rss.php
+msgctxt "sprintf(t('Get the latest debates on texts from the project %s'), $objProject->ProjectName)"
 msgid "Get the latest debates on texts from the project %s"
 msgstr ""
 
-#. t('Debates on texts'),
 #: rss.php
+msgctxt "t('Debates on texts'),"
 msgid "Debates on texts"
 msgstr ""
 
-#. t('Get the latest debates on texts')
 #: rss.php
+msgctxt "t('Get the latest debates on texts')"
 msgid "Get the latest debates on texts"
 msgstr ""
 
-#. <span style="font-size:80%%;color:gray;">' . t('%s wrote on %s:') . '</span>
 #: rss.php
+msgctxt "<span style=\"font-size:80%%;color:gray;\">' . t('%s wrote on %s:') . '</span>"
 msgid "%s wrote on %s:"
 msgstr ""
 
-#. ' . t('This is a debate on the text "%s", used in the following projects:') . '
 #: rss.php
+msgctxt "' . t('This is a debate on the text \"%s\", used in the following projects:') . '"
 msgid "This is a debate on the text \"%s\", used in the following projects:"
 msgstr ""
 
-#. $arrProjectLinks[] = sprintf(t('<a href="%s">%s</a>'), $strProjectLink, $strProjectName);
 #: rss.php
+msgctxt "$arrProjectLinks[] = sprintf(t('<a href=\"%s\">%s</a>'), $strProjectLink, $strProjectName);"
 msgid "<a href=\"%s\">%s</a>"
 msgstr ""
 
-#. t('<i>Translating in: %s</i>'),
 #: templates/NarroHeaderPanel.tpl.php
+msgctxt "t('<i>Translating in: %s</i>'),"
 msgid "<i>Translating in: %s</i>"
 msgstr ""
 
-#. t('<i>Logged in as <a href="%s" style="color:green;font-weight:bold">%s</a></i>'),
 #: templates/NarroHeaderPanel.tpl.php
+msgctxt "t('<i>Logged in as <a href=\"%s\" style=\"color:green;font-weight:bold\">%s</a></i>'),"
 msgid "<i>Logged in as <a href=\"%s\" style=\"color:green;font-weight:bold\">%s</a></i>"
 msgstr ""
 
-#. <a href="narro_user_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>" title="<?php echo t('Users') ?>"><?php echo t('Users') ?></a>
 #: templates/NarroHeaderPanel.tpl.php
+msgctxt "<a href=\"narro_user_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>\" title=\"<?php echo t('Users') ?>\"><?php echo t('Users') ?></a>"
 msgid "Users"
 msgstr ""
 
-#. | <a href="narro_logout.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php echo t('Logout') ?></a>
 #: templates/NarroHeaderPanel.tpl.php
+msgctxt "| <a href=\"narro_logout.php?l=<?php echo NarroApp::$Language->LanguageCode ?>\"><?php echo t('Logout') ?></a>"
 msgid "Logout"
 msgstr ""
 
-#. <span style="font-size:80%;color:gray;"><?php echo sprintf('<a href="#comment%d">#%d:</a> ', $_CONTROL->CurrentItemIndex + 1, $_CONTROL->CurrentItemIndex + 1) . sprintf(t('%s wrote %s ago:'), NarroLink::UserProfile($_ITEM->UserId, '<b>' . $_ITEM->User->Username . '</b>'), $strCreatedWhen) ?></span>
 #: templates/NarroTextComment.tpl.php
+msgctxt "<span style=\"font-size:80%;color:gray;\"><?php echo sprintf('<a href=\"#comment%d\">#%d:</a> ', $_CONTROL->CurrentItemIndex + 1, $_CONTROL->CurrentItemIndex + 1) . sprintf(t('%s wrote %s ago:'), NarroLink::UserProfile($_ITEM->UserId, '<b>' . $_ITEM->User->Username . '</b>'), $strCreatedWhen) ?></span>"
 msgid "%s wrote %s ago:"
 msgstr ""
 
-#. <p><?php echo sprintf(t('This is a debate on the text "<i>%s</i>"'), NarroString::HtmlEntities($_CONTROL->NarroText->TextValue)); ?></p>
 #: templates/NarroTextCommentListPanel.tpl.php
+msgctxt "<p><?php echo sprintf(t('This is a debate on the text \"<i>%s</i>\"'), NarroString::HtmlEntities($_CONTROL->NarroText->TextValue)); ?></p>"
 msgid "This is a debate on the text \"<i>%s</i>\""
 msgstr ""
 
-#. <?php _t('If you want to debate this text, add your opinion below.'); ?>
 #: templates/NarroTextCommentListPanel.tpl.php
+msgctxt "<?php _t('If you want to debate this text, add your opinion below.'); ?>"
 msgid "If you want to debate this text, add your opinion below."
 msgstr ""
 
-#.
 #: templates/NarroTextCommentListPanel.tpl.php
+msgctxt ""
 msgid "Don't forget to subscribe via RSS if you want to receive notifications of future comments."
 msgstr ""
 
-#. echo '<p>' . sprintf(t('You can debate texts if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . NarroApp::$Language->LanguageCode, 'narro_login.php?l=' . NarroApp::$Language->LanguageCode) . '</p>';
 #: templates/NarroTextCommentListPanel.tpl.php
+msgctxt "echo '<p>' . sprintf(t('You can debate texts if you are logged in. <a href=\"%s\">Register</a> or <a href=\"%s\">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . NarroApp::$Language->LanguageCode, 'narro_login.php?l=' . NarroApp::$Language->LanguageCode) . '</p>';"
 msgid "You can debate texts if you are logged in. <a href=\"%s\">Register</a> or <a href=\"%s\">Log in</a> if you already have an account or an OpenId."
 msgstr ""
 
-#. <p><?php echo t('Here you can change your password. Just type the new password and hit the button.'); ?></p>
 #: templates/narro_change_password.tpl.php
+msgctxt "<p><?php echo t('Here you can change your password. Just type the new password and hit the button.'); ?></p>"
 msgid "Here you can change your password. Just type the new password and hit the button."
 msgstr ""
 
-#. <td><?php echo t('Password') ?>:</td>
 #: templates/narro_change_password.tpl.php templates/narro_login.tpl.php templates/narro_register.tpl.php
+msgctxt "<td><?php echo t('Password') ?>:</td>"
 msgid "Password"
 msgstr ""
 
-#. <?php echo t('Text to translate'); ?>:
 #: templates/narro_context_suggest.tpl.php
+msgctxt "<?php echo t('Text to translate'); ?>:"
 msgid "Text to translate"
 msgstr ""
 
-#. <div class="white3dbg" style="border:1px solid #DDDDDD; padding:5px<?php if ($this->objNarroContextInfo->Context->Active == 0) echo ';color:gray;' ?>" title="<?php _t('Details about the place where the text appears'); ?>">
 #: templates/narro_context_suggest.tpl.php
+msgctxt "<div class=\"white3dbg\" style=\"border:1px solid #DDDDDD; padding:5px<?php if ($this->objNarroContextInfo->Context->Active == 0) echo ';color:gray;' ?>\" title=\"<?php _t('Details about the place where the text appears'); ?>\">"
 msgid "Details about the place where the text appears"
 msgstr ""
 
-#. <?php echo t('Your suggestion'); ?>:
 #: templates/narro_context_suggest.tpl.php
+msgctxt "<?php echo t('Your suggestion'); ?>:"
 msgid "Your suggestion"
 msgstr ""
 
-#. echo sprintf(t('You can add suggestions if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . NarroApp::$Language->LanguageCode, 'narro_login.php?l=' . NarroApp::$Language->LanguageCode) . '<br /><br />';
 #: templates/narro_context_suggest.tpl.php
+msgctxt "echo sprintf(t('You can add suggestions if you are logged in. <a href=\"%s\">Register</a> or <a href=\"%s\">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . NarroApp::$Language->LanguageCode, 'narro_login.php?l=' . NarroApp::$Language->LanguageCode) . '<br /><br />';"
 msgid "You can add suggestions if you are logged in. <a href=\"%s\">Register</a> or <a href=\"%s\">Log in</a> if you already have an account or an OpenId."
 msgstr ""
 
-#. $strPageTitle = sprintf(t('Texts from the file "%s"'), $this->objNarroFile->FileName);
 #: templates/narro_file_text_list.tpl.php
+msgctxt "$strPageTitle = sprintf(t('Texts from the file \"%s\"'), $this->objNarroFile->FileName);"
 msgid "Texts from the file \"%s\""
 msgstr ""
 
-#. <?php echo t('Show') ?>: <?php $this->lstTextFilter->Render() ?>
 #: templates/narro_file_text_list.tpl.php templates/narro_project_text_list.tpl.php
+msgctxt "<?php echo t('Show') ?>: <?php $this->lstTextFilter->Render() ?>"
 msgid "Show"
 msgstr ""
 
-#. $strPageTitle = ($this->blnEditMode)?t('Edit language'):t('Add language');
 #: templates/narro_language_edit.tpl.php
+msgctxt "$strPageTitle = ($this->blnEditMode)?t('Edit language'):t('Add language');"
 msgid "Edit language"
 msgstr ""
 
-#. <p align="right"><a href="narro_language_edit.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php _t('Add language') ?></a></p>
 #: templates/narro_language_edit.tpl.php templates/narro_language_list.tpl.php
+msgctxt "<p align=\"right\"><a href=\"narro_language_edit.php?l=<?php echo NarroApp::$Language->LanguageCode ?>\"><?php _t('Add language') ?></a></p>"
 msgid "Add language"
 msgstr ""
 
-#. <label for="<?php echo $this->txtLanguageName->ControlId ?>"><?php _t('Language name') ?></label>
 #: templates/narro_language_edit.tpl.php
+msgctxt "<label for=\"<?php echo $this->txtLanguageName->ControlId ?>\"><?php _t('Language name') ?></label>"
 msgid "Language name"
 msgstr ""
 
-#. <label for="<?php echo $this->txtLanguageCode->ControlId ?>"><?php _t('Language code') ?></label>
 #: templates/narro_language_edit.tpl.php
+msgctxt "<label for=\"<?php echo $this->txtLanguageCode->ControlId ?>\"><?php _t('Language code') ?></label>"
 msgid "Language code"
 msgstr ""
 
-#. <label for="<?php echo $this->txtCountryCode->ControlId ?>"><?php _t('Country code') ?></label>
 #: templates/narro_language_edit.tpl.php
+msgctxt "<label for=\"<?php echo $this->txtCountryCode->ControlId ?>\"><?php _t('Country code') ?></label>"
 msgid "Country code"
 msgstr ""
 
-#. <label for="<?php echo $this->lstTextDirection->ControlId ?>"><?php _t('Text direction') ?></label>
 #: templates/narro_language_edit.tpl.php
+msgctxt "<label for=\"<?php echo $this->lstTextDirection->ControlId ?>\"><?php _t('Text direction') ?></label>"
 msgid "Text direction"
 msgstr ""
 
-#. $strPageTitle = t('Language list');
-#. <h3><?php echo t('Language list') ?></h3>
 #: templates/narro_language_list.tpl.php
+msgctxt "$strPageTitle = t('Language list');\n"
+"<h3><?php echo t('Language list') ?></h3>"
 msgid "Language list"
 msgstr ""
 
-#. <p><?php echo t('This is a list of languages that projects can be translated in.'); ?></p>
 #: templates/narro_language_list.tpl.php
+msgctxt "<p><?php echo t('This is a list of languages that projects can be translated in.'); ?></p>"
 msgid "This is a list of languages that projects can be translated in."
 msgstr ""
 
-#. <p><?php echo t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>
 #: templates/narro_login.tpl.php
+msgctxt "<p><?php echo t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>"
 msgid "Please login so everyone else knows who is adding those great suggestions that you will add."
 msgstr ""
 
-#. <td><?php echo t('Username or <a href="http://www.openid.net">OpenID</a>')?>:</td>
 #: templates/narro_login.tpl.php
+msgctxt "<td><?php echo t('Username or <a href=\"http://www.openid.net\">OpenID</a>')?>:</td>"
 msgid "Username or <a href=\"http://www.openid.net\">OpenID</a>"
 msgstr ""
 
-#. $strPageTitle = ($this->blnEditMode)?t('Edit project'):t('Create project');
 #: templates/narro_project_edit.tpl.php
+msgctxt "$strPageTitle = ($this->blnEditMode)?t('Edit project'):t('Create project');"
 msgid "Edit project"
 msgstr ""
 
-#. $strPageTitle = ($this->blnEditMode)?t('Edit project'):t('Create project');
 #: templates/narro_project_edit.tpl.php
+msgctxt "$strPageTitle = ($this->blnEditMode)?t('Edit project'):t('Create project');"
 msgid "Create project"
 msgstr ""
 
-#. <label for="<?php echo $this->lstProjectTypeObject->ControlId ?>"><?php _t('Project Type') ?> : </label>
 #: templates/narro_project_edit.tpl.php
+msgctxt "<label for=\"<?php echo $this->lstProjectTypeObject->ControlId ?>\"><?php _t('Project Type') ?> : </label>"
 msgid "Project Type"
 msgstr ""
 
-#. $strPageTitle = sprintf(t('%s :: File list'), $this->objNarroProject->ProjectName);
 #: templates/narro_project_file_list.tpl.php
+msgctxt "$strPageTitle = sprintf(t('%s :: File list'), $this->objNarroProject->ProjectName);"
 msgid "%s :: File list"
 msgstr ""
 
-#. $strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objNarroProject->ProjectName, $this->objParentFile->FileName);
 #: templates/narro_project_file_list.tpl.php
+msgctxt "$strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objNarroProject->ProjectName, $this->objParentFile->FileName);"
 msgid "%s :: %s :: File list"
 msgstr ""
 
-#. <?php $this->chkShowHierarchy->Render();?> <label for="<?php echo $this->chkShowHierarchy->ControlId; ?>"><?php echo t('Show hierarchy') ?></label>
 #: templates/narro_project_file_list.tpl.php
+msgctxt "<?php $this->chkShowHierarchy->Render();?> <label for=\"<?php echo $this->chkShowHierarchy->ControlId; ?>\"><?php echo t('Show hierarchy') ?></label>"
 msgid "Show hierarchy"
 msgstr ""
 
-#. <?php $this->chkShowFolders->Render();?>  <label for="<?php echo $this->chkShowFolders->ControlId; ?>"><?php echo t('Show folders') ?></label>
 #: templates/narro_project_file_list.tpl.php
+msgctxt "<?php $this->chkShowFolders->Render();?>  <label for=\"<?php echo $this->chkShowFolders->ControlId; ?>\"><?php echo t('Show folders') ?></label>"
 msgid "Show folders"
 msgstr ""
 
-#. $strPageTitle = t('Project language list');
 #: templates/narro_project_language_list.tpl.php
+msgctxt "$strPageTitle = t('Project language list');"
 msgid "Project language list"
 msgstr ""
 
-#. <h3><?php echo sprintf(t('Language list for %s'), $this->objNarroProject->ProjectName); ?></h3>
 #: templates/narro_project_language_list.tpl.php
+msgctxt "<h3><?php echo sprintf(t('Language list for %s'), $this->objNarroProject->ProjectName); ?></h3>"
 msgid "Language list for %s"
 msgstr ""
 
-#. <p><?php echo sprintf(t('This is a list of languages that %s is translated in.'), $this->objNarroProject->ProjectName); ?></p>
 #: templates/narro_project_language_list.tpl.php
+msgctxt "<p><?php echo sprintf(t('This is a list of languages that %s is translated in.'), $this->objNarroProject->ProjectName); ?></p>"
 msgid "This is a list of languages that %s is translated in."
 msgstr ""
 
-#. $strPageTitle = t('Project list');
-#. <h3><?php echo t('Project list') ?></h3>
 #: templates/narro_project_list.tpl.php
+msgctxt "$strPageTitle = t('Project list');\n"
+"<h3><?php echo t('Project list') ?></h3>"
 msgid "Project list"
 msgstr ""
 
-#. <p><?php echo t('This is a list of projects that are being translated here. You can help too. Click on any project name to start translating.'); ?></p>
 #: templates/narro_project_list.tpl.php
+msgctxt "<p><?php echo t('This is a list of projects that are being translated here. You can help too. Click on any project name to start translating.'); ?></p>"
 msgid "This is a list of projects that are being translated here. You can help too. Click on any project name to start translating."
 msgstr ""
 
-#. <p align="right"><a href="narro_project_edit.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php _t('Add project') ?></a></p>
 #: templates/narro_project_list.tpl.php
+msgctxt "<p align=\"right\"><a href=\"narro_project_edit.php?l=<?php echo NarroApp::$Language->LanguageCode ?>\"><?php _t('Add project') ?></a></p>"
 msgid "Add project"
 msgstr ""
 
-#. <?php echo sprintf(t('Top %d translators'), 20) ?>
 #: templates/narro_project_list.tpl.php
+msgctxt "<?php echo sprintf(t('Top %d translators'), 20) ?>"
 msgid "Top %d translators"
 msgstr ""
 
-#. <?php echo sprintf(t('Newest %d translators'), 20) ?>
 #: templates/narro_project_list.tpl.php
+msgctxt "<?php echo sprintf(t('Newest %d translators'), 20) ?>"
 msgid "Newest %d translators"
 msgstr ""
 
-#. <h3><?php echo t('Project management') ?></h3>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<h3><?php echo t('Project management') ?></h3>"
 msgid "Project management"
 msgstr ""
 
-#. <p><?php echo t('Here you can edit project properties or do management related tasks.'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p><?php echo t('Here you can edit project properties or do management related tasks.'); ?></p>"
 msgid "Here you can edit project properties or do management related tasks."
 msgstr ""
 
-#. <div class="dotted_box_title"><?php echo t('Import and export options'); ?></div>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<div class=\"dotted_box_title\"><?php echo t('Import and export options'); ?></div>"
 msgid "Import and export options"
 msgstr ""
 
-#. <label for="<?php echo $this->lstLogLevel->ControlId ?>"><?php echo t('Minimum logged error level') . ' ' . $this->lstLogLevel->Render(false); ?></label>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<label for=\"<?php echo $this->lstLogLevel->ControlId ?>\"><?php echo t('Minimum logged error level') . ' ' . $this->lstLogLevel->Render(false); ?></label>"
 msgid "Minimum logged error level"
 msgstr ""
 
-#. <p class="instructions"><?php echo t('Lower values give more verbosity'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo t('Lower values give more verbosity'); ?></p>"
 msgid "Lower values give more verbosity"
 msgstr ""
 
-#. <label for="<?php echo $this->chkForce->ControlId ?>"><?php echo $this->chkForce->Render(false) . ' ' . t('Force operation even if a previous operation is reported to be running'); ?></label>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<label for=\"<?php echo $this->chkForce->ControlId ?>\"><?php echo $this->chkForce->Render(false) . ' ' . t('Force operation even if a previous operation is reported to be running'); ?></label>"
 msgid "Force operation even if a previous operation is reported to be running"
 msgstr ""
 
-#. <p class="instructions"><?php echo t('Cleanup the files that are used during an import or export and allow starting another operation'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo t('Cleanup the files that are used during an import or export and allow starting another operation'); ?></p>"
 msgid "Cleanup the files that are used during an import or export and allow starting another operation"
 msgstr ""
 
-#. <p class="instructions"><?php echo t('Delete all the files in the locale directory to get a fresh export. Be sure to backup any files not imported in the application.'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo t('Delete all the files in the locale directory to get a fresh export. Be sure to backup any files not imported in the application.'); ?></p>"
 msgid "Delete all the files in the locale directory to get a fresh export. Be sure to backup any files not imported in the application."
 msgstr ""
 
-#. <div class="dotted_box_title"><?php echo t('Import project'); ?></div>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<div class=\"dotted_box_title\"><?php echo t('Import project'); ?></div>"
 msgid "Import project"
 msgstr ""
 
-#. <label for="<?php echo $this->chkCheckEqual->ControlId ?>"><?php echo $this->chkCheckEqual->Render(false) . ' ' . t('Do not import translations that are identical to the original text'); ?></label>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<label for=\"<?php echo $this->chkCheckEqual->ControlId ?>\"><?php echo $this->chkCheckEqual->Render(false) . ' ' . t('Do not import translations that are identical to the original text'); ?></label>"
 msgid "Do not import translations that are identical to the original text"
 msgstr ""
 
-#. <p class="instructions"><?php echo t('Warning, if you uncheck this and choose to approve the imported suggestions all the translations identical to the original texts will be approved.'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo t('Warning, if you uncheck this and choose to approve the imported suggestions all the translations identical to the original texts will be approved.'); ?></p>"
 msgid "Warning, if you uncheck this and choose to approve the imported suggestions all the translations identical to the original texts will be approved."
 msgstr ""
 
-#. <label for="<?php echo $this->chkApprove->ControlId ?>"><?php echo $this->chkApprove->Render(false) . ' ' . t('Approve the imported translations'); ?></label>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<label for=\"<?php echo $this->chkApprove->ControlId ?>\"><?php echo $this->chkApprove->Render(false) . ' ' . t('Approve the imported translations'); ?></label>"
 msgid "Approve the imported translations"
 msgstr ""
 
-#. <p class="instructions"><?php echo t('Mark the imported suggestions as approved.'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo t('Mark the imported suggestions as approved.'); ?></p>"
 msgid "Mark the imported suggestions as approved."
 msgstr ""
 
-#. <label for="<?php echo $this->chkOnlySuggestions->ControlId ?>"><?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?></label>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<label for=\"<?php echo $this->chkOnlySuggestions->ControlId ?>\"><?php echo $this->chkOnlySuggestions->Render(false) . ' ' . t('Import only suggestions'); ?></label>"
 msgid "Import only suggestions"
 msgstr ""
 
-#. <p class="instructions"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo t('Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts.'); ?></p>"
 msgid "Do not add files, texts or contexts. Import only translation suggestions for existing texts in existing files and contexts."
 msgstr ""
 
-#. <?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<?php echo t('From an archive') . ': ' . $this->flaImportFromFile->Render(false); ?>"
 msgid "From an archive"
 msgstr ""
 
-#. <p class="instructions"><?php echo sprintf(t('The archive can contain two directories, en-US and %s, but at least %s, each having the same file structure. Supported formats: %s'), NarroApp::$Language->LanguageCode, NarroApp::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo sprintf(t('The archive can contain two directories, en-US and %s, but at least %s, each having the same file structure. Supported formats: %s'), NarroApp::$Language->LanguageCode, NarroApp::$Language->LanguageCode, 'tar.gz, zip'); ?></p>"
 msgid "The archive can contain two directories, en-US and %s, but at least %s, each having the same file structure. Supported formats: %s"
 msgstr ""
 
-#. <p class="instructions"><?php echo sprintf(t('The archive must contain the directory %s with the same structure as en-US. Supported formats: %s'), NarroApp::$Language->LanguageCode, 'tar.gz, zip'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo sprintf(t('The archive must contain the directory %s with the same structure as en-US. Supported formats: %s'), NarroApp::$Language->LanguageCode, 'tar.gz, zip'); ?></p>"
 msgid "The archive must contain the directory %s with the same structure as en-US. Supported formats: %s"
 msgstr ""
 
-#.
 #: templates/narro_project_manage.tpl.php
+msgctxt ""
 msgid "If you don't upload an archive, the import will use the directory \"%s\", subdirectories \"%s\" and \"%s\". You could update those directories nightly from CVS, SVN or a web address."
 msgstr ""
 
-#. <div class="dotted_box_title"><?php echo t('Export project'); ?></div>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<div class=\"dotted_box_title\"><?php echo t('Export project'); ?></div>"
 msgid "Export project"
 msgstr ""
 
-#. <p class="instructions"><?php echo t('If you check this option, all the unhandled files missing from your translation will be copied from the source language.'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo t('If you check this option, all the unhandled files missing from your translation will be copied from the source language.'); ?></p>"
 msgid "If you check this option, all the unhandled files missing from your translation will be copied from the source language."
 msgstr ""
 
-#. <label for="<?php echo $this->lstExportArchiveType->ControlId ?>"><?php echo  t('Export archive format') . ' ' . $this->lstExportArchiveType->Render(false); ?></label>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<label for=\"<?php echo $this->lstExportArchiveType->ControlId ?>\"><?php echo  t('Export archive format') . ' ' . $this->lstExportArchiveType->Render(false); ?></label>"
 msgid "Export archive format"
 msgstr ""
 
-#. <p class="instructions"><?php echo t('Choose the format of the exported archive.'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo t('Choose the format of the exported archive.'); ?></p>"
 msgid "Choose the format of the exported archive."
 msgstr ""
 
-#. <label for="<?php echo $this->lstExportedSuggestion->ControlId ?>"><?php echo t('Export translations using') . ': '; ?></label>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<label for=\"<?php echo $this->lstExportedSuggestion->ControlId ?>\"><?php echo t('Export translations using') . ': '; ?></label>"
 msgid "Export translations using"
 msgstr ""
 
-#. <p class="instructions"><?php echo t('If you want to export the suggestions that are not approved, you have here a few choices to do so'); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo t('If you want to export the suggestions that are not approved, you have here a few choices to do so'); ?></p>"
 msgid "If you want to export the suggestions that are not approved, you have here a few choices to do so"
 msgstr ""
 
-#. <p class="instructions"><?php echo sprintf(t('You will get an archive containing two directories, en-US and %s, each having the same file structure.'), NarroApp::$Language->LanguageCode); ?></p>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php echo sprintf(t('You will get an archive containing two directories, en-US and %s, each having the same file structure.'), NarroApp::$Language->LanguageCode); ?></p>"
 msgid "You will get an archive containing two directories, en-US and %s, each having the same file structure."
 msgstr ""
 
-#. <p class="instructions"><?php _t('Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.
-#.             You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.');?>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php _t('Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.\n            You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.');?>"
 msgid "Sometimes, it might help to delete contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.\n            You will also loose context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want."
 msgstr ""
 
-#. <p class="instructions"><?php _t('Sometimes, it might help to delete the informations about contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.
-#.             Translations and texts are kept, and you can import your project to recreate the context informations any time you want. This affects only the current language');?>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php _t('Sometimes, it might help to delete the informations about contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.\n            Translations and texts are kept, and you can import your project to recreate the context informations any time you want. This affects only the current language');?>"
 msgid "Sometimes, it might help to delete the informations about contexts to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.\n            Translations and texts are kept, and you can import your project to recreate the context informations any time you want. This affects only the current language"
 msgstr ""
 
-#. <p class="instructions"><?php _t('Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.
-#.             You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.');?>
 #: templates/narro_project_manage.tpl.php
+msgctxt "<p class=\"instructions\"><?php _t('Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.\n            You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want.');?>"
 msgid "Sometimes, it might help to delete files to clean up the database a bit. Before doing this, please export your work, you will loose all your approvals.\n            You will also loose contexts and context comments for this project. Translations and texts are kept, and you can import your project to recreate the contexts any time you want."
 msgstr ""
 
-#. $strPageTitle = sprintf(t('Texts from the project "%s"'), $this->objNarroProject->ProjectName);
 #: templates/narro_project_text_list.tpl.php
+msgctxt "$strPageTitle = sprintf(t('Texts from the project \"%s\"'), $this->objNarroProject->ProjectName);"
 msgid "Texts from the project \"%s\""
 msgstr ""
 
-#. $strPageTitle = t('Recover password');
-#. <h3><?php echo t('Recover password') ?></h3>
 #: templates/narro_recover_password.tpl.php
+msgctxt "$strPageTitle = t('Recover password');\n"
+"<h3><?php echo t('Recover password') ?></h3>"
 msgid "Recover password"
 msgstr ""
 
-#. <p><?php echo t('If you remember your username or email address, we can send you a link at the email address you registered with to change your password.'); ?></p>
 #: templates/narro_recover_password.tpl.php
+msgctxt "<p><?php echo t('If you remember your username or email address, we can send you a link at the email address you registered with to change your password.'); ?></p>"
 msgid "If you remember your username or email address, we can send you a link at the email address you registered with to change your password."
 msgstr ""
 
-#. <p><?php echo t('Here are a few benefits for a registered user'); ?>:</p>
 #: templates/narro_register.tpl.php
+msgctxt "<p><?php echo t('Here are a few benefits for a registered user'); ?>:</p>"
 msgid "Here are a few benefits for a registered user"
 msgstr ""
 
-#. <li><?php echo t('Be famous for your suggestions. Everyone will see that you added that cool suggestion.') ?></li>
 #: templates/narro_register.tpl.php
+msgctxt "<li><?php echo t('Be famous for your suggestions. Everyone will see that you added that cool suggestion.') ?></li>"
 msgid "Be famous for your suggestions. Everyone will see that you added that cool suggestion."
 msgstr ""
 
-#. <li><?php echo t('Vote for your favourite suggestion.') ?></li>
 #: templates/narro_register.tpl.php
+msgctxt "<li><?php echo t('Vote for your favourite suggestion.') ?></li>"
 msgid "Vote for your favourite suggestion."
 msgstr ""
 
-#. <li><?php echo t('Set your preferences and maintain your user profile.') ?></li>
 #: templates/narro_register.tpl.php
+msgctxt "<li><?php echo t('Set your preferences and maintain your user profile.') ?></li>"
 msgid "Set your preferences and maintain your user profile."
 msgstr ""
 
-#. <td><?php echo t('This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name.') ?></td>
 #: templates/narro_register.tpl.php
+msgctxt "<td><?php echo t('This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name.') ?></td>"
 msgid "This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name."
 msgstr ""
 
-#.
 #: templates/narro_register.tpl.php
+msgctxt ""
 msgid "Alright, you don't have to type it twice, but please type it carefully."
 msgstr ""
 
-#. <td><?php echo t('This is used for password recovery and opt-in notifications.') ?></td>
 #: templates/narro_register.tpl.php
+msgctxt "<td><?php echo t('This is used for password recovery and opt-in notifications.') ?></td>"
 msgid "This is used for password recovery and opt-in notifications."
 msgstr ""
 
-#. $strPageTitle = t('Role list');
-#. <h3><?php echo t('Role list') ?></h3>
 #: templates/narro_role_list.tpl.php
+msgctxt "$strPageTitle = t('Role list');\n"
+"<h3><?php echo t('Role list') ?></h3>"
 msgid "Role list"
 msgstr ""
 
-#. <p><?php echo t('Here you can manage the roles used on this website.'); ?></p>
 #: templates/narro_role_list.tpl.php
+msgctxt "<p><?php echo t('Here you can manage the roles used on this website.'); ?></p>"
 msgid "Here you can manage the roles used on this website."
 msgstr ""
 
-#. <div class="title_action"><?php echo t('Roles list'); ?></div>
 #: templates/narro_role_list.tpl.php
+msgctxt "<div class=\"title_action\"><?php echo t('Roles list'); ?></div>"
 msgid "Roles list"
 msgstr ""
 
-#. $strPageTitle = t('User list');
-#. <div class="title_action"><?php echo t('User list'); ?></div>
 #: templates/narro_user_list.tpl.php
+msgctxt "$strPageTitle = t('User list');\n"
+"<div class=\"title_action\"><?php echo t('User list'); ?></div>"
 msgid "User list"
 msgstr ""
 
-#. $strPageTitle = sprintf(t('Preferences for %s'), $this->pnlPreferences->User->Username);
 #: templates/narro_user_preferences.tpl.php
+msgctxt "$strPageTitle = sprintf(t('Preferences for %s'), $this->pnlPreferences->User->Username);"
 msgid "Preferences for %s"
 msgstr ""
 
-#. <p><?php echo t('Here you can set your preferences.');?></p>
 #: templates/narro_user_preferences.tpl.php
+msgctxt "<p><?php echo t('Here you can set your preferences.');?></p>"
 msgid "Here you can set your preferences."
 msgstr ""
 
-#.
 #: templates/narro_user_profile.tpl.php
+msgctxt ""
 msgid "%s's translations"
 msgstr ""
 
-#. echo sprintf(t('Out of a total of %d suggestions made by %s, %d were approved.'), $intSuggestionCount, $this->objUser->Username, $intValidSuggestionCount);
 #: templates/narro_user_profile.tpl.php
+msgctxt "echo sprintf(t('Out of a total of %d suggestions made by %s, %d were approved.'), $intSuggestionCount, $this->objUser->Username, $intValidSuggestionCount);"
 msgid "Out of a total of %d suggestions made by %s, %d were approved."
 msgstr ""
 
-#. echo sprintf(t('Here are the suggestions that %s made so far') . ':', $this->objUser->Username);
 #: templates/narro_user_profile.tpl.php
+msgctxt "echo sprintf(t('Here are the suggestions that %s made so far') . ':', $this->objUser->Username);"
 msgid "Here are the suggestions that %s made so far"
 msgstr ""
 
-#.
 #: templates/narro_user_role.tpl.php
+msgctxt ""
 msgid "%s's roles"
 msgstr ""
 
