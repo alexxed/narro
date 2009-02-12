@@ -35,6 +35,7 @@
         protected $lstSearchType;
         protected $btnSearch;
         protected $btnMultiApprove;
+        protected $btnMultiApproveBottom;
 
         protected $arrSuggestionList;
 
@@ -145,6 +146,10 @@
             $this->btnMultiApprove->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId);
             $this->btnMultiApprove->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
 
+            $this->btnMultiApproveBottom = new QButton($this);
+            $this->btnMultiApproveBottom->Text = t('Mass approve');
+            $this->btnMultiApproveBottom->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId);
+            $this->btnMultiApproveBottom->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
         }
 
         protected function btnMultiApprove_Click($strFormId, $strControlId, $strParameter) {
@@ -153,6 +158,7 @@
 
             if ($this->btnMultiApprove->Text == t('Mass approve')) {
                 $this->btnMultiApprove->Text = t('Approve all selected suggestions');
+                $this->btnMultiApproveBottom->Text = t('Approve all selected suggestions');
                 $this->SetMessage(t('Mass approve mode is the quick way to approve short translations. Leave empty to disapprove.'));
                 if (NarroApp::QueryString('st') != 3)
                     $this->dtgNarroContextInfo->AddColumnAt(0, $this->colContext);
@@ -162,6 +168,7 @@
             }
             else {
                 $this->btnMultiApprove->Text = t('Mass approve');
+                $this->btnMultiApproveBottom->Text = t('Mass approve');
                 /**
                  * Approve changes
                  */

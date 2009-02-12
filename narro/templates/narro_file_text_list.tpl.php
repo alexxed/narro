@@ -32,6 +32,9 @@
         </div>
         <br />
         <?php $this->dtgNarroContextInfo->Render() ?>
+        <div style="text-align:right;padding:3px;">
+            <?php $this->btnMultiApproveBottom->Render(); ?>
+        </div>
 
     <?php $this->RenderEnd() ?>
 
