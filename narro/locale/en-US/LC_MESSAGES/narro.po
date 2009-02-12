@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 0.9.3\n"
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2009-12-02 06:07-0800\n"
-"PO-Revision-Date: 2009-12-02 06:07-0800\n"
+"POT-Creation-Date: 2009-12-02 06:15-0800\n"
+"PO-Revision-Date: 2009-12-02 06:15-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -23,11 +23,13 @@ msgstr ""
 msgid "Click <a href=\"%s\">here</a> to start over."
 msgstr ""
 
+#. Preference name
 #. NarroApp::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
 #: includes/application.inc.php
 msgid "Items per page"
 msgstr ""
 
+#. Preference name
 #. NarroApp::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
 #: includes/application.inc.php
 msgid "Font size"
@@ -38,6 +40,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+#. Preference name
 #. NarroApp::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US', array((isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US'));
 #: includes/application.inc.php
 msgid "Application language"
@@ -48,36 +51,43 @@ msgstr ""
 msgid "Special characters"
 msgstr ""
 
+#. Preference name
 #. NarroApp::RegisterPreference('Other languages', 'text', 'Other languages that you want to check for suggestions, separated by spaces.', 'ro');
 #: includes/application.inc.php
 msgid "Other languages"
 msgstr ""
 
+#. Preference description
 #. NarroApp::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
 #: includes/application.inc.php
 msgid "How many items are displayed per page"
 msgstr ""
 
+#. Preference description
 #. NarroApp::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
 #: includes/application.inc.php
 msgid "The application font size"
 msgstr ""
 
+#. Preference description
 #. NarroApp::RegisterPreference('Language', 'option', 'The language you are translating to.', NarroApp::QueryString('l'), array(NarroApp::QueryString('l')));
 #: includes/application.inc.php
 msgid "The language you are translating to."
 msgstr ""
 
+#. Preference description
 #. NarroApp::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US', array((isset(NarroApp::$Language))?NarroApp::$Language->LanguageCode:'en-US'));
 #: includes/application.inc.php
 msgid "The language you want to see Narro in."
 msgstr ""
 
+#. Preference description
 #. NarroApp::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
 #: includes/application.inc.php
 msgid "Characters that are not on your keyboard, separated by spaces."
 msgstr ""
 
+#. Preference description
 #. NarroApp::RegisterPreference('Other languages', 'text', 'Other languages that you want to check for suggestions, separated by spaces.', 'ro');
 #: includes/application.inc.php
 msgid "Other languages that you want to check for suggestions, separated by spaces."
@@ -868,11 +878,13 @@ msgstr ""
 msgid "Cedill/Comma issue solver"
 msgstr ""
 
+#. Preference name
 #. NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
 #: includes/narro/plugins/NarroCedillaComma.class.php
 msgid "Cedilla or comma"
 msgstr ""
 
+#. Preference description
 #. NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
 #: includes/narro/plugins/NarroCedillaComma.class.php
 msgid "Select whether you want to see s and t with comma or cedilla undernieth"
@@ -954,11 +966,13 @@ msgstr ""
 msgid "<span class=\"mispelled_word\">%s</span> seems to be mispelled."
 msgstr ""
 
+#. Preference name
 #. NarroApp::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don&&&escapedsimplequote&&&t need it', 'Yes, please'));
 #: includes/narro/plugins/NarroSpellCheck.class.php
 msgid "Spellchecking"
 msgstr ""
 
+#. Preference description
 #. NarroApp::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don&&&escapedsimplequote&&&t need it', 'Yes, please'));
 #: includes/narro/plugins/NarroSpellCheck.class.php
 msgid "Spellcheck support if possible, or just disable it"
