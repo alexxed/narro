@@ -22,7 +22,7 @@
             $this->blnEnable = false;
             $this->strName = t('Cedill/Comma issue solver');
             if ($this->blnEnable)
-                NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select wether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
+                NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
         }
 
         protected function ConvertToSedilla($strText) {
