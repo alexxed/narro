@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 0.9.3\n"
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2009-12-02 10:44-0800\n"
-"PO-Revision-Date: 2009-12-02 10:44-0800\n"
+"POT-Creation-Date: 2009-12-02 10:48-0800\n"
+"PO-Revision-Date: 2009-12-02 10:48-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1724,14 +1724,17 @@ msgid "Context"
 msgstr ""
 
 #. $this->btnMultiApprove->Text = t('Mass approve');
+#. $this->btnMultiApproveBottom->Text = t('Mass approve');
 #. if ($this->btnMultiApprove->Text == t('Mass approve')) {
 #. $this->btnMultiApprove->Text = t('Mass approve');
+#. $this->btnMultiApproveBottom->Text = t('Mass approve');
 #. if ($this->btnMultiApprove->Text != t('Mass approve') && $objNarroContextInfo->HasSuggestions && !$objNarroContextInfo->TextAccessKey && $objNarroContextInfo->Context->Text->TextCharCount < 100) {
 #: narro_text_list.php
 msgid "Mass approve"
 msgstr ""
 
 #. $this->btnMultiApprove->Text = t('Approve all selected suggestions');
+#. $this->btnMultiApproveBottom->Text = t('Approve all selected suggestions');
 #: narro_text_list.php
 msgid "Approve all selected suggestions"
 msgstr ""
@@ -2427,5 +2430,15 @@ msgstr ""
 #.
 #: templates/narro_user_role.tpl.php
 msgid "%s's roles"
+msgstr ""
+
+#. * Spellchecking: t('Yes, please')
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "Yes, please"
+msgstr ""
+
+#.
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "I don't need it"
 msgstr ""
 
