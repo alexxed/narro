@@ -20,6 +20,11 @@
         public function __construct() {
             parent::__construct();
             $this->strName = t('Spell check');
+            /**
+             * Spellchecking: t('Yes, please')
+             * Spellchecking: t('I don\'t need it')
+             */
+
             NarroApp::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don\'t need it', 'Yes, please'));
         }
 
