@@ -72,5 +72,15 @@
             $this->pnlHeader = new NarroHeaderPanel($this);
             $this->pnlBreadcrumb = new NarroBreadcrumbPanel($this);
         }
+
+        protected function Form_Exit() {
+            if (SERVER_INSTANCE == 'dev') {
+                global $arrQuery;
+                if (count($arrQuery) > 1) {
+                    $objFirePhp = FirePHP::getInstance(true);
+                    $objFirePhp->table('SQL queries', $arrQuery);
+                }
+            }
+        }
     }
 ?>

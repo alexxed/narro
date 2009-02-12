@@ -132,7 +132,7 @@
 
         public static function RecursiveCopy( $source, $target ) {
             if ( is_dir( $source ) ) {
-                if (!@mkdir( $target, 0777 )) {
+                if (!file_exists($target) && !@mkdir( $target, 0777 )) {
                     if (is_writable($target))
                         throw new Exception(
                                     sprintf('Could not create directory %s. The parent directory has owner %s and permissions %s',
