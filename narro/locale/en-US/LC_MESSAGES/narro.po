@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 0.9.3\n"
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2009-12-02 03:02-0800\n"
-"PO-Revision-Date: 2009-12-02 03:02-0800\n"
+"POT-Creation-Date: 2009-12-02 04:40-0800\n"
+"PO-Revision-Date: 2009-12-02 04:40-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -19,6 +19,54 @@ msgstr ""
 
 #: assets/php/_core/error_page.php
 msgid "Click <a href=\"%s\">here</a> to start over."
+msgstr ""
+
+#: includes/application.inc.php
+msgid "Items per page"
+msgstr ""
+
+#: includes/application.inc.php
+msgid "Font size"
+msgstr ""
+
+#: includes/application.inc.php includes/narro/NarroNewUsersPanel.class.php includes/narro/NarroRoleUserListPanel.class.php includes/narro/NarroTopUsersPanel.class.php includes/narro/NarroUserSuggestionsPanel.class.php narro_project_language_list.php narro_user_role.php templates/narro_user_role.tpl.php
+msgid "Language"
+msgstr ""
+
+#: includes/application.inc.php
+msgid "Application language"
+msgstr ""
+
+#: includes/application.inc.php templates/narro_language_edit.tpl.php
+msgid "Special characters"
+msgstr ""
+
+#: includes/application.inc.php
+msgid "Other languages"
+msgstr ""
+
+#: includes/application.inc.php
+msgid "How many items are displayed per page"
+msgstr ""
+
+#: includes/application.inc.php
+msgid "The application font size"
+msgstr ""
+
+#: includes/application.inc.php
+msgid "The language you are translating to."
+msgstr ""
+
+#: includes/application.inc.php
+msgid "The language you want to see Narro in."
+msgstr ""
+
+#: includes/application.inc.php
+msgid "Characters that are not on your keyboard, separated by spaces."
+msgstr ""
+
+#: includes/application.inc.php
+msgid "Other languages that you want to check for suggestions, separated by spaces."
 msgstr ""
 
 #: includes/data_classes/NarroLanguage.class.php includes/data_classes/generated/NarroLanguageGen.class.php includes/narro/NarroHeaderPanel.class.php includes/narro/NarroRoleUserListPanel.class.php includes/narro/NarroSuggestionListPanel.class.php includes/narro/NarroUserSuggestionsPanel.class.php includes/narro/importer/NarroDumbGettextPoFileImporter.class.php includes/narro/importer/NarroGettextPoFileImporter.class.php includes/narro/importer/importer.php narro_language_edit.php narro_language_list.php narro_project_language_list.php narro_project_manage.php narro_user_list.php narro_user_preferences.php narro_user_role.php rss.php
@@ -477,10 +525,6 @@ msgstr ""
 msgid "Characters"
 msgstr ""
 
-#: includes/narro/NarroNewUsersPanel.class.php includes/narro/NarroRoleUserListPanel.class.php includes/narro/NarroTopUsersPanel.class.php includes/narro/NarroUserSuggestionsPanel.class.php narro_project_language_list.php narro_user_role.php templates/narro_user_role.tpl.php
-msgid "Language"
-msgstr ""
-
 #: includes/narro/NarroNewUsersPanel.class.php includes/narro/NarroSuggestionListPanel.class.php includes/narro/NarroTopUsersPanel.class.php
 msgid "Unknown"
 msgstr ""
@@ -689,6 +733,14 @@ msgstr ""
 msgid "Cedill/Comma issue solver"
 msgstr ""
 
+#: includes/narro/plugins/NarroCedillaComma.class.php
+msgid "Cedilla or comma"
+msgstr ""
+
+#: includes/narro/plugins/NarroCedillaComma.class.php
+msgid "Select whether you want to see s and t with comma or cedilla undernieth"
+msgstr ""
+
 #: includes/narro/plugins/NarroEntityCheck.class.php
 msgid "Entity check"
 msgstr ""
@@ -729,10 +781,6 @@ msgstr ""
 msgid "The original text has %d trailing spaces, your suggestion has %d."
 msgstr ""
 
-#: includes/narro/plugins/NarroSelfTranslate.class.php
-msgid "Narro self translator"
-msgstr ""
-
 #: includes/narro/plugins/NarroSpellCheck.class.php
 msgid "Spell check"
 msgstr ""
@@ -743,6 +791,14 @@ msgstr ""
 
 #: includes/narro/plugins/NarroSpellCheck.class.php
 msgid "<span class=\"mispelled_word\">%s</span> seems to be mispelled."
+msgstr ""
+
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "Spellchecking"
+msgstr ""
+
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "Spellcheck support if possible, or just disable it"
 msgstr ""
 
 #: includes/qcodo/_core/framework/QDateTimeSpan.class.php
@@ -1607,10 +1663,6 @@ msgstr ""
 
 #: templates/narro_language_edit.tpl.php
 msgid "Text direction"
-msgstr ""
-
-#: templates/narro_language_edit.tpl.php
-msgid "Special characters"
 msgstr ""
 
 #: templates/narro_language_list.tpl.php
