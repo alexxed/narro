@@ -75,6 +75,10 @@
             // Additional Static Methods
             ////////////////////////////
             // TODO: Define any other custom global WebApplication functions (if any) here...
+
+            public static function Translate($strText, $strPlural = null, $intCnt = null) {
+                return NarroApp::Translate($strText, $strPlural, $intCnt);
+            }
         }
 
 
