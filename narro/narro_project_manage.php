@@ -30,7 +30,6 @@
         /**
          * common options
          */
-        protected $chkForce;
         protected $btnCleanLocaleDirectory;
         protected $lstLogLevel;
 
@@ -406,7 +405,6 @@
                         escapeshellarg('includes/narro/importer/importer.php').
                         ' --import --minloglevel %d --project %d --user %d ' .
                         (($this->chkApprove->Checked)?'--approve ':'') .
-                        (($this->chkForce->Checked)?'--force ':'') .
                         (($this->chkCheckEqual->Checked)?'--check-equal ':'') .
                         (($this->chkOnlySuggestions->Checked || !NarroApp::HasPermission('Can manage project'))?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                         ' --source-lang en-US --target-lang %s',
@@ -587,7 +585,6 @@
                         ' --export --minloglevel %d --project %d --user %d ' .
                         (($this->chkApprove->Checked)?'--approve ':'') .
                         (($this->chkCopyUnhandledFiles->Checked)?'--copy-unhandled-files ':'') .
-                        (($this->chkForce->Checked)?'--force ':'') .
                         (($this->chkOnlySuggestions->Checked)?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                         ' --check-equal --source-lang en-US --target-lang %s --exported-suggestion %d',
                     $this->lstLogLevel->SelectedValue,

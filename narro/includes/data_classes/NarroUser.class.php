@@ -123,10 +123,12 @@
                         if (strstr($strLangGroup, ',')) {
                             $arrLangCodes = split(',', $strLangGroup);
                             foreach($arrLangCodes as $strLangCode) {
-                                $objLanguage = NarroLanguage::LoadByLanguageCode($strLangCode);
-                                if ($objLanguage instanceof NarroLanguage) {
-                                    $objUser->Language = $objLanguage;
-                                    return $objUser;
+                                if (preg_match('/a-z0-9\_/i', $strLangCode)) {
+                                    $objLanguage = NarroLanguage::LoadByLanguageCode($strLangCode);
+                                    if ($objLanguage instanceof NarroLanguage) {
+                                        $objUser->Language = $objLanguage;
+                                        return $objUser;
+                                    }
                                 }
                             }
                         }

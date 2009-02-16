@@ -35,8 +35,6 @@
             <div class="dotted_box_content">
             <label for="<?php echo $this->lstLogLevel->ControlId ?>"><?php echo t('Minimum logged error level') . ' ' . $this->lstLogLevel->Render(false); ?></label>
             <p class="instructions"><?php echo t('Lower values give more verbosity'); ?></p>
-            <label for="<?php echo $this->chkForce->ControlId ?>"><?php echo $this->chkForce->Render(false) . ' ' . t('Force operation even if a previous operation is reported to be running'); ?></label>
-            <p class="instructions"><?php echo t('Cleanup the files that are used during an import or export and allow starting another operation'); ?></p>
             <?php echo $this->btnCleanLocaleDirectory->Render(false) ?>
             <p class="instructions"><?php echo t('Delete all the files in the locale directory to get a fresh export. Be sure to backup any files not imported in the application.'); ?></p>
             </div>
