@@ -155,8 +155,8 @@ CREATE TABLE narro_project (
   KEY project_category_id (project_category_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `narro_project` (`project_id`, `project_category_id`, `project_name`, `project_type`, `project_description`, `total_text_count`, `fuzzy_text_count`, `approved_text_count`, `progress_percent`, `active`) VALUES
-(1, NULL, 'Narro', 4, NULL, 0, 0, 0, 0, 1);
+INSERT INTO `narro_project` (`project_id`, `project_category_id`, `project_name`, `project_type`, `project_description`, `active`) VALUES
+(1, NULL, 'Narro', 4, NULL, 1);
 
 CREATE TABLE narro_project_category (
   project_category_id int(11) unsigned NOT NULL auto_increment,

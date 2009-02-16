@@ -203,7 +203,7 @@
         if (!mkdir(__LOCALE_DIRECTORY__, 0777, true))
             die(sprintf('Could not create a directory. Please create the directory "%s" and give it write permissions for everyone (chmod 777)', __LOCALE_DIRECTORY__));
         else
-            NarroUtils::RecursiveChmod(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/');
+            NarroUtils::RecursiveChmod(__LOCALE_DIRECTORY__);
     }
 
     if (file_exists(__LOCALE_DIRECTORY__ . '/narro.mo'))
