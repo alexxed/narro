@@ -22,7 +22,7 @@
         protected $colLanguage;
         protected $colSuggestionCnt;
         protected $colCharCnt;
-        protected $intLimit = 10;
+        protected $intLimit;
 
         public function __construct($objParentObject, $strControlId = null) {
             // Call the Parent
@@ -37,7 +37,6 @@
             $this->colUsername->HtmlEntities = false;
             $this->colSuggestionCnt = new QDataGridColumn(t('Translations'), '<?= $_CONTROL->ParentControl->dtgUsers_colSuggestionCnt_Render($_ITEM); ?>');
             $this->colCharCnt = new QDataGridColumn(t('Characters'), '<?= $_CONTROL->ParentControl->dtgUsers_colCharCnt_Render($_ITEM); ?>');
-            $this->colLanguage = new QDataGridColumn(t('Language'), '<?= $_CONTROL->ParentControl->dtgUsers_colLanguage_Render($_ITEM); ?>');
 
             // Setup DataGrid
             $this->dtgUsers = new QDataGrid($this);
@@ -54,7 +53,8 @@
             $this->dtgUsers->AddColumn($this->colUsername);
             $this->dtgUsers->AddColumn($this->colSuggestionCnt);
             $this->dtgUsers->AddColumn($this->colCharCnt);
-            $this->dtgUsers->AddColumn($this->colLanguage);
+
+            $this->intLimit = floor(NarroApp::$User->getPreferenceValueByName('Items per page') / 2);
         }
 
         public function dtgUsers_colUsername_Render( $arrUserInfo ) {
@@ -83,7 +83,7 @@
         public function dtgUsers_Bind() {
             $objDatabase = NarroApp::$Database[1];
 
-            $strQuery = sprintf('SELECT u.username, u.user_id, u.data, COUNT(s.suggestion_id) as suggestion_cnt, SUM(s.suggestion_char_count) AS char_cnt FROM narro_user u LEFT JOIN narro_suggestion s ON u.user_id=s.user_id WHERE u.user_id<>%d GROUP BY u.user_id ORDER BY suggestion_cnt DESC LIMIT 0,%d', NarroUser::ANONYMOUS_USER_ID, $this->intLimit);
+            $strQuery = sprintf('SELECT u.username, u.user_id, u.data, COUNT(s.suggestion_id) as suggestion_cnt, SUM(s.suggestion_char_count) AS char_cnt FROM narro_user u LEFT JOIN narro_suggestion s ON u.user_id=s.user_id WHERE u.user_id<>%d AND s.language_id=%d GROUP BY u.user_id ORDER BY suggestion_cnt DESC LIMIT 0,%d', NarroUser::ANONYMOUS_USER_ID, NarroApp::GetLanguageId(), $this->intLimit);
 
             // Perform the Query
             $objDbResult = $objDatabase->Query($strQuery);
@@ -96,6 +96,22 @@
 
         protected function GetControlHtml() {
             return $this->dtgUsers->Render(false);
+        }
+
+        public function __get($strName) {
+                    switch ($strName) {
+                case "Limit":
+                    return $this->intLimit;
+
+                default:
+                    try {
+                        return parent::__get($strName);
+                        break;
+                    } catch (QCallerException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+            }
         }
 
     }
