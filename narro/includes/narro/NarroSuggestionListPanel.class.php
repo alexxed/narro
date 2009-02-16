@@ -239,7 +239,7 @@
 
             $strSuggestionValue = NarroString::ShowLeadingAndTrailingSpaces(NarroString::HtmlEntities($strSuggestionValue));
 
-            if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->TextAccessKey) {
+            if ($objNarroSuggestion->SuggestionId == $this->objNarroContextInfo->ValidSuggestionId && $this->objNarroContextInfo->TextAccessKey && NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId)) {
                 if ($this->objNarroContextInfo->SuggestionAccessKey != '') {
                     $intAccPos = mb_strpos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
 
