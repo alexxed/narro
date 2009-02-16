@@ -182,10 +182,6 @@
             $this->chkCopyUnhandledFiles->Checked = true;
             $this->chkCopyUnhandledFiles->Text = t('Copy unhandled files');
 
-            $this->chkForce = new QCheckBox($this);
-            $this->chkForce->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('document.getElementById(\'%s\').disabled = false', $this->btnImport->ControlId)));
-            $this->chkForce->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('document.getElementById(\'%s\').disabled = false', $this->btnExport->ControlId)));
-
             $this->btnCleanLocaleDirectory = new QButton($this);
             $this->btnCleanLocaleDirectory->Text = t('Clean locale directory');
             $this->btnCleanLocaleDirectory->AddAction(new QClickEvent(), new QConfirmAction(NarroApp::Translate('Are you SURE you want to DELETE the files in your locale directory?\nThis operation has no effect on the data present in the application, but you might loose translated unhandled files, so you should backup first.')));
@@ -456,9 +452,6 @@
                 NarroLog::LogMessage(3, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
                 NarroLog::LogMessage(3, sprintf('Importing using templates from %s', $strImportPath . '/' . $objNarroImporter->SourceLanguage->LanguageCode));
 
-                if ($this->chkForce->Checked)
-                    $objNarroImporter->CleanImportDirectory();
-
                 try {
                     $objNarroImporter->ImportProject();
                 }
@@ -623,9 +616,6 @@
                 NarroLog::LogMessage(3, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
                 NarroLog::LogMessage(3, sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
                 NarroLog::LogMessage(3, sprintf('Exporting using templates from %s', $strExportPath . '/en-US'));
-
-                if ($this->chkForce->Checked)
-                    $objNarroImporter->CleanExportDirectory();
 
                 try {
                     $objNarroImporter->ExportProject();
