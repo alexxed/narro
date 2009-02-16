@@ -47,11 +47,17 @@
         }
 
         public static function HasPermissionForThisLang($strPermissionName, $intProjectId = null) {
-            return self::$User->hasPermission($strPermissionName, $intProjectId, self::GetLanguageId());
+            if (self::$User instanceof NarroUser)
+                return self::$User->hasPermission($strPermissionName, $intProjectId, self::GetLanguageId());
+            else
+                return false;
         }
 
         public static function HasPermission($strPermissionName, $intProjectId = null, $intLanguageId = null) {
-            return self::$User->hasPermission($strPermissionName, $intProjectId, $intLanguageId);
+            if (self::$User instanceof NarroUser)
+                return self::$User->hasPermission($strPermissionName, $intProjectId, $intLanguageId);
+            else
+                return false;
         }
 
         /**
