@@ -126,6 +126,8 @@
         }
 
         public static function LoadByLanguageCode($strLanguageCode) {
+            if (!preg_match('/[a-zA-Z0-9\_\-]+/', $strLanguageCode))
+                return false;
             $objLanguage = NarroApp::$Cache->load('narrolanguage_' . str_replace('-', '_', $strLanguageCode));
 
             if (!$objLanguage instanceof NarroLanguage) {
