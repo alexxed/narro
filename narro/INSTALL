@@ -33,15 +33,19 @@
 
 - import the file narro.sql in the database you are using.
 
-    Make sure that the directories "data" and "locale" under Narro's directory has 777 permissions (everyone can read, write and execute). If you extract the archive on a unix based system, the permissions are usually kept.    
+    Make sure that the directories "data" and "locale" under Narro's directory has 777 permissions (everyone can read, write and execute). If you extract the archive on a unix based system, the permissions are usually kept.
 
 - head to http://server/__VIRTUAL_DIRECTORY__/__SUBDIRECTORY__. By default, it's http://hostname/narro.
 
     Narro should be working.
     If so, create an account by clicking Register.
-    The first account will get super powers. Go to the link "Projects".
+    The first account will get super powers.
+    Go to the link "Languages".
+    Change the Romanian language to yours. That means the name, language code, country code, text direction and plural form. Leave the plural form empty for the default one.
+    Go to the link "Projects".
     You'll have a project already defined, that's Narro.
     Follow the "Manage" link besides it and do a first import from the page that opens.
     It shouldn't take long.
     After it's finished, click on "Narro" from the breadcrumbs to see the texts imported.
     Please see the README file for ways to get help.
+    For other project types, you have to upload an archive with two directories with the same structure. One en-US and one ab-CD (your locale).
