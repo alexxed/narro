@@ -49,7 +49,7 @@
         case 'prod':
     }
 
-    define ('NARRO_VERSION', '0.9.3');
+    define ('NARRO_VERSION', '0.9.4');
     define ('ALLOW_REMOTE_ADMIN', false);
     define ('__URL_REWRITE__', 'none');
 
