@@ -69,6 +69,13 @@
                                  */
                                 $intPos = @mb_stripos( $strOriginalText, $strAccKey);
                                 if ($intPos !== false) {
+                                    /**
+                                     * Try to keep the case at import if possible
+                                     */
+                                    $intKeySensitivePos = mb_strpos($strOriginalText, $strAccKey);
+                                    if ($intKeySensitivePos !== false)
+                                        $intPos = $intKeySensitivePos;
+
                                     $arrAccKey[$strLabelCtx] = mb_substr($strOriginalText, $intPos, 1);
                                     unset($arrTexts[$strAccCtx]);
                                     NarroLog::LogMessage(1, sprintf('Found access key %s, using it', $arrAccKey[$strLabelCtx]));
