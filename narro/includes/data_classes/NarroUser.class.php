@@ -107,13 +107,21 @@
         }
 
         public static function LoadAnonymousUser() {
-            $objUser = NarroUser::LoadByUserId(self::ANONYMOUS_USER_ID);
 
-            $arrUserRole = NarroUserRole::LoadArrayByUserId(self::ANONYMOUS_USER_ID);
-            foreach($arrUserRole as $objRole) {
-                $arrRolePermission = NarroRolePermission::LoadArrayByRoleId($objRole->RoleId);
-                foreach($arrRolePermission as $objRolePermission)
-                    $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
+
+            $objUser = NarroApp::$Cache->load('anonymous_user_' . self::ANONYMOUS_USER_ID);
+
+            if (!$objUser instanceof NarroUser) {
+                $objUser = NarroUser::LoadByUserId(self::ANONYMOUS_USER_ID);
+
+                $arrUserRole = NarroUserRole::LoadArrayByUserId(self::ANONYMOUS_USER_ID);
+                foreach($arrUserRole as $objRole) {
+                    $arrRolePermission = NarroRolePermission::LoadArrayByRoleId($objRole->RoleId);
+                    foreach($arrRolePermission as $objRolePermission)
+                        $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
+                }
+
+                NarroApp::$Cache->save($objUser, 'anonymous_user_' . self::ANONYMOUS_USER_ID, array(), 3600 * 24);
             }
 
             if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {

@@ -54,9 +54,6 @@
 		static public function NarroUser() {
 			return new QQNodeNarroUser('narro_user', null);
 		}
-		static public function NarroUserPermission() {
-			return new QQNodeNarroUserPermission('narro_user_permission', null);
-		}
 		static public function NarroUserRole() {
 			return new QQNodeNarroUserRole('narro_user_role', null);
 		}

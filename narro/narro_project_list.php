@@ -23,10 +23,7 @@
 
         // DataGrid Columns
         protected $colProjectName;
-        protected $colProjectType;
-        protected $colActive;
         protected $colPercentTranslated;
-        protected $colActions;
 
         protected $pnlTopUsers;
         protected $pnlNewUsers;
@@ -38,14 +35,8 @@
             $this->colProjectName = new QDataGridColumn(t('Name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
             $this->colProjectName->HtmlEntities = false;
 
-            $this->colProjectType = new QDataGridColumn(t('Type'), '<?= $_FORM->dtgNarroProject_ProjectTypeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectType), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectType, false)));
-            $this->colActive = new QDataGridColumn(t('Active'), '<?= $_FORM->dtgNarroProject_ActiveColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->Active), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->Active, false)));
-
             $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, true, QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, true), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, false, QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, false)));
             $this->colPercentTranslated->HtmlEntities = false;
-
-            $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_FORM->dtgNarroProject_Actions_Render($_ITEM) ?>');
-            $this->colActions->HtmlEntities = false;
 
             // Setup DataGrid
             $this->dtgNarroProject = new QDataGrid($this);
@@ -62,13 +53,7 @@
 
             $this->dtgNarroProject->AddColumn($this->colProjectName);
 
-            if (NarroApp::HasPermissionForThisLang('Can manage project', null)) {
-                $this->dtgNarroProject->AddColumn($this->colProjectType);
-                $this->dtgNarroProject->AddColumn($this->colActive);
-            }
-
             $this->dtgNarroProject->AddColumn($this->colPercentTranslated);
-            $this->dtgNarroProject->AddColumn($this->colActions);
 
             $this->dtgNarroProject->SortColumnIndex = 0;
 
@@ -91,6 +76,23 @@
 
             $strOutput .= $objProgressBar->Render(false);
 
+            $strActions = '<div style="display:block; padding-top: 3px">';
+            if ($intTotalTexts)
+                $strActions .=
+                    NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')) .
+                    ' | ' .
+                    NarroLink::ProjectFileList($objNarroProject->ProjectId, null, t('Files')) .
+                    sprintf(' | <a href="narro_project_language_list.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Languages'));
+
+            if (NarroApp::HasPermissionForThisLang('Can manage project', $objNarroProject->ProjectId))
+                $strActions .=
+                    sprintf(' | <a href="narro_project_manage.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Manage'));
+
+            if (NarroApp::HasPermissionForThisLang('Can edit project', $objNarroProject->ProjectId))
+                $strActions .=
+                    sprintf(' | <a href="narro_project_edit.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Edit'));
+
+
             return
                 NarroLink::ContextSuggest(
                     $objNarroProject->ProjectId,
@@ -104,13 +106,70 @@
                     -1,
                     0,
                     $strOutput
-                );
+                )
+                .
+                $strActions . '</div>';
         }
 
         public function dtgNarroProject_ProjectNameColumn_Render(NarroProject $objNarroProject) {
             $intTotalTexts = $objNarroProject->CountAllTextsByLanguage();
             $intTranslatedTexts = $objNarroProject->CountTranslatedTextsByLanguage();
             $intApprovedTexts = $objNarroProject->CountApprovedTextsByLanguage();
+
+            if ($objNarroProject->Active)
+                $strProjectName = '<span style="font-size:1.2em">' . $objNarroProject->ProjectName . '</span>';
+            else
+                $strProjectName = '<span style="color:gray;font-style:italic;font-size:1.2em">' . $objNarroProject->ProjectName . '</span>';
+
+            $arrUser = NarroApp::$Cache->load('users_that_review_' . $objNarroProject->ProjectId . '_' . NarroApp::GetLanguageId());
+            if ($arrUser === false) {
+                $arrUser = NarroUser::QueryArray(
+                    QQ::AndCondition(
+                        QQ::Equal(QQN::NarroUser()->NarroUserRoleAsUser->Role->NarroRolePermissionAsRole->Permission->PermissionName, 'Can approve'),
+                        QQ::OrCondition(
+                            QQ::Equal(QQN::NarroUser()->NarroUserRoleAsUser->ProjectId, $objNarroProject->ProjectId),
+                            QQ::IsNull(QQN::NarroUser()->NarroUserRoleAsUser->ProjectId)
+                        ),
+                        QQ::OrCondition(
+                            QQ::Equal(QQN::NarroUser()->NarroUserRoleAsUser->LanguageId, NarroApp::GetLanguageId()),
+                            QQ::IsNull(QQN::NarroUser()->NarroUserRoleAsUser->LanguageId)
+                        )
+                    ),
+                    array(QQ::Distinct(), QQ::OrderBy(QQN::NarroUser()->Username))
+                );
+
+                NarroApp::$Cache->save($arrUser, 'users_that_review_' . $objNarroProject->ProjectId . '_' . NarroApp::GetLanguageId(), array(), 3600 * 24);
+            }
+
+            $arrUserLinks = array();
+            foreach($arrUser as $objUser) {
+                $arrUserLinks[] = NarroLink::UserProfile($objUser->UserId, $objUser->Username);
+            }
+
+            if (count($arrUserLinks))
+                $strReviewers = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Reviewers') . ': %s', join(', ', $arrUserLinks)) . '</div>';
+
+            $arrUser = NarroApp::$Cache->load('users_that_translated_' . $objNarroProject->ProjectId . '_' . NarroApp::GetLanguageId());
+            if ($arrUser === false) {
+                $arrUser = NarroUser::QueryArray(
+                    QQ::AndCondition(
+                        QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $objNarroProject->ProjectId),
+                        QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->LanguageId, NarroApp::GetLanguageId()),
+                        QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
+                    ),
+                    array(QQ::Distinct(), QQ::OrderBy(QQN::NarroUser()->Username))
+                );
+
+                NarroApp::$Cache->save($arrUser, 'users_that_translated_' . $objNarroProject->ProjectId . '_' . NarroApp::GetLanguageId(), array(), 3600 * 24);
+            }
+
+            $arrUserLinks = array();
+            foreach($arrUser as $objUser) {
+                $arrUserLinks[] = NarroLink::UserProfile($objUser->UserId, $objUser->Username);
+            }
+
+            if (count($arrUserLinks))
+                $strTranslators = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Translators') . ': %s', join(', ', $arrUserLinks)) . '</div>';
 
             return
                 NarroLink::ContextSuggest(
@@ -124,19 +183,10 @@
                     $intTotalTexts - $intApprovedTexts - $intTranslatedTexts,
                     -1,
                     0,
-                    $objNarroProject->ProjectName
-                );
-        }
-
-        public function dtgNarroProject_ProjectTypeColumn_Render(NarroProject $objNarroProject) {
-            return NarroProjectType::ToString($objNarroProject->ProjectType);
-        }
-
-        public function dtgNarroProject_ActiveColumn_Render(NarroProject $objNarroProject) {
-            if ($objNarroProject->Active)
-                return t('Yes');
-            else
-                return t('No');
+                    $strProjectName
+                ) .
+                $strReviewers .
+                $strTranslators;
         }
 
         public function dtgNarroProject_Actions_Render(NarroProject $objNarroProject) {

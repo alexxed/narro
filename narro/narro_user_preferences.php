@@ -92,7 +92,7 @@
                             elseif ($strName == 'Other languages') {
                                 $strSelect = sprintf('<select onchange="document.getElementById(\'%s\').value+= \' \' + this.options[this.selectedIndex].value;">', $txtTextPref->ControlId);
                                 foreach(NarroLanguage::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName))) as $objLanguage)
-                                    $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, $objLanguage->LanguageName, $objLanguage->LanguageCode);
+                                    $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
                                 $strSelect .= '</select>';
                                 $arrPref['description'] .= $strSelect;
                                 $txtTextPref->Width = 400;

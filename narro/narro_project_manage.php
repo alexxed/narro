@@ -638,7 +638,7 @@
         private function showLog() {
             $this->pnlLogViewer->Text = '<div class="dotted_box">
             <div class="dotted_box_title">' . t('Operation log') . '</div>
-            <div class="dotted_box_content">' . nl2br(NarroLog::GetLogContents()) . '</div></div></div>';
+            <div class="dotted_box_content">' . nl2br(NarroString::HtmlEntities(NarroLog::GetLogContents())) . '</div></div></div>';
 
             $this->pnlLogViewer->Visible = true;
         }

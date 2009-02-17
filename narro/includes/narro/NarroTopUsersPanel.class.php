@@ -95,7 +95,13 @@
         }
 
         protected function GetControlHtml() {
-            return $this->dtgUsers->Render(false);
+            $strCachedContent = NarroApp::$Cache->load(__CLASS__ . '_' . NarroApp::GetLanguageId());
+            if ($strCachedContent === false) {
+                $strCachedContent = $this->dtgUsers->Render(false);
+                NarroApp::$Cache->save($strCachedContent, __CLASS__ . '_' . NarroApp::GetLanguageId(), array(), 3600);
+            }
+
+            return $strCachedContent;
         }
 
         public function __get($strName) {

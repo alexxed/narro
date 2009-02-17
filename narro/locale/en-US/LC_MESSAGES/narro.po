@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 0.9.3\n"
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2009-12-02 10:48-0800\n"
-"PO-Revision-Date: 2009-12-02 10:48-0800\n"
+"POT-Creation-Date: 2009-17-02 02:36-0800\n"
+"PO-Revision-Date: 2009-17-02 02:36-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2206,14 +2206,14 @@ msgstr ""
 msgid "Lower values give more verbosity"
 msgstr ""
 
-#. <label for="<?php echo $this->chkForce->ControlId ?>"><?php echo $this->chkForce->Render(false) . ' ' . t('Force operation even if a previous operation is reported to be running'); ?></label>
-#: templates/narro_project_manage.tpl.php
-msgid "Force operation even if a previous operation is reported to be running"
+#. * Spellchecking: t('Yes, please')
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "Yes, please"
 msgstr ""
 
-#. <p class="instructions"><?php echo t('Cleanup the files that are used during an import or export and allow starting another operation'); ?></p>
-#: templates/narro_project_manage.tpl.php
-msgid "Cleanup the files that are used during an import or export and allow starting another operation"
+#.
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "I don't need it"
 msgstr ""
 
 #. <p class="instructions"><?php echo t('Delete all the files in the locale directory to get a fresh export. Be sure to backup any files not imported in the application.'); ?></p>
@@ -2432,13 +2432,4 @@ msgstr ""
 msgid "%s's roles"
 msgstr ""
 
-#. * Spellchecking: t('Yes, please')
-#: includes/narro/plugins/NarroSpellCheck.class.php
-msgid "Yes, please"
-msgstr ""
-
-#.
-#: includes/narro/plugins/NarroSpellCheck.class.php
-msgid "I don't need it"
-msgstr ""
 

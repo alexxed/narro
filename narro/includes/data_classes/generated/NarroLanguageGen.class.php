@@ -394,18 +394,6 @@
 					$blnExpandedViaArray = true;
 				}
 
-				if ((array_key_exists($strAliasPrefix . 'narrouserpermissionaslanguage__user_permission_id', $strExpandAsArrayNodes)) &&
-					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserpermissionaslanguage__user_permission_id')))) {
-					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserPermissionAsLanguageArray)) {
-						$objPreviousChildItem = $objPreviousItem->_objNarroUserPermissionAsLanguageArray[$intPreviousChildItemCount - 1];
-						$objChildItem = NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItem);
-						if ($objChildItem)
-							array_push($objPreviousItem->_objNarroUserPermissionAsLanguageArray, $objChildItem);
-					} else
-						array_push($objPreviousItem->_objNarroUserPermissionAsLanguageArray, NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionaslanguage__', $strExpandAsArrayNodes));
-					$blnExpandedViaArray = true;
-				}
-
 				if ((array_key_exists($strAliasPrefix . 'narrouserroleaslanguage__user_role_id', $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserroleaslanguage__user_role_id')))) {
 					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserRoleAsLanguageArray)) {
@@ -509,14 +497,6 @@
 					array_push($objToReturn->_objNarroTextCommentAsLanguageArray, NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentaslanguage__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objNarroTextCommentAsLanguage = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentaslanguage__', $strExpandAsArrayNodes);
-			}
-
-			// Check for NarroUserPermissionAsLanguage Virtual Binding
-			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserpermissionaslanguage__user_permission_id'))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narrouserpermissionaslanguage__user_permission_id', $strExpandAsArrayNodes)))
-					array_push($objToReturn->_objNarroUserPermissionAsLanguageArray, NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionaslanguage__', $strExpandAsArrayNodes));
-				else
-					$objToReturn->_objNarroUserPermissionAsLanguage = NarroUserPermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserpermissionaslanguage__', $strExpandAsArrayNodes);
 			}
 
 			// Check for NarroUserRoleAsLanguage Virtual Binding
@@ -948,22 +928,6 @@
 					 * @return NarroTextComment[]
 					 */
 					return (array) $this->_objNarroTextCommentAsLanguageArray;
-
-				case '_NarroUserPermissionAsLanguage':
-					/**
-					 * Gets the value for the private _objNarroUserPermissionAsLanguage (Read-Only)
-					 * if set due to an expansion on the narro_user_permission.language_id reverse relationship
-					 * @return NarroUserPermission
-					 */
-					return $this->_objNarroUserPermissionAsLanguage;
-
-				case '_NarroUserPermissionAsLanguageArray':
-					/**
-					 * Gets the value for the private _objNarroUserPermissionAsLanguageArray (Read-Only)
-					 * if set due to an ExpandAsArray on the narro_user_permission.language_id reverse relationship
-					 * @return NarroUserPermission[]
-					 */
-					return (array) $this->_objNarroUserPermissionAsLanguageArray;
 
 				case '_NarroUserRoleAsLanguage':
 					/**
@@ -2204,156 +2168,6 @@
 
 			
 		
-		// Related Objects' Methods for NarroUserPermissionAsLanguage
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated NarroUserPermissionsAsLanguage as an array of NarroUserPermission objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroUserPermission[]
-		*/ 
-		public function GetNarroUserPermissionAsLanguageArray($objOptionalClauses = null) {
-			if ((is_null($this->intLanguageId)))
-				return array();
-
-			try {
-				return NarroUserPermission::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated NarroUserPermissionsAsLanguage
-		 * @return int
-		*/ 
-		public function CountNarroUserPermissionsAsLanguage() {
-			if ((is_null($this->intLanguageId)))
-				return 0;
-
-			return NarroUserPermission::CountByLanguageId($this->intLanguageId);
-		}
-
-		/**
-		 * Associates a NarroUserPermissionAsLanguage
-		 * @param NarroUserPermission $objNarroUserPermission
-		 * @return void
-		*/ 
-		public function AssociateNarroUserPermissionAsLanguage(NarroUserPermission $objNarroUserPermission) {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserPermissionAsLanguage on this unsaved NarroLanguage.');
-			if ((is_null($objNarroUserPermission->UserPermissionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserPermissionAsLanguage on this NarroLanguage with an unsaved NarroUserPermission.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_user_permission`
-				SET
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-				WHERE
-					`user_permission_id` = ' . $objDatabase->SqlVariable($objNarroUserPermission->UserPermissionId) . '
-			');
-		}
-
-		/**
-		 * Unassociates a NarroUserPermissionAsLanguage
-		 * @param NarroUserPermission $objNarroUserPermission
-		 * @return void
-		*/ 
-		public function UnassociateNarroUserPermissionAsLanguage(NarroUserPermission $objNarroUserPermission) {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this unsaved NarroLanguage.');
-			if ((is_null($objNarroUserPermission->UserPermissionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this NarroLanguage with an unsaved NarroUserPermission.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_user_permission`
-				SET
-					`language_id` = null
-				WHERE
-					`user_permission_id` = ' . $objDatabase->SqlVariable($objNarroUserPermission->UserPermissionId) . ' AND
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all NarroUserPermissionsAsLanguage
-		 * @return void
-		*/ 
-		public function UnassociateAllNarroUserPermissionsAsLanguage() {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this unsaved NarroLanguage.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_user_permission`
-				SET
-					`language_id` = null
-				WHERE
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated NarroUserPermissionAsLanguage
-		 * @param NarroUserPermission $objNarroUserPermission
-		 * @return void
-		*/ 
-		public function DeleteAssociatedNarroUserPermissionAsLanguage(NarroUserPermission $objNarroUserPermission) {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this unsaved NarroLanguage.');
-			if ((is_null($objNarroUserPermission->UserPermissionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this NarroLanguage with an unsaved NarroUserPermission.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_user_permission`
-				WHERE
-					`user_permission_id` = ' . $objDatabase->SqlVariable($objNarroUserPermission->UserPermissionId) . ' AND
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated NarroUserPermissionsAsLanguage
-		 * @return void
-		*/ 
-		public function DeleteAllNarroUserPermissionsAsLanguage() {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserPermissionAsLanguage on this unsaved NarroLanguage.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_user_permission`
-				WHERE
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-			');
-		}
-
-			
-		
 		// Related Objects' Methods for NarroUserRoleAsLanguage
 		//-------------------------------------------------------------------
 
@@ -2710,22 +2524,6 @@
 		private $_objNarroTextCommentAsLanguageArray = array();
 
 		/**
-		 * Private member variable that stores a reference to a single NarroUserPermissionAsLanguage object
-		 * (of type NarroUserPermission), if this NarroLanguage object was restored with
-		 * an expansion on the narro_user_permission association table.
-		 * @var NarroUserPermission _objNarroUserPermissionAsLanguage;
-		 */
-		private $_objNarroUserPermissionAsLanguage;
-
-		/**
-		 * Private member variable that stores a reference to an array of NarroUserPermissionAsLanguage objects
-		 * (of type NarroUserPermission[]), if this NarroLanguage object was restored with
-		 * an ExpandAsArray on the narro_user_permission association table.
-		 * @var NarroUserPermission[] _objNarroUserPermissionAsLanguageArray;
-		 */
-		private $_objNarroUserPermissionAsLanguageArray = array();
-
-		/**
 		 * Private member variable that stores a reference to a single NarroUserRoleAsLanguage object
 		 * (of type NarroUserRole), if this NarroLanguage object was restored with
 		 * an expansion on the narro_user_role association table.
@@ -2895,8 +2693,6 @@
 					return new QQReverseReferenceNodeNarroSuggestionComment($this, 'narrosuggestioncommentaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroTextCommentAsLanguage':
 					return new QQReverseReferenceNodeNarroTextComment($this, 'narrotextcommentaslanguage', 'reverse_reference', 'language_id');
-				case 'NarroUserPermissionAsLanguage':
-					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroUserRoleAsLanguage':
 					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleaslanguage', 'reverse_reference', 'language_id');
 
@@ -2953,8 +2749,6 @@
 					return new QQReverseReferenceNodeNarroSuggestionComment($this, 'narrosuggestioncommentaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroTextCommentAsLanguage':
 					return new QQReverseReferenceNodeNarroTextComment($this, 'narrotextcommentaslanguage', 'reverse_reference', 'language_id');
-				case 'NarroUserPermissionAsLanguage':
-					return new QQReverseReferenceNodeNarroUserPermission($this, 'narrouserpermissionaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroUserRoleAsLanguage':
 					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleaslanguage', 'reverse_reference', 'language_id');
 

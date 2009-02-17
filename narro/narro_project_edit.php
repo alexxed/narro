@@ -204,7 +204,7 @@
 
             $objDatabase = NarroApp::$Database[1];
 
-            $strQuery = sprintf("DELETE FROM `narro_user_permission` WHERE project_id = %d", $this->objNarroProject->ProjectId);
+            $strQuery = sprintf("DELETE FROM `narro_user_role` WHERE project_id = %d", $this->objNarroProject->ProjectId);
             try {
                 $objDatabase->NonQuery($strQuery);
             }catch (Exception $objEx) {
