@@ -77,22 +77,26 @@
 
             $strOutput .= $objProgressBar->Render(false);
 
-            $strActions = '<div style="display:block; padding-top: 3px">';
-            if ($intTotalTexts)
-                $strActions .=
-                    NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')) .
-                    ' | ' .
-                    NarroLink::ProjectFileList($objNarroProject->ProjectId, null, t('Files')) .
-                    sprintf(' | <a href="narro_project_language_list.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Languages')) .
-                    ' | ';
+            $objActions = new NarroBreadcrumbPanel($this->dtgNarroProject);
+            $objActions->strSeparator = ' | ';
+            $objActions->CssClass = '';
+            $objActions->SetCustomStyle('padding-top', '3px');
+
+            if ($intTotalTexts) {
+                $objActions->addElement(NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')));
+                $objActions->addElement(NarroLink::ProjectFileList($objNarroProject->ProjectId, null, t('Files')));
+                $objActions->addElement(sprintf('<a href="narro_project_language_list.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Languages')));
+            }
 
             if (NarroApp::HasPermissionForThisLang('Can manage project', $objNarroProject->ProjectId))
-                $strActions .=
-                    sprintf('<a href="narro_project_manage.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Manage'));
+                $objActions->addElement(
+                    sprintf('<a href="narro_project_manage.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Manage'))
+                );
 
             if (NarroApp::HasPermissionForThisLang('Can edit project', $objNarroProject->ProjectId))
-                $strActions .=
-                    sprintf(' | <a href="narro_project_edit.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Edit'));
+                $objActions->addElement(
+                    sprintf('<a href="narro_project_edit.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Edit'))
+                );
 
 
             return
@@ -110,7 +114,7 @@
                     $strOutput
                 )
                 .
-                $strActions . '</div>';
+                $objActions->Render(false);
         }
 
         public function dtgNarroProject_ProjectNameColumn_Render(NarroProject $objNarroProject) {
