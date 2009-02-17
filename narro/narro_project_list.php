@@ -37,6 +37,7 @@
 
             $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, true, QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, true), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, false, QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, false)));
             $this->colPercentTranslated->HtmlEntities = false;
+            $this->colPercentTranslated->Wrap = false;
 
             // Setup DataGrid
             $this->dtgNarroProject = new QDataGrid($this);
@@ -82,11 +83,12 @@
                     NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')) .
                     ' | ' .
                     NarroLink::ProjectFileList($objNarroProject->ProjectId, null, t('Files')) .
-                    sprintf(' | <a href="narro_project_language_list.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Languages'));
+                    sprintf(' | <a href="narro_project_language_list.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Languages')) .
+                    ' | ';
 
             if (NarroApp::HasPermissionForThisLang('Can manage project', $objNarroProject->ProjectId))
                 $strActions .=
-                    sprintf(' | <a href="narro_project_manage.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Manage'));
+                    sprintf('<a href="narro_project_manage.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Manage'));
 
             if (NarroApp::HasPermissionForThisLang('Can edit project', $objNarroProject->ProjectId))
                 $strActions .=
@@ -187,24 +189,6 @@
                 ) .
                 $strReviewers .
                 $strTranslators;
-        }
-
-        public function dtgNarroProject_Actions_Render(NarroProject $objNarroProject) {
-            $strOutput =
-                NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')) .
-                ' | ' .
-                NarroLink::ProjectFileList($objNarroProject->ProjectId, null, t('Files')) .
-                sprintf(' | <a href="narro_project_language_list.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Languages'));
-
-            if (NarroApp::HasPermissionForThisLang('Can manage project', $objNarroProject->ProjectId))
-                $strOutput .=
-                    sprintf(' | <a href="narro_project_manage.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Manage'));
-
-            if (NarroApp::HasPermissionForThisLang('Can edit project', $objNarroProject->ProjectId))
-                $strOutput .=
-                    sprintf(' | <a href="narro_project_edit.php?l=%s&p=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroProject->ProjectId, t('Edit'));
-
-            return $strOutput;
         }
 
         protected function dtgNarroProject_Bind() {
