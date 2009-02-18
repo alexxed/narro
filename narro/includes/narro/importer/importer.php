@@ -36,8 +36,6 @@
                     "                             3 - approved, then most recent,\n" .
                     "                             4 approved, most voted, most recent,\n" .
                     "                             5 approved, my suggestion\n" .
-                    "--force                      run the operation even if a previous operation is\n" .
-                    "                             reported to be running\n" .
                     "--do-not-deactivate-files    do not deactivate project files before importing\n" .
                     "--do-not-deactivate-contexts do not deactivate project contexts before\n" .
                     "                             importing\n" .

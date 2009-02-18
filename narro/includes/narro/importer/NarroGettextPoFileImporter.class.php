@@ -60,6 +60,9 @@
 
                     if (strpos($strLine, '#:') === 0) {
                         NarroLog::LogMessage(1, 'Found reference. <br />');
+                        /**
+                         * Remove the line number from the source file
+                         */
                         $arrFields['Reference'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -222,8 +225,8 @@
                     /**
                      * Remove the source line numbers from the context, they change too often
                      */
-                    $arrFields['Context'] = preg_replace('/(:[0-9]+)/m', '', $arrFields['Reference']) . $arrFields['Flag'] . $arrFields['PreviousContext'] . $arrFields['PreviousUntranslated'] . $arrFields['PreviousUntranslatedPlural'] . $arrFields['MsgContext'];
-                    $arrFields['ContextComment'] = $arrFields['ExtractedComment'];
+                    $arrFields['Context'] = $arrFields['MsgContext'];
+                    $arrFields['ContextComment'] = $arrFields['ExtractedComment'] . preg_replace('/(:[0-9]+)/m', '', $arrFields['Reference']) . $arrFields['Flag'] . $arrFields['PreviousContext'] . $arrFields['PreviousUntranslated'] . $arrFields['PreviousUntranslatedPlural'] . $arrFields['MsgContext'];
 
                     if (!is_null($arrFields['MsgId'])) $arrFields['MsgId'] = str_replace('\"', '"', $arrFields['MsgId']);
                     if (!is_null($arrFields['MsgStr'])) $arrFields['MsgStr'] = str_replace('\"', '"', $arrFields['MsgStr']);
@@ -234,23 +237,19 @@
                     if (!is_null($arrFields['MsgStr2'])) $arrFields['MsgStr2'] = str_replace('\"', '"', $arrFields['MsgStr2']);
 
                     if (trim($arrFields['Context']) == '') {
-                        $arrFields['Context'] = sprintf('This text has no context info. The text is used in %s. Position in file: %d', $this->objFile->FileName, $intCurrentGroup);
+                        $arrFields['Context'] = sprintf('This text has no context info. The text is used in %s. Unique id is %s', $this->objFile->FileName, md5($arrFields['MsgId']));
                     }
 
                     if ((!isset($arrFields['MsgId']) && !isset($arrFields['MsgPluralId'])) || (!isset($arrFields['MsgStr']) && !isset($arrFields['MsgStr0'])))
                         continue;
 
                     $intCurrentGroup++;
-                    /**
-                     * If there is a similar context, add a unique thing to it, like the group number in the file
-                     */
                     if (isset($arrGroupFields[$arrFields['Context']])) {
-                        $arrFields['Context'] .= sprintf("\nPosition in file: %d", $intCurrentGroup);
+                        $arrFields['Context'] .= sprintf("\nFound duplicate context, group in file: %d", $intCurrentGroup);
                         $arrGroupFields[$arrFields['Context']] = $arrFields;
                     }
-                    else {
+                    else
                         $arrGroupFields[$arrFields['Context']] = $arrFields;
-                    }
                 }
             }
             else {
@@ -379,10 +378,10 @@
                     $strSingularText = $arrTemplateFields['MsgId'];
 
                     if (!is_null($arrTemplateFields['MsgStr0']))
-                        $arrTemplateFields['MsgStr0'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgId']), $this->getAccessKey($arrTemplateFields['MsgId']), $this->getAccessKeyPrefix($arrTemplateFields['MsgId']), null, null, $arrTemplateFields['Context'] . "This text has plurals.");
+                        $arrTemplateFields['MsgStr0'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgId']), $this->getAccessKey($arrTemplateFields['MsgId']), $this->getAccessKeyPrefix($arrTemplateFields['MsgId']), null, null, $arrTemplateFields['Context'] . "\nThis text has plurals.");
 
                     for($intPluralId=1; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
-                        $arrTemplateFields['MsgStr' . $intPluralId] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgPluralId']), $this->getAccessKey($arrTemplateFields['MsgPluralId']), $this->getAccessKeyPrefix($arrTemplateFields['MsgPluralId']), null, null, $arrTemplateFields['Context'] . "This is plural form $intPluralId for the text \"".$strSingularText."\".");
+                        $arrTemplateFields['MsgStr' . $intPluralId] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgPluralId']), $this->getAccessKey($arrTemplateFields['MsgPluralId']), $this->getAccessKeyPrefix($arrTemplateFields['MsgPluralId']), null, null, $arrTemplateFields['Context'] . "\nThis is plural form $intPluralId for the text \"".$strSingularText."\".");
                     }
                 }
 
@@ -531,7 +530,7 @@
                             $this->getAccessKey($arrTemplateFields['MsgId']),
                             $this->stripAccessKey($arrTranslatedFile[$strContext]['MsgStr0']),
                             $this->getAccessKey($arrTranslatedFile[$strContext]['MsgStr0']),
-                            $arrTemplateFields['Context'] . "This text has plurals.",
+                            $arrTemplateFields['Context'] . "\nThis text has plurals.",
                             $arrTemplateFields['ContextComment']
                         );
                     }
@@ -543,7 +542,7 @@
                                 $this->getAccessKey($arrTemplateFields['MsgPluralId']),
                                 $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId],
                                 $this->getAccessKey($arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]),
-                                $arrTemplateFields['Context'] . "This is plural form $intPluralId for the text \"" . $arrTemplateFields['MsgId'] . "\".",
+                                $arrTemplateFields['Context'] . "\nThis is plural form $intPluralId for the text \"" . $arrTemplateFields['MsgId'] . "\".",
                                 $arrTemplateFields['ContextComment']
                             );
                         }
@@ -558,7 +557,7 @@
             $strCleanText = html_entity_decode($strCleanText);
             $strCleanText = preg_replace('/\$[a-z0-9A-Z_\-]+/', '', $strCleanText);
 
-            if (preg_match('/_(\w)/', $strCleanText, $arrMatches)) {
+            if (preg_match('/^[A-Z]/', $strCleanText) && preg_match('/_(\w)/', $strCleanText, $arrMatches)) {
                 return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
             }
             else {
