@@ -232,7 +232,7 @@
 
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
-        $objNarroImporter->CopyUnhandledFiles = !((bool) array_search('--copy-unhandled-files', $argv));
+        $objNarroImporter->CopyUnhandledFiles = ((bool) array_search('--copy-unhandled-files', $argv));
 
         if (in_array('--force', $argv)) {
             $objNarroImporter->CleanExportDirectory();
