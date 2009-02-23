@@ -557,7 +557,7 @@
             $strCleanText = html_entity_decode($strCleanText);
             $strCleanText = preg_replace('/\$[a-z0-9A-Z_\-]+/', '', $strCleanText);
 
-            if (preg_match('/^[A-Z]/', $strCleanText) && preg_match('/_(\w)/', $strCleanText, $arrMatches)) {
+            if (preg_match('/[A-Z]/', $strCleanText) && preg_match('/_(\w)/', $strCleanText, $arrMatches)) {
                 return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
             }
             else {
