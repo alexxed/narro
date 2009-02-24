@@ -131,7 +131,7 @@
                 $strProjectName = '<span style="color:gray;font-style:italic;font-size:1.2em">' . $objNarroProject->ProjectName . '</span>';
 
             $arrUser = NarroApp::$Cache->load('users_that_review_' . $objNarroProject->ProjectId . '_' . NarroApp::GetLanguageId());
-            if (1 || $arrUser === false) {
+            if ($arrUser === false) {
                 $arrUser = NarroUser::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroUser()->NarroUserRoleAsUser->Role->NarroRolePermissionAsRole->Permission->PermissionName, 'Can approve'),
@@ -165,7 +165,7 @@
                 $strReviewers = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Reviewers') . ': %s', join(', ', $arrUserLinks)) . $strMore . '</div>';
 
             $arrUser = NarroApp::$Cache->load('users_that_translated_' . $objNarroProject->ProjectId . '_' . NarroApp::GetLanguageId());
-            if (1 || $arrUser === false) {
+            if ($arrUser === false) {
                 $arrUser = NarroUser::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $objNarroProject->ProjectId),
