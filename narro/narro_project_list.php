@@ -68,9 +68,8 @@
             $intTranslatedTexts = $objNarroProject->CountTranslatedTextsByLanguage();
             $intApprovedTexts = $objNarroProject->CountApprovedTextsByLanguage();
 
-            $objProgressBar = $this->GetControl('progressbar' . $objNarroProject->ProjectId);
-            if (!$objProgressBar instanceof NarroTranslationProgressBar)
-                $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroProject, 'progressbar' . $objNarroProject->ProjectId);
+            $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroProject);
+
             $objProgressBar->Total = $intTotalTexts;
             $objProgressBar->Translated = $intApprovedTexts;
             $objProgressBar->Fuzzy = $intTranslatedTexts;
@@ -78,6 +77,7 @@
             $strOutput .= $objProgressBar->Render(false);
 
             $objActions = new NarroBreadcrumbPanel($this->dtgNarroProject);
+
             $objActions->strSeparator = ' | ';
             $objActions->CssClass = '';
             $objActions->SetCustomStyle('padding-top', '3px');
@@ -99,7 +99,7 @@
                 );
 
 
-            return
+            $strOutput =
                 NarroLink::ContextSuggest(
                     $objNarroProject->ProjectId,
                     0,
@@ -112,12 +112,15 @@
                     -1,
                     0,
                     $strOutput
-                )
-                .
-                $objActions->Render(false);
+                );
+
+            $strOutput .= $objActions->Render(false);
+
+            return $strOutput;
         }
 
         public function dtgNarroProject_ProjectNameColumn_Render(NarroProject $objNarroProject) {
+
             $intTotalTexts = $objNarroProject->CountAllTextsByLanguage();
             $intTranslatedTexts = $objNarroProject->CountTranslatedTextsByLanguage();
             $intApprovedTexts = $objNarroProject->CountApprovedTextsByLanguage();
@@ -128,7 +131,7 @@
                 $strProjectName = '<span style="color:gray;font-style:italic;font-size:1.2em">' . $objNarroProject->ProjectName . '</span>';
 
             $arrUser = NarroApp::$Cache->load('users_that_review_' . $objNarroProject->ProjectId . '_' . NarroApp::GetLanguageId());
-            if ($arrUser === false) {
+            if (1 || $arrUser === false) {
                 $arrUser = NarroUser::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroUser()->NarroUserRoleAsUser->Role->NarroRolePermissionAsRole->Permission->PermissionName, 'Can approve'),
@@ -141,7 +144,7 @@
                             QQ::IsNull(QQN::NarroUser()->NarroUserRoleAsUser->LanguageId)
                         )
                     ),
-                    array(QQ::Distinct(), QQ::OrderBy(QQN::NarroUser()->Username))
+                    array(QQ::Distinct(), QQ::OrderBy(QQN::NarroUser()->NarroUserRoleAsUser->UserRoleId))
                 );
 
                 NarroApp::$Cache->save($arrUser, 'users_that_review_' . $objNarroProject->ProjectId . '_' . NarroApp::GetLanguageId(), array(), 3600 * 24);
@@ -152,18 +155,24 @@
                 $arrUserLinks[] = NarroLink::UserProfile($objUser->UserId, $objUser->Username);
             }
 
+            $strMore = '';
+            if (count($arrUserLinks) > 4) {
+                $arrUserLinks = array_slice($arrUserLinks, 0, 4);
+                $strMore = ', ...';
+            }
+
             if (count($arrUserLinks))
-                $strReviewers = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Reviewers') . ': %s', join(', ', $arrUserLinks)) . '</div>';
+                $strReviewers = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Reviewers') . ': %s', join(', ', $arrUserLinks)) . $strMore . '</div>';
 
             $arrUser = NarroApp::$Cache->load('users_that_translated_' . $objNarroProject->ProjectId . '_' . NarroApp::GetLanguageId());
-            if ($arrUser === false) {
+            if (1 || $arrUser === false) {
                 $arrUser = NarroUser::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $objNarroProject->ProjectId),
                         QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->LanguageId, NarroApp::GetLanguageId()),
                         QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
                     ),
-                    array(QQ::Distinct(), QQ::OrderBy(QQN::NarroUser()->Username))
+                    array(QQ::Distinct(), QQ::OrderBy(QQN::NarroUser()->NarroSuggestionAsUser->Created, false))
                 );
 
                 NarroApp::$Cache->save($arrUser, 'users_that_translated_' . $objNarroProject->ProjectId . '_' . NarroApp::GetLanguageId(), array(), 3600 * 24);
@@ -171,11 +180,17 @@
 
             $arrUserLinks = array();
             foreach($arrUser as $objUser) {
-                $arrUserLinks[] = NarroLink::UserProfile($objUser->UserId, $objUser->Username);
+               $arrUserLinks[] = NarroLink::UserProfile($objUser->UserId, $objUser->Username);
+            }
+
+            $strMore = '';
+            if (count($arrUserLinks) > 4) {
+                $arrUserLinks = array_slice($arrUserLinks, 0, 4);
+                $strMore = ', ...';
             }
 
             if (count($arrUserLinks))
-                $strTranslators = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Translators') . ': %s', join(', ', $arrUserLinks)) . '</div>';
+               $strTranslators = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Translators') . ': %s', join(', ', $arrUserLinks)) . $strMore . '</div>';
 
             return
                 NarroLink::ContextSuggest(

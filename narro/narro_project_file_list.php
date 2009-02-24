@@ -134,9 +134,7 @@
         }
 
         public function dtgNarroFile_PercentTranslated_Render(NarroFile $objNarroFile) {
-            $objProgressBar = $this->GetControl('progressbar' . $objNarroFile->FileId);
-            if (!$objProgressBar instanceof NarroTranslationProgressBar)
-                $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroFile, 'progressbar' . $objNarroFile->FileId);
+            $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroFile);
 
             $objProgressBar->Total = $objNarroFile->CountAllTextsByLanguage();
             $objProgressBar->Translated = $objNarroFile->CountApprovedTextsByLanguage();

@@ -89,6 +89,8 @@
                     $objProjectProgress->TotalTextCount = $intTotalTexts;
                     if ($objProjectProgress->TotalTextCount)
                         $objProjectProgress->ProgressPercent = floor($objProjectProgress->ApprovedTextCount*100/$objProjectProgress->TotalTextCount);
+                    else
+                        $objProjectProgress->ProgressPercent = 0;
                     $objProjectProgress->Save();
 
                     NarroApp::$Cache->save($intTotalTexts, 'total_texts_' . $this->ProjectId . '_' . $intLanguageId);
@@ -166,6 +168,8 @@
                     $objProjectProgress->ApprovedTextCount = $intApprovedTexts;
                     if ($objProjectProgress->TotalTextCount)
                         $objProjectProgress->ProgressPercent = floor($objProjectProgress->ApprovedTextCount*100/$objProjectProgress->TotalTextCount);
+                    else
+                        $objProjectProgress->ProgressPercent = 0;
                     $objProjectProgress->Save();
                     NarroApp::$Cache->save($intApprovedTexts, 'approved_texts_' . $this->ProjectId . '_' . $intLanguageId);
                 }
