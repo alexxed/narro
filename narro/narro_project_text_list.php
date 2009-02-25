@@ -99,11 +99,20 @@
 
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
-            $objCommonCondition = QQ::AndCondition(
-                QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
-                QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
-                QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
-            );
+            if (NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save'))
+                $objCommonCondition = QQ::AndCondition(
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1),
+                    QQ::LessThan(QQN::NarroContextInfo()->Context->Text->TextCharCount, 100),
+                    QQ::IsNull(QQN::NarroContextInfo()->TextAccessKey)
+                );
+            else
+                $objCommonCondition = QQ::AndCondition(
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
+                );
 
             // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
             switch($this->lstSearchType->SelectedValue) {

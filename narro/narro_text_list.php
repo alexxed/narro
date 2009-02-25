@@ -35,7 +35,9 @@
         protected $lstSearchType;
         protected $btnSearch;
         protected $btnMultiApprove;
+        protected $btnMultiApproveCancel;
         protected $btnMultiApproveBottom;
+        protected $btnMultiApproveCancelBottom;
 
         protected $arrSuggestionList;
 
@@ -146,10 +148,24 @@
             $this->btnMultiApprove->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId);
             $this->btnMultiApprove->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
 
+            $this->btnMultiApproveCancel = new QButton($this);
+            $this->btnMultiApproveCancel->Text = t('Cancel');
+            $this->btnMultiApproveCancel->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
+            $this->btnMultiApproveCancel->AddAction(new QClickEvent(), new QServerAction('btnMultiApproveCancel_Click'));
+
             $this->btnMultiApproveBottom = new QButton($this);
             $this->btnMultiApproveBottom->Text = t('Mass approve');
             $this->btnMultiApproveBottom->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId);
             $this->btnMultiApproveBottom->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
+
+            $this->btnMultiApproveCancelBottom = new QButton($this);
+            $this->btnMultiApproveCancelBottom->Text = t('Cancel');
+            $this->btnMultiApproveCancelBottom->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
+            $this->btnMultiApproveCancelBottom->AddAction(new QClickEvent(), new QServerAction('btnMultiApproveCancel_Click'));
+        }
+
+        protected function btnMultiApproveCancel_Click($strFormId, $strControlId, $strParameter) {
+            NarroApp::Redirect(NarroApp::$ScriptName . '?' . NarroApp::$QueryString);
         }
 
         protected function btnMultiApprove_Click($strFormId, $strControlId, $strParameter) {
@@ -157,8 +173,8 @@
               return false;
 
             if ($this->btnMultiApprove->Text == t('Mass approve')) {
-                $this->btnMultiApprove->Text = t('Approve all selected suggestions');
-                $this->btnMultiApproveBottom->Text = t('Approve all selected suggestions');
+                $this->btnMultiApprove->Text = t('Save');
+                $this->btnMultiApproveBottom->Text = t('Save');
                 $this->SetMessage(t('Mass approve mode is the quick way to approve short translations. Leave empty to disapprove.'));
                 if (NarroApp::QueryString('st') != 3)
                     $this->dtgNarroContextInfo->AddColumnAt(0, $this->colContext);
@@ -216,6 +232,9 @@
                 $this->dtgNarroContextInfo->AddColumn($this->colActions);
                 $this->dtgNarroContextInfo->MarkAsModified();
             }
+
+            $this->btnMultiApproveCancel->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
+            $this->btnMultiApproveCancelBottom->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
 
         }
 

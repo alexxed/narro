@@ -34,10 +34,12 @@
             <?php $this->btnSearch->Render(); ?>
             <br />
             <?php $this->btnMultiApprove->Render(); ?>
+            <?php $this->btnMultiApproveCancel->Render(); ?>
         </div>
         <?php $this->dtgNarroContextInfo->Render() ?>
         <div style="text-align:right;padding:3px;">
             <?php $this->btnMultiApproveBottom->Render(); ?>
+            <?php $this->btnMultiApproveCancelBottom->Render(); ?>
         </div>
         <?php NarroApp::ExecuteJavaScript("if (location.hash.match('p')) qc.pA('NarroProjectTextListForm', '" . $this->dtgNarroContextInfo->Paginator->ControlId . "', 'QClickEvent', location.hash.replace('#p', ''), '');"); ?>
     <?php $this->RenderEnd() ?>
