@@ -556,17 +556,40 @@
             $strCleanText = strip_tags($strCleanText);
             $strCleanText = html_entity_decode($strCleanText);
             $strCleanText = preg_replace('/\$[a-z0-9A-Z_\-]+/', '', $strCleanText);
-
-            if (preg_match('/[A-Z]/', $strCleanText) && preg_match('/_(\w)/', $strCleanText, $arrMatches)) {
-                return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
-            }
-            else {
-                if (preg_match('/&(\w)/', $strCleanText, $arrMatches)) {
-                    return array(NarroString::Replace('&' . $arrMatches[1], $arrMatches[1], $strText), '&', $arrMatches[1]);
+            /**
+             * it's a access key if _ is found only once
+             */
+            if (strstr($strCleanText, '_') && !strstr(NarroString::Replace('_', '', $strCleanText, 1), '_')) {
+                $arrPossibleWords = explode(' ', $strCleanText);
+                foreach($arrPossibleWords as $strPossibleWord) {
+                    /**
+                     * if there's a _ and the word that contains it starts with a capital letter or is a number, + or -
+                     */
+                    if (strstr($strPossibleWord, '_') && preg_match('/^[A-Z0-9\+\-]/', str_replace('_', '', $strPossibleWord))) {
+                        preg_match('/_(\w)/', $strText, $arrMatches);
+                        return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
+                    }
                 }
-                else
-                    return array($strText, null);
             }
+
+            /**
+             * it's a access key if & is found only once
+             */
+            if (strstr($strCleanText, '&') && !strstr(NarroString::Replace('&', '', $strCleanText, 1), '&')) {
+                $arrPossibleWords = explode(' ', $strCleanText);
+                foreach($arrPossibleWords as $strPossibleWord) {
+                    /**
+                     * if there's a _ and the word that contains it starts with a capital letter or is a number, + or -
+                     */
+                    if (strstr($strPossibleWord, '&') && preg_match('/^[A-Z0-9\+\-]/', str_replace('&', '', $strPossibleWord))) {
+                        preg_match('/&(\w)/', $strText, $arrMatches);
+                        return array(NarroString::Replace('&' . $arrMatches[1], $arrMatches[1], $strText), '&', $arrMatches[1]);
+                    }
+                }
+            }
+
+
+            return array($strText, null, null);
         }
 
         protected function getAccessKey($strText) {
