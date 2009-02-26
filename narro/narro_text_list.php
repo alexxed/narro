@@ -180,11 +180,8 @@
                     $this->dtgNarroContextInfo->AddColumnAt(0, $this->colContext);
                 $this->dtgNarroContextInfo->RemoveColumnByName(t('Actions'));
                 $this->dtgNarroContextInfo->MarkAsModified();
-
             }
             else {
-                $this->btnMultiApprove->Text = t('Mass approve');
-                $this->btnMultiApproveBottom->Text = t('Mass approve');
                 /**
                  * Approve changes
                  */
@@ -226,10 +223,6 @@
                         $this->SetMessage(t('No changes.'));
                 }
 
-                if (NarroApp::QueryString('st') != 3)
-                    $this->dtgNarroContextInfo->RemoveColumnByName(t('Context'));
-
-                $this->dtgNarroContextInfo->AddColumn($this->colActions);
                 $this->dtgNarroContextInfo->MarkAsModified();
             }
 
