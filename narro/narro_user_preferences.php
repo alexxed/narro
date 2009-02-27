@@ -49,15 +49,7 @@
             $this->btnCancel->Text = t('Cancel');
             $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
 
-            if (NarroApp::GetUserId() != NarroApp::QueryString('u') && NarroApp::HasPermission('Can manage users')) {
-                $this->objUser = NarroUser::LoadByUserId(NarroApp::QueryString('u'));
-                $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = t('Warning, you are editing another user\'s preferences!');
-            }
-            else {
-                $this->objUser = NarroApp::$User;
-            }
-
+            $this->objUser = NarroApp::$User;
         }
 
         protected function GetControlHtml() {
@@ -86,7 +78,7 @@
                                 foreach(NarroDiacriticsPanel::$arrEntities as $strEntityName=>$strEntityChar)
                                     $strSelect .= sprintf('<option value=" %s">%s (%s)', $strEntityName, $strEntityChar, $strEntityName);
                                 $strSelect .= '</select>';
-                                $arrPref['description'] .= $strSelect;
+                                $arrPref['description'] = t($arrPref['description']) . $strSelect;
                                 $txtTextPref->Width = 400;
                             }
                             elseif ($strName == 'Other languages') {
@@ -94,11 +86,11 @@
                                 foreach(NarroLanguage::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName))) as $objLanguage)
                                     $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
                                 $strSelect .= '</select>';
-                                $arrPref['description'] .= $strSelect;
+                                $arrPref['description'] = t($arrPref['description']) . $strSelect;
                                 $txtTextPref->Width = 400;
                             }
 
-                            $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), t($arrPref['description']));
+                            $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), $arrPref['description']);
                             $this->arrControls[$strName] = $txtTextPref;
                             break;
                     case 'option':
@@ -149,11 +141,9 @@
 
             $this->objUser->Data = serialize($this->objUser->Preferences);
 
-            if (NarroApp::QueryString('u') == $this->objUser->UserId) {
-                require_once 'Zend/Session/Namespace.php';
-                $objNarroSession = new Zend_Session_Namespace('Narro');
-                $objNarroSession->User = $this->objUser;
-            }
+            require_once 'Zend/Session/Namespace.php';
+            $objNarroSession = new Zend_Session_Namespace('Narro');
+            $objNarroSession->User = $this->objUser;
 
             /**
              * Don't save the preferences for the anonymous user in the database
@@ -163,10 +153,7 @@
 
             try {
                 $this->objUser->Save();
-                if (NarroApp::GetUserId() != NarroApp::QueryString('u') && NarroApp::HasPermission('Can manage users'))
-                    $this->lblMessage->Text = sprintf(t('Preferences for %s were saved successfuly.'), $this->objUser->Username);
-                else
-                    $this->lblMessage->Text = t('Your preferences were saved successfuly.');
+                $this->lblMessage->Text = t('Your preferences were saved successfuly.');
                 $this->lblMessage->ForeColor = 'green';
             } catch( Exception $objEx) {
                 $this->lblMessage->Text = t('An error occured while trying to save your preferences.');
