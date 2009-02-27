@@ -68,29 +68,23 @@
             $this->pnlBreadcrumb->addElement($this->objNarroFile->FileName);
         }
 
-        public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {
-            if (NarroApp::HasPermissionForThisLang('Can suggest', $objNarroContextInfo->Context->ProjectId) && NarroApp::HasPermissionForThisLang('Can vote', $objNarroContextInfo->Context->ProjectId))
-                $strText = t('Suggest / Vote');
-            elseif (NarroApp::HasPermissionForThisLang('Can suggest', $objNarroContextInfo->Context->ProjectId))
-                $strText = t('Suggest');
-            elseif (NarroApp::HasPermissionForThisLang('Can vote', $objNarroContextInfo->Context->ProjectId))
-                $strText = t('Vote');
-            else
-                $strText = t('Details');
-
-            return NarroLink::ContextSuggest(
+        public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
+            return parent::dtgNarroContextInfo_TranslatedText_Render(
+                $objNarroContextInfo,
+                NarroLink::ContextSuggest(
                         $this->objNarroFile->Project->ProjectId,
                         $this->objNarroFile->FileId,
                         $objNarroContextInfo->ContextId,
                         $this->lstTextFilter->SelectedValue,
                         $this->lstSearchType->SelectedValue,
                         $this->txtSearch->Text,
-                        $intRowIndex + (($this->dtgNarroContextInfo->PageNumber - 1) * $this->dtgNarroContextInfo->ItemsPerPage),
+                        $this->dtgNarroContextInfo->CurrentRowIndex + 1 + (($this->dtgNarroContextInfo->PageNumber - 1) * $this->dtgNarroContextInfo->ItemsPerPage),
                         $this->dtgNarroContextInfo->TotalItemCount,
                         $this->dtgNarroContextInfo->SortColumnIndex,
                         $this->dtgNarroContextInfo->SortDirection,
                         $strText
-                   );
+                   )
+               );
         }
 
         public function lstTextFilter_Change() {

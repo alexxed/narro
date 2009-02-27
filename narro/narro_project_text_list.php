@@ -59,17 +59,9 @@
             $this->pnlBreadcrumb->addElement(NarroLink::ProjectLanguages($intProjectId, t('Languages')));
         }
 
-        public function dtgNarroContextInfo_Actions_Render(NarroContextInfo $objNarroContextInfo, $intRowIndex) {
-            if (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroProject->ProjectId) && NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroProject->ProjectId) )
-                $strText = t('Suggest/Vote');
-            elseif (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroProject->ProjectId))
-                $strText = t('Suggest');
-            elseif (NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroProject->ProjectId))
-                $strText = t('Vote');
-            else
-                $strText = t('Details');
-
-            return
+        public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
+            return parent::dtgNarroContextInfo_TranslatedText_Render(
+                $objNarroContextInfo,
                 NarroLink::ContextSuggest(
                     $this->objNarroProject->ProjectId,
                     0,
@@ -77,12 +69,12 @@
                     $this->lstTextFilter->SelectedValue,
                     $this->lstSearchType->SelectedValue,
                     $this->txtSearch->Text,
-                    $intRowIndex + (($this->dtgNarroContextInfo->PageNumber - 1) * $this->dtgNarroContextInfo->ItemsPerPage),
+                    $this->dtgNarroContextInfo->CurrentRowIndex + 1 + (($this->dtgNarroContextInfo->PageNumber - 1) * $this->dtgNarroContextInfo->ItemsPerPage),
                     $this->dtgNarroContextInfo->TotalItemCount,
                     $this->dtgNarroContextInfo->SortColumnIndex,
-                    $this->dtgNarroContextInfo->SortDirection,
-                    $strText
-               );
+                    $this->dtgNarroContextInfo->SortDirection
+               )
+           );
         }
 
         public function lstTextFilter_Change() {

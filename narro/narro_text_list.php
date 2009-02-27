@@ -27,8 +27,6 @@
         protected $colOriginalTextLength;
         protected $colOriginalText;
         protected $colTranslatedText;
-        protected $colActions;
-
 
         protected $lstTextFilter;
         protected $txtSearch;
@@ -83,11 +81,6 @@
             );
             $this->colTranslatedText->HtmlEntities = false;
             $this->colTranslatedText->CssClass = NarroApp::$Language->TextDirection;
-            $this->colActions = new QDataGridColumn(
-                t('Actions'),
-                '<?= $_FORM->dtgNarroContextInfo_Actions_Render($_ITEM, $_CONTROL->CurrentRowIndex + 1); ?>'
-            );
-            $this->colActions->HtmlEntities = false;
 
             // Setup DataGrid
             $this->dtgNarroContextInfo = new QDataGrid($this);
@@ -108,7 +101,6 @@
                 $this->dtgNarroContextInfo->AddColumn($this->colContext);
             $this->dtgNarroContextInfo->AddColumn($this->colOriginalText);
             $this->dtgNarroContextInfo->AddColumn($this->colTranslatedText);
-            $this->dtgNarroContextInfo->AddColumn($this->colActions);
 
             $this->lstTextFilter = new QListBox($this);
             $this->lstTextFilter->AddItem(t('All texts'), self::SHOW_ALL_TEXTS, true);
@@ -288,7 +280,7 @@
         }
 
 
-        public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
+        public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo, $strLink = null) {
             if ($this->btnMultiApprove->Text != t('Mass approve') && $objNarroContextInfo->HasSuggestions && !$objNarroContextInfo->TextAccessKey && $objNarroContextInfo->Context->Text->TextCharCount < 100) {
                 return $this->dtgNarroContextInfo_EditTranslatedText_Render($objNarroContextInfo);
             }
@@ -310,7 +302,7 @@
                 if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->SuggestionAccessKey)
                     $strSuggestionValue = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', $strSuggestionValue, 1);
 
-                return $strSuggestionValue;
+                return sprintf('<a href="%s" title="%s"><div style="width:100%%;color:black">%s</div></a>', $strLink, t('Approved translation. Click for details'), $strSuggestionValue);
             }
             elseif (
                 $objSuggestion =
@@ -328,7 +320,7 @@
 
                 $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
 
-                return '<div style="color:green">' . NarroString::HtmlEntities($strSuggestionValue) . '</div>';
+                return sprintf('<a href="%s" title="%s"><div style="width:100%%;color:green">%s</div></a>', $strLink, t('Your translation, not approved yet. Click for details'), NarroString::HtmlEntities($strSuggestionValue));
             }
             elseif (
                 $arrSuggestions =
@@ -354,10 +346,10 @@
                     $strSuggestionValue = $objSuggestion->SuggestionValue;
 
                 $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
-                return '<div style="color:blue">' . NarroString::HtmlEntities($strSuggestionValue) . '</div>';
+                return sprintf('<a href="%s" title="%s"><div style="width:100%%;color:blue">%s</div></a>', $strLink, t('Translation not approved yet. Click to help'), NarroString::HtmlEntities($strSuggestionValue));
             }
             else {
-                return '<div width="100%" style="background:gray">&nbsp;</div>';
+                return sprintf('<a href="%s" title="%s"><div style="width:100%%;background:gray">&nbsp;</div></a>', $strLink, t('Click to translate this text'));
             }
         }
 
