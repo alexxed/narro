@@ -344,6 +344,9 @@
                     case NarroTextListForm::SEARCH_CONTEXTS:
                         $this->pnlBreadcrumb->addElement(sprintf(t('Search in contexts for "%s"'), $this->strSearchText));
                         break;
+                    case NarroTextListForm::SEARCH_AUTHORS:
+                        $this->pnlBreadcrumb->addElement(sprintf(t('Search in authors for "%s"'), $this->strSearchText));
+                        break;
                     default:
                 }
             }

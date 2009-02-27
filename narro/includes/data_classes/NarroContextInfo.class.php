@@ -91,6 +91,9 @@
                 case NarroTextListForm::SEARCH_SUGGESTIONS:
                     $arrContexts = self::LoadArrayBySuggestionValue($strSearchText, $intFilter, QQ::LimitInfo(1, 0), $objSortInfo, $objExtraCondition);
                     break;
+                case NarroTextListForm::SEARCH_AUTHORS:
+                    $arrContexts = self::LoadArrayByAuthor($strSearchText, $intFilter, QQ::LimitInfo(1, 0), $objSortInfo, $objExtraCondition);
+                    break;
                 case NarroTextListForm::SEARCH_CONTEXTS:
                     $arrContexts = self::LoadArrayByContext($strSearchText, $intFilter, QQ::LimitInfo(1, 0), $objSortInfo, $objExtraCondition);
                     break;
@@ -421,6 +424,73 @@
                 $objSearchCondition = QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, substr($strSuggestion, 1, -1));
             else
                 $objSearchCondition = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue,  '%' . $strSuggestion . '%');
+
+            switch ($intFilter) {
+                case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
+                    $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
+                    break;
+                case NarroTextListForm::SHOW_APPROVED_TEXTS :
+                    $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
+                    break;
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
+                    $objFilterCondition = QQ::AndCondition(QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
+                    break;
+                default:
+                    // no filters
+                    $objFilterCondition = QQ::All();
+            }
+
+            $intContextCount = NarroContextInfo::QueryCount(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array(QQ::GroupBy(QQN::NarroContextInfo()->ContextId)));
+
+            return $intContextCount;
+        }
+
+        public static function LoadArrayByAuthor($strAuthor, $intFilter, $objLimitInfo = null, $objSortInfo = null, $objExtraCondition = null) {
+            if (!is_object($objExtraCondition))
+                $objExtraCondition = QQ::All();
+
+            if (!is_object($objSortInfo))
+                $objSortInfo = QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, true));
+
+            if (!is_object($objLimitInfo))
+                $objLimitInfo = QQ::LimitInfo(20, 0);
+
+            if (trim($strAuthor) == '')
+                $objSearchCondition = QQ::All();
+            elseif (preg_match("/^'.*'$/", $strAuthor))
+                $objSearchCondition = QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username, substr($strAuthor, 1, -1));
+            else
+                $objSearchCondition = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username,  '%' . $strAuthor . '%');
+
+            switch ($intFilter) {
+                case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
+                    $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
+                    break;
+                case NarroTextListForm::SHOW_APPROVED_TEXTS :
+                    $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
+                    break;
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
+                    $objFilterCondition = QQ::AndCondition(QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
+                    break;
+                default:
+                    // no filters
+                    $objFilterCondition = QQ::All();
+            }
+
+            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo, QQ::GroupBy(QQN::NarroContextInfo()->ContextId)));
+
+            return $arrContext;
+        }
+
+        public static function CountByAuthor($strAuthor, $intFilter, $objExtraCondition = null) {
+            if (!is_object($objExtraCondition))
+                $objExtraCondition = QQ::All();
+            if (trim($strAuthor) == '')
+                $objSearchCondition = QQ::All();
+            elseif (preg_match("/^'.*'$/", $strAuthor))
+                $objSearchCondition = QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username, substr($strAuthor, 1, -1));
+            else
+                $objSearchCondition = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username,  '%' . $strAuthor . '%');
 
             switch ($intFilter) {
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :

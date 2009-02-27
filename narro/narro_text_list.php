@@ -49,6 +49,7 @@
         const SEARCH_TEXTS = 1;
         const SEARCH_SUGGESTIONS = 2;
         const SEARCH_CONTEXTS = 3;
+        const SEARCH_AUTHORS = 4;
 
         protected function Form_Create() {
             parent::Form_Create();
@@ -118,6 +119,7 @@
             $this->lstSearchType->AddItem(t('original texts'), self::SEARCH_TEXTS, true);
             $this->lstSearchType->AddItem(t('translations'), self::SEARCH_SUGGESTIONS);
             $this->lstSearchType->AddItem(t('contexts'), self::SEARCH_CONTEXTS);
+            $this->lstSearchType->AddItem(t('authors'), self::SEARCH_AUTHORS);
             $this->lstSearchType->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('qc.getControl(\'%s\').className=((this.selectedIndex == 1)?\'%s\':\'ltr\');', $this->txtSearch->ControlId, NarroApp::$Language->TextDirection)));
             if (NarroApp::QueryString('st') > 0)
                 $this->lstSearchType->SelectedValue = NarroApp::QueryString('st');

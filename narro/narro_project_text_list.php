@@ -26,6 +26,9 @@
                 case NarroTextListForm::SEARCH_SUGGESTIONS:
                     $this->SetMessage(t('Note that, since you\'re searching suggestions, you won\'t see the texts without suggestions.'));
                     break;
+                case NarroTextListForm::SEARCH_AUTHORS:
+                    $this->SetMessage(t('Note that, since you\'re searching authors of suggestions, you won\'t see the texts without suggestions.'));
+                    break;
             }
 
         }
@@ -129,6 +132,13 @@
                         $objCommonCondition
                     );
                     break;
+                case NarroTextListForm::SEARCH_AUTHORS:
+                    $this->dtgNarroContextInfo->TotalItemCount = NarroContextInfo::CountByAuthor(
+                        $this->txtSearch->Text,
+                        $this->lstTextFilter->SelectedValue,
+                        $objCommonCondition
+                    );
+                    break;
             }
 
             // Setup the $objClauses Array
@@ -165,9 +175,17 @@
                         $objCommonCondition
                     );
                     break;
-
                 case NarroTextListForm::SEARCH_CONTEXTS:
                     $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayByContext(
+                        $this->txtSearch->Text,
+                        $this->lstTextFilter->SelectedValue,
+                        $this->dtgNarroContextInfo->LimitClause,
+                        $this->dtgNarroContextInfo->OrderByClause,
+                        $objCommonCondition
+                    );
+                    break;
+                case NarroTextListForm::SEARCH_AUTHORS:
+                    $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayByAuthor(
                         $this->txtSearch->Text,
                         $this->lstTextFilter->SelectedValue,
                         $this->dtgNarroContextInfo->LimitClause,

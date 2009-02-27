@@ -238,10 +238,14 @@
                                         QQ::Equal(QQN::NarroContext()->Context, $strContext)
                                     )
                                 );
+
+
             /**
              * MySql is case insensitive, so we need $strContext != $objNarroContext->Context
              */
-            if (!$this->blnOnlySuggestions && !$objNarroContext instanceof NarroContext && $strContext != $objNarroContext->Context) {
+            if ($strContext != $objNarroContext->Context) $objNarroContext = null;
+
+            if (!$this->blnOnlySuggestions && !$objNarroContext instanceof NarroContext) {
 
                 $objNarroContext = new NarroContext();
                 $objNarroContext->TextId = $objNarroText->TextId;
