@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 0.9.3\n"
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2009-17-02 02:58-0800\n"
-"PO-Revision-Date: 2009-17-02 02:58-0800\n"
+"POT-Creation-Date: 2009-27-02 02:37-0800\n"
+"PO-Revision-Date: 2009-27-02 02:37-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -733,7 +733,7 @@ msgid "Actions"
 msgstr ""
 
 #. $this->btnAddRole->Text = t('Save');
-#: includes/narro/NarroSuggestionListPanel.class.php includes/narro/NarroTextCommentListPanel.class.php narro_context_suggest.php narro_language_edit.php narro_project_edit.php narro_role_list.php narro_user_preferences.php narro_user_role.php
+#: includes/narro/NarroSuggestionListPanel.class.php includes/narro/NarroTextCommentListPanel.class.php narro_context_suggest.php narro_file_text_list.php narro_language_edit.php narro_project_edit.php narro_project_text_list.php narro_role_list.php narro_text_list.php narro_user_preferences.php narro_user_role.php
 msgid "Save"
 msgstr ""
 
@@ -747,8 +747,9 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#. $strText = t('Vote');
-#: includes/narro/NarroSuggestionListPanel.class.php narro_file_text_list.php narro_project_text_list.php
+#. $btnVote->Text = t('Vote');
+#. $btnVote->Text = t('Vote');
+#: includes/narro/NarroSuggestionListPanel.class.php
 msgid "Vote"
 msgstr ""
 
@@ -952,6 +953,16 @@ msgstr ""
 msgid "Cedill/Comma issue solver"
 msgstr ""
 
+#. * Preference value: t('cedilla');
+#: includes/narro/plugins/NarroCedillaComma.class.php
+msgid "cedilla"
+msgstr ""
+
+#. * Preference value: t('comma');
+#: includes/narro/plugins/NarroCedillaComma.class.php
+msgid "comma"
+msgstr ""
+
 #. Preference name
 #. NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
 #: includes/narro/plugins/NarroCedillaComma.class.php
@@ -1028,6 +1039,16 @@ msgstr ""
 #. $this->strName = t('Spell check');
 #: includes/narro/plugins/NarroSpellCheck.class.php
 msgid "Spell check"
+msgstr ""
+
+#. * Spellchecking: t('Yes, please')
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "Yes, please"
+msgstr ""
+
+#.
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "I don't need it"
 msgstr ""
 
 #. t('<span class="mispelled_word">%s</span> seems to be mispelled. Maybe you meant %s.'),
@@ -1229,7 +1250,7 @@ msgid "Upload"
 msgstr ""
 
 #. $this->btnCancel->Text = t('Cancel');
-#: includes/qcodo/qform/QFileAsset.class.php narro_language_edit.php narro_project_edit.php narro_user_preferences.php
+#: includes/qcodo/qform/QFileAsset.class.php narro_language_edit.php narro_project_edit.php narro_text_list.php narro_user_preferences.php
 msgid "Cancel"
 msgstr ""
 
@@ -1334,6 +1355,11 @@ msgstr ""
 msgid "Search in contexts for \"%s\""
 msgstr ""
 
+#. $this->pnlBreadcrumb->addElement(sprintf(t('Search in authors for "%s"'), $this->strSearchText));
+#: narro_context_suggest.php
+msgid "Search in authors for \"%s\""
+msgstr ""
+
 #. sprintf(t('You are now translating a batch of %d texts. The bar below shows your progress through this batch'), $this->intContextsCount),
 #: narro_context_suggest.php
 msgid "You are now translating a batch of %d texts. The bar below shows your progress through this batch"
@@ -1364,19 +1390,14 @@ msgstr ""
 msgid "100 back"
 msgstr ""
 
-#. $strText = t('Suggest / Vote');
-#: narro_file_text_list.php
-msgid "Suggest / Vote"
+#.
+#: narro_file_text_list.php narro_project_text_list.php
+msgid "Note that, since you're searching suggestions, you won't see the texts without suggestions."
 msgstr ""
 
-#. $strText = t('Suggest');
+#.
 #: narro_file_text_list.php narro_project_text_list.php
-msgid "Suggest"
-msgstr ""
-
-#. $strText = t('Details');
-#: narro_file_text_list.php narro_project_text_list.php
-msgid "Details"
+msgid "Note that, since you're searching authors of suggestions, you won't see the texts without suggestions."
 msgstr ""
 
 #. $this->strTitleVerb = NarroApp::Translate('Create');
@@ -1555,14 +1576,19 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#. $strReviewers = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Reviewers') . ': %s', join(', ', $arrUserLinks)) . '</div>';
+#. $objActions->addElement(NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')));
+#: narro_project_list.php
+msgid "Texts"
+msgstr ""
+
+#. $strReviewers = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Reviewers') . ': %s', join(', ', $arrUserLinks)) . $strMore . '</div>';
 #: narro_project_list.php
 msgid "Reviewers"
 msgstr ""
 
-#. $objActions->addElement(NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')));
+#. $strTranslators = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Translators') . ': %s', join(', ', $arrUserLinks)) . $strMore . '</div>';
 #: narro_project_list.php
-msgid "Texts"
+msgid "Translators"
 msgstr ""
 
 #. $this->btnDelProjectContexts->Text = t('Delete project contexts');
@@ -1681,16 +1707,6 @@ msgstr ""
 msgid "Operation log"
 msgstr ""
 
-#.
-#: narro_project_text_list.php
-msgid "Note that, since you're searching suggestions, you won't see the texts without suggestions."
-msgstr ""
-
-#. $strText = t('Suggest/Vote');
-#: narro_project_text_list.php
-msgid "Suggest/Vote"
-msgstr ""
-
 #. $this->lstTextFilter->AddItem(t('All texts'), self::SHOW_ALL_TEXTS, true);
 #: narro_project_translate_text_list.php narro_text_list.php
 msgid "All texts"
@@ -1797,20 +1813,17 @@ msgstr ""
 msgid "Context"
 msgstr ""
 
+#. $this->lstSearchType->AddItem(t('authors'), self::SEARCH_AUTHORS);
+#: narro_text_list.php
+msgid "authors"
+msgstr ""
+
 #. $this->btnMultiApprove->Text = t('Mass approve');
 #. $this->btnMultiApproveBottom->Text = t('Mass approve');
 #. if ($this->btnMultiApprove->Text == t('Mass approve')) {
-#. $this->btnMultiApprove->Text = t('Mass approve');
-#. $this->btnMultiApproveBottom->Text = t('Mass approve');
 #. if ($this->btnMultiApprove->Text != t('Mass approve') && $objNarroContextInfo->HasSuggestions && !$objNarroContextInfo->TextAccessKey && $objNarroContextInfo->Context->Text->TextCharCount < 100) {
 #: narro_text_list.php
 msgid "Mass approve"
-msgstr ""
-
-#. $this->btnMultiApprove->Text = t('Approve all selected suggestions');
-#. $this->btnMultiApproveBottom->Text = t('Approve all selected suggestions');
-#: narro_text_list.php
-msgid "Approve all selected suggestions"
 msgstr ""
 
 #. $this->SetMessage(t('Mass approve mode is the quick way to approve short translations. Leave empty to disapprove.'));
@@ -1837,6 +1850,26 @@ msgstr ""
 #. $this->SetMessage(t('No changes.'));
 #: narro_text_list.php
 msgid "No changes."
+msgstr ""
+
+#. return sprintf('<a href="%s" title="%s"><div style="width:100%%;color:black">%s</div></a>', $strLink, t('Approved translation. Click for details'), $strSuggestionValue);
+#: narro_text_list.php
+msgid "Approved translation. Click for details"
+msgstr ""
+
+#. return sprintf('<a href="%s" title="%s"><div style="width:100%%;color:green">%s</div></a>', $strLink, t('Your translation, not approved yet. Click for details'), NarroString::HtmlEntities($strSuggestionValue));
+#: narro_text_list.php
+msgid "Your translation, not approved yet. Click for details"
+msgstr ""
+
+#. return sprintf('<a href="%s" title="%s"><div style="width:100%%;color:blue">%s</div></a>', $strLink, t('Translation not approved yet. Click to help'), NarroString::HtmlEntities($strSuggestionValue));
+#: narro_text_list.php
+msgid "Translation not approved yet. Click to help"
+msgstr ""
+
+#. return sprintf('<a href="%s" title="%s"><div style="width:100%%;background:gray">&nbsp;</div></a>', $strLink, t('Click to translate this text'));
+#: narro_text_list.php
+msgid "Click to translate this text"
 msgstr ""
 
 #. <td><?php echo t('Email') ?>:</td>
@@ -2280,16 +2313,6 @@ msgstr ""
 msgid "Lower values give more verbosity"
 msgstr ""
 
-#. * Spellchecking: t('Yes, please')
-#: includes/narro/plugins/NarroSpellCheck.class.php
-msgid "Yes, please"
-msgstr ""
-
-#.
-#: includes/narro/plugins/NarroSpellCheck.class.php
-msgid "I don't need it"
-msgstr ""
-
 #. <p class="instructions"><?php echo t('Delete all the files in the locale directory to get a fresh export. Be sure to backup any files not imported in the application.'); ?></p>
 #: templates/narro_project_manage.tpl.php
 msgid "Delete all the files in the locale directory to get a fresh export. Be sure to backup any files not imported in the application."
@@ -2504,20 +2527,5 @@ msgstr ""
 #.
 #: templates/narro_user_role.tpl.php
 msgid "%s's roles"
-msgstr ""
-
-#. * Preference value: t('cedilla');
-#: includes/narro/plugins/NarroCedillaComma.class.php
-msgid "cedilla"
-msgstr ""
-
-#. * Preference value: t('comma');
-#: includes/narro/plugins/NarroCedillaComma.class.php
-msgid "comma"
-msgstr ""
-
-#. $strTranslators = '<div style="color:gray;display:block;text-align:left;font-style:italic">' . sprintf(t('Translators') . ': %s', join(', ', $arrUserLinks)) . '</div>';
-#: narro_project_list.php
-msgid "Translators"
 msgstr ""
 
