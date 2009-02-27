@@ -122,7 +122,6 @@
         public function dtgNarroUserList_ActionsColumn_Render(NarroUser $objNarroUser) {
             if ($objNarroUser->UserId != NarroApp::GetUserId())
                 return
-                    NarroLink::UserPreferences($objNarroUser->UserId, t('Preferences')) . ' | ' .
                     NarroLink::UserRole($objNarroUser->UserId, t('Roles'));
             else
                 return t('That\'s you!');
