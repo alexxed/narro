@@ -93,7 +93,7 @@
                         $objProjectProgress->ProgressPercent = 0;
                     $objProjectProgress->Save();
 
-                    NarroApp::$Cache->save($intTotalTexts, 'total_texts_' . $this->ProjectId . '_' . $intLanguageId, 3600);
+                    NarroApp::$Cache->save($intTotalTexts, 'total_texts_' . $this->ProjectId . '_' . $intLanguageId, array('project_progress' . $this->ProjectId), 3600);
                 }
             }
 
@@ -131,7 +131,7 @@
                     $objProjectProgress->FuzzyTextCount = $intTranslatedTexts;
                     $objProjectProgress->Save();
 
-                    NarroApp::$Cache->save($intTranslatedTexts, 'translated_texts_' . $this->ProjectId . '_' . $intLanguageId, 3600);
+                    NarroApp::$Cache->save($intTranslatedTexts, 'translated_texts_' . $this->ProjectId . '_' . $intLanguageId, array('project_progress' . $this->ProjectId), 3600);
                 }
             }
 
@@ -171,7 +171,7 @@
                     else
                         $objProjectProgress->ProgressPercent = 0;
                     $objProjectProgress->Save();
-                    NarroApp::$Cache->save($intApprovedTexts, 'approved_texts_' . $this->ProjectId . '_' . $intLanguageId, 3600);
+                    NarroApp::$Cache->save($intApprovedTexts, 'approved_texts_' . $this->ProjectId . '_' . $intLanguageId, array('project_progress' . $this->ProjectId), 3600);
                 }
             }
 
