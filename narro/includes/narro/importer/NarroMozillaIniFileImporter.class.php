@@ -39,14 +39,14 @@
 
             $arrTranslation = array();
             foreach($arrFileContents as $intPos=>$strLine) {
-                if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches))
+                if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?\{\}]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches))
                     $arrTranslation[trim($arrMatches[1])] = trim($arrMatches[2]);
             }
 
             $strContext = '';
             $arrTemplate = array();
             foreach($arrTemplateContents as $intPos=>$strLine) {
-                if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches)) {
+                if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?\{\}]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches)) {
                     $arrTemplate[trim($arrMatches[1])] = trim($arrMatches[2]);
                     $arrTemplateComments[trim($arrMatches[1])] = $strContext;
                     $strContext = '';
@@ -99,7 +99,7 @@
             $arrTemplateContents = split("\n", $strTemplateContents);
 
             foreach($arrTemplateContents as $intPos=>$strLine) {
-                if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches)) {
+                if (preg_match('/^\s*([0-9a-zA-Z\-\_\.\?\{\}]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches)) {
                     $arrTemplate[trim($arrMatches[1])] = trim($arrMatches[2]);
                     $arrTemplateLines[trim($arrMatches[1])] = $arrMatches[0];
                 }
@@ -140,7 +140,7 @@
                     else
                         NarroLog::LogMessage(2, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $arrTranslation[$strKey], var_export($arrResult, true)));
 
-                    if (preg_match('/[A-Z0-9a-z\.\_\-]+(\s*=\s*)/', $arrTemplateLines[$strKey], $arrMiddleMatches)) {
+                    if (preg_match('/[A-Z0-9a-z\.\_\-\?\{\}]+(\s*=\s*)/', $arrTemplateLines[$strKey], $arrMiddleMatches)) {
                         $strGlue = $arrMiddleMatches[1];
                     }
                     else {
