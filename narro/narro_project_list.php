@@ -66,25 +66,18 @@
             $this->pnlNewUsers = new NarroNewUsersPanel($this);
 
             $this->chkShowCompleted = new QCheckBox($this);
-            $this->chkShowCompleted->TextAlign = QTextAlign::Right;
-            $this->chkShowCompleted->DisplayStyle = QDisplayStyle::Inline;
             if (NarroApp::$UseAjax)
                 $this->chkShowCompleted->AddAction(new QClickEvent(), new QAjaxAction('dtgNarroProject_Bind'));
             else
                 $this->chkShowCompleted->AddAction(new QClickEvent(), new QServerAction('dtgNarroProject_Bind'));
 
             $this->chkShowEmpty = new QCheckBox($this);
-            $this->chkShowEmpty->DisplayStyle = QDisplayStyle::Inline;
-            $this->chkShowEmpty->TextAlign = QTextAlign::Right;
             if (NarroApp::$UseAjax)
                 $this->chkShowEmpty->AddAction(new QClickEvent(), new QAjaxAction('dtgNarroProject_Bind'));
             else
                 $this->chkShowEmpty->AddAction(new QClickEvent(), new QServerAction('dtgNarroProject_Bind'));
 
             $this->chkShowInactive = new QCheckBox($this);
-            $this->chkShowInactive->DisplayStyle = QDisplayStyle::Inline;
-            $this->chkShowInactive->Display = NarroApp::HasPermission('Administrator');
-            $this->chkShowInactive->TextAlign = QTextAlign::Right;
             if (NarroApp::$UseAjax)
                 $this->chkShowInactive->AddAction(new QClickEvent(), new QAjaxAction('dtgNarroProject_Bind'));
             else
