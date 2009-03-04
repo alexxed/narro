@@ -29,6 +29,17 @@
         <?php if (NarroApp::HasPermissionForThisLang('Can add project', null)) { ?>
             <p align="right"><a href="narro_project_edit.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php _t('Add project') ?></a></p>
         <?php } ?>
+
+        <div align="right">
+        <?php _t('Show'); ?>:
+        <?php $this->chkShowCompleted->Render() ?>
+        <label for="<?php echo $this->chkShowCompleted->ControlId?>"><?php _t('completed')?></label>
+        <?php $this->chkShowEmpty->Render() ?>
+        <label for="<?php echo $this->chkShowEmpty->ControlId?>"><?php _t('empty')?></label>
+        <?php $this->chkShowInactive->Render() ?>
+        <label for="<?php echo $this->chkShowInactive->ControlId?>"><?php _t('inactive')?></label>
+        </div>
+
         <?php $this->dtgNarroProject->Render() ?>
         <table style="width:100%;padding-top:10px" cellpadding="0" cellspacing="0">
         <tr>
