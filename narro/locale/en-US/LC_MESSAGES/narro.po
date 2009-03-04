@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 0.9.3\n"
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2009-27-02 02:37-0800\n"
-"PO-Revision-Date: 2009-27-02 02:37-0800\n"
+"POT-Creation-Date: 2009-04-03 05:39-0800\n"
+"PO-Revision-Date: 2009-04-03 05:39-0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1902,19 +1902,9 @@ msgstr ""
 msgid "That's you!"
 msgstr ""
 
-#.
-#: narro_user_preferences.php
-msgid "Warning, you are editing another user's preferences!"
-msgstr ""
-
 #. $strOutput .= '<p>' . sprintf(t('Click <a href="%s">here</a> to return to the page you were.'), $this->txtPreviousUrl) . '</p>';
 #: narro_user_preferences.php
 msgid "Click <a href=\"%s\">here</a> to return to the page you were."
-msgstr ""
-
-#. $this->lblMessage->Text = sprintf(t('Preferences for %s were saved successfuly.'), $this->objUser->Username);
-#: narro_user_preferences.php
-msgid "Preferences for %s were saved successfuly."
 msgstr ""
 
 #. $this->lblMessage->Text = t('Your preferences were saved successfuly.');
@@ -2157,7 +2147,7 @@ msgid "Texts from the file \"%s\""
 msgstr ""
 
 #. <?php echo t('Show') ?>: <?php $this->lstTextFilter->Render() ?>
-#: templates/narro_file_text_list.tpl.php templates/narro_project_text_list.tpl.php
+#: templates/narro_file_text_list.tpl.php templates/narro_project_list.tpl.php templates/narro_project_text_list.tpl.php
 msgid "Show"
 msgstr ""
 
@@ -2276,6 +2266,21 @@ msgstr ""
 #. <p align="right"><a href="narro_project_edit.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php _t('Add project') ?></a></p>
 #: templates/narro_project_list.tpl.php
 msgid "Add project"
+msgstr ""
+
+#. <label for="<?php echo $this->chkShowCompleted->ControlId?>"><?php _t('completed')?></label>
+#: templates/narro_project_list.tpl.php
+msgid "completed"
+msgstr ""
+
+#. <label for="<?php echo $this->chkShowEmpty->ControlId?>"><?php _t('empty')?></label>
+#: templates/narro_project_list.tpl.php
+msgid "empty"
+msgstr ""
+
+#. <label for="<?php echo $this->chkShowInactive->ControlId?>"><?php _t('inactive')?></label>
+#: templates/narro_project_list.tpl.php
+msgid "inactive"
 msgstr ""
 
 #. <?php echo sprintf(t('Top %d translators'), $this->pnlTopUsers->Limit) ?>
