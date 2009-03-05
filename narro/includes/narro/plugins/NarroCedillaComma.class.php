@@ -85,21 +85,7 @@
         }
 
         public function ExportSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
-            if (
-                in_array(
-                    $objFile->FileName,
-                    array(
-                        'custom.properties',
-                        'mui.properties',
-                        'override.properties',
-                        'crashreporter.ini',
-                        'installer.inc',
-                        'updater.ini',
-                    )
-                )
-            )
-                return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
-            elseif (NarroApp::$User->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
+            if (NarroApp::$User->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
             elseif (NarroApp::$User->getPreferenceValueByName('Cedilla or comma') == 'comma')
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
