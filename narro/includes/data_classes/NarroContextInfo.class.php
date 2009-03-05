@@ -44,45 +44,6 @@
             return sprintf('NarroContextInfo Object %s',  $this->intContextInfoId);
         }
 
-        public static function GetSearchCondition($strText, $intSearchType, $intFilter) {
-            if (strlen($strText)) {
-                switch($intSearchType) {
-                    case 1:
-                        if (strlen($strText) < 4 || preg_match("/^'.*'$/", $strText)) {
-                            if (preg_match("/^'.*'$/", $strText))
-                                $strText = substr($strText, 1, -1);
-                            $strSearchCondition = sprintf("AND narro_suggestion.suggestion_value = '%s'", $strText);
-                        }
-                        else {
-                            $strSearchCondition = sprintf("AND narro_suggestion.suggestion_value LIKE '%%%s%%'", $strText);
-                        }
-                        break;
-                    case 2:
-                        if (strlen($strText) < 4 || preg_match("/^'.*'$/", $strText)) {
-                            if (preg_match("/^'.*'$/", $strText))
-                                $strText = substr($strText, 1, -1);
-                            $strSearchCondition = sprintf("AND narro_text.text_value = '%s'", $strText);
-                        }
-                        else {
-                            $strSearchCondition = sprintf("AND narro_text.text_value LIKE '%%%s%%'", $strText);
-                        }
-                        break;
-                    default:
-                        if (strlen($strText) < 4 || preg_match("/^'.*'$/", $strText)) {
-                            if (preg_match("/^'.*'$/", $strText))
-                                $strText = substr($strText, 1, -1);
-                            $strSearchCondition = sprintf("AND (narro_suggestion.suggestion_value = '%s' OR narro_text.text_value = '%s')", $strText, $strText);
-                        }
-                        else {
-                            $strSearchCondition = sprintf("AND (narro_suggestion.suggestion_value LIKE '%%%s%%' OR narro_text.text_value LIKE '%%%s%%')", $strText, $strText);
-                        }
-                }
-                return $strSearchCondition;
-            }
-            else
-                return false;
-        }
-
         public static function GetContext($intContextId, $strSearchText, $intSearchType, $intFilter, $objSortInfo, $objExtraCondition) {
             switch($intSearchType) {
                 case NarroTextListForm::SEARCH_TEXTS:
@@ -93,6 +54,9 @@
                     break;
                 case NarroTextListForm::SEARCH_AUTHORS:
                     $arrContexts = self::LoadArrayByAuthor($strSearchText, $intFilter, QQ::LimitInfo(1, 0), $objSortInfo, $objExtraCondition);
+                    break;
+                case NarroTextListForm::SEARCH_FILES:
+                    $arrContexts = self::LoadArrayByFileName($strSearchText, $intFilter, QQ::LimitInfo(1, 0), $objSortInfo, $objExtraCondition);
                     break;
                 case NarroTextListForm::SEARCH_CONTEXTS:
                     $arrContexts = self::LoadArrayByContext($strSearchText, $intFilter, QQ::LimitInfo(1, 0), $objSortInfo, $objExtraCondition);
@@ -114,132 +78,6 @@
                 return $arrContexts[0];
             else
                 return false;
-        }
-
-        public static function LoadBySuggestionSearch($strText, $intProjectId, $intFileId, $intSearchType, $intFilter, $strLimitInfo, $strOrderInfo = 'narro_context_info.context_id ASC', $strExtraCondition = '') {
-            $intTime = time();
-            // Performing the load manually (instead of using Qcodo Query)
-
-            // Get the Database Object for this Class
-            $objDatabase = NarroContextInfo::GetDatabase();
-
-            $strSearchCondition = NarroContextInfo::GetSearchCondition($strText, $intSearchType, $intFilter);
-            if ($intSearchType == NarroTextListForm::SEARCH_TEXTS)
-                $strSuggestionJoin = 'narro_context.text_id = narro_suggestion.text_id AND';
-
-            switch($intFilter) {
-                case NarroTextListForm::SHOW_APPROVED_TEXTS:
-                    $strFilter = 'AND narro_context_info.valid_suggestion_id IS NOT NULL';
-                    break;
-                case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS:
-                    $strSearchCondition = '';
-                    $strSuggestionJoin = '';
-                    $strFilter = 'AND narro_context_info.has_suggestions=0';
-                    break;
-                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL:
-                    $strFilter = 'AND narro_context_info.valid_suggestion_id IS NULL AND narro_context_info.has_suggestions=1';
-                    break;
-                default:
-            }
-
-
-            // Setup the SQL Query
-            $strQuery = sprintf("
-                SELECT
-                    DISTINCT narro_context_info.*
-                FROM
-                    narro_context_info,
-                    narro_context,
-                    %s
-                    narro_text
-                WHERE
-                    %s
-                    narro_context.text_id = narro_text.text_id AND
-                    narro_context_info.language_id = %d AND
-                    narro_context.active = 1
-                    %s
-                    %s
-                    %s
-                    %s
-                    %s
-                    %s
-                    %s ",
-                ($strSuggestionJoin)?'narro_suggestion,':'',
-                $strSuggestionJoin,
-                NarroApp::GetLanguageId(),
-                ($intProjectId)?'AND narro_context.project_id=' . $intProjectId:'',
-                ($intFileId)?'AND narro_context.file_id=' . $intFileId:'',
-                $strSearchCondition,
-                $strExtraCondition,
-                $strFilter,
-                ($strOrderInfo)?'ORDER BY ' . $strOrderInfo:'',
-                $strLimitInfo);
-            // Perform the Query and Instantiate the Result
-            $objDbResult = $objDatabase->Query($strQuery);
-            return NarroContextInfo::InstantiateDbResult($objDbResult);
-        }
-
-        public static function CountBySuggestionSearch($strText, $intProjectId, $intFileId, $intSearchType, $intFilter) {
-            // Performing the load manually (instead of using Qcodo Query)
-
-            // Get the Database Object for this Class
-            $objDatabase = NarroContextInfo::GetDatabase();
-            $strSearchCondition = NarroContextInfo::GetSearchCondition($strText, $intSearchType, $intFilter);
-            if ($intSearchType == 1)
-                $strSuggestionJoin = 'narro_context.text_id = narro_suggestion.text_id AND';
-
-            switch($intFilter) {
-                case 2:
-                    $strFilter = 'AND narro_context_info.valid_suggestion_id IS NOT NULL';
-                    break;
-                case 3:
-                    $strFilter = 'AND narro_context_info.valid_suggestion_id IS NULL';
-                    break;
-                case 4:
-                    $strSearchCondition = '';
-                    $strSuggestionJoin = '';
-                    $strFilter = 'AND narro_context_info.has_suggestions=0';
-                    break;
-                case 5:
-                    $strFilter = 'AND narro_context_info.valid_suggestion_id IS NULL AND narro_context_info.has_suggestions=1';
-                    break;
-                default:
-            }
-
-
-            // Setup the SQL Query
-            $strQuery = sprintf("
-                SELECT
-                    COUNT(DISTINCT narro_context_info.context_id)
-                FROM
-                    narro_context,
-                    %s
-                    narro_text
-                WHERE
-                    %s
-                    narro_context.text_id = narro_text.text_id AND
-                    narro_context_info.language_id = %d AND
-                    narro_context.active = 1
-                    %s
-                    %s
-                    %s
-                    %s ",
-                ($strSuggestionJoin)?'narro_suggestion,':'',
-                $strSuggestionJoin,
-                NarroApp::GetLanguageId(),
-                ($intProjectId)?'AND narro_context.project_id=' . $intProjectId:'',
-                ($intFileId)?'AND narro_context.file_id=' . $intFileId:'',
-                $strSearchCondition,
-                $strFilter);
-
-            // Perform the Query and Instantiate the Result
-            $objDbResult = $objDatabase->Query($strQuery);
-
-            $arrRow = $objDbResult->FetchArray();
-            if (isset($arrRow[0]))
-                return $arrRow[0];
-            else
-                return 0;
         }
 
         public static function LoadArrayByContext($strContext, $intFilter, $objLimitInfo = null, $objSortInfo = null, $objExtraCondition = null) {
@@ -491,6 +329,73 @@
                 $objSearchCondition = QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username, substr($strAuthor, 1, -1));
             else
                 $objSearchCondition = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username,  '%' . $strAuthor . '%');
+
+            switch ($intFilter) {
+                case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
+                    $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
+                    break;
+                case NarroTextListForm::SHOW_APPROVED_TEXTS :
+                    $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
+                    break;
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
+                    $objFilterCondition = QQ::AndCondition(QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
+                    break;
+                default:
+                    // no filters
+                    $objFilterCondition = QQ::All();
+            }
+
+            $intContextCount = NarroContextInfo::QueryCount(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array(QQ::GroupBy(QQN::NarroContextInfo()->ContextId)));
+
+            return $intContextCount;
+        }
+
+        public static function LoadArrayByFileName($strFileName, $intFilter, $objLimitInfo = null, $objSortInfo = null, $objExtraCondition = null) {
+            if (!is_object($objExtraCondition))
+                $objExtraCondition = QQ::All();
+
+            if (!is_object($objSortInfo))
+                $objSortInfo = QQ::OrderBy(array(QQN::NarroContextInfo()->ContextId, true));
+
+            if (!is_object($objLimitInfo))
+                $objLimitInfo = QQ::LimitInfo(20, 0);
+
+            if (trim($strFileName) == '')
+                $objSearchCondition = QQ::All();
+            elseif (preg_match("/^'.*'$/", $strFileName))
+                $objSearchCondition = QQ::Equal(QQN::NarroContextInfo()->Context->File->FileName, substr($strFileName, 1, -1));
+            else
+                $objSearchCondition = QQ::Like(QQN::NarroContextInfo()->Context->File->FileName,  '%' . $strFileName . '%');
+
+            switch ($intFilter) {
+                case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
+                    $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
+                    break;
+                case NarroTextListForm::SHOW_APPROVED_TEXTS :
+                    $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
+                    break;
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
+                    $objFilterCondition = QQ::AndCondition(QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
+                    break;
+                default:
+                    // no filters
+                    $objFilterCondition = QQ::All();
+            }
+
+            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo, QQ::GroupBy(QQN::NarroContextInfo()->ContextId)));
+
+            return $arrContext;
+        }
+
+        public static function CountByFileName($strFileName, $intFilter, $objExtraCondition = null) {
+            if (!is_object($objExtraCondition))
+                $objExtraCondition = QQ::All();
+            if (trim($strFileName) == '')
+                $objSearchCondition = QQ::All();
+            elseif (preg_match("/^'.*'$/", $strFileName))
+                $objSearchCondition = QQ::Equal(QQN::NarroContextInfo()->Context->File->FileName, substr($strFileName, 1, -1));
+            else
+                $objSearchCondition = QQ::Like(QQN::NarroContextInfo()->Context->File->FileName,  '%' . $strFileName . '%');
 
             switch ($intFilter) {
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :

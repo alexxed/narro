@@ -158,6 +158,13 @@
                         $objCommonCondition
                     );
                     break;
+                case NarroTextListForm::SEARCH_FILES:
+                    $this->dtgNarroContextInfo->TotalItemCount = NarroContextInfo::CountByFileName(
+                        $this->txtSearch->Text,
+                        $this->lstTextFilter->SelectedValue,
+                        $objCommonCondition
+                    );
+                    break;
             }
 
             // Setup the $objClauses Array
@@ -203,6 +210,15 @@
                     break;
                 case NarroTextListForm::SEARCH_AUTHORS:
                     $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayByAuthor(
+                        $this->txtSearch->Text,
+                        $this->lstTextFilter->SelectedValue,
+                        $this->dtgNarroContextInfo->LimitClause,
+                        $this->dtgNarroContextInfo->OrderByClause,
+                        $objCommonCondition
+                    );
+                    break;
+                case NarroTextListForm::SEARCH_FILES:
+                    $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayByFileName(
                         $this->txtSearch->Text,
                         $this->lstTextFilter->SelectedValue,
                         $this->dtgNarroContextInfo->LimitClause,
