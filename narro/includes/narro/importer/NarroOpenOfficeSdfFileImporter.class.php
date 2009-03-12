@@ -48,11 +48,6 @@
                  */
                 $arrColumn[8] = '';
 
-                /**
-                 * skip help
-                 */
-                if ($arrColumn[0] == 'helpcontent2') continue;
-
                 if (count($arrColumn) != 15) {
                     NarroLog::LogMessage(2, sprintf('Skipped "%s" because splitting by tab does not give 14 columns.', $strFileLine));
                     continue;
@@ -147,18 +142,37 @@
         }
 
         public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
-            $objDatabase = NarroApp::$Database[1];
-            /**
-             * Open the template file
-             */
-            $hndFile = fopen($strTemplateFile, 'r');
+
+            if (file_exists($strTemplateFile))
+                $arrTexts = $this->FileToArray($strTemplateFile, $this->objSourceLanguage->LanguageCode);
+            else
+                NarroLog::LogMessage(3, sprintf('The template file "%s" does not exist.', $strTemplateFile));
+
+            if (trim($strTranslatedFile) != '')
+                if (file_exists($strTranslatedFile))
+                    $arrTranslations = $this->FileToArray($strTranslatedFile, $this->objTargetLanguage->LanguageCode);
+                else
+                    NarroLog::LogMessage(3, sprintf('The translation file "%s" does not exist.', $strTranslatedFile));
+
+            foreach($arrTexts as $strContext=>$arrTextInfo) {
+                if (isset($arrTranslations[$strContext]))
+                    $this->AddTranslation($arrTexts[$strContext][0], $arrTexts[$strContext][1], $arrTranslations[$strContext][0], $arrTranslations[$strContext][0], $strContext);
+                else
+                    $this->AddTranslation($arrTexts[$strContext][0], $arrTexts[$strContext][1], null, null, $strContext);
+            }
+        }
+
+        private function FileToArray($strFile, $strLocale) {
+            $arrTexts = array();
+
+            $hndFile = fopen($strFile, 'r');
 
             if (!$hndFile) {
-                NarroLog::LogMessage(3, sprintf('Cannot open input file "%s" for reading.', $strTemplateFile));
+                NarroLog::LogMessage(3, sprintf('Cannot open input file "%s" for reading.', $strFile));
                 return false;
             }
 
-            $intTotalToProcess = NarroUtils::CountFileLines($strTemplateFile);
+            $intTotalToProcess = NarroUtils::CountFileLines($strFile);
             $intProcessedSoFar = 0;
 
             /**
@@ -172,11 +186,6 @@
                  * OpenOffice uses tab separated values
                  */
                 $arrColumn = preg_split('/\t/', $strFileLine);
-
-                /**
-                 * skip help
-                 */
-                if ($arrColumn[0] == 'helpcontent2') continue;
 
                 $strLangCode = $arrColumn[9];
 
@@ -203,46 +212,7 @@
                 if ($strLangCode == 1)
                     $strLangCode = 'en-US';
 
-                /**
-                 * if we have a line with the target language in the language column, then the previous line was probably the original english value
-                 * to be sure, we're checking the context too
-                 */
-                if ($this->objTargetLanguage->LanguageCode == trim($strLangCode) && isset($strContext) && $strContext == $strPossibleContext) {
-                    /**
-                     * $strText and $strTextAccKey are kept from the previous cycle
-                     */
-                    $strTranslation = $arrColumn[10];
-
-                    /**
-                     * search for access key if needed
-                     */
-                    if ($strTextAccKey) {
-                        /**
-                         * if we import a translation and it already has an access key set, keep it
-                         * if not, find one or just use the first usable character
-                         */
-                        if (preg_match('/~(\w)/', $strTranslation, $arrTranslationAccMatches)) {
-                            $strTranslationAccKey = $arrTranslationAccMatches[1];
-                        }
-                        else {
-                            $intPos = mb_stripos($strTranslation, $strTextAccKey);
-                            if ($intPos != false)
-                                $strTranslationAccKey = mb_substr($strTranslation, $intPos, 1);
-                            else {
-                                if (preg_match('/(\w)/', $strTranslation, $arrTranslationAccMatches))
-                                    $strTranslationAccKey = $arrTranslationAccMatches[1];
-                                else
-                                    $strTranslationAccKey = mb_substr($strTranslation, 0, 1);
-                            }
-                        }
-
-                        $strTranslation = mb_ereg_replace('~' . $strTranslationAccKey, $strTranslationAccKey, $strTranslation);
-                    }
-                    else
-                        $strTranslationAccKey = null;
-
-                }
-                elseif ($this->objSourceLanguage->LanguageCode == trim($strLangCode) ) {
+                if ($strLocale == trim($strLangCode) ) {
                     $strText = $arrColumn[10];
 
                     $strTranslation = null;
@@ -255,30 +225,27 @@
                     else {
                         $strTextAccKey = null;
                     }
+
+                    $strContext = $strPossibleContext;
+
+                    $strDate = $arrColumn[14];
+
+                    if (!isset($strDate))
+                        continue;
+
+                    if (!preg_match('/[0-9]{4,4}[\-]?[0-9]{2,2}[\-]?[0-9]{2,2}\s[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}/', $strDate)) {
+                        NarroLog::LogMessage(2, var_export($strDate,true) . ' not good. Count: ' . count($arrColumn) . var_export($arrColumn, true));
+                        continue;
+                    }
+                    $arrTexts[$strContext] = array($strText, $strTextAccKey);
                 }
-                else {
-                    NarroLog::LogMessage(2, sprintf('Skipped line "%s" because the language code found "%s" does not match the source or target language. Columns: %s', $strFileLine, $strLangCode, print_r($arrColumn, true)));
-                    continue;
-                }
-
-                $strContext = $strPossibleContext;
-
-                $strDate = $arrColumn[14];
-
-                if (!isset($strDate))
-                    continue;
-
-                if (!preg_match('/[0-9]{4,4}[\-]?[0-9]{2,2}[\-]?[0-9]{2,2}\s[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}/', $strDate)) {
-                    NarroLog::LogMessage(2, var_export($strDate,true) . ' not good. Count: ' . count($arrColumn) . var_export($arrColumn, true));
-                    continue;
-                }
-
-                $this->AddTranslation($strText, $strTextAccKey, $strTranslation, $strTranslationAccKey, $strContext);
             }
             fclose($hndFile);
+
+            return $arrTexts;
         }
 
-        public static function SplitFile($strFile) {
+        public static function SplitFile($strFile, $strPath, $arrLocale = array('en-US')) {
             $hndFile = fopen($strFile, 'r');
 
             if (!$hndFile) {
@@ -290,7 +257,7 @@
              * read the template file line by line
              */
             while(!feof($hndFile)) {
-                $strFileLine = fgets($hndFile, 16384);
+                $strFileLine = fgets($hndFile);
 
                 /**
                  * OpenOffice uses tab separated values
@@ -299,17 +266,13 @@
 
                 if (count($arrColumn) < 14) continue;
 
-                /**
-                 * skip help
-                 */
-                if ($arrColumn[0] == 'helpcontent2') continue;
+                if (!in_array($arrColumn[9], $arrLocale)) continue;
 
-                $strFilePath = dirname($strFile) . '/' . $arrColumn[0] . '/' . str_replace('\\', '/', $arrColumn[1]) . '.sdf';
+                $strFilePath = $strPath . '/' . $arrColumn[9] . '/' . $arrColumn[0] . '/' . str_replace('\\', '/', $arrColumn[1]) . '.sdf';
 
                 if (!file_exists($strFilePath)) {
                     if (!file_exists(dirname($strFilePath))) {
                         mkdir(dirname($strFilePath), 0777, true);
-                        NarroUtils::RecursiveChmod(dirname($strFilePath));
                     }
                 }
 
@@ -318,7 +281,7 @@
                 fclose($hndSplitFile);
             }
 
-            NarroUtils::RecursiveChmod(dirname($strFile));
+            NarroUtils::RecursiveChmod($strPath);
         }
     }
 ?>

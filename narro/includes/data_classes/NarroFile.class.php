@@ -79,15 +79,38 @@
         }
 
         public function DeleteAllTextsCacheByLanguage($intLanguageId = null) {
-            NarroApp::$Cache->remove('total_texts_file_' . $this->FileId . '_' . $intLanguageId);
+            $strTag = '';
+
+            foreach(explode('/', preg_replace('/[^\/a-zA-Z0-9_]/', '__', substr($this->FilePath, 1))) as $strFilePathPart) {
+                $strTag .= '__' . $strFilePathPart;
+                foreach(NarroApp::$Cache->getIdsMatchingTags(array($strTag, 'Project' . $this->ProjectId, 'total_texts_file')) as $strCacheId) {
+                    NarroApp::$Cache->remove($strCacheId);
+                }
+            }
         }
 
         public function DeleteTranslatedTextsByLanguage($intLanguageId = null) {
-            NarroApp::$Cache->remove('translated_texts_file_' . $this->FileId . '_' . $intLanguageId);
+            $strTag = '';
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::GetLanguageId();
+
+            foreach(explode('/', preg_replace('/[^\/a-zA-Z0-9_]/', '__', substr($this->FilePath, 1))) as $strFilePathPart) {
+                $strTag .= '__' . $strFilePathPart;
+                foreach(NarroApp::$Cache->getIdsMatchingTags(array($strTag, 'Language' . $intLanguageId, 'Project' . $this->ProjectId, 'translated_texts_file')) as $strCacheId) {
+                    NarroApp::$Cache->remove($strCacheId);
+                }
+            }
         }
 
         public function DeleteApprovedTextsByLanguage($intLanguageId = null) {
-            NarroApp::$Cache->remove('approved_texts_file_' . $this->FileId . '_' . $intLanguageId);
+            $strTag = '';
+            if (is_null($intLanguageId)) $intLanguageId = NarroApp::GetLanguageId();
+
+            foreach(explode('/', preg_replace('/[^\/a-zA-Z0-9_]/', '__', substr($this->FilePath, 1))) as $strFilePathPart) {
+                $strTag .= '__' . $strFilePathPart;
+                foreach(NarroApp::$Cache->getIdsMatchingTags(array($strTag, 'Language' . $intLanguageId, 'Project' . $this->ProjectId, 'approved_texts_file')) as $strCacheId) {
+                    NarroApp::$Cache->remove($strCacheId);
+                }
+            }
         }
 
         public function CountAllTextsByLanguage($intLanguageId = null) {
@@ -129,7 +152,7 @@
                         $objFileProgress->ProgressPercent = 0;
                     $objFileProgress->Save();
 
-                    NarroApp::$Cache->save($intTotalTexts, 'total_texts_file_' . $this->FileId . '_' . $intLanguageId, array('file_progress' . $this->FileId, 'project_file_progress' . $this->ProjectId), 3600);
+                    NarroApp::$Cache->save($intTotalTexts, 'total_texts_file_' . $this->FileId . '_' . $intLanguageId, array(preg_replace('/[^a-zA-Z0-9_]/', '__', $this->FilePath), 'Project' . $this->Project->ProjectId, 'total_texts_file'));
                 }
             }
 
@@ -171,7 +194,7 @@
 
                     $objFileProgress->FuzzyTextCount = $intTranslatedTexts;
                     $objFileProgress->Save();
-                    NarroApp::$Cache->save($intTranslatedTexts, 'translated_texts_file_' . $this->FileId . '_' . $intLanguageId, array('file_progress' . $this->FileId, 'project_file_progress' . $this->ProjectId), 3600);
+                    NarroApp::$Cache->save($intTranslatedTexts, 'translated_texts_file_' . $this->FileId . '_' . $intLanguageId, array(preg_replace('/[^a-zA-Z0-9_]/', '__', $this->FilePath), 'Project' . $this->Project->ProjectId, 'Language' . NarroApp::GetLanguageId(), 'translated_texts_file'));
                 }
             }
 
@@ -217,7 +240,7 @@
                         $objFileProgress->ProgressPercent = 0;
 
                     $objFileProgress->Save();
-                    NarroApp::$Cache->save($intApprovedTexts, 'approved_texts_file_' . $this->FileId . '_' . $intLanguageId, array('file_progress' . $this->FileId, 'project_file_progress' . $this->ProjectId), 3600);
+                    NarroApp::$Cache->save($intApprovedTexts, 'approved_texts_file_' . $this->FileId . '_' . $intLanguageId, array(preg_replace('/[^a-zA-Z0-9_]/', '__', $this->FilePath), 'Project' . $this->Project->ProjectId, 'Language' . NarroApp::GetLanguageId(), 'approved_texts_file'));
                 }
             }
 

@@ -28,6 +28,7 @@
             if (!@file_put_contents(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId, $intValue)) {
                 NarroLog::LogMessage(2, sprintf('Can\'t write progress file %s', __TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId));
             }
+            @chmod(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId, $intValue, 0666);
         }
 
     }

@@ -51,6 +51,10 @@
 
     define ('NARRO_VERSION', '0.9.4');
     define ('ALLOW_REMOTE_ADMIN', false);
+    /**
+     * default is almost 10MB
+     */
+    define ('__MAXIMUM_FILE_SIZE_TO_IMPORT__', '10048576');
     define ('__URL_REWRITE__', 'none');
 
     define ('__DEVTOOLS_CLI__', __DOCROOT__ . __SUBDIRECTORY__ . '/_devtools_cli');
@@ -97,6 +101,8 @@
     ini_set('memory_limit', "512M");
 
     set_time_limit(0);
+    error_reporting(E_ALL ^ E_NOTICE);
+    $GLOBALS['_PEAR_default_error_mode'] = PEAR_ERROR_TRIGGER;
 
     if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data'))
         die(sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__));

@@ -49,6 +49,7 @@
         private static function OutputLog($intMessageType, $strText) {
             if (!self::$strLogFile) {
                 self::$strLogFile = __TMP_PATH__ . '/narro-' . NarroApp::$Language->LanguageCode . '.log';
+                self::OutputLog($intMessageType, date('l, j F Y g:i a'));
             }
 
             $hndLogFile = fopen(self::$strLogFile, 'a+');
@@ -87,8 +88,10 @@
 
             if (file_exists(self::$strLogFile))
                 return file_get_contents(self::$strLogFile);
-            elseif (file_exists(__TMP_PATH__ . '/narro-' . NarroApp::$Language->LanguageCode . '.log'))
+            elseif (file_exists(__TMP_PATH__ . '/narro-' . NarroApp::$Language->LanguageCode . '.log')) {
+                self::OutputLog(3, 'No log found, showing the full application log');
                 return file_get_contents(__TMP_PATH__ . '/narro-' . NarroApp::$Language->LanguageCode . '.log');
+            }
             else
                 return 'No log found, check the server log.';
         }

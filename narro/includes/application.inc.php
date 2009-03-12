@@ -17,13 +17,37 @@
      */
 
     class NarroApp extends QApplication {
+        /**
+         * @var boolean
+         */
         public static $UseAjax = true;
+        /**
+         * @var NarroUser
+         */
         public static $User;
+        /**
+         * @var NarroPluginHandler
+         */
         public static $PluginHandler;
+        /**
+         * @var array
+         */
         public static $arrPreferences;
+        /**
+         * @var array
+         */
         public static $arrFormats;
+        /**
+         * @var Zend_Cache_Core
+         */
         public static $Cache;
+        /**
+         * @var NarroLanguage
+         */
         public static $Language;
+        /**
+         * @var Zend_Translate
+         */
         public static $TranslationEngine;
 
         ////////////////////////////
@@ -93,7 +117,10 @@
     NarroApp::$ClassFile['NarroProgress'] = __INCLUDES__ . '/narro/importer/NarroProgress.class.php';
     NarroApp::$ClassFile['NarroProjectImporter'] = __INCLUDES__ . '/narro/importer/NarroProjectImporter.class.php';
     NarroApp::$ClassFile['NarroSvgFileImporter'] = __INCLUDES__ . '/narro/importer/NarroSvgFileImporter.class.php';
-
+    NarroApp::$ClassFile['File_Archive'] = __INCLUDES__ . '/PEAR/File/Archive.php';
+    /**
+     * @todo remove this in the next version
+     */
     NarroApp::$ClassFile['Archive_Tar'] = __INCLUDES__ . '/PEAR/Archive/Tar.php';
     NarroApp::$ClassFile['NarroTextListForm'] = 'narro_text_list.php';
 
@@ -114,6 +141,9 @@
     NarroApp::$ClassFile['NarroTranslationProgressBar'] = __INCLUDES__ . '/narro/NarroTranslationProgressBar.class.php';
     NarroApp::$ClassFile['NarroUserSuggestionsPanel'] = __INCLUDES__ . '/narro/NarroUserSuggestionsPanel.class.php';
     NarroApp::$ClassFile['NarroUtils'] = __INCLUDES__ . '/narro/NarroUtils.class.php';
+
+    NarroApp::$ClassFile['NarroArchiveFileSourcePanel'] = __INCLUDES__ . '/narro/NarroArchiveFileSourcePanel.class.php';
+    NarroApp::$ClassFile['NarroFileSourcePanel'] = __INCLUDES__ . '/narro/NarroFileSourcePanel.class.php';
 
     NarroApp::$ClassFile['FirePHP'] = __INCLUDES__ . '/PEAR/FirePHPCore/FirePHP.class.php';
     NarroApp::$ClassFile['FB'] = __INCLUDES__ . '/PEAR/FirePHPCore/fb.php';

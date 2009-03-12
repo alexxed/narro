@@ -200,7 +200,7 @@
                 NarroLog::LogMessage(3, sprintf('Can\'t write to file "%s"', $strTranslatedFile));
             }
 
-            chmod($strTranslatedFile, 0666);
+            @chmod($strTranslatedFile, 0666);
 
         }
 

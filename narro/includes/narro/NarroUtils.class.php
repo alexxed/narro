@@ -62,9 +62,9 @@
                     else
                         return true;
                 }
-                if (!@unlink($strFilePath)) {
+                if (file_exists($strFilePath) && !@unlink($strFilePath)) {
                     if (!is_writable($strFilePath))
-                        $strError = sprintf('"%s" is not writable by "%s".', realpath($strFilePath . '/..'), get_current_user());
+                        $strError = sprintf('"%s" is only writable by "%s".', realpath($strFilePath . '/..'), get_current_user());
                     else
                         $strError = 'Unknown error.';
 
@@ -99,7 +99,7 @@
                      * If it's writable, we don't care if chmod failed, it's probably due to selinux
                      */
                     if (!is_writable($strFilePath)) {
-                        $strError = sprintf('"%s" is not writable by "%s".', $strFilePath, get_current_user());
+                        $strError = sprintf('"%s" is only writable by "%s".', $strFilePath, get_current_user());
                         throw new Exception(sprintf('Could not chmod file %s: %s', $strFilePath, $strError));
                     }
 
@@ -115,7 +115,7 @@
                      * If it's writable, we don't care if chmod failed, it's probably due to selinux
                      */
                     if (!is_writable($strFilePath)) {
-                        $strError = sprintf('"%s" is not writable by "%s".', $strFilePath, get_current_user());
+                        $strError = sprintf('"%s" is only writable by "%s".', $strFilePath, get_current_user());
                         throw new Exception(sprintf('Could not chmod file %s: %s', $strFilePath, $strError));
                     }
 
@@ -143,7 +143,7 @@
                         );
                     else
                         throw new Exception(
-                                    sprintf('Could not create directory %s. The parent directory is not writable by %s',
+                                    sprintf('Could not create directory %s. The parent directory is only writable by %s',
                                         $target,
                                         get_current_user()
                                     )
@@ -173,7 +173,7 @@
                             );
                         elseif (!is_writable(dirname($target)))
                             throw new Exception(
-                                sprintf('Could not copy %s to %s. The directory %s is not writable by %s',
+                                sprintf('Could not copy %s to %s. The directory %s is only writable by %s',
                                     $source,
                                     $target,
                                     dirname($target),
@@ -199,7 +199,7 @@
                         );
                     elseif (!is_writable(dirname($target)))
                         throw new Exception(
-                            sprintf('Could not copy %s to %s. The directory %s is not writable by %s',
+                            sprintf('Could not copy %s to %s. The directory %s is only writable by %s',
                                 $source,
                                 $target,
                                 dirname($target),
