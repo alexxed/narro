@@ -74,9 +74,15 @@
                 $arrTranslatedColumn[8] = 0;
                 $arrTranslatedColumn[9] = 'ro';
 
-                if (preg_match('/~(\w)/', $strText, $arrTextAccMatches)) {
+                if (strstr($strText, '~') && preg_match('/~(\w)/', $strText, $arrTextAccMatches)) {
                     $strTextAccKey = $arrTextAccMatches[1];
                     $strText = mb_ereg_replace('~' . $strTextAccKey, $strTextAccKey, $strText);
+                    $strTextAccKeyPrefix = '~';
+                }
+                elseif (strstr($strText, '&') && preg_match('/&(\w)/', $strText, $arrTextAccMatches)) {
+                    $strTextAccKey = $arrTextAccMatches[1];
+                    $strText = mb_ereg_replace('&' . $strTextAccKey, $strTextAccKey, $strText);
+                    $strTextAccKeyPrefix = '&';
                 }
                 else {
                     $strTextAccKey = null;
@@ -96,12 +102,12 @@
                     if ($objNarroContextInfo->ValidSuggestionId && $objNarroContextInfo->SuggestionAccessKey != '')
                         $strSuggestionValue = NarroString::Replace(
                             $objNarroContextInfo->SuggestionAccessKey,
-                            '~' . $objNarroContextInfo->SuggestionAccessKey,
+                            $strTextAccKeyPrefix . $objNarroContextInfo->SuggestionAccessKey,
                             $strSuggestionValue,
                             1
                         );
                     else
-                        $strSuggestionValue = '~' . $strSuggestionValue;
+                        $strSuggestionValue = $strTextAccKeyPrefix . $strSuggestionValue;
                 }
 
 
@@ -156,7 +162,7 @@
 
             foreach($arrTexts as $strContext=>$arrTextInfo) {
                 if (isset($arrTranslations[$strContext]))
-                    $this->AddTranslation($arrTexts[$strContext][0], $arrTexts[$strContext][1], $arrTranslations[$strContext][0], $arrTranslations[$strContext][0], $strContext);
+                    $this->AddTranslation($arrTexts[$strContext][0], $arrTexts[$strContext][1], $arrTranslations[$strContext][0], $arrTranslations[$strContext][1], $strContext);
                 else
                     $this->AddTranslation($arrTexts[$strContext][0], $arrTexts[$strContext][1], null, null, $strContext);
             }
@@ -185,58 +191,51 @@
                 /**
                  * OpenOffice uses tab separated values
                  */
-                $arrColumn = preg_split('/\t/', $strFileLine);
+                $arrColumn = explode("\t", $strFileLine);
+                if (count($arrColumn) != 15) {
+                    NarroLog::LogMessage(3, sprintf('Skipping line "%s" because it does not split into 15 fields by tab', $strFileLine));
+                    continue;
+                }
 
                 $strLangCode = $arrColumn[9];
-
-                $strPossibleContext = '';
-                /**
-                 * positions 8, 9 and 10 contain a number, the language code and the text/translation
-                 * positions 1 and 2 contain path info
-                 * position 3 contains a number
-                 * position 14 contains a date
-                 */
-                foreach(array(3, 4, 5, 6, 7, 11, 12, 13) as $intPos) {
-                    if (trim($arrColumn[$intPos]) != '' && !is_numeric($arrColumn[$intPos]))
-                        $strPossibleContext .= $arrColumn[$intPos] ."\n";
-                }
-                $strPossibleContext = trim($strPossibleContext);
-
-                /**
-                 * Unset some unused fields
-                 */
-                unset($arrColumn[8]);
-                unset($arrColumn[9]);
-                unset($arrColumn[9]);
 
                 if ($strLangCode == 1)
                     $strLangCode = 'en-US';
 
                 if ($strLocale == trim($strLangCode) ) {
+                    $strContext = '';
+
+                    /**
+                     * positions 8, 9 and 10 contain a number, the language code and the text/translation
+                     * positions 1 and 2 contain path info
+                     * position 3 contains a number
+                     * position 14 contains a date
+                     */
+                    foreach(array(3, 4, 5, 6, 7, 11, 12, 13) as $intPos) {
+                        if (trim($arrColumn[$intPos]) != '' && !is_numeric($arrColumn[$intPos]))
+                            $strContext .= $arrColumn[$intPos] ."\n";
+                    }
+
+                    $strContext = trim($strContext);
+
+
                     $strText = $arrColumn[10];
 
                     $strTranslation = null;
                     $strTranslationAccKey = null;
 
-                    if (preg_match('/~(\w)/', $strText, $arrTextAccMatches)) {
+                    if (strstr($strText, '~') && preg_match('/~(\w)/', $strText, $arrTextAccMatches)) {
                         $strTextAccKey = $arrTextAccMatches[1];
                         $strText = mb_ereg_replace('~' . $strTextAccKey, $strTextAccKey, $strText);
+                    }
+                    elseif (strstr($strText, '&') && preg_match('/&(\w)/', $strText, $arrTextAccMatches)) {
+                        $strTextAccKey = $arrTextAccMatches[1];
+                        $strText = mb_ereg_replace('&' . $strTextAccKey, $strTextAccKey, $strText);
                     }
                     else {
                         $strTextAccKey = null;
                     }
 
-                    $strContext = $strPossibleContext;
-
-                    $strDate = $arrColumn[14];
-
-                    if (!isset($strDate))
-                        continue;
-
-                    if (!preg_match('/[0-9]{4,4}[\-]?[0-9]{2,2}[\-]?[0-9]{2,2}\s[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}/', $strDate)) {
-                        NarroLog::LogMessage(2, var_export($strDate,true) . ' not good. Count: ' . count($arrColumn) . var_export($arrColumn, true));
-                        continue;
-                    }
                     $arrTexts[$strContext] = array($strText, $strTextAccKey);
                 }
             }
