@@ -19,11 +19,6 @@
     class NarroOpenOfficeSdfFileImporter extends NarroFileImporter {
 
         public function ExportFile($strTemplateFile, $strTranslatedFile) {
-            $hndTemplateFile = fopen($strTemplateFile, 'r');
-            if (!$hndTemplateFile) {
-                NarroLog::LogMessage(3, sprintf('Can\'t open file "%s" for reading', $strTemplateFile));
-                return false;
-            }
 
             $hndTranslatedFile = @fopen($strTranslatedFile, 'w');
 
@@ -32,13 +27,21 @@
 
             $intTotalToProcess = NarroUtils::CountFileLines($strTemplateFile);
 
+            /**
+             * get all the texts and contexts from the template file, including the file line
+             */
+            $arrTexts = $this->FileToArray($strTemplateFile, $this->objSourceLanguage->LanguageCode, true);
+
             NarroLog::LogMessage(1, sprintf('Starting to process file "%s" (%d texts), the result is written to "%s".', $strTemplateFile, $intTotalToProcess, $strTranslatedFile));
 
             $intFileLineNr=0;
 
-            while(!feof($hndTemplateFile)) {
+            foreach($arrTexts as $strContext=>$arrTextInfo) {
+                $strText = $arrTextInfo[0];
+                $strTextAccKey = $arrTextInfo[1];
+                $strTextAccKeyPrefix = $arrTextInfo[2];
+                $strFileLine = $arrTextInfo[3];
 
-                $strFileLine = fgets($hndTemplateFile, 4096);
                 $intFileLineNr++;
 
                 $arrColumn = preg_split('/\t/', $strFileLine);
@@ -48,48 +51,19 @@
                  */
                 $arrColumn[8] = '';
 
-                if (count($arrColumn) != 15) {
-                    NarroLog::LogMessage(2, sprintf('Skipped "%s" because splitting by tab does not give 14 columns.', $strFileLine));
-                    continue;
-                }
-
-                $arrTranslatedColumn = $arrColumn;
-
-                $strLangCode = $arrColumn[9];
-                $strText = $arrColumn[10];
-
-                $strPossibleContext = '';
                 /**
-                 * positions 8, 9 and 10 contain a number, the language code and the text/translation
-                 * positions 1 and 2 contain path info
-                 * position 3 contains a number
-                 * position 14 contains a date
+                 * create a copy for the translated line, we'll just replace lang code, the number on column 8 and the text with the translation
                  */
-                foreach(array(3, 4, 5, 6, 7, 11, 12, 13) as $intPos) {
-                    if (trim($arrColumn[$intPos]) != '' && !is_numeric($arrColumn[$intPos]))
-                        $strPossibleContext .= $arrColumn[$intPos] ."\n";
-                }
-                $strContext = trim($strPossibleContext);
+                $arrTranslatedColumn = $arrColumn;
 
                 $arrTranslatedColumn[8] = 0;
                 $arrTranslatedColumn[9] = 'ro';
 
-                if (strstr($strText, '~') && preg_match('/~(\w)/', $strText, $arrTextAccMatches)) {
-                    $strTextAccKey = $arrTextAccMatches[1];
-                    $strText = mb_ereg_replace('~' . $strTextAccKey, $strTextAccKey, $strText);
-                    $strTextAccKeyPrefix = '~';
-                }
-                elseif (strstr($strText, '&') && preg_match('/&(\w)/', $strText, $arrTextAccMatches)) {
-                    $strTextAccKey = $arrTextAccMatches[1];
-                    $strText = mb_ereg_replace('&' . $strTextAccKey, $strTextAccKey, $strText);
-                    $strTextAccKeyPrefix = '&';
-                }
-                else {
-                    $strTextAccKey = null;
-                }
-
                 $objNarroContextInfo = $this->GetContextInfo($strText, $strContext);
 
+                /**
+                 * the original texts are used if no suggestion is found, so we export only approved texts
+                 */
                 if ($objNarroContextInfo instanceof NarroContextInfo)
                     $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
                 else
@@ -142,7 +116,6 @@
 
             }
 
-            fclose($hndTemplateFile);
             fclose($hndTranslatedFile);
             chmod($strTranslatedFile, 0666);
         }
@@ -168,7 +141,7 @@
             }
         }
 
-        private function FileToArray($strFile, $strLocale) {
+        private function FileToArray($strFile, $strLocale, $blnIncludeFileLine = false) {
             $arrTexts = array();
 
             $hndFile = fopen($strFile, 'r');
@@ -185,15 +158,19 @@
              * read the template file line by line
              */
             while(!feof($hndFile)) {
-                $strFileLine = fgets($hndFile, 16384);
+                $strFileLine = fgets($hndFile);
                 $intProcessedSoFar++;
+                if ($strFileLine == '') {
+                    NarroLog::LogMessage(1, sprintf('Skipping empty line from "%s"', $strFileLine));
+                    continue;
+                }
 
                 /**
                  * OpenOffice uses tab separated values
                  */
                 $arrColumn = explode("\t", $strFileLine);
                 if (count($arrColumn) != 15) {
-                    NarroLog::LogMessage(3, sprintf('Skipping line "%s" because it does not split into 15 fields by tab', $strFileLine));
+                    NarroLog::LogMessage(3, sprintf('Skipping line "%s" from "%s" because it does not split into 15 fields by tab', $strFileLine, $strFile));
                     continue;
                 }
 
@@ -212,7 +189,7 @@
                      * position 14 contains a date
                      */
                     foreach(array(3, 4, 5, 6, 7, 11, 12, 13) as $intPos) {
-                        if (trim($arrColumn[$intPos]) != '' && !is_numeric($arrColumn[$intPos]))
+                        if (trim($arrColumn[$intPos]) != '')
                             $strContext .= $arrColumn[$intPos] ."\n";
                     }
 
@@ -220,23 +197,30 @@
 
 
                     $strText = $arrColumn[10];
-
-                    $strTranslation = null;
-                    $strTranslationAccKey = null;
+                    $strTextAccKey = null;
+                    $strTextAccKeyPrefix = null;
 
                     if (strstr($strText, '~') && preg_match('/~(\w)/', $strText, $arrTextAccMatches)) {
                         $strTextAccKey = $arrTextAccMatches[1];
                         $strText = mb_ereg_replace('~' . $strTextAccKey, $strTextAccKey, $strText);
+                        $strTextAccKeyPrefix = '~';
                     }
                     elseif (strstr($strText, '&') && preg_match('/&(\w)/', $strText, $arrTextAccMatches)) {
                         $strTextAccKey = $arrTextAccMatches[1];
                         $strText = mb_ereg_replace('&' . $strTextAccKey, $strTextAccKey, $strText);
+                        $strTextAccKeyPrefix = '&';
                     }
                     else {
                         $strTextAccKey = null;
                     }
 
-                    $arrTexts[$strContext] = array($strText, $strTextAccKey);
+                    if (isset($arrTexts[$strContext]))
+                        $strContext .= "\n" . $intProcessedSoFar;
+
+                    $arrTexts[$strContext] = array($strText, $strTextAccKey, $strTextAccKeyPrefix, ($blnIncludeFileLine)?$strFileLine:'');
+                }
+                else {
+                    NarroLog::LogMessage(1, sprintf('Skipping line "%s" from "%s" because detected language code "%s" does not match the expected one "%s"', $strFileLine, $strFile, $strLangCode, $strLocale));
                 }
             }
             fclose($hndFile);
