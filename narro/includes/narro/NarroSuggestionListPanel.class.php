@@ -329,7 +329,29 @@
                 $strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by %s'), NarroLink::UserProfile($this->objNarroContextInfo->ValidatorUser->UserId, $this->objNarroContextInfo->ValidatorUser->Username) . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
             }
 
-            return $strAuthorInfo;
+            if
+            (
+                NarroApp::$User->hasPermission(
+                    'Can suggest',
+                    $this->objNarroContextInfo->Context->ProjectId,
+                    NarroApp::GetLanguageId()
+                )
+                &&
+                $this->intEditSuggestionId == $objNarroSuggestion->SuggestionId
+                &&
+                $objNarroSuggestion->UserId != NarroApp::GetUserId()
+            ) {
+                $strControlId = 'lstEditSuggestion' . $objNarroSuggestion->SuggestionId;
+                $lstEditSuggestion = $this->objForm->GetControl($strControlId);
+                if (!$lstEditSuggestion) {
+                    $lstEditSuggestion = new QListBox($this->dtgSuggestions, $strControlId);
+                    $lstEditSuggestion->AddItem(strip_tags($strAuthorInfo), $objNarroSuggestion->UserId);
+                    $lstEditSuggestion->AddItem(NarroApp::$User->Username, NarroApp::GetUserId());
+                }
+                return $lstEditSuggestion->Render(false);
+            }
+            else
+                return $strAuthorInfo;
         }
 
 
@@ -640,6 +662,11 @@
                         $objSuggestion->SuggestionValue = $strSuggestionValue;
                         $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
                         $objSuggestion->SuggestionCharCount = mb_strlen($strSuggestionValue);
+                        $lstEditSuggestion = $this->Form->GetControl('lstEditSuggestion' . $objSuggestion->SuggestionId);
+                        if ($lstEditSuggestion instanceof QListBox && $lstEditSuggestion->SelectedValue == NarroApp::GetUserId() && $objSuggestion->UserId != $lstEditSuggestion->SelectedValue) {
+                            $objSuggestion->UserId = $lstEditSuggestion->SelectedValue;
+                            $objSuggestion->Created = date('Y-m-d H:i:s');
+                        }
 
                         try {
                             $objSuggestion->Save();

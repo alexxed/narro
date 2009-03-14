@@ -887,7 +887,7 @@
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();
 
-            if ($this->chkGoToNext->Checked )
+            if ($this->chkGoToNext->Checked && $strParameter != $this->objNarroContextInfo->ValidSuggestionId)
                 $this->btnNext_Click($strFormId, $strControlId, $strParameter);
 
         }
