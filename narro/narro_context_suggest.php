@@ -864,10 +864,12 @@
             if ($strParameter != $this->objNarroContextInfo->ValidSuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = (int) $strParameter;
                 $this->objNarroContextInfo->ValidatorUserId = NarroApp::GetUserId();
+                $blnGoNext = true;
                 NarroApp::$PluginHandler->ApproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             }
             else {
                 $this->objNarroContextInfo->ValidSuggestionId = null;
+                $blnGoNext = false;
                 NarroApp::$PluginHandler->DisapproveSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $this->txtSuggestionValue->Text, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
             }
 
@@ -887,7 +889,7 @@
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();
 
-            if ($this->chkGoToNext->Checked && $strParameter != $this->objNarroContextInfo->ValidSuggestionId)
+            if ($this->chkGoToNext->Checked && $blnGoNext)
                 $this->btnNext_Click($strFormId, $strControlId, $strParameter);
 
         }
