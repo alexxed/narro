@@ -465,7 +465,7 @@
 
             $strText = '';
 
-            if (NarroApp::$User->Language->LanguageId == $objNarroSuggestion->LanguageId) {
+            if (NarroApp::GetLanguageId() == $objNarroSuggestion->LanguageId) {
                 if (NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId))
                     $strText .= '&nbsp;' . $btnApprove->Render(false);
                 if (NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroContextInfo->Context->ProjectId))
