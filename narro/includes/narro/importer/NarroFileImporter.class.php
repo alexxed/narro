@@ -235,15 +235,9 @@
                                          */
                                         QQ::Equal(QQN::NarroContext()->FileId, $this->objFile->FileId),
                                         QQ::Equal(QQN::NarroContext()->ProjectId, $this->objProject->ProjectId),
-                                        QQ::Equal(QQN::NarroContext()->Context, $strContext)
+                                        QQ::Equal(QQN::NarroContext()->ContextMd5, md5($strContext))
                                     )
                                 );
-
-
-            /**
-             * MySql is case insensitive, so we need $strContext != $objNarroContext->Context
-             */
-            if ($strContext != $objNarroContext->Context) $objNarroContext = null;
 
             if (!$this->blnOnlySuggestions && !$objNarroContext instanceof NarroContext) {
 
