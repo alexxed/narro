@@ -62,9 +62,11 @@
             $this->colSuggestion = new QDataGridColumn(t('Translation'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
             $this->colSuggestion->HtmlEntities = false;
             $this->colSuggestion->CssClass = NarroApp::$Language->TextDirection;
+            $this->colSuggestion->Width = '100%';
 
             $this->colAuthor = new QDataGridColumn(t('Author'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colAuthor_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId, false)));
             $this->colAuthor->HtmlEntities = false;
+            $this->colAuthor->Wrap = false;
 
             $this->colVote = new QDataGridColumn(t('Votes'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colVote_Render($_ITEM); ?>');
             $this->colVote->HtmlEntities = false;
@@ -392,6 +394,19 @@
                         $btnSaveIgnoreSuggestion->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnEdit_Click'));
                 }
                 $btnSaveIgnoreSuggestion->ActionParameter = $objNarroSuggestion->SuggestionId;
+
+                $strControlId = 'btnCancelEditSuggestion' . $objNarroSuggestion->SuggestionId;
+                $btnCancelEditSuggestion = $this->objForm->GetControl($strControlId);
+                if (!$btnCancelEditSuggestion) {
+                    $btnCancelEditSuggestion = new QButton($this->dtgSuggestions, $strControlId);
+                    $btnCancelEditSuggestion->Text = t('Cancel');
+                    if (NarroApp::$UseAjax)
+                        $btnCancelEditSuggestion->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCancelEditSuggestion_Click'));
+                    else
+                        $btnCancelEditSuggestion->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancelEditSuggestion_Click'));
+                }
+                $btnCancelEditSuggestion->Visible = ($objNarroSuggestion->SuggestionId == $this->intEditSuggestionId);
+                $btnCancelEditSuggestion->ActionParameter = $objNarroSuggestion->SuggestionId;
             }
 
             if ($objNarroSuggestion->SuggestionId != $this->intEditSuggestionId)
@@ -432,7 +447,7 @@
 
             $btnVote->ActionParameter = $objNarroSuggestion->SuggestionId;
 
-            $strControlId = 'btnApprove' . $this->dtgSuggestions->CurrentRowIndex;
+            $strControlId = 'btnApprove' . $objNarroSuggestion->SuggestionId;
 
             $btnApprove = $this->objForm->GetControl($strControlId);
             if (!$btnApprove) {
@@ -444,7 +459,7 @@
                 );
             }
 
-            $btnApprove->Text = t('Approve');
+            $btnApprove->Text = ($objNarroSuggestion->SuggestionId == $this->intEditSuggestionId)?t('Save and approve'):t('Approve');
 
             $btnApprove->ActionParameter = $objNarroSuggestion->SuggestionId;
 
@@ -457,7 +472,7 @@
                     $strText .= '&nbsp;' . $btnVote->Render(false);
                 if (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId) || ($objNarroSuggestion->UserId == NarroApp::GetUserId() && NarroApp::GetUserId() != NarroUser::ANONYMOUS_USER_ID )) {
                     $strText .= '&nbsp;' . $btnEdit->Render(false);
-                    if ($blnCanEdit) $strText .= '&nbsp;' . $btnSaveIgnoreSuggestion->Render(false);
+                    if ($blnCanEdit) $strText .= '&nbsp;' . $btnSaveIgnoreSuggestion->Render(false) . $btnCancelEditSuggestion->Render(false);
                 }
                 if (NarroApp::HasPermissionForThisLang('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId) || ($objNarroSuggestion->UserId == NarroApp::GetUserId() && NarroApp::GetUserId() != NarroUser::ANONYMOUS_USER_ID ))
                     $strText .= '&nbsp;' . $btnDelete->Render(false);
@@ -600,9 +615,20 @@
 
         }
 
+        public function btnCancelEditSuggestion_Click($strFormId, $strControlId, $strParameter) {
+            $this->intEditSuggestionId = null;
+            $btnSaveIgnoreSuggestion = $this->Form->GetControl('btnSaveIgnoreSuggestion' . $strParameter);
+            $btnSaveIgnoreSuggestion->Visible = false;
+            $this->lblMessage->Text = '';
+            $this->Form->HidePluginErrors();
+            $this->MarkAsModified();
+        }
+
         public function btnEdit_Click($strFormId, $strControlId, $strParameter) {
             if (!NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))
                 return false;
+
+            $blnResult = true;
 
             $objSuggestion = NarroSuggestion::Load($strParameter);
 
@@ -672,15 +698,20 @@
                             $objSuggestion->Save();
                             $this->lblMessage->Text = t('Your changes were saved succesfully.');
                             $btnEdit->Text = ($blnCanEdit)?t('Edit'):t('Copy');
-                            $this->intEditSuggestionId = null;
+                            $this->btnCancelEditSuggestion_Click($strFormId, $strControlId, $strParameter);
+                            $blnResult = true;
                         } catch (QMySqliDatabaseException $objExc) {
                             $this->lblMessage->Text = t('The text you are trying to save already exists.');
                         }
                     }
                 }
+                else
+                    $blnResult = false;
             }
             //$this->dtgSuggestions_Bind();
             $this->MarkAsModified();
+
+            return $blnResult;
         }
 
         protected function IsSuggestionUsed($strSuggestionId) {

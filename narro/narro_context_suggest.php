@@ -859,7 +859,16 @@
 
         public function btnApprove_Click($strFormId, $strControlId, $strParameter) {
             if (!NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId))
-              return false;
+                return false;
+
+            $btnApprove = $this->GetControl($strControlId);
+            if ($btnApprove->Text == t('Save and approve'))
+                $blnResult = $this->pnlSuggestionList->btnEdit_Click($strFormId, 'btnEditSuggestion' . $strParameter, $strParameter);
+            else
+                $blnResult = true;
+
+            if (!$blnResult)
+                return false;
 
             if ($strParameter != $this->objNarroContextInfo->ValidSuggestionId) {
                 $this->objNarroContextInfo->ValidSuggestionId = (int) $strParameter;
