@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 0.9.3\n"
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2009-04-03 05:39-0800\n"
-"PO-Revision-Date: 2009-04-03 05:39-0800\n"
+"POT-Creation-Date: 2009-15-03 10:20-0700\n"
+"PO-Revision-Date: 2009-15-03 10:20-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -809,6 +809,11 @@ msgstr ""
 msgid "Ignore and save"
 msgstr ""
 
+#. $this->btnCancel->Text = t('Cancel');
+#: includes/narro/NarroSuggestionListPanel.class.php includes/qcodo/qform/QFileAsset.class.php narro_language_edit.php narro_project_edit.php narro_text_list.php narro_user_preferences.php
+msgid "Cancel"
+msgstr ""
+
 #. $btnEdit->Text = t('Edit');
 #. $btnEdit->Text = t('Edit');
 #. $btnEdit->Text = t('Edit');
@@ -826,7 +831,12 @@ msgstr ""
 msgid "Are you sure you want to delete this suggestion?"
 msgstr ""
 
-#. $btnApprove->Text = t('Approve');
+#. if ($btnApprove->Text == t('Save and approve'))
+#: includes/narro/NarroSuggestionListPanel.class.php narro_context_suggest.php
+msgid "Save and approve"
+msgstr ""
+
+#. $btnApprove->Text = ($objNarroSuggestion->SuggestionId == $this->intEditSuggestionId)?t('Save and approve'):t('Approve');
 #: includes/narro/NarroSuggestionListPanel.class.php
 msgid "Approve"
 msgstr ""
@@ -1249,11 +1259,6 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
-#. $this->btnCancel->Text = t('Cancel');
-#: includes/qcodo/qform/QFileAsset.class.php narro_language_edit.php narro_project_edit.php narro_text_list.php narro_user_preferences.php
-msgid "Cancel"
-msgstr ""
-
 #. $this->btnPrevious->Text = t('Previous');
 #: includes/qcodo/qform/QPaginator.class.php narro_context_suggest.php
 msgid "Previous"
@@ -1358,6 +1363,11 @@ msgstr ""
 #. $this->pnlBreadcrumb->addElement(sprintf(t('Search in authors for "%s"'), $this->strSearchText));
 #: narro_context_suggest.php
 msgid "Search in authors for \"%s\""
+msgstr ""
+
+#. $this->pnlBreadcrumb->addElement(sprintf(t('Search in file names for "%s"'), $this->strSearchText));
+#: narro_context_suggest.php
+msgid "Search in file names for \"%s\""
 msgstr ""
 
 #. sprintf(t('You are now translating a batch of %d texts. The bar below shows your progress through this batch'), $this->intContextsCount),
@@ -1816,6 +1826,11 @@ msgstr ""
 #. $this->lstSearchType->AddItem(t('authors'), self::SEARCH_AUTHORS);
 #: narro_text_list.php
 msgid "authors"
+msgstr ""
+
+#. $this->lstSearchType->AddItem(t('files'), self::SEARCH_FILES);
+#: narro_text_list.php
+msgid "files"
 msgstr ""
 
 #. $this->btnMultiApprove->Text = t('Mass approve');
