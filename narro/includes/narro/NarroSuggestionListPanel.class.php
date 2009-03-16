@@ -445,6 +445,7 @@
 
             }
 
+            $btnVote->Visible = ($objNarroSuggestion->UserId <> NarroApp::GetUserId());
             $btnVote->ActionParameter = $objNarroSuggestion->SuggestionId;
 
             $strControlId = 'btnApprove' . $objNarroSuggestion->SuggestionId;
@@ -579,7 +580,10 @@
         public function btnVote_Click($strFormId, $strControlId, $strParameter) {
 
             if (!NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroContextInfo->Context->ProjectId))
-              return false;
+                return false;
+
+            if ($objNarroSuggestion->UserId == NarroApp::GetUserId());
+                return false;
 
             $objSuggestion = NarroSuggestion::Load($strParameter);
             NarroApp::$PluginHandler->VoteSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $objSuggestion->SuggestionValue, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
