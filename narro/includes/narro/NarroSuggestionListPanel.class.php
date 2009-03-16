@@ -445,7 +445,7 @@
 
             }
 
-            $btnVote->Visible = ($objNarroSuggestion->UserId <> NarroApp::GetUserId());
+            $btnVote->Enabled = ($objNarroSuggestion->UserId <> NarroApp::GetUserId());
             $btnVote->ActionParameter = $objNarroSuggestion->SuggestionId;
 
             $strControlId = 'btnApprove' . $objNarroSuggestion->SuggestionId;
@@ -467,14 +467,17 @@
             $strText = '';
 
             if (NarroApp::GetLanguageId() == $objNarroSuggestion->LanguageId) {
-                if (NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroContextInfo->Context->ProjectId))
-                    $strText .= '&nbsp;' . $btnVote->Render(false);
                 if (NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId))
                     $strText .= '&nbsp;' . $btnApprove->Render(false);
+
+                if (NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroContextInfo->Context->ProjectId))
+                    $strText .= '&nbsp;' . $btnVote->Render(false);
+
                 if (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId) || ($objNarroSuggestion->UserId == NarroApp::GetUserId() && NarroApp::GetUserId() != NarroUser::ANONYMOUS_USER_ID )) {
                     $strText .= '&nbsp;' . $btnEdit->Render(false);
                     if ($blnCanEdit) $strText .= '&nbsp;' . $btnSaveIgnoreSuggestion->Render(false) . $btnCancelEditSuggestion->Render(false);
                 }
+
                 if (NarroApp::HasPermissionForThisLang('Can delete any suggestion', $this->objNarroContextInfo->Context->ProjectId) || ($objNarroSuggestion->UserId == NarroApp::GetUserId() && NarroApp::GetUserId() != NarroUser::ANONYMOUS_USER_ID ))
                     $strText .= '&nbsp;' . $btnDelete->Render(false);
 
