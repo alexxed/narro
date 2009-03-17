@@ -71,6 +71,8 @@
         protected function Form_Create() {
             $this->pnlHeader = new NarroHeaderPanel($this);
             $this->pnlBreadcrumb = new NarroBreadcrumbPanel($this);
+            // Define the Wait Icon -- we need to remember to "RENDER" this wait icon, too!
+            $this->objDefaultWaitIcon = new QWaitIcon($this);
         }
 
         protected function Form_Exit() {

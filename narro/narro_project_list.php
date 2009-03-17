@@ -28,9 +28,7 @@
         protected $pnlTopUsers;
         protected $pnlNewUsers;
 
-        protected $chkShowCompleted;
-        protected $chkShowEmpty;
-        protected $chkShowInactive;
+        protected $lstFilter;
 
         protected function Form_Create() {
             parent::Form_Create();
@@ -65,23 +63,17 @@
             $this->pnlTopUsers = new NarroTopUsersPanel($this);
             $this->pnlNewUsers = new NarroNewUsersPanel($this);
 
-            $this->chkShowCompleted = new QCheckBox($this);
+            $this->lstFilter = new QListBox($this);
+            $this->lstFilter->AddItem(t('All'), 0);
+            $this->lstFilter->AddItem(t('In progress'), 1, true);
+            $this->lstFilter->AddItem(t('Completed'), 2);
+            $this->lstFilter->AddItem(t('Empty'), 3);
+            if (NarroApp::HasPermission('Administrator'))
+                $this->lstFilter->AddItem(t('Inactive'), 4);
             if (NarroApp::$UseAjax)
-                $this->chkShowCompleted->AddAction(new QClickEvent(), new QAjaxAction('dtgNarroProject_Bind'));
+                $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxAction('dtgNarroProject_Bind'));
             else
-                $this->chkShowCompleted->AddAction(new QClickEvent(), new QServerAction('dtgNarroProject_Bind'));
-
-            $this->chkShowEmpty = new QCheckBox($this);
-            if (NarroApp::$UseAjax)
-                $this->chkShowEmpty->AddAction(new QClickEvent(), new QAjaxAction('dtgNarroProject_Bind'));
-            else
-                $this->chkShowEmpty->AddAction(new QClickEvent(), new QServerAction('dtgNarroProject_Bind'));
-
-            $this->chkShowInactive = new QCheckBox($this);
-            if (NarroApp::$UseAjax)
-                $this->chkShowInactive->AddAction(new QClickEvent(), new QAjaxAction('dtgNarroProject_Bind'));
-            else
-                $this->chkShowInactive->AddAction(new QClickEvent(), new QServerAction('dtgNarroProject_Bind'));
+                $this->lstFilter->AddAction(new QChangeEvent(), new QServerAction('dtgNarroProject_Bind'));
 
         }
 
@@ -233,37 +225,57 @@
         }
 
         protected function dtgNarroProject_Bind() {
-            if ($this->chkShowCompleted->Checked)
-                $objShowCompletedCondition = QQ::All();
-            else
-                $objShowCompletedCondition = QQ::AndCondition(
-                    QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId, NarroApp::GetLanguageId()),
-                    QQ::LessThan(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, 100)
-                );
+            switch ($this->lstFilter->SelectedValue) {
+                /**
+                 * In progress
+                 */
+                case 1:
+                    $objFilterCondition =
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId, NarroApp::GetLanguageId()),
+                            QQ::LessThan(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, 100),
+                            QQ::GreaterThan(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, 0)
+                        );
+                    break;
+                /**
+                 * Completed
+                 */
+                case 2:
+                    $objFilterCondition =
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId, NarroApp::GetLanguageId()),
+                            QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, 100)
+                        );
+                    break;
+                /**
+                 * Empty
+                 */
+                case 3:
+                    $objFilterCondition =
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId, NarroApp::GetLanguageId()),
+                            QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, 0)
+                        );
+                    break;
+                /**
+                 * Inactive
+                 */
+                case 4:
+                    $objFilterCondition = QQ::Equal(QQN::NarroProject()->Active, 1);
+                    break;
+                /**
+                 * 0 - show all
+                 */
+                default:
+                    $objFilterCondition = QQ::All();
 
-            if ($this->chkShowEmpty->Checked)
-                $objShowEmptyCondition = QQ::All();
-            else
-                $objShowEmptyCondition = QQ::AndCondition(
-                    QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId, NarroApp::GetLanguageId()),
-                    QQ::GreaterThan(QQN::NarroProject()->NarroProjectProgressAsProject->TotalTextCount, 0)
-                );
+            }
 
-            if ($this->chkShowInactive->Checked)
-                $objShowInactiveCondition = QQ::All();
-            else
-                $objShowInactiveCondition = QQ::Equal(QQN::NarroProject()->Active, 1);
 
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
             // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-            $this->dtgNarroProject->TotalItemCount = NarroProject::QueryCount(
-                QQ::AndCondition(
-                    $objShowCompletedCondition,
-                    $objShowEmptyCondition,
-                    $objShowInactiveCondition
-                )
-            );
+            $this->dtgNarroProject->TotalItemCount = NarroProject::QueryCount($objFilterCondition);
 
             // Setup the $objClauses Array
             $objClauses = array();
@@ -278,14 +290,7 @@
                 array_push($objClauses, $objClause);
 
             // Set the DataSource to be the array of all NarroProject objects, given the clauses above
-            $this->dtgNarroProject->DataSource = NarroProject::QueryArray(
-                QQ::AndCondition(
-                    $objShowCompletedCondition,
-                    $objShowEmptyCondition,
-                    $objShowInactiveCondition
-                ),
-                $objClauses
-            );
+            $this->dtgNarroProject->DataSource = NarroProject::QueryArray($objFilterCondition, $objClauses);
 
             NarroApp::ExecuteJavaScript('highlight_datagrid();');
         }

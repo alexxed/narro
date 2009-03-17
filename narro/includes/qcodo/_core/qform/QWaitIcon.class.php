@@ -17,7 +17,7 @@
 		public function __construct($objParentObject, $strControlId = null) {
 			parent::__construct($objParentObject, $strControlId);
 
-			$this->strText = sprintf('<img src="%s/spinner_14.gif" width="14" height="14" alt="Please Wait..."/>', __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__);
+			$this->strText = sprintf('<img src="%s/spinner_16.gif" width="14" height="14" alt="Please Wait..."/>', __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__);
 		}
 
 		public function GetStyleAttributes() {

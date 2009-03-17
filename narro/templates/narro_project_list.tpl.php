@@ -31,15 +31,8 @@
         <?php } ?>
 
         <div align="right">
-        <?php _t('Show'); ?>:
-        <?php $this->chkShowCompleted->Render() ?>
-        <label for="<?php echo $this->chkShowCompleted->ControlId?>"><?php _t('completed')?></label>
-        <?php $this->chkShowEmpty->Render() ?>
-        <label for="<?php echo $this->chkShowEmpty->ControlId?>"><?php _t('empty')?></label>
-        <?php if (NarroApp::HasPermission('Administrator'))  { ?>
-            <?php $this->chkShowInactive->Render() ?>
-            <label for="<?php echo $this->chkShowInactive->ControlId?>"><?php _t('inactive')?></label>
-        <?php } ?>
+        <label for="<?php echo $this->lstFilter->ControlId?>"><?php _t('Show')?>:</label>
+        <?php $this->lstFilter->Render() ?>
         </div>
 
         <?php $this->dtgNarroProject->Render() ?>
