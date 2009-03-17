@@ -64,12 +64,12 @@
             $this->pnlNewUsers = new NarroNewUsersPanel($this);
 
             $this->lstFilter = new QListBox($this);
-            $this->lstFilter->AddItem(t('All'), 0);
-            $this->lstFilter->AddItem(t('In progress'), 1, true);
-            $this->lstFilter->AddItem(t('Completed'), 2);
-            $this->lstFilter->AddItem(t('Empty'), 3);
+            $this->lstFilter->AddItem(t('all'), 0);
+            $this->lstFilter->AddItem(t('in progress'), 1, true);
+            $this->lstFilter->AddItem(t('completed'), 2);
+            $this->lstFilter->AddItem(t('empty'), 3);
             if (NarroApp::HasPermission('Administrator'))
-                $this->lstFilter->AddItem(t('Inactive'), 4);
+                $this->lstFilter->AddItem(t('inactive'), 4);
             if (NarroApp::$UseAjax)
                 $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxAction('dtgNarroProject_Bind'));
             else
