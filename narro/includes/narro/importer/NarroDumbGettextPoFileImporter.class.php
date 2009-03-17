@@ -237,14 +237,19 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 if (!is_null($arrFields['MsgStr2'])) $arrFields['MsgStr2'] = str_replace('\"', '"', $arrFields['MsgStr2']);
 
                 if (trim($arrFields['Context']) == '') {
-                    $arrFields['Context'] = sprintf('This text has no context info. The text is used in %s.', $this->objFile->FileName);
+                    $arrFields['Context'] = sprintf('This text has no context info. The text is used in %s. Unique id is %s', $this->objFile->FileName, md5($arrFields['MsgStr']));
                 }
 
                 if ((!isset($arrFields['MsgId']) && !isset($arrFields['MsgPluralId'])) || (!isset($arrFields['MsgStr']) && !isset($arrFields['MsgStr0'])))
                 continue;
 
                 $intCurrentGroup++;
-                $arrGroupFields[$arrFields['Context']] = $arrFields;
+                if (isset($arrGroupFields[$arrFields['Context']])) {
+                    $arrFields['Context'] .= sprintf("\nFound duplicate context, group in file: %d", $intCurrentGroup);
+                    $arrGroupFields[$arrFields['Context']] = $arrFields;
+                }
+                else
+                    $arrGroupFields[$arrFields['Context']] = $arrFields;
             }
         }
         else {
@@ -552,17 +557,57 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
         $strCleanText = strip_tags($strCleanText);
         $strCleanText = html_entity_decode($strCleanText);
         $strCleanText = preg_replace('/\$[a-z0-9A-Z_\-]+/', '', $strCleanText);
-
-        if (preg_match('/^[A-Z]/', $strCleanText) && preg_match('/_(\w)/', $strCleanText, $arrMatches)) {
+            /**
+             * it's a access key if _ is found only once
+             */
+            if (strstr($strCleanText, '_') && !strstr(NarroString::Replace('_', '', $strCleanText, 1), '_')) {
+                if (strstr($strCleanText, ' ')) {
+                    $arrPossibleWords = explode(' ', $strCleanText);
+                    foreach($arrPossibleWords as $strPossibleWord) {
+                        /**
+                         * if there's a _ and the word that contains it starts with a capital letter or is a number, + or -
+                         */
+                        if (strstr($strPossibleWord, '_') && preg_match('/^[A-Z0-9\+\-]/', str_replace('_', '', $strPossibleWord))) {
+                            preg_match('/_(\w)/', $strText, $arrMatches);
             return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
         }
+                    }
+                }
         else {
-            if (preg_match('/&(\w)/', $strCleanText, $arrMatches)) {
+                    if (strstr($strCleanText, '_') && preg_match('/^[A-Z0-9\+\-]/', str_replace('_', '', $strCleanText))) {
+                        preg_match('/_(\w)/', $strText, $arrMatches);
+                        return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
+                    }
+
+                }
+            }
+
+            /**
+             * it's a access key if & is found only once
+             */
+            if (strstr($strCleanText, '&') && !strstr(NarroString::Replace('&', '', $strCleanText, 1), '&')) {
+                if (strstr($strCleanText, ' ')) {
+                    $arrPossibleWords = explode(' ', $strCleanText);
+                    foreach($arrPossibleWords as $strPossibleWord) {
+                        /**
+                         * if there's a _ and the word that contains it starts with a capital letter or is a number, + or -
+                         */
+                        if (strstr($strPossibleWord, '&') && preg_match('/^[A-Z0-9\+\-]/', str_replace('&', '', $strPossibleWord))) {
+                            preg_match('/&(\w)/', $strText, $arrMatches);
+                            return array(NarroString::Replace('&' . $arrMatches[1], $arrMatches[1], $strText), '&', $arrMatches[1]);
+                        }
+                    }
+                } else {
+                    if (strstr($strCleanText, '&') && preg_match('/^[A-Z0-9\+\-]/', str_replace('&', '', $strCleanText))) {
+                        preg_match('/&(\w)/', $strText, $arrMatches);
                 return array(NarroString::Replace('&' . $arrMatches[1], $arrMatches[1], $strText), '&', $arrMatches[1]);
             }
-            else
-            return array($strText, null);
+
+                }
         }
+
+
+            return array($strText, null, null);
     }
 
     protected function getAccessKey($strText) {
