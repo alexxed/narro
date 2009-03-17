@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 0.9.3\n"
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2009-15-03 10:20-0700\n"
-"PO-Revision-Date: 2009-15-03 10:20-0700\n"
+"POT-Creation-Date: 2009-17-03 05:00-0700\n"
+"PO-Revision-Date: 2009-17-03 05:00-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1586,6 +1586,31 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+#. $this->lstFilter->AddItem(t('all'), 0);
+#: narro_project_list.php
+msgid "all"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('in progress'), 1, true);
+#: narro_project_list.php
+msgid "in progress"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('completed'), 2);
+#: narro_project_list.php
+msgid "completed"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('empty'), 3);
+#: narro_project_list.php
+msgid "empty"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('inactive'), 4);
+#: narro_project_list.php
+msgid "inactive"
+msgstr ""
+
 #. $objActions->addElement(NarroLink::ProjectTextList($objNarroProject->ProjectId, 1, 1, '', t('Texts')));
 #: narro_project_list.php
 msgid "Texts"
@@ -2281,21 +2306,6 @@ msgstr ""
 #. <p align="right"><a href="narro_project_edit.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php _t('Add project') ?></a></p>
 #: templates/narro_project_list.tpl.php
 msgid "Add project"
-msgstr ""
-
-#. <label for="<?php echo $this->chkShowCompleted->ControlId?>"><?php _t('completed')?></label>
-#: templates/narro_project_list.tpl.php
-msgid "completed"
-msgstr ""
-
-#. <label for="<?php echo $this->chkShowEmpty->ControlId?>"><?php _t('empty')?></label>
-#: templates/narro_project_list.tpl.php
-msgid "empty"
-msgstr ""
-
-#. <label for="<?php echo $this->chkShowInactive->ControlId?>"><?php _t('inactive')?></label>
-#: templates/narro_project_list.tpl.php
-msgid "inactive"
 msgstr ""
 
 #. <?php echo sprintf(t('Top %d translators'), $this->pnlTopUsers->Limit) ?>
