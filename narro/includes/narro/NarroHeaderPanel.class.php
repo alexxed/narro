@@ -20,6 +20,7 @@
 
         public function __construct($objParentObject, $strControlId = null) {
             parent::__construct($objParentObject, $strControlId);
+            $this->SetCustomStyle('min-height', '16px');
             $this->strTemplate = __DOCROOT__ . __SUBDIRECTORY__ . '/templates/NarroHeaderPanel.tpl.php';
             $this->strHorizontalAlign = QHorizontalAlign::Right;
 
