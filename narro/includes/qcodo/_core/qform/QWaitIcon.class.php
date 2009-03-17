@@ -12,7 +12,7 @@
 
 		// LAYOUT
 		protected $strHorizontalAlign = QHorizontalAlign::NotSet;
-		protected $strVerticalAlign = QVerticalAlign::NotSet;
+		protected $strVerticalAlign = QVerticalAlign::Middle;
 
 		public function __construct($objParentObject, $strControlId = null) {
 			parent::__construct($objParentObject, $strControlId);
