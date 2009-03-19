@@ -178,7 +178,9 @@
                 case "NarroText":
                     try {
                         $this->objNarroText = $mixValue;
-                        $this->dtgSuggestions->PageNumber = 1;
+                        if ($this->blnVisible)
+                            $this->dtgSuggestions->PageNumber = 1;
+
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
                         throw $objExc;
@@ -187,8 +189,7 @@
 
                 case "Visible":
                     $this->blnVisible = $mixValue;
-                    if ($mixValue)
-                        $this->dtgSuggestions_Bind();
+                    $this->dtgSuggestions->PageNumber = 1;
                     break;
 
                 default:
