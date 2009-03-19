@@ -37,12 +37,14 @@
         <div class="white3dbg" style="border:1px solid #DDDDDD; padding:5px<?php if ($this->objNarroContextInfo->Context->Active == 0) echo ';color:gray;' ?>" title="<?php _t('Details about the place where the text appears'); ?>">
             <?php $this->pnlContext->Render(); ?>
         </div>
-        <br />
         <?php $this->pnlSuggestionList->Render(); ?>
+        <?php $this->pnlSimilarSuggestionList->Render(); ?>
+        <br />
+        <?php $this->chkShowOtherLanguages->Render(); ?>
+        <?php $this->chkShowSimilarSuggestions->Render(); ?>
         <?php if (NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId)) { ?>
             <?php $this->chkGoToNext->Render(); ?>
         <?php } ?>
-        <br />
         <?php if (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId)) { ?>
             <?php $this->pnlPluginMessages->Render(); ?>
             <br />
@@ -51,7 +53,6 @@
             <tr>
             <td width="60%" valign="top" style="padding-left:0px;border:0px">
                 <?php $this->txtSuggestionValue->Render("Rows=10"); ?>
-                <?php $this->pnlDiacritics->Render(); ?>
             </td>
             <td width="40%" valign="top" style="padding-left:0px;border:0px">
                 <?php $this->btnSave->Render() ?>&nbsp;<?php $this->btnSaveIgnore->Render() ?>
@@ -76,6 +77,7 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         <?php $this->btnNext100->Render(); ?>
         &nbsp;&nbsp;&nbsp;&nbsp;
+        <?php $this->pnlDiacritics->Render(); ?>
         <br />
         <?php $this->pnlProgress->Render() ?>
         <?php $this->lblMessage->Render() ?>

@@ -23,6 +23,7 @@
 
         // DataGrid Columns
         protected $colProjectName;
+        protected $colLastActivity;
         protected $colPercentTranslated;
 
         protected $pnlTopUsers;
@@ -37,12 +38,17 @@
             $this->colProjectName = new QDataGridColumn(t('Name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
             $this->colProjectName->HtmlEntities = false;
 
+            $this->colLastActivity = new QDataGridColumn(t('Last activity'), '<?= $_FORM->dtgNarroProject_LastActivityColumn_Render($_ITEM) ?>');
+            $this->colLastActivity->HtmlEntities = false;
+
             $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroProject_PercentTranslated_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, true, QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, true), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, false, QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, false)));
             $this->colPercentTranslated->HtmlEntities = false;
             $this->colPercentTranslated->Wrap = false;
 
             // Setup DataGrid
             $this->dtgNarroProject = new QDataGrid($this);
+            $this->dtgNarroProject->ShowHeader = true;
+            $this->dtgNarroProject->Title = t('Projects');
 
             // Datagrid Paginator
             $this->dtgNarroProject->Paginator = new QPaginator($this->dtgNarroProject);
@@ -55,7 +61,7 @@
             $this->dtgNarroProject->SetDataBinder('dtgNarroProject_Bind');
 
             $this->dtgNarroProject->AddColumn($this->colProjectName);
-
+            $this->dtgNarroProject->AddColumn($this->colLastActivity);
             $this->dtgNarroProject->AddColumn($this->colPercentTranslated);
 
             $this->dtgNarroProject->SortColumnIndex = 0;
@@ -75,6 +81,24 @@
             else
                 $this->lstFilter->AddAction(new QChangeEvent(), new QServerAction('dtgNarroProject_Bind'));
 
+        }
+
+        public function dtgNarroProject_LastActivityColumn_Render(NarroProject $objNarroProject) {
+            $objLastModifiedContext = NarroContextInfo::QuerySingle(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $objNarroProject->ProjectId),
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId())
+                ),
+                array(QQ::OrderBy(QQN::NarroContextInfo()->Modified, false))
+            );
+            if ($objLastModifiedContext instanceof NarroContextInfo) {
+                $objDateSpan = new QDateTimeSpan(time() - strtotime($objLastModifiedContext->Modified));
+                $strModifiedWhen = $objDateSpan->SimpleDisplay();
+                return sprintf(t('%s ago'), $strModifiedWhen);
+            }
+            else {
+                return t('never');
+            }
         }
 
         public function dtgNarroProject_PercentTranslated_Render(NarroProject $objNarroProject) {

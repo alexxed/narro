@@ -21,7 +21,7 @@ body {
 .title { font-weight: bold; margin-left: -2px;}
 .title_action { font-weight: bold; margin-bottom: -4px; }
 .warning { color: #ff0000; }
-.instructions { font-style: italic; color: #888888}
+.instructions { font-size:0.8em; font-style: italic; color: #888888}
 .item_divider { line-height: 16px; }
 .item_label { padding-bottom: 4px; }
 .item_label_disabled { padding-bottom: 4px; color: #999999; }
@@ -102,13 +102,9 @@ top:0px;
 }
 
 th.datagrid_header {
-    background: #DDDDDD url(../images/bg_td2.jpg) repeat-x;
-    height: 30px;
     color: #000000;
     font-weight: bold;
-    padding: 0px 7px;
-    margin: 20px 0px 0px;
-    text-align: left;
+    text-align: center;
     border-right: 1px solid #DDDDDD;
 }
 

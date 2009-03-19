@@ -22,8 +22,6 @@
 
         public $lblMessage;
 
-        protected $lblSuggestions;
-
         protected $dtgSuggestions;
 
         protected $colSuggestion;
@@ -33,12 +31,7 @@
 
         protected $txtAccessKey;
         protected $btnSaveAccessKey;
-
-        /**
-         * move this somewhere to preferences so that you can choose which languages you actually want to see
-         * @var unknown_type
-         */
-        protected $chkShowOtherLanguages;
+        protected $blnShowOtherLanguages;
 
         protected $intEditSuggestionId;
 
@@ -52,11 +45,8 @@
             }
 
             $this->lblMessage_Create();
-            $this->chkShowOtherLanguages_Create();
             $this->txtAccessKey_Create();
             $this->btnSaveAccessKey_Create();
-
-            $this->lblSuggestions = new QLabel($this);
 
             // Setup DataGrid Columns
             $this->colSuggestion = new QDataGridColumn(t('Translation'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
@@ -79,10 +69,11 @@
             // Setup DataGrid
             $this->dtgSuggestions = new QDataGrid($this);
             $this->dtgSuggestions->ShowHeader = true;
+            $this->dtgSuggestions->Title = t('Translations for this text');
 
             // Datagrid Paginator
             $this->dtgSuggestions->Paginator = new QPaginator($this->dtgSuggestions);
-            $this->dtgSuggestions->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
+            $this->dtgSuggestions->ItemsPerPage = round(NarroApp::$User->getPreferenceValueByName('Items per page')/2);
 
             $this->dtgSuggestions->PaginatorAlternate = new QPaginator($this->dtgSuggestions);
 
@@ -121,15 +112,6 @@
             $this->lblMessage->ForeColor = 'green';
             $this->lblMessage->HtmlEntities = false;
             $this->lblMessage->DisplayStyle = QDisplayStyle::Block;
-        }
-
-        private function chkShowOtherLanguages_Create() {
-            $this->chkShowOtherLanguages = new QCheckBox($this);
-            $this->chkShowOtherLanguages->Text = t('Show suggestions from other languages');
-            if (NarroApp::$UseAjax)
-                $this->chkShowOtherLanguages->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgSuggestions_Bind'));
-            else
-                $this->chkShowOtherLanguages->AddAction(new QClickEvent(), new QServerControlAction($this, 'dtgSuggestions_Bind'));
         }
 
         public function GetControlHtml() {
@@ -184,7 +166,7 @@
 
                 $btnApprove->ActionParameter = $this->objNarroContextInfo->ValidSuggestionId;
 
-                $this->strText .= sprintf('<div style="color:gray;float:right;">%s, %s %s</div>%s<div class="green3dbg" style="border:1px dotted #DDDDDD;padding: 5px"><div style="float:right;">%s%s%s</div>%s</div><br/>',
+                $this->strText .= sprintf('<br /><div style="color:gray;float:right;">%s, %s %s</div>%s<div class="green3dbg" style="border:1px dotted #DDDDDD;padding: 5px"><div style="float:right;">%s%s%s</div>%s</div>',
                     sprintf(t('added by %s'), $this->dtgSuggestions_colAuthor_Render($this->objNarroContextInfo->ValidSuggestion)),
                     $this->dtgSuggestions_colVote_Render($this->objNarroContextInfo->ValidSuggestion),
                     t('votes'),
@@ -197,7 +179,7 @@
 
                 if ($this->objNarroContextInfo->TextAccessKey && NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId)) {
                     $this->txtAccessKey->Text = $this->objNarroContextInfo->SuggestionAccessKey;
-                    $this->strText .= sprintf('%s<div class="green3dbg" style="border:1px dotted #DDDDDD;padding: 5px"><div style="float:right;">%s</div>%s</div><br/>',
+                    $this->strText .= sprintf('<br />%s<div class="green3dbg" style="border:1px dotted #DDDDDD;padding: 5px"><div style="float:right;">%s</div>%s</div>',
                         t('Access key') . ':',
                         $this->btnSaveAccessKey->Render(false),
                         $this->txtAccessKey->Render(false)
@@ -205,24 +187,18 @@
                 }
             }
 
-            if ($this->dtgSuggestions->TotalItemCount) {
-                $this->lblSuggestions->Text = t('Translations for this text:');
-                $this->dtgSuggestions->Visible = true;
+            $this->dtgSuggestions->Visible = true;
+
+            if ($this->dtgSuggestions->TotalItemCount == 0 && !$this->objNarroContextInfo->ValidSuggestionId) {
+                $this->dtgSuggestions->LabelForNoneFound = '&nbsp;' . t('No translations yet.');
             }
-            elseif ($this->objNarroContextInfo->ValidSuggestionId) {
-                $this->lblSuggestions->Text = t('No other suggestions yet.');
-                $this->dtgSuggestions->Visible = false;
-            }
-            else {
-                $this->lblSuggestions->Text = t('No suggestions yet.');
+            elseif ($this->dtgSuggestions->TotalItemCount == 0 && $this->objNarroContextInfo->ValidSuggestionId) {
                 $this->dtgSuggestions->Visible = false;
             }
 
-            $this->strText .=
-                $this->lblSuggestions->Render(false) . '<br />' .
-                $this->dtgSuggestions->Render(false) . '<br />' .
-                $this->lblMessage->Render(false) .
-                '<div style="text-align:right;width:100%">' . $this->chkShowOtherLanguages->Render(false) . '</div>';
+            $this->strText .= (($this->dtgSuggestions->Visible)?'<br />':'') .
+                $this->dtgSuggestions->Render(false) .
+                $this->lblMessage->Render(false);
 
             return $this->strText;
         }
@@ -288,7 +264,7 @@
 
             }
 
-            if ($this->chkShowOtherLanguages->Checked)
+            if ($this->blnShowOtherLanguages)
                 return '<div style="color:gray;font-size:70%">' . t($objNarroSuggestion->Language->LanguageName) . '</div>' . $strCellValue;
             else
                 return $strCellValue;
@@ -500,7 +476,7 @@
             }
 
             // Get Total Count b/c of Pagination
-            if ($this->chkShowOtherLanguages->Checked)
+            if ($this->blnShowOtherLanguages)
                 $this->dtgSuggestions->TotalItemCount = NarroSuggestion::QueryCount(
                         QQ::AndCondition(
                             QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objNarroContextInfo->Context->TextId),
@@ -525,7 +501,7 @@
             if ($objClause = $this->dtgSuggestions->LimitClause)
                 array_push($objClauses, $objClause);
 
-            if ($this->chkShowOtherLanguages->Checked)
+            if ($this->blnShowOtherLanguages)
                 $this->dtgSuggestions->DataSource =
                     NarroSuggestion::QueryArray(
                             QQ::AndCondition(
@@ -778,6 +754,17 @@
                 case "NarroContextInfo":
                     try {
                         $this->objNarroContextInfo = $mixValue;
+                        $this->lblMessage->Text = '';
+                        $this->dtgSuggestions_Bind();
+                        $this->MarkAsModified();
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+                    break;
+                case "ShowOtherLanguages":
+                    try {
+                        $this->blnShowOtherLanguages = $mixValue;
                         $this->lblMessage->Text = '';
                         $this->dtgSuggestions_Bind();
                         $this->MarkAsModified();

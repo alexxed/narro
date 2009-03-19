@@ -140,6 +140,8 @@
     NarroApp::$ClassFile['NarroTopUsersPanel'] = __INCLUDES__ . '/narro/NarroTopUsersPanel.class.php';
     NarroApp::$ClassFile['NarroTranslationProgressBar'] = __INCLUDES__ . '/narro/NarroTranslationProgressBar.class.php';
     NarroApp::$ClassFile['NarroUserSuggestionsPanel'] = __INCLUDES__ . '/narro/NarroUserSuggestionsPanel.class.php';
+    NarroApp::$ClassFile['NarroTextSuggestionIndexer'] = __INCLUDES__ . '/narro/search/NarroTextSuggestionIndexer.class.php';
+    NarroApp::$ClassFile['NarroSimilarSuggestionListPanel'] = __INCLUDES__ . '/narro/NarroSimilarSuggestionListPanel.class.php';
     NarroApp::$ClassFile['NarroUtils'] = __INCLUDES__ . '/narro/NarroUtils.class.php';
 
     NarroApp::$ClassFile['NarroArchiveFileSourcePanel'] = __INCLUDES__ . '/narro/NarroArchiveFileSourcePanel.class.php';

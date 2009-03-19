@@ -40,8 +40,11 @@
         protected $pnlContext;
         public $txtSuggestionValue;
         protected $txtSuggestionComment;
+        protected $chkShowSimilarSuggestions;
+        protected $chkShowOtherLanguages;
 
         protected $pnlSuggestionList;
+        protected $pnlSimilarSuggestionList;
         protected $lblMessage;
 
         protected $intTextFilter;
@@ -143,6 +146,9 @@
             $this->btnSave_Create();
             $this->btnSaveIgnore_Create();
             $this->chkApprove_Create();
+            $this->chkShowSimilarSuggestions_Create();
+            $this->chkShowOtherLanguages_Create();
+            $this->pnlSimilarSuggestionList_Create();
 
             $this->btnNext_Create();
             $this->btnNext100_Create();
@@ -159,6 +165,7 @@
 
             $this->pnlSuggestionList = new NarroSuggestionListPanel($this);
             $this->pnlSuggestionList->ToolTip = t('Other suggestions so far');
+            $this->pnlSuggestionList->DisplayStyle = QDisplayStyle::Block;
 
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->ForeColor = 'green';
@@ -196,6 +203,31 @@
         protected function pnlContext_Create() {
             $this->pnlContext = new QPanel($this);
             $this->pnlContext->ToolTip = t('Details about the place where the text is used');
+        }
+
+        protected function chkShowSimilarSuggestions_Create() {
+            $this->chkShowSimilarSuggestions = new QCheckBox($this);
+            $this->chkShowSimilarSuggestions->Text = t('Show translations of similar texts');
+            $this->chkShowSimilarSuggestions->Display = (file_exists(__SEARCH_INDEX_PATH__ . '/' . NarroApp::$Language->LanguageCode . '/text_suggestion_idx'));
+            if (NarroApp::$UseAjax)
+                $this->chkShowSimilarSuggestions->AddAction(new QClickEvent(), new QAjaxAction('chkShowSimilarSuggestions_Click'));
+            else
+                $this->chkShowSimilarSuggestions->AddAction(new QClickEvent(), new QServerAction('chkShowSimilarSuggestions_Click'));
+        }
+
+        protected function pnlSimilarSuggestionList_Create() {
+            $this->pnlSimilarSuggestionList = new NarroSimilarSuggestionListPanel($this);
+            $this->pnlSimilarSuggestionList->Visible = false;
+            $this->pnlSimilarSuggestionList->DisplayStyle = QDisplayStyle::Block;
+        }
+
+        private function chkShowOtherLanguages_Create() {
+            $this->chkShowOtherLanguages = new QCheckBox($this);
+            $this->chkShowOtherLanguages->Text = t('Show suggestions from other languages');
+            if (NarroApp::$UseAjax)
+                $this->chkShowOtherLanguages->AddAction(new QClickEvent(), new QAjaxAction('chkShowOtherLanguages_Click'));
+            else
+                $this->chkShowOtherLanguages->AddAction(new QClickEvent(), new QServerAction('chkShowOtherLanguages_Click'));
         }
 
         // Create and Setup pnlComments
@@ -258,13 +290,15 @@
             //$this->txtSuggestionComment->Text = '';
             $this->txtSuggestionValue->Text = '';
 
-            $this->pnlPluginMessages->Visible = false;
+            $this->HidePluginErrors();
             $this->btnSaveIgnore->Visible = false;
 
             $this->lblMessage->Text = '';
 
             if (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId))
                 $this->txtSuggestionValue->Focus();
+
+            $this->pnlSimilarSuggestionList->NarroText = $this->objNarroContextInfo->Context->Text;
 
         }
 
@@ -611,8 +645,7 @@
             if ($strSuggestionValue == '')
                 return false;
 
-            $this->pnlPluginMessages->Text = '';
-            $this->pnlPluginMessages->Visible = false;
+            $this->HidePluginErrors();
             $this->btnSaveIgnore->Visible = false;
 
             $objSuggestion = new NarroSuggestion();
@@ -933,6 +966,14 @@
             $this->pnlSuggestionList->NarroContextInfo =  $this->objNarroContextInfo;
             $this->pnlSuggestionList->MarkAsModified();
 
+        }
+
+        public function chkShowSimilarSuggestions_Click($strFormId, $strControlId, $strParameter) {
+            $this->pnlSimilarSuggestionList->Visible = $this->chkShowSimilarSuggestions->Checked;
+        }
+
+        public function chkShowOtherLanguages_Click($strFormId, $strControlId, $strParameter) {
+            $this->pnlSuggestionList->ShowOtherLanguages = $this->chkShowOtherLanguages->Checked;
         }
 
         protected function getSortOrderClause() {

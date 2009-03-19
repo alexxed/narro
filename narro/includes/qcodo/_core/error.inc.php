@@ -61,7 +61,7 @@
         exit;
     }
 
-    function QcodoHandleError($__exc_errno, $__exc_errstr, $__exc_errfile, $__exc_errline) {
+    function QcodoHandleError($__exc_errno, $__exc_errstr, $__exc_errfile, $__exc_errline, $__exc_errctxt = null) {
         // If a command is called with "@", then we should return
         if (error_reporting() == 0)
             return;
@@ -152,7 +152,7 @@
         require(__DOCROOT__ . ERROR_PAGE_PATH);
         if (SERVER_INSTANCE == 'dev') {
             $objFirePhp = FirePHP::getInstance(true);
-            $objFirePhp->errorHandler($__exc_errno, $__exc_errstr, $__exc_errfile, $__exc_errline);
+            $objFirePhp->errorHandler($__exc_errno, $__exc_errstr, $__exc_errfile, $__exc_errline, $__exc_errctxt);
         }
 
         exit;
