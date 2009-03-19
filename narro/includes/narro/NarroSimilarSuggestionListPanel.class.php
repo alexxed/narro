@@ -67,7 +67,8 @@
 
             $this->dtgSuggestions->AddColumn($this->colText);
             $this->dtgSuggestions->AddColumn($this->colSuggestion);
-            $this->dtgSuggestions->AddColumn($this->colActions);
+            if (NarroApp::HasPermissionForThisLang('Can suggest', NarroApp::QueryString('p')))
+                $this->dtgSuggestions->AddColumn($this->colActions);
         }
 
         public function GetControlHtml() {
@@ -142,9 +143,6 @@
         }
 
         public function btnCopy_Click($strFormId, $strControlId, $strParameter) {
-            if (!$this->Form->txtSuggestionValue->Rendered)
-                return false;
-
             $blnResult = true;
             $strControlId = 'btnCopySuggestion' . $arrSuggestionData['suggestion_id'];
             $btnCopy = $this->objForm->GetControl($strControlId);
