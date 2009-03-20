@@ -103,6 +103,33 @@
         return NarroApp::Translate($strText, $strPlural, $intCnt);
     }
 
+    if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data'))
+        die(sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__));
+
+    foreach (array('cache', 'cache/i18n', 'cache/zend', 'dictionaries', 'import', 'tmp', 'tmp/session', 'tmp/qform_state') as $strDirName) {
+        if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName)) {
+            if (!mkdir(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName))
+                die(sprintf('Could not create a directory. Please create the directory "%s" and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName));
+            else
+                chmod(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName, 0777);
+        }
+    }
+
+    $arrConData = unserialize(DB_CONNECTION_1);
+
+    $link = mysql_connect($arrConData['server'].(($arrConData['port'])?':' . $arrConData['port']:''), $arrConData['username'], $arrConData['password']);
+    if (!$link) {
+        print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php') . '<br />');
+        print(sprintf('Error: "%s"', mysql_error()));
+        die();
+    }
+
+    if (!mysql_select_db($arrConData['database'], $link)) {
+        print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php') . '<br />');
+        print(sprintf('Error: "%s"', mysql_error()));
+        die();
+    }
+
     NarroApp::$ClassFile['NarroFileImporter'] = __INCLUDES__ . '/narro/importer/NarroFileImporter.class.php';
     NarroApp::$ClassFile['NarroDumbGettextPoFileImporter'] = __INCLUDES__ . '/narro/importer/NarroDumbGettextPoFileImporter.class.php';
     NarroApp::$ClassFile['NarroGettextPoFileImporter'] = __INCLUDES__ . '/narro/importer/NarroGettextPoFileImporter.class.php';

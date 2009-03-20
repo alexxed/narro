@@ -34,6 +34,9 @@
         protected function Form_Create() {
             parent::Form_Create();
 
+            if (NarroApp::$User->Data == '' && NarroApp::GetUserId() <> NarroUser::ANONYMOUS_USER_ID)
+                NarroApp::Redirect(NarroLink::UserPreferences(NarroApp::GetUserId()));
+
             // Setup DataGrid Columns
             $this->colProjectName = new QDataGridColumn(t('Name'), '<?= $_FORM->dtgNarroProject_ProjectNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroProject()->ProjectName, false)));
             $this->colProjectName->HtmlEntities = false;

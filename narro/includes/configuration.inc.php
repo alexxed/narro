@@ -16,7 +16,6 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-
     /**
      * Paths that may need changing
      */
@@ -26,8 +25,6 @@
     define ('__SUBDIRECTORY__', '/narro');
     define ('__PHP_CLI_PATH__', '/usr/bin/php');
     define ('ADMIN_EMAIL_ADDRESS', 'user@host.com');
-
-
 
     /**
      * Database configuration
@@ -51,12 +48,32 @@
 
     define ('NARRO_VERSION', '0.9.4');
     define ('ALLOW_REMOTE_ADMIN', false);
+
     /**
      * default is almost 10MB
      */
     define ('__MAXIMUM_FILE_SIZE_TO_IMPORT__', '10048576');
     define ('__URL_REWRITE__', 'none');
 
+    /**
+     * Uncomment this lines and fill in the values if you want to use external authentication
+     * @see narro_login.php for more detailes
+     */
+//    define ('__AUTH_EXTERNAL_DB_HOST__', 'localhost');
+//    define ('__AUTH_EXTERNAL_DB_USERNAME__', 'root');
+//    define ('__AUTH_EXTERNAL_DB_PASSWORD__', '');
+//    define ('__AUTH_EXTERNAL_DB_NAME__', 'drupal');
+//    define ('__AUTH_EXTERNAL_DB_TABLE__', 'users');
+//    define ('__AUTH_EXTERNAL_DB_TABLE_USER_FIELD__', 'name');
+//    define ('__AUTH_EXTERNAL_DB_TABLE_PASSWORD_FIELD__', 'pass');
+//    define ('__AUTH_EXTERNAL_DB_TABLE_PASSWORD_FUNCTION__', 'MD5(?)');
+
+    if ((function_exists('date_default_timezone_set')) && (!ini_get('date.timezone')))
+        date_default_timezone_set('America/Los_Angeles');
+
+    /**
+     * Normally, you won't need to change the following settings
+     */
     define ('__DEVTOOLS_CLI__', __DOCROOT__ . __SUBDIRECTORY__ . '/_devtools_cli');
     define ('__INCLUDES__', __DOCROOT__ .  __SUBDIRECTORY__ . '/includes');
     define ('__QCODO__', __INCLUDES__ . '/qcodo');
@@ -76,9 +93,6 @@
     define ('__CSS_ASSETS__', __SUBDIRECTORY__ . '/assets/css');
     define ('__IMAGE_ASSETS__', __SUBDIRECTORY__ . '/assets/images');
     define ('__PHP_ASSETS__', __SUBDIRECTORY__ . '/assets/php');
-
-    if ((function_exists('date_default_timezone_set')) && (!ini_get('date.timezone')))
-        date_default_timezone_set('America/Los_Angeles');
 
     define('ERROR_PAGE_PATH', __PHP_ASSETS__ . '/_core/error_page.php');
 
@@ -105,30 +119,4 @@
     error_reporting(E_ALL ^ E_NOTICE);
     $GLOBALS['_PEAR_default_error_mode'] = PEAR_ERROR_TRIGGER;
 
-    if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data'))
-        die(sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__));
-
-    foreach (array('cache', 'cache/i18n', 'cache/zend', 'dictionaries', 'import', 'tmp', 'tmp/session', 'tmp/qform_state') as $strDirName) {
-        if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName)) {
-            if (!mkdir(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName))
-                die(sprintf('Could not create a directory. Please create the directory "%s" and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName));
-            else
-                chmod(__DOCROOT__ . __SUBDIRECTORY__ . '/data/' . $strDirName, 0777);
-        }
-    }
-
-    $arrConData = unserialize(DB_CONNECTION_1);
-
-    $link = mysql_connect($arrConData['server'].(($arrConData['port'])?':' . $arrConData['port']:''), $arrConData['username'], $arrConData['password']);
-    if (!$link) {
-        print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php') . '<br />');
-        print(sprintf('Error: "%s"', mysql_error()));
-        die();
-    }
-
-    if (!mysql_select_db($arrConData['database'], $link)) {
-        print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php') . '<br />');
-        print(sprintf('Error: "%s"', mysql_error()));
-        die();
-    }
 ?>

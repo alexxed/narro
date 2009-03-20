@@ -79,6 +79,11 @@
                         $objNarroSession->User = $objUser;
                         NarroApp::Redirect(NarroLink::UserPreferences($objUser->UserId));
                     }
+                    elseif ($objUser->Password != md5('')) {
+                        $this->lblMessage->ForeColor = 'red';
+                        $this->lblMessage->Text = t('This user has a password set, please login with that instead');
+                        return false;
+                    }
 
                     $objNarroSession->User = $objUser;
 
@@ -105,8 +110,7 @@
 
                 $status = "";
                 $auth = Zend_Auth::getInstance();
-                $result = $auth->authenticate(
-                new Zend_Auth_Adapter_OpenId($this->txtUsername->Text));
+                $result = $auth->authenticate(new Zend_Auth_Adapter_OpenId($this->txtUsername->Text));
                 if ($result->isValid()) {
                     Zend_OpenId::redirect(Zend_OpenId::selfURL());
                 } else {
@@ -116,24 +120,129 @@
                     }
                     $this->lblMessage->ForeColor = 'red';
                     $this->lblMessage->Text = 'OpenId: ' . $status;
+                    return false;
                 }
             }
             else {
-                if (trim($this->txtPassword->Text) != '' && $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text))) {
-                    require_once 'Zend/Session/Namespace.php';
-                    $objNarroSession = new Zend_Session_Namespace('Narro');
-                    $objNarroSession->User = $objUser;
+                $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text));
 
-                    NarroApp::$User = $objUser;
-                    if ($this->txtPreviousUrl)
-                        NarroApp::Redirect($this->txtPreviousUrl);
-                    else
-                        NarroApp::Redirect(NarroLink::ProjectList());
+                /**
+                 * If the stored password is empty, try to authenticate against an external database
+                 */
+                if (defined('__AUTH_EXTERNAL_DB_HOST__') &&
+                    !$objUser instanceof NarroUser &&
+                    NarroUser::QueryCount(
+                        QQ::AndCondition(QQ::Equal(QQN::NarroUser()->Username, $this->txtUsername->Text), QQ::NotEqual(QQN::NarroUser()->Password, md5('')))
+                    ) == 0
+                    ) {
+                    require_once "Zend/Auth.php";
+                    require_once "Zend/Auth/Adapter/DbTable.php";
+                    require_once "Zend/Db/Adapter/Pdo/Mysql.php";
+                    require_once "Zend/Db/Adapter/Pdo/Pgsql.php";
+                    require_once "Zend/Db/Adapter/Pdo/Mssql.php";
+                    require_once "Zend/Db/Adapter/Pdo/Sqlite.php";
+
+                    $external_db = Zend_Db::factory('Pdo_Mysql', array(
+                        'host'     => __AUTH_EXTERNAL_DB_HOST__,
+                        'username' => __AUTH_EXTERNAL_DB_USERNAME__,
+                        'password' => __AUTH_EXTERNAL_DB_PASSWORD__,
+                        'dbname'   => __AUTH_EXTERNAL_DB_NAME__
+                    ));
+
+                    try {
+                        $external_db->getServerVersion();
+                    }
+                    catch (Exception $objEx) {
+                        $this->lblMessage->ForeColor = 'red';
+                        $this->lblMessage->Text = sprintf(t('There was an error while trying to authenticate you against an external database: %s'), $objEx->getMessage());
+                        return false;
+                    }
+
+                    /**
+                     * your_user is the table name from the external database
+                     * username is a unique identifier
+                     * password is something that will be checked with MD5 in this example
+                     *   feel free to change MD5 with PASSWORD or even add extra conditions
+                     *   example: MD5(?) AND active <> 0
+                     */
+                    try {
+
+                        $auth_adapter = new Zend_Auth_Adapter_DbTable(
+                            $external_db,
+                            __AUTH_EXTERNAL_DB_TABLE__,
+                            __AUTH_EXTERNAL_DB_TABLE_USER_FIELD__,
+                            __AUTH_EXTERNAL_DB_TABLE_PASSWORD_FIELD__,
+                            __AUTH_EXTERNAL_DB_TABLE_PASSWORD_FUNCTION__
+                        );
+
+                        /**
+                         * set here the username and password provided by the user on the external login page
+                         */
+                        $auth_adapter->setIdentity($this->txtUsername->Text);
+                        $auth_adapter->setCredential($this->txtPassword->Text);
+
+                        $auth = Zend_Auth::getInstance();
+                        $result = $auth->authenticate($auth_adapter);
+                    }
+                    catch (Exception $objEx) {
+                        $this->lblMessage->ForeColor = 'red';
+                        $this->lblMessage->Text = sprintf(t('There was an error while trying to authenticate you against an external database: %s'), $objEx->getMessage());
+                        return false;
+                    }
+
+                    if ($result->isValid()) {
+                        /**
+                         * Try loading the user from Narro
+                         */
+                        $objUser = NarroUser::LoadByUsername($auth->getIdentity());
+
+                        /**
+                         * Register the user in Narro if not registered yet
+                         */
+                        if (!$objUser instanceof NarroUser) {
+                            try {
+                                $objUser = NarroUser::RegisterUser($auth->getIdentity(), $auth->getIdentity(), '');
+//                                /**
+//                                 * If you want to assing an extra role, here's a bit of code to do so
+//                                 */
+//                                $objUserRole = new NarroUserRole();
+//
+//                                $objUserRole->RoleId = 1;
+//                                $objUserRole->UserId = $objUser->UserId;
+//
+//                                /**
+//                                 * LanguageId and ProjectId are optional, if not set, the role is valid for any project or language
+//                                 */
+//                                $objUserRole->ProjectId = 1;
+//                                $objUserRole->LanguageId = 1;
+//
+//                                $objUserRole->Save();
+                            }
+                            catch( Exception $objEx ) {
+                                $this->lblMessage->ForeColor = 'red';
+                                $this->lblMessage->Text = sprintf(t('The authentication against an external database suceeded, but the registration in Narro failed: %s'), $objEx->getMessage());
+                                return false;
+                            }
+                        }
+                    }
                 }
-                else {
-                    $this->lblMessage->ForeColor = 'red';
-                    $this->lblMessage->Text = t('Bad username or password');
-                }
+            }
+
+            if ($objUser instanceof NarroUser) {
+                require_once 'Zend/Session/Namespace.php';
+                $objNarroSession = new Zend_Session_Namespace('Narro');
+                $objNarroSession->User = $objUser;
+
+                NarroApp::$User = $objUser;
+                if ($this->txtPreviousUrl)
+                    NarroApp::Redirect($this->txtPreviousUrl);
+                else
+                    NarroApp::Redirect(NarroLink::ProjectList());
+            }
+            else {
+                $this->lblMessage->ForeColor = 'red';
+                $this->lblMessage->Text = t('Bad username or password');
+                return false;
             }
         }
     }

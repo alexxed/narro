@@ -50,6 +50,11 @@
             $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
 
             $this->objUser = NarroApp::$User;
+
+            if ($this->objUser->Data == '' && NarroApp::GetUserId() <> NarroUser::ANONYMOUS_USER_ID) {
+                $this->lblMessage->Text = t('You don\'t have any preferences set. Please set your preferences and save them.');
+                $this->lblMessage->ForeColor = 'red';
+            }
         }
 
         protected function GetControlHtml() {
