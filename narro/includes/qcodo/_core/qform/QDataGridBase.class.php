@@ -71,7 +71,7 @@
 	// And due to the cascaiding nature of how browsers render tables, any undefined appearance property will simply
 	// inherit from the parent (where a <td>'s parent is the <tr>, and the <tr>'s parent is the <table>,
 	// and any defined appearance property will simply override whatever was defined by the parent.
-	// 
+	//
 	//
 	// Sorting
 	// Whether or not a column can be sorted depends on whether or not you define a SortByCommand (and
@@ -79,7 +79,7 @@
 	// to be the SQL syntax used in an "ORDER BY" clause of a SQL query.  This fits in really well
 	// with the CodeGen Framework's Class::LoadArrayByXXX() and Class::LoadAll() which takes "$strSortInfo"
 	// as an optional parameter.
-	// 
+	//
 	// If a DataGrid is being sorted by a specific column, DataGrid::SortInfo will return to you the contents
 	// of DataGridColumn::SortByCommand (or ReverseSortByCommand if it's a reverse sort) for the specific
 	// column being sorted by.  Therefore, you can set up your data source like:
@@ -102,7 +102,7 @@
 	// Appearance-related properties:
 	// * "AlternateRowStyle" is the DataGridRowStyle object that defines how "alternating rows" should be displayed
 	// * "BorderCollapse" defines the BorderCollapse css style for the table
-	// * "HeaderLinkStyle" is the DataGridRowStyle object that defines how links, specifically, in the header row 
+	// * "HeaderLinkStyle" is the DataGridRowStyle object that defines how links, specifically, in the header row
 	//   should be displayed.  Basically, anything defined here will show up as html attributes and css styles within the
 	//   '<a href="">' tag of the link, itself, in the header.  Links in the header ONLY GET DISPLAYED when a column is
 	//   sortable
@@ -135,8 +135,8 @@
 	// * "SortDirection" specifies the direction of that sort, 0 for SortBy, and 1 for ReverseSortBy
 	//
 	// Layout-related properties:
-	// * "CellPadding" refers the the HTML CellPadding attribute of the <table> 
-	// * "CellSpacing" refers the the HTML CellSpacing attribute of the <table> 
+	// * "CellPadding" refers the the HTML CellPadding attribute of the <table>
+	// * "CellSpacing" refers the the HTML CellSpacing attribute of the <table>
 	// * "GridLines" refers the the HTML rules attribute of the <table>
 	// * "ShowHeader" is the flag of whether or not to show the Header row
 	//
@@ -149,7 +149,7 @@
 	//   the array of items from the database
 
 
-	// Due to the fact that DataGrid's will perform php eval's on anything that is back-ticked within each column/row's 
+	// Due to the fact that DataGrid's will perform php eval's on anything that is back-ticked within each column/row's
 	// DataGridColumn::HTML, we need to set up this special DataGridEvalHandleError error handler to correctly report
 	// errors that happen.
 	function DataGridEvalHandleError($__exc_errno, $__exc_errstr, $__exc_errfile, $__exc_errline) {
@@ -196,7 +196,7 @@
 		protected $intCurrentRowIndex;
 		protected $intSortColumnIndex = -1;
 		protected $intSortDirection = 0;
-		
+
 		protected $strLabelForNoneFound;
 		protected $strLabelForOneFound;
 		protected $strLabelForMultipleFound;
@@ -219,7 +219,7 @@
 			$this->strLabelForOneFound = QApplication::Translate('<b>Results:</b> 1 %s found.');
 			$this->strLabelForMultipleFound = QApplication::Translate('<b>Results:</b> %s %s found.');
 			$this->strLabelForPaginated = QApplication::Translate('<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s.');
-			
+
 			$this->objColumnArray = array();
 
 			// Setup Sorting Events
@@ -237,7 +237,7 @@
 			array_push($this->objColumnArray, $objColumn);
 //			$this->objColumnArray[count($this->objColumnArray)] = $objColumn;
 		}
-		
+
 		public function AddColumnAt($intColumnIndex, QDataGridColumn $objColumn) {
 			$this->blnModified = true;
 			try {
@@ -321,7 +321,7 @@
 		}
 
 		// If you want to override a SPECIFIC row's style, you can specify
-		// the RowIndex and the DataGridRowStyle with which to override		
+		// the RowIndex and the DataGridRowStyle with which to override
 		public function OverrideRowStyle($intRowIndex, $objStyle) {
 			try {
 				$objStyle = QType::Cast($objStyle, "QDataGridRowStyle");
@@ -341,14 +341,14 @@
 
 			$strHtml = $objColumn->Html;
 			$intPosition = 0;
-			
+
 			while (($intStartPosition = strpos($strHtml, '<?=', $intPosition)) !== false) {
 				$intEndPosition = strpos($strHtml, '?>', $intStartPosition);
 				if ($intEndPosition === false)
 					return $strHtml;
 				$strToken = substr($strHtml, $intStartPosition + 3, ($intEndPosition - $intStartPosition) - 3);
 				$strToken = trim($strToken);
-				
+
 				if ($strToken) {
 					// Because Eval doesn't utilize exception management, we need to do hack thru the PHP Error Handler
 					set_error_handler("DataGridEvalHandleError");
@@ -409,7 +409,7 @@
 
 			return $strToReturn;
 		}
-		
+
 		public function GetJavaScriptAction() {
 			return "onclick";
 		}
@@ -417,9 +417,9 @@
 		public function GetStyleAttributes() {
 			$strToReturn = parent::GetStyleAttributes();
 
-			if ($this->strBorderCollapse == QBorderCollapse::Collapse) 
+			if ($this->strBorderCollapse == QBorderCollapse::Collapse)
 				$strToReturn .= 'border-collapse:collapse;';
-			else if ($this->strBorderCollapse == QBorderCollapse::Separate) 
+			else if ($this->strBorderCollapse == QBorderCollapse::Separate)
 				$strToReturn .= 'border-collapse:separate;';
 
 			return $strToReturn;
@@ -433,7 +433,7 @@
 				// Sorting
 				$intColumnIndex = QType::Cast($strParameter, QType::Integer);
 				$objColumn = $this->objColumnArray[$intColumnIndex];
-				
+
 				// First, reset pagination (if applicable)
 				if ($this->objPaginator)
 					$this->PageNumber = 1;
@@ -441,11 +441,11 @@
 				// First, make sure the Column is Sortable
 				if ($objColumn->OrderByClause) {
 					// It is
-					
+
 					// Are we currently sorting by this column?
 					if ($this->intSortColumnIndex == $intColumnIndex) {
 						// Yes we are currently sorting by this column
-						
+
 						// In Reverse?
 						if ($this->intSortDirection == 1) {
 							// Yep -- unreverse the sort
@@ -469,7 +469,7 @@
 		}
 
 		protected function GetPaginatorRowHtml($objPaginator) {
-			$strToReturn = sprintf('<tr><td colspan="%s" style="padding:4px 0px 4px 0px;"><table cellspacing="0" cellpadding="0" border="0" style="width:100%%;"><tr><td valign="bottom" style="width:50%%;font-size:10px;">', count($this->objColumnArray));
+			$strToReturn = sprintf('<tr><td colspan="%s" style="padding:4px 0px 4px 0px;"><table cellspacing="0" cellpadding="0" border="0" style="width:100%%;"><tr><td valign="bottom" style="width:50%%;">', count($this->objColumnArray));
 
 			if ($this->TotalItemCount > 0) {
 				$intStart = (($this->PageNumber - 1) * $this->ItemsPerPage) + 1;
@@ -489,13 +489,13 @@
 					$strToReturn .= sprintf($this->strLabelForMultipleFound, $intCount, $this->strNounPlural);
 			}
 
-			$strToReturn .= '</td><td valign="bottom" style="width:50%;font-size:10px;text-align:right;">';
+			$strToReturn .= '</td><td valign="bottom" style="width:50%;text-align:right;">';
 			$strToReturn .= $objPaginator->Render(false);
 			$strToReturn .= '</td></tr></table></td></tr>';
-			
+
 			return $strToReturn;
 		}
-		
+
 		protected function GetHeaderSortedHtml(QDataGridColumn $objColumn) {
 			$strToReturn = sprintf('<span style="text-transform: uppercase;">%s</span>', $objColumn->Name);
 
@@ -513,7 +513,7 @@
 			$strToReturn = sprintf('<tr %s>', $objHeaderStyle->GetAttributes());
 			$intColumnIndex = 0;
 			if ($this->objColumnArray) foreach ($this->objColumnArray as $objColumn) {
-				if ($objColumn->OrderByClause) {						
+				if ($objColumn->OrderByClause) {
 					// This Column is Sortable
 					if ($intColumnIndex == $this->intSortColumnIndex)
 						$strName = $this->GetHeaderSortedHtml($objColumn);
@@ -535,7 +535,7 @@
 
 			return $strToReturn;
 		}
-		
+
 		protected function GetDataGridRowHtml($objObject) {
 			// Get the Default Style
 			$objStyle = $this->objRowStyle;
@@ -565,7 +565,7 @@
 				$objStyle = $objStyle->ApplyOverride($this->objAlternateRowStyle);
 
 			// Apply any Style Override (if applicable)
-			if ((is_array($this->objOverrideRowStyleArray)) && 
+			if ((is_array($this->objOverrideRowStyleArray)) &&
 				(array_key_exists($this->intCurrentRowIndex, $this->objOverrideRowStyleArray)) &&
 				(!is_null($this->objOverrideRowStyleArray[$this->intCurrentRowIndex])))
 				$objStyle = $objStyle->ApplyOverride($this->objOverrideRowStyleArray[$this->intCurrentRowIndex]);
@@ -724,7 +724,7 @@
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
-					
+
 				// BEHAVIOR
 				case "UseAjax":
 					try {
