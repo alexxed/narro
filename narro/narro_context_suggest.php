@@ -299,18 +299,6 @@
                 $this->txtSuggestionValue->Focus();
 
             $this->pnlSimilarSuggestionList->NarroText = $this->objNarroContextInfo->Context->Text;
-
-            /**
-             * Show the translations for similar texts if there are no translations, it's better than nothing
-             */
-            if (
-                !$this->objNarroContextInfo->HasSuggestions &&
-                !$this->chkShowSimilarSuggestions->Checked &&
-                file_exists(__SEARCH_INDEX_PATH__ . '/' . NarroApp::$Language->LanguageCode . '/text_suggestion_idx')
-            )
-                $this->pnlSimilarSuggestionList->Visible = true;
-            elseif (!$this->chkShowSimilarSuggestions->Checked && $this->pnlSimilarSuggestionList->Visible)
-                $this->pnlSimilarSuggestionList->Visible = false;
         }
 
         protected function UpdateNavigator() {
