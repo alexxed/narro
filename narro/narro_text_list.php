@@ -94,7 +94,7 @@
             $this->dtgNarroContextInfo->PaginatorAlternate = new QPaginator($this->dtgNarroContextInfo);
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroContextInfo->UseAjax = true;
+            $this->dtgNarroContextInfo->UseAjax = NarroApp::$UseAjax;
 
             // Specify the local databind method this datagrid will use
             $this->dtgNarroContextInfo->SetDataBinder('dtgNarroContextInfo_Bind');
@@ -142,7 +142,10 @@
             $this->btnMultiApprove = new QButton($this);
             $this->btnMultiApprove->Text = t('Mass approve');
             $this->btnMultiApprove->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId);
-            $this->btnMultiApprove->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
+            if (NarroApp::$UseAjax)
+                $this->btnMultiApprove->AddAction(new QClickEvent(), new QAjaxAction('btnMultiApprove_Click'));
+            else
+                $this->btnMultiApprove->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
 
             $this->btnMultiApproveCancel = new QButton($this);
             $this->btnMultiApproveCancel->Text = t('Cancel');
@@ -152,7 +155,10 @@
             $this->btnMultiApproveBottom = new QButton($this);
             $this->btnMultiApproveBottom->Text = t('Mass approve');
             $this->btnMultiApproveBottom->Display = NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId);
-            $this->btnMultiApproveBottom->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
+            if (NarroApp::$UseAjax)
+                $this->btnMultiApproveBottom->AddAction(new QClickEvent(), new QAjaxAction('btnMultiApprove_Click'));
+            else
+                $this->btnMultiApproveBottom->AddAction(new QClickEvent(), new QServerAction('btnMultiApprove_Click'));
 
             $this->btnMultiApproveCancelBottom = new QButton($this);
             $this->btnMultiApproveCancelBottom->Text = t('Cancel');
@@ -174,7 +180,6 @@
                 $this->SetMessage(t('Mass approve mode is the quick way to approve short translations. Leave empty to disapprove.'));
                 if (NarroApp::QueryString('st') != 3)
                     $this->dtgNarroContextInfo->AddColumnAt(0, $this->colContext);
-                $this->dtgNarroContextInfo->RemoveColumnByName(t('Actions'));
                 $this->dtgNarroContextInfo->MarkAsModified();
             }
             else {
