@@ -176,7 +176,7 @@
             $this->pnlPluginMessages->SetCustomStyle('padding', '5px');
 
             $this->pnlProgress = new QPanel($this);
-            $this->pnlProgress->Display = NarroApp::HasPermission('Can suggest');
+            $this->pnlProgress->Display = NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroProject->ProjectId);
 
             $this->lblProgress = new QLabel($this);
 
@@ -186,6 +186,7 @@
 
             $this->pnlDiacritics = new NarroDiacriticsPanel($this);
             $this->pnlDiacritics->strTextareaControlId = $this->txtSuggestionValue->ControlId;
+            $this->pnlDiacritics->Display = NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroProject->ProjectId);
 
         }
 
@@ -561,6 +562,7 @@
             $this->btnCopyOriginal->CausesValidation = false;
             $this->btnCopyOriginal->SetCustomStyle('float', 'right');
             $this->btnCopyOriginal->AccessKey = 'c';
+            $this->btnCopyOriginal->Display = NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroProject->ProjectId);
         }
 
         // Setup btnComments
@@ -578,13 +580,14 @@
 
             $this->btnComments->CausesValidation = false;
             $this->btnComments->SetCustomStyle('float', 'right');
+            $this->btnComments->Display = NarroApp::HasPermissionForThisLang('Can comment', $this->objNarroProject->ProjectId);
         }
 
         public function ShowPluginErrors() {
             $this->pnlPluginMessages->Text = '';
             if (NarroApp::$PluginHandler->Error) {
                 foreach(NarroApp::$PluginHandler->PluginErrors as $strPluginName=>$arrErors) {
-                    $this->pnlPluginMessages->Text .= $strPluginName . '<div style="padding-left:10px;border:1px dotted black;">' . join('<br />', $arrErors) . '</div><br />';
+                    $this->pnlPluginMessages->Text .= $strPluginName . '<div style="padding-left:10px;border:1px dotted black;">' . join('<br />', $arrErors) . '</div>';
                 }
                 $this->pnlPluginMessages->Visible = true;
             }

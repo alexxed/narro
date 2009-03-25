@@ -190,7 +190,7 @@
             $this->dtgSuggestions->Visible = true;
 
             if ($this->dtgSuggestions->TotalItemCount == 0 && !$this->objNarroContextInfo->ValidSuggestionId) {
-                $this->dtgSuggestions->LabelForNoneFound = '&nbsp;' . t('No translations yet.');
+                $this->dtgSuggestions->Visible = false;
             }
             elseif ($this->dtgSuggestions->TotalItemCount == 0 && $this->objNarroContextInfo->ValidSuggestionId) {
                 $this->dtgSuggestions->Visible = false;
