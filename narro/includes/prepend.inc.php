@@ -63,7 +63,12 @@
                 // First use the Qcodo Autoloader
                 parent::Autoload($strClassName);
 
-                // TODO: Run any custom autoloading functionality (if any) here...
+                if (file_exists($strFilePath = sprintf('%s/narro/%s.class.php', __INCLUDES__, $strClassName)))
+                    require_once($strFilePath);
+                elseif (file_exists($strFilePath = sprintf('%s/narro/importer/%s.class.php', __INCLUDES__, $strClassName)))
+                    require_once($strFilePath);
+                elseif (file_exists($strFilePath = sprintf('%s/qcodo/qform/%s.class.php', __INCLUDES__, $strClassName)))
+                    require_once($strFilePath);
             }
 
             ////////////////////////////

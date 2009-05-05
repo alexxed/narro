@@ -40,7 +40,11 @@
             'DisplayContext',
             'DisplaySuggestionComment',
             'DisplayContextComment',
-            'VoteSuggestion'
+            'VoteSuggestion',
+            'ImportFile',
+            'ExportFile',
+            'ImportProject',
+            'ExportProject'
         );
 
         public function __construct($strPluginFolder) {

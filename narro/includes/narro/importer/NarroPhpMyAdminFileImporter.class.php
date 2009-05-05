@@ -44,7 +44,7 @@
                 }
             }
             else {
-                NarroLog::LogMessage(3, sprintf('Cannot open file "%s".', $strFileToImport));
+                $this->objLogger->err(sprintf('Cannot open file "%s".', $strFileToImport));
             }
         }
 
@@ -82,7 +82,7 @@
                 }
             }
             else {
-                NarroLog::LogMessage(3, sprintf('Cannot open file "%s".', $strFileToImport));
+                $this->objLogger->err(sprintf('Cannot open file "%s".', $strFileToImport));
             }
 
         }

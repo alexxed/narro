@@ -275,6 +275,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_value` AS ' . $strAliasPrefix . 'suggestion_value`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_value_md5` AS ' . $strAliasPrefix . 'suggestion_value_md5`');
 			$objBuilder->AddSelectItem($strTableName . '.`suggestion_char_count` AS ' . $strAliasPrefix . 'suggestion_char_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`suggestion_word_count` AS ' . $strAliasPrefix . 'suggestion_word_count`');
 			$objBuilder->AddSelectItem($strTableName . '.`has_comments` AS ' . $strAliasPrefix . 'has_comments`');
 			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
 			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
@@ -376,6 +377,7 @@
 			$objToReturn->strSuggestionValue = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_value', 'Blob');
 			$objToReturn->strSuggestionValueMd5 = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_value_md5', 'VarChar');
 			$objToReturn->intSuggestionCharCount = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_char_count', 'Integer');
+			$objToReturn->intSuggestionWordCount = $objDbRow->GetColumn($strAliasPrefix . 'suggestion_word_count', 'Integer');
 			$objToReturn->blnHasComments = $objDbRow->GetColumn($strAliasPrefix . 'has_comments', 'Bit');
 			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
 			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
@@ -639,6 +641,7 @@
 							`suggestion_value`,
 							`suggestion_value_md5`,
 							`suggestion_char_count`,
+							`suggestion_word_count`,
 							`has_comments`,
 							`created`,
 							`modified`
@@ -649,6 +652,7 @@
 							' . $objDatabase->SqlVariable($this->strSuggestionValue) . ',
 							' . $objDatabase->SqlVariable($this->strSuggestionValueMd5) . ',
 							' . $objDatabase->SqlVariable($this->intSuggestionCharCount) . ',
+							' . $objDatabase->SqlVariable($this->intSuggestionWordCount) . ',
 							' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							' . $objDatabase->SqlVariable($this->strCreated) . ',
 							' . $objDatabase->SqlVariable($this->strModified) . '
@@ -673,6 +677,7 @@
 							`suggestion_value` = ' . $objDatabase->SqlVariable($this->strSuggestionValue) . ',
 							`suggestion_value_md5` = ' . $objDatabase->SqlVariable($this->strSuggestionValueMd5) . ',
 							`suggestion_char_count` = ' . $objDatabase->SqlVariable($this->intSuggestionCharCount) . ',
+							`suggestion_word_count` = ' . $objDatabase->SqlVariable($this->intSuggestionWordCount) . ',
 							`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
 							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
@@ -807,6 +812,13 @@
 					 * @return integer
 					 */
 					return $this->intSuggestionCharCount;
+
+				case 'SuggestionWordCount':
+					/**
+					 * Gets the value for intSuggestionWordCount (Not Null)
+					 * @return integer
+					 */
+					return $this->intSuggestionWordCount;
 
 				case 'HasComments':
 					/**
@@ -1044,6 +1056,19 @@
 					 */
 					try {
 						return ($this->intSuggestionCharCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'SuggestionWordCount':
+					/**
+					 * Sets the value for intSuggestionWordCount (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intSuggestionWordCount = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1886,6 +1911,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_suggestion.suggestion_word_count
+		 * @var integer intSuggestionWordCount
+		 */
+		protected $intSuggestionWordCount;
+		const SuggestionWordCountDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_suggestion.has_comments
 		 * @var boolean blnHasComments
 		 */
@@ -2042,6 +2075,7 @@
 			$strToReturn .= '<element name="SuggestionValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="SuggestionValueMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="SuggestionCharCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="SuggestionWordCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="HasComments" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Created" type="xsd:string"/>';
 			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
@@ -2087,6 +2121,8 @@
 				$objToReturn->strSuggestionValueMd5 = $objSoapObject->SuggestionValueMd5;
 			if (property_exists($objSoapObject, 'SuggestionCharCount'))
 				$objToReturn->intSuggestionCharCount = $objSoapObject->SuggestionCharCount;
+			if (property_exists($objSoapObject, 'SuggestionWordCount'))
+				$objToReturn->intSuggestionWordCount = $objSoapObject->SuggestionWordCount;
 			if (property_exists($objSoapObject, 'HasComments'))
 				$objToReturn->blnHasComments = $objSoapObject->HasComments;
 			if (property_exists($objSoapObject, 'Created'))
@@ -2161,6 +2197,8 @@
 					return new QQNode('suggestion_value_md5', 'string', $this);
 				case 'SuggestionCharCount':
 					return new QQNode('suggestion_char_count', 'integer', $this);
+				case 'SuggestionWordCount':
+					return new QQNode('suggestion_word_count', 'integer', $this);
 				case 'HasComments':
 					return new QQNode('has_comments', 'boolean', $this);
 				case 'Created':
@@ -2215,6 +2253,8 @@
 					return new QQNode('suggestion_value_md5', 'string', $this);
 				case 'SuggestionCharCount':
 					return new QQNode('suggestion_char_count', 'integer', $this);
+				case 'SuggestionWordCount':
+					return new QQNode('suggestion_word_count', 'integer', $this);
 				case 'HasComments':
 					return new QQNode('has_comments', 'boolean', $this);
 				case 'Created':

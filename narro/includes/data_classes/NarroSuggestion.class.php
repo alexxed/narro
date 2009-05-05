@@ -63,6 +63,17 @@
             );
         }
 
+        public function Save($blnForceInsert = false, $blnForceUpdate = false) {
+            $this->intSuggestionWordCount = str_word_count($this->strSuggestionValue, 0);
+            $this->intSuggestionCharCount = strlen($this->strSuggestionValue);
+            $this->strSuggestionValueMd5 = md5($this->strSuggestionValue);
+            if ((!$this->__blnRestored) || ($blnForceInsert))
+                $this->strCreated = date('Y-m-d H:i:s');
+            else
+                $this->strModified = date('Y-m-d H:i:s');
+            parent::Save($blnForceInsert, $blnForceUpdate);
+        }
+
 
 
         // Override or Create New Load/Count methods

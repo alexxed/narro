@@ -17,8 +17,6 @@
      */
 
 ?>
-    <br />
-    <br />
     </div>
 <?php
     if (NarroApp::$Database[1]->EnableProfiling)

@@ -53,6 +53,12 @@
      * default is almost 10MB
      */
     define ('__MAXIMUM_FILE_SIZE_TO_IMPORT__', '10048576');
+    define ('__SOURCE_LANGUAGE_ID__', 58);
+    /**
+     * used for email sending from narro (notifications and password recovery)
+     */
+    define ('__FROM_EMAIL_ADDRESS__', 'root@localhost');
+    define ('__FROM_EMAIL_NAME__', 'Narro');
     define ('__URL_REWRITE__', 'none');
 
     /**
@@ -116,7 +122,7 @@
     ini_set('memory_limit', "512M");
 
     set_time_limit(0);
-    error_reporting(E_ALL ^ E_NOTICE);
+    error_reporting(E_ALL ^ (E_NOTICE | E_WARNING | E_STRICT));
     $GLOBALS['_PEAR_default_error_mode'] = PEAR_ERROR_TRIGGER;
 
 ?>

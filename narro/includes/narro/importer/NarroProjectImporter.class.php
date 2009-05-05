@@ -47,6 +47,10 @@
          */
         protected $blnOnlySuggestions = false;
 
+        protected $blnImportUnchangedFiles = false;
+
+        protected $objLogger;
+
         /**
          * what suggestions are exported
          * 1 = approved
@@ -87,12 +91,12 @@
         public function ImportProject() {
             $this->startTimer();
 
-            if (function_exists('popen') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../import.sh')) {
-                NarroLog::LogMessage(3, 'Found a before import script, trying to run it.');
+            if (function_exists('popen') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/import.sh')) {
+                $this->objLogger->err('Found a before import script, trying to run it.');
                  $fp = popen(
                         sprintf(
                             '/bin/sh %s %s %d %s %d %d 2>&1',
-                            escapeshellarg(realpath($this->strTemplatePath . '/..') . '/import.sh'),
+                            escapeshellarg(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/import.sh'),
                             escapeshellarg($this->objTargetLanguage->LanguageCode),
                             $this->objTargetLanguage->LanguageId,
                             escapeshellarg($this->objProject->ProjectName),
@@ -108,30 +112,32 @@
                     $strOutput .= fread($fp, 1024);
                 }
                 if (pclose($fp))
-                    NarroLog::LogMessage(3, "Before import script failed:\n" . $strOutput);
+                    $this->objLogger->err("Before import script failed:\n" . $strOutput);
                 else
-                    NarroLog::LogMessage(3, "Before import script finished successfully:\n" . $strOutput);
+                    $this->objLogger->err("Before import script finished successfully:\n" . $strOutput);
             }
 
             if ($this->objProject->ProjectName == 'Narro')
                 $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
 
             if (!file_exists($this->strTemplatePath))
-                throw new Exception(sprintf('%s does not exist.', $this->strTemplatePath));
+                throw new Exception(sprintf('Template path %s does not exist.', $this->strTemplatePath));
 
-            NarroLog::LogMessage(3, sprintf('Starting import for the project %s from the directory %s', $this->objProject->ProjectName, realpath($this->strTemplatePath . '/..')));
+            $this->objLogger->info(sprintf('Starting import for the project %s', $this->objProject->ProjectName));
+            $this->objLogger->info(sprintf('Template path is %s', $this->strTemplatePath));
+            $this->objLogger->info(sprintf('Translation path is %s', $this->strTranslationPath));
 
 
             if (is_dir($this->strTemplatePath))
                 if ($this->ImportFromDirectory()) {
                     $this->stopTimer();
-                    NarroLog::LogMessage(3, sprintf('Import finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
+                    $this->objLogger->info(sprintf('Import finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
                 }
                 else {
-                    NarroLog::LogMessage(3, 'Import failed. See any messages above for details.');
+                    $this->objLogger->err('Import failed. See any messages above for details.');
                 }
             else
-                throw new Exception(sprintf('"%s" is not a directory.', $this->strTemplatePath));
+                throw new Exception(sprintf('Template path "%s" is not a directory.', $this->strTemplatePath));
         }
 
         public function ImportFromDirectory() {
@@ -146,7 +152,7 @@
             $arrFiles = $this->ListDir($this->strTemplatePath);
             $intTotalFilesToProcess = count($arrFiles);
 
-            NarroLog::LogMessage(1, sprintf('Starting to process %d files using directory %s', $intTotalFilesToProcess, $this->strTemplatePath));
+            $this->objLogger->debug(sprintf('Starting to process %d files using directory %s', $intTotalFilesToProcess, $this->strTemplatePath));
 
             if ($this->blnDeactivateFiles) {
                 $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
@@ -167,6 +173,8 @@
             }
 
             $arrDirectories = array();
+            NarroProgress::SetProgress(0, $this->objProject->ProjectId, 'import');
+
             if (is_array($arrFiles))
             foreach($arrFiles as $intFileNo=>$strFileToImport) {
                 if (preg_match('/\/CVS|\/\.svn|\/\.hg|\/\.git/', $strFileToImport)) continue;
@@ -243,7 +251,7 @@
                             $objFile->Created = date('Y-m-d H:i:s');
                             $objFile->Active = 1;
                             $objFile->Save();
-                            NarroLog::LogMessage(1, sprintf('Added folder "%s" from "%s"', $strDir, $strPath));
+                            $this->objLogger->debug(sprintf('Added folder "%s" from "%s"', $strDir, $strPath));
                             NarroImportStatistics::$arrStatistics['Imported folders']++;
                         }
                         $arrDirectories[$strPath] = $objFile->FileId;
@@ -270,6 +278,13 @@
                     $objFile->TypeId = $intFileType;
                     $objFile->FilePath = $strFilePath;
                     $objFile->Modified = date('Y-m-d H:i:s');
+                    $strMd5File = md5_file($strFileToImport);
+                    if ($strMd5File == $objFile->FileMd5)
+                        $blnSourceFileChanged = false;
+                    else {
+                        $objFile->FileMd5 = $strMd5File;
+                        $blnSourceFileChanged = true;
+                    }
                     $objFile->Save();
                     NarroImportStatistics::$arrStatistics['Kept files']++;
                 }
@@ -285,25 +300,39 @@
                     $objFile->ProjectId = $this->objProject->ProjectId;
                     $objFile->Active = 1;
                     $objFile->FilePath = $strFilePath;
+                    $objFile->FileMd5 = md5_file($strFileToImport);
                     $objFile->Modified = date('Y-m-d H:i:s');
                     $objFile->Created = date('Y-m-d H:i:s');
                     $objFile->Save();
+                    $blnSourceFileChanged = true;
                     NarroApp::$PluginHandler->ActivateFile($objFile, $this->objProject);
-                    NarroLog::LogMessage(1, sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
+                    $this->objLogger->debug(sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
 
                 $strTranslatedFileToImport = str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToImport);
 
                 $intTime = time();
-                if (file_exists($strTranslatedFileToImport))
+                if (file_exists($strTranslatedFileToImport)) {
+                    if ($blnSourceFileChanged || $this->blnImportUnchangedFiles) {
+
+                    }
+                    else {
+                        $this->blnOnlySuggestions = true;
+                        $this->objLogger->debug(sprintf('Importing only suggestions from "%s" because it\'s unchanged from the last import', $strTranslatedFileToImport));
+                        NarroImportStatistics::$arrStatistics['Unchanged template files']++;
+                    }
+
                     $this->ImportFile($objFile, $strFileToImport, $strTranslatedFileToImport);
+
+                }
                 else {
                     // it's ok, equal strings won't be imported
                     $this->ImportFile($objFile, $strFileToImport);
                 }
+
                 $intElapsedTime = time() - $intTime;
-                NarroLog::LogMessage(1, sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo)));
+                $this->objLogger->debug(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
 
                 NarroProgress::SetProgress((int) ceil(($intFileNo*100)/$intTotalFilesToProcess), $this->objProject->ProjectId, 'import');
 
@@ -315,6 +344,16 @@
         public function ImportFile ($objFile, $strTemplateFile, $strTranslatedFile = false) {
             if (!$objFile instanceof NarroFile)
                 return false;
+
+            if (is_file($strTemplateFile) && filesize($strTemplateFile) > __MAXIMUM_FILE_SIZE_TO_IMPORT__) {
+                $this->objLogger->err(sprintf('The file "%s" exceeds the maximum file size allowed to be imported, skipping it', $strTemplateFile));
+                return false;
+            }
+
+            if (is_file($strTranslatedFile) && filesize($strTranslatedFile) > __MAXIMUM_FILE_SIZE_TO_IMPORT__) {
+                $this->objLogger->err(sprintf('The file "%s" exceeds the maximum file size allowed to be imported, skipping it', $strTranslatedFile));
+                return false;
+            }
 
             switch($objFile->TypeId) {
                 case NarroFileType::MozillaDtd:
@@ -352,7 +391,7 @@
 
         public function ExportProject() {
 
-            NarroLog::LogMessage(3, sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
+            $this->objLogger->err(sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
 
             $this->startTimer();
 
@@ -362,17 +401,17 @@
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
                 if ($this->ExportFromDirectory()) {
                     $this->stopTimer();
-                    NarroLog::LogMessage(3, sprintf('Export finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
+                    $this->objLogger->err(sprintf('Export finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
                 }
                 else {
-                    NarroLog::LogMessage(3, 'Export failed.');
+                    $this->objLogger->err('Export failed.');
                 }
 
             else
-                throw new Exception(sprintf('%s does not exist or it is not a directory', $this->strTemplatePath));
+                throw new Exception(sprintf('Template path "%s" does not exist or it is not a directory', $this->strTemplatePath));
 
             if (function_exists('popen') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../export.sh')) {
-                NarroLog::LogMessage(3, 'Found an after export script, trying to run it.');
+                $this->objLogger->err('Found an after export script, trying to run it.');
                  $fp = popen(
                         sprintf(
                             '/bin/sh %s %s %d %s %d %d 2>&1',
@@ -392,9 +431,9 @@
                     $strOutput .= fread($fp, 1024);
                 }
                 if (pclose($fp))
-                    NarroLog::LogMessage(3, "After export script failed:\n" . $strOutput);
+                    $this->objLogger->err("After export script failed:\n" . $strOutput);
                 else
-                    NarroLog::LogMessage(3, "After export script finished successfully:\n" . $strOutput);
+                    $this->objLogger->err("After export script finished successfully:\n" . $strOutput);
             }
 
             if ($this->objProject->ProjectName == 'Narro') {
@@ -413,9 +452,9 @@
                     $strOutput .= fread($fp, 1024);
                 }
                 if (pclose($fp))
-                    NarroLog::LogMessage(3, "Exporting Narro's translation failed:\n" . $strOutput);
+                    $this->objLogger->err("Exporting Narro's translation failed:\n" . $strOutput);
                 else
-                    NarroLog::LogMessage(3, "Exported Narro's translation succesfully:\n" . $strOutput);
+                    $this->objLogger->err("Exported Narro's translation succesfully:\n" . $strOutput);
 
                 chmod(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/narro.mo', 0666);
             }
@@ -428,7 +467,7 @@
 
             NarroLog::SetLogFile($this->objProject->ProjectId . '-' . $this->objTargetLanguage->LanguageCode . '-export.log');
 
-            NarroLog::LogMessage(1, sprintf('Starting to export in directory "%s"', $this->strTranslationPath));
+            $this->objLogger->debug(sprintf('Starting to export in directory "%s"', $this->strTranslationPath));
 
             /**
              * get the file list with complete paths
@@ -437,10 +476,12 @@
 
             $intTotalFilesToProcess = count($arrFiles);
 
-            NarroLog::LogMessage(1, sprintf('Starting to process %d files', $intTotalFilesToProcess));
+            $this->objLogger->debug(sprintf('Starting to process %d files', $intTotalFilesToProcess));
 
             $arrDirectories = array();
+            NarroProgress::SetProgress(0, $this->objProject->ProjectId, 'export');
 
+            if (is_array($arrFiles))
             foreach($arrFiles as $intFileNo=>$strFileToExport) {
                 $arrFileParts = split('/', str_replace($this->strTemplatePath, '', $strFileToExport));
                 $strFileName = $arrFileParts[count($arrFileParts)-1];
@@ -475,7 +516,7 @@
                             );
 
                         if (!$objFile instanceof NarroFile) {
-                            NarroLog::LogMessage(2, sprintf('Could not find folder "%s" with parent id "%d" in the database.', $strDir, $intParentId));
+                            $this->objLogger->warn(sprintf('Could not find folder "%s" with parent id "%d" in the database.', $strDir, $intParentId));
                             continue;
                         }
 
@@ -487,7 +528,7 @@
                 $strTranslatedFileToExport = str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToExport);
                 if (!file_exists(dirname($strTranslatedFileToExport))) {
                     if (!mkdir(dirname($strTranslatedFileToExport), 0777, true)) {
-                        NarroLog::LogMessage(2, sprintf('Failed to create the parent directories for the file %s', $strFileToExport));
+                        $this->objLogger->warn(sprintf('Failed to create the parent directories for the file %s', $strFileToExport));
                         return false;
                     }
                     NarroUtils::RecursiveChmod(dirname($strTranslatedFileToExport));
@@ -496,11 +537,11 @@
                 if (!$intFileType = $this->GetFileType($strFileName)) {
                     if ($this->blnCopyUnhandledFiles && !file_exists($strTranslatedFileToExport)) {
                         if (@copy($strFileToExport, $strTranslatedFileToExport)) {
-                            NarroLog::LogMessage(2, sprintf('Copying unhandled file type: %s', $strFileToExport));
+                            $this->objLogger->warn(sprintf('Copying unhandled file type: %s', $strFileToExport));
                             NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
                             chmod($strTranslatedFileToExport, 0666);
                         } else {
-                            NarroLog::LogMessage(2, sprintf('Failed to copy the unhandled file to %s', $strTranslatedFileToExport));
+                            $this->objLogger->warn(sprintf('Failed to copy the unhandled file to %s', $strTranslatedFileToExport));
                             return false;
                         }
                     }
@@ -521,7 +562,7 @@
                     continue;
                 }
 
-                NarroLog::LogMessage(1, sprintf('Exporting file "%s" using template "%s"', $objFile->FileName, $strTranslatedFileToExport));
+                $this->objLogger->debug(sprintf('Exporting file "%s" using template "%s"', $objFile->FileName, $strTranslatedFileToExport));
 
                 $this->ExportFile($objFile, $strFileToExport, $strTranslatedFileToExport);
                 NarroImportStatistics::$arrStatistics['Exported files']++;
@@ -535,7 +576,7 @@
 
         public function ExportFile ($objFile, $strTemplateFile, $strTranslatedFile) {
             if (!$objFile instanceof NarroFile) {
-                NarroLog::LogMessage(2, sprintf('Failed to find a corresponding file in the database for %s', $strTemplateFile));
+                $this->objLogger->warn(sprintf('Failed to find a corresponding file in the database for %s', $strTemplateFile));
                 return false;
             }
 
@@ -565,7 +606,7 @@
                         $objFileImporter = new NarroPhpMyAdminFileImporter($this);
                         break;
                 default:
-                        NarroLog::LogMessage(2, sprintf('Copying unhandled file type: %s', $strTemplateFile));
+                        $this->objLogger->warn(sprintf('Copying unhandled file type: %s', $strTemplateFile));
                         NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
                         copy($strTemplateFile, $strTranslatedFile);
                         return false;
@@ -616,11 +657,13 @@
                 case "TargetLanguage": return $this->objTargetLanguage;
                 case "Approve": return $this->blnApprove;
                 case "CheckEqual": return $this->blnCheckEqual;
+                case "ImportUnchangedFiles": return $this->blnImportUnchangedFiles;
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
                 case "DeactivateFiles": return $this->blnDeactivateFiles;
                 case "DeactivateContexts": return $this->blnDeactivateContexts;
                 case "ExportedSuggestion": return $this->intExportedSuggestion;
                 case "CopyUnhandledFiles": return $this->blnCopyUnhandledFiles;
+                case "Logger": return $this->objLogger;
 
                 default: return false;
             }
@@ -711,6 +754,15 @@
                         throw $objExc;
                     }
 
+                case "ImportUnchangedFiles":
+                    try {
+                        $this->blnImportUnchangedFiles = QType::Cast($mixValue, QType::Boolean);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
                 case "CopyUnhandledFiles":
                     try {
                         $this->blnCopyUnhandledFiles = QType::Cast($mixValue, QType::Boolean);
@@ -750,6 +802,15 @@
                 case "ExportedSuggestion":
                     try {
                         $this->intExportedSuggestion = QType::Cast($mixValue, QType::Integer);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
+                case "Logger":
+                    try {
+                        $this->objLogger = QType::Cast($mixValue, 'Zend_Log');
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();

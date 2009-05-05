@@ -274,7 +274,7 @@
         }
 
         public static function IsProcessRunning($strOperation, $intProjectId) {
-            $strSearchCmd = sprintf('egrep -e "php --%s.*--project %d"', $strOperation, $intProjectId);
+            $strSearchCmd = sprintf('egrep -e "php --%s.*--project %d.*--translation-lang %s"', $strOperation, $intProjectId, NarroApp::$Language->LanguageCode);
             $strPsFindCmd = 'ps aux | ' . $strSearchCmd;
             $arrCmdLines = explode("\n", `$strPsFindCmd`);
 
@@ -289,6 +289,8 @@
                             return $arrMatches[3];
                         }
                     }
+                    else
+                        return false;
                 }
             /**
              * If exec functions are disabled, return false, surely no process is running in background

@@ -17,6 +17,7 @@
 
 body {
     font-family:verdana,arial,tahoma,sans-serif;
+    margin: 5px;
 }
 .title { font-weight: bold; margin-left: -2px;}
 .title_action { font-weight: bold; margin-bottom: -4px; }
@@ -47,6 +48,10 @@ body {
 .dotted_box { border:1px dotted black;}
 .dotted_box_title { display:block; background-color: #A5F7A5; font-weight:bold; padding:2px; }
 .dotted_box_content { padding:5px; }
+
+label {
+	white-space:nowrap;
+}
 
 a:link, a:visited {
   color: #557D0C;
@@ -104,7 +109,7 @@ top:0px;
 th.datagrid_header {
     color: #000000;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
     border-right: 1px solid #DDDDDD;
 }
 
@@ -197,4 +202,24 @@ td.datagrid_footer {
 .whitespace {
     background-color:white;
     margin-right:2px;
+}
+
+.section_title {
+    background: #DDDDDD url(../images/bg_td1.jpg) repeat-x;
+    padding: 4px;
+    text-align: left;
+    border-left: 1px solid #DDDDDD;
+    border-right: 1px solid #DDDDDD;
+    border-top: 1px solid #DDDDDD;
+    border-bottom: 1px dotted #DDDDDD;
+    font-weight: bold;
+    color: #000000;
+}
+
+.section {
+    padding: 4px;
+    border-left: 1px solid #DDDDDD;
+    border-right: 1px solid #DDDDDD;
+    border-bottom: 1px solid #DDDDDD;
+    margin-bottom: 4px;
 }

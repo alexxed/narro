@@ -272,6 +272,7 @@
 			$objBuilder->AddSelectItem($strTableName . '.`text_value` AS ' . $strAliasPrefix . 'text_value`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_value_md5` AS ' . $strAliasPrefix . 'text_value_md5`');
 			$objBuilder->AddSelectItem($strTableName . '.`text_char_count` AS ' . $strAliasPrefix . 'text_char_count`');
+			$objBuilder->AddSelectItem($strTableName . '.`text_word_count` AS ' . $strAliasPrefix . 'text_word_count`');
 			$objBuilder->AddSelectItem($strTableName . '.`has_comments` AS ' . $strAliasPrefix . 'has_comments`');
 			$objBuilder->AddSelectItem($strTableName . '.`created` AS ' . $strAliasPrefix . 'created`');
 			$objBuilder->AddSelectItem($strTableName . '.`modified` AS ' . $strAliasPrefix . 'modified`');
@@ -358,6 +359,7 @@
 			$objToReturn->strTextValue = $objDbRow->GetColumn($strAliasPrefix . 'text_value', 'Blob');
 			$objToReturn->strTextValueMd5 = $objDbRow->GetColumn($strAliasPrefix . 'text_value_md5', 'VarChar');
 			$objToReturn->intTextCharCount = $objDbRow->GetColumn($strAliasPrefix . 'text_char_count', 'Integer');
+			$objToReturn->intTextWordCount = $objDbRow->GetColumn($strAliasPrefix . 'text_word_count', 'Integer');
 			$objToReturn->blnHasComments = $objDbRow->GetColumn($strAliasPrefix . 'has_comments', 'Bit');
 			$objToReturn->strCreated = $objDbRow->GetColumn($strAliasPrefix . 'created', 'VarChar');
 			$objToReturn->strModified = $objDbRow->GetColumn($strAliasPrefix . 'modified', 'VarChar');
@@ -496,6 +498,7 @@
 							`text_value`,
 							`text_value_md5`,
 							`text_char_count`,
+							`text_word_count`,
 							`has_comments`,
 							`created`,
 							`modified`
@@ -503,6 +506,7 @@
 							' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							' . $objDatabase->SqlVariable($this->strTextValueMd5) . ',
 							' . $objDatabase->SqlVariable($this->intTextCharCount) . ',
+							' . $objDatabase->SqlVariable($this->intTextWordCount) . ',
 							' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							' . $objDatabase->SqlVariable($this->strCreated) . ',
 							' . $objDatabase->SqlVariable($this->strModified) . '
@@ -524,6 +528,7 @@
 							`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue) . ',
 							`text_value_md5` = ' . $objDatabase->SqlVariable($this->strTextValueMd5) . ',
 							`text_char_count` = ' . $objDatabase->SqlVariable($this->intTextCharCount) . ',
+							`text_word_count` = ' . $objDatabase->SqlVariable($this->intTextWordCount) . ',
 							`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->strCreated) . ',
 							`modified` = ' . $objDatabase->SqlVariable($this->strModified) . '
@@ -637,6 +642,13 @@
 					 * @return integer
 					 */
 					return $this->intTextCharCount;
+
+				case 'TextWordCount':
+					/**
+					 * Gets the value for intTextWordCount (Not Null)
+					 * @return integer
+					 */
+					return $this->intTextWordCount;
 
 				case 'HasComments':
 					/**
@@ -774,6 +786,19 @@
 					 */
 					try {
 						return ($this->intTextCharCount = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'TextWordCount':
+					/**
+					 * Sets the value for intTextWordCount (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intTextWordCount = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1340,6 +1365,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_text.text_word_count
+		 * @var integer intTextWordCount
+		 */
+		protected $intTextWordCount;
+		const TextWordCountDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_text.has_comments
 		 * @var boolean blnHasComments
 		 */
@@ -1447,6 +1480,7 @@
 			$strToReturn .= '<element name="TextValue" type="xsd:string"/>';
 			$strToReturn .= '<element name="TextValueMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="TextCharCount" type="xsd:int"/>';
+			$strToReturn .= '<element name="TextWordCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="HasComments" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Created" type="xsd:string"/>';
 			$strToReturn .= '<element name="Modified" type="xsd:string"/>';
@@ -1480,6 +1514,8 @@
 				$objToReturn->strTextValueMd5 = $objSoapObject->TextValueMd5;
 			if (property_exists($objSoapObject, 'TextCharCount'))
 				$objToReturn->intTextCharCount = $objSoapObject->TextCharCount;
+			if (property_exists($objSoapObject, 'TextWordCount'))
+				$objToReturn->intTextWordCount = $objSoapObject->TextWordCount;
 			if (property_exists($objSoapObject, 'HasComments'))
 				$objToReturn->blnHasComments = $objSoapObject->HasComments;
 			if (property_exists($objSoapObject, 'Created'))
@@ -1530,6 +1566,8 @@
 					return new QQNode('text_value_md5', 'string', $this);
 				case 'TextCharCount':
 					return new QQNode('text_char_count', 'integer', $this);
+				case 'TextWordCount':
+					return new QQNode('text_word_count', 'integer', $this);
 				case 'HasComments':
 					return new QQNode('has_comments', 'boolean', $this);
 				case 'Created':
@@ -1570,6 +1608,8 @@
 					return new QQNode('text_value_md5', 'string', $this);
 				case 'TextCharCount':
 					return new QQNode('text_char_count', 'integer', $this);
+				case 'TextWordCount':
+					return new QQNode('text_word_count', 'integer', $this);
 				case 'HasComments':
 					return new QQNode('has_comments', 'boolean', $this);
 				case 'Created':

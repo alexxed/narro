@@ -44,6 +44,11 @@
          */
         protected $blnApprove = true;
         /**
+         * whether to approve the import suggestions even if another suggestion is approved in Narro
+         * @var boolean
+         */
+        protected $blnApproveAlreadyApproved = true;
+        /**
          * whether to import only suggestions, that is don't add anything else than suggestions
          */
         protected $blnOnlySuggestions = false;
@@ -57,6 +62,8 @@
          */
         protected $intExportedSuggestion = 1;
 
+        protected $objLogger;
+
         public function __construct($objImporter = null) {
 
             if ($objImporter instanceof NarroProjectImporter) {
@@ -69,6 +76,7 @@
                 $this->blnApprove = $objImporter->Approve;
                 $this->blnOnlySuggestions = $objImporter->OnlySuggestions;
                 $this->intExportedSuggestion = $objImporter->ExportedSuggestion;
+                $this->objLogger = $objImporter->Logger;
             }
 
         }
@@ -100,7 +108,7 @@
              * First, let the plug-ins process the data
              */
             if ($strOriginal == '') {
-                NarroLog::LogMessage(2, sprintf('In file "%s", the context "%s" was skipped because the original text "%s" was empty.', $this->objFile->FileName, $strContext, $strOriginal));
+                $this->objLogger->warn(sprintf('In file "%s", the context "%s" was skipped because the original text "%s" was empty.', $this->objFile->FileName, $strContext, $strOriginal));
                 NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Skipped texts']++;
@@ -121,7 +129,7 @@
                     $strOriginal = $arrResult[0];
                 }
                 else
-                    NarroLog::LogMessage(2, sprintf('A plug-in returned an unexpected result while processing the text "%s": %s', $strOriginal, print_r($arrResult, true)));
+                    $this->objLogger->warn(sprintf('A plug-in returned an unexpected result while processing the text "%s": %s', $strOriginal, print_r($arrResult, true)));
             }
 
             if ($strTranslation != '') {
@@ -137,11 +145,11 @@
                     $strTranslation = $arrResult[1];
                 }
                 else
-                    NarroLog::LogMessage(2, sprintf('A plug-in returned an unexpected result while processing the translation "%s": %s', $strTranslation, print_r($arrResult, true)));
+                    $this->objLogger->warn(sprintf('A plug-in returned an unexpected result while processing the translation "%s": %s', $strTranslation, print_r($arrResult, true)));
             }
 
             if ($strContext == '') {
-                NarroLog::LogMessage(2, sprintf('In file "%s", the context "%s" was skipped because it was empty.', $this->objFile->FileName, $strContext));
+                $this->objLogger->warn(sprintf('In file "%s", the context "%s" was skipped because it was empty.', $this->objFile->FileName, $strContext));
                 NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Skipped texts']++;
@@ -162,7 +170,7 @@
                     $strContext = $arrResult[2];
                 }
                 else
-                    NarroLog::LogMessage(2, sprintf('A plug-in returned an unexpected result while processing the context "%s": %s', $strContext, print_r($arrResult, true)));
+                    $this->objLogger->warn(sprintf('A plug-in returned an unexpected result while processing the context "%s": %s', $strContext, print_r($arrResult, true)));
             }
 
             if (!is_null($strComment) && trim($strComment) != '') {
@@ -180,7 +188,7 @@
                     $strComment = $arrResult[3];
                 }
                 else
-                    NarroLog::LogMessage(2, sprintf('A plug-in returned an unexpected result while processing the comment "%s": %s', $strComment, print_r($arrResult, true)));
+                    $this->objLogger->warn(sprintf('A plug-in returned an unexpected result while processing the comment "%s": %s', $strComment, print_r($arrResult, true)));
             }
 
             /**
@@ -193,19 +201,15 @@
 
                 $objNarroText = new NarroText();
                 $objNarroText->TextValue = $strOriginal;
-                $objNarroText->TextValueMd5 = md5($strOriginal);
-                $objNarroText->TextCharCount = mb_strlen($strOriginal);
-                $objNarroText->Modified = date('Y-m-d H:i:s');
-                $objNarroText->Created = date('Y-m-d H:i:s');
 
                 NarroApp::$PluginHandler->AddText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
 
                 try {
                     $objNarroText->Save();
-                    NarroLog::LogMessage(1, sprintf('Added text "%s" from the file "%s"', $strOriginal, $this->objFile->FileName));
+                    $this->objLogger->debug(sprintf('Added text "%s" from the file "%s"', $strOriginal, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Imported texts']++;
                 } catch(Exception $objExc) {
-                    NarroLog::LogMessage(3, sprintf('Error while adding "%s": %s', $strOriginal, $objExc->getMessage()));
+                    $this->objLogger->err(sprintf('Error while adding "%s": %s', $strOriginal, $objExc->getMessage()));
                     NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                     NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                     NarroImportStatistics::$arrStatistics['Skipped texts']++;
@@ -250,9 +254,15 @@
                 $objNarroContext->Active = 1;
                 $objNarroContext->Modified = date('Y-m-d H:i:s');
                 $objNarroContext->Created = date('Y-m-d H:i:s');
-                $objNarroContext->Save();
+                try {
+                    $objNarroContext->Save();
+                }
+                catch (Exception $objException) {
+                    $this->objLogger->err(sprintf('An error occured while saving the context: %s. Skipping the text "%s"', $objException->getMessage(), $strOriginal));
+                    return false;
+                }
 
-                NarroLog::LogMessage(1, sprintf('Added the context "%s" from the file "%s"', $strContext, $this->objFile->FileName));
+                $this->objLogger->debug(sprintf('Added the context "%s" from the file "%s"', $strContext, $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Imported contexts']++;
             }
             elseif($objNarroContext instanceof NarroContext) {
@@ -265,7 +275,10 @@
              */
             $objContextInfo = NarroContextInfo::LoadByContextIdLanguageId($objNarroContext->ContextId, $this->objTargetLanguage->LanguageId);
 
-            if (!$this->blnOnlySuggestions && !$objContextInfo instanceof NarroContextInfo) {
+            /**
+             * Add context infos even if only suggestion is selected to allow users that have permissions only on one language to approve suggestions
+             */
+            if (!$objContextInfo instanceof NarroContextInfo) {
 
                 $objContextInfo = new NarroContextInfo();
                 $objContextInfo->ContextId = $objNarroContext->ContextId;
@@ -311,7 +324,13 @@
                         $objContextComment->CommentTextMd5 = md5($strComment);
                         $objContextComment->Modified = date('Y-m-d H:i:s');
                         $objContextComment->Created = date('Y-m-d H:i:s');
-                        $objContextComment->Save();
+                        try {
+                            $objContextComment->Save();
+                        }
+                        catch (Exception $objException) {
+                            $this->objLogger->err(sprintf('An error occured while saving the context comment: %s.', $objException->getMessage()));
+                        }
+
                     }
 
 
@@ -332,7 +351,7 @@
              */
             elseif ($this->blnCheckEqual && strlen($strOriginal)>1 && $strOriginal == $strTranslation)
             {
-                NarroLog::LogMessage(1, sprintf('Skipped "%s" because "%s" has the same value. From "%s".', $strOriginal, $strTranslation, $this->objFile->FileName));
+                $this->objLogger->debug(sprintf('Skipped "%s" because "%s" has the same value. From "%s".', $strOriginal, $strTranslation, $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Suggestions that kept the original text']++;
             }
@@ -359,11 +378,14 @@
                     $objNarroSuggestion->TextId = $objNarroText->TextId;
                     $objNarroSuggestion->LanguageId = $this->objTargetLanguage->LanguageId;
                     $objNarroSuggestion->SuggestionValue = $strTranslation;
-                    $objNarroSuggestion->SuggestionValueMd5 = md5($strTranslation);
-                    $objNarroSuggestion->SuggestionCharCount = mb_strlen($strTranslation);
-                    $objNarroSuggestion->Modified = date('Y-m-d H:i:s');
-                    $objNarroSuggestion->Created = date('Y-m-d H:i:s');
-                    $objNarroSuggestion->Save();
+                    try {
+                        $objNarroSuggestion->Save();
+                    }
+                    catch (Exception $objException) {
+                        $this->objLogger->err(sprintf('An error occured while adding the suggestion "%s": %s. Skipping the text "%s"', $strTranslation, $objException->getMessage(), $strOriginal));
+                        return false;
+                    }
+
 
                     NarroApp::$PluginHandler->AddSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
 
@@ -380,7 +402,11 @@
                     NarroImportStatistics::$arrStatistics['Reused suggestions']++;
                 }
 
-                if ($objContextInfo instanceof NarroContextInfo && $this->blnApprove && $objContextInfo->ValidSuggestionId != $objNarroSuggestion->SuggestionId) {
+                if (
+                        $objContextInfo instanceof NarroContextInfo &&
+                        $this->blnApprove &&
+                        (is_null($objContextInfo->ValidSuggestionId) || $this->blnApproveAlreadyApproved) &&
+                        $objContextInfo->ValidSuggestionId != $objNarroSuggestion->SuggestionId) {
                     $objContextInfo->ValidSuggestionId = $objNarroSuggestion->SuggestionId;
                     $objContextInfo->ValidatorUserId = NarroApp::GetUserId();
                     $blnContextInfoChanged = true;
@@ -435,7 +461,7 @@
                     $objNarroContext->Modified = date('Y-m-d H:i:s');
                     $objNarroContext->Save();
                 } catch(Exception $objExc) {
-                    NarroLog::LogMessage(3, sprintf('Error while setting context "%s" to active: %s', $strContext, $objExc->getMessage()));
+                    $this->objLogger->err(sprintf('Error while setting context "%s" to active: %s', $strContext, $objExc->getMessage()));
                     NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                 }
             }
@@ -445,7 +471,7 @@
                 try {
                     $objContextInfo->Save();
                 } catch(Exception $objExc) {
-                    NarroLog::LogMessage(3, sprintf('Error while saving context info for context %s: %s', $strContext, $objExc->getMessage()));
+                    $this->objLogger->err(sprintf('Error while saving context info for context %s: %s', $strContext, $objExc->getMessage()));
                     NarroImportStatistics::$arrStatistics['Skipped context infos']++;
                 }
             }
@@ -536,7 +562,7 @@
             $objDatabase = NarroApp::$Database[1];
 
             if (!$objDbResult = $objDatabase->Query($strQuery)) {
-                NarroLog::LogMessage(3, 'db_query failed. $strQuery=' . $strQuery);
+                $this->objLogger->err('db_query failed. $strQuery=' . $strQuery);
                 return false;
             }
             else {
@@ -546,7 +572,7 @@
                     return NarroSuggestion::Load($arrDbRow['suggestion_id']);
                 }
                 else {
-                    NarroLog::LogMessage(2, sprintf('There are no votes recorded for context_id=%d', $intContextId));
+                    $this->objLogger->warn(sprintf('There are no votes recorded for context_id=%d', $intContextId));
                     return false;
                 }
             }
@@ -587,7 +613,7 @@
                 case 2:
                     $objSuggestion = $this->GetMostVotedSuggestion($objNarroContextInfo->ContextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        NarroLog::LogMessage(1, sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        $this->objLogger->debug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -599,7 +625,7 @@
                 case 3:
                     $objSuggestion = $this->GetMostRecentSuggestion($objNarroContextInfo->Context->TextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        NarroLog::LogMessage(1, sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        $this->objLogger->debug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -612,13 +638,13 @@
                 case 4:
                     $objSuggestion = $this->GetMostVotedSuggestion($objNarroContextInfo->ContextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        NarroLog::LogMessage(1, sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        $this->objLogger->debug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
                         $objSuggestion = $this->GetMostRecentSuggestion($objNarroContextInfo->Context->TextId);
                         if ($objSuggestion instanceof NarroSuggestion) {
-                            NarroLog::LogMessage(1, sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                            $this->objLogger->debug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                             return $objSuggestion->SuggestionValue;
                         }
                         else {
@@ -628,7 +654,7 @@
                 case 5:
                     $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, NarroApp::GetUserId());
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        NarroLog::LogMessage(1, sprintf('Exporting %s\'s suggestion "%s" for "%s"', NarroApp::$User->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        $this->objLogger->debug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', NarroApp::$User->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -649,6 +675,7 @@
                 case "SourceLanguage": return $this->objSourceLanguage;
                 case "TargetLanguage": return $this->objTargetLanguage;
                 case "Approve": return $this->blnApprove;
+                case "ApproveAlreadyApproved": return $this->blnApproveAlreadyApproved;
                 case "CheckEqual": return $this->blnCheckEqual;
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
                 case "ExportedSuggestion": return $this->intExportedSuggestion;
@@ -707,6 +734,15 @@
                 case "Approve":
                     try {
                         $this->blnApprove = QType::Cast($mixValue, QType::Boolean);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
+                case "ApproveAlreadyApproved":
+                    try {
+                        $this->blnApproveAlreadyApproved = QType::Cast($mixValue, QType::Boolean);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();

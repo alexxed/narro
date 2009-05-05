@@ -30,6 +30,9 @@
 		static public function NarroProjectProgress() {
 			return new QQNodeNarroProjectProgress('narro_project_progress', null);
 		}
+		static public function NarroProjectSettingValue() {
+			return new QQNodeNarroProjectSettingValue('narro_project_setting_value', null);
+		}
 		static public function NarroRole() {
 			return new QQNodeNarroRole('narro_role', null);
 		}

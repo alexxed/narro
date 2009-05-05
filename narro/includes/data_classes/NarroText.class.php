@@ -44,7 +44,16 @@
             return sprintf('NarroText Object %s',  $this->intTextId);
         }
 
-
+        public function Save($blnForceInsert = false, $blnForceUpdate = false) {
+            $this->intTextWordCount = str_word_count($this->strTextValue, 0);
+            $this->intTextCharCount = strlen($this->strTextValue);
+            $this->strTextValueMd5 = md5($this->strTextValue);
+            if ((!$this->__blnRestored) || ($blnForceInsert))
+                $this->strCreated = date('Y-m-d H:i:s');
+            else
+                $this->strModified = date('Y-m-d H:i:s');
+            parent::Save($blnForceInsert, $blnForceUpdate);
+        }
 
         // Override or Create New Load/Count methods
         // (For obvious reasons, these methods are commented out...

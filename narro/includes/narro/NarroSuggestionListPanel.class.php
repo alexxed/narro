@@ -137,6 +137,7 @@
                 if (!$btnVote) {
                     $btnVote = new QButton($this, $strControlId);
                     $btnVote->Text = t('Vote');
+                    $btnVote->Display = NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroContextInfo->Context->ProjectId);
                     $btnVote->SetCustomStyle('float', 'right');
                     if (NarroApp::$UseAjax)
                         $btnVote->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
@@ -390,7 +391,7 @@
 
             $btnEdit->ActionParameter = $objNarroSuggestion->SuggestionId;
 
-            $strControlId = 'btnDelete' . $this->dtgSuggestions->CurrentRowIndex;
+            $strControlId = 'btnDelete' . $objNarroSuggestion->SuggestionId;
 
             $btnDelete = $this->objForm->GetControl($strControlId);
             if (!$btnDelete) {
@@ -407,11 +408,12 @@
 
             $btnDelete->ActionParameter = $objNarroSuggestion->SuggestionId;
 
-            $strControlId = 'btnVote' . $this->dtgSuggestions->CurrentRowIndex;
+            $strControlId = 'btnVote' . $objNarroSuggestion->SuggestionId;
 
             $btnVote = $this->objForm->GetControl($strControlId);
             if (!$btnVote) {
                 $btnVote = new QButton($this->dtgSuggestions, $strControlId);
+                $btnVote->Display = NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroContextInfo->Context->ProjectId);
                 $btnVote->Text = t('Vote');
                 if (NarroApp::$UseAjax)
                     $btnVote->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
@@ -557,14 +559,13 @@
         }
 
         public function btnVote_Click($strFormId, $strControlId, $strParameter) {
-
             if (!NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroContextInfo->Context->ProjectId))
                 return false;
 
-            if ($objNarroSuggestion->UserId == NarroApp::GetUserId());
+            $objSuggestion = NarroSuggestion::Load($strParameter);
+            if ($objSuggestion->UserId == NarroApp::GetUserId())
                 return false;
 
-            $objSuggestion = NarroSuggestion::Load($strParameter);
             NarroApp::$PluginHandler->VoteSuggestion($this->objNarroContextInfo->Context->Text->TextValue, $objSuggestion->SuggestionValue, $this->objNarroContextInfo->Context->Context, $this->objNarroContextInfo->Context->File, $this->objNarroContextInfo->Context->Project);
 
             $arrSuggestion = NarroSuggestionVote::QueryArray(
@@ -667,10 +668,7 @@
                         }
 
 
-                        $objSuggestion->Modified = date('Y-m-d H:i:s');
                         $objSuggestion->SuggestionValue = $strSuggestionValue;
-                        $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
-                        $objSuggestion->SuggestionCharCount = mb_strlen($strSuggestionValue);
                         $lstEditSuggestion = $this->Form->GetControl('lstEditSuggestion' . $objSuggestion->SuggestionId);
                         if ($lstEditSuggestion instanceof QListBox && $lstEditSuggestion->SelectedValue == NarroApp::GetUserId() && $objSuggestion->UserId != $lstEditSuggestion->SelectedValue) {
                             $objSuggestion->UserId = $lstEditSuggestion->SelectedValue;

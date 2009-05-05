@@ -61,9 +61,9 @@
 
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
-                NarroLog::LogMessage(1, sprintf('Ini/Properties file %s preprocessing took %d seconds.', $this->objFile->FileName, $intElapsedTime));
+                $this->objLogger->debug(sprintf('Ini/Properties file %s preprocessing took %d seconds.', $this->objFile->FileName, $intElapsedTime));
 
-            NarroLog::LogMessage(1, sprintf('Found %d contexts in file %s.', count($arrTemplate), $this->objFile->FileName));
+            $this->objLogger->debug(sprintf('Found %d contexts in file %s.', count($arrTemplate), $this->objFile->FileName));
 
             if (is_array($arrTemplate))
                 foreach($arrTemplate as $strKey=>$strVal) {
@@ -77,7 +77,7 @@
                     );
                 }
             else {
-                NarroLog::LogMessage(2, sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                $this->objLogger->warn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 chmod($strTranslatedFile, 0666);
             }
@@ -88,7 +88,7 @@
             $strTemplateContents = file_get_contents($strTemplateFile);
 
             if (!$strTemplateContents) {
-                NarroLog::LogMessage(2, sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                $this->objLogger->warn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 chmod($strTranslatedFile, 0666);
                 return false;
@@ -104,13 +104,13 @@
                     $arrTemplateLines[trim($arrMatches[1])] = $arrMatches[0];
                 }
                 elseif (trim($strLine) != '' && $strLine[0] != '#')
-                    NarroLog::LogMessage(1, sprintf('Skipped line "%s" from the template "%s".', $strLine, $this->objFile->FileName));
+                    $this->objLogger->debug(sprintf('Skipped line "%s" from the template "%s".', $strLine, $this->objFile->FileName));
             }
 
             $strTranslateContents = '';
 
             if (!isset($arrTemplate) || count($arrTemplate) < 1) {
-                NarroLog::LogMessage(2, sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                $this->objLogger->warn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 chmod($strTranslatedFile, 0666);
                 return false;
@@ -138,39 +138,39 @@
                         $arrTranslation[$strKey] = $arrResult[1];
                     }
                     else
-                        NarroLog::LogMessage(2, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $arrTranslation[$strKey], var_export($arrResult, true)));
+                        $this->objLogger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $arrTranslation[$strKey], var_export($arrResult, true)));
 
                     if (preg_match('/[A-Z0-9a-z\.\_\-\?\{\}]+(\s*=\s*)/', $arrTemplateLines[$strKey], $arrMiddleMatches)) {
                         $strGlue = $arrMiddleMatches[1];
                     }
                     else {
-                        NarroLog::LogMessage(2, sprintf('Glue faield: "%s"', $arrTemplateLines[$strKey]));
+                        $this->objLogger->warn(sprintf('Glue faield: "%s"', $arrTemplateLines[$strKey]));
                         $strGlue = '=';
                     }
 
                     if (strstr($arrTranslation[$strKey], "\n")) {
-                        NarroLog::LogMessage(2, sprintf('Skpping translation "%s" because it has a newline in it', $arrTranslation[$strKey]));
+                        $this->objLogger->warn(sprintf('Skpping translation "%s" because it has a newline in it', $arrTranslation[$strKey]));
                         continue;
                     }
 
                     if (strstr($strTranslateContents, $strKey . $strGlue . $strOriginalText))
                         $strTranslateContents = str_replace($strKey . $strGlue . $strOriginalText, $strKey . $strGlue . $arrTranslation[$strKey], $strTranslateContents);
                     else
-                        NarroLog::LogMessage(2, sprintf('Can\'t find "%s" in the file "%s"', $strKey . $strGlue . $strOriginalText, $this->objFile->FileName));
+                        $this->objLogger->warn(sprintf('Can\'t find "%s" in the file "%s"', $strKey . $strGlue . $strOriginalText, $this->objFile->FileName));
 
                 }
                 else {
-                    NarroLog::LogMessage(1, sprintf('Couldn\'t find the key "%s" in the translations, using the original text.', $strKey, $this->objFile->FileName));
+                    $this->objLogger->debug(sprintf('Couldn\'t find the key "%s" in the translations, using the original text.', $strKey, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                 }
             }
 
             if (file_exists($strTranslatedFile) && !is_writable($strTranslatedFile) && !unlink($strTranslatedFile)) {
-                NarroLog::LogMessage(3, sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
+                $this->objLogger->err(sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
             }
 
             if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
-                NarroLog::LogMessage(3, sprintf('Can\'t write to file "%s"', $strTranslatedFile));
+                $this->objLogger->err(sprintf('Can\'t write to file "%s"', $strTranslatedFile));
             }
 
             @chmod($strTranslatedFile, 0666);

@@ -53,12 +53,12 @@
                                 $strLabelCtx = $arrMatches[1];
                             else {
                                 $strLabelCtx = '';
-                                NarroLog::LogMessage(2, sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
+                                $this->objLogger->warn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
                                 continue;
                             }
 
                             if ($strLabelCtx) {
-                                NarroLog::LogMessage(1, sprintf('Found label context "%s", looking for an acceptable access key', $strLabelCtx));
+                                $this->objLogger->debug(sprintf('Found label context "%s", looking for an acceptable access key', $strLabelCtx));
                                 /**
                                  * strip mozilla entities when looking for an acceptable access key
                                  */
@@ -78,21 +78,21 @@
 
                                     $arrAccKey[$strLabelCtx] = mb_substr($strOriginalText, $intPos, 1);
                                     unset($arrTexts[$strAccCtx]);
-                                    NarroLog::LogMessage(1, sprintf('Found access key %s, using it', $arrAccKey[$strLabelCtx]));
+                                    $this->objLogger->debug(sprintf('Found access key %s, using it', $arrAccKey[$strLabelCtx]));
                                 }
                                 elseif (preg_match('/[a-z]/i', $strOriginalText, $arrPossibleKeyMatches)) {
                                     $arrAccKey[$strLabelCtx] = $arrPossibleKeyMatches[0];
                                     unset($arrTexts[$strAccCtx]);
-                                    NarroLog::LogMessage(3, sprintf('Found access key %s does not exist in the label %s, using the first ascii character as accesskey: "%s"', $strAccKey, $arrTexts[$strLabelCtx], $arrPossibleKeyMatches[0]));
+                                    $this->objLogger->warn(sprintf('Found access key %s does not exist in the label %s, using the first ascii character as accesskey: "%s"', $strAccKey, $arrTexts[$strLabelCtx], $arrPossibleKeyMatches[0]));
                                 }
                                 else {
                                     $arrAccKey[$strLabelCtx] = $strAccKey;
                                     unset($arrTexts[$strAccCtx]);
-                                    NarroLog::LogMessage(2, sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
+                                    $this->objLogger->warn(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
                                 }
                             }
                             else {
-                                NarroLog::LogMessage(2, sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
+                                $this->objLogger->warn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
                                 continue;
                             }
                         }
@@ -134,11 +134,11 @@
                         if (!preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->SuggestionAccessKey)) {
                             if (preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches)) {
                                 $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $arrPossibleKeyMatches[0];
-                                NarroLog::LogMessage(3, sprintf('For context "%s", found access key "%s" is not a ascii character, using the first ascii character as accesskey: "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $arrPossibleKeyMatches[0]));
+                                $this->objLogger->warn(sprintf('For context "%s", found access key "%s" is not a ascii character, using the first ascii character as accesskey: "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $arrPossibleKeyMatches[0]));
                             }
                             else {
                                 $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->TextAccessKey;
-                                NarroLog::LogMessage(3, sprintf('For context "%s", found access key "%s" is not a ascii character, and no ascii characters were found in "%s", keeping the original access key "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches[0]));
+                                $this->objLogger->warn(sprintf('For context "%s", found access key "%s" is not a ascii character, and no ascii characters were found in "%s", keeping the original access key "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches[0]));
                             }
                         }
                         else

@@ -32,7 +32,7 @@
              */
             $arrTexts = $this->FileToArray($strTemplateFile, $this->objSourceLanguage->LanguageCode, true);
 
-            NarroLog::LogMessage(1, sprintf('Starting to process file "%s" (%d texts), the result is written to "%s".', $strTemplateFile, $intTotalToProcess, $strTranslatedFile));
+            $this->objLogger->debug(sprintf('Starting to process file "%s" (%d texts), the result is written to "%s".', $strTemplateFile, $intTotalToProcess, $strTranslatedFile));
 
             $intFileLineNr=0;
 
@@ -98,7 +98,7 @@
                     $strSuggestionValue = $arrResult[1];
                 }
                 else
-                    NarroLog::LogMessage(2, sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strSuggestionValue, print_r($arrResult, true)));
+                    $this->objLogger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strSuggestionValue, print_r($arrResult, true)));
 
                 $arrTranslatedColumn[10] = str_replace(array("\n", "\r"), array("",""), $strSuggestionValue);
 
@@ -107,7 +107,7 @@
                 preg_match_all('/\\\\"/', $strSuggestionValue, $arrEscTransMatches);
 
                 if (isset($arrEscOrigMatches[0]) && count($arrEscTransMatches[0]) % 2 != 0) {
-                    NarroLog::LogMessage(2, sprintf('Warning! The translated text "%s" has unclosed double quotes.', $strSuggestionValue));
+                    $this->objLogger->warn(sprintf('Warning! The translated text "%s" has unclosed double quotes.', $strSuggestionValue));
                     continue;
                 }
 
@@ -125,13 +125,13 @@
             if (file_exists($strTemplateFile))
                 $arrTexts = $this->FileToArray($strTemplateFile, $this->objSourceLanguage->LanguageCode);
             else
-                NarroLog::LogMessage(3, sprintf('The template file "%s" does not exist.', $strTemplateFile));
+                $this->objLogger->err(sprintf('The template file "%s" does not exist.', $strTemplateFile));
 
             if (trim($strTranslatedFile) != '')
                 if (file_exists($strTranslatedFile))
                     $arrTranslations = $this->FileToArray($strTranslatedFile, $this->objTargetLanguage->LanguageCode);
                 else
-                    NarroLog::LogMessage(3, sprintf('The translation file "%s" does not exist.', $strTranslatedFile));
+                    $this->objLogger->err(sprintf('The translation file "%s" does not exist.', $strTranslatedFile));
 
             foreach($arrTexts as $strContext=>$arrTextInfo) {
                 if (isset($arrTranslations[$strContext]))
@@ -147,7 +147,7 @@
             $hndFile = fopen($strFile, 'r');
 
             if (!$hndFile) {
-                NarroLog::LogMessage(3, sprintf('Cannot open input file "%s" for reading.', $strFile));
+                $this->objLogger->err(sprintf('Cannot open input file "%s" for reading.', $strFile));
                 return false;
             }
 
@@ -161,7 +161,7 @@
                 $strFileLine = fgets($hndFile);
                 $intProcessedSoFar++;
                 if ($strFileLine == '') {
-                    NarroLog::LogMessage(1, sprintf('Skipping empty line from "%s"', $strFileLine));
+                    $this->objLogger->debug(sprintf('Skipping empty line from "%s"', $strFileLine));
                     continue;
                 }
 
@@ -170,7 +170,7 @@
                  */
                 $arrColumn = explode("\t", $strFileLine);
                 if (count($arrColumn) != 15) {
-                    NarroLog::LogMessage(3, sprintf('Skipping line "%s" from "%s" because it does not split into 15 fields by tab', $strFileLine, $strFile));
+                    $this->objLogger->err(sprintf('Skipping line "%s" from "%s" because it does not split into 15 fields by tab', $strFileLine, $strFile));
                     continue;
                 }
 
@@ -220,7 +220,7 @@
                     $arrTexts[$strContext] = array($strText, $strTextAccKey, $strTextAccKeyPrefix, ($blnIncludeFileLine)?$strFileLine:'');
                 }
                 else {
-                    NarroLog::LogMessage(1, sprintf('Skipping line "%s" from "%s" because detected language code "%s" does not match the expected one "%s"', $strFileLine, $strFile, $strLangCode, $strLocale));
+                    $this->objLogger->debug(sprintf('Skipping line "%s" from "%s" because detected language code "%s" does not match the expected one "%s"', $strFileLine, $strFile, $strLangCode, $strLocale));
                 }
             }
             fclose($hndFile);
@@ -232,7 +232,7 @@
             $hndFile = fopen($strFile, 'r');
 
             if (!$hndFile) {
-                NarroLog::LogMessage(3, sprintf('Cannot open input file "%s" for reading.', $strFile));
+                $this->objLogger->err(sprintf('Cannot open input file "%s" for reading.', $strFile));
                 return false;
             }
 

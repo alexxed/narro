@@ -342,6 +342,18 @@
 					$blnExpandedViaArray = true;
 				}
 
+				if ((array_key_exists($strAliasPrefix . 'narroprojectsettingvalueasproject__project_setting_value_id', $strExpandAsArrayNodes)) &&
+					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narroprojectsettingvalueasproject__project_setting_value_id')))) {
+					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroProjectSettingValueAsProjectArray)) {
+						$objPreviousChildItem = $objPreviousItem->_objNarroProjectSettingValueAsProjectArray[$intPreviousChildItemCount - 1];
+						$objChildItem = NarroProjectSettingValue::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectsettingvalueasproject__', $strExpandAsArrayNodes, $objPreviousChildItem);
+						if ($objChildItem)
+							array_push($objPreviousItem->_objNarroProjectSettingValueAsProjectArray, $objChildItem);
+					} else
+						array_push($objPreviousItem->_objNarroProjectSettingValueAsProjectArray, NarroProjectSettingValue::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectsettingvalueasproject__', $strExpandAsArrayNodes));
+					$blnExpandedViaArray = true;
+				}
+
 				if ((array_key_exists($strAliasPrefix . 'narrouserroleasproject__user_role_id', $strExpandAsArrayNodes)) &&
 					(!is_null($objDbRow->GetColumn($strAliasPrefix . 'narrouserroleasproject__user_role_id')))) {
 					if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserRoleAsProjectArray)) {
@@ -413,6 +425,14 @@
 					array_push($objToReturn->_objNarroProjectProgressAsProjectArray, NarroProjectProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectprogressasproject__', $strExpandAsArrayNodes));
 				else
 					$objToReturn->_objNarroProjectProgressAsProject = NarroProjectProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectprogressasproject__', $strExpandAsArrayNodes);
+			}
+
+			// Check for NarroProjectSettingValueAsProject Virtual Binding
+			if (!is_null($objDbRow->GetColumn($strAliasPrefix . 'narroprojectsettingvalueasproject__project_setting_value_id'))) {
+				if (($strExpandAsArrayNodes) && (array_key_exists($strAliasPrefix . 'narroprojectsettingvalueasproject__project_setting_value_id', $strExpandAsArrayNodes)))
+					array_push($objToReturn->_objNarroProjectSettingValueAsProjectArray, NarroProjectSettingValue::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectsettingvalueasproject__', $strExpandAsArrayNodes));
+				else
+					$objToReturn->_objNarroProjectSettingValueAsProject = NarroProjectSettingValue::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectsettingvalueasproject__', $strExpandAsArrayNodes);
 			}
 
 			// Check for NarroUserRoleAsProject Virtual Binding
@@ -806,6 +826,22 @@
 					 * @return NarroProjectProgress[]
 					 */
 					return (array) $this->_objNarroProjectProgressAsProjectArray;
+
+				case '_NarroProjectSettingValueAsProject':
+					/**
+					 * Gets the value for the private _objNarroProjectSettingValueAsProject (Read-Only)
+					 * if set due to an expansion on the narro_project_setting_value.project_id reverse relationship
+					 * @return NarroProjectSettingValue
+					 */
+					return $this->_objNarroProjectSettingValueAsProject;
+
+				case '_NarroProjectSettingValueAsProjectArray':
+					/**
+					 * Gets the value for the private _objNarroProjectSettingValueAsProjectArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_project_setting_value.project_id reverse relationship
+					 * @return NarroProjectSettingValue[]
+					 */
+					return (array) $this->_objNarroProjectSettingValueAsProjectArray;
 
 				case '_NarroUserRoleAsProject':
 					/**
@@ -1427,6 +1463,156 @@
 
 			
 		
+		// Related Objects' Methods for NarroProjectSettingValueAsProject
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroProjectSettingValuesAsProject as an array of NarroProjectSettingValue objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroProjectSettingValue[]
+		*/ 
+		public function GetNarroProjectSettingValueAsProjectArray($objOptionalClauses = null) {
+			if ((is_null($this->intProjectId)))
+				return array();
+
+			try {
+				return NarroProjectSettingValue::LoadArrayByProjectId($this->intProjectId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroProjectSettingValuesAsProject
+		 * @return int
+		*/ 
+		public function CountNarroProjectSettingValuesAsProject() {
+			if ((is_null($this->intProjectId)))
+				return 0;
+
+			return NarroProjectSettingValue::CountByProjectId($this->intProjectId);
+		}
+
+		/**
+		 * Associates a NarroProjectSettingValueAsProject
+		 * @param NarroProjectSettingValue $objNarroProjectSettingValue
+		 * @return void
+		*/ 
+		public function AssociateNarroProjectSettingValueAsProject(NarroProjectSettingValue $objNarroProjectSettingValue) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroProjectSettingValueAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroProjectSettingValue->ProjectSettingValueId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroProjectSettingValueAsProject on this NarroProject with an unsaved NarroProjectSettingValue.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_project_setting_value`
+				SET
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+				WHERE
+					`project_setting_value_id` = ' . $objDatabase->SqlVariable($objNarroProjectSettingValue->ProjectSettingValueId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroProjectSettingValueAsProject
+		 * @param NarroProjectSettingValue $objNarroProjectSettingValue
+		 * @return void
+		*/ 
+		public function UnassociateNarroProjectSettingValueAsProject(NarroProjectSettingValue $objNarroProjectSettingValue) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectSettingValueAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroProjectSettingValue->ProjectSettingValueId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectSettingValueAsProject on this NarroProject with an unsaved NarroProjectSettingValue.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_project_setting_value`
+				SET
+					`project_id` = null
+				WHERE
+					`project_setting_value_id` = ' . $objDatabase->SqlVariable($objNarroProjectSettingValue->ProjectSettingValueId) . ' AND
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroProjectSettingValuesAsProject
+		 * @return void
+		*/ 
+		public function UnassociateAllNarroProjectSettingValuesAsProject() {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectSettingValueAsProject on this unsaved NarroProject.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_project_setting_value`
+				SET
+					`project_id` = null
+				WHERE
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroProjectSettingValueAsProject
+		 * @param NarroProjectSettingValue $objNarroProjectSettingValue
+		 * @return void
+		*/ 
+		public function DeleteAssociatedNarroProjectSettingValueAsProject(NarroProjectSettingValue $objNarroProjectSettingValue) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectSettingValueAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroProjectSettingValue->ProjectSettingValueId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectSettingValueAsProject on this NarroProject with an unsaved NarroProjectSettingValue.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_project_setting_value`
+				WHERE
+					`project_setting_value_id` = ' . $objDatabase->SqlVariable($objNarroProjectSettingValue->ProjectSettingValueId) . ' AND
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroProjectSettingValuesAsProject
+		 * @return void
+		*/ 
+		public function DeleteAllNarroProjectSettingValuesAsProject() {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectSettingValueAsProject on this unsaved NarroProject.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_project_setting_value`
+				WHERE
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for NarroUserRoleAsProject
 		//-------------------------------------------------------------------
 
@@ -1681,6 +1867,22 @@
 		private $_objNarroProjectProgressAsProjectArray = array();
 
 		/**
+		 * Private member variable that stores a reference to a single NarroProjectSettingValueAsProject object
+		 * (of type NarroProjectSettingValue), if this NarroProject object was restored with
+		 * an expansion on the narro_project_setting_value association table.
+		 * @var NarroProjectSettingValue _objNarroProjectSettingValueAsProject;
+		 */
+		private $_objNarroProjectSettingValueAsProject;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroProjectSettingValueAsProject objects
+		 * (of type NarroProjectSettingValue[]), if this NarroProject object was restored with
+		 * an ExpandAsArray on the narro_project_setting_value association table.
+		 * @var NarroProjectSettingValue[] _objNarroProjectSettingValueAsProjectArray;
+		 */
+		private $_objNarroProjectSettingValueAsProjectArray = array();
+
+		/**
 		 * Private member variable that stores a reference to a single NarroUserRoleAsProject object
 		 * (of type NarroUserRole), if this NarroProject object was restored with
 		 * an expansion on the narro_user_role association table.
@@ -1840,6 +2042,8 @@
 					return new QQReverseReferenceNodeNarroFile($this, 'narrofileasproject', 'reverse_reference', 'project_id');
 				case 'NarroProjectProgressAsProject':
 					return new QQReverseReferenceNodeNarroProjectProgress($this, 'narroprojectprogressasproject', 'reverse_reference', 'project_id');
+				case 'NarroProjectSettingValueAsProject':
+					return new QQReverseReferenceNodeNarroProjectSettingValue($this, 'narroprojectsettingvalueasproject', 'reverse_reference', 'project_id');
 				case 'NarroUserRoleAsProject':
 					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleasproject', 'reverse_reference', 'project_id');
 
@@ -1882,6 +2086,8 @@
 					return new QQReverseReferenceNodeNarroFile($this, 'narrofileasproject', 'reverse_reference', 'project_id');
 				case 'NarroProjectProgressAsProject':
 					return new QQReverseReferenceNodeNarroProjectProgress($this, 'narroprojectprogressasproject', 'reverse_reference', 'project_id');
+				case 'NarroProjectSettingValueAsProject':
+					return new QQReverseReferenceNodeNarroProjectSettingValue($this, 'narroprojectsettingvalueasproject', 'reverse_reference', 'project_id');
 				case 'NarroUserRoleAsProject':
 					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleasproject', 'reverse_reference', 'project_id');
 

@@ -32,6 +32,22 @@
                 return $strLink;
         }
 
+        public static function ProjectImport($intProjectId, $strLinkText = '') {
+            $strLink = sprintf('narro_project_import.php?l=%s&p=%d', NarroApp::$Language->LanguageCode, $intProjectId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function ProjectExport($intProjectId, $strLinkText = '') {
+            $strLink = sprintf('narro_project_export.php?l=%s&p=%d', NarroApp::$Language->LanguageCode, $intProjectId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
         public static function ProjectLanguages($intProjectId, $strLinkText = '') {
             $strLink = sprintf('narro_project_language_list.php?l=%s&p=%d', NarroApp::$Language->LanguageCode, $intProjectId);
             if ($strLinkText)
@@ -113,8 +129,24 @@
                 return $strLink;
         }
 
+        public static function RoleEdit($intRoleId = null, $strLinkText = '') {
+            $strLink = sprintf('narro_role_edit.php?l=%s&rid=%d', NarroApp::$Language->LanguageCode, $intProjectId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
         public static function UserPreferences($intUserId, $strLinkText = '') {
             $strLink = sprintf('narro_user_preferences.php?l=%s&u=%d', NarroApp::$Language->LanguageCode, $intUserId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function UserEdit($intUserId, $strLinkText = '') {
+            $strLink = sprintf('narro_user_edit.php?l=%s&u=%d', NarroApp::$Language->LanguageCode, $intUserId);
             if ($strLinkText)
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -141,5 +173,54 @@
             else
                 return $strLink;
         }
+
+        public static function LanguageList($strLinkText = '') {
+            $strLink = sprintf('narro_language_list.php?l=%s', NarroApp::$Language->LanguageCode);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function UserRegister($strLinkText = '') {
+            $strLink = sprintf('narro_register.php?l=%s', NarroApp::$Language->LanguageCode);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function UserLogin($strLinkText = '') {
+            $strLink = sprintf('narro_login.php?l=%s', NarroApp::$Language->LanguageCode);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function UserRecoverPassword($strLinkText = '') {
+            $strLink = sprintf('narro_recover_password.php?l=%s', NarroApp::$Language->LanguageCode);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function LanguageEdit($intLanguageId = null, $strLinkText = '') {
+            $strLink = sprintf('narro_language_edit.php?l=%s&lid=%d', NarroApp::$Language->LanguageCode, $intProjectId);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function UserList($strSearch = '', $strLinkText = '') {
+            $strLink = sprintf('narro_user_list.php?l=%s&s=%s', NarroApp::$Language->LanguageCode, $strSearch);
+            if ($strLinkText)
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
     }
 ?>

@@ -37,11 +37,7 @@
 
             // Setup DataGrid
             $this->dtgRoleUserList = new QDataGrid($this);
-            $this->dtgRoleUserList->CellSpacing = 0;
-            $this->dtgRoleUserList->CellPadding = 4;
-            $this->dtgRoleUserList->BorderStyle = QBorderStyle::Solid;
-            $this->dtgRoleUserList->BorderWidth = 1;
-            $this->dtgRoleUserList->GridLines = QGridLines::Both;
+            $this->dtgRoleUserList->Title = t('Users');
 
             // Datagrid Paginator
             $this->dtgRoleUserList->Paginator = new QPaginator($this->dtgRoleUserList);
@@ -67,10 +63,10 @@
         }
 
         public function dtgRoleUserList_UsernameColumn_Render(NarroUserRole $objNarroUserRole) {
-            if ($objNarroUserRole->UserId != NarroApp::GetUserId())
+            if (NarroApp::HasPermission('Can manage roles'))
                 return NarroLink::UserRole($objNarroUserRole->UserId, $objNarroUserRole->User->Username);
             else
-                return $objNarroUserRole->User->Username;
+                return NarroLink::UserProfile($objNarroUserRole->UserId, $objNarroUserRole->User->Username);
         }
 
         public function dtgRoleUserList_ProjectColumn_Render(NarroUserRole $objNarroUserRole) {

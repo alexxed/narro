@@ -97,6 +97,11 @@
             else
                 return $strText;
         }
+
+        public static function ResetUser($intUserId) {
+            foreach(NarroApp::$Cache->getIdsMatchingTags(array('NarroUser' . $intUserId)) as $strCacheId)
+                NarroApp::$Cache->remove($strCacheId);
+        }
     }
 
     function t($strText, $strPlural = null, $intCnt = null) {
@@ -130,50 +135,8 @@
         die();
     }
 
-    NarroApp::$ClassFile['NarroFileImporter'] = __INCLUDES__ . '/narro/importer/NarroFileImporter.class.php';
-    NarroApp::$ClassFile['NarroDumbGettextPoFileImporter'] = __INCLUDES__ . '/narro/importer/NarroDumbGettextPoFileImporter.class.php';
-    NarroApp::$ClassFile['NarroGettextPoFileImporter'] = __INCLUDES__ . '/narro/importer/NarroGettextPoFileImporter.class.php';
-    NarroApp::$ClassFile['NarroImportStatistics'] = __INCLUDES__ . '/narro/importer/NarroImportStatistics.class.php';
-    NarroApp::$ClassFile['NarroLog'] = __INCLUDES__ . '/narro/importer/NarroLog.class.php';
-    NarroApp::$ClassFile['NarroMozillaDtdFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaDtdFileImporter.class.php';
-    NarroApp::$ClassFile['NarroMozillaFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaFileImporter.class.php';
-    NarroApp::$ClassFile['NarroMozillaIncFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaIncFileImporter.class.php';
-    NarroApp::$ClassFile['NarroMozillaIniFileImporter'] = __INCLUDES__ . '/narro/importer/NarroMozillaIniFileImporter.class.php';
-    NarroApp::$ClassFile['NarroOpenOfficeSdfFileImporter'] = __INCLUDES__ . '/narro/importer/NarroOpenOfficeSdfFileImporter.class.php';
-    NarroApp::$ClassFile['NarroPhpMyAdminFileImporter'] = __INCLUDES__ . '/narro/importer/NarroPhpMyAdminFileImporter.class.php';
-    NarroApp::$ClassFile['NarroProgress'] = __INCLUDES__ . '/narro/importer/NarroProgress.class.php';
-    NarroApp::$ClassFile['NarroProjectImporter'] = __INCLUDES__ . '/narro/importer/NarroProjectImporter.class.php';
-    NarroApp::$ClassFile['NarroSvgFileImporter'] = __INCLUDES__ . '/narro/importer/NarroSvgFileImporter.class.php';
     NarroApp::$ClassFile['File_Archive'] = __INCLUDES__ . '/PEAR/File/Archive.php';
-    /**
-     * @todo remove this in the next version
-     */
-    NarroApp::$ClassFile['Archive_Tar'] = __INCLUDES__ . '/PEAR/Archive/Tar.php';
     NarroApp::$ClassFile['NarroTextListForm'] = 'narro_text_list.php';
-
-    NarroApp::$ClassFile['NarroBreadcrumbPanel'] = __INCLUDES__ . '/narro/NarroBreadcrumbPanel.class.php';
-    NarroApp::$ClassFile['NarroCache'] = __INCLUDES__ . '/narro/NarroCache.class.php';
-    NarroApp::$ClassFile['NarroDiacriticsPanel'] = __INCLUDES__ . '/narro/NarroDiacriticsPanel.class.php';
-    NarroApp::$ClassFile['NarroHeaderPanel'] = __INCLUDES__ . '/narro/NarroHeaderPanel.class.php';
-    NarroApp::$ClassFile['NarroLink'] = __INCLUDES__ . '/narro/NarroLink.class.php';
-    NarroApp::$ClassFile['NarroNewUsersPanel'] = __INCLUDES__ . '/narro/NarroNewUsersPanel.class.php';
-    NarroApp::$ClassFile['NarroPlugin'] = __INCLUDES__ . '/narro/NarroPlugin.class.php';
-    NarroApp::$ClassFile['NarroPluginHandler'] = __INCLUDES__ . '/narro/NarroPluginHandler.class.php';
-    NarroApp::$ClassFile['NarroRolePermissionPanel'] = __INCLUDES__ . '/narro/NarroRolePermissionPanel.class.php';
-    NarroApp::$ClassFile['NarroRoleUserListPanel'] = __INCLUDES__ . '/narro/NarroRoleUserListPanel.class.php';
-    NarroApp::$ClassFile['NarroString'] = __INCLUDES__ . '/narro/NarroString.class.php';
-    NarroApp::$ClassFile['NarroSuggestionListPanel'] = __INCLUDES__ . '/narro/NarroSuggestionListPanel.class.php';
-    NarroApp::$ClassFile['NarroTextCommentListPanel'] = __INCLUDES__ . '/narro/NarroTextCommentListPanel.class.php';
-    NarroApp::$ClassFile['NarroTopUsersPanel'] = __INCLUDES__ . '/narro/NarroTopUsersPanel.class.php';
-    NarroApp::$ClassFile['NarroTranslationProgressBar'] = __INCLUDES__ . '/narro/NarroTranslationProgressBar.class.php';
-    NarroApp::$ClassFile['NarroUserSuggestionsPanel'] = __INCLUDES__ . '/narro/NarroUserSuggestionsPanel.class.php';
-    NarroApp::$ClassFile['NarroTextSuggestionIndexer'] = __INCLUDES__ . '/narro/search/NarroTextSuggestionIndexer.class.php';
-    NarroApp::$ClassFile['NarroSimilarSuggestionListPanel'] = __INCLUDES__ . '/narro/NarroSimilarSuggestionListPanel.class.php';
-    NarroApp::$ClassFile['NarroUtils'] = __INCLUDES__ . '/narro/NarroUtils.class.php';
-
-    NarroApp::$ClassFile['NarroArchiveFileSourcePanel'] = __INCLUDES__ . '/narro/NarroArchiveFileSourcePanel.class.php';
-    NarroApp::$ClassFile['NarroFileSourcePanel'] = __INCLUDES__ . '/narro/NarroFileSourcePanel.class.php';
-
     NarroApp::$ClassFile['FirePHP'] = __INCLUDES__ . '/PEAR/FirePHPCore/FirePHP.class.php';
     NarroApp::$ClassFile['FB'] = __INCLUDES__ . '/PEAR/FirePHPCore/fb.php';
 
@@ -252,6 +215,12 @@
     if (!NarroApp::$User instanceof NarroUser)
         // @todo add handling here
         throw Exception('Could not create an instance of NarroUser');
+
+    if (!NarroApp::$Cache->getIdsMatchingTags(array('NarroUser' . NarroApp::$User->UserId))) {
+        NarroApp::$User = NarroUser::LoadByUserId(NarroApp::$User->UserId);
+        $objNarroSession->User = NarroApp::$User;
+        NarroApp::$Cache->save(NarroApp::$User, 'NarroUser' . NarroApp::$User->UserId, array('NarroUser' . NarroApp::$User->UserId));
+    }
 
     if (!isset(NarroApp::$Language))
         NarroApp::$Language = NarroApp::$User->Language;

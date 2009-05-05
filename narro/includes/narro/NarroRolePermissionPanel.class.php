@@ -33,11 +33,7 @@
 
             // Setup DataGrid
             $this->dtgNarroPermission = new QDataGrid($this);
-            $this->dtgNarroPermission->CellSpacing = 0;
-            $this->dtgNarroPermission->CellPadding = 4;
-            $this->dtgNarroPermission->BorderStyle = QBorderStyle::Solid;
-            $this->dtgNarroPermission->BorderWidth = 1;
-            $this->dtgNarroPermission->GridLines = QGridLines::Both;
+            $this->dtgNarroPermission->Title = t('Permissions');
 
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgNarroPermission->UseAjax = NarroApp::$UseAjax;
@@ -57,28 +53,33 @@
         }
 
         public function dtgNarroPermission_PermissionColumn_Render(NarroPermission $objNarroPermission) {
-            $strControlId = 'chkPermission' . $objNarroPermission->PermissionId;
-            $chkPermission = new QCheckBox($this->dtgNarroPermission);
-            $chkPermission->Text = $objNarroPermission->PermissionName;
-            $chkPermission->ActionParameter = $objNarroPermission->PermissionId;
-            $chkPermission->Checked = NarroRolePermission::QueryCount(
-                QQ::AndCondition(
-                    QQ::Equal(
-                        QQN::NarroRolePermission()->RoleId,
-                        $this->objRole->RoleId
-                    ),
-                    QQ::Equal(
-                        QQN::NarroRolePermission()->PermissionId,
-                        $objNarroPermission->PermissionId
+            if (NarroApp::HasPermission('Can manage roles')) {
+                $strControlId = 'chkPermission' . $objNarroPermission->PermissionId;
+                $chkPermission = new QCheckBox($this->dtgNarroPermission);
+                $chkPermission->Text = $objNarroPermission->PermissionName;
+                $chkPermission->ActionParameter = $objNarroPermission->PermissionId;
+                $chkPermission->Checked = NarroRolePermission::QueryCount(
+                    QQ::AndCondition(
+                        QQ::Equal(
+                            QQN::NarroRolePermission()->RoleId,
+                            $this->objRole->RoleId
+                        ),
+                        QQ::Equal(
+                            QQN::NarroRolePermission()->PermissionId,
+                            $objNarroPermission->PermissionId
+                        )
                     )
-                )
-            );
-            if (NarroApp::$UseAjax)
-                $chkPermission->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkPermission_Click'));
-            else
-                $chkPermission->AddAction(new QClickEvent(), new QServerControlAction($this, 'chkPermission_Click'));
+                );
+                if (NarroApp::$UseAjax)
+                    $chkPermission->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkPermission_Click'));
+                else
+                    $chkPermission->AddAction(new QClickEvent(), new QServerControlAction($this, 'chkPermission_Click'));
 
-            return $chkPermission->Render(false);
+                return $chkPermission->Render(false);
+            }
+            else {
+                return $objNarroPermission->PermissionName;
+            }
         }
 
         public function dtgNarroPermission_Bind() {

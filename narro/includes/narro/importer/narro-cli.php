@@ -24,11 +24,11 @@
                     "php %s [--import|--export] [options]\n" .
                     "--import                     import a project\n" .
                     "--export                     export a project\n" .
-                    "--minloglevel                minimum level of errors logged, 1 gives the most\n".
-                    "                             information\n" .
                     "--project                    project id from the database\n" .
-                    "--source-lang                source language code, optional, defaults to en-US\n" .
-                    "--target-lang                target language code\n" .
+                    "--template-lang              language code for the original texts, optional, defaults to en-US\n" .
+                    "--translation-lang           language code for the translations\n" .
+                    "--template-directory         the directory that holds the original texts" .
+                    "--translation-directory      the directory that holds the translations" .
                     "--user                       user id that will be used for the added\n" .
                     "                             suggestions, optional, defaults to anonymous\n" .
                     "--exported-suggestion        1 for approved,\n" .
@@ -42,6 +42,7 @@
                     "--check-equal                check if the translation is equal to the original\n" .
                     "                             text and don't import it\n" .
                     "--approve                    approve the imported suggestions\n" .
+                    "--import-unchanged-files     import files marked unchanged after the last import\n" .
                     "--copy-unhandled-files       copy unhandled files when exporting\n" .
                     "--only-suggestions           import only suggestions, don't add files, texts\n" .
                     "                             or contexts\n",
@@ -55,8 +56,6 @@
 
         $objNarroImporter = new NarroProjectImporter();
 
-        NarroLog::$blnEchoOutput = false;
-
         /**
          * Get boolean options
          */
@@ -65,36 +64,43 @@
         $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
         $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
         $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
+        $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
 
         /**
          * Get specific options
          */
-        if (array_search('--minloglevel', $argv))
-            NarroLog::$intMinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
 
         if (array_search('--project', $argv) !== false)
             $intProjectId = $argv[array_search('--project', $argv)+1];
 
-        if (array_search('--source-lang', $argv) !== false)
-            $strSourceLanguage = $argv[array_search('--source-lang', $argv)+1];
+        if (array_search('--template-lang', $argv) !== false)
+            $strSourceLanguage = $argv[array_search('--template-lang', $argv)+1];
         else
             $strSourceLanguage = 'en-US';
 
-        if (array_search('--target-lang', $argv) !== false)
-            $strTargetLanguage = $argv[array_search('--target-lang', $argv)+1];
+        if (array_search('--translation-lang', $argv) !== false)
+            $strTargetLanguage = $argv[array_search('--translation-lang', $argv)+1];
 
         if (array_search('--user', $argv) !== false)
             $intUserId = $argv[array_search('--user', $argv)+1];
+
+
+        require_once('Zend/Log.php');
+        require_once('Zend/Log/Writer/Stream.php');
+
+        $objLogger = new Zend_Log(new Zend_Log_Writer_Stream(__TMP_PATH__ . '/' . $intProjectId . '-' . $strTargetLanguage . '-import.log'));
+
+        $objNarroImporter->Logger = $objLogger;
 
         /**
          * Load the specified user or the anonymous user if unspecified
          */
         $objUser = NarroUser::LoadByUserId($intUserId);
         if (!$objUser instanceof NarroUser) {
-            NarroLog::LogMessage(2, sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
+            $objLogger->info(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
             $objUser = NarroUser::LoadAnonymousUser();
             if (!$objUser instanceof NarroUser) {
-                NarroLog::LogMessage(3, sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
+                $objLogger->info(sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
                 return false;
             }
         }
@@ -106,7 +112,7 @@
          */
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
-            NarroLog::LogMessage(3, sprintf('Project with id=%s does not exist in the database.', $intProjectId));
+            $objLogger->info(sprintf('Project with id=%s does not exist in the database.', $intProjectId));
             return false;
         }
 
@@ -115,7 +121,7 @@
          */
         $objLanguage = NarroLanguage::LoadByLanguageCode($strTargetLanguage);
         if (!$objLanguage instanceof NarroLanguage) {
-            NarroLog::LogMessage(3, sprintf('Language %s does not exist in the database.', $strTargetLanguage));
+            $objLogger->info(sprintf('Language %s does not exist in the database.', $strTargetLanguage));
             return false;
         }
 
@@ -123,21 +129,31 @@
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 
-        NarroLog::LogMessage(3, sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
+        $objLogger->info(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
 
         /**
          * Load the specified source language
          */
         $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
         if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-            NarroLog::LogMessage(3, sprintf('Language %s does not exist in the database.', $strSourceLanguage));
+            $objLogger->info(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
             return false;
         }
 
-        NarroLog::LogMessage(3, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
+        $objLogger->info(sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
 
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
+
+        if (array_search('--template-directory', $argv) !== false)
+            $objNarroImporter->TemplatePath = $argv[array_search('--template-directory', $argv)+1];
+        else
+            $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
+
+        if (array_search('--translation-directory', $argv) !== false)
+            $objNarroImporter->TranslationPath = $argv[array_search('--translation-directory', $argv)+1];
+        else
+            $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
 
         if (in_array('--force', $argv)) {
             $objNarroImporter->CleanImportDirectory();
@@ -146,9 +162,6 @@
 
 
         try {
-            $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
-            $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
-            NarroLog::SetLogFile($objNarroImporter->Project->ProjectId . '-' . $objNarroImporter->TargetLanguage->LanguageCode . '-import.log');
             $intPid = NarroUtils::IsProcessRunning('import', $objNarroImporter->Project->ProjectId);
 
             if ($intPid && $intPid <> getmypid())
@@ -157,21 +170,17 @@
             $objNarroImporter->ImportProject();
         }
         catch (Exception $objEx) {
-            NarroLog::LogMessage(3, sprintf('An error occured during import: %s', $objEx->getMessage()));
+            $objLogger->info(sprintf('An error occured during import: %s', $objEx->getMessage()));
             $objNarroImporter->CleanImportDirectory();
             exit();
         }
 
         $objNarroImporter->CleanImportDirectory();
-        NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
+        $objLogger->info(var_export(NarroImportStatistics::$arrStatistics, true));
      }
      elseif (in_array('--export', $argv)) {
 
         $objNarroImporter = new NarroProjectImporter();
-        NarroLog::$blnEchoOutput = false;
-
-        if (array_search('--minloglevel', $argv))
-            NarroLog::$intMinLogLevel = $argv[array_search('--minloglevel', $argv)+1];
 
         if (array_search('--exported-suggestion', $argv))
             $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];
@@ -179,23 +188,29 @@
         if (array_search('--project', $argv) !== false)
             $intProjectId = $argv[array_search('--project', $argv)+1];
 
-        if (array_search('--source-lang', $argv) !== false)
-            $strSourceLanguage = $argv[array_search('--source-lang', $argv)+1];
+        if (array_search('--template-lang', $argv) !== false)
+            $strSourceLanguage = $argv[array_search('--template-lang', $argv)+1];
         else
             $strSourceLanguage = 'en-US';
 
-        if (array_search('--target-lang', $argv) !== false)
-            $strTargetLanguage = $argv[array_search('--target-lang', $argv)+1];
+        if (array_search('--translation-lang', $argv) !== false)
+            $strTargetLanguage = $argv[array_search('--translation-lang', $argv)+1];
 
         if (array_search('--user', $argv) !== false)
             $intUserId = $argv[array_search('--user', $argv)+1];
 
+        require_once('Zend/Log.php');
+        require_once('Zend/Log/Writer/Stream.php');
+        $objLogger = new Zend_Log(new Zend_Log_Writer_Stream(__TMP_PATH__ . '/' . $intProjectId . '-' . $strTargetLanguage . '-export.log'));
+
+        $objNarroImporter->Logger = $objLogger;
+
         $objUser = NarroUser::LoadByUserId($intUserId);
         if (!$objUser instanceof NarroUser) {
-            NarroLog::LogMessage(2, sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
+            $objLogger->info(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
             $objUser = NarroUser::LoadAnonymousUser();
             if (!$objUser instanceof NarroUser) {
-                NarroLog::LogMessage(3, sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
+                $objLogger->info(sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
                 return false;
             }
         }
@@ -204,13 +219,13 @@
 
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
-            NarroLog::LogMessage(3, sprintf('Project with id=%s does not exist in the database.', $intProjectId));
+            $objLogger->info(sprintf('Project with id=%s does not exist in the database.', $intProjectId));
             return false;
         }
 
         $objLanguage = NarroLanguage::LoadByLanguageCode($strTargetLanguage);
         if (!$objLanguage instanceof NarroLanguage) {
-            NarroLog::LogMessage(3, sprintf('Language %s does not exist in the database.', $strTargetLanguage));
+            $objLogger->info(sprintf('Language %s does not exist in the database.', $strTargetLanguage));
             return false;
         }
 
@@ -218,15 +233,15 @@
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 
-        NarroLog::LogMessage(3, sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
+        $objLogger->info(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
 
         $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
         if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-            NarroLog::LogMessage(3, sprintf('Language %s does not exist in the database.', $strSourceLanguage));
+            $objLogger->info(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
             return false;
         }
 
-        NarroLog::LogMessage(3, sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
+        $objLogger->info(sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
 
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
@@ -239,22 +254,21 @@
         try {
             $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
             $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
-            NarroLog::SetLogFile($objNarroImporter->Project->ProjectId . '-' . $objNarroImporter->TargetLanguage->LanguageCode . '-export.log');
             $intPid = NarroUtils::IsProcessRunning('export', $objNarroImporter->Project->ProjectId);
 
             if ($intPid && $intPid <> getmypid())
-                throw new Exception(sprintf('An export process is already for this project with pid %d', $intPid));
+                $objLogger->info(sprintf('An export process is already for this project with pid %d', $intPid));
 
             $objNarroImporter->ExportProject();
         }
         catch (Exception $objEx) {
-            NarroLog::LogMessage(3, sprintf('An error occured during export: %s', $objEx->getMessage()));
+            $objLogger->info(sprintf('An error occured during export: %s', $objEx->getMessage()));
             $objNarroImporter->CleanExportDirectory();
             exit();
         }
 
         $objNarroImporter->CleanExportDirectory();
-        NarroLog::LogMessage(2, var_export(NarroImportStatistics::$arrStatistics, true));
+        $objLogger->info(var_export(NarroImportStatistics::$arrStatistics, true));
 
      }
 
