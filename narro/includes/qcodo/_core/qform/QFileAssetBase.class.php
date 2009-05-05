@@ -196,6 +196,9 @@
                         break;
                     case 'bz2':
                     case 'gz':
+                    case 'tbz2':
+                    case 'tbz':
+                    case 'tgz':
                     case 'zip':
                         $this->imgFileIcon->ImagePath = $this->strIconFilePathArray['archive'];
                         break;

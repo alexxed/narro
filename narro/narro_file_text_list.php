@@ -52,6 +52,7 @@
             $this->objNarroProject = $this->objNarroFile->Project;
 
             $this->pnlBreadcrumb->setElements(
+                NarroLink::ProjectList(t('Projects')),
                 NarroLink::ProjectTextList($this->objNarroFile->Project->ProjectId, 1, 1, '', $this->objNarroFile->Project->ProjectName),
                 NarroLink::ProjectFileList($this->objNarroFile->Project->ProjectId, null, t('Files'))
             );

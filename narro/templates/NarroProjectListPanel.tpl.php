@@ -15,14 +15,15 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-
-    $strPageTitle = t('Register');
-
-    require('includes/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
-    $this->RenderEnd();
-    require('includes/footer.inc.php');
+?>
+<?php echo t('Click on any project name to start translating.'); ?>
+<span style="text-align:right;display:block;white-space:nowrap;">
+<?php if (NarroApp::HasPermissionForThisLang('Can add project', null)) { ?>
+    <a href="narro_project_edit.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php _t('Add project') ?></a> |
+<?php } ?>
+<label for="<?php echo $_CONTROL->lstFilter->ControlId?>"><?php _t('Show')?>:</label>
+<?php $_CONTROL->lstFilter->Render() ?>
+<?php $_CONTROL->txtSearch->Render() ?>
+<?php $_CONTROL->btnSearch->Render() ?>
+</span>
+<?php $_CONTROL->dtgProject->Render() ?>

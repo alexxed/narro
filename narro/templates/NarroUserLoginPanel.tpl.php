@@ -15,14 +15,21 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-
-    $strPageTitle = t('Register');
-
-    require('includes/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
-    $this->RenderEnd();
-    require('includes/footer.inc.php');
+    $strPageTitle = t('Login');
+?>
+    <p><?php echo t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>
+    <br />
+    <?php $_CONTROL->lblMessage->Render() ?>
+    <table>
+        <tr>
+            <td><?php echo t('Username or <a href="http://www.openid.net">OpenID</a>')?>:</td>
+            <td><?php $_CONTROL->txtUsername->Render() ?></td>
+        </tr>
+        <tr>
+            <td><?php echo t('Password')?>:</td>
+            <td><?php $_CONTROL->txtPassword->Render() ?></td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:right"><?php $_CONTROL->btnLogin->Render() ?></td>
+        </tr>
+    </table>

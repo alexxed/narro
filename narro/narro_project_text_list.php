@@ -46,9 +46,8 @@
             } else
                 NarroApp::Redirect(NarroLink::ProjectList());
 
-            $this->pnlBreadcrumb->strSeparator = ' | ';
-
             $this->pnlBreadcrumb->setElements(
+                NarroLink::ProjectList(t('Projects')),
                 NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName),
                 NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
             );

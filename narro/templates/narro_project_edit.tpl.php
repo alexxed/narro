@@ -16,52 +16,15 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = ($this->blnEditMode)?t('Edit project'):t('Create project');
-
-    require('includes/header.inc.php')
-?>
-
-    <?php $this->RenderBegin() ?>
-        <?php $this->pnlHeader->Render() ?>
-        <?php $this->pnlBreadcrumb->Render() ?>
-        <h3><?php echo $strPageTitle ?></h3>
-        <br class="item_divider" />
-
-        <table>
-        <tr>
-        <td>
-        <label for="<?php echo $this->txtProjectName->ControlId ?>"><?php _t('Project Name') ?> : </label>
-        </td>
-        <td>
-        <?php $this->txtProjectName->Render(); ?>
-        </td>
-        </tr>
-
-        <tr>
-        <td>
-        <label for="<?php echo $this->lstProjectTypeObject->ControlId ?>"><?php _t('Project Type') ?> : </label>
-        </td>
-        <td>
-        <?php $this->lstProjectTypeObject->Render(); ?>
-        </td>
-        </tr>
-
-        <tr>
-        <td></td>
-        <td>
-        <?php $this->chkActive->Render(); ?>
-        <label for="<?php echo $this->chkActive->ControlId ?>"><?php _t('Active') ?></label>
-        </td>
-        </tr>
-        </table>
 
 
-        <br />
-        <?php $this->btnSave->Render() ?>
-        &nbsp;&nbsp;&nbsp;
-        <?php $this->btnCancel->Render() ?>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <?php $this->btnDelete->Render() ?>
-    <?php $this->RenderEnd() ?>
+    $strPageTitle = $this->pnlProjectEdit->strTitleVerb . ' ' . $this->objNarroProject->ProjectName;
 
-<?php require('includes/footer.inc.php'); ?>
+    require('includes/header.inc.php');
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlBreadcrumb->Render();
+    echo '<br />';
+    $this->pnlTab->Render();
+    $this->RenderEnd();
+    require('includes/footer.inc.php');

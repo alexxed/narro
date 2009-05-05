@@ -17,10 +17,10 @@
      */
     require_once('includes/prepend.inc.php');
 
-    class NarroLanguageEditForm extends QForm {
+    class NarroRoleEditForm extends QForm {
         protected $pnlTab;
-        protected $pnlLanguageTab;
-        public $pnlLanguageEdit;
+        protected $pnlRoleTab;
+        public $pnlRoleEdit;
 
         protected function Form_Create() {
             parent::Form_Create();
@@ -28,22 +28,22 @@
             $this->pnlTab = new QTabPanel($this);
             $this->pnlTab->UseAjax = false;
 
-            $this->pnlLanguageTab = new QTabPanel($this->pnlTab);
+            $this->pnlRoleTab = new QTabPanel($this->pnlTab);
 
-            $this->pnlLanguageEdit = new NarroLanguageEditPanel($this->pnlLanguageTab, NarroLanguage::Load(NarroApp::QueryString('lid')));
+            $this->pnlRoleEdit = new NarroRoleEditPanel($this->pnlRoleTab, NarroRole::Load(NarroApp::QueryString('rid')));
 
-            $this->pnlLanguageTab->addTab(new QPanel($this->pnlLanguageTab), t('List'), NarroLink::LanguageList());
-            $this->pnlLanguageTab->addTab($this->pnlLanguageEdit, (NarroApp::QueryString('lid')?t('Edit'):t('Add')));
+            $this->pnlRoleTab->addTab(new QPanel($this->pnlRoleTab), t('List'), NarroLink::RoleList());
+            $this->pnlRoleTab->addTab($this->pnlRoleEdit, (NarroApp::QueryString('lid')?t('Edit'):t('Add')));
 
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
-            $this->pnlTab->addTab($this->pnlLanguageTab, t('Languages'));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::RoleList());
+            $this->pnlTab->addTab($this->pnlRoleTab, t('Roles'));
 
-            $this->pnlTab->SelectedTab = 1;
-            $this->pnlLanguageTab->SelectedTab = 1;
+            $this->pnlTab->SelectedTab = 3;
+            $this->pnlRoleTab->SelectedTab = 1;
         }
     }
 
-    NarroLanguageEditForm::Run('NarroLanguageEditForm', 'templates/narro_language_edit.tpl.php');
+    NarroRoleEditForm::Run('NarroRoleEditForm', 'templates/narro_role_edit.tpl.php');
 ?>

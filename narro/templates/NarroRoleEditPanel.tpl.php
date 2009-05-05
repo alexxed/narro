@@ -15,14 +15,24 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-
-    $strPageTitle = t('Register');
-
-    require('includes/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
-    $this->RenderEnd();
-    require('includes/footer.inc.php');
+?>
+<h3><?php echo $strPageTitle ?></h3>
+<table>
+<tr>
+<td>
+<label for="<?php echo $_CONTROL->txtRoleName->ControlId ?>"><?php _t('Role name') ?></label>
+</td>
+<td>
+<?php $_CONTROL->txtRoleName->Render(); ?>
+</td>
+</tr>
+<tr>
+<td colspan="2" align="right">
+<?php $_CONTROL->btnSave->Render() ?>
+&nbsp;&nbsp;&nbsp;
+<?php $_CONTROL->btnCancel->Render() ?>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<?php $_CONTROL->btnDelete->Render() ?>
+</td>
+</tr>
+</table>

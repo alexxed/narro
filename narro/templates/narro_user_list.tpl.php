@@ -16,18 +16,11 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = t('User list');
+    $strPageTitle = t('Users');
 
     require('includes/header.inc.php');
-?>
-
-    <?php $this->RenderBegin() ?>
-        <?php $this->pnlHeader->Render() ?>
-        <div class="title_action"><?php echo t('User list'); ?></div>
-        <br class="item_divider" />
-
-        <?php $this->dtgNarroUserList->Render() ?>
-
-    <?php $this->RenderEnd() ?>
-
-<?php require('includes/footer.inc.php'); ?>
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlTab->Render();
+    $this->RenderEnd();
+    require('includes/footer.inc.php');

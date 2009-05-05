@@ -18,49 +18,48 @@
 
     require_once('includes/prepend.inc.php');
 
-    class NarroProjectEditForm extends QForm {
+    class NarroProjectExportForm extends QForm {
         protected $pnlTab;
-        protected $pnlProjectEdit;
+        protected $pnlProjectExport;
         protected $objNarroProject;
 
         protected function SetupNarroProject() {
             // Lookup Object PK information from Query String (if applicable)
             // Set mode to Edit or New depending on what's found
             $intProjectId = NarroApp::QueryString('p');
-            $this->objNarroProject = NarroProject::Load(($intProjectId));
+            if ($intProjectId > 0) {
+                $this->objNarroProject = NarroProject::Load(($intProjectId));
+
+                if (!$this->objNarroProject)
+                    NarroApp::Redirect(NarroLink::ProjectList());
+
+            } else
+                NarroApp::Redirect(NarroLink::ProjectList());
+
         }
         protected function Form_Create() {
             parent::Form_Create();
 
             $this->SetupNarroProject();
 
-            if (!NarroApp::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId))
+            if (!NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
                 NarroApp::Redirect(NarroLink::ProjectList());
 
-            if ($this->objNarroProject->ProjectId)
-                $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, null, null, null, $this->objNarroProject->ProjectName), t('Edit'));
-            else
-                $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), t('Add'));
+            $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, null, null, null, $this->objNarroProject->ProjectName), 'Manage');
 
             $this->pnlTab = new QTabPanel($this);
             $this->pnlTab->UseAjax = false;
 
-            $this->pnlProjectEdit = new NarroProjectEditPanel($this->objNarroProject, $this->pnlTab);
-
+            $this->pnlProjectExport = new NarroProjectExportPanel($this->objNarroProject, $this->pnlTab);
 
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
-            if ($this->objNarroProject->ProjectId) {
-                $this->pnlTab->addTab($this->pnlProjectEdit, t('Edit'));
-                $this->pnlTab->SelectedTab = t('Edit');
-            }
-            else {
-                $this->pnlTab->addTab($this->pnlProjectEdit, t('Add'));
-                $this->pnlTab->SelectedTab = t('Add');
-            }
+            $this->pnlTab->addTab($this->pnlProjectExport, t('Export'));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Edit'), NarroLink::ProjectEdit($this->objNarroProject->ProjectId));
+
+            $this->pnlTab->SelectedTab = t('Export');
         }
     }
 
 
-    NarroProjectEditForm::Run('NarroProjectEditForm', 'templates/narro_project_edit.tpl.php');
+    NarroProjectExportForm::Run('NarroProjectExportForm', 'templates/narro_project_export.tpl.php');
 ?>

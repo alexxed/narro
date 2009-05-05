@@ -16,89 +16,11 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = ($this->blnEditMode)?t('Edit language'):t('Add language');
+    $strPageTitle = (NarroApp::QueryString('lid'))?t('Edit language'):t('Add language');
 
-    require('includes/header.inc.php')
-?>
-
-    <?php $this->RenderBegin() ?>
-        <?php $this->pnlHeader->Render() ?>
-        <h3><?php echo $strPageTitle ?></h3>
-        <table>
-        <tr>
-        <td>
-        <label for="<?php echo $this->txtLanguageName->ControlId ?>"><?php _t('Language name') ?></label>
-        </td>
-        <td>
-        <?php $this->txtLanguageName->Render(); ?>
-        </td>
-        </tr>
-        <tr>
-        <td>
-        <label for="<?php echo $this->txtLanguageCode->ControlId ?>"><?php _t('Language code') ?></label>
-        </td>
-        <td>
-        <?php $this->txtLanguageCode->Render(); ?>
-        </td>
-        </tr>
-        <tr>
-        <td>
-        <label for="<?php echo $this->txtCountryCode->ControlId ?>"><?php _t('Country code') ?></label>
-        </td>
-        <td>
-        <?php $this->txtCountryCode->Render(); ?>
-        </td>
-        </tr>
-        <tr>
-        <td>
-        <label for="<?php echo $this->txtEncoding->ControlId ?>"><?php _t('Encoding') ?></label>
-        </td>
-        <td>
-        <?php $this->txtEncoding->Render(); ?>
-        </td>
-        </tr>
-        <tr>
-        <td>
-        <label for="<?php echo $this->lstTextDirection->ControlId ?>"><?php _t('Text direction') ?></label>
-        </td>
-        <td>
-        <?php $this->lstTextDirection->Render(); ?>
-        </td>
-        </tr>
-        <tr>
-        <td>
-        <label for="<?php echo $this->txtSpecialCharacters->ControlId ?>"><?php _t('Special characters') ?></label>
-        </td>
-        <td>
-        <?php $this->txtSpecialCharacters->Render(); ?>
-        </td>
-        </tr>
-        <tr>
-        <td>
-        <label for="<?php echo $this->txtPluralForm->ControlId ?>"><?php _t('Plural formula') ?></label>
-        </td>
-        <td>
-        <?php $this->txtPluralForm->Render(); ?>
-        </td>
-        </tr>
-        <tr>
-        <td>
-        <label for="<?php echo $this->chkActive->ControlId ?>"><?php _t('Active') ?></label>
-        </td>
-        <td>
-        <?php $this->chkActive->Render(); ?>
-        </td>
-        </tr>
-        <tr>
-        <td colspan="2" align="right">
-        <?php $this->btnSave->Render() ?>
-        &nbsp;&nbsp;&nbsp;
-        <?php $this->btnCancel->Render() ?>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <?php $this->btnDelete->Render() ?>
-        </td>
-        </tr>
-        </table>
-    <?php $this->RenderEnd() ?>
-
-<?php require('includes/footer.inc.php'); ?>
+    require('includes/header.inc.php');
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlTab->Render();
+    $this->RenderEnd();
+    require('includes/footer.inc.php');

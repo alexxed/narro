@@ -16,40 +16,15 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = t('Project list');
+    $strPageTitle = t('Projects');
 
 
     require('includes/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
-        <?php $this->pnlHeader->Render() ?>
-        <h3><?php echo t('Project list') ?></h3>
-        <p><?php echo t('This is a list of projects that are being translated here. You can help too. Click on any project name to start translating.'); ?></p>
-        <?php if (NarroApp::HasPermissionForThisLang('Can add project', null)) { ?>
-            <p align="right"><a href="narro_project_edit.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php _t('Add project') ?></a></p>
-        <?php } ?>
-
-        <div align="right">
-        <label for="<?php echo $this->lstFilter->ControlId?>"><?php _t('Show')?>:</label>
-        <?php $this->lstFilter->Render() ?>
-        </div>
-
-        <?php $this->dtgNarroProject->Render() ?>
-        <table style="width:100%;padding-top:10px" cellpadding="0" cellspacing="0">
-        <tr>
-        <td>
-        <?php echo sprintf(t('Top %d translators'), $this->pnlTopUsers->Limit) ?>
-        <?php $this->pnlTopUsers->Render() ?>
-        </td>
-        <td style="padding-left:10px">
-        <?php echo sprintf(t('Newest %d translators'), $this->pnlNewUsers->Limit) ?>
-        <?php $this->pnlNewUsers->Render() ?>
-        </td>
-        </tr>
-        </table>
-
-
+    <?php $this->pnlHeader->Render() ?>
+    <?php $this->pnlTab->Render() ?>
     <?php $this->RenderEnd() ?>
 
 <?php require('includes/footer.inc.php'); ?>

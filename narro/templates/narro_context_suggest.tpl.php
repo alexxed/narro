@@ -40,26 +40,21 @@
         <?php $this->pnlSuggestionList->Render(); ?>
         <?php $this->pnlSimilarSuggestionList->Render(); ?>
         <br />
-        <?php $this->chkShowOtherLanguages->Render(); ?>
-        <?php $this->chkShowSimilarSuggestions->Render(); ?>
-        <?php if (NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId)) { ?>
-            <?php $this->chkGoToNext->Render(); ?>
-        <?php } ?>
         <?php if (NarroApp::HasPermissionForThisLang('Can suggest', $this->objNarroContextInfo->Context->ProjectId)) { ?>
             <?php $this->pnlPluginMessages->Render(); ?>
-            <br />
-            <?php echo t('Your suggestion'); ?>:
+            <?php echo t('Your translation'); ?>:
             <table cellspacing="3" border="0" style="border-width:0px;border-collapse:separate;width:100%;margin:0px">
             <tr>
-            <td width="60%" valign="top" style="padding-left:0px;border:0px">
+            <td width="100%" valign="top" style="padding-left:0px;border:0px">
                 <?php $this->txtSuggestionValue->Render("Rows=10"); ?>
             </td>
-            <td width="40%" valign="top" style="padding-left:0px;border:0px">
-                <?php $this->btnSave->Render() ?>&nbsp;<?php $this->btnSaveIgnore->Render() ?>
+            <td valign="top" style="padding-left:0px;border:0px">
                 <?php if (NarroApp::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId)) { ?>
-                    <br />
                     <?php $this->chkApprove->Render() ?>
+                    <?php $this->chkGoToNext->Render(); ?>
                 <?php } ?>
+                <?php $this->chkShowOtherLanguages->Render(); ?>
+                <?php $this->chkShowSimilarSuggestions->Render(); ?>
             </td>
             </tr>
             </table>
@@ -78,12 +73,14 @@
         <?php $this->btnNext100->Render(); ?>
         &nbsp;&nbsp;&nbsp;&nbsp;
         <?php $this->pnlDiacritics->Render(); ?>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <?php $this->btnSave->Render() ?>
+        <?php $this->btnSaveIgnore->Render() ?>
         <br />
         <?php $this->pnlProgress->Render() ?>
         <?php $this->lblMessage->Render() ?>
         <br />
         <?php $this->pnlComments->Render() ?>
-
         <?php if(NarroApp::GetUserId() != NarroUser::ANONYMOUS_USER_ID && $this->txtSuggestionValue->Display) $this->txtSuggestionValue->Focus(); ?>
     <?php $this->RenderEnd() ?>
 

@@ -15,14 +15,9 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-
-    $strPageTitle = t('Register');
-
-    require('includes/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
-    $this->RenderEnd();
-    require('includes/footer.inc.php');
+?>
+<span style="text-align:right;display:block;white-space:nowrap;">
+<?php $_CONTROL->txtSearch->Render() ?>
+<?php $_CONTROL->btnSearch->Render() ?>
+</span>
+<?php $_CONTROL->dtgUser->Render() ?>

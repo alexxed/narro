@@ -15,14 +15,26 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-
-    $strPageTitle = t('Register');
-
-    require('includes/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
-    $this->RenderEnd();
-    require('includes/footer.inc.php');
+ echo t('These are the roles used on this website.');
+?>
+<table width="100%">
+<tr>
+<td width="50%" valign="top">
+<br class="item_divider" /><p></p>
+<?php $_CONTROL->dtgRole->Render() ?>
+</td>
+<td width="50%" valign="top">
+<?php
+    switch(NarroApp::QueryString('view')) {
+        case 'permission':
+                $_CONTROL->pnlRolePermissions->Render();
+                break;
+        case 'user':
+                $_CONTROL->pnlRoleUsers->Render();
+                break;
+        default:
+    }
+?>
+</td>
+</tr>
+</table>

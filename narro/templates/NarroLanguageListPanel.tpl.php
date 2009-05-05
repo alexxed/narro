@@ -16,13 +16,15 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = t('Register');
-
-    require('includes/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
-    $this->RenderEnd();
-    require('includes/footer.inc.php');
+    echo t('This is a list of languages that projects can be translated in.');
+?>
+<span style="text-align:right;display:block;white-space:nowrap;">
+<?php if (NarroApp::HasPermission('Can edit language', null)) { ?>
+        <label for="<?php echo $_CONTROL->lstFilter->ControlId?>"><?php _t('Show')?>:</label>
+        <?php $_CONTROL->lstFilter->Render();
+      }
+      $_CONTROL->txtSearch->Render();
+      $_CONTROL->btnSearch->Render()
+?>
+</span>
+<?php $_CONTROL->dtgLanguage->Render() ?>

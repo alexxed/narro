@@ -309,6 +309,7 @@
             NarroApp::ExecuteJavaScript(sprintf('document.title="%s"', str_replace(array('\\', '"', "\n"), array('\\\\', '\\"', ' '), $strPageTitle)));
 
             $this->pnlBreadcrumb->setElements(
+                NarroLink::ProjectList(t('Projects')),
                 NarroLink::ProjectTextList(
                         $this->objNarroContextInfo->Context->File->Project->ProjectId,
                         $this->intTextFilter,
@@ -496,7 +497,7 @@
         // Setup btnNext
         protected function btnNext_Create() {
             $this->btnNext = new QButton($this);
-            $this->btnNext->Text = t('Next');
+            $this->btnNext->Text = t('Next') . ' >';
 
             if (NarroApp::$UseAjax)
                 $this->btnNext->AddAction(new QClickEvent(), new QAjaxAction('btnNext_Click'));
@@ -511,7 +512,7 @@
         // Setup btnNext100
         protected function btnNext100_Create() {
             $this->btnNext100 = new QButton($this);
-            $this->btnNext100->Text = t('100 forward');
+            $this->btnNext100->Text = t('100 forward') . ' >>';
 
             if (NarroApp::$UseAjax)
                 $this->btnNext100->AddAction(new QClickEvent(), new QAjaxAction('btnNext100_Click'));
@@ -525,7 +526,7 @@
         // Setup btnPrevious100
         protected function btnPrevious100_Create() {
             $this->btnPrevious100 = new QButton($this);
-            $this->btnPrevious100->Text = t('100 back');
+            $this->btnPrevious100->Text = '<< ' . t('100 back');
             if (NarroApp::$UseAjax)
                 $this->btnPrevious100->AddAction(new QClickEvent(), new QAjaxAction('btnPrevious100_Click'));
             else
@@ -539,7 +540,7 @@
         // Setup btnPrevious
         protected function btnPrevious_Create() {
             $this->btnPrevious = new QButton($this);
-            $this->btnPrevious->Text = t('Previous');
+            $this->btnPrevious->Text = '< ' . t('Previous');
             if (NarroApp::$UseAjax)
                 $this->btnPrevious->AddAction(new QClickEvent(), new QAjaxAction('btnPrevious_Click'));
             else
@@ -654,10 +655,7 @@
             $objSuggestion->UserId = NarroApp::GetUserId();
             $objSuggestion->LanguageId = NarroApp::GetLanguageId();
             $objSuggestion->TextId = $this->objNarroContextInfo->Context->TextId;
-            $objSuggestion->Created = date('Y-m-d H:i:s');
             $objSuggestion->SuggestionValue = $strSuggestionValue;
-            $objSuggestion->SuggestionValueMd5 = md5($strSuggestionValue);
-            $objSuggestion->SuggestionCharCount = mb_strlen($strSuggestionValue);
 
             try {
                 $objSuggestion->Save();

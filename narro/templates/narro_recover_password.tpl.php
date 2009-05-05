@@ -18,30 +18,11 @@
 
     $strPageTitle = t('Recover password');
 
-
-    require('includes/header.inc.php')
-?>
-
-    <?php $this->RenderBegin() ?>
-        <?php $this->pnlHeader->Render() ?>
-        <h3><?php echo t('Recover password') ?></h3>
-        <p><?php echo t('If you remember your username or email address, we can send you a link at the email address you registered with to change your password.'); ?></p>
-        <br />
-        <?php $this->lblMessage->Render() ?>
-        <table>
-            <tr>
-                <td><?php echo t('Username')?>:</td>
-                <td><?php $this->txtUsername->Render() ?></td>
-            </tr>
-            <tr>
-                <td><?php echo t('Email')?>:</td>
-                <td><?php $this->txtEmail->Render() ?></td>
-            </tr>
-            <tr>
-                <td colspan="2" style="text-align:right"><?php $this->btnRecoverPassword->Render() ?></td>
-            </tr>
-        </table>
-
-    <?php $this->RenderEnd() ?>
-
-<?php require('includes/footer.inc.php'); ?>
+    require('includes/header.inc.php');
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlBreadcrumb->Render();
+    echo '<br />';
+    $this->pnlTab->Render();
+    $this->RenderEnd();
+    require('includes/footer.inc.php');

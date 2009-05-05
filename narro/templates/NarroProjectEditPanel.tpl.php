@@ -15,16 +15,37 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-
-    $strPageTitle = t('Language list');
-
-
-    require('includes/header.inc.php')
 ?>
 
-    <?php $this->RenderBegin() ?>
-    <?php $this->pnlHeader->Render() ?>
-    <?php $this->pnlTab->Render() ?>
-    <?php $this->RenderEnd() ?>
-
-<?php require('includes/footer.inc.php'); ?>
+<table>
+    <tr>
+        <td><?php _t('Name')?></td>
+        <td><?php $_CONTROL->txtProjectName->Render(); ?></td>
+    </tr>
+    <tr>
+        <td><?php _t('Category') ?></td>
+        <td><?php $_CONTROL->lstProjectCategory->Render(); ?></td>
+    </tr>
+    <tr>
+        <td><?php _t('Type')?></td>
+        <td><?php $_CONTROL->lstProjectType->Render(); ?></td>
+    </tr>
+    <tr>
+        <td><?php _t('Description')?></td>
+        <td><?php $_CONTROL->txtProjectDescription->Render(); ?></td>
+    </tr>
+    <tr>
+        <td><?php _t('Active')?></td>
+        <td><?php $_CONTROL->txtActive->Render(); ?></td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <?php $_CONTROL->btnSave->Render() ?>
+            &nbsp;&nbsp;&nbsp;
+            <?php $_CONTROL->btnCancel->Render() ?>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <?php $_CONTROL->btnDelete->Render() ?>
+        </td>
+    </tr>
+</table>
+<?php $_CONTROL->lblMessage->Render();?>

@@ -19,20 +19,10 @@
     $strPageTitle = sprintf(t('%s\'s roles'), $this->objUser->Username);
 
     require('includes/header.inc.php');
-?>
-
-    <?php $this->RenderBegin() ?>
-        <?php $this->pnlHeader->Render() ?>
-        <div class="title_action"><?php echo sprintf(t('%s\'s roles'), $this->objUser->Username); ?></div>
-        <br class="item_divider" />
-
-        <?php $this->dtgNarroUserRole->Render() ?>
-        <hr />
-        <?php echo t('Language') . ':'; $this->lstLanguage->Render() ?>
-        <?php echo t('Project') . ':'; $this->lstProject->Render() ?>
-        <?php echo t('Role') . ':'; $this->lstRole->Render() ?>
-        <?php $this->btnAddRole->Render() ?>
-
-    <?php $this->RenderEnd() ?>
-
-<?php require('includes/footer.inc.php'); ?>
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlBreadcrumb->Render();
+    echo '<br />';
+    $this->pnlTab->Render();
+    $this->RenderEnd();
+    require('includes/footer.inc.php');

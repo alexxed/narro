@@ -16,38 +16,11 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = t('Role list');
+    $strPageTitle = t('Roles');
 
-
-    require('includes/header.inc.php')
-?>
-
-    <?php $this->RenderBegin() ?>
-        <?php $this->pnlHeader->Render() ?>
-        <h3><?php echo t('Role list') ?></h3>
-        <p><?php echo t('Here you can manage the roles used on this website.'); ?></p>
-        <table width="100%">
-        <tr>
-        <td width="50%" valign="top">
-        <div class="title_action"><?php echo t('Roles list'); ?></div>
-        <br class="item_divider" />
-        <?php $this->dtgNarroRole->Render() ?>
-        </td>
-        <td width="50%" valign="top">
-        <?php
-            switch(NarroApp::QueryString('view')) {
-                case 'permission':
-                        $this->pnlRolePermissions->Render();
-                        break;
-                case 'user':
-                        $this->pnlRoleUsers->Render();
-                        break;
-                default:
-            }
-        ?>
-        </td>
-        </tr>
-        </table>
-    <?php $this->RenderEnd() ?>
-
-<?php require('includes/footer.inc.php'); ?>
+    require('includes/header.inc.php');
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlTab->Render();
+    $this->RenderEnd();
+    require('includes/footer.inc.php');

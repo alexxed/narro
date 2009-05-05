@@ -19,124 +19,27 @@
     require_once('includes/prepend.inc.php');
 
     class NarroLanguageListForm extends QForm {
-        protected $dtgNarroLanguage;
-
-        // DataGrid Columns
-        protected $colLanguageName;
-        protected $colLanguageCode;
-        protected $colCountryCode;
-        protected $colEncoding;
-        protected $colTextDirection;
-        protected $colSpecialCharacters;
-        protected $colPluralForm;
-        protected $colActive;
-
-        protected $colActions;
+        protected $pnlTab;
+        protected $pnlLanguageList;
 
         protected function Form_Create() {
             parent::Form_Create();
 
-            // Setup DataGrid Columns
-            $this->colLanguageName = new QDataGridColumn(t('Language Name'), '<?= $_FORM->dtgNarroLanguage_LanguageNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName, false)));
-            $this->colLanguageName->HtmlEntities = false;
-            $this->colLanguageCode = new QDataGridColumn(t('Language Code'), '<?= $_FORM->dtgNarroLanguage_LanguageCodeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageCode), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageCode, false)));
-            $this->colCountryCode = new QDataGridColumn(t('Country Code'), '<?= $_FORM->dtgNarroLanguage_CountryCodeColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->CountryCode), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->CountryCode, false)));
-            $this->colEncoding = new QDataGridColumn(t('Encoding'), '<?= $_FORM->dtgNarroLanguage_EncodingColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->Encoding), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->Encoding, false)));
-            $this->colTextDirection = new QDataGridColumn(t('Text Direction'), '<?= $_FORM->dtgNarroLanguage_TextDirectionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->TextDirection), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->TextDirection, false)));
-            $this->colSpecialCharacters = new QDataGridColumn(t('Special Characters'), '<?= $_FORM->dtgNarroLanguage_SpecialCharactersColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));
-            $this->colPluralForm = new QDataGridColumn(t('Plural Forms'), '<?= $_FORM->dtgNarroLanguage_PluralFormColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));
-            $this->colActive = new QDataGridColumn(t('Active'), '<?= $_FORM->dtgNarroLanguage_ActiveColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->Active), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->Active, false)));
+            $this->pnlTab = new QTabPanel($this);
+            $this->pnlTab->UseAjax = false;
 
-            $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_FORM->dtgNarroLanguage_Actions_Render($_ITEM) ?>');
-            $this->colActions->HtmlEntities = false;
+            $this->pnlLanguageList = new QTabPanel($this->pnlTab);
+            $this->pnlLanguageList->addTab(new NarroLanguageListPanel($this->pnlLanguageList), t('List'));
+            if (NarroApp::HasPermissionForThisLang('Can add language', null))
+                $this->pnlLanguageList->addTab(new QPanel($this->pnlLanguageList), t('Add'), NarroLink::LanguageEdit());
 
-            // Setup DataGrid
-            $this->dtgNarroLanguage = new QDataGrid($this);
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
+            $this->pnlTab->addTab($this->pnlLanguageList, t('Languages'));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::RoleList());
 
-            // Datagrid Paginator
-            $this->dtgNarroLanguage->Paginator = new QPaginator($this->dtgNarroLanguage);
-            $this->dtgNarroLanguage->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
-
-            // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroLanguage->UseAjax = false;
-
-            // Specify the local databind method this datagrid will use
-            $this->dtgNarroLanguage->SetDataBinder('dtgNarroLanguage_Bind');
-
-            $this->dtgNarroLanguage->AddColumn($this->colLanguageName);
-            $this->dtgNarroLanguage->AddColumn($this->colLanguageCode);
-            $this->dtgNarroLanguage->AddColumn($this->colCountryCode);
-            $this->dtgNarroLanguage->AddColumn($this->colEncoding);
-            $this->dtgNarroLanguage->AddColumn($this->colTextDirection);
-            $this->dtgNarroLanguage->AddColumn($this->colSpecialCharacters);
-            $this->dtgNarroLanguage->AddColumn($this->colPluralForm);
-            $this->dtgNarroLanguage->AddColumn($this->colActive);
-
-            $this->dtgNarroLanguage->AddColumn($this->colActions);
-
-            $this->dtgNarroLanguage->SortColumnIndex = 0;
-        }
-
-        public function dtgNarroLanguage_LanguageNameColumn_Render(NarroLanguage $objNarroLanguage) {
-            return sprintf('<a href="%s?l=%s">%s</a>', basename(__FILE__), $objNarroLanguage->LanguageCode, $objNarroLanguage->LanguageName);
-        }
-
-        public function dtgNarroLanguage_LanguageCodeColumn_Render(NarroLanguage $objNarroLanguage) {
-            return $objNarroLanguage->LanguageCode;
-        }
-
-        public function dtgNarroLanguage_PluralFormColumn_Render(NarroLanguage $objNarroLanguage) {
-            return $objNarroLanguage->Plurals;
-        }
-
-        public function dtgNarroLanguage_CountryCodeColumn_Render(NarroLanguage $objNarroLanguage) {
-            return $objNarroLanguage->CountryCode;
-        }
-
-        public function dtgNarroLanguage_EncodingColumn_Render(NarroLanguage $objNarroLanguage) {
-            return $objNarroLanguage->Encoding;
-        }
-
-        public function dtgNarroLanguage_TextDirectionColumn_Render(NarroLanguage $objNarroLanguage) {
-            return $objNarroLanguage->TextDirection;
-        }
-
-        public function dtgNarroLanguage_SpecialCharactersColumn_Render(NarroLanguage $objNarroLanguage) {
-            return $objNarroLanguage->SpecialCharacters;
-        }
-
-        public function dtgNarroLanguage_ActiveColumn_Render(NarroLanguage $objNarroLanguage) {
-            return $objNarroLanguage->Active?t('Yes'):t('No');
-        }
-
-        public function dtgNarroLanguage_Actions_Render(NarroLanguage $objNarroLanguage) {
-            if (NarroApp::HasPermissionForThisLang('Can edit language', null))
-                return sprintf('<a href="narro_language_edit.php?l=%s&lid=%d">%s</a>', NarroApp::$Language->LanguageCode, $objNarroLanguage->LanguageId, t('Edit'));
-        }
-
-        protected function dtgNarroLanguage_Bind() {
-            // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
-
-            $this->dtgNarroLanguage->TotalItemCount = NarroLanguage::QueryCount(QQ::All());
-
-            if ($this->dtgNarroLanguage->TotalItemCount == 0)
-                NarroApp::Redirect('narro_language_edit.php');
-
-            // Setup the $objClauses Array
-            $objClauses = array();
-
-            // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
-            // the OrderByClause to the $objClauses array
-            if ($objClause = $this->dtgNarroLanguage->OrderByClause)
-                array_push($objClauses, $objClause);
-
-            // Add the LimitClause information, as well
-            if ($objClause = $this->dtgNarroLanguage->LimitClause)
-                array_push($objClauses, $objClause);
-
-            $this->dtgNarroLanguage->DataSource = NarroLanguage::QueryArray(QQ::All(), $objClauses);
-
-            NarroApp::ExecuteJavaScript('highlight_datagrid();');
+            $this->pnlTab->SelectedTab = 1;
+            $this->pnlLanguageList->SelectedTab = 0;
         }
     }
 

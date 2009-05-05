@@ -17,39 +17,35 @@
      */
     require_once('includes/prepend.inc.php');
 
-    class NarroUserProfileForm extends QForm {
+    class NarroUserEditForm extends QForm {
         protected $pnlTab;
-        protected $pnlUserSuggestions;
+        protected $pnlUser;
         protected $objUser;
 
         protected function Form_Create() {
             parent::Form_Create();
 
-            $this->objUser = NarroUser::Load(NarroApp::QueryString('u'));
+            if (NarroApp::GetUserId() != NarroApp::QueryString('u') && NarroApp::HasPermissionForThisLang('Can manage users', null))
+                $this->objUser = NarroUser::Load(NarroApp::QueryString('u'));
 
             if (!$this->objUser instanceof NarroUser)
-                NarroApp::Redirect(NarroLink::UserList());
+                $this->objUser = NarroApp::$User;
 
             $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), $this->objUser->Username);
 
             $this->pnlTab = new QTabPanel($this);
             $this->pnlTab->UseAjax = false;
 
-            $this->pnlUserSuggestions = new NarroUserSuggestionsPanel($this->objUser, $this->pnlTab);
+            $this->pnlUser = new NarroUserEditPanel($this->objUser, $this->pnlTab);
 
-            $this->pnlTab->addTab($this->pnlUserSuggestions, t('Profile'));
-
-            if (NarroApp::GetUserId() == $this->objUser->UserId || NarroApp::HasPermissionForThisLang('Can manage users', null))
-                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Preferences'), NarroLink::UserPreferences($this->objUser->UserId));
-
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Profile'), NarroLink::UserProfile($this->objUser->UserId));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Preferences'), NarroLink::UserPreferences($this->objUser->UserId));
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::UserRole($this->objUser->UserId));
+            $this->pnlTab->addTab($this->pnlUser, t('Edit'));
 
-            if (NarroApp::GetUserId() == $this->objUser->UserId || NarroApp::HasPermissionForThisLang('Can manage users', null))
-                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Edit'), NarroLink::UserEdit($this->objUser->UserId));
-
-            $this->pnlTab->SelectedTab = 0;
+            $this->pnlTab->SelectedTab = 3;
         }
     }
 
-    NarroUserProfileForm::Run('NarroUserProfileForm', 'templates/narro_user_profile.tpl.php');
+    NarroUserEditForm::Run('NarroUserEditForm', 'templates/narro_user_edit.tpl.php');
 ?>

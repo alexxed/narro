@@ -19,68 +19,24 @@
     require('includes/prepend.inc.php');
 
     class NarroRecoverPasswordForm extends QForm {
-        protected $lblMessage;
-        protected $txtUsername;
-        protected $txtEmail;
-        protected $btnRecoverPassword;
+        protected $pnlTab;
+        protected $pnlUserRecoverPassword;
 
         protected function Form_Create() {
             parent::Form_Create();
-            
-            $this->lblMessage = new QLabel($this);
-            $this->lblMessage->HtmlEntities = false;
-            $this->txtUsername = new QTextBox($this);
-            $this->txtEmail = new QTextBox($this);
-            $this->btnRecoverPassword = new QButton($this);
-            $this->btnRecoverPassword->Text = t('Proceed');
-            $this->btnRecoverPassword->PrimaryButton = true;
-            $this->btnRecoverPassword->AddAction(new QClickEvent(), new QServerAction('btnRecoverPassword_Click'));
 
-        }
+            $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), t('Lost and found'));
 
-        protected function btnRecoverPassword_Click($strFormId, $strControlId, $strParameter) {
-            if ($this->txtUsername->Text)
-                $objUser = NarroUser::QuerySingle(QQ::Equal(QQN::NarroUser()->Username, $this->txtUsername->Text));
-            elseif ($this->txtEmail->Text)
-                $objUser = NarroUser::QuerySingle(QQ::Equal(QQN::NarroUser()->Email, $this->txtEmail->Text));
-            else {
-                $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = t('Please enter a username or email to continue.');
-                return false;
-            }
+            $this->pnlTab = new QTabPanel($this);
+            $this->pnlTab->UseAjax = false;
 
-            if ($objUser instanceof NarroUser) {
-                if ($objUser->UserId == NarroUser::ANONYMOUS_USER_ID) {
-                    $this->lblMessage->ForeColor = 'red';
-                    $this->lblMessage->Text = t('Hey, the anonymous user doesn\'t have a password. What are you trying to do?');
-                    return false;
-                }
-                $objEmailMessage = new QEmailMessage();
-                $objEmailMessage->From = ADMIN_EMAIL_ADDRESS;
-                $objEmailMessage->To = $objUser->Email;
-                $objEmailMessage->Subject = sprintf(t('Password recovery for "%s" on "%s"'), $objUser->Username, $_SERVER['HTTP_HOST']);
-                $objEmailMessage->Body = sprintf(t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this link: %s'),
-                    $objUser->Username,
-                    $_SERVER['HTTP_HOST'],
-                    ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')?'https://':'http://') . $_SERVER['HTTP_HOST'] . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . sprintf('/narro_change_password.php?l=%s&u=%s&h=%s', NarroApp::$Language->LanguageCode, $objUser->Username, $objUser->Password)
-                );
-                
-                try {
-                    QEmailServer::Send($objEmailMessage);
-                } catch (Exception $objEx) {
-                    $this->lblMessage->ForeColor = 'red';
-                    $this->lblMessage->Text = t('Failed to send email. This may be a server issue. Please try again later.');
-                    return false;
-                }
+            $this->pnlUserRecoverPassword = new NarroUserRecoverPasswordPanel($this->pnlTab);
 
-            }
-            else {
-                $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = t('Bad username or/and email');
-            }
-            $this->lblMessage->ForeColor = 'green';
-            $this->lblMessage->Text = t('You should have a new email message with instructions. Check your spam/bulk directory too.');
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Login'), NarroLink::UserLogin());
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Register'), NarroLink::UserRegister());
+            $this->pnlTab->addTab($this->pnlUserRecoverPassword, t('Lost and found'));
 
+            $this->pnlTab->SelectedTab = t('Lost and found');
         }
     }
 

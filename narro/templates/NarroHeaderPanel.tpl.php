@@ -17,42 +17,24 @@
      */
     $this->objDefaultWaitIcon->Render();
 
-    echo
-        sprintf(
-            t('<i>Translating in: %s</i>'),
-            ($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name
-        ) . ' | ';
-
-    if (NarroApp::GetUserId() != NarroUser::ANONYMOUS_USER_ID) {
+    if (NarroApp::GetUserId() == NarroUser::ANONYMOUS_USER_ID) {
         echo
             sprintf(
-                t('<i>Logged in as <a href="%s" style="color:green;font-weight:bold">%s</a></i>'),
-                NarroLink::UserProfile(NarroApp::GetUserId()),
-                NarroApp::$User->Username
-            ) . ' | '
-            ;
+                t('Viewing translations in: %s'),
+                ($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name
+            ) . '&nbsp;' .
+            sprintf(
+                '<a href="%s">' . t('Login or register to contribute') . '</a>',
+                'narro_login.php?l=' . NarroApp::$Language->LanguageCode
+            );
+
     } else {
-    ?>
-        <a href="narro_register.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php echo t('Register') ?></a> |
-        <a href="narro_login.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php echo t('Login') ?></a> |
-    <?php
+        echo
+            sprintf(
+                t('Logged in as <b>%s</b>, translating in %s'),
+                NarroLink::UserPreferences(NarroApp::GetUserId(), NarroApp::$User->Username),
+                ($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name
+            ) .
+            '&nbsp;<a href="narro_logout.php?l=' . NarroApp::$Language->LanguageCode . '" style="vertical-align:middle"><img src="'.__IMAGE_ASSETS__.'/logout.png" alt="' . t('Logout') . '" border="0" title="' . t('Logout') . '" /></a>';
     }
-    ?>
-    <?php echo NarroLink::UserPreferences(NarroApp::GetUserId(), t('Preferences')) ?> |
-    <?php echo NarroLink::ProjectList(t('Projects')) ?> |
-    <a href="narro_language_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>" title="<?php echo t('Languages') ?>"><?php echo t('Languages') ?></a> |
-    <a href="narro_user_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>" title="<?php echo t('Users') ?>"><?php echo t('Users') ?></a>
-    <?php
-    if (NarroApp::HasPermission('Can manage users')) {
-    ?>
-    | <a href="narro_role_list.php?l=<?php echo NarroApp::$Language->LanguageCode ?>" title="<?php echo t('Roles') ?>"><?php echo t('Roles') ?></a>
-    <?php
-    }
-    ?>
-    <?php
-    if (NarroApp::GetUserId() > 0) {
-    ?>
-        | <a href="narro_logout.php?l=<?php echo NarroApp::$Language->LanguageCode ?>"><?php echo t('Logout') ?></a>
-    <?php
-    }
-    ?>
+?>

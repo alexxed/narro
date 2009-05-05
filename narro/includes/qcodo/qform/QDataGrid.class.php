@@ -62,10 +62,10 @@
             switch ($strName) {
                 case 'Title':
                     try {
-                        $this->strLabelForNoneFound = sprintf('<b>%s:</b> %s', $mixValue, QApplication::Translate('%s found nothing.'));/**Translators: ignore %s */
-                        $this->strLabelForOneFound = sprintf('<b>%s:</b> %s', $mixValue, QApplication::Translate(' 1 %s found.'));/**Translators: ignore %s */
-                        $this->strLabelForMultipleFound = sprintf('<b>%s:</b> %s', $mixValue, QApplication::Translate(' %d %s found.'));/**Translators: ignore %s */
-                        $this->strLabelForPaginated = sprintf('<b>%s:</b> %s', $mixValue, QApplication::Translate('%s %d-%d of %d.'));/**Translators: ignore %s */
+                        $this->strLabelForNoneFound = '&nbsp;' . sprintf('%s: %s', $mixValue, QApplication::Translate('%s found nothing.'));/**Translators: ignore %s */
+                        $this->strLabelForOneFound = '&nbsp;' . sprintf('%s: %s', $mixValue, QApplication::Translate(' 1 %s found.'));/**Translators: ignore %s */
+                        $this->strLabelForMultipleFound = '&nbsp;' . sprintf('%s: %s', $mixValue, QApplication::Translate(' %d %s found.'));/**Translators: ignore %s */
+                        $this->strLabelForPaginated = '&nbsp;' . sprintf('%s: %s', $mixValue, QApplication::Translate('%s %d-%d of %d.'));/**Translators: ignore %s */
                         $this->strNoun = '';
                         $this->strNounPlural = '';
 

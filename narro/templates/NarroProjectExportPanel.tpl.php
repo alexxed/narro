@@ -15,14 +15,17 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
+?>
 
-    $strPageTitle = t('Register');
+<div class="section_title"><?php _t('Options')?></div>
+<div class="section">
+<label for="<?php echo $_CONTROL->lstExportSuggestionType->ControlId?>"><?php echo $_CONTROL->lstExportSuggestionType->Name?></label>
+<?php $_CONTROL->lstExportSuggestionType->Render(); ?>
+<br />
+<?php $_CONTROL->chkCopyUnhandledFiles->Render(); ?>
+<label for="<?php echo $_CONTROL->chkCopyUnhandledFiles->ControlId?>"><?php echo $_CONTROL->chkCopyUnhandledFiles->Name?></label>
+<br />
+</div>
+<?php $_CONTROL->pnlLogViewer->Render() ?>
+<?php $_CONTROL->btnExport->Render(); $_CONTROL->objExportProgress->Render(); $_CONTROL->lblExport->Render() ?>
 
-    require('includes/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
-    $this->RenderEnd();
-    require('includes/footer.inc.php');

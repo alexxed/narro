@@ -19,58 +19,24 @@
     require('includes/prepend.inc.php');
 
     class NarroRegisterForm extends QForm {
-        protected $lblMessage;
-        protected $txtUsername;
-        protected $txtPassword;
-        protected $txtEmail;
-        protected $btnRegister;
+        protected $pnlTab;
+        protected $pnlUserRegister;
 
         protected function Form_Create() {
             parent::Form_Create();
 
-            $this->lblMessage = new QLabel($this);
-            $this->lblMessage->HtmlEntities = false;
-            $this->txtUsername = new QTextBox($this);
-            $this->txtEmail = new QTextBox($this);
-            $this->txtPassword = new QTextBox($this);
-            $this->txtPassword->TextMode = QTextMode::Password;
-            $this->btnRegister = new QButton($this);
-            $this->btnRegister->Text = t('Register');
-            $this->btnRegister->AddAction(new QClickEvent(), new QServerAction('btnRegister_Click'));
+            $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), t('Register'));
 
-        }
+            $this->pnlTab = new QTabPanel($this);
+            $this->pnlTab->UseAjax = false;
 
-        protected function btnRegister_Click($strFormId, $strControlId, $strParameter) {
-            if (!trim($this->txtUsername->Text) || !trim($this->txtPassword->Text) || !trim($this->txtEmail->Text)) {
-                $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = t("It's just three fields, don't leave one empty please.");
-                return false;
-            }
+            $this->pnlUserRegister = new NarroUserRegisterPanel($this->pnlTab);
 
-            $objMaxUser = NarroUser::LoadAll(QQ::Clause(QQ::LimitInfo(1,0), QQ::OrderBy(QQN::NarroUser()->UserId, false)));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Login'), NarroLink::UserLogin());
+            $this->pnlTab->addTab($this->pnlUserRegister, t('Register'));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Lost and found'), NarroLink::UserRecoverPassword());
 
-            $objUser = new NarroUser();
-            $objUser->UserId = $objMaxUser[0]->UserId + 1;
-            $objUser->Username = $this->txtUsername->Text;
-            $objUser->Email = $this->txtEmail->Text;
-            $objUser->Password = md5($this->txtPassword->Text);
-
-            try {
-                $objUser = NarroUser::RegisterUser($this->txtUsername->Text, $this->txtEmail->Text, $this->txtPassword->Text);
-            } catch(Exception $objEx) {
-                $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = t("Seems like the username or email is already in use.") . $objEx->getMessage();
-                return false;
-            }
-
-            if (!$objUser instanceof NarroUser)
-                NarroApp::Redirect(sprintf('narro_login.php?l=%s', NarroApp::$Language->LanguageCode));
-
-            require_once 'Zend/Session/Namespace.php';
-            $objNarroSession = new Zend_Session_Namespace('Narro');
-            $objNarroSession->User = $objUser;
-            NarroApp::$User = $objUser;
-            NarroApp::Redirect(NarroLink::UserPreferences($objUser->UserId));
+            $this->pnlTab->SelectedTab = t('Register');
         }
     }
 

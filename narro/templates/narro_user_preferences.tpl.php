@@ -16,15 +16,13 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(t('Preferences for %s'), $this->pnlPreferences->User->Username);
+    $strPageTitle = sprintf(t('Preferences for %s'), NarroApp::$User->Username);
 
     require('includes/header.inc.php');
-?>
-
-    <?php $this->RenderBegin() ?>
-        <?php $this->pnlHeader->Render() ?>
-        <p><?php echo t('Here you can set your preferences.');?></p>
-        <?php $this->pnlPreferences->Render() ?>
-    <?php $this->RenderEnd() ?>
-
-<?php require('includes/footer.inc.php'); ?>
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlBreadcrumb->Render();
+    echo '<br />';
+    $this->pnlTab->Render();
+    $this->RenderEnd();
+    require('includes/footer.inc.php');
