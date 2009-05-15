@@ -55,13 +55,15 @@
                     $strLogContents = '';
                     while (!feof($hndFile)) {
                         $strLogLine = fgets($hndFile);
-                        switch($this->lstFilter->SelectedValue) {
-                            case 0:
-                                if (!preg_match('/[0-9\-T:]+\sDEBUG\s\(7\)/', $strLogLine))
+                        if (trim($strLogLine)) {
+                            switch($this->lstFilter->SelectedValue) {
+                                case 0:
+                                    if (!preg_match('/[0-9\-T:]+\sDEBUG\s\(7\)/', $strLogLine))
+                                        $strLogContents .= preg_replace('/[0-9\-T:]+\s[A-Z]+\s\([0-9]+\):/', '', $strLogLine);
+                                    break;
+                                default:
                                     $strLogContents .= preg_replace('/[0-9\-T:]+\s[A-Z]+\s\([0-9]+\):/', '', $strLogLine);
-                                break;
-                            default:
-                                $strLogContents .= preg_replace('/[0-9\-T:]+\s[A-Z]+\s\([0-9]+\):/', '', $strLogLine);
+                            }
                         }
                     }
                     fclose($hndFile);

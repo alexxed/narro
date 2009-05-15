@@ -45,7 +45,14 @@
             $this->pnlLogViewer->Visible = false;
 
             $this->lblExport = new QLabel($this);
-            $this->lblExport->Visible = false;
+            $this->lblExport->HtmlEntities = false;
+            $strArchiveName = $this->objNarroProject->ProjectName . '-' . NarroApp::$Language->LanguageCode . '.zip';
+            $strExportFile = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $strArchiveName;
+            if (file_exists($strExportFile)) {
+                $objDateSpan = new QDateTimeSpan(time() - filemtime($strExportFile));
+                $this->lblExport->Text = sprintf(t('Link to last export: <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
+            }
+
 
             $this->chkCopyUnhandledFiles = new QCheckBox($this);
             $this->chkCopyUnhandledFiles->Name = t('Copy unhandled files');
@@ -78,8 +85,6 @@
         }
 
         public function btnExport_Click($strFormId, $strControlId, $strParameter) {
-            $args = func_get_args();
-            error_log(var_export($args, true));
             if (!NarroApp::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
                 return false;
 
@@ -113,6 +118,20 @@
                     $this->objExportProgress->Translated = 0;
                     $this->objExportProgress->Visible = false;
 
+                    $this->CreateExportArchive(
+                        __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroApp::$Language->LanguageCode,
+                        __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . NarroApp::$Language->LanguageCode . '.zip'
+                    );
+                    if (file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . NarroApp::$Language->LanguageCode . '.zip')) {
+                        $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . NarroApp::$Language->LanguageCode . '.zip';
+                        $this->lblExport->Text .= ' ' . sprintf(t('Download link: <a href="%s">%s</a>'), $strDownloadUrl, $this->objNarroProject->ProjectName . '-' . NarroApp::$Language->LanguageCode . '.zip');
+                    }
+                    else {
+                        $this->lblExport->Text .= ' ' . t('Failed to create an archive for download');
+                    }
+
+
+
                     $this->pnlLogViewer->MarkAsModified();
                 }
             }
@@ -133,8 +152,8 @@
                 $objNarroImporter->TargetLanguage = NarroApp::$Language;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode('en-US');
                 try {
-                    $objNarroImporter->TranslationPath = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroApp::$Language->LanguageCode;
-                    $objNarroImporter->TemplatePath = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US';
+                    $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroApp::$Language->LanguageCode;
+                    $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US';
                 }
                 catch (Exception $objEx) {
                     $objLogger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
@@ -171,8 +190,8 @@
                         $this->objNarroProject->ProjectId,
                         0,
                         NarroApp::$Language->LanguageCode,
-                        __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US',
-                        __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroApp::$Language->LanguageCode,
+                        __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/en-US',
+                        __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroApp::$Language->LanguageCode,
                         $this->lstExportSuggestionType->SelectedValue,
                         (($this->chkCopyUnhandledFiles->Checked)?'--copy-unhandled-files ':'')
                     );
@@ -215,6 +234,32 @@
                         $this->btnExport_Click($strFormId, $strControlId, 2);
                 }
             }
+        }
+
+        private function CreateExportArchive($strTranslationPath, $strArchive) {
+
+            if (file_exists($strArchive))
+                unlink($strArchive);
+
+            $arrFiles = NarroUtils::ListDirectory($strTranslationPath, null, null, null, true);
+
+            $objZipFile = new ZipArchive;
+            if ($objZipFile->open($strArchive, ZipArchive::OVERWRITE) === TRUE) {
+                foreach($arrFiles as $strFileName) {
+                    if (is_dir($strFileName)) {
+                        $objZipFile->addEmptyDir(str_replace($strTranslationPath, '', $strFileName ));
+                    }
+                    elseif (is_file($strFileName)) {
+                        $objZipFile->addFile($strFileName, str_replace($strTranslationPath . '/', '', $strFileName ));
+                    }
+                }
+            } else {
+                $objLogger->err(sprintf('Failed to create a new archive %s', $strArchive));
+                return false;
+            }
+            $objZipFile->close();
+            chmod($strArchive, 0666);
+            return true;
         }
 
     }

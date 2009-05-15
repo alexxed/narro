@@ -128,7 +128,6 @@
         // Control ServerActions
         public function btnSave_Click($strFormId, $strControlId, $strParameter) {
             $this->UpdateNarroUserFields();
-            error_log('in here');
             try {
                 $this->objNarroUser->Save();
             }

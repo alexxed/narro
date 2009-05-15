@@ -27,5 +27,8 @@
 <br />
 </div>
 <?php $_CONTROL->pnlLogViewer->Render() ?>
-<?php $_CONTROL->btnExport->Render(); $_CONTROL->objExportProgress->Render(); $_CONTROL->lblExport->Render() ?>
+<?php $_CONTROL->btnExport->Render(); ?>
+<?php $_CONTROL->objExportProgress->Render(); ?>
+&nbsp;
+<?php $_CONTROL->lblExport->Render() ?>
 

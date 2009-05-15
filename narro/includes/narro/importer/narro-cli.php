@@ -176,7 +176,10 @@
         }
 
         $objNarroImporter->CleanImportDirectory();
-        $objLogger->info(var_export(NarroImportStatistics::$arrStatistics, true));
+        foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
+            if ($strValue != 0)
+                $objLogger->info(stripslashes($strName) . ': ' . $strValue);
+        }
      }
      elseif (in_array('--export', $argv)) {
 
@@ -268,7 +271,10 @@
         }
 
         $objNarroImporter->CleanExportDirectory();
-        $objLogger->info(var_export(NarroImportStatistics::$arrStatistics, true));
+        foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
+            if ($strValue != 0)
+                $objLogger->info(stripslashes($strName) . ': ' . $strValue);
+        }
 
      }
 

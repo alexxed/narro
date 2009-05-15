@@ -31,9 +31,9 @@
                     $arrFields = array();
 
                     $strLine = fgets($hndFile, 8192);
-                    $this->objLogger->debug("Processing " . $strLine . "<br />");
+                    $this->objLogger->debug('Processing ' . trim($strLine));
                     if (strpos($strLine, '# ') === 0) {
-                        $this->objLogger->debug('Found translator comment. <br />');
+                        $this->objLogger->debug('Found translator comment');
                         $arrFields['TranslatorComment'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -46,7 +46,7 @@
                     }
 
                     if (strpos($strLine, '#.') === 0) {
-                        $this->objLogger->debug('Found extracted comment. <br />');
+                        $this->objLogger->debug('Found extracted comment');
                         $arrFields['ExtractedComment'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -59,7 +59,7 @@
                     }
 
                     if (strpos($strLine, '#:') === 0) {
-                        $this->objLogger->debug('Found reference. <br />');
+                        $this->objLogger->debug('Found reference');
                         /**
                          * Remove the line number from the source file
                          */
@@ -77,7 +77,7 @@
                     }
 
                     if (strpos($strLine, '#,') === 0) {
-                        $this->objLogger->debug('Found flag. <br />');
+                        $this->objLogger->debug('Found flag');
                         $arrFields['Flag'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -89,7 +89,7 @@
                     }
 
                     if (strpos($strLine, '#| msgctxt') === 0) {
-                        $this->objLogger->debug('Found previous context. <br />');
+                        $this->objLogger->debug('Found previous context');
                         $arrFields['PreviousContext'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -101,7 +101,7 @@
                     }
 
                     if (strpos($strLine, '#| msgid') === 0) {
-                        $this->objLogger->debug('Found previous translated string. <br />');
+                        $this->objLogger->debug('Found previous translated string');
                         $arrFields['PreviousUntranslated'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -113,7 +113,7 @@
                     }
 
                     if (strpos($strLine, '#| msgid_plural') === 0) {
-                        $this->objLogger->debug('Found previous translated plural string. <br />');
+                        $this->objLogger->debug('Found previous translated plural string');
                         $arrFields['PreviousUntranslatedPlural'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -125,7 +125,7 @@
                     }
 
                     if (strpos($strLine, 'msgctxt ') === 0) {
-                        $this->objLogger->debug('Found string. <br />');
+                        $this->objLogger->debug('Found string');
                         preg_match('/msgctxt\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgContext'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -139,7 +139,7 @@
                     }
 
                     if (strpos($strLine, 'msgid ') === 0) {
-                        $this->objLogger->debug('Found msgid. <br />');
+                        $this->objLogger->debug('Found msgid');
                         preg_match('/msgid\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgId'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -153,7 +153,7 @@
                     }
 
                     if (strpos($strLine, 'msgid_plural') === 0) {
-                        $this->objLogger->debug('Found plural string. <br />');
+                        $this->objLogger->debug('Found plural string');
                         preg_match('/msgid_plural\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgPluralId'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -167,7 +167,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr ') === 0) {
-                        $this->objLogger->debug('Found translation. <br />');
+                        $this->objLogger->debug('Found translation');
                         preg_match('/msgstr\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -181,7 +181,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[0]') === 0) {
-                        $this->objLogger->debug('Found translation plural 1. <br />');
+                        $this->objLogger->debug('Found translation plural 1');
                         preg_match('/msgstr\[0\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr0'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -195,7 +195,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[1]') === 0) {
-                        $this->objLogger->debug('Found translation plural 2. <br />');
+                        $this->objLogger->debug('Found translation plural 2');
                         preg_match('/msgstr\[1\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr1'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -209,7 +209,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[2]') === 0) {
-                        $this->objLogger->debug('Found translation plural 3. <br />');
+                        $this->objLogger->debug('Found translation plural 3');
                         preg_match('/msgstr\[2\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr2'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -651,29 +651,34 @@
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
                 $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
 
-                $arrResult = NarroApp::$PluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
-                if
-                (
-                    trim($arrResult[1]) != '' &&
-                    $arrResult[0] == $strOriginal &&
-                    $arrResult[2] == $strContext &&
-                    $arrResult[3] == $this->objFile &&
-                    $arrResult[4] == $this->objProject
-                ) {
-                    $strSuggestionValue = $arrResult[1];
-                }
-                else
-                    $this->objLogger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strTranslation, $strTranslation));
+                if ($strSuggestionValue !== false) {
 
-                if (!is_null($strOriginalAccKey) && !is_null($strOriginalAccKeyPrefix)) {
-                    /**
-                     * @todo don't export if there's no valid access key
-                     */
-                    $strTextWithAccKey = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, $strOriginalAccKeyPrefix . $objNarroContextInfo->SuggestionAccessKey, $strSuggestionValue, 1);
-                    return $strTextWithAccKey;
+                    $arrResult = NarroApp::$PluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
+                    if
+                    (
+                        trim($arrResult[1]) != '' &&
+                        $arrResult[0] == $strOriginal &&
+                        $arrResult[2] == $strContext &&
+                        $arrResult[3] == $this->objFile &&
+                        $arrResult[4] == $this->objProject
+                    ) {
+                        $strSuggestionValue = $arrResult[1];
+                    }
+                    else
+                        $this->objLogger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strSuggestionValue, join(';', $arrResult)));
+
+                    if (!is_null($strOriginalAccKey) && !is_null($strOriginalAccKeyPrefix)) {
+                        /**
+                         * @todo don't export if there's no valid access key
+                         */
+                        $strTextWithAccKey = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, $strOriginalAccKeyPrefix . $objNarroContextInfo->SuggestionAccessKey, $strSuggestionValue, 1);
+                        return $strTextWithAccKey;
+                    }
+                    else
+                        return $strSuggestionValue;
                 }
                 else
-                    return $strSuggestionValue;
+                    return '';
             }
             else {
                 return '';

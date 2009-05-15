@@ -165,13 +165,25 @@
             chmod($this->strWorkingDirectory, 0777);
 
             NarroLog::LogMessage(3, sprintf('Trying to uncompress %s', $this->fileSource->File));
-            $objResult = File_Archive::extract($src = $this->fileSource->File . '/', $dest = $this->strWorkingDirectory);
-            if (PEAR::isError($objResult)) {
-                throw new Exception(sprintf('Failed to uncompress %s: %s', $this->fileSource->File, $objResult->getMessage()));
-                return false;
-            }
-            else
+            $objZipFile = new ZipArchive();
+            $intErrCode = $objZipFile->open($this->fileSource->File);
+            if ($intErrCode === TRUE) {
+                $objZipFile->extractTo($this->strWorkingDirectory);
+                $objZipFile->close();
                 NarroLog::LogMessage(3, sprintf('Sucessfully uncompressed %s.', $this->fileSource->File));
+            } else {
+                switch($intErrCode) {
+                    case ZIPARCHIVE::ER_NOZIP:
+                        $strError = 'Not a zip archive';
+                        break;
+                    default:
+                        $strError = 'Error code: '. $intErrCode;
+                }
+                unlink($this->fileSource->File);
+                $this->fileSource->File = '';
+
+                throw new Exception(sprintf('Failed to uncompress %s: %s', $this->fileSource->File, $strError));
+            }
 
             unlink($this->fileSource->File);
             NarroUtils::RecursiveChmod($this->strWorkingDirectory);
