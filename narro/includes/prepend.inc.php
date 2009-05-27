@@ -67,6 +67,8 @@
                     require_once($strFilePath);
                 elseif (file_exists($strFilePath = sprintf('%s/narro/importer/%s.class.php', __INCLUDES__, $strClassName)))
                     require_once($strFilePath);
+                elseif (file_exists($strFilePath = sprintf('%s/narro/search/%s.class.php', __INCLUDES__, $strClassName)))
+                    require_once($strFilePath);
                 elseif (file_exists($strFilePath = sprintf('%s/qcodo/qform/%s.class.php', __INCLUDES__, $strClassName)))
                     require_once($strFilePath);
             }

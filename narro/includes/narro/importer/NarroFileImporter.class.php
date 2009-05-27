@@ -262,7 +262,7 @@
                     return false;
                 }
 
-                $this->objLogger->debug(sprintf('Added the context "%s" from the file "%s"', $strContext, $this->objFile->FileName));
+                $this->objLogger->debug(sprintf('Added the context "%s" from the file "%s"', nl2br($strContext), $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Imported contexts']++;
             }
             elseif($objNarroContext instanceof NarroContext) {

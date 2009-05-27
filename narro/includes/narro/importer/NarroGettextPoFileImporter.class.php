@@ -225,7 +225,7 @@
                     /**
                      * Remove the source line numbers from the context, they change too often
                      */
-                    $arrFields['Context'] = $arrFields['MsgContext'];
+                    $arrFields['Context'] =  $arrFields['MsgContext'] . " " . md5($arrFields['MsgId']);
                     $arrFields['ContextComment'] = $arrFields['ExtractedComment'] . preg_replace('/(:[0-9]+)/m', '', $arrFields['Reference']) . $arrFields['Flag'] . $arrFields['PreviousContext'] . $arrFields['PreviousUntranslated'] . $arrFields['PreviousUntranslatedPlural'] . $arrFields['MsgContext'];
 
                     if (!is_null($arrFields['MsgId'])) $arrFields['MsgId'] = str_replace('\"', '"', $arrFields['MsgId']);
@@ -235,10 +235,6 @@
                     if (!is_null($arrFields['MsgStr0'])) $arrFields['MsgStr0'] = str_replace('\"', '"', $arrFields['MsgStr0']);
                     if (!is_null($arrFields['MsgStr1'])) $arrFields['MsgStr1'] = str_replace('\"', '"', $arrFields['MsgStr1']);
                     if (!is_null($arrFields['MsgStr2'])) $arrFields['MsgStr2'] = str_replace('\"', '"', $arrFields['MsgStr2']);
-
-                    if (trim($arrFields['Context']) == '') {
-                        $arrFields['Context'] = sprintf('This text has no context info. The text is used in %s. Unique id is %s', $this->objFile->FileName, md5($arrFields['MsgId']));
-                    }
 
                     if ((!isset($arrFields['MsgId']) && !isset($arrFields['MsgPluralId'])) || (!isset($arrFields['MsgStr']) && !isset($arrFields['MsgStr0'])))
                         continue;

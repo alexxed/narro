@@ -311,6 +311,9 @@
                     0,
                     $strProjectName
                 ) .
+                '<div style="display:block">' .
+                htmlspecialchars($objNarroProject->ProjectDescription) .
+                '</div>' .
                 $strReviewers .
                 $strTranslators . $pnlTranslatorPie->Render(false);
         }

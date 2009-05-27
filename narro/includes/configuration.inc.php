@@ -46,7 +46,7 @@
         case 'prod':
     }
 
-    define ('NARRO_VERSION', '0.9.4');
+    define ('NARRO_VERSION', '0.9.5');
     define ('ALLOW_REMOTE_ADMIN', false);
 
     /**
@@ -113,6 +113,7 @@
         dirname(__FILE__) . __SUBDIRECTORY__ . PATH_SEPARATOR .
         __INCLUDES__ . PATH_SEPARATOR .
         __INCLUDES__ . '/narro/importer' . PATH_SEPARATOR .
+        __INCLUDES__ . '/narro/search' . PATH_SEPARATOR .
         __INCLUDES__ . '/narro' . PATH_SEPARATOR .
         __INCLUDES__ . '/PEAR'
         );

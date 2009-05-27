@@ -53,8 +53,10 @@
                 $hndFile = fopen($this->strLogFile, 'r');
                 if ($hndFile) {
                     $strLogContents = '';
+                    $strLogLine = '';
                     while (!feof($hndFile)) {
                         $strLogLine = fgets($hndFile);
+
                         if (trim($strLogLine)) {
                             switch($this->lstFilter->SelectedValue) {
                                 case 0:
