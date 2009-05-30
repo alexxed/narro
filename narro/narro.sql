@@ -393,6 +393,8 @@ CREATE TABLE narro_user (
   UNIQUE KEY email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO narro_user (user_id, username, password, email, data) VALUES(0, 'Anonymous', '', '', '');
+
 CREATE TABLE narro_user_role (
   user_role_id int(10) unsigned NOT NULL auto_increment,
   user_id int(10) unsigned NOT NULL,
@@ -474,5 +476,5 @@ ALTER TABLE narro_user_role
   ADD CONSTRAINT narro_user_role_ibfk_2 FOREIGN KEY (role_id) REFERENCES narro_role (role_id),
   ADD CONSTRAINT narro_user_role_ibfk_3 FOREIGN KEY (project_id) REFERENCES narro_project (project_id),
   ADD CONSTRAINT narro_user_role_ibfk_4 FOREIGN KEY (language_id) REFERENCES narro_language (language_id);
-  
+
 SET FOREIGN_KEY_CHECKS=1;
