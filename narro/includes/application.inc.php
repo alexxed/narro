@@ -214,7 +214,7 @@
 
     if (!NarroApp::$User instanceof NarroUser)
         // @todo add handling here
-        throw Exception('Could not create an instance of NarroUser');
+        throw new Exception('Could not create an instance of NarroUser');
 
     if (!NarroApp::$Cache->getIdsMatchingTags(array('NarroUser' . NarroApp::$User->UserId))) {
         NarroApp::$User = NarroUser::LoadByUserId(NarroApp::$User->UserId);

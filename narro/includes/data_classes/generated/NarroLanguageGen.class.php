@@ -795,7 +795,7 @@
 
 				case 'PluralForm':
 					/**
-					 * Gets the value for strPluralForm (Not Null)
+					 * Gets the value for strPluralForm 
 					 * @return string
 					 */
 					return $this->strPluralForm;
@@ -1061,7 +1061,7 @@
 
 				case 'PluralForm':
 					/**
-					 * Sets the value for strPluralForm (Not Null)
+					 * Sets the value for strPluralForm 
 					 * @param string $mixValue
 					 * @return string
 					 */

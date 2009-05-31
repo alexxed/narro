@@ -18,23 +18,15 @@
 	 * @subpackage GeneratedDataObjects
 	 */
 	abstract class NarroProjectSettingTypeGen extends QBaseClass {
-		const Sourcefilestoignore = 1;
-		const Forceasciiaccesskeys = 2;
 
-		const MaxId = 2;
+		const MaxId = 0;
 
-		public static $NameArray = array(
-			1 => 'Source files to ignore',
-			2 => 'Force ascii access keys');
+		public static $NameArray = array();
 
-		public static $TokenArray = array(
-			1 => 'Sourcefilestoignore',
-			2 => 'Forceasciiaccesskeys');
+		public static $TokenArray = array();
 
 		public static function ToString($intNarroProjectSettingTypeId) {
 			switch ($intNarroProjectSettingTypeId) {
-				case 1: return 'Source files to ignore';
-				case 2: return 'Force ascii access keys';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroProjectSettingTypeId: %s', $intNarroProjectSettingTypeId));
 			}
@@ -42,8 +34,6 @@
 
 		public static function ToToken($intNarroProjectSettingTypeId) {
 			switch ($intNarroProjectSettingTypeId) {
-				case 1: return 'Sourcefilestoignore';
-				case 2: return 'Forceasciiaccesskeys';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroProjectSettingTypeId: %s', $intNarroProjectSettingTypeId));
 			}

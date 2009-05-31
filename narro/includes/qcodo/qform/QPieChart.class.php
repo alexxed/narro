@@ -20,6 +20,7 @@
         protected $arrData;
         protected $intMinimumDataValue = 0;
         protected $intTotal;
+        protected $intMaxValues = 12;
 
         public function __construct($objParentObject, $strControlId = null) {
             // Call the Parent
@@ -38,17 +39,26 @@
 
             $arrData = array();
             $arrToolTip = array();
+            $intIndex = 1;
             foreach($this->arrData as $strLabel=>$intCount) {
                 if ($intCount > $this->intMinimumDataValue) {
-                    $arrData[$strLabel] = round(($intCount * 100) / $this->intTotal, 2);
-                    $arrToolTip[] = sprintf('%s (%d)', $strLabel, $intCount);
+                    if ($intIndex > $this->intMaxValues) {
+                        $arrData[t('Others')] += round(($intCount * 100) / $this->intTotal, 2);
+                        $arrToolTip[t('Others')] = sprintf('%s (%d), ', t('Others'), $arrData[t('Others')]);
+                    }
+                    else {
+                        $arrData[$strLabel] = round(($intCount * 100) / $this->intTotal, 2);
+                        $arrToolTip[$strLabel] = sprintf('%s (%d)', $strLabel, $intCount);
+                    }
+
+                    $intIndex++;
                 }
             }
 
             if (count($arrData)) {
                 $strData = join(',', array_values($arrData));
                 $strLabels = join('|', array_keys($arrData));
-                $strTooltip = join(',', $arrToolTip);
+                $strTooltip = join(',', array_values($arrToolTip));
 
                 $this->strText = sprintf('<img src="http://chart.apis.google.com/chart?cht=p&chd=t:%s&chs=%dx%d&chl=%s" alt="%s" title="%s" />', $strData, $this->strWidth, $this->strHeight, $strLabels, $strTooltip, $strTooltip);
             }
