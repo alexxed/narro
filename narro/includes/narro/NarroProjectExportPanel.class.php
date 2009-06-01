@@ -237,6 +237,12 @@
         }
 
         private function CreateExportArchive($strTranslationPath, $strArchive) {
+            $strExportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . NarroApp::$Language->LanguageCode . '-export.log';
+
+            require_once('Zend/Log.php');
+            require_once('Zend/Log/Writer/Stream.php');
+
+            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strExportLogFile));
 
             if (file_exists($strArchive))
                 unlink($strArchive);
@@ -258,7 +264,12 @@
                 return false;
             }
             $objZipFile->close();
-            chmod($strArchive, 0666);
+            if (file_exists($strArchive))
+                chmod($strArchive, 0666);
+            else {
+                $objLogger->err(sprintf('Failed to create an archive %s', $strArchive));
+                return false;
+            }
             return true;
         }
 
