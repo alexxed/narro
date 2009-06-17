@@ -344,7 +344,13 @@
             $objFileImporter->TargetLanguage = NarroApp::$Language;
             $objFileImporter->File = $objFile;
 
-            NarroLog::$intMinLogLevel = 3;
+            $strImportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . NarroApp::$Language->LanguageCode . '-import.log';
+
+            require_once('Zend/Log.php');
+            require_once('Zend/Log/Writer/Stream.php');
+            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strImportLogFile));
+
+            $objFileImporter->Logger = $objLogger;
 
             $strTempFileName = tempnam(__TMP_PATH__, NarroApp::$Language->LanguageCode);
 
@@ -404,11 +410,16 @@
             $objFileImporter->CheckEqual = true;
             $objFileImporter->File = $objFile;
 
+            $strImportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . NarroApp::$Language->LanguageCode . '-import.log';
+
+            require_once('Zend/Log.php');
+            require_once('Zend/Log/Writer/Stream.php');
+            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strImportLogFile));
+
+            $objFileImporter->Logger = $objLogger;
             $objFileImporter->OnlySuggestions = !NarroApp::HasPermissionForThisLang('Can approve', $objFile->ProjectId);
             $objFileImporter->DeactivateFiles = false;
             $objFileImporter->DeactivateContexts = false;
-
-            NarroLog::$intMinLogLevel = 3;
 
             $objFileImporter->Approve = NarroApp::HasPermissionForThisLang('Can approve', $objFile->ProjectId);
 

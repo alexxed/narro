@@ -679,6 +679,7 @@
                 case "CheckEqual": return $this->blnCheckEqual;
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
                 case "ExportedSuggestion": return $this->intExportedSuggestion;
+                case "Logger": return $this->objLogger;
 
                 default: return false;
             }
@@ -690,41 +691,59 @@
         public function __set($strName, $mixValue) {
 
             switch ($strName) {
+                case "Logger":
+                    if ($mixValue instanceof Zend_Log) {
+                        $this->objLogger = $mixValue;
+                        break;
+                    }
+                    else
+                        throw new Exception(t('User should be set with an instance of Zend_Log'));
+
                 case "User":
-                    if ($mixValue instanceof NarroUser)
+                    if ($mixValue instanceof NarroUser) {
                         $this->objUser = $mixValue;
+                        break;
+                    }
                     else
                         throw new Exception(t('User should be set with an instance of NarroUser'));
 
                     break;
 
                 case "Project":
-                    if ($mixValue instanceof NarroProject)
+                    if ($mixValue instanceof NarroProject) {
                         $this->objProject = $mixValue;
+                        break;
+                    }
                     else
                         throw new Exception(t('Project should be set with an instance of NarroProject'));
 
                     break;
 
                 case "File":
-                    if ($mixValue instanceof NarroFile)
+                    if ($mixValue instanceof NarroFile) {
                         $this->objFile = $mixValue;
+                        break;
+                    }
                     else
                         throw new Exception(t('File should be set with an instance of NarroFile'));
 
                     break;
 
                 case "TargetLanguage":
-                    if ($mixValue instanceof NarroLanguage)
+                    if ($mixValue instanceof NarroLanguage) {
                         $this->objTargetLanguage = $mixValue;
+                        break;
+                    }
                     else
                         throw new Exception(t('TargetLanguage should be set with an instance of NarroLanguage'));
 
                     break;
 
                 case "SourceLanguage":
-                    if ($mixValue instanceof NarroLanguage)
+                    if ($mixValue instanceof NarroLanguage) {
                         $this->objSourceLanguage = $mixValue;
+                        return false;
+                    }
                     else
                         throw new Exception(t('SourceLanguage should be set with an instance of NarroLanguage'));
 

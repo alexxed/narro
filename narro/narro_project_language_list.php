@@ -83,8 +83,12 @@
                 NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
             );
 
-            if (NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
-                $this->pnlBreadcrumb->addElement(NarroLink::ProjectManage($this->objNarroProject->ProjectId, t('Manage')));
+            if (NarroApp::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectImport($this->objNarroProject->ProjectId, t('Import')));
+
+            if (NarroApp::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectExport($this->objNarroProject->ProjectId, t('Export')));
+
 
             if (NarroApp::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId))
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($this->objNarroProject->ProjectId, t('Edit')));

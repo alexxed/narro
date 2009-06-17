@@ -32,6 +32,8 @@
             if (NarroApp::$User->getPreferenceValueByName('Spellchecking') == 'I don\'t need it')
                 return true;
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strText);
+            $strCleanText = str_replace(array('\n', '\r'), array(' ', ' '), $strText);
+            $strCleanText = mb_ereg_replace('http://[a-z\-A-Z\.]+', ' ', $strCleanText);
             $strCleanText = strip_tags($strCleanText);
             /**
              * mozilla entitites: &xxx;
@@ -50,6 +52,8 @@
              * some characters that mess with the spellchecking
              */
             $strCleanText = mb_ereg_replace('[\(\)]+', ' ', $strCleanText);
+            $strCleanText = mb_ereg_replace('[„”]', ' ', $strCleanText);
+            $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strCleanText);
 
             $strSpellLang = NarroApp::$User->getPreferenceValueByName('Language');
 

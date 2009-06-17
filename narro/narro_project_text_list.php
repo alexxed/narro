@@ -16,6 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     require_once('includes/prepend.inc.php');
+    require_once('narro_text_list.php');
 
     class NarroProjectTextListForm extends NarroTextListForm {
 
@@ -52,8 +53,11 @@
                 NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
             );
 
-            if (NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId) && NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroProject->ProjectId) )
-                $this->pnlBreadcrumb->addElement(NarroLink::ProjectManage($intProjectId, t('Manage')));
+            if (NarroApp::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectImport($intProjectId, t('Import')));
+
+            if (NarroApp::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectImport($intProjectId, t('Export')));
 
             if (NarroApp::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId) && NarroApp::HasPermissionForThisLang('Can vote', $this->objNarroProject->ProjectId) )
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($intProjectId, t('Edit')));
