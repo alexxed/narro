@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once(dirname(__FILE__) . '/../../prepend.inc.php');
+    require_once(dirname(__FILE__) . '/../../configuration/prepend.inc.php');
 
     if (!isset($argv[2])) {
         echo
@@ -25,7 +25,7 @@
                     "--import                     import a project\n" .
                     "--export                     export a project\n" .
                     "--project                    project id from the database\n" .
-                    "--template-lang              language code for the original texts, optional, defaults to en-US\n" .
+                    "--template-lang              language code for the original texts, optional, defaults to %s\n" .
                     "--translation-lang           language code for the translations\n" .
                     "--template-directory         the directory that holds the original texts" .
                     "--translation-directory      the directory that holds the translations" .
@@ -46,7 +46,8 @@
                     "--copy-unhandled-files       copy unhandled files when exporting\n" .
                     "--only-suggestions           import only suggestions, don't add files, texts\n" .
                     "                             or contexts\n",
-                basename(__FILE__)
+                basename(__FILE__),
+                NarroLanguage::SOURCE_LANGUAGE_CODE
             )
         ;
         exit();
@@ -76,7 +77,7 @@
         if (array_search('--template-lang', $argv) !== false)
             $strSourceLanguage = $argv[array_search('--template-lang', $argv)+1];
         else
-            $strSourceLanguage = 'en-US';
+            $strSourceLanguage = NarroLanguage::SOURCE_LANGUAGE_CODE;
 
         if (array_search('--translation-lang', $argv) !== false)
             $strTargetLanguage = $argv[array_search('--translation-lang', $argv)+1];
@@ -105,7 +106,7 @@
             }
         }
 
-        NarroApp::$User = $objUser;
+        QApplication::$User = $objUser;
 
         /**
          * Load the specified project
@@ -125,7 +126,7 @@
             return false;
         }
 
-        NarroApp::$Language = $objLanguage;
+        QApplication::$Language = $objLanguage;
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 
@@ -194,7 +195,7 @@
         if (array_search('--template-lang', $argv) !== false)
             $strSourceLanguage = $argv[array_search('--template-lang', $argv)+1];
         else
-            $strSourceLanguage = 'en-US';
+            $strSourceLanguage = NarroLanguage::SOURCE_LANGUAGE_CODE;
 
         if (array_search('--translation-lang', $argv) !== false)
             $strTargetLanguage = $argv[array_search('--translation-lang', $argv)+1];
@@ -218,7 +219,7 @@
             }
         }
 
-        NarroApp::$User = $objUser;
+        QApplication::$User = $objUser;
 
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
@@ -232,7 +233,7 @@
             return false;
         }
 
-        NarroApp::$Language = $objLanguage;
+        QApplication::$Language = $objLanguage;
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 

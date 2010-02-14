@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -340,7 +340,7 @@
                         else
                             $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strCharsetLine ;
 
-                        $strTranslatorLine = sprintf('Last-Translator: %s <%s>\n', NarroApp::$User->Username, NarroApp::$User->Email);
+                        $strTranslatorLine = sprintf('Last-Translator: %s <%s>\n', QApplication::$User->Username, QApplication::$User->Email);
 
                         if (strstr($arrTemplateFields['MsgStr'], '"Last-Translator:'))
                             $arrTemplateFields['MsgStr'] = preg_replace('/Last\-Translator:[^"]+/mi', $strTranslatorLine, $arrTemplateFields['MsgStr']);
@@ -466,11 +466,6 @@
                      */
                     $arrTranslatedFile[$strContext]['MsgStr'] = '';
 
-                    $arrTranslatedFile[$strContext]['Flag'] = str_replace(', fuzzy', '', $arrTranslatedFile[$strContext]['Flag']);
-                    /**
-                     * if no other flags are found, just empty the variable
-                     */
-                    if (strlen(trim($arrTranslatedFile[$strContext]['Flag'])) < 4) $arrTranslatedFile[$strContext]['Flag'] = null;
                 }
 
 
@@ -487,19 +482,28 @@
                          */
                         if (strlen(trim($arrTranslatedFile[$strContext]['Flag'])) < 4) $arrTranslatedFile[$strContext]['Flag'] = null;
                     }
-
-                    if (
-                        isset($arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]) &&
-                        $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] != '' &&
-                        isset($arrTranslatedFile[$strContext]['MsgPluralId']) &&
-                        $arrTranslatedFile[$strContext]['MsgPluralId'] == $arrTemplateFields['MsgPluralId']
-                    ) {
-                        $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] = str_replace('\"', '"', $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]);
-                    }
                     else {
-                        $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] = '';
+
+                        if (
+                            isset($arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]) &&
+                            $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] != '' &&
+                            isset($arrTranslatedFile[$strContext]['MsgPluralId']) &&
+                            $arrTranslatedFile[$strContext]['MsgPluralId'] == $arrTemplateFields['MsgPluralId']
+                        ) {
+                            $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] = str_replace('\"', '"', $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]);
+                        }
+                        else {
+                            $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] = '';
+                        }
                     }
                 }
+
+                $arrTranslatedFile[$strContext]['Flag'] = str_replace(', fuzzy', '', $arrTranslatedFile[$strContext]['Flag']);
+                /**
+                 * if no other flags are found, just empty the variable
+                 */
+                if (strlen(trim($arrTranslatedFile[$strContext]['Flag'])) < 4) $arrTranslatedFile[$strContext]['Flag'] = null;
+
 
                 /**
                  * if it's not a plural, just add msgid and msgstr
@@ -649,7 +653,7 @@
 
                 if ($strSuggestionValue !== false) {
 
-                    $arrResult = NarroApp::$PluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
+                    $arrResult = QApplication::$PluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
                     if
                     (
                         trim($arrResult[1]) != '' &&

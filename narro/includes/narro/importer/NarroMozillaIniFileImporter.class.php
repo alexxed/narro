@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -34,8 +34,8 @@
             $strTranslatedFileContents = str_replace("\\\n", '', $strTranslatedFileContents);
             $strTemplateContents = str_replace("\\\n", '', $strTemplateContents);
 
-            $arrFileContents = split("\n", $strTranslatedFileContents);
-            $arrTemplateContents = split("\n", $strTemplateContents);
+            $arrFileContents = explode("\n", $strTranslatedFileContents);
+            $arrTemplateContents = explode("\n", $strTemplateContents);
 
             $arrTranslation = array();
             foreach($arrFileContents as $intPos=>$strLine) {
@@ -96,7 +96,7 @@
 
             $strTemplateContents = str_replace("\\\n", '', $strTemplateContents);
 
-            $arrTemplateContents = split("\n", $strTemplateContents);
+            $arrTemplateContents = explode("\n", $strTemplateContents);
 
             foreach($arrTemplateContents as $intPos=>$strLine) {
                 if (preg_match('/^\s*([\@0-9a-zA-Z\-\_\.\?\{\}]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches)) {
@@ -124,7 +124,7 @@
 
                 if (isset($arrTranslation[$strKey])) {
 
-                    $arrResult = NarroApp::$PluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
+                    $arrResult = QApplication::$PluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
 
                     if
                     (

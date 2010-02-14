@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -24,8 +24,8 @@
         }
 
         public function AddText($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            $objFile->DeleteAllTextsCacheByLanguage(NarroApp::GetLanguageId());
-            $objProject->DeleteAllTextsCacheByLanguage(NarroApp::GetLanguageId());
+            $objFile->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
+            $objProject->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
@@ -38,33 +38,33 @@
         }
 
         public function DisapproveSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            $objFile->DeleteApprovedTextsByLanguage(NarroApp::GetLanguageId());
-            $objProject->DeleteApprovedTextsByLanguage(NarroApp::GetLanguageId());
-            $objFile->DeleteTranslatedTextsByLanguage(NarroApp::GetLanguageId());
-            $objProject->DeleteTranslatedTextsByLanguage(NarroApp::GetLanguageId());
+            $objFile->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
+            $objProject->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
+            $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
+            $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
 
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
         public function ApproveSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            $objFile->DeleteApprovedTextsByLanguage(NarroApp::GetLanguageId());
-            $objProject->DeleteApprovedTextsByLanguage(NarroApp::GetLanguageId());
-            $objFile->DeleteTranslatedTextsByLanguage(NarroApp::GetLanguageId());
-            $objProject->DeleteTranslatedTextsByLanguage(NarroApp::GetLanguageId());
+            $objFile->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
+            $objProject->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
+            $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
+            $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
 
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
         public function AddSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            $objFile->DeleteTranslatedTextsByLanguage(NarroApp::GetLanguageId());
-            $objProject->DeleteTranslatedTextsByLanguage(NarroApp::GetLanguageId());
+            $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
+            $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
 
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
         public function DeleteSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            $objFile->DeleteTranslatedTextsByLanguage(NarroApp::GetLanguageId());
-            $objProject->DeleteTranslatedTextsByLanguage(NarroApp::GetLanguageId());
+            $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
+            $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
 
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }

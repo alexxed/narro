@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -119,7 +119,7 @@
                 NarroContextInfo::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $objFile->FileId),
-                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
                     )
                 );
@@ -131,7 +131,7 @@
 
                 if ($objNarroContextInfo->TextAccessKey) {
                     if ($objNarroContextInfo->SuggestionAccessKey) {
-                        if (!preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->SuggestionAccessKey) && NarroApp::$User->getPreferenceValueByName('Force ascii letters as access keys') == 'Yes') {
+                        if (!preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->SuggestionAccessKey) && QApplication::$User->getPreferenceValueByName('Force ascii letters as access keys') == 'Yes') {
                             if (preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches)) {
                                 $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $arrPossibleKeyMatches[0];
                                 $this->objLogger->warn(sprintf('For context "%s", found access key "%s" is not a ascii character, using the first ascii character as accesskey: "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $arrPossibleKeyMatches[0]));

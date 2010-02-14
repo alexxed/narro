@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -101,7 +101,7 @@
                             $this->objTargetLanguage->LanguageId,
                             escapeshellarg($this->objProject->ProjectName),
                             $this->objProject->ProjectId,
-                            NarroApp::GetUserId()
+                            QApplication::GetUserId()
                         ),
                         'r'
                 );
@@ -118,7 +118,7 @@
             }
 
             if ($this->objProject->ProjectName == 'Narro')
-                $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
+                $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . NarroLanguage::SOURCE_LANGUAGE_CODE . '/LC_MESSAGES/';
 
             if (!file_exists($this->strTemplatePath))
                 throw new Exception(sprintf('Template path %s does not exist.', $this->strTemplatePath));
@@ -142,7 +142,7 @@
 
         public function ImportFromDirectory() {
 
-            $objDatabase = NarroApp::$Database[1];
+            $objDatabase = QApplication::$Database[1];
 
             NarroLog::SetLogFile($this->objProject->ProjectId . '-' . $this->objTargetLanguage->LanguageCode . '-import.log');
 
@@ -180,7 +180,7 @@
                 if (preg_match('/\/CVS|\/\.svn|\/\.hg|\/\.git/', $strFileToImport)) continue;
 
                 $strFilePath = str_replace($this->strTemplatePath, '', $strFileToImport);
-                $arrFileParts = split('/', $strFilePath);
+                $arrFileParts = explode('/', $strFilePath);
                 $strFileName = $arrFileParts[count($arrFileParts)-1];
 
                 unset($arrFileParts[count($arrFileParts)-1]);
@@ -232,9 +232,9 @@
                             NarroImportStatistics::$arrStatistics['Kept folders']++;
                             $objFile->Active = 1;
                             $objFile->FilePath = $strPath;
-                            $objFile->Modified = date('Y-m-d H:i:s');
+                            $objFile->Modified = QDateTime::Now();
                             $objFile->Save();
-                            NarroApp::$PluginHandler->ActivateFolder($objFile, $this->objProject);
+                            QApplication::$PluginHandler->ActivateFolder($objFile, $this->objProject);
                         }
                         else {
                             /**
@@ -247,8 +247,8 @@
                                 $objFile->ParentId = $intParentId;
                             $objFile->ProjectId = $this->objProject->ProjectId;
                             $objFile->FilePath = $strPath;
-                            $objFile->Modified = date('Y-m-d H:i:s');
-                            $objFile->Created = date('Y-m-d H:i:s');
+                            $objFile->Modified = QDateTime::Now();
+                            $objFile->Created = QDateTime::Now();
                             $objFile->Active = 1;
                             $objFile->Save();
                             $this->objLogger->debug(sprintf('Added folder "%s" from "%s"', $strDir, $strPath));
@@ -277,7 +277,7 @@
                     $objFile->Active = 1;
                     $objFile->TypeId = $intFileType;
                     $objFile->FilePath = $strFilePath;
-                    $objFile->Modified = date('Y-m-d H:i:s');
+                    $objFile->Modified = QDateTime::Now();
                     $strMd5File = md5_file($strFileToImport);
                     if ($strMd5File == $objFile->FileMd5)
                         $blnSourceFileChanged = false;
@@ -301,11 +301,11 @@
                     $objFile->Active = 1;
                     $objFile->FilePath = $strFilePath;
                     $objFile->FileMd5 = md5_file($strFileToImport);
-                    $objFile->Modified = date('Y-m-d H:i:s');
-                    $objFile->Created = date('Y-m-d H:i:s');
+                    $objFile->Modified = QDateTime::Now();
+                    $objFile->Created = QDateTime::Now();
                     $objFile->Save();
                     $blnSourceFileChanged = true;
-                    NarroApp::$PluginHandler->ActivateFile($objFile, $this->objProject);
+                    QApplication::$PluginHandler->ActivateFile($objFile, $this->objProject);
                     $this->objLogger->debug(sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
@@ -396,7 +396,7 @@
             $this->startTimer();
 
             if ($this->objProject->ProjectName == 'Narro')
-                $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US/LC_MESSAGES/';
+                $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . NarroLanguage::SOURCE_LANGUAGE_CODE . '/LC_MESSAGES/';
 
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
                 if ($this->ExportFromDirectory()) {
@@ -420,7 +420,7 @@
                             $this->objTargetLanguage->LanguageId,
                             escapeshellarg($this->objProject->ProjectName),
                             $this->objProject->ProjectId,
-                            NarroApp::GetUserId()
+                            QApplication::GetUserId()
                         ),
                         'r'
                 );
@@ -483,7 +483,7 @@
 
             if (is_array($arrFiles))
             foreach($arrFiles as $intFileNo=>$strFileToExport) {
-                $arrFileParts = split('/', str_replace($this->strTemplatePath, '', $strFileToExport));
+                $arrFileParts = explode('/', str_replace($this->strTemplatePath, '', $strFileToExport));
                 $strFileName = $arrFileParts[count($arrFileParts)-1];
                 unset($arrFileParts[count($arrFileParts)-1]);
                 unset($arrFileParts[0]);

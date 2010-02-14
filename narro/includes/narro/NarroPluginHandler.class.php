@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -72,24 +72,30 @@
 
 
         public function __call($strMethod, $arrParameters) {
-            $mixReturn = $arrParameters;
+            if (is_array($this->arrPlugins))
+                foreach($this->arrPlugins as $objPlugin) {
+                    if (method_exists($objPlugin, $strMethod)) {
+                        $this->arrPluginReturnValues[$objPlugin->Name] = call_user_func_array(array($objPlugin, $strMethod), $arrParameters);
+                        if ($this->arrPluginReturnValues[$objPlugin->Name] !== false) {
+                            if (is_array($arrParameters))
+                                $arrParameters = $this->arrPluginReturnValues[$objPlugin->Name];
+                            else
+                                $arrParameters = array($this->arrPluginReturnValues[$objPlugin->Name]);
+                        }
 
-            foreach($this->arrPlugins as $objPlugin) {
-                if (method_exists($objPlugin, $strMethod)) {
-                    $this->arrPluginReturnValues[$objPlugin->Name] = call_user_func_array(array($objPlugin, $strMethod), $arrParameters);
-                    if ($this->arrPluginReturnValues[$objPlugin->Name] !== false) {
-                        if (is_array($arrParameters))
-                            $arrParameters = $this->arrPluginReturnValues[$objPlugin->Name];
-                        else
-                            $arrParameters = array($this->arrPluginReturnValues[$objPlugin->Name]);
-                    }
-
-                    if ($objPlugin->Errors) {
-                        $this->arrPluginErrors[$objPlugin->Name] = $objPlugin->Errors;
+                        if ($objPlugin->Errors) {
+                            $this->arrPluginErrors[$objPlugin->Name] = $objPlugin->Errors;
+                        }
+                        else {
+                            if (!is_array($arrParameters)) return $arrParameters;
+                            switch((count($arrParameters))) {
+                                case 0: $mixReturn = false; break;
+                                case 1: $mixReturn = $arrParameters[0]; break;
+                                default: $mixReturn = $arrParameters;
+                            }
+                        }
                     }
                     else {
-                        if (!is_array($arrParameters)) return $arrParameters;
-
                         switch((count($arrParameters))) {
                             case 0: $mixReturn = false; break;
                             case 1: $mixReturn = $arrParameters[0]; break;
@@ -97,14 +103,13 @@
                         }
                     }
                 }
-                else {
-                    switch((count($arrParameters))) {
-                        case 0: $mixReturn = false; break;
-                        case 1: $mixReturn = $arrParameters[0]; break;
-                        default: $mixReturn = $arrParameters;
-                    }
-                }
+
+            switch((count($arrParameters))) {
+                case 0: $mixReturn = false; break;
+                case 1: $mixReturn = $arrParameters[0]; break;
+                default: $mixReturn = $arrParameters;
             }
+
             return $mixReturn;
         }
 

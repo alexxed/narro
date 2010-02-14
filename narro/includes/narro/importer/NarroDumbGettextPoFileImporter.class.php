@@ -1,7 +1,7 @@
 <?php
 /**
  * Narro is an application that allows online software translation and maintenance.
- * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+ * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
  * http://code.google.com/p/narro/
  *
  * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -344,7 +344,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                     else
                     $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strCharsetLine ;
 
-                    $strTranslatorLine = sprintf('Last-Translator: %s <%s>\n', NarroApp::$User->Username, NarroApp::$User->Email);
+                    $strTranslatorLine = sprintf('Last-Translator: %s <%s>\n', QApplication::$User->Username, QApplication::$User->Email);
 
                     if (strstr($arrTemplateFields['MsgStr'], '"Last-Translator:'))
                     $arrTemplateFields['MsgStr'] = preg_replace('/Last\-Translator:[^"]+/mi', $strTranslatorLine, $arrTemplateFields['MsgStr']);
@@ -652,7 +652,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
         if ( $objNarroContextInfo instanceof NarroContextInfo ) {
             $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
 
-            $arrResult = NarroApp::$PluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
+            $arrResult = QApplication::$PluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
             if
             (
             trim($arrResult[1]) != '' &&

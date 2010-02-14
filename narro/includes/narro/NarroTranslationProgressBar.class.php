@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -29,7 +29,7 @@
 
         protected function GetControlHtml() {
             if ($this->intTotal == 0) {
-                return t('No texts');
+                return t('Nothing to translate');
             }
 
             $intPercentTranslated = 0;
@@ -44,14 +44,14 @@
                 else
                     $intPercentTranslated = 0;
 
-                $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/green-bar.png', $intPercentTranslated);
+                $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', 'assets/images/green-bar.png', $intPercentTranslated);
 
                 if ($this->intFuzzy > 0)
                     $intPercentFuzzy = ceil(($this->intFuzzy * 100)/$this->intTotal);
                 else
                     $intPercentFuzzy = 0;
 
-                $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/orange-bar.png', $intPercentFuzzy);
+                $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', 'assets/images/orange-bar.png', $intPercentFuzzy);
 
             }
 
@@ -60,7 +60,7 @@
             else
                 $intPercentUntranslated = 0;
 
-            $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', __IMAGE_ASSETS__ . '/red-bar.png',  $intPercentUntranslated);
+            $strText .= sprintf('<img src="%s" width="%d" height="100%%" border="0" />', 'assets/images/red-bar.png',  $intPercentUntranslated);
 
 
             $strText .= sprintf(' %d%%</div>', $intPercentTranslated);

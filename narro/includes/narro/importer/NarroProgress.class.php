@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -18,22 +18,22 @@
     class NarroProgress {
 
         public static function GetProgress($intProjectId, $strOperation) {
-            if (file_exists(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . NarroApp::$Language->LanguageCode))
-                return trim(file_get_contents(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . NarroApp::$Language->LanguageCode));
+            if (file_exists(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode))
+                return trim(file_get_contents(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode));
             else
                 return 0;
         }
 
         public static function SetProgress($intValue, $intProjectId, $strOperation) {
-            if (!@file_put_contents(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . NarroApp::$Language->LanguageCode, $intValue)) {
+            if (!@file_put_contents(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode, $intValue)) {
                 require_once('Zend/Log.php');
                 require_once('Zend/Log/Writer/Stream.php');
 
-                $objLogger = new Zend_Log(new Zend_Log_Writer_Stream(__TMP_PATH__ . '/' . $intProjectId . '-' . NarroApp::$Language->LanguageCode . '-' . $strOperation . '.log'));
+                $objLogger = new Zend_Log(new Zend_Log_Writer_Stream(__TMP_PATH__ . '/' . $intProjectId . '-' . QApplication::$Language->LanguageCode . '-' . $strOperation . '.log'));
 
-                $objLogger->warn(sprintf('Can\'t write progress file %s', __TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . NarroApp::$Language->LanguageCode));
+                $objLogger->warn(sprintf('Can\'t write progress file %s', __TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode));
             }
-            @chmod(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . NarroApp::$Language->LanguageCode, $intValue, 0666);
+            @chmod(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode, $intValue, 0666);
         }
 
     }

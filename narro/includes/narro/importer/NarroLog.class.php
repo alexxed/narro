@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -48,7 +48,7 @@
 
         private static function OutputLog($intMessageType, $strText) {
             if (!self::$strLogFile) {
-                self::$strLogFile = __TMP_PATH__ . '/narro-' . NarroApp::$Language->LanguageCode . '.log';
+                self::$strLogFile = __TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log';
                 self::OutputLog($intMessageType, date('l, j F Y g:i a'));
             }
 
@@ -88,9 +88,9 @@
 
             if (file_exists(self::$strLogFile))
                 return file_get_contents(self::$strLogFile);
-            elseif (file_exists(__TMP_PATH__ . '/narro-' . NarroApp::$Language->LanguageCode . '.log')) {
+            elseif (file_exists(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log')) {
                 self::OutputLog(3, 'No log found, showing the full application log');
-                return file_get_contents(__TMP_PATH__ . '/narro-' . NarroApp::$Language->LanguageCode . '.log');
+                return file_get_contents(__TMP_PATH__ . '/narro-' . QApplication::$Language->LanguageCode . '.log');
             }
             else
                 return 'No log found, check the server log.';

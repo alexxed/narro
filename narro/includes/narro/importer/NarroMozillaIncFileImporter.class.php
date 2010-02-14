@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -34,8 +34,8 @@
             if (!$strTranslatedFileContents || !$strTemplateContents)
                 return false;
 
-            $arrFileContents = split("\n", $strTranslatedFileContents);
-            $arrTemplateContents = split("\n", $strTemplateContents);
+            $arrFileContents = explode("\n", $strTranslatedFileContents);
+            $arrTemplateContents = explode("\n", $strTemplateContents);
 
             foreach($arrFileContents as $intPos=>$strLine) {
                 if (preg_match('/^#define\s+([^\s]+)\s+(.+)$/s', trim($strLine), $arrMatches)) {
@@ -102,7 +102,7 @@
             if (strstr($strTemplateContents, '#define MOZ_LANGPACK_CONTRIBUTORS'))
                 $strTemplateContents = preg_replace('/^#\s+#define MOZ_LANGPACK_CONTRIBUTORS.*$/m', '#define MOZ_LANGPACK_CONTRIBUTORS <em:contributor>Joe Solon</em:contributor> <em:contributor>Suzy Solon</em:contributor>', $strTemplateContents);
 
-            $arrTemplateContents = split("\n", $strTemplateContents);
+            $arrTemplateContents = explode("\n", $strTemplateContents);
 
             foreach($arrTemplateContents as $intPos=>$strLine) {
                 if (preg_match('/^#define\s+([^\s]+)\s+(.+)$/s', trim($strLine), $arrMatches)) {
@@ -121,7 +121,7 @@
                 NarroContextInfo::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
-                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
                     )
                 );
@@ -160,7 +160,7 @@
 
                 if (isset($arrTranslation[$strKey])) {
 
-                    $arrResult = NarroApp::$PluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
+                    $arrResult = QApplication::$PluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
 
                     if
                     (

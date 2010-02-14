@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -116,7 +116,7 @@
                 return false;
             }
             else {
-                $arrResult = NarroApp::$PluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                $arrResult = QApplication::$PluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[0]) != '' &&
@@ -133,7 +133,7 @@
             }
 
             if ($strTranslation != '') {
-                $arrResult = NarroApp::$PluginHandler->SaveSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                $arrResult = QApplication::$PluginHandler->SaveSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[1]) != '' &&
@@ -157,7 +157,7 @@
             }
             else {
                 $strContext = trim($strContext);
-                $arrResult = NarroApp::$PluginHandler->SaveContext($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                $arrResult = QApplication::$PluginHandler->SaveContext($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[2]) != '' &&
@@ -174,7 +174,7 @@
             }
 
             if (!is_null($strComment) && trim($strComment) != '') {
-                $arrResult = NarroApp::$PluginHandler->SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $this->objFile, $this->objProject);
+                $arrResult = QApplication::$PluginHandler->SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $this->objFile, $this->objProject);
                 if
                 (
                     trim($arrResult[3]) != '' &&
@@ -202,7 +202,7 @@
                 $objNarroText = new NarroText();
                 $objNarroText->TextValue = $strOriginal;
 
-                NarroApp::$PluginHandler->AddText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                QApplication::$PluginHandler->AddText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
 
                 try {
                     $objNarroText->Save();
@@ -252,8 +252,8 @@
                 $objNarroContext->ContextMd5 = md5($strContext);
                 $objNarroContext->FileId = $this->objFile->FileId;
                 $objNarroContext->Active = 1;
-                $objNarroContext->Modified = date('Y-m-d H:i:s');
-                $objNarroContext->Created = date('Y-m-d H:i:s');
+                $objNarroContext->Modified = QDateTime::Now();
+                $objNarroContext->Created = QDateTime::Now();
                 try {
                     $objNarroContext->Save();
                 }
@@ -285,6 +285,7 @@
                 $objContextInfo->LanguageId = $this->objTargetLanguage->LanguageId;
                 $objContextInfo->HasSuggestions = 0;
                 $objContextInfo->HasComments = 0;
+                $objContextInfo->Created = QDateTime::Now();
                 $blnContextInfoChanged = true;
             }
             elseif ($objContextInfo instanceof NarroContextInfo) {
@@ -322,8 +323,8 @@
                         $objContextComment->LanguageId = $this->objTargetLanguage->LanguageId;
                         $objContextComment->CommentText = $strComment;
                         $objContextComment->CommentTextMd5 = md5($strComment);
-                        $objContextComment->Modified = date('Y-m-d H:i:s');
-                        $objContextComment->Created = date('Y-m-d H:i:s');
+                        $objContextComment->Modified = QDateTime::Now();
+                        $objContextComment->Created = QDateTime::Now();
                         try {
                             $objContextComment->Save();
                         }
@@ -374,6 +375,7 @@
                 if (!$objNarroSuggestion instanceof NarroSuggestion) {
 
                     $objNarroSuggestion = new NarroSuggestion();
+                    $objNarroSuggestion->IsImported = 1;
                     $objNarroSuggestion->UserId = $this->objUser->UserId;
                     $objNarroSuggestion->TextId = $objNarroText->TextId;
                     $objNarroSuggestion->LanguageId = $this->objTargetLanguage->LanguageId;
@@ -387,7 +389,7 @@
                     }
 
 
-                    NarroApp::$PluginHandler->AddSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+                    QApplication::$PluginHandler->AddSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
 
                     /**
                      * update the HasSuggestions if it was 0 and we added a suggestion
@@ -408,7 +410,7 @@
                         (is_null($objContextInfo->ValidSuggestionId) || $this->blnApproveAlreadyApproved) &&
                         $objContextInfo->ValidSuggestionId != $objNarroSuggestion->SuggestionId) {
                     $objContextInfo->ValidSuggestionId = $objNarroSuggestion->SuggestionId;
-                    $objContextInfo->ValidatorUserId = NarroApp::GetUserId();
+                    $objContextInfo->ValidatorUserId = QApplication::GetUserId();
                     $blnContextInfoChanged = true;
                     NarroImportStatistics::$arrStatistics['Approved suggestions']++;
                 }
@@ -447,7 +449,7 @@
 
                     foreach($arrContextInfo as $objOneContextInfo) {
                         $objOneContextInfo->HasSuggestions = 1;
-                        $objOneContextInfo->Modified = date('Y-m-d H:i:s');
+                        $objOneContextInfo->Modified = QDateTime::Now();
                         $objOneContextInfo->Save();
                     }
 
@@ -458,7 +460,7 @@
             if (!$this->blnOnlySuggestions && $objNarroContext instanceof NarroContext) {
                 try {
                     $objNarroContext->Active = 1;
-                    $objNarroContext->Modified = date('Y-m-d H:i:s');
+                    $objNarroContext->Modified = QDateTime::Now();
                     $objNarroContext->Save();
                 } catch(Exception $objExc) {
                     $this->objLogger->err(sprintf('Error while setting context "%s" to active: %s', $strContext, $objExc->getMessage()));
@@ -467,7 +469,7 @@
             }
 
             if ($blnContextInfoChanged && $objContextInfo instanceof NarroContextInfo) {
-                $objContextInfo->Modified = date('Y-m-d H:i:s');
+                $objContextInfo->Modified = QDateTime::Now();
                 try {
                     $objContextInfo->Save();
                 } catch(Exception $objExc) {
@@ -559,7 +561,7 @@
                 'LIMIT 1',
                 $intContextId
             );
-            $objDatabase = NarroApp::$Database[1];
+            $objDatabase = QApplication::$Database[1];
 
             if (!$objDbResult = $objDatabase->Query($strQuery)) {
                 $this->objLogger->err('db_query failed. $strQuery=' . $strQuery);
@@ -652,9 +654,9 @@
                         }
                     }
                 case 5:
-                    $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, NarroApp::GetUserId());
+                    $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, QApplication::GetUserId());
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        $this->objLogger->debug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', NarroApp::$User->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        $this->objLogger->debug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$User->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {

@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -274,7 +274,7 @@
         }
 
         public static function IsProcessRunning($strOperation, $intProjectId) {
-            $strSearchCmd = sprintf('egrep -e "php --%s.*--project %d.*--translation-lang %s"', $strOperation, $intProjectId, NarroApp::$Language->LanguageCode);
+            $strSearchCmd = sprintf('egrep -e "php --%s.*--project %d.*--translation-lang %s"', $strOperation, $intProjectId, QApplication::$Language->LanguageCode);
             $strPsFindCmd = 'ps aux | ' . $strSearchCmd;
             $arrCmdLines = explode("\n", `$strPsFindCmd`);
 

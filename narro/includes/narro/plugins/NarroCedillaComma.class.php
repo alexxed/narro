@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -22,7 +22,7 @@
             $this->blnEnable = false;
             $this->strName = t('Cedill/Comma issue solver');
             if ($this->blnEnable)
-                NarroApp::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
+                QApplication::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
             /**
              * Preference value: t('cedilla');
              * Preference value: t('comma');
@@ -42,7 +42,7 @@
         }
 
         protected function Convert($strText) {
-            $strPref = NarroApp::$User->getPreferenceValueByName('Cedilla or comma');
+            $strPref = QApplication::$User->getPreferenceValueByName('Cedilla or comma');
 
             if ( $strPref  && $strPref == 'comma' )
                 return $this->ConvertToComma($strText);
@@ -85,9 +85,9 @@
         }
 
         public function ExportSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
-            if (NarroApp::$User->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
+            if (QApplication::$User->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
-            elseif (NarroApp::$User->getPreferenceValueByName('Cedilla or comma') == 'comma')
+            elseif (QApplication::$User->getPreferenceValueByName('Cedilla or comma') == 'comma')
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
             else
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);

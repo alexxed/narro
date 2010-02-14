@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -85,7 +85,7 @@
                 }
 
 
-                $arrResult = NarroApp::$PluginHandler->ExportSuggestion($strText, $strSuggestionValue, $strContext, new NarroFile(), $this->objProject);
+                $arrResult = QApplication::$PluginHandler->ExportSuggestion($strText, $strSuggestionValue, $strContext, new NarroFile(), $this->objProject);
                 if
                 (
                     trim($arrResult[1]) != '' &&
@@ -177,7 +177,7 @@
                 $strLangCode = $arrColumn[9];
 
                 if ($strLangCode == 1)
-                    $strLangCode = 'en-US';
+                    $strLangCode = NarroLanguage::SOURCE_LANGUAGE_CODE;
 
                 if ($strLocale == trim($strLangCode) ) {
                     $strContext = '';
@@ -228,7 +228,7 @@
             return $arrTexts;
         }
 
-        public static function SplitFile($strFile, $strPath, $arrLocale = array('en-US')) {
+        public static function SplitFile($strFile, $strPath, $arrLocale = array(NarroLanguage::SOURCE_LANGUAGE_CODE)) {
             $hndFile = fopen($strFile, 'r');
 
             if (!$hndFile) {

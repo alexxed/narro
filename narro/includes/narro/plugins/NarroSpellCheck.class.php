@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -25,11 +25,11 @@
              * Spellchecking: t('I don\'t need it')
              */
 
-            NarroApp::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don\'t need it', 'Yes, please'));
+            QApplication::RegisterPreference('Spellchecking', 'option', 'Spellcheck support if possible, or just disable it', 'Yes, please', array('I don\'t need it', 'Yes, please'));
         }
 
         public static function GetSpellSuggestions($strText) {
-            if (NarroApp::$User->getPreferenceValueByName('Spellchecking') == 'I don\'t need it')
+            if (QApplication::$User->getPreferenceValueByName('Spellchecking') == 'I don\'t need it')
                 return true;
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strText);
             $strCleanText = str_replace(array('\n', '\r'), array(' ', ' '), $strText);
@@ -55,7 +55,7 @@
             $strCleanText = mb_ereg_replace('[„”]', ' ', $strCleanText);
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strCleanText);
 
-            $strSpellLang = NarroApp::$User->getPreferenceValueByName('Language');
+            $strSpellLang = QApplication::$User->getPreferenceValueByName('Language');
 
             return self::GetSpellSuggestionsWithPspell($strCleanText, $strSpellLang);
         }
