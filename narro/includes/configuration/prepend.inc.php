@@ -19,7 +19,8 @@
         //////////////////////////////
 		// Include the QCubed Framework
         //////////////////////////////
-		require(__QCUBED_CORE__ . '/framework/DisableMagicQuotes.inc.php');
+		if (get_magic_quotes_gpc()) 
+            require(__QCUBED_CORE__ . '/framework/DisableMagicQuotes.inc.php');
 		require(__QCUBED_CORE__ . '/qcubed.inc.php');
 
 
@@ -95,8 +96,8 @@
         QApplication::Initialize();
         QApplication::InitializeDatabaseConnections();
 
-        NarroForm::$FormStateHandler = 'QFileFormStateHandler';
-        define('__FORM_STATE_HANDLER__', 'QFileFormStateHandler');
+        NarroForm::$FormStateHandler = 'QFormStateHandler';
+        define('__FORM_STATE_HANDLER__', 'QFormStateHandler');
         define('__FILE_FORM_STATE_HANDLER_PATH__',  __TMP_PATH__ . '/qform_state');
 
         
@@ -163,9 +164,6 @@
                 QApplication::$Cache->save(QApplication::$User, 'NarroUser' . QApplication::$User->UserId, array('NarroUser' . QApplication::$User->UserId));
             }
 
-//            if (QApplication::$User->Data == '' && !class_exists('') && QApplication::GetUserId() <> NarroUser::ANONYMOUS_USER_ID)
-//                QApplication::Redirect(NarroLink::UserPreferences(QApplication::GetUserId()));
-
             if (!isset(QApplication::$Language))
                 QApplication::$Language = QApplication::$User->Language;
 
@@ -200,7 +198,7 @@
             if (!extension_loaded('gd'))
                 die('This version of Narro needs php-gd, please install it');
 
-            QApplication::$PluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/narro/plugins');
+            QApplication::$PluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/../narro/plugins');
         }
 
         ///////////////////////

@@ -53,7 +53,7 @@ if (!defined('SERVER_INSTANCE')) {
 			define ('__QCUBED__', __INCLUDES__ . '/qcubed');
 			define ('__PLUGINS__', __QCUBED__ . '/plugins');
 
-			define ('__CACHE__', __INCLUDES__ . '/tmp/cache');
+			define ('__CACHE__', __TMP_PATH__ . '/cache');
 
 			// The QCubed Core
 			define ('__QCUBED_CORE__', __INCLUDES__ . '/qcubed/_core');
