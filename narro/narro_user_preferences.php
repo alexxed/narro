@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -15,7 +15,7 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
     class NarroUserPreferencesPanel extends QPanel {
         protected $lblMessage;
@@ -54,7 +54,7 @@
             $this->btnCancel->Text = t('Cancel');
             $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
 
-            if (NarroApp::$User->Data == '' && NarroApp::GetUserId() <> NarroUser::ANONYMOUS_USER_ID) {
+            if ($this->objUser->Data == '' && $this->objUser->UserId <> NarroUser::ANONYMOUS_USER_ID) {
                 $this->lblMessage->Text = t('You don\'t have any preferences set. Please set your preferences and save them.');
                 $this->lblMessage->ForeColor = 'red';
             }
@@ -63,7 +63,7 @@
         protected function GetControlHtml() {
             $strOutput = $this->lblMessage->Render(false) . '<br /><table style="border: 1px solid #DDDDDD" cellpadding="4" cellspacing="0" width="100%">';
 
-            foreach(NarroApp::$arrPreferences as $strName=>$arrPref) {
+            foreach(QApplication::$AvailablePreferences as $strName=>$arrPref) {
                 switch($arrPref['type']) {
                     case 'number':
                             $txtNumber = new QIntegerTextBox($this);
@@ -72,14 +72,14 @@
                             $txtNumber->Maximum = 100;
                             $txtNumber->MaxLength = 3;
                             $txtNumber->Width = 50;
-                            $txtNumber->Text = NarroApp::$User->getPreferenceValueByName($strName);
+                            $txtNumber->Text = $this->objUser->getPreferenceValueByName($strName);
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtNumber->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $txtNumber;
                             break;
                     case 'text':
                             $txtTextPref = new QTextBox($this);
                             $txtTextPref->Name = $strName;
-                            $txtTextPref->Text = NarroApp::$User->getPreferenceValueByName($strName);
+                            $txtTextPref->Text = $this->objUser->getPreferenceValueByName($strName);
 
                             if ($strName == 'Special characters') {
                                 $strSelect = sprintf('<select onchange="document.getElementById(\'%s\').value+=this.options[this.selectedIndex].value;">', $txtTextPref->ControlId);
@@ -107,18 +107,18 @@
                             if ($strName == 'Language') {
                                 $arrLanguages = NarroLanguage::LoadAllActive(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
                                 foreach($arrLanguages as $objLanguage) {
-                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == NarroApp::$User->getPreferenceValueByName($strName)));
+                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
                                 }
                             }
                             elseif ($strName == 'Application language') {
                                 $arrLanguages = NarroLanguage::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
                                 foreach($arrLanguages as $objLanguage) {
-                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == NarroApp::$User->getPreferenceValueByName($strName)));
+                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
                                 }
                             }
                             else
                                 foreach($arrPref['values'] as $strValue) {
-                                    $lstOption->AddItem(t($strValue), $strValue, ($strValue == NarroApp::$User->getPreferenceValueByName($strName)));
+                                    $lstOption->AddItem(t($strValue), $strValue, ($strValue == $this->objUser->getPreferenceValueByName($strName)));
                                 }
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $lstOption->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $lstOption;
@@ -139,33 +139,35 @@
 
         public function btnSave_Click($strFormId, $strControlId, $strParameter) {
             foreach($this->arrControls as $strName=>$objControl) {
-                switch(NarroApp::$arrPreferences[$strName]['type']) {
+                switch(QApplication::$AvailablePreferences[$strName]['type']) {
                     case 'number':
-                            NarroApp::$User->setPreferenceValueByName($strName, $objControl->Text);
+                            $this->objUser->setPreferenceValueByName($strName, $objControl->Text);
                             break;
                     case 'text':
-                            NarroApp::$User->setPreferenceValueByName($strName,  $objControl->Text);
+                            $this->objUser->setPreferenceValueByName($strName,  $objControl->Text);
                             break;
                     case 'option':
-                            NarroApp::$User->setPreferenceValueByName($strName, $objControl->SelectedValue);
+                            $this->objUser->setPreferenceValueByName($strName, $objControl->SelectedValue);
                             break;
                 }
             }
 
-            NarroApp::$User->Data = serialize(NarroApp::$User->Preferences);
+            $this->objUser->Data = serialize($this->objUser->Preferences);
 
-            require_once 'Zend/Session/Namespace.php';
-            $objNarroSession = new Zend_Session_Namespace('Narro');
-            $objNarroSession->User = NarroApp::$User;
+            if ($this->objUser->UserId == QApplication::GetUserId()) {
+                require_once 'Zend/Session/Namespace.php';
+                $objNarroSession = new Zend_Session_Namespace('Narro');
+                $objNarroSession->User = $this->objUser;
+            }
 
             /**
              * Don't save the preferences for the anonymous user in the database
              */
-            if (NarroApp::$User->UserId == 0 && (!is_numeric(NarroApp::QueryString('u')) || !NarroApp::HasPermission('Can manage users')))
+            if ($this->objUser->UserId == 0 && (!is_numeric(QApplication::QueryString('u')) || !QApplication::HasPermission('Can manage users')))
                 return true;
 
             try {
-                NarroApp::$User->Save();
+                $this->objUser->Save();
                 $this->lblMessage->Text = t('Your preferences were saved successfuly.');
                 $this->lblMessage->ForeColor = 'green';
             } catch( Exception $objEx) {
@@ -175,12 +177,12 @@
         }
 
         public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
-            NarroApp::Redirect(NarroLink::ProjectList());
+            QApplication::Redirect(NarroLink::ProjectList());
         }
 
         public function __get($strName) {
             switch ($strName) {
-                case 'User': return NarroApp::$User;
+                case 'User': return $this->objUser;
 
                 default:
                     try {
@@ -194,28 +196,27 @@
 
     }
 
-    class NarroUserPreferencesForm extends QForm {
+    class NarroUserPreferencesForm extends NarroForm {
         protected $pnlTab;
         protected $pnlPreferences;
         protected $objUser;
 
         protected function Form_Create() {
             parent::Form_Create();
-
-            if (NarroApp::GetUserId() != NarroApp::QueryString('u') && NarroApp::HasPermissionForThisLang('Can manage users', null))
-                $this->objUser = NarroUser::Load(NarroApp::QueryString('u'));
+            if (QApplication::GetUserId() != QApplication::QueryString('u') && QApplication::HasPermissionForThisLang('Can manage users', null))
+                $this->objUser = NarroUser::Load(QApplication::QueryString('u'));
 
             if (!$this->objUser instanceof NarroUser)
-                $this->objUser = NarroApp::$User;
+                $this->objUser = QApplication::$User;
 
-            $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), NarroApp::$User->Username);
+            $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), $this->objUser->Username);
 
             $this->pnlTab = new QTabPanel($this);
             $this->pnlTab->UseAjax = false;
 
             $this->pnlPreferences = new NarroUserPreferencesPanel($this->objUser, $this->pnlTab);
 
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Profile'), NarroLink::UserProfile(NarroApp::GetUserId()));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Profile'), NarroLink::UserProfile($this->objUser->UserId));
             $this->pnlTab->addTab($this->pnlPreferences, t('Preferences'));
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::UserRole($this->objUser->UserId));
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Edit'), NarroLink::UserEdit($this->objUser->UserId));

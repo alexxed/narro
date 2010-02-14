@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -16,31 +16,31 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    NarroApp::$Language = NarroLanguage::Load(NarroApp::QueryString('l'));
-    if (NarroApp::QueryString('p'))
-        $objProject = NarroProject::Load(NarroApp::QueryString('p'));
+    QApplication::$Language = NarroLanguage::Load(QApplication::QueryString('l'));
+    if (QApplication::QueryString('p'))
+        $objProject = NarroProject::Load(QApplication::QueryString('p'));
 
-    switch(NarroApp::QueryString('t')) {
+    switch(QApplication::QueryString('t')) {
         case 'suggestion':
             if (isset($objProject) && $objProject instanceof NarroProject)
-                $strCacheId = sprintf('rssfeed_suggestion_%d_%d', $objProject->ProjectId, NarroApp::QueryString('l'));
+                $strCacheId = sprintf('rssfeed_suggestion_%d_%d', $objProject->ProjectId, QApplication::QueryString('l'));
             else
-                $strCacheId = sprintf('rssfeed_suggestion_%d', NarroApp::QueryString('l'));
+                $strCacheId = sprintf('rssfeed_suggestion_%d', QApplication::QueryString('l'));
 
-            if (!$objRssFeed = NarroApp::$Cache->load($strCacheId)) {
+            if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $objRssFeed  = new QRssFeed(
                             sprintf(t('Translations for %s'), $objProject->ProjectName),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
-                            sprintf(t('Get the latest translation suggestions in %s for %s'), t(NarroApp::$Language->LanguageName), $objProject->ProjectName)
+                            sprintf(t('Get the latest translation suggestions in %s for %s'), t(QApplication::$Language->LanguageName), $objProject->ProjectName)
                     );
                 else
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('Translations for all projects'), t(NarroApp::$Language->LanguageName)),
+                            sprintf(t('Translations for all projects'), t(QApplication::$Language->LanguageName)),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
-                            sprintf(t('Get the latest translation suggestions in %s'), t(NarroApp::$Language->LanguageName))
+                            sprintf(t('Get the latest translation suggestions in %s'), t(QApplication::$Language->LanguageName))
                     );
 
 
@@ -50,7 +50,7 @@
                     $objProjectCondition = QQ::All();
 
                 $arrNarroSuggestion = NarroSuggestion::LoadArrayByLanguageId(
-                    NarroApp::GetLanguageId(),
+                    QApplication::GetLanguageId(),
                     array(
                         QQ::OrderBy(QQN::NarroSuggestion()->Created, 0),
                         QQ::LimitInfo(20, 0)
@@ -65,7 +65,7 @@
 
                     $arrNarroContextInfo = NarroContextInfo::QueryArray(
                         QQ::AndCondition(
-                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
+                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
                             QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $objNarroSuggestion->TextId),
                             QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1),
                             $objProjectCondition
@@ -145,20 +145,20 @@
                         $objRssFeed->AddItem($objItem);
                     }
                 }
-                $objRssFeed->Language = strtolower(NarroApp::$Language->LanguageCode);
-                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
-                NarroApp::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
+                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
+                QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
 
             $objRssFeed->Run();
             break;
         case 'text':
             if (isset($objProject) && $objProject instanceof NarroProject)
-                $strCacheId = sprintf('rssfeed_text_%d_%d', $objProject->ProjectId, NarroApp::QueryString('l'));
+                $strCacheId = sprintf('rssfeed_text_%d_%d', $objProject->ProjectId, QApplication::QueryString('l'));
             else
-                $strCacheId = sprintf('rssfeed_text_%d', NarroApp::QueryString('l'));
+                $strCacheId = sprintf('rssfeed_text_%d', QApplication::QueryString('l'));
 
-            if (!$objRssFeed = NarroApp::$Cache->load($strCacheId)) {
+            if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $objRssFeed  = new QRssFeed(
                             sprintf(t('Texts to translate for %s'), $objProject->ProjectName),
@@ -183,7 +183,7 @@
                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1),
                         $objProjectCondition,
                         QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId),
-                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId())
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId())
                     ),
                     array(
                         QQ::OrderBy(QQN::NarroContextInfo()->Context->Text->Created, 0),
@@ -232,7 +232,7 @@
                                 __VIRTUAL_DIRECTORY__ .
                                 __SUBDIRECTORY__ .
                                 sprintf('/narro_context_suggest.php?l=%s&p=%d&c=%d#textcomments',
-                                    NarroApp::$Language->LanguageCode,
+                                    QApplication::$Language->LanguageCode,
                                     $objNarroContextInfo->Context->ProjectId,
                                     $objNarroContextInfo->ContextId
                                 )
@@ -279,33 +279,33 @@
                     $strDescription .= sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName);
 
                 }
-                $objRssFeed->Language = strtolower(NarroApp::$Language->LanguageCode);
-                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
-                NarroApp::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
+                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
+                QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
 
             $objRssFeed->Run();
             break;
         case 'context_info_changes':
             if (isset($objProject) && $objProject instanceof NarroProject)
-                $strCacheId = sprintf('rssfeed_context_info_changes_%d_%d', $objProject->ProjectId, NarroApp::QueryString('l'));
+                $strCacheId = sprintf('rssfeed_context_info_changes_%d_%d', $objProject->ProjectId, QApplication::QueryString('l'));
             else
-                $strCacheId = sprintf('rssfeed_context_info_changes_%d', NarroApp::QueryString('l'));
+                $strCacheId = sprintf('rssfeed_context_info_changes_%d', QApplication::QueryString('l'));
 
-            if (!$objRssFeed = NarroApp::$Cache->load($strCacheId)) {
+            if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
                 $objRssFeed  = new QRssFeed(
                         sprintf(
                             t('Context changes in %s'),
-                            t(NarroApp::$Language->LanguageName)
+                            t(QApplication::$Language->LanguageName)
                         ),
                         __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                         sprintf(
                             t('Get the latest context information changes in %s'),
-                            t(NarroApp::$Language->LanguageName)
+                            t(QApplication::$Language->LanguageName)
                         )
                 );
                 $objRssFeed->PubDate = new QDateTime(QDateTime::Now);
-                $objRssFeed->Language = strtolower(str_replace('_', '-', NarroApp::$Language->LanguageCode));
+                $objRssFeed->Language = strtolower(str_replace('_', '-', QApplication::$Language->LanguageCode));
 
                 $strDescription = '';
 
@@ -313,7 +313,7 @@
                     $objCondition = QQ::AndCondition(
                                             QQ::Equal(
                                                 QQN::NarroContextInfo()->LanguageId,
-                                                NarroApp::GetLanguageId()
+                                                QApplication::GetLanguageId()
                                             ),
                                             QQ::Equal(
                                                 QQN::NarroContextInfo()->Context->ProjectId,
@@ -321,7 +321,7 @@
                                             )
                     );
                 else
-                    $objCondition = QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId());
+                    $objCondition = QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId());
 
                 foreach(NarroContextInfo::QueryArray($objCondition, array(QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0), QQ::LimitInfo(20, 0))) as $intKey=>$objNarroContextInfo) {
                     $strContextLink = sprintf(
@@ -398,7 +398,7 @@
                                 ''
                         ) .
                         (($objNarroContextInfo->HasSuggestions)?
-                            sprintf(t('The text has %s suggestions'), NarroSuggestion::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId), QQ::Equal(QQN::NarroSuggestion()->LanguageId, NarroApp::GetLanguageId())))):
+                            sprintf(t('The text has %s suggestions'), NarroSuggestion::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId), QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::GetLanguageId())))):
                             t('The text has no suggestions')) .
                         (
                             ($objNarroContextInfo->ValidSuggestionId && $objNarroContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID)?
@@ -416,20 +416,20 @@
                     $objRssFeed->AddItem($objItem);
                     $strDescription = '';
                 }
-                $objRssFeed->Language = strtolower(NarroApp::$Language->LanguageCode);
-                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
-                NarroApp::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
+                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
+                QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
 
             $objRssFeed->Run();
             break;
         case 'textcomment':
             if (isset($objProject) && $objProject instanceof NarroProject)
-                $strCacheId = sprintf('rssfeed_textcomment_%d_%d', $objProject->ProjectId, NarroApp::QueryString('l'));
+                $strCacheId = sprintf('rssfeed_textcomment_%d_%d', $objProject->ProjectId, QApplication::QueryString('l'));
             else
-                $strCacheId = sprintf('rssfeed_textcomment_%d', NarroApp::QueryString('l'));
+                $strCacheId = sprintf('rssfeed_textcomment_%d', QApplication::QueryString('l'));
 
-            if (!$objRssFeed = NarroApp::$Cache->load($strCacheId)) {
+            if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $objRssFeed  = new QRssFeed(
                             sprintf(t('Debates on texts from %s'), $objProject->ProjectName),
@@ -448,14 +448,14 @@
                     $strSqlQuery = sprintf(
                         'SELECT DISTINCT narro_text_comment.* FROM narro_text_comment, narro_context WHERE narro_text_comment.text_id=narro_context.text_id AND narro_context.active=1 AND narro_context.project_id=%d AND narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
                          $objProject->ProjectId,
-                         NarroApp::GetLanguageId()
+                         QApplication::GetLanguageId()
                     );
                 else
                     $strSqlQuery = sprintf('SELECT DISTINCT narro_text_comment.* FROM narro_text_comment WHERE narro_text_comment.language_id=%d ORDER BY created DESC LIMIT 0, 20',
-                         NarroApp::GetLanguageId()
+                         QApplication::GetLanguageId()
                     );
 
-                $objDatabase = NarroApp::$Database[1];
+                $objDatabase = QApplication::$Database[1];
                 $objDbResult = $objDatabase->Query($strSqlQuery);
 
                 if ($objDbResult) {
@@ -561,9 +561,9 @@
                         $objRssFeed->AddItem($objItem);
                     }
                 }
-                $objRssFeed->Language = strtolower(NarroApp::$Language->LanguageCode);
-                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
-                NarroApp::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
+                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
+                QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
 
             $objRssFeed->Run();

@@ -15,12 +15,12 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
+
     require_once('includes/configuration/prepend.inc.php');
 
-    class NarroProjectTextListForm extends NarroForm {
+    class NarroProjectForm extends NarroForm {
         protected $objNarroProject;
         protected $pnlMainTab;
-        protected $pnlProjectTextList;
 
         protected function Form_Create() {
             parent::Form_Create();
@@ -29,18 +29,15 @@
 
             $this->pnlMainTab = new QTabPanel($this);
             $this->pnlMainTab->UseAjax = false;
-            
-            $this->pnlProjectTextList = new NarroProjectTextListPanel($this->objNarroProject, $this->pnlMainTab);
-            
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab($this->pnlProjectTextList, t('Texts'));
+
+            $this->pnlMainTab->addTab(new NarroProjectPanel($this->objNarroProject, $this->pnlMainTab), t('Overview'));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId, ''));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, ''));
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 2));
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 4));
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
-                        
-            $this->pnlMainTab->SelectedTab = t('Texts');
+            
         }
         
         protected function SetupNarroProject() {
@@ -63,8 +60,9 @@
                 NarroLink::ProjectList(t('Projects')),
                 $this->objNarroProject->ProjectName
             );
-        }        
+        }
+        
     }
 
-    NarroProjectTextListForm::Run('NarroProjectTextListForm', 'templates/narro_project_text_list.tpl.php');
+    NarroProjectForm::Run('NarroProjectForm', 'templates/narro_project.tpl.php');
 ?>

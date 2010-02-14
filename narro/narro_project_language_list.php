@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -16,9 +16,9 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    class NarroProjectLanguageListForm extends QForm {
+    class NarroProjectLanguageListForm extends NarroForm {
         protected $dtgNarroLanguage;
 
         // DataGrid Columns
@@ -30,15 +30,15 @@
         protected function SetupNarroProject() {
             // Lookup Object PK information from Query String (if applicable)
             // Set mode to Edit or New depending on what's found
-            $intProjectId = NarroApp::QueryString('p');
+            $intProjectId = QApplication::QueryString('p');
             if ($intProjectId > 0) {
                 $this->objNarroProject = NarroProject::Load(($intProjectId));
 
                 if (!$this->objNarroProject)
-                    NarroApp::Redirect(NarroLink::ProjectList());
+                    QApplication::Redirect(NarroLink::ProjectList());
 
             } else
-                NarroApp::Redirect(NarroLink::ProjectList());
+                QApplication::Redirect(NarroLink::ProjectList());
 
         }
 
@@ -57,12 +57,12 @@
 
 
             // Setup DataGrid
-            $this->dtgNarroLanguage = new QDataGrid($this);
+            $this->dtgNarroLanguage = new NarroDataGrid($this);
 
             // Datagrid Paginator
             $this->dtgNarroLanguage->Paginator = new QPaginator($this->dtgNarroLanguage);
             $this->dtgNarroLanguage->PaginatorAlternate = new QPaginator($this->dtgNarroLanguage);
-            $this->dtgNarroLanguage->ItemsPerPage = NarroApp::$User->getPreferenceValueByName('Items per page');
+            $this->dtgNarroLanguage->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
             $this->dtgNarroLanguage->SortColumnIndex = 0;
 
             // Specify Whether or Not to Refresh using Ajax
@@ -83,14 +83,14 @@
                 NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
             );
 
-            if (NarroApp::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
+            if (QApplication::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectImport($this->objNarroProject->ProjectId, t('Import')));
 
-            if (NarroApp::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
+            if (QApplication::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectExport($this->objNarroProject->ProjectId, t('Export')));
 
 
-            if (NarroApp::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId))
+            if (QApplication::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId))
                 $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($this->objNarroProject->ProjectId, t('Edit')));
 
             $this->pnlBreadcrumb->addElement(t('Languages'));
@@ -100,7 +100,7 @@
         public function dtgNarroLanguage_PercentTranslated_Render(NarroLanguage $objNarroLanguage) {
             $sOutput = '';
 
-            $objDatabase = NarroApp::$Database[1];
+            $objDatabase = QApplication::$Database[1];
 
             $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND c.active=1', $this->objNarroProject->ProjectId, $objNarroLanguage->LanguageId);
 
@@ -155,7 +155,7 @@
                 $this->dtgNarroLanguage->LimitClause
             ));
 
-            NarroApp::ExecuteJavaScript('highlight_datagrid();');
+            QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
 
     }

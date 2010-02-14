@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -16,223 +16,59 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    class NarroFileTextListForm extends NarroTextListForm {
-
+    class NarroFileTextListForm extends NarroForm {
+        protected $objNarroProject;
         protected $objNarroFile;
+        protected $pnlMainTab;
+        protected $pnlFileTextList;
 
         protected function Form_Create() {
             parent::Form_Create();
+            
+            $this->SetupNarroProject();
 
-            switch($this->lstSearchType->SelectedValue) {
-                case NarroTextListForm::SEARCH_SUGGESTIONS:
-                    $this->SetMessage(t('Note that, since you\'re searching suggestions, you won\'t see the texts without suggestions.'));
-                    break;
-                case NarroTextListForm::SEARCH_AUTHORS:
-                    $this->SetMessage(t('Note that, since you\'re searching authors of suggestions, you won\'t see the texts without suggestions.'));
-                    break;
-            }
-
+            $this->pnlMainTab = new QTabPanel($this);
+            $this->pnlMainTab->UseAjax = false;
+            
+            $this->pnlFileTextList = new NarroFileTextListPanel($this->objNarroProject, $this->objNarroFile, $this->pnlMainTab);
+            
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
+            $this->pnlMainTab->addTab($this->pnlFileTextList, t('Texts'));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 2));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 4));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
+                        
+            $this->pnlMainTab->SelectedTab = t('Texts');
         }
-
-        protected function SetupNarroObject() {
+        
+        protected function SetupNarroProject() {
             // Lookup Object PK information from Query String (if applicable)
-            $intFileId = NarroApp::QueryString('f');
-            $intProjectId = NarroApp::QueryString('p');
-            if (($intFileId)) {
+            $intProjectId = QApplication::QueryString('p');
+            $intFileId = QApplication::QueryString('f');
+            
+            if ($intProjectId && $intFileId) {
+                $this->objNarroProject = NarroProject::Load(($intProjectId));
                 $this->objNarroFile = NarroFile::Load(($intFileId));
 
-                if (!$this->objNarroFile)
-                    NarroApp::Redirect(NarroLink::ProjectFileList($intProjectId));
+                if (!$this->objNarroProject || !$this->objNarroFile) {
+                    QApplication::Redirect(NarroLink::ProjectList());
+                    return false;
+                }
 
-            } else
-                NarroApp::Redirect(NarroLink::ProjectFileList($intProjectId));
-
-            $this->objNarroProject = $this->objNarroFile->Project;
+            } else {
+                QApplication::Redirect(NarroLink::ProjectList());
+                return false;
+            }
 
             $this->pnlBreadcrumb->setElements(
                 NarroLink::ProjectList(t('Projects')),
-                NarroLink::ProjectTextList($this->objNarroFile->Project->ProjectId, 1, 1, '', $this->objNarroFile->Project->ProjectName),
-                NarroLink::ProjectFileList($this->objNarroFile->Project->ProjectId, null, t('Files'))
+                $this->objNarroProject->ProjectName
             );
-
-            if ($this->objNarroFile) {
-                $arrPaths = explode('/', $this->objNarroFile->FilePath);
-                $strProgressivePath = '';
-                if (is_array($arrPaths)) {
-                    /**
-                     * remove the first part that is empty because paths begin with /
-                     * and the last part that will be displayed unlinked
-                     */
-                    unset($arrPaths[count($arrPaths) - 1]);
-                    unset($arrPaths[0]);
-                    foreach($arrPaths as $strPathPart) {
-                        $strProgressivePath .= '/' . $strPathPart;
-                        $this->pnlBreadcrumb->addElement(
-                            NarroLink::ProjectFileList(
-                                    $this->objNarroFile->ProjectId,
-                                    $strProgressivePath,
-                                    $strPathPart
-                            )
-                        );
-                    }
-                }
-            }
-            $this->pnlBreadcrumb->addElement($this->objNarroFile->FileName);
-        }
-
-        public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
-            return parent::dtgNarroContextInfo_TranslatedText_Render(
-                $objNarroContextInfo,
-                NarroLink::ContextSuggest(
-                        $this->objNarroFile->Project->ProjectId,
-                        $this->objNarroFile->FileId,
-                        $objNarroContextInfo->ContextId,
-                        $this->lstTextFilter->SelectedValue,
-                        $this->lstSearchType->SelectedValue,
-                        $this->txtSearch->Text,
-                        $this->dtgNarroContextInfo->CurrentRowIndex + 1 + (($this->dtgNarroContextInfo->PageNumber - 1) * $this->dtgNarroContextInfo->ItemsPerPage),
-                        $this->dtgNarroContextInfo->TotalItemCount,
-                        $this->dtgNarroContextInfo->SortColumnIndex,
-                        $this->dtgNarroContextInfo->SortDirection,
-                        $strText
-                   )
-               );
-        }
-
-        public function lstTextFilter_Change() {
-            NarroApp::Redirect(NarroLink::FileTextList($this->objNarroFile->ProjectId, $this->objNarroFile->FileId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
-        }
-
-        public function btnSearch_Click() {
-            NarroApp::Redirect(NarroLink::FileTextList($this->objNarroFile->ProjectId, $this->objNarroFile->FileId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
-        }
-
-
-        protected function dtgNarroContextInfo_Bind() {
-            $this->arrSuggestionList = array();
-
-            // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
-            if (NarroApp::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save'))
-                $objCommonCondition = QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objNarroFile->FileId),
-                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1),
-                    QQ::LessThan(QQN::NarroContextInfo()->Context->Text->TextCharCount, 100),
-                    QQ::IsNull(QQN::NarroContextInfo()->TextAccessKey)
-                );
-
-            else
-                $objCommonCondition = QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objNarroFile->FileId),
-                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, NarroApp::GetLanguageId()),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
-                );
-
-            switch($this->lstSearchType->SelectedValue) {
-                case NarroTextListForm::SEARCH_TEXTS:
-                    $this->dtgNarroContextInfo->TotalItemCount = NarroContextInfo::CountByTextValue(
-                        $this->txtSearch->Text,
-                        $this->lstTextFilter->SelectedValue,
-                        $objCommonCondition
-                    );
-                    break;
-                case NarroTextListForm::SEARCH_SUGGESTIONS:
-                    $this->dtgNarroContextInfo->TotalItemCount = NarroContextInfo::CountBySuggestionValue(
-                        $this->txtSearch->Text,
-                        $this->lstTextFilter->SelectedValue,
-                        $objCommonCondition
-                    );
-                    break;
-                case NarroTextListForm::SEARCH_CONTEXTS:
-                    $this->dtgNarroContextInfo->TotalItemCount = NarroContextInfo::CountByContext(
-                        $this->txtSearch->Text,
-                        $this->lstTextFilter->SelectedValue,
-                        $objCommonCondition
-                    );
-                    break;
-                case NarroTextListForm::SEARCH_AUTHORS:
-                    $this->dtgNarroContextInfo->TotalItemCount = NarroContextInfo::CountByAuthor(
-                        $this->txtSearch->Text,
-                        $this->lstTextFilter->SelectedValue,
-                        $objCommonCondition
-                    );
-                    break;
-                case NarroTextListForm::SEARCH_FILES:
-                    $this->dtgNarroContextInfo->TotalItemCount = NarroContextInfo::CountByFileName(
-                        $this->txtSearch->Text,
-                        $this->lstTextFilter->SelectedValue,
-                        $objCommonCondition
-                    );
-                    break;
-            }
-
-            // Setup the $objClauses Array
-            $objClauses = array();
-
-            // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
-            // the OrderByClause to the $objClauses array
-            if ($objClause = $this->dtgNarroContextInfo->OrderByClause)
-                array_push($objClauses, $objClause);
-
-            // Add the LimitClause information, as well
-            if ($objClause = $this->dtgNarroContextInfo->LimitClause)
-                array_push($objClauses, $objClause);
-
-            // Set the DataSource to be the array of all NarroContextInfo objects, given the clauses above
-            switch($this->lstSearchType->SelectedValue) {
-                case NarroTextListForm::SEARCH_TEXTS:
-                    $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayByTextValue(
-                        $this->txtSearch->Text,
-                        $this->lstTextFilter->SelectedValue,
-                        $this->dtgNarroContextInfo->LimitClause,
-                        $this->dtgNarroContextInfo->OrderByClause,
-                        $objCommonCondition
-                    );
-                    break;
-                case NarroTextListForm::SEARCH_SUGGESTIONS:
-                    $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayBySuggestionValue(
-                        $this->txtSearch->Text,
-                        $this->lstTextFilter->SelectedValue,
-                        $this->dtgNarroContextInfo->LimitClause,
-                        $this->dtgNarroContextInfo->OrderByClause,
-                        $objCommonCondition
-                    );
-                    break;
-                case NarroTextListForm::SEARCH_CONTEXTS:
-                    $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayByContext(
-                        $this->txtSearch->Text,
-                        $this->lstTextFilter->SelectedValue,
-                        $this->dtgNarroContextInfo->LimitClause,
-                        $this->dtgNarroContextInfo->OrderByClause,
-                        $objCommonCondition
-                    );
-                    break;
-                case NarroTextListForm::SEARCH_AUTHORS:
-                    $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayByAuthor(
-                        $this->txtSearch->Text,
-                        $this->lstTextFilter->SelectedValue,
-                        $this->dtgNarroContextInfo->LimitClause,
-                        $this->dtgNarroContextInfo->OrderByClause,
-                        $objCommonCondition
-                    );
-                    break;
-                case NarroTextListForm::SEARCH_FILES:
-                    $this->dtgNarroContextInfo->DataSource = NarroContextInfo::LoadArrayByFileName(
-                        $this->txtSearch->Text,
-                        $this->lstTextFilter->SelectedValue,
-                        $this->dtgNarroContextInfo->LimitClause,
-                        $this->dtgNarroContextInfo->OrderByClause,
-                        $objCommonCondition
-                    );
-                    break;
-            }
-
-            NarroApp::ExecuteJavaScript('highlight_datagrid();');
-
-        }
-
+        }        
     }
 
     NarroFileTextListForm::Run('NarroFileTextListForm', 'templates/narro_file_text_list.tpl.php');

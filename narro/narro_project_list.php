@@ -1,7 +1,13 @@
 <?php
     /**
+     * This page shows the project list inside a tab panel.
+     * Being an entry point for users, it should be fast and easy to understand
+     * 
+     * @package Narro
+     * @subpackage Forms
+     * 
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -16,28 +22,46 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    class NarroProjectListForm extends QForm {
-        protected $pnlTab;
-
+    class NarroProjectListForm extends NarroForm {
+        /**
+         * The main tab is the tab panel, used to group panels in a tabbed control for easy access
+         * @var QTabPanel
+         */
+        protected $pnlMainTab;
+        /**
+         * This is the project list panel
+         * @see includes/narro/panel/NarroProjectListPanel.class.php
+         * @var NarroProjectListPanel
+         */
         protected $pnlProjectList;
 
         protected function Form_Create() {
             parent::Form_Create();
 
-            if (NarroApp::$User->Data == '' && NarroApp::GetUserId() <> NarroUser::ANONYMOUS_USER_ID)
-                NarroApp::Redirect(NarroLink::UserPreferences(NarroApp::GetUserId()));
+            $this->pnlMainTab = new QTabPanel($this);
+            $this->pnlMainTab->UseAjax = false;
 
-            $this->pnlTab = new QTabPanel($this);
-            $this->pnlTab->UseAjax = false;
+            /**
+             * Create the project list panel and set the filter from the url.
+             * The filter is used to show only projects of a given status based on their progress 
+             * (finished, empty, in progress).
+             */
+            $this->pnlProjectList = new NarroProjectListPanel($this->pnlMainTab);
+            $this->pnlProjectList->Filter = QApplication::QueryString('f');
+            
+            $this->pnlMainTab->addTab($this->pnlProjectList, t('Projects'));
 
-            $this->pnlProjectList = new NarroProjectListPanel($this->pnlTab);
-
-            $this->pnlTab->addTab($this->pnlProjectList, t('Projects'));
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::RoleList());
+            /**
+             * Do not show the langauge tab if only two languages are active (source and target 
+             * Unless the user is an administrator and might want to set another one active
+             */
+            if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator'))
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Languages'), NarroLink::LanguageList());
+                
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Roles'), NarroLink::RoleList());
 
         }
     }

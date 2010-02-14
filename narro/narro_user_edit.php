@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -15,9 +15,9 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    class NarroUserEditForm extends QForm {
+    class NarroUserEditForm extends NarroForm {
         protected $pnlTab;
         protected $pnlUser;
         protected $objUser;
@@ -25,11 +25,11 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            if (NarroApp::GetUserId() != NarroApp::QueryString('u') && NarroApp::HasPermissionForThisLang('Can manage users', null))
-                $this->objUser = NarroUser::Load(NarroApp::QueryString('u'));
+            if (QApplication::GetUserId() != QApplication::QueryString('u') && QApplication::HasPermissionForThisLang('Can manage users', null))
+                $this->objUser = NarroUser::Load(QApplication::QueryString('u'));
 
             if (!$this->objUser instanceof NarroUser)
-                $this->objUser = NarroApp::$User;
+                $this->objUser = QApplication::$User;
 
             $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), $this->objUser->Username);
 

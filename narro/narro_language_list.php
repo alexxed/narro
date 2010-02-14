@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -16,9 +16,9 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    class NarroLanguageListForm extends QForm {
+    class NarroLanguageListForm extends NarroForm {
         protected $pnlTab;
         protected $pnlLanguageList;
 
@@ -30,7 +30,7 @@
 
             $this->pnlLanguageList = new QTabPanel($this->pnlTab);
             $this->pnlLanguageList->addTab(new NarroLanguageListPanel($this->pnlLanguageList), t('List'));
-            if (NarroApp::HasPermissionForThisLang('Can add language', null))
+            if (QApplication::HasPermissionForThisLang('Can add language', null))
                 $this->pnlLanguageList->addTab(new QPanel($this->pnlLanguageList), t('Add'), NarroLink::LanguageEdit());
 
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());

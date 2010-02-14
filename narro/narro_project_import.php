@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -16,9 +16,9 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    class NarroProjectImportForm extends QForm {
+    class NarroProjectImportForm extends NarroForm {
         protected $pnlTab;
         protected $pnlProjectImport;
         protected $objNarroProject;
@@ -26,15 +26,15 @@
         protected function SetupNarroProject() {
             // Lookup Object PK information from Query String (if applicable)
             // Set mode to Edit or New depending on what's found
-            $intProjectId = NarroApp::QueryString('p');
+            $intProjectId = QApplication::QueryString('p');
             if ($intProjectId > 0) {
                 $this->objNarroProject = NarroProject::Load(($intProjectId));
 
                 if (!$this->objNarroProject)
-                    NarroApp::Redirect(NarroLink::ProjectList());
+                    QApplication::Redirect(NarroLink::ProjectList());
 
             } else
-                NarroApp::Redirect(NarroLink::ProjectList());
+                QApplication::Redirect(NarroLink::ProjectList());
 
         }
         protected function Form_Create() {
@@ -42,8 +42,8 @@
 
             $this->SetupNarroProject();
 
-            if (!NarroApp::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
-                NarroApp::Redirect(NarroLink::ProjectList());
+            if (!QApplication::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
+                QApplication::Redirect(NarroLink::ProjectList());
 
             $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, null, null, null, $this->objNarroProject->ProjectName), 'Manage');
 
@@ -52,9 +52,13 @@
 
             $this->pnlProjectImport = new NarroProjectImportPanel($this->objNarroProject, $this->pnlTab);
 
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId, ''));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 2));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 4));
             $this->pnlTab->addTab($this->pnlProjectImport, t('Import'));
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Edit'), NarroLink::ProjectEdit($this->objNarroProject->ProjectId));
+            
 
             $this->pnlTab->SelectedTab = t('Import');
         }

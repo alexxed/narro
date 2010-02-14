@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -17,22 +17,16 @@
      */
 
     $strPageTitle = sprintf(t('%s :: File list'), $this->objNarroProject->ProjectName);
-    if (NarroApp::QueryString('pf')>0)
+    if (QApplication::QueryString('pf')>0)
         $strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objNarroProject->ProjectName, $this->objParentFile->FileName);
 
-    require('includes/header.inc.php')
+    require('configuration/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
-        <?php $this->pnlHeader->Render() ?>
-        <?php $this->pnlBreadcrumb->Render(); ?>
-        <br />
-        <div style="text-align:right;">
-            <?php $this->chkShowHierarchy->Render();?> <label for="<?php echo $this->chkShowHierarchy->ControlId; ?>"><?php echo t('Show hierarchy') ?></label>
-            &nbsp;&nbsp;&nbsp;
-            <?php $this->chkShowFolders->Render();?>  <label for="<?php echo $this->chkShowFolders->ControlId; ?>"><?php echo t('Show folders') ?></label>
-        </div>
-        <?php $this->dtgNarroFile->Render() ?>
+    <?php $this->pnlHeader->Render() ?>
+    <?php $this->pnlBreadcrumb->Render() ?>
+    <?php $this->pnlMainTab->Render() ?>
     <?php $this->RenderEnd() ?>
 
-<?php require('includes/footer.inc.php'); ?>
+<?php require('configuration/footer.inc.php'); ?>

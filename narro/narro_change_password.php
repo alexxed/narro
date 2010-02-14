@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -16,9 +16,9 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    class NarroChangePasswordForm extends QForm {
+    class NarroChangePasswordForm extends NarroForm {
         protected $lblMessage;
         protected $txtPassword;
         protected $btnChangePassword;
@@ -26,21 +26,21 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            if (NarroApp::GetUserId() == NarroUser::ANONYMOUS_USER_ID) {
-                $strPassHash = NarroApp::QueryString('h');
-                $strUsername = NarroApp::QueryString('u');
+            if (QApplication::GetUserId() == NarroUser::ANONYMOUS_USER_ID) {
+                $strPassHash = QApplication::QueryString('h');
+                $strUsername = QApplication::QueryString('u');
                 if ($strPassHash && $strUsername) {
                     if ($objUser = NarroUser::LoadByUsernameAndPassword($strUsername, $strPassHash)) {
                         require_once 'Zend/Session/Namespace.php';
                         $objNarroSession = new Zend_Session_Namespace('Narro');
                         $objNarroSession->User = $objUser;
-                        NarroApp::$User = $objUser;
+                        QApplication::$User = $objUser;
                     }
                     else
-                        NarroApp::Redirect('narro_login.php');
+                        QApplication::Redirect('narro_login.php');
                 }
                 else
-                    NarroApp::Redirect('narro_login.php');
+                    QApplication::Redirect('narro_login.php');
             }
 
             $this->lblMessage = new QLabel($this);
@@ -55,10 +55,10 @@
         }
 
         protected function btnChangePassword_Click($strFormId, $strControlId, $strParameter) {
-            NarroApp::$User->Password = md5($this->txtPassword->Text);
+            QApplication::$User->Password = md5($this->txtPassword->Text);
 
             try {
-                NarroApp::$User->Save();
+                QApplication::$User->Save();
             } catch (Exception $objEx) {
                 $this->lblMessage->ForeColor = 'red';
                 $this->lblMessage->Text = t('Failed to change the password.');
@@ -66,7 +66,7 @@
 
             require_once 'Zend/Session/Namespace.php';
             $objNarroSession = new Zend_Session_Namespace('Narro');
-            $objNarroSession->User = NarroApp::$User;
+            $objNarroSession->User = QApplication::$User;
             $this->lblMessage->ForeColor = 'green';
             $this->lblMessage->Text = t('Password changed succesfully.');
 

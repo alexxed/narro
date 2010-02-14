@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -16,9 +16,9 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    class NarroRoleListForm extends QForm {
+    class NarroRoleListForm extends NarroForm {
         protected $pnlTab;
         protected $pnlRoleList;
 
@@ -31,16 +31,17 @@
             $this->pnlRoleList = new QTabPanel($this->pnlTab);
 
             $this->pnlRoleList->addTab(new NarroRoleListPanel($this->pnlRoleList), t('List'));
-            if (NarroApp::HasPermissionForThisLang('Can add role', null)) {
+            if (QApplication::HasPermissionForThisLang('Can add role', null)) {
                 $this->pnlRoleList->addTab(new QPanel($this->pnlRoleList), t('Add'), NarroLink::RoleEdit());
             }
 
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());
+            if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator'))
+                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
             $this->pnlTab->addTab($this->pnlRoleList, t('Roles'));
 
-            $this->pnlTab->SelectedTab = 3;
+            $this->pnlTab->SelectedTab = t('Roles');
 
             $this->pnlRoleList->SelectedTab = 0;
         }

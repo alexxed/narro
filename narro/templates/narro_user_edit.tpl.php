@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -19,12 +19,12 @@
 
     $strPageTitle = $this->objUser->Username;
 
-    require('includes/header.inc.php');
+    require('configuration/header.inc.php');
     $this->RenderBegin();
     $this->pnlHeader->Render();
     $this->pnlBreadcrumb->Render();
     echo '<br />';
     $this->pnlTab->Render();
     $this->RenderEnd();
-    require('includes/footer.inc.php');
+    require('configuration/footer.inc.php');
 

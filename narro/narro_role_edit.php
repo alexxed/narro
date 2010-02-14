@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -15,9 +15,9 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    class NarroRoleEditForm extends QForm {
+    class NarroRoleEditForm extends NarroForm {
         protected $pnlTab;
         protected $pnlRoleTab;
         public $pnlRoleEdit;
@@ -30,10 +30,10 @@
 
             $this->pnlRoleTab = new QTabPanel($this->pnlTab);
 
-            $this->pnlRoleEdit = new NarroRoleEditPanel($this->pnlRoleTab, NarroRole::Load(NarroApp::QueryString('rid')));
+            $this->pnlRoleEdit = new NarroRoleEditPanel($this->pnlRoleTab, NarroRole::Load(QApplication::QueryString('rid')));
 
             $this->pnlRoleTab->addTab(new QPanel($this->pnlRoleTab), t('List'), NarroLink::RoleList());
-            $this->pnlRoleTab->addTab($this->pnlRoleEdit, (NarroApp::QueryString('lid')?t('Edit'):t('Add')));
+            $this->pnlRoleTab->addTab($this->pnlRoleEdit, (QApplication::QueryString('lid')?t('Edit'):t('Add')));
 
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());

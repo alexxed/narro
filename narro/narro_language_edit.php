@@ -1,7 +1,7 @@
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -15,9 +15,9 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    require_once('includes/prepend.inc.php');
+    require_once('includes/configuration/prepend.inc.php');
 
-    class NarroLanguageEditForm extends QForm {
+    class NarroLanguageEditForm extends NarroForm {
         protected $pnlTab;
         protected $pnlLanguageTab;
         public $pnlLanguageEdit;
@@ -30,10 +30,10 @@
 
             $this->pnlLanguageTab = new QTabPanel($this->pnlTab);
 
-            $this->pnlLanguageEdit = new NarroLanguageEditPanel($this->pnlLanguageTab, NarroLanguage::Load(NarroApp::QueryString('lid')));
+            $this->pnlLanguageEdit = new NarroLanguageEditPanel($this->pnlLanguageTab, NarroLanguage::Load(QApplication::QueryString('lid')));
 
             $this->pnlLanguageTab->addTab(new QPanel($this->pnlLanguageTab), t('List'), NarroLink::LanguageList());
-            $this->pnlLanguageTab->addTab($this->pnlLanguageEdit, (NarroApp::QueryString('lid')?t('Edit'):t('Add')));
+            $this->pnlLanguageTab->addTab($this->pnlLanguageEdit, (QApplication::QueryString('lid')?t('Edit'):t('Add')));
 
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
             $this->pnlTab->addTab($this->pnlLanguageTab, t('Languages'));
