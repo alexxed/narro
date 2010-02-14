@@ -24,7 +24,6 @@
     $this->RenderBegin();
     $this->pnlHeader->Render();
     $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
+    $this->pnlMainTab->Render();
     $this->RenderEnd();
     require('configuration/footer.inc.php');

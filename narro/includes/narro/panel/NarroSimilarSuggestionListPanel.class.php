@@ -53,6 +53,7 @@
             // Setup DataGrid
             $this->dtgSuggestions = new NarroDataGrid($this);
             $this->dtgSuggestions->ShowHeader = true;
+            $this->dtgSuggestions->AlwaysShowPaginator = true;
             $this->dtgSuggestions->Title = t('Translations of similar texts');
 
             // Datagrid Paginator
@@ -60,7 +61,7 @@
             $this->dtgSuggestions->ItemsPerPage = 5;
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgSuggestions->UseAjax = QApplication::$UseAjax;
+            $this->dtgSuggestions->UseAjax = QApplication::$UseAjax;            
 
             // Specify the local databind method this datagrid will use
             $this->dtgSuggestions->SetDataBinder('dtgSuggestions_Bind', $this);

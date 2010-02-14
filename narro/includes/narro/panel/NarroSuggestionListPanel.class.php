@@ -69,6 +69,7 @@
             // Setup DataGrid
             $this->dtgSuggestions = new NarroDataGrid($this);
             $this->dtgSuggestions->ShowHeader = true;
+            $this->dtgSuggestions->AlwaysShowPaginator = true;
             $this->dtgSuggestions->Title = t('Translations for this text');
 
             // Datagrid Paginator
