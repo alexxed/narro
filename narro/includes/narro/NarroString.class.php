@@ -55,6 +55,8 @@
         }
 
         public static function ShowLeadingAndTrailingSpaces($strText) {
+            $strSpanSpaces = '';
+            
             if (preg_match_all('/^\s+/m', $strText, $arrMatches)) {
                 foreach($arrMatches[0] as $strSpaces) {
                     foreach(str_split($strSpaces) as $strSpaceCharacter) {
