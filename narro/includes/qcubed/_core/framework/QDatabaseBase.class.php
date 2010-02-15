@@ -7,7 +7,7 @@
 	 * * DatabaseRowBase
 	 * * DatabaseExceptionBase
 	 *
-	 * This Database library also has the following classes already defined, and 
+	 * This Database library also has the following classes already defined, and
 	 * Database adapters are assumed to use them internally:
 	 * * DatabaseIndex
 	 * * DatabaseForeignKey
@@ -64,7 +64,7 @@
 				case 'Profile':
 					return $this->strProfileArray;
 				case 'DatabaseIndex':
-					return $this->intDatabaseIndex;					
+					return $this->intDatabaseIndex;
 				case 'Adapter':
 					$strConstantName = get_class($this) . '::Adapter';
 					return constant($strConstantName) . ' (' . $this->objConfigArray['adapter'] . ')';
@@ -130,6 +130,10 @@
 		 * @return void
 		 */
 		protected function LogQuery($strQuery) {
+		    if (SERVER_INSTANCE == 'dev') {
+		        QFirebug::log($strQuery);
+		    }
+
 			if ($this->blnEnableProfiling) {
 				// Dereference-ize Backtrace Information
 				$objDebugBacktrace = debug_backtrace();
@@ -366,7 +370,7 @@
 
 		abstract public function Close();
 	}
-	
+
 	abstract class QDatabaseRowBase extends QBaseClass {
 		abstract public function GetColumn($strColumnName, $strColumnType = null);
 		abstract public function ColumnExists($strColumnName);
@@ -428,14 +432,14 @@
 		protected $blnPrimaryKey;
 		protected $blnUnique;
 		protected $strColumnNameArray;
-		
+
 		public function __construct($strKeyName, $blnPrimaryKey, $blnUnique, $strColumnNameArray) {
 			$this->strKeyName = $strKeyName;
 			$this->blnPrimaryKey = $blnPrimaryKey;
 			$this->blnUnique = $blnUnique;
 			$this->strColumnNameArray = $strColumnNameArray;
 		}
-		
+
 		public function __get($strName) {
 			switch ($strName) {
 				case "KeyName":
