@@ -15,14 +15,14 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    
+
     class NarroProjectFileListPanel extends QPanel {
         protected $objNarroProject;
         public $pnlBreadcrumb;
-        
+
         public $dtgNarroFile;
         protected $objParentFile;
-        
+
         // DataGrid Columns
         protected $colFileName;
         protected $colPercentTranslated;
@@ -39,12 +39,12 @@
                 $objExc->IncrementOffset();
                 throw $objExc;
             }
-            
+
             $this->pnlBreadcrumb = new NarroBreadcrumbPanel($this);
             $this->pnlBreadcrumb->strSeparator = ' / ';
 
             $this->objNarroProject = $objNarroProject;
-            
+
             // Setup DataGrid Columns
             $this->colFileName = new QDataGridColumn(t('File name'), '<?= $_CONTROL->ParentControl->dtgNarroFile_FileNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName, false)));
             $this->colFileName->HtmlEntities = false;
@@ -82,13 +82,13 @@
             $this->chkShowFolders = new QCheckBox($this);
             $this->chkShowFolders->Checked = true;
             $this->chkShowFolders->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgNarroFile_Bind'));
-            
+
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroProjectFileListPanel.tpl.php';
-            
+
             $this->ChangeDirectory($strCurrentPath);
 
         }
-        
+
         public function ChangeDirectory($strPath) {
 
             if ($strPath)
@@ -131,7 +131,7 @@
             if ($this->objParentFile instanceof NarroFile) {
                 $this->pnlBreadcrumb->addElement($this->objParentFile->FileName);
                 $this->pnlBreadcrumb->Visible = true;
-            }            
+            }
         }
 
         public function dtgNarroFile_PercentTranslated_Render(NarroFile $objNarroFile) {
@@ -198,7 +198,7 @@
                 return '';
             }
             else {
-                $strTemplateFile = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE . $objNarroFile->FilePath;
+                $strTemplateFile = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE . $objNarroFile->FilePath;
 
                 if (!file_exists($strTemplateFile)) return 'No template on disk';
 
@@ -213,7 +213,7 @@
                     if (file_exists($strTemplateFile) && filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_EXPORT__)
                         $objExportButton->Visible = true;
                 }
-                
+
                 if (!$objImportButton = $this->Form->GetControl('btnImport' . $objNarroFile->FileId)) {
                     $objImportButton = new QButton($this->dtgNarroFile, 'btnImport' . $objNarroFile->FileId);
                     $objImportButton->Text = t('Import');
@@ -367,7 +367,7 @@
                 unlink($objFileControl->File);
             }
             else
-                $objFileImporter->ExportFile(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE . $objFile->FilePath, $strTempFileName);
+                $objFileImporter->ExportFile(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE . $objFile->FilePath, $strTempFileName);
 
             header(sprintf('Content-Disposition: attachment; filename="%s"', $objFile->FileName));
             readfile($strTempFileName);
@@ -433,7 +433,7 @@
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$Language->LanguageCode);
 
-            $objFileImporter->ImportFile(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE . $objFile->FilePath, $objFileControl->File);
+            $objFileImporter->ImportFile(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE . $objFile->FilePath, $objFileControl->File);
 
         }
 

@@ -48,6 +48,22 @@
                 $this->lstProject->Render(false);
             return parent::GetControlHtml();
         }
+
+        public function __get($strName) {
+            switch ($strName) {
+                case "Directory":
+                    return sprintf('%s/%s/%s', __IMPORT_PATH__, $this->lstProject->SelectedValue, QApplication::$LanguageCode);
+
+                default:
+                    try {
+                        return parent::__get($strName);
+                        break;
+                    } catch (QCallerException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+            }
+        }
     }
 
     class NarroDirectorySourcePanel extends QPanel {
@@ -250,7 +266,7 @@
             $this->pnlTextSource = new QTabPanel($this);
             $this->pnlTextSource->UseAjax = QApplication::$UseAjax;
             $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $this->pnlTextSource);
-            $objDirectoryPanel->Directory = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
+            $objDirectoryPanel->Directory = __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
             $this->pnlTextSource->addTab($objDirectoryPanel, t('On this server'));
             $this->pnlTextSource->addTab(new NarroUploadSourcePanel($objProject, $this->pnlTextSource), t('On my computer'));
         }
@@ -297,7 +313,7 @@
             $this->pnlTranslationSource = new QTabPanel($this);
             $this->pnlTranslationSource->UseAjax = QApplication::$UseAjax;
             $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $this->pnlTranslationSource);
-            $objDirectoryPanel->Directory = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . QApplication::$Language->LanguageCode;
+            $objDirectoryPanel->Directory = __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . QApplication::$Language->LanguageCode;
             $this->pnlTranslationSource->addTab($objDirectoryPanel, t('On this server'));
             $this->pnlTranslationSource->addTab(new NarroUploadSourcePanel($objProject, $this->pnlTranslationSource), t('On my computer'));
             $this->pnlTranslationSource->addTab(new NarroProjectSourcePanel($objProject, $this->pnlTranslationSource), t('In another project'));

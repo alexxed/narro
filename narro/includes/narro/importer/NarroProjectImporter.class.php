@@ -91,12 +91,12 @@
         public function ImportProject() {
             $this->startTimer();
 
-            if (function_exists('popen') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/import.sh')) {
+            if (function_exists('popen') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/import.sh')) {
                 $this->objLogger->err('Found a before import script, trying to run it.');
                  $fp = popen(
                         sprintf(
                             '/bin/sh %s %s %d %s %d %d 2>&1',
-                            escapeshellarg(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/import.sh'),
+                            escapeshellarg(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/import.sh'),
                             escapeshellarg($this->objTargetLanguage->LanguageCode),
                             $this->objTargetLanguage->LanguageId,
                             escapeshellarg($this->objProject->ProjectName),

@@ -50,5 +50,5 @@
 <br />
 </div>
 <?php $_CONTROL->pnlLogViewer->Render() ?>
-<?php $_CONTROL->btnImport->Render(); $_CONTROL->objImportProgress->Render(); $_CONTROL->lblImport->Render() ?>
+<?php $_CONTROL->btnImport->Render(); $_CONTROL->btnKillProcess->Render(); $_CONTROL->objImportProgress->Render(); $_CONTROL->lblImport->Render() ?>
 

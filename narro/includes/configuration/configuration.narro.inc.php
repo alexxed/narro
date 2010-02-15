@@ -54,7 +54,7 @@
 
     define ('__DICTIONARY_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/dictionaries');
     define ('__TMP_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/tmp');
-    define ('__IMPORT_PATH__', '/data/import');
+    define ('__IMPORT_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/import');
     define ('__RSS_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/rss');
     define ('__SEARCH_INDEX_PATH__', __DOCROOT__ . __SUBDIRECTORY__ . '/data/search');
 

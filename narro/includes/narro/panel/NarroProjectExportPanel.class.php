@@ -22,6 +22,7 @@
 
         public $pnlLogViewer;
         public $lblExport;
+        public $btnKillProcess;
 
         public $chkCopyUnhandledFiles;
         public $lstExportSuggestionType;
@@ -47,7 +48,7 @@
             $this->lblExport = new QLabel($this);
             $this->lblExport->HtmlEntities = false;
             $strArchiveName = $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip';
-            $strExportFile = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $strArchiveName;
+            $strExportFile = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $strArchiveName;
             if (file_exists($strExportFile)) {
                 $objDateSpan = new QDateTimeSpan(time() - filemtime($strExportFile));
                 $this->lblExport->Text = sprintf(t('Link to last export: <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
@@ -69,6 +70,14 @@
             $this->objExportProgress->Total = 100;
             $this->objExportProgress->Visible = false;
 
+            $this->btnKillProcess = new QButton($this);
+            $this->btnKillProcess->Text = 'Kill process';
+            if (QApplication::$UseAjax)
+                $this->btnKillProcess->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKillProcess_Click'));
+            else
+                $this->btnKillProcess->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnKillProcess_Click'));
+
+
             if (NarroUtils::IsProcessRunning('export', $this->objNarroProject->ProjectId)) {
                 $this->btnExport->Visible = false;
                 $this->objExportProgress->Visible = true;
@@ -82,6 +91,8 @@
                 $this->btnExport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnExport_Click'));
             else
                 $this->btnExport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnExport_Click'));
+
+            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode) && !$this->btnExport->Visible;
         }
 
         public function btnExport_Click($strFormId, $strControlId, $strParameter) {
@@ -115,15 +126,17 @@
 
                     $this->lblExport->Visible = true;
                     $this->btnExport->Visible = true;
+                    $this->btnKillProcess->Visible = false;
                     $this->objExportProgress->Translated = 0;
                     $this->objExportProgress->Visible = false;
 
                     $this->CreateExportArchive(
-                        __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode,
-                        __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip'
+                        __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode,
+                        __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip'
                     );
-                    if (file_exists(__DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip')) {
-                        $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip';
+                    if (file_exists(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip')) {
+                        // @todo replace this with a download method that can serve files from a non web public directory
+                        $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . str_replace(__DOCROOT__ . __SUBDIRECTORY__, '', __IMPORT_PATH__) . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip';
                         $this->lblExport->Text .= ' ' . sprintf(t('Download link: <a href="%s">%s</a>'), $strDownloadUrl, $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip');
                     }
                     else {
@@ -152,8 +165,8 @@
                 $objNarroImporter->TargetLanguage = QApplication::$Language;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
                 try {
-                    $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode;
-                    $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
+                    $objNarroImporter->TranslationPath = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode;
+                    $objNarroImporter->TemplatePath = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
                 }
                 catch (Exception $objEx) {
                     $objLogger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
@@ -170,6 +183,7 @@
 
                 $this->lblExport->Visible = true;
                 $this->btnExport->Visible = true;
+                $this->btnKillProcess->Visible = false;
                 $this->objExportProgress->Visible = false;
 
                 $this->pnlLogViewer->MarkAsModified();
@@ -179,6 +193,7 @@
                 unlink($strExportLogFile);
                 $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strExportLogFile));
                 $this->btnExport->Visible = false;
+                $this->btnKillProcess->Visible = $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode);
                 $this->objExportProgress->Visible = true;
                 $this->objExportProgress->Translated = 0;
                 $this->lblExport->Text = '';
@@ -191,8 +206,8 @@
                         0,
                         NarroLanguage::SOURCE_LANGUAGE_CODE,
                         QApplication::$Language->LanguageCode,
-                        __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE,
-                        __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode,
+                        __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE,
+                        __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode,
                         $this->lstExportSuggestionType->SelectedValue,
                         (($this->chkCopyUnhandledFiles->Checked)?'--copy-unhandled-files ':'')
                     );
@@ -203,6 +218,7 @@
 
                     $this->lblExport->Visible = true;
                     $this->btnExport->Visible = true;
+                    $this->btnKillProcess->Visible = false;
                     $this->objExportProgress->Translated = 0;
                     $this->objExportProgress->Visible = false;
 
@@ -272,6 +288,43 @@
                 return false;
             }
             return true;
+        }
+
+        public function btnKillProcess_Click($strFormId, $strControlId, $strParameter) {
+            $strExportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export.log';
+            $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export-process.log';
+            $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export-process.pid';
+
+            require_once('Zend/Log.php');
+            require_once('Zend/Log/Writer/Stream.php');
+            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strExportLogFile));
+
+            if (!file_exists($strProcPidFile)) {
+                $objLogger->err('Could not find a pid file for the background process.');
+                $this->pnlLogViewer->MarkAsModified();
+                return false;
+            }
+
+            $intPid = file_get_contents($strProcPidFile);
+
+            if (is_numeric(trim($intPid))) {
+
+                $mixProcess = proc_open(sprintf('kill -9 %d', $intPid), array(2 => array("file", $strProcLogFile, 'a')), $foo);
+
+                if ($mixProcess) {
+                    proc_close($mixProcess);
+                    $objLogger->info('Process killed');
+                }
+                else {
+                    $objLogger->info('Failed to kill process');
+                }
+
+                if (file_exists($strProcLogFile) && filesize($strProcLogFile))
+                    $objLogger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+
+                $this->pnlLogViewer->MarkAsModified();
+            }
+
         }
 
     }

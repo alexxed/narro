@@ -149,12 +149,12 @@
         if (array_search('--template-directory', $argv) !== false)
             $objNarroImporter->TemplatePath = $argv[array_search('--template-directory', $argv)+1];
         else
-            $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
+            $objNarroImporter->TemplatePath = __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
 
         if (array_search('--translation-directory', $argv) !== false)
             $objNarroImporter->TranslationPath = $argv[array_search('--translation-directory', $argv)+1];
         else
-            $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
+            $objNarroImporter->TranslationPath = __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
 
         if (in_array('--force', $argv)) {
             $objNarroImporter->CleanImportDirectory();
@@ -167,6 +167,12 @@
 
             if ($intPid && $intPid <> getmypid())
                 throw new Exception(sprintf('An import process is already for this project with pid %d', $intPid));
+
+            $strProcPidFile = __TMP_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '-' . $objNarroImporter->TargetLanguage->LanguageCode . '-import-process.pid';
+            if (file_exists($strProcPidFile))
+                unlink($strProcPidFile);
+
+            file_put_contents($strProcPidFile, getmypid());
 
             $objNarroImporter->ImportProject();
         }
@@ -256,12 +262,18 @@
         }
 
         try {
-            $objNarroImporter->TranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
-            $objNarroImporter->TemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
+            $objNarroImporter->TranslationPath = __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
+            $objNarroImporter->TemplatePath = __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
             $intPid = NarroUtils::IsProcessRunning('export', $objNarroImporter->Project->ProjectId);
 
             if ($intPid && $intPid <> getmypid())
                 $objLogger->info(sprintf('An export process is already for this project with pid %d', $intPid));
+
+            $strProcPidFile = __TMP_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '-' . $objNarroImporter->TargetLanguage->LanguageCode . '-export-process.pid';
+            if (file_exists($strProcPidFile))
+                unlink($strProcPidFile);
+
+            file_put_contents($strProcPidFile, getmypid());
 
             $objNarroImporter->ExportProject();
         }

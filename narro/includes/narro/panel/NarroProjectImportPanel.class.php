@@ -81,16 +81,8 @@
             $this->objImportProgress->Total = 100;
             $this->objImportProgress->Visible = false;
 
-            if (NarroUtils::IsProcessRunning('import', $this->objNarroProject->ProjectId)) {
-                $this->btnImport->Visible = false;
-                $this->objImportProgress->Visible = true;
-                $this->objImportProgress->Translated = NarroProgress::GetProgress($this->objNarroProject->ProjectId, 'import');
-                QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnImport->ControlId, 2000));
-            }
-
             $this->btnKillProcess = new QButton($this);
             $this->btnKillProcess->Text = 'Kill process';
-            $this->btnKillProcess->Visible = false;
             if (QApplication::$UseAjax)
                 $this->btnKillProcess->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKillProcess_Click'));
             else
@@ -102,6 +94,15 @@
                 $this->btnImport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnImport_Click'));
             else
                 $this->btnImport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnImport_Click'));
+
+            if (NarroUtils::IsProcessRunning('import', $this->objNarroProject->ProjectId)) {
+                $this->btnImport->Visible = false;
+                $this->objImportProgress->Visible = true;
+                $this->objImportProgress->Translated = NarroProgress::GetProgress($this->objNarroProject->ProjectId, 'import');
+                QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnImport->ControlId, 2000));
+            }
+
+            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode) && !$this->btnImport->Visible;
         }
 
         public function chkApproveImportedTranslations_Click($strFormId, $strControlId, $strParameter) {
@@ -137,6 +138,7 @@
 
                     $this->lblImport->Visible = true;
                     $this->btnImport->Visible = true;
+                    $this->btnKillProcess->Visible = false;
                     $this->objImportProgress->Translated = 0;
                     $this->objImportProgress->Visible = false;
 
@@ -182,15 +184,19 @@
 
                 $this->lblImport->Visible = true;
                 $this->btnImport->Visible = true;
+                $this->btnKillProcess->Visible = false;
                 $this->objImportProgress->Visible = false;
 
                 $this->pnlLogViewer->MarkAsModified();
 
             }
             else {
-                unlink($strImportLogFile);
+                if (file_exists($strImportLogFile))
+                    unlink($strImportLogFile);
+
                 $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strImportLogFile));
                 $this->btnImport->Visible = false;
+                $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode) && !$this->btnImport->Visible;
                 $this->objImportProgress->Visible = true;
                 $this->objImportProgress->Translated = 0;
                 $this->lblImport->Text = '';
@@ -217,6 +223,7 @@
 
                     $this->lblImport->Visible = true;
                     $this->btnImport->Visible = true;
+                    $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode) && !$this->btnImport->Visible;
                     $this->objImportProgress->Translated = 0;
                     $this->objImportProgress->Visible = false;
 
@@ -225,8 +232,9 @@
                 }
 
 
-                if (file_exists($strProcLogFile) && is_writable($strProcLogFile))
+                if (file_exists($strProcLogFile) && is_writable($strProcLogFile)) {
                     unlink($strProcLogFile);
+                }
 
                 $mixProcess = proc_open("$strCommand &", array(2 => array("file", $strProcLogFile, 'a')), $foo);
 
@@ -249,6 +257,43 @@
                         $this->btnImport_Click($strFormId, $strControlId, 2);
                 }
             }
+        }
+
+        public function btnKillProcess_Click($strFormId, $strControlId, $strParameter) {
+            $strImportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import.log';
+            $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.log';
+            $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.pid';
+
+            require_once('Zend/Log.php');
+            require_once('Zend/Log/Writer/Stream.php');
+            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strImportLogFile));
+
+            if (!file_exists($strProcPidFile)) {
+                $objLogger->err('Could not find a pid file for the background process.');
+                $this->pnlLogViewer->MarkAsModified();
+                return false;
+            }
+
+            $intPid = file_get_contents($strProcPidFile);
+
+            if (is_numeric(trim($intPid))) {
+
+                $mixProcess = proc_open(sprintf('kill -9 %d', $intPid), array(2 => array("file", $strProcLogFile, 'a')), $foo);
+
+                if ($mixProcess) {
+                    proc_close($mixProcess);
+                    $objLogger->info('Process killed');
+                }
+                else {
+                    $objLogger->info('Failed to kill process');
+                }
+
+                if (file_exists($strProcLogFile) && filesize($strProcLogFile))
+                    $objLogger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+
+                $this->pnlLogViewer->MarkAsModified();
+            }
+
         }
 
     }
