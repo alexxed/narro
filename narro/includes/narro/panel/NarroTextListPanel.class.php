@@ -30,12 +30,19 @@
         public $txtSearch;
         public $lstSearchType;
         public $btnSearch;
+
         public $btnMultiApprove;
         public $btnMultiApproveCancel;
         public $btnMultiApproveBottom;
         public $btnMultiApproveCancelBottom;
 
+        public $btnMultiTranslate;
+        public $btnMultiTranslateCancel;
+        public $btnMultiTranslateBottom;
+        public $btnMultiTranslateCancelBottom;
+
         protected $arrSuggestionList;
+        protected $arrTexBoxList;
 
         public $lblMessage;
 
@@ -52,7 +59,7 @@
 
         public function __construct(NarroProject $objNarroProject, $objParentObject, $strControlId = null) {
             parent::__construct($objParentObject, $strControlId);
-            
+
             $this->objNarroProject = $objNarroProject;
 
             // Setup DataGrid Columns
@@ -84,6 +91,7 @@
 
             // Setup DataGrid
             $this->dtgNarroContextInfo = new NarroDataGrid($this);
+            $this->dtgNarroContextInfo->Title = sprintf(t('Texts from the project "%s"'), $this->objNarroProject->ProjectName);
 
             // Datagrid Paginator
             $this->dtgNarroContextInfo->Paginator = new QPaginator($this->dtgNarroContextInfo);
@@ -146,7 +154,7 @@
                 $this->btnMultiApprove->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnMultiApprove_Click'));
 
             $this->btnMultiApproveCancel = new QButton($this);
-            $this->btnMultiApproveCancel->Text = t('Cancel');
+            $this->btnMultiApproveCancel->Text = t('Cancel mass approval');
             $this->btnMultiApproveCancel->Display = QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
             $this->btnMultiApproveCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnMultiApproveCancel_Click'));
 
@@ -159,18 +167,127 @@
                 $this->btnMultiApproveBottom->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnMultiApprove_Click'));
 
             $this->btnMultiApproveCancelBottom = new QButton($this);
-            $this->btnMultiApproveCancelBottom->Text = t('Cancel');
+            $this->btnMultiApproveCancelBottom->Text = t('Cancel mass approval');
             $this->btnMultiApproveCancelBottom->Display = QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
             $this->btnMultiApproveCancelBottom->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnMultiApproveCancel_Click'));
+
+            $this->btnMultiTranslate = new QButton($this);
+            $this->btnMultiTranslate->Text = t('Mass translate');
+            if (QApplication::$UseAjax)
+                $this->btnMultiTranslate->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMultiTranslate_Click'));
+            else
+                $this->btnMultiTranslate->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnMultiTranslate_Click'));
+
+            $this->btnMultiTranslateCancel = new QButton($this);
+            $this->btnMultiTranslateCancel->Text = t('Cancel mass translation');
+            $this->btnMultiTranslateCancel->Display = $this->btnMultiTranslate->Text == t('Save');
+            $this->btnMultiTranslateCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnMultiApproveCancel_Click'));
+
+            $this->btnMultiTranslateBottom = new QButton($this);
+            $this->btnMultiTranslateBottom->Text = t('Mass translate');
+            if (QApplication::$UseAjax)
+                $this->btnMultiTranslateBottom->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMultiTranslate_Click'));
+            else
+                $this->btnMultiTranslateBottom->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnMultiTranslate_Click'));
+
+            $this->btnMultiTranslateCancelBottom = new QButton($this);
+            $this->btnMultiTranslateCancelBottom->Text = t('Cancel mass translation');
+            $this->btnMultiTranslateCancelBottom->Display = $this->btnMultiTranslateBottom->Text == t('Save');
+            $this->btnMultiTranslateCancelBottom->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnMultiApproveCancel_Click'));
         }
 
-        protected function btnMultiApproveCancel_Click($strFormId, $strControlId, $strParameter) {
+        public function btnMultiApproveCancel_Click($strFormId, $strControlId, $strParameter) {
             QApplication::Redirect(QApplication::$ScriptName . '?' . QApplication::$QueryString);
         }
 
-        protected function btnMultiApprove_Click($strFormId, $strControlId, $strParameter) {
+        public function btnMultiTranslate_Click($strFormId, $strControlId, $strParameter) {
+            $this->btnMultiApproveCancel->Display = false;
+            $this->btnMultiApproveCancelBottom->Display = false;
+            $this->btnMultiApprove->Text = t('Mass approve');
+            $this->btnMultiApproveBottom->Text = t('Mass approve');
+
+            if ($this->btnMultiTranslate->Text == t('Mass translate')) {
+                $this->btnMultiTranslate->Text = t('Save');
+                $this->btnMultiTranslateBottom->Text = t('Save');
+                $this->SetMessage(t('Mass translate mode is the quick and dirty way to translate. If a text has an approved translation, it will be prefilled in the translation textbox. All the translations are added as new and not approved.'));
+                $this->dtgNarroContextInfo->MarkAsModified();
+            }
+            else {
+                $blnCanContinue = true;
+
+                /**
+                 * Store translations
+                 */
+                if (is_array($this->arrTexBoxList)) {
+                    $intProcessed = 0;
+                    $intAdded = 0;
+
+                    // @todo Add plugin validation and a checkbox (Ignore)
+                    foreach($this->arrTexBoxList as $intContextInfoId=>$objTranslationText) {
+                        $intProcessed++;
+
+                        if (trim($objTranslationText->Text) == '') continue;
+
+                        $objContextInfo = NarroContextInfo::Load($intContextInfoId);
+                        $objNewSuggestion = new NarroSuggestion();
+                        $objNewSuggestion->TextId = $objTranslationText->ActionParameter;
+                        $objNewSuggestion->UserId = QApplication::GetUserId();
+                        $objNewSuggestion->LanguageId = QApplication::GetLanguageId();
+                        $objNewSuggestion->SuggestionValue = $objTranslationText->Text;
+                        try {
+                            $objNewSuggestion->Save();
+                            $intAdded++;
+                        }
+                        catch (Exception $objEx) {
+                            if (!strstr($objEx->getMessage(), 'Duplicate entry')) {
+                                $this->arrTexBoxList[$intContextInfoId]->Warning = $objEx->getMessage();
+                                $this->arrTexBoxList[$intContextInfoId]->MarkAsModified();
+                                $blnCanContinue = false;
+                            }
+                        }
+
+                        if (!$objContextInfo->HasSuggestions) {
+                            $objContextInfo->HasSuggestions = 1;
+                            try {
+                                $objContextInfo->Save();
+                            }
+                            catch (Exception $objEx) {
+                                $this->arrTexBoxList[$intContextInfoId]->Warning .= $objEx->getMessage();
+                                $this->arrTexBoxList[$intContextInfoId]->MarkAsModified();
+                                $blnCanContinue = false;
+                            }
+                        }
+                    }
+                }
+
+                if ($blnCanContinue) {
+                    // Reset the stored textboxes
+                    $this->arrTexBoxList = array();
+                    $this->dtgNarroContextInfo->MarkAsModified();
+                }
+
+
+
+                if ($intAdded > 0)
+                    $this->SetMessage(sprintf(t('Added %d translations.'), $intAdded));
+                else
+                    $this->SetMessage(t('No translations added.'));
+
+            }
+
+            $this->btnMultiTranslateCancel->Display = $this->btnMultiTranslate->Text == t('Save');
+            $this->btnMultiTranslateCancelBottom->Display = $this->btnMultiTranslateBottom->Text == t('Save');
+        }
+
+        public function btnMultiApprove_Click($strFormId, $strControlId, $strParameter) {
             if (!QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId))
               return false;
+
+            $this->btnMultiTranslateCancel->Display = false;
+            $this->btnMultiTranslateCancelBottom->Display = false;
+            $this->btnMultiTranslate->Text = t('Mass translate');
+            $this->btnMultiTranslateBottom->Text = t('Mass translate');
+
 
             if ($this->btnMultiApprove->Text == t('Mass approve')) {
                 $this->btnMultiApprove->Text = t('Save');
@@ -220,6 +337,9 @@
                         $this->SetMessage(sprintf(t('Saved %d changes.'), $intModified));
                     else
                         $this->SetMessage(t('No changes.'));
+
+                    // Reset the stored listboxes
+                    $this->arrSuggestionList = array();
                 }
 
                 $this->dtgNarroContextInfo->MarkAsModified();
@@ -276,7 +396,7 @@
                 return '<div width="100%" style="background:gray">&nbsp;</div>';
         }
 
-        public function dtgNarroContextInfo_EditTranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
+        public function dtgNarroContextInfo_ApproveTranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
             $this->arrSuggestionList[$objNarroContextInfo->ContextInfoId] = new QListBox($this->dtgNarroContextInfo);
             $this->arrSuggestionList[$objNarroContextInfo->ContextInfoId]->AddItem('', '');
             foreach(NarroSuggestion::LoadArrayByTextIdForCurrentLanguage($objNarroContextInfo->Context->TextId) as $objSuggestion) {
@@ -286,11 +406,27 @@
             return $this->arrSuggestionList[$objNarroContextInfo->ContextInfoId]->Render(false);
         }
 
+        public function dtgNarroContextInfo_EditTranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
+            $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId] = new QTextBox($this->dtgNarroContextInfo);
+            $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->ActionParameter = $objNarroContextInfo->Context->TextId;
+            $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->TextMode = QTextMode::MultiLine;
+            $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->Rows = 1;
+            if ($objNarroContextInfo->ValidSuggestionId)
+                $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->Text = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
+            $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->Columns = 50;
+            $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->AddAction(new QFocusEvent(), new QJavaScriptAction(sprintf('this.rows=4; this.cols=100;highlight_datagrid_row_by_control(this);')));
+            $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->AddAction(new QBlurEvent(), new QJavaScriptAction(sprintf('this.rows=1; this.cols=50;reset_datagrid_row_by_control(this);')));
+            return $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->RenderWithError(false);
+        }
 
         public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo, $strLink = null) {
             if ($this->btnMultiApprove->Text != t('Mass approve') && $objNarroContextInfo->HasSuggestions && !$objNarroContextInfo->TextAccessKey && $objNarroContextInfo->Context->Text->TextCharCount < 100) {
+                return $this->dtgNarroContextInfo_ApproveTranslatedText_Render($objNarroContextInfo);
+            }
+            elseif ($this->btnMultiTranslate->Text != t('Mass translate')) {
                 return $this->dtgNarroContextInfo_EditTranslatedText_Render($objNarroContextInfo);
             }
+
             /**
             * if there is a valid suggestion, show it
             * if not and a user has made a suggestion, show it in green

@@ -49,7 +49,7 @@ body {
 .dotted_box_content { padding:5px; }
 
 label {
-	white-space:nowrap;
+  white-space:nowrap;
 }
 
 a:link, a:visited {
@@ -87,21 +87,21 @@ div.translated {
 background:transparent url(../images/green-bar.png) repeat-x scroll 0pt 50%;
 height:100%;
 left:0%;
-position:relative;
+position:absolute;
 top:0px;
 }
 
 div.fuzzy {
 background:transparent url(../images/orange-bar.png) repeat-x scroll 0pt 50%;
 height:100%;
-position:relative;
+position:absolute;
 top:0px;
 }
 
 div.untranslated {
 background:transparent url(../images/red-bar.png) repeat-x scroll 0pt 50%;
 height:100%;
-position:relative;
+position:absolute;
 top:0px;
 }
 

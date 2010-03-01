@@ -22,7 +22,7 @@
 
         public function __construct(NarroProject $objNarroProject, $objParentObject, $strControlId = null) {
             parent::__construct($objNarroProject, $objParentObject, $strControlId);
-            
+
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroProjectTextListPanel.tpl.php';
 
             switch($this->lstSearchType->SelectedValue) {
@@ -66,6 +66,15 @@
 
 
         public function dtgNarroContextInfo_Bind() {
+            switch($this->lstTextFilter->SelectedValue) {
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL:
+                    $this->dtgNarroContextInfo->LabelForNoneFound = t('All the texts from this project are already approved.');
+                    break;
+                case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS:
+                    $this->dtgNarroContextInfo->LabelForNoneFound = t('All the texts from this project are already translated.');
+                    break;
+            }
+
             $this->arrSuggestionList = array();
 
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
@@ -185,6 +194,17 @@
                         $objCommonCondition
                     );
                     break;
+            }
+
+            if ($this->dtgNarroContextInfo->TotalItemCount) {
+                $this->dtgNarroContextInfo->AlwaysShowPaginator = false;
+                $this->dtgNarroContextInfo->ShowFooter = true;
+                $this->dtgNarroContextInfo->ShowHeader = true;
+            }
+            else {
+                $this->dtgNarroContextInfo->AlwaysShowPaginator = true;
+                $this->dtgNarroContextInfo->ShowFooter = false;
+                $this->dtgNarroContextInfo->ShowHeader = false;
             }
         }
 

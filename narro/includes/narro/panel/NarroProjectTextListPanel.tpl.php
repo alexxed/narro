@@ -27,10 +27,14 @@
         <br />
         <?php $_CONTROL->btnMultiApprove->Render(); ?>
         <?php $_CONTROL->btnMultiApproveCancel->Render(); ?>
+        <?php $_CONTROL->btnMultiTranslate->Render(); ?>
+        <?php $_CONTROL->btnMultiTranslateCancel->Render(); ?>
     </div>
     <?php $_CONTROL->dtgNarroContextInfo->Render() ?>
     <div style="text-align:right;padding:3px;">
         <?php $_CONTROL->btnMultiApproveBottom->Render(); ?>
         <?php $_CONTROL->btnMultiApproveCancelBottom->Render(); ?>
+        <?php $_CONTROL->btnMultiTranslateBottom->Render(); ?>
+        <?php $_CONTROL->btnMultiTranslateCancelBottom->Render(); ?>
     </div>
     <?php QApplication::ExecuteJavaScript("if (location.hash.match('p')) qc.pA('NarroProjectTextListForm', '" . $_CONTROL->dtgNarroContextInfo->Paginator->ControlId . "', 'QClickEvent', location.hash.replace('#p', ''), '');"); ?>

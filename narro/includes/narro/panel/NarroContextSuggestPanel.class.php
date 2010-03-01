@@ -428,6 +428,8 @@
         protected function btnNext_Create() {
             $this->btnNext = new QButton($this);
             $this->btnNext->Text = t('Next');
+            
+            $this->btnNext->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
 
             if (QApplication::$UseAjax)
                 $this->btnNext->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnNext_Click'));
@@ -443,6 +445,8 @@
         protected function btnNext100_Create() {
             $this->btnNext100 = new QButton($this);
             $this->btnNext100->Text = t('100 forward') . ' »';
+            
+            $this->btnNext100->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
 
             if (QApplication::$UseAjax)
                 $this->btnNext100->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnNext100_Click'));
@@ -457,6 +461,9 @@
         protected function btnPrevious100_Create() {
             $this->btnPrevious100 = new QButton($this);
             $this->btnPrevious100->Text = '« ' . t('100 back');
+            
+            $this->btnPrevious100->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
+            
             if (QApplication::$UseAjax)
                 $this->btnPrevious100->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnPrevious100_Click'));
             else
@@ -471,6 +478,9 @@
         protected function btnPrevious_Create() {
             $this->btnPrevious = new QButton($this);
             $this->btnPrevious->Text = t('Previous');
+            
+            $this->btnPrevious->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
+            
             if (QApplication::$UseAjax)
                 $this->btnPrevious->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnPrevious_Click'));
             else
@@ -813,6 +823,10 @@
                 $this->objNarroContextInfo = $objContext;
                 $this->UpdateData();
                 $this->UpdateNavigator();
+                $this->btnNext->Enabled = $this->btnNext->Enabled;
+                $this->btnNext100->Enabled = $this->btnNext100->Enabled;
+                $this->btnPrevious->Enabled = $this->btnPrevious->Enabled;
+                $this->btnPrevious100->Enabled = $this->btnPrevious100->Enabled;
                 QApplication::ExecuteJavaScript(sprintf('location.hash=\'#c%di%d\'', $this->objNarroContextInfo->ContextId, $this->intCurrentContext));
                 return true;
             }
@@ -825,7 +839,7 @@
             if (!QApplication::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId))
                 return false;
 
-            $btnApprove = $this->GetControl($strControlId);
+            $btnApprove = $this->Form->GetControl($strControlId);
             if ($btnApprove->Text == t('Save and approve'))
                 $blnResult = $this->pnlSuggestionList->btnEdit_Click($strFormId, 'btnEditSuggestion' . $strParameter, $strParameter);
             else
@@ -849,12 +863,14 @@
             $objSuggestion = NarroSuggestion::Load($strParameter);
             $strSuggestionValue = $objSuggestion->SuggestionValue;
 
-            if (mb_stripos($strSuggestionValue, $this->objNarroContextInfo->TextAccessKey) === false)
-                $this->objNarroContextInfo->SuggestionAccessKey = mb_substr($strSuggestionValue, 0, 1);
-            elseif (mb_strpos($strSuggestionValue, mb_strtoupper($this->objNarroContextInfo->TextAccessKey)) === false)
-                $this->objNarroContextInfo->SuggestionAccessKey = mb_strtolower($this->objNarroContextInfo->TextAccessKey);
-            else
-                $this->objNarroContextInfo->SuggestionAccessKey = mb_strtoupper($this->objNarroContextInfo->TextAccessKey);
+            if ($this->objNarroContextInfo->TextAccessKey) {
+                if (mb_stripos($strSuggestionValue, $this->objNarroContextInfo->TextAccessKey) === false)
+                    $this->objNarroContextInfo->SuggestionAccessKey = mb_substr($strSuggestionValue, 0, 1);
+                elseif (mb_strpos($strSuggestionValue, mb_strtoupper($this->objNarroContextInfo->TextAccessKey)) === false)
+                    $this->objNarroContextInfo->SuggestionAccessKey = mb_strtolower($this->objNarroContextInfo->TextAccessKey);
+                else
+                    $this->objNarroContextInfo->SuggestionAccessKey = mb_strtoupper($this->objNarroContextInfo->TextAccessKey);
+            }
 
             $this->objNarroContextInfo->Modified = QDateTime::Now();
             $this->objNarroContextInfo->Save();
@@ -890,7 +906,7 @@
             if (!QApplication::HasPermissionForThisLang('Can approve', $this->objNarroContextInfo->Context->ProjectId))
               return false;
 
-            $this->objNarroContextInfo->SuggestionAccessKey = $this->GetControl($strParameter)->Text;
+            $this->objNarroContextInfo->SuggestionAccessKey = $this->Form->GetControl($strParameter)->Text;
             $this->objNarroContextInfo->Modified = QDateTime::Now();
             $this->objNarroContextInfo->Save();
 

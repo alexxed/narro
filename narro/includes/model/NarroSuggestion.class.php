@@ -44,7 +44,7 @@
             return sprintf('NarroSuggestion Object %s',  $this->intSuggestionId);
         }
 
-        public function LoadArrayByTextIdForCurrentLanguage($intTextId, $objOptionalClauses = null) {
+        public static function LoadArrayByTextIdForCurrentLanguage($intTextId, $objOptionalClauses = null) {
             return self::QueryArray(
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::GetLanguageId()),
@@ -54,7 +54,7 @@
             );
         }
 
-        public function CountByTextIdForCurrentLanguage($intTextId) {
+        public static function CountByTextIdForCurrentLanguage($intTextId) {
             return self::QueryCount(
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::GetLanguageId()),

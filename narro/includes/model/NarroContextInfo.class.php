@@ -71,7 +71,7 @@
                     else
                         $objFilterCondition = $objExtraCondition;
 
-                    $arrContexts = self::QueryArray($objFilterCondition, array(QQ::LimitInfo(1, 0), $objSortInfo));
+                    $arrContexts = self::QueryArray($objFilterCondition, array(QQ::LimitInfo(1, 0), $objSortInfo, QQ::Expand(QQN::NarroContextInfo()->Context->Text)));
             }
 
             if (count($arrContexts) && $arrContexts[0] instanceof NarroContextInfo)
@@ -112,7 +112,7 @@
                     $objFilterCondition = QQ::All();
             }
 
-            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo));
+            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo, QQ::Expand(QQN::NarroContextInfo()->Context->Text)));
 
             return $arrContext;
         }
@@ -149,6 +149,7 @@
         }
 
         public static function LoadArrayByTextValue($strTextValue, $intFilter, $objLimitInfo = null, $objSortInfo = null, $objExtraCondition = null) {
+
             if (!is_object($objExtraCondition))
                 $objExtraCondition = QQ::All();
 
@@ -165,12 +166,15 @@
             else
                 $objSearchCondition = QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue,  '%' . $strTextValue . '%');
 
+            $objClauses = array($objLimitInfo, $objSortInfo, QQ::Expand(QQN::NarroContextInfo()->Context->Text));
+
             switch ($intFilter) {
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS :
                     $objFilterCondition = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0);
                     break;
                 case NarroTextListForm::SHOW_APPROVED_TEXTS :
                     $objFilterCondition = QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId);
+                    $objClauses[] = QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion);
                     break;
                 case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL :
                     $objFilterCondition = QQ::AndCondition(QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
@@ -180,7 +184,7 @@
                     $objFilterCondition = QQ::All();
             }
 
-            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo));
+            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), $objClauses);
 
             return $arrContext;
         }
@@ -248,7 +252,7 @@
                     $objFilterCondition = QQ::All();
             }
 
-            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo, QQ::GroupBy(QQN::NarroContextInfo()->ContextId)));
+            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo, QQ::GroupBy(QQN::NarroContextInfo()->ContextId), QQ::Expand(QQN::NarroContextInfo()->Context->Text)));
 
             return $arrContext;
         }
@@ -315,7 +319,7 @@
                     $objFilterCondition = QQ::All();
             }
 
-            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo, QQ::GroupBy(QQN::NarroContextInfo()->ContextId)));
+            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo, QQ::GroupBy(QQN::NarroContextInfo()->ContextId), QQ::Expand(QQN::NarroContextInfo()->Context->Text)));
 
             return $arrContext;
         }
@@ -382,7 +386,7 @@
                     $objFilterCondition = QQ::All();
             }
 
-            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo, QQ::GroupBy(QQN::NarroContextInfo()->ContextId)));
+            $arrContext = NarroContextInfo::QueryArray(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition), array($objLimitInfo, $objSortInfo, QQ::GroupBy(QQN::NarroContextInfo()->ContextId), QQ::Expand(QQN::NarroContextInfo()->Context->Text)));
 
             return $arrContext;
         }

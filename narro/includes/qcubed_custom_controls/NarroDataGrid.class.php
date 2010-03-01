@@ -7,7 +7,7 @@
         protected $blnShowFooter = true;
         
         protected $blnAlwaysShowPaginator = false;
-
+        
         // Let's define the footer to be to display our alternate paginator
         // We'll use the already built-in GetPaginatorRowHtml, sending in our ALTERNATE paginator, to help with the rendering
         protected function GetFooterRowHtml() {

@@ -13,19 +13,19 @@
         * to move the configuration file anywhere you want.  But be sure to provide
         * a relative or absolute path to the file.
         */
-		require(dirname(__FILE__) . '/configuration.inc.php');
+    require(dirname(__FILE__) . '/configuration.inc.php');
 
 
         //////////////////////////////
-		// Include the QCubed Framework
+    // Include the QCubed Framework
         //////////////////////////////
-		if (get_magic_quotes_gpc()) 
+    if (get_magic_quotes_gpc())
             require(__QCUBED_CORE__ . '/framework/DisableMagicQuotes.inc.php');
-		require(__QCUBED_CORE__ . '/qcubed.inc.php');
+    require(__QCUBED_CORE__ . '/qcubed.inc.php');
 
 
-		// Register the autoloader
-		//spl_autoload_register(array('QApplication', 'Autoload'));
+    // Register the autoloader
+    //spl_autoload_register(array('QApplication', 'Autoload'));
 
         //////////////////////////
         // Custom Global Functions
@@ -78,7 +78,7 @@
         ///////////////////////
         /*
         * Set Error/Exception Handling to the default
-		 * QCubed HandleError and HandlException functions
+     * QCubed HandleError and HandlException functions
         * (Only in non CLI mode)
         *
         * Feel free to change, if needed, to your own
@@ -100,7 +100,7 @@
         define('__FORM_STATE_HANDLER__', 'QFormStateHandler');
         define('__FILE_FORM_STATE_HANDLER_PATH__',  __TMP_PATH__ . '/qform_state');
 
-        
+
         if (strstr($_SERVER['SCRIPT_NAME'], 'assets/') === false) {
 
             /////////////////////////////
@@ -155,12 +155,13 @@
                 // @todo add handling here
                 throw new Exception('Could not create an instance of NarroUser');
 
+            $objNarroSession->User = QApplication::$User;
+
             if (QApplication::$User->UserId != NarroUser::ANONYMOUS_USER_ID && !QApplication::$Cache->getIdsMatchingTags(array('NarroUser' . QApplication::$User->UserId))) {
                 QApplication::$User = NarroUser::LoadByUserId(QApplication::$User->UserId);
                 if (!QApplication::$User instanceof NarroUser)
                     QApplication::$User = NarroUser::LoadAnonymousUser();
 
-                $objNarroSession->User = QApplication::$User;
                 QApplication::$Cache->save(QApplication::$User, 'NarroUser' . QApplication::$User->UserId, array('NarroUser' . QApplication::$User->UserId));
             }
 
@@ -206,7 +207,7 @@
         ///////////////////////
         /*
         * Set Error/Exception Handling to the default
-		 * QCubed HandleError and HandlException functions
+     * QCubed HandleError and HandlException functions
         * (Only in non CLI mode)
         *
         * Feel free to change, if needed, to your own

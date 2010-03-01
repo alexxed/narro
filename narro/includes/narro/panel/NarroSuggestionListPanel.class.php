@@ -102,9 +102,9 @@
             $this->btnSaveAccessKey->Text = t('Save');
             $this->btnSaveAccessKey->ActionParameter = $this->txtAccessKey->ControlId;
             if (QApplication::$UseAjax)
-                $this->btnSaveAccessKey->AddAction(new QClickEvent(), new QAjaxAction('btnSaveAccessKey_Click'));
+                $this->btnSaveAccessKey->AddAction(new QClickEvent(), new QAjaxControlAction($this->ParentControl, 'btnSaveAccessKey_Click'));
             else
-                $this->btnSaveAccessKey->AddAction(new QClickEvent(), new QServerAction('btnSaveAccessKey_Click')
+                $this->btnSaveAccessKey->AddAction(new QClickEvent(), new QServerControlAction($this->ParentControl, 'btnSaveAccessKey_Click')
             );
         }
 
@@ -157,10 +157,11 @@
                 if (!$btnApprove) {
                     $btnApprove = new QButton($this, $strControlId);
                     $btnApprove->SetCustomStyle('float', 'right');
+                    $btnApprove->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     if (QApplication::$UseAjax)
-                        $btnApprove->AddAction(new QClickEvent(), new QAjaxAction('btnApprove_Click'));
+                        $btnApprove->AddAction(new QClickEvent(), new QAjaxControlAction($this->ParentControl, 'btnApprove_Click'));
                     else
-                        $btnApprove->AddAction(new QClickEvent(), new QServerAction('btnApprove_Click')
+                        $btnApprove->AddAction(new QClickEvent(), new QServerControlAction($this->ParentControl, 'btnApprove_Click')
                     );
                 }
 
@@ -202,7 +203,7 @@
                 $this->dtgSuggestions->Render(false) .
                 $this->lblMessage->Render(false);
 
-            return $this->strText;
+            return parent::GetControlHtml();
         }
 
         public function dtgSuggestions_colProject_Render(NarroSuggestion $objNarroSuggestion) {
@@ -370,6 +371,7 @@
                     $btnSaveIgnoreSuggestion = new QButton($this->dtgSuggestions, $strControlId);
                     $btnSaveIgnoreSuggestion->Text = t('Ignore and save');
                     $btnSaveIgnoreSuggestion->Visible = false;
+                    $btnSaveIgnoreSuggestion->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     if (QApplication::$UseAjax)
                         $btnSaveIgnoreSuggestion->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnEdit_Click'));
                     else
@@ -402,6 +404,7 @@
             if (!$btnDelete) {
                 $btnDelete = new QButton($this->dtgSuggestions, $strControlId);
                 $btnDelete->Text = t('Delete');
+                $btnDelete->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                 $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this suggestion?')));
                 if (QApplication::$UseAjax)
                     $btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
@@ -420,6 +423,7 @@
                 $btnVote = new QButton($this->dtgSuggestions, $strControlId);
                 $btnVote->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objNarroContextInfo->Context->ProjectId);
                 $btnVote->Text = t('Vote');
+                $btnVote->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                 if (QApplication::$UseAjax)
                     $btnVote->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
                 else
@@ -436,10 +440,11 @@
             $btnApprove = $this->objForm->GetControl($strControlId);
             if (!$btnApprove) {
                 $btnApprove = new QButton($this->dtgSuggestions, $strControlId);
+                $btnApprove->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                 if (QApplication::$UseAjax)
-                    $btnApprove->AddAction(new QClickEvent(), new QAjaxAction('btnApprove_Click'));
+                    $btnApprove->AddAction(new QClickEvent(), new QAjaxControlAction($this->ParentControl, 'btnApprove_Click'));
                 else
-                    $btnApprove->AddAction(new QClickEvent(), new QServerAction('btnApprove_Click')
+                    $btnApprove->AddAction(new QClickEvent(), new QServerControlAction($this->ParentControl, 'btnApprove_Click')
                 );
             }
 

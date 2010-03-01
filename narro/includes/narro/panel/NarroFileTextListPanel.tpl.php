@@ -25,10 +25,14 @@
         <br />
         <?php $_CONTROL->btnMultiApprove->Render(); ?>
         <?php $_CONTROL->btnMultiApproveCancel->Render(); ?>
+        <?php $_CONTROL->btnMultiTranslate->Render(); ?>
+        <?php $_CONTROL->btnMultiTranslateCancel->Render(); ?>
     </div>
     <br />
     <?php $_CONTROL->dtgNarroContextInfo->Render() ?>
     <div style="text-align:right;padding:3px;">
         <?php $_CONTROL->btnMultiApproveBottom->Render(); ?>
         <?php $_CONTROL->btnMultiApproveCancelBottom->Render(); ?>
+        <?php $_CONTROL->btnMultiTranslateBottom->Render(); ?>
+        <?php $_CONTROL->btnMultiTranslateCancelBottom->Render(); ?>
     </div>
