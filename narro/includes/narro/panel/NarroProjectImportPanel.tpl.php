@@ -30,25 +30,39 @@
 
 <div class="section_title"><?php _t('Options')?></div>
 <div class="section">
-<?php $_CONTROL->chkApproveImportedTranslations->Render(); ?>
+<?php
+    $_CONTROL->chkApproveImportedTranslations->Render();
+    if ($_CONTROL->chkApproveImportedTranslations->Display) {
+?>
 <label for="<?php echo $_CONTROL->chkApproveImportedTranslations->ControlId?>"><?php echo $_CONTROL->chkApproveImportedTranslations->Name?></label>
 <br />
 <?php
+    }
     $_CONTROL->chkApproveOnlyNotApproved->Render();
-    if ($_CONTROL->chkApproveOnlyNotApproved->Visible) {
+    if ($_CONTROL->chkApproveOnlyNotApproved->Display) {
 ?>
 <label for="<?php echo $_CONTROL->chkApproveOnlyNotApproved->ControlId?>"><?php echo $_CONTROL->chkApproveOnlyNotApproved->Name?></label>
 <br />
 <?php
     }
+ 
+    $_CONTROL->chkImportOnlyTranslations->Render();
+    if ($_CONTROL->chkImportOnlyTranslations->Display) {
 ?>
-<?php $_CONTROL->chkImportOnlyTranslations->Render(); ?>
 <label for="<?php echo $_CONTROL->chkImportOnlyTranslations->ControlId?>"><?php echo $_CONTROL->chkImportOnlyTranslations->Name?></label>
 <br />
-<?php $_CONTROL->chkImportUnchangedFiles->Render(); ?>
+<?php
+    }
+    $_CONTROL->chkImportUnchangedFiles->Render();
+?>
 <label for="<?php echo $_CONTROL->chkImportUnchangedFiles->ControlId?>"><?php echo $_CONTROL->chkImportUnchangedFiles->Name?></label>
 <br />
 </div>
-<?php $_CONTROL->pnlLogViewer->Render() ?>
-<?php $_CONTROL->btnImport->Render(); $_CONTROL->btnKillProcess->Render(); $_CONTROL->objImportProgress->Render(); $_CONTROL->lblImport->Render() ?>
+<?php
+$_CONTROL->pnlLogViewer->Render();
+$_CONTROL->btnImport->Render();
+$_CONTROL->btnKillProcess->Render();
+$_CONTROL->objImportProgress->Render();
+$_CONTROL->lblImport->Render()
+?>
 

@@ -18,13 +18,12 @@
 
 
 
-    $strPageTitle = $this->pnlProjectEdit->strTitleVerb . ' ' . (($this->objNarroProject instanceof NarroProject)?$this->objNarroProject->ProjectName:'');
+    $strPageTitle = ($this->objNarroProject instanceof NarroProject)?sprintf(t('Edit %s'), $this->objNarroProject->ProjectName):t('Add');
 
     require('configuration/header.inc.php');
     $this->RenderBegin();
     $this->pnlHeader->Render();
     $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
+    $this->pnlMainTab->Render();
     $this->RenderEnd();
     require('configuration/footer.inc.php');

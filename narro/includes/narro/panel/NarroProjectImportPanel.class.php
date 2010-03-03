@@ -59,23 +59,44 @@
 
             $this->chkApproveImportedTranslations = new QCheckBox($this);
             $this->chkApproveImportedTranslations->Name = t('Approve the imported translations');
-            $this->chkApproveImportedTranslations->Checked = true;
+            if (QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId)) {
+                $this->chkApproveImportedTranslations->Display = true;
+                $this->chkApproveImportedTranslations->Checked = true;
+            }
+            else {
+                $this->chkApproveImportedTranslations->Display = false;
+                $this->chkApproveImportedTranslations->Checked = false;
+            }
+            
             if (QApplication::$UseAjax)
                 $this->chkApproveImportedTranslations->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkApproveImportedTranslations_Click'));
             else
                 $this->chkApproveImportedTranslations->AddAction(new QClickEvent(), new QServerControlAction($this, 'chkApproveImportedTranslations_Click'));
-
+                
             $this->chkApproveOnlyNotApproved = new QCheckBox($this);
             $this->chkApproveOnlyNotApproved->Name = t('Approve only translations that are not approved yet in Narro');
+            if (QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId)) {
+                $this->chkApproveOnlyNotApproved->Display = true;
+            }
+            else {
+                $this->chkApproveOnlyNotApproved->Display = false;
+            }
             $this->chkApproveOnlyNotApproved->Checked = true;
-
+            
             $this->chkImportUnchangedFiles = new QCheckBox($this);
             $this->chkImportUnchangedFiles->Name = t('Import the files that are marked as not changed');
             $this->chkImportUnchangedFiles->Checked = false;
 
             $this->chkImportOnlyTranslations = new QCheckBox($this);
             $this->chkImportOnlyTranslations->Name = t('Do not add texts, just add found translations for existing texts');
-            $this->chkImportOnlyTranslations->Checked = false;
+            if (QApplication::HasPermission('Can import project', $this->objNarroProject->ProjectId)) {
+                $this->chkImportOnlyTranslations->Display = true;
+                $this->chkImportOnlyTranslations->Checked = false;
+            }
+            else {
+                $this->chkImportOnlyTranslations->Checked = true;
+                $this->chkImportOnlyTranslations->Display = false;
+            }
 
             $this->objImportProgress = new NarroTranslationProgressBar($this);
             $this->objImportProgress->Total = 100;
@@ -106,7 +127,7 @@
         }
 
         public function chkApproveImportedTranslations_Click($strFormId, $strControlId, $strParameter) {
-            $this->chkApproveOnlyNotApproved->Visible = $this->chkApproveImportedTranslations->Checked;
+            $this->chkApproveOnlyNotApproved->Display = $this->chkApproveImportedTranslations->Checked;
             $this->MarkAsModified();
         }
 

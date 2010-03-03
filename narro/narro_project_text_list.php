@@ -17,53 +17,33 @@
      */
     require_once('includes/configuration/prepend.inc.php');
 
-    class NarroProjectTextListForm extends NarroForm {
-        protected $objNarroProject;
-        protected $pnlMainTab;
-        protected $pnlProjectTextList;
+    class NarroProjectTextListForm extends NarroGenericProjectForm {
 
         protected function Form_Create() {
             parent::Form_Create();
             
-            $this->SetupNarroProject();
-
-            $this->pnlMainTab = new QTabPanel($this);
-            $this->pnlMainTab->UseAjax = false;
+            $this->pnlSelectedTab = new NarroProjectTextListPanel($this->objNarroProject, $this->pnlMainTab);
             
-            $this->pnlProjectTextList = new NarroProjectTextListPanel($this->objNarroProject, $this->pnlMainTab);
-            
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab($this->pnlProjectTextList, t('Texts'));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 2, QApplication::QueryString('st'), QApplication::QueryString('s')));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 4, QApplication::QueryString('st'), QApplication::QueryString('s')));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
-                        
-            $this->pnlMainTab->SelectedTab = t('Texts');
-        }
-        
-        protected function SetupNarroProject() {
-            // Lookup Object PK information from Query String (if applicable)
-            $intProjectId = QApplication::QueryString('p');
-            if (($intProjectId)) {
-                $this->objNarroProject = NarroProject::Load(($intProjectId));
-
-                if (!$this->objNarroProject) {
-                    QApplication::Redirect(NarroLink::ProjectList());
-                    return false;
-                }
-
-            } else {
-                QApplication::Redirect(NarroLink::ProjectList());
-                return false;
+            switch(QApplication::QueryString('tf')) {
+                case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL:
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, NarroTextListForm::SHOW_ALL_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, NarroTextListForm::SHOW_UNTRANSLATED_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Review'));
+                    $this->pnlMainTab->SelectedTab = t('Review');
+                    break;
+                case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS:
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, NarroTextListForm::SHOW_ALL_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Translate'));
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->SelectedTab = t('Translate');
+                    break;
+                default:
+                    $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Texts'));
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, NarroTextListForm::SHOW_UNTRANSLATED_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->SelectedTab = t('Texts');
             }
-
-            $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectList(t('Projects')),
-                $this->objNarroProject->ProjectName
-            );
-        }        
+        }
     }
 
     NarroProjectTextListForm::Run('NarroProjectTextListForm', 'templates/narro_project_text_list.tpl.php');

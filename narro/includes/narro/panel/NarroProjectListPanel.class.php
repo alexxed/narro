@@ -2,7 +2,7 @@
     /**
      * @package Narro
      * @subpackage Panels
-     * 
+     *
      * Narro is an application that allows online software translation and maintenance.
      * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
@@ -39,6 +39,7 @@
 
         public $txtSearch;
         public $btnSearch;
+        public $btnAdd;
 
         const SHOW_ALL = 0;
         const SHOW_IN_PROGRESS = 1;
@@ -126,6 +127,10 @@
             $this->btnSearch = new QButton($this);
             $this->btnSearch->Text = t('Search');
             $this->btnSearch->PrimaryButton = true;
+            
+            $this->btnAdd = new QButton($this);
+            $this->btnAdd->Text = t('Add');
+            $this->btnAdd->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnAdd_Click'));
 
             if (QApplication::$UseAjax)
                 $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
@@ -241,7 +246,7 @@
 
             }
             
-            $objOverallCondition = 
+            $objOverallCondition =
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId, QApplication::GetLanguageId()),
                     $objSearchCondition,
@@ -270,9 +275,13 @@
             $this->dtgProjectList->DataSource = NarroProject::QueryArray($objOverallCondition, $objClauses);
         }
         
-        public function btnSearch_Click() {
+        public function btnSearch_Click($strFormId, $strControlId, $strParameter) {
             $this->dtgProjectList->PageNumber = 1;
             $this->dtgProjectList_Bind();
+        }
+        
+        public function btnAdd_Click($strFormId, $strControlId, $strParameter) {
+            QApplication::Redirect(NarroLink::ProjectEdit(0));
         }
 
         /////////////////////////

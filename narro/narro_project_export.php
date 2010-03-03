@@ -18,56 +18,17 @@
 
     require_once('includes/configuration/prepend.inc.php');
 
-    class NarroProjectExportForm extends NarroForm {
-        protected $pnlMainTab;
-        protected $pnlProjectExport;
-        protected $objNarroProject;
-
-        protected function SetupNarroProject() {
-            // Lookup Object PK information from Query String (if applicable)
-            // Set mode to Edit or New depending on what's found
-            $intProjectId = QApplication::QueryString('p');
-            if ($intProjectId > 0) {
-                $this->objNarroProject = NarroProject::Load(($intProjectId));
-
-                if (!$this->objNarroProject)
-                    QApplication::Redirect(NarroLink::ProjectList());
-
-            } else
-                QApplication::Redirect(NarroLink::ProjectList());
-
-        }
+    class NarroProjectExportForm extends NarroGenericProjectForm {
         protected function Form_Create() {
             parent::Form_Create();
-
-            $this->SetupNarroProject();
-
-            if (!QApplication::HasPermissionForThisLang('Can manage project', $this->objNarroProject->ProjectId))
+            
+            if (!QApplication::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
                 QApplication::Redirect(NarroLink::ProjectList());
-
-            $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectList(t('Projects')),
-                $this->objNarroProject->ProjectName
-            );
-                
-
-            $this->pnlMainTab = new QTabPanel($this);
-            $this->pnlMainTab->UseAjax = false;
-
-            $this->pnlProjectExport = new NarroProjectExportPanel($this->objNarroProject, $this->pnlMainTab);
-
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId, ''));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, ''));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 2));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 4));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab($this->pnlProjectExport, t('Export'));
-
+            
+            $this->pnlMainTab->replaceTab(new NarroProjectExportPanel($this->objNarroProject, $this->pnlMainTab), t('Export'));
             $this->pnlMainTab->SelectedTab = t('Export');
         }
     }
-
 
     NarroProjectExportForm::Run('NarroProjectExportForm', 'templates/narro_project_export.tpl.php');
 ?>

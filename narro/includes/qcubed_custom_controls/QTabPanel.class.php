@@ -21,6 +21,18 @@
             $this->arrTabTitle[$intTabCount] = $strTitle;
             $this->arrTabUrl[$intTabCount] = $strUrl;
         }
+        
+	    public function replaceTab($objPanel, $strTitle, $strUrl = null) {
+	        foreach($this->arrTabTitle as $intTabNo=>$strTabTitle) {
+	            if ($strTabTitle == $strTitle)
+	               break;
+	        }
+	        
+            $objPanel->CssClass = 'tabs-container';
+            $this->arrTab[$intTabNo] = $objPanel;
+            $this->arrTabTitle[$intTabNo] = $strTitle;
+            $this->arrTabUrl[$intTabNo] = $strUrl;
+        }
 
         public function removeTabByTitle($strTitle) {
             foreach($this->arrTabTitle as $intTabIndex=>$strTabTitle) {

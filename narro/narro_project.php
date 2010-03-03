@@ -18,50 +18,12 @@
 
     require_once('includes/configuration/prepend.inc.php');
 
-    class NarroProjectForm extends NarroForm {
-        protected $objNarroProject;
-        protected $pnlMainTab;
-
+    class NarroProjectForm extends NarroGenericProjectForm {
         protected function Form_Create() {
             parent::Form_Create();
             
-            $this->SetupNarroProject();
-
-            $this->pnlMainTab = new QTabPanel($this);
-            $this->pnlMainTab->UseAjax = false;
-
-            $this->pnlMainTab->addTab(new NarroProjectPanel($this->objNarroProject, $this->pnlMainTab), t('Overview'));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId, ''));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, ''));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 2));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 4));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
-            
+            $this->pnlMainTab->replaceTab(new NarroProjectPanel($this->objNarroProject, $this->pnlMainTab), t('Overview'));
         }
-        
-        protected function SetupNarroProject() {
-            // Lookup Object PK information from Query String (if applicable)
-            $intProjectId = QApplication::QueryString('p');
-            if (($intProjectId)) {
-                $this->objNarroProject = NarroProject::Load(($intProjectId));
-
-                if (!$this->objNarroProject) {
-                    QApplication::Redirect(NarroLink::ProjectList());
-                    return false;
-                }
-
-            } else {
-                QApplication::Redirect(NarroLink::ProjectList());
-                return false;
-            }
-
-            $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectList(t('Projects')),
-                $this->objNarroProject->ProjectName
-            );
-        }
-        
     }
 
     NarroProjectForm::Run('NarroProjectForm', 'templates/narro_project.tpl.php');

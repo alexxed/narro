@@ -2,7 +2,7 @@
     /**
      * @package Narro
      * @subpackage Templates
-     * 
+     *
      * Narro is an application that allows online software translation and maintenance.
      * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
@@ -21,7 +21,10 @@
 ?>
 <?php echo t('Click on any project name to start translating.'); ?>
 <span style="text-align:right;display:block;white-space:nowrap;">
-<?php $_CONTROL->txtSearch->Render() ?>
-<?php $_CONTROL->btnSearch->Render() ?>
+<?php
+$_CONTROL->txtSearch->Render();
+$_CONTROL->btnSearch->Render();
+$_CONTROL->btnAdd->Render();
+?>
 </span>
 <?php $_CONTROL->dtgProjectList->Render() ?>

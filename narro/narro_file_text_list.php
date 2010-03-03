@@ -18,57 +18,36 @@
 
     require_once('includes/configuration/prepend.inc.php');
 
-    class NarroFileTextListForm extends NarroForm {
+    class NarroFileTextListForm extends NarroGenericProjectForm {
         protected $objNarroProject;
         protected $objNarroFile;
-        protected $pnlMainTab;
-        protected $pnlFileTextList;
 
         protected function Form_Create() {
             parent::Form_Create();
             
-            $this->SetupNarroProject();
-
-            $this->pnlMainTab = new QTabPanel($this);
-            $this->pnlMainTab->UseAjax = false;
-            
-            $this->pnlFileTextList = new NarroFileTextListPanel($this->objNarroProject, $this->objNarroFile, $this->pnlMainTab);
-            
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab($this->pnlFileTextList, t('Texts'));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, QApplication::QueryString('f'), null, 2, QApplication::QueryString('st'), QApplication::QueryString('s')));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, QApplication::QueryString('f'), null, 4, QApplication::QueryString('st'), QApplication::QueryString('s')));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
-                        
+            $this->pnlSelectedTab = new NarroFileTextListPanel($this->objNarroProject, $this->objNarroFile, $this->pnlMainTab);
+            $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Texts'));
             $this->pnlMainTab->SelectedTab = t('Texts');
         }
         
         protected function SetupNarroProject() {
+            parent::SetupNarroProject();
             // Lookup Object PK information from Query String (if applicable)
-            $intProjectId = QApplication::QueryString('p');
             $intFileId = QApplication::QueryString('f');
             
-            if ($intProjectId && $intFileId) {
-                $this->objNarroProject = NarroProject::Load(($intProjectId));
+            if ($intFileId) {
                 $this->objNarroFile = NarroFile::Load(($intFileId));
 
-                if (!$this->objNarroProject || !$this->objNarroFile) {
-                    QApplication::Redirect(NarroLink::ProjectList());
+                if (!$this->objNarroFile instanceof NarroFile) {
+                    QApplication::Redirect(NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
                     return false;
                 }
 
             } else {
-                QApplication::Redirect(NarroLink::ProjectList());
+                QApplication::Redirect(NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
                 return false;
             }
-
-            $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectList(t('Projects')),
-                $this->objNarroProject->ProjectName
-            );
-        }        
+        }
     }
 
     NarroFileTextListForm::Run('NarroFileTextListForm', 'templates/narro_file_text_list.tpl.php');

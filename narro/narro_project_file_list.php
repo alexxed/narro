@@ -18,60 +18,20 @@
 
     require_once('includes/configuration/prepend.inc.php');
 
-    class NarroProjectFileListForm extends NarroForm {
-        protected $objNarroProject;
-        protected $pnlMainTab;
-        protected $pnlProjectFileList;
-        
+    class NarroProjectFileListForm extends NarroGenericProjectForm {
         protected $objParentFile;
-
+        
         protected function Form_Create() {
             parent::Form_Create();
             
-            $this->SetupNarroProject();
-
-            $this->pnlMainTab = new QTabPanel($this);
-            $this->pnlMainTab->UseAjax = false;
+            $this->pnlSelectedTab = new NarroProjectFileListPanel($this->objNarroProject, $this->objParentFile, $this->pnlMainTab);
+            $this->pnlSelectedTab->ChangeDirectory(QApplication::QueryString('pf'));
             
-            $this->pnlProjectFileList = new NarroProjectFileListPanel($this->objNarroProject, $this->objParentFile, $this->pnlMainTab);
-            
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab($this->pnlProjectFileList, t('Files'));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, ''));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 2));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 4));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
-                        
+            $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Files'));
             $this->pnlMainTab->SelectedTab = t('Files');
-            
-            $strPath = QApplication::QueryString('pf');
-            $this->pnlProjectFileList->ChangeDirectory($strPath);
         }
-        
-        protected function SetupNarroProject() {
-            // Lookup Object PK information from Query String (if applicable)
-            $intProjectId = QApplication::QueryString('p');
-            if (($intProjectId)) {
-                $this->objNarroProject = NarroProject::Load(($intProjectId));
-
-                if (!$this->objNarroProject) {
-                    QApplication::Redirect(NarroLink::ProjectList());
-                    return false;
-                }
-
-            } else {
-                QApplication::Redirect(NarroLink::ProjectList());
-                return false;
-            }
-
-            $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectList(t('Projects')),
-                $this->objNarroProject->ProjectName
-            );
-        }        
     }
-
+    
     NarroProjectFileListForm::Run('NarroProjectFileListForm', 'templates/narro_project_file_list.tpl.php');
 
 ?>
