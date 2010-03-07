@@ -53,9 +53,9 @@
             $this->lblImport = new QLabel($this);
             $this->lblImport->Visible = false;
 
-            $this->pnlTextsSource = new NarroProjectTextSourcePanel($this->objNarroProject, $this);
+            $this->pnlTextsSource = new NarroProjectTextSourcePanel($this->objNarroProject, NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE), $this);
 
-            $this->pnlTranslationsSource = new NarroProjectTranslationSourcePanel($this->objNarroProject, $this);
+            $this->pnlTranslationsSource = new NarroProjectTranslationSourcePanel($this->objNarroProject, QApplication::$Language, $this);
 
             $this->chkApproveImportedTranslations = new QCheckBox($this);
             $this->chkApproveImportedTranslations->Name = t('Approve the imported translations');
@@ -67,12 +67,12 @@
                 $this->chkApproveImportedTranslations->Display = false;
                 $this->chkApproveImportedTranslations->Checked = false;
             }
-            
+
             if (QApplication::$UseAjax)
                 $this->chkApproveImportedTranslations->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkApproveImportedTranslations_Click'));
             else
                 $this->chkApproveImportedTranslations->AddAction(new QClickEvent(), new QServerControlAction($this, 'chkApproveImportedTranslations_Click'));
-                
+
             $this->chkApproveOnlyNotApproved = new QCheckBox($this);
             $this->chkApproveOnlyNotApproved->Name = t('Approve only translations that are not approved yet in Narro');
             if (QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId)) {
@@ -82,7 +82,7 @@
                 $this->chkApproveOnlyNotApproved->Display = false;
             }
             $this->chkApproveOnlyNotApproved->Checked = true;
-            
+
             $this->chkImportUnchangedFiles = new QCheckBox($this);
             $this->chkImportUnchangedFiles->Name = t('Import the files that are marked as not changed');
             $this->chkImportUnchangedFiles->Checked = false;
@@ -135,12 +135,9 @@
             if (!QApplication::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
                 return false;
 
-            $strImportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import.log';
             $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.log';
-
-            require_once('Zend/Log.php');
-            require_once('Zend/Log/Writer/Stream.php');
-            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strImportLogFile));
+            $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.pid';
+            $strProgressFile = __TMP_PATH__ . '/import-' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode;
 
             if ($strParameter == 1) {
                 if (NarroUtils::IsProcessRunning('import', $this->objNarroProject->ProjectId)) {
@@ -155,7 +152,16 @@
                         QApplication::ExecuteJavaScript('if (typeof lastImportId != \'undefined\') clearInterval(lastImportId)');
 
                     if (file_exists($strProcLogFile) && filesize($strProcLogFile))
-                        $objLogger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+                        QApplication::$Logger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+
+                    if (file_exists($strProcLogFile))
+                        unlink($strProcLogFile);
+
+                    if (file_exists($strProcPidFile))
+                        unlink($strProcPidFile);
+
+                    if (file_exists($strProgressFile))
+                        unlink($strProgressFile);
 
                     $this->lblImport->Visible = true;
                     $this->btnImport->Visible = true;
@@ -163,7 +169,7 @@
                     $this->objImportProgress->Translated = 0;
                     $this->objImportProgress->Visible = false;
 
-                    $this->pnlLogViewer->LogFile = $strImportLogFile;
+                    $this->pnlLogViewer->LogFile = QApplication::$LogFile;
                     $this->pnlLogViewer->MarkAsModified();
                 }
             }
@@ -171,8 +177,6 @@
                 set_time_limit(0);
 
                 $objNarroImporter = new NarroProjectImporter();
-
-                $objNarroImporter->Logger = $objLogger;
 
                 /**
                  * Get boolean options
@@ -191,7 +195,7 @@
                     $objNarroImporter->TemplatePath = $this->pnlTextsSource->Directory;
                 }
                 catch (Exception $objEx) {
-                    $objLogger->err(sprintf('An error occured during import: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occured during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = t('Import failed.');
                 }
 
@@ -199,7 +203,7 @@
                     $objNarroImporter->ImportProject();
                 }
                 catch (Exception $objEx) {
-                    $objLogger->err(sprintf('An error occured during import: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occured during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = t('Import failed.');
                 }
 
@@ -212,10 +216,8 @@
 
             }
             else {
-                if (file_exists($strImportLogFile))
-                    unlink($strImportLogFile);
-
-                $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strImportLogFile));
+                QApplication::ClearLog();
+                $this->pnlLogViewer->MarkAsModified();
                 $this->btnImport->Visible = false;
                 $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode) && !$this->btnImport->Visible;
                 $this->objImportProgress->Visible = true;
@@ -239,7 +241,7 @@
                     );
                 }
                 catch (Exception $objEx) {
-                    $objLogger->err(sprintf('An error occured during import: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occured during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = t('Import failed.');
 
                     $this->lblImport->Visible = true;
@@ -267,7 +269,7 @@
                 }
                 else {
                     $this->objImportProgress->Visible = false;
-                    $objLogger->err('Failed to launch a background process, there will be no progress displayed, and it might take a while, please wait for more messages');
+                    QApplication::$Logger->err('Failed to launch a background process, there will be no progress displayed, and it might take a while, please wait for more messages');
                     $this->pnlLogViewer->MarkAsModified();
                     /**
                      * try importing without launching a background process
@@ -281,16 +283,11 @@
         }
 
         public function btnKillProcess_Click($strFormId, $strControlId, $strParameter) {
-            $strImportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import.log';
             $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.log';
             $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.pid';
 
-            require_once('Zend/Log.php');
-            require_once('Zend/Log/Writer/Stream.php');
-            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strImportLogFile));
-
             if (!file_exists($strProcPidFile)) {
-                $objLogger->err('Could not find a pid file for the background process.');
+                QApplication::$Logger->err('Could not find a pid file for the background process.');
                 $this->pnlLogViewer->MarkAsModified();
                 return false;
             }
@@ -303,14 +300,14 @@
 
                 if ($mixProcess) {
                     proc_close($mixProcess);
-                    $objLogger->info('Process killed');
+                    QApplication::$Logger->err('Process killed');
                 }
                 else {
-                    $objLogger->info('Failed to kill process');
+                    QApplication::$Logger->err('Failed to kill process');
                 }
 
                 if (file_exists($strProcLogFile) && filesize($strProcLogFile))
-                    $objLogger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+                    QApplication::$Logger->warn(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
 
                 $this->pnlLogViewer->MarkAsModified();
             }

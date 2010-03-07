@@ -23,6 +23,21 @@
             $this->strName = t('Narro cache');
         }
 
+        public function ImportFile(NarroFile $objFile) {
+            $objFile->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
+            $objFile->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
+            $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
+
+            return array($objFile, $objProject);
+        }
+
+        public function ImportProject(NarroProject $objProject) {
+            $objProject->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
+            $objProject->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
+            $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
+            return array($objProject);
+        }
+
         public function AddText($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
             $objFile->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
             $objProject->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());

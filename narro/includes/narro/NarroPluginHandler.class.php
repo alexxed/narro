@@ -47,6 +47,8 @@
             'ExportProject'
         );
 
+        public static $blnEnablePlugins = true;
+
         public function __construct($strPluginFolder) {
 
             // Open a known directory, and proceed to read its contents
@@ -72,6 +74,8 @@
 
 
         public function __call($strMethod, $arrParameters) {
+            if (!self::$blnEnablePlugins) return $arrParameters;
+
             if (is_array($this->arrPlugins))
                 foreach($this->arrPlugins as $objPlugin) {
                     if (method_exists($objPlugin, $strMethod)) {

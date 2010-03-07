@@ -45,6 +45,12 @@
          * @var Zend_Translate
          */
         public static $TranslationEngine;
+        /**
+         * @var Zend_Log
+         */
+        public static $Logger;
+
+        public static $LogFile;
 
         ////////////////////////////
         // Additional Static Methods
@@ -147,6 +153,11 @@
                 }
             }
             return false;
+        }
+
+        public static function ClearLog() {
+            if (file_exists(self::$LogFile))
+                return @unlink(self::$LogFile);
         }
     }
 

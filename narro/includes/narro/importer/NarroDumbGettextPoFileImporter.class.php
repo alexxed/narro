@@ -31,9 +31,9 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 $arrFields = array();
 
                 $strLine = fgets($hndFile, 8192);
-                $this->objLogger->debug("Processing " . $strLine);
+                QApplication::$Logger->debug("Processing " . $strLine);
                 if (strpos($strLine, '# ') === 0) {
-                    $this->objLogger->debug('Found translator comment.');
+                    QApplication::$Logger->debug('Found translator comment.');
                     $arrFields['TranslatorComment'] = $strLine;
                     while (!feof($hndFile)) {
                         $strLine = fgets($hndFile, 8192);
@@ -46,7 +46,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, '#.') === 0) {
-                    $this->objLogger->debug('Found extracted comment.');
+                    QApplication::$Logger->debug('Found extracted comment.');
                     $arrFields['ExtractedComment'] = $strLine;
                     while (!feof($hndFile)) {
                         $strLine = fgets($hndFile, 8192);
@@ -59,7 +59,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, '#:') === 0) {
-                    $this->objLogger->debug('Found reference.');
+                    QApplication::$Logger->debug('Found reference.');
                     /**
                      * Remove the line number from the source file
                      */
@@ -77,7 +77,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, '#,') === 0) {
-                    $this->objLogger->debug('Found flag.');
+                    QApplication::$Logger->debug('Found flag.');
                     $arrFields['Flag'] = $strLine;
                     while (!feof($hndFile)) {
                         $strLine = fgets($hndFile, 8192);
@@ -89,7 +89,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, '#| msgctxt') === 0) {
-                    $this->objLogger->debug('Found previous context.');
+                    QApplication::$Logger->debug('Found previous context.');
                     $arrFields['PreviousContext'] = $strLine;
                     while (!feof($hndFile)) {
                         $strLine = fgets($hndFile, 8192);
@@ -101,7 +101,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, '#| msgid') === 0) {
-                    $this->objLogger->debug('Found previous translated string.');
+                    QApplication::$Logger->debug('Found previous translated string.');
                     $arrFields['PreviousUntranslated'] = $strLine;
                     while (!feof($hndFile)) {
                         $strLine = fgets($hndFile, 8192);
@@ -113,7 +113,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, '#| msgid_plural') === 0) {
-                    $this->objLogger->debug('Found previous translated plural string.');
+                    QApplication::$Logger->debug('Found previous translated plural string.');
                     $arrFields['PreviousUntranslatedPlural'] = $strLine;
                     while (!feof($hndFile)) {
                         $strLine = fgets($hndFile, 8192);
@@ -125,7 +125,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, 'msgctxt ') === 0) {
-                    $this->objLogger->debug('Found context.');
+                    QApplication::$Logger->debug('Found context.');
                     preg_match('/msgctxt\s+\"(.*)\"/', $strLine, $arrMatches);
                     $arrFields['MsgContext'] = str_replace('\"', '"', $arrMatches[1]);
                     while (!feof($hndFile)) {
@@ -139,7 +139,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, 'msgid ') === 0) {
-                    $this->objLogger->debug('Found msgid.');
+                    QApplication::$Logger->debug('Found msgid.');
                     preg_match('/msgid\s+\"(.*)\"/', $strLine, $arrMatches);
                     $arrFields['MsgId'] = str_replace('\"', '"', $arrMatches[1]);
                     while (!feof($hndFile)) {
@@ -153,7 +153,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, 'msgid_plural') === 0) {
-                    $this->objLogger->debug('Found plural msgid.');
+                    QApplication::$Logger->debug('Found plural msgid.');
                     preg_match('/msgid_plural\s+\"(.*)\"/', $strLine, $arrMatches);
                     $arrFields['MsgPluralId'] = str_replace('\"', '"', $arrMatches[1]);
                     while (!feof($hndFile)) {
@@ -167,7 +167,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, 'msgstr ') === 0) {
-                    $this->objLogger->debug('Found translation.');
+                    QApplication::$Logger->debug('Found translation.');
                     preg_match('/msgstr\s+\"(.*)\"/', $strLine, $arrMatches);
                     $arrFields['MsgStr'] = str_replace('\"', '"', $arrMatches[1]);
                     while (!feof($hndFile)) {
@@ -181,7 +181,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, 'msgstr[0]') === 0) {
-                    $this->objLogger->debug('Found translation plural 1.');
+                    QApplication::$Logger->debug('Found translation plural 1.');
                     preg_match('/msgstr\[0\]\s+\"(.*)\"/', $strLine, $arrMatches);
                     $arrFields['MsgStr0'] = str_replace('\"', '"', $arrMatches[1]);
                     while (!feof($hndFile)) {
@@ -195,7 +195,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, 'msgstr[1]') === 0) {
-                    $this->objLogger->debug('Found translation plural 2.');
+                    QApplication::$Logger->debug('Found translation plural 2.');
                     preg_match('/msgstr\[1\]\s+\"(.*)\"/', $strLine, $arrMatches);
                     $arrFields['MsgStr1'] = str_replace('\"', '"', $arrMatches[1]);
                     while (!feof($hndFile)) {
@@ -209,7 +209,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 }
 
                 if (strpos($strLine, 'msgstr[2]') === 0) {
-                    $this->objLogger->debug('Found translation plural 3.');
+                    QApplication::$Logger->debug('Found translation plural 3.');
                     preg_match('/msgstr\[2\]\s+\"(.*)\"/', $strLine, $arrMatches);
                     $arrFields['MsgStr2'] = str_replace('\"', '"', $arrMatches[1]);
                     while (!feof($hndFile)) {
@@ -253,7 +253,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
             }
         }
         else {
-            $this->objLogger->warn(sprintf('Cannot read "%s".', $strFile));
+            QApplication::$Logger->warn(sprintf('Cannot read "%s".', $strFile));
         }
 
         return $arrGroupFields;
@@ -262,7 +262,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
     public function ExportFile($strTemplate, $strTranslatedFile = null) {
         $hndExportFile = fopen($strTranslatedFile, 'w');
         if (!$hndExportFile) {
-            $this->objLogger->warn(sprintf('Cannot create or write to "%s".', $strTranslatedFile));
+            QApplication::$Logger->warn(sprintf('Cannot create or write to "%s".', $strTranslatedFile));
             return false;
         }
 
@@ -664,7 +664,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 $strSuggestionValue = $arrResult[1];
             }
             else
-                $this->objLogger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strTranslation, $strTranslation));
+                QApplication::$Logger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strTranslation, $strTranslation));
 
             if (!is_null($strOriginalAccKey) && !is_null($strOriginalAccKeyPrefix)) {
                 /**

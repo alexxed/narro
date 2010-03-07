@@ -195,5 +195,34 @@
 
             return $intApprovedTexts;
         }
+
+        /**
+         * Override method to perform a property "Get"
+         * This will get the value of $strName
+         *
+         * @param string $strName Name of the property to get
+         * @return mixed
+         */
+        public function __get($strName) {
+            switch ($strName) {
+                ///////////////////
+                // Member Variables
+                ///////////////////
+                case 'DefaultTemplatePath':
+                    return __IMPORT_PATH__ . '/' . $this->intProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
+
+                case 'DefaultTranslationPath':
+                    return __IMPORT_PATH__ . '/' . $this->intProjectId . '/' . QApplication::$Language->LanguageCode;
+
+                default:
+                    try {
+                        return parent::__get($strName);
+                    } catch (QCallerException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+            }
+        }
+
     }
 ?>

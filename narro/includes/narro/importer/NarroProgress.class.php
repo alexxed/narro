@@ -17,23 +17,66 @@
      */
     class NarroProgress {
 
-        public static function GetProgress($intProjectId, $strOperation) {
-            if (file_exists(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode))
-                return trim(file_get_contents(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode));
+        public static function GetProgressFileName($intProjectId, $strOperation) {
+            return __TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode;
+        }
+
+        public static function GetProgressPerProject($intProjectId, $strOperation) {
+            if (file_exists(self::GetProgressFileName($intProjectId, $strOperation))) {
+                list($intFiles, $intProgress, $intProgressPerFile) = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
+                return $intProgress;
+            }
             else
                 return 0;
         }
 
-        public static function SetProgress($intValue, $intProjectId, $strOperation) {
-            if (!@file_put_contents(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode, $intValue)) {
-                require_once('Zend/Log.php');
-                require_once('Zend/Log/Writer/Stream.php');
-
-                $objLogger = new Zend_Log(new Zend_Log_Writer_Stream(__TMP_PATH__ . '/' . $intProjectId . '-' . QApplication::$Language->LanguageCode . '-' . $strOperation . '.log'));
-
-                $objLogger->warn(sprintf('Can\'t write progress file %s', __TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode));
+        public static function GetProgress($intProjectId, $strOperation) {
+            if (file_exists(self::GetProgressFileName($intProjectId, $strOperation))) {
+                list($intFiles, $intProgress, $intProgressPerFile) = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
+                return min(100, $intProgress + ceil(($intProgressPerFile/100)*(100/$intFiles)));
             }
-            @chmod(__TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode, $intValue, 0666);
+            else
+                return 0;
+        }
+
+        public static function GetProgressPerFile($intProjectId, $strOperation) {
+            if (file_exists(self::GetProgressFileName($intProjectId, $strOperation))) {
+                list($intFiles, $intProgress, $intProgressPerFile) = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
+                return $intProgressPerFile;
+            }
+            else
+                return 0;
+        }
+
+        public static function GetFilesToProcess($intProjectId, $strOperation) {
+            if (file_exists(self::GetProgressFileName($intProjectId, $strOperation))) {
+                list($intFiles, $intProgress, $intProgressPerFile) = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
+                return $intFiles;
+            }
+            else
+                return 0;
+        }
+
+        public static function SetProgress($intValue, $intProjectId, $strOperation, $intFilesToProcess = 0, $intProgressPerFile = 0) {
+            $arrArguments = func_get_args();
+
+            if ($intFilesToProcess == 0)
+                $intFilesToProcess = self::GetFilesToProcess($intProjectId, $strOperation);
+
+            if ($intProgressPerFile == 0)
+                $intProgressPerFile = self::GetProgressPerFile($intProjectId, $strOperation);
+
+            if ($intValue == 0)
+                $intValue = self::GetProgressPerProject($intProjectId, $strOperation);
+
+            if (!@file_put_contents(self::GetProgressFileName($intProjectId, $strOperation), $intFilesToProcess . ',' . $intValue . ',' . $intProgressPerFile)) {
+                QApplication::$Logger->warn(sprintf('Can\'t write progress file %s', self::GetProgressFileName($intProjectId, $strOperation)));
+            }
+            @chmod(self::GetProgressFileName($intProjectId, $strOperation), 0666);
+        }
+
+        public static function SetProgressPerFile($intValue, $intProjectId, $strOperation) {
+            self::SetProgress(0, $intProjectId, $strOperation, 0, min(100, ceil($intValue)));
         }
 
     }

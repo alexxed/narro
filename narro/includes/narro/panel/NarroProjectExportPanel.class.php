@@ -99,15 +99,9 @@
             if (!QApplication::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
                 return false;
 
-            $strExportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export.log';
             $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export-process.log';
 
-            require_once('Zend/Log.php');
-            require_once('Zend/Log/Writer/Stream.php');
-
-            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strExportLogFile));
-
-            $this->pnlLogViewer->LogFile = $strExportLogFile;
+            $this->pnlLogViewer->LogFile = QApplication::$LogFile;
 
             if ($strParameter == 1) {
                 if (NarroUtils::IsProcessRunning('export', $this->objNarroProject->ProjectId)) {
@@ -122,7 +116,7 @@
                         QApplication::ExecuteJavaScript('if (typeof lastExportId != \'undefined\') clearInterval(lastExportId)');
 
                     if (file_exists($strProcLogFile) && filesize($strProcLogFile))
-                        $objLogger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+                        QApplication::$Logger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
 
                     $this->lblExport->Visible = true;
                     $this->btnExport->Visible = true;
@@ -131,7 +125,7 @@
                     $this->objExportProgress->Visible = false;
 
                     $this->CreateExportArchive(
-                        __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode,
+                        $this->objNarroProject->DefaultTranslationPath,
                         __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip'
                     );
                     if (file_exists(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip')) {
@@ -153,8 +147,6 @@
 
                 $objNarroImporter = new NarroProjectImporter();
 
-                $objNarroImporter->Logger = $objLogger;
-
                 /**
                  * Get boolean options
                  */
@@ -165,11 +157,11 @@
                 $objNarroImporter->TargetLanguage = QApplication::$Language;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
                 try {
-                    $objNarroImporter->TranslationPath = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode;
-                    $objNarroImporter->TemplatePath = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
+                    $objNarroImporter->TranslationPath = $this->objNarroProject->DefaultTranslationPath;
+                    $objNarroImporter->TemplatePath = $this->objNarroProject->DefaultTemplatePath;
                 }
                 catch (Exception $objEx) {
-                    $objLogger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
                     $this->lblExport->Text = t('Export failed.');
                 }
 
@@ -177,7 +169,7 @@
                     $objNarroImporter->ExportProject();
                 }
                 catch (Exception $objEx) {
-                    $objLogger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
                     $this->lblExport->Text = t('Export failed.');
                 }
 
@@ -190,8 +182,7 @@
 
             }
             else {
-                unlink($strExportLogFile);
-                $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strExportLogFile));
+                QApplication::ClearLog();
                 $this->btnExport->Visible = false;
                 $this->btnKillProcess->Visible = $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode);
                 $this->objExportProgress->Visible = true;
@@ -206,14 +197,14 @@
                         0,
                         NarroLanguage::SOURCE_LANGUAGE_CODE,
                         QApplication::$Language->LanguageCode,
-                        __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE,
-                        __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . QApplication::$Language->LanguageCode,
+                        $this->objNarroProject->DefaultTemplatePath,
+                        $this->objNarroProject->DefaultTranslationPath,
                         $this->lstExportSuggestionType->SelectedValue,
                         (($this->chkCopyUnhandledFiles->Checked)?'--copy-unhandled-files ':'')
                     );
                 }
                 catch (Exception $objEx) {
-                    $objLogger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
                     $this->lblExport->Text = t('Export failed.');
 
                     $this->lblExport->Visible = true;
@@ -240,7 +231,7 @@
                 }
                 else {
                     $this->objExportProgress->Visible = false;
-                    $objLogger->err('Failed to launch a background process, there will be no progress displayed, and it might take a while, please wait for more messages');
+                    QApplication::$Logger->err('Failed to launch a background process, there will be no progress displayed, and it might take a while, please wait for more messages');
                     $this->pnlLogViewer->MarkAsModified();
                     /**
                      * try exporting without launching a background process
@@ -254,13 +245,6 @@
         }
 
         private function CreateExportArchive($strTranslationPath, $strArchive) {
-            $strExportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export.log';
-
-            require_once('Zend/Log.php');
-            require_once('Zend/Log/Writer/Stream.php');
-
-            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strExportLogFile));
-
             if (file_exists($strArchive))
                 unlink($strArchive);
 
@@ -277,30 +261,25 @@
                     }
                 }
             } else {
-                $objLogger->err(sprintf('Failed to create a new archive %s', $strArchive));
+                QApplication::$Logger->err(sprintf('Failed to create a new archive %s', $strArchive));
                 return false;
             }
             $objZipFile->close();
             if (file_exists($strArchive))
                 chmod($strArchive, 0666);
             else {
-                $objLogger->err(sprintf('Failed to create an archive %s', $strArchive));
+                QApplication::$Logger->err(sprintf('Failed to create an archive %s', $strArchive));
                 return false;
             }
             return true;
         }
 
         public function btnKillProcess_Click($strFormId, $strControlId, $strParameter) {
-            $strExportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export.log';
             $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export-process.log';
             $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export-process.pid';
 
-            require_once('Zend/Log.php');
-            require_once('Zend/Log/Writer/Stream.php');
-            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strExportLogFile));
-
             if (!file_exists($strProcPidFile)) {
-                $objLogger->err('Could not find a pid file for the background process.');
+                QApplication::$Logger->err('Could not find a pid file for the background process.');
                 $this->pnlLogViewer->MarkAsModified();
                 return false;
             }
@@ -313,14 +292,14 @@
 
                 if ($mixProcess) {
                     proc_close($mixProcess);
-                    $objLogger->info('Process killed');
+                    QApplication::$Logger->info('Process killed');
                 }
                 else {
-                    $objLogger->info('Failed to kill process');
+                    QApplication::$Logger->info('Failed to kill process');
                 }
 
                 if (file_exists($strProcLogFile) && filesize($strProcLogFile))
-                    $objLogger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+                    QApplication::$Logger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
 
                 $this->pnlLogViewer->MarkAsModified();
             }

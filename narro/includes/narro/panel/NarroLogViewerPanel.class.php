@@ -40,6 +40,7 @@
             $strLogContents = '';
 
             if (file_exists($this->strLogFile)) {
+                $this->blnVisible = true;
                 $strLogContents = file_get_contents($this->strLogFile);
                 $hndFile = fopen($this->strLogFile, 'r');
                 if ($hndFile) {
@@ -49,11 +50,23 @@
                         $strLogLine = fgets($hndFile);
 
                         if (trim($strLogLine))
-                            if (!preg_match('/[0-9\-T:]+\sDEBUG\s\(7\)/', $strLogLine))
-                                $strLogContents .= preg_replace('/[0-9\-T:]+\s[A-Z]+\s\([0-9]+\):/', '', $strLogLine);
+                            if (!preg_match('/[0-9\-T:]+\sDEBUG\s\(7\)/', $strLogLine)) {
+                                if (strstr($strLogLine, 'WARN'))
+                                    $strLogContents .= sprintf('<span class="warning">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine)));
+                                elseif (strstr($strLogLine, 'ERR'))
+                                    $strLogContents .= sprintf('<span class="error">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine)));
+                                elseif (strstr($strLogLine, 'INFO'))
+                                    $strLogContents .= sprintf('<span class="info">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine)));
+                                else
+                                    $strLogContents .= nl2br(NarroString::HtmlEntities($strLogLine));
+                            }
+
                     }
                     fclose($hndFile);
                 }
+            }
+            else {
+                $this->blnVisible = false;
             }
 
             $this->strText = sprintf(
@@ -63,7 +76,7 @@
                     <div align="right">%s</div>
                 </div>',
                 t('Operation log'),
-                nl2br(NarroString::HtmlEntities($strLogContents)),
+                $strLogContents,
                 $this->btnDownloadLog->Render(false)
             );
 

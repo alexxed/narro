@@ -145,6 +145,7 @@
             $this->txtSpecialCharacters = new QTextBox($this);
             $this->txtSpecialCharacters->Name = QApplication::Translate('Special Characters');
             $this->txtSpecialCharacters->Text = $this->objNarroLanguage->SpecialCharacters;
+            $this->txtSpecialCharacters->CrossScripting = QCrossScripting::Allow;
             $this->txtSpecialCharacters->MaxLength = NarroLanguage::SpecialCharactersMaxLength;
         }
 

@@ -44,11 +44,11 @@
 
                     }
                     else {
-                        $this->objLogger->warn(sprintf('No entities found in translation file %s', $strTranslatedFile));
+                        QApplication::$Logger->warn(sprintf('No entities found in translation file %s', $strTranslatedFile));
                     }
                 }
                 else
-                    $this->objLogger->warn(sprintf('Failed to open file %s', $strTranslatedFile));
+                    QApplication::$Logger->warn(sprintf('Failed to open file %s', $strTranslatedFile));
             }
             else
                 $strTranslatedFileContents = false;
@@ -100,11 +100,17 @@
 
                         $intElapsedTime = time() - $intTime;
                         if ($intElapsedTime > 0)
-                            $this->objLogger->debug(sprintf('DTD file %s processing took %d seconds.', $this->objFile->FileName, $intElapsedTime));
+                            QApplication::$Logger->debug(sprintf('DTD file %s processing took %d seconds.', $this->objFile->FileName, $intElapsedTime));
 
-                        $this->objLogger->debug(sprintf('Found %d contexts in file %s.', count($arrTemplate), $this->objFile->FileName));
+                        $intCurrentContext = 0;
+                        $intTotalContexts = count($arrTemplate);
+
+                        QApplication::$Logger->info(sprintf('Found %d contexts in file %s.', $intTotalContexts, $this->objFile->FileName));
 
                         foreach($arrTemplate as $strContextKey=>$strOriginalText) {
+                            $intCurrentContext++;
+                            NarroProgress::SetProgressPerFile(($intCurrentContext/$intTotalContexts)*100, $this->objProject->ProjectId, 'import');
+
                             if (isset($arrTranslation) && isset($arrTranslation[$strContextKey]))
                                 $strTranslation = $arrTranslation[$strContextKey];
                             else
@@ -126,16 +132,16 @@
                         }
                     }
                     elseif (count($arrCheckMatches[0]) != count($arrTemplateMatches[0]))
-                        $this->objLogger->err(sprintf('Error on matching expressions in file %s', $strTemplateFile));
+                        QApplication::$Logger->err(sprintf('Error on matching expressions in file %s', $strTemplateFile));
                     else
-                        $this->objLogger->warn(sprintf('No entities found in file %s', $strTemplateFile));
+                        QApplication::$Logger->warn(sprintf('No entities found in file %s', $strTemplateFile));
                 }
                 else
-                    $this->objLogger->warn(sprintf('No entities found in template file %s', $strTemplateFile));
+                    QApplication::$Logger->warn(sprintf('No entities found in template file %s', $strTemplateFile));
             }
             else {
-                $this->objLogger->warn(sprintf('No contexts found in file: %s', $strTemplateFile));
-                $this->objLogger->warn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                QApplication::$Logger->warn(sprintf('No contexts found in file: %s', $strTemplateFile));
+                QApplication::$Logger->warn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 chmod($strTranslatedFile, 0666);
                 return false;
@@ -143,11 +149,11 @@
         }
 
         public function ExportFile($strTemplateFile, $strTranslatedFile) {
-            $this->objLogger->debug(sprintf('Exporting %s using %s', $strTemplateFile, __CLASS__));
+            QApplication::$Logger->debug(sprintf('Exporting %s using %s', $strTemplateFile, __CLASS__));
             $strTemplateContents = file_get_contents($strTemplateFile);
 
             if (!$strTemplateContents) {
-                $this->objLogger->warn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                QApplication::$Logger->warn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 chmod($strTranslatedFile, 0666);
                 return false;
@@ -170,11 +176,11 @@
                 }
 
             if (!is_array($arrTemplate) || count($arrTemplate) == 0) {
-                $this->objLogger->warn(sprintf('No contexts found in %s', $strTemplateFile));
+                QApplication::$Logger->warn(sprintf('No contexts found in %s', $strTemplateFile));
                 return false;
             }
 
-            $this->objLogger->debug(sprintf('Found %d contexts in %s', count($arrTemplate), $strTemplateFile));
+            QApplication::$Logger->debug(sprintf('Found %d contexts in %s', count($arrTemplate), $strTemplateFile));
 
             $strTranslateContents = '';
 
@@ -195,7 +201,7 @@
                         $arrTranslation[$strKey] = $arrResult[1];
                     }
                     else
-                        $this->objLogger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $arrTranslation[$strKey], print_r($arrResult, true)));
+                        QApplication::$Logger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $arrTranslation[$strKey], print_r($arrResult, true)));
 
                     $strTranslatedLine = str_replace('"' . $arrTemplate[$strKey] . '"', '"' . $arrTranslation[$strKey] . '"', $arrTemplateLines[$strKey]);
                     /**
@@ -207,10 +213,10 @@
                     if ($strTranslatedLine)
                         $strTemplateContents = str_replace($arrTemplateLines[$strKey], $strTranslatedLine, $strTemplateContents);
                     else
-                        $this->objLogger->err(sprintf('In file "%s", failed to replace "%s"', 'str_replace("' . $arrTemplate[$strKey] . '"' . ', "' . $arrTranslation[$strKey] . '", ' . $arrTemplateLines[$strKey] . ');'));
+                        QApplication::$Logger->err(sprintf('In file "%s", failed to replace "%s"', 'str_replace("' . $arrTemplate[$strKey] . '"' . ', "' . $arrTranslation[$strKey] . '", ' . $arrTemplateLines[$strKey] . ');'));
                 }
                 else {
-                    $this->objLogger->err(sprintf('Couldn\'t find the key "%s" in the translations for "%s" from the file "%s". Using the original text.', $strKey, $strOriginalText, $this->objFile->FileName));
+                    QApplication::$Logger->err(sprintf('Couldn\'t find the key "%s" in the translations for "%s" from the file "%s". Using the original text.', $strKey, $strOriginalText, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                 }
             }
@@ -218,11 +224,11 @@
             $strTranslateContents = $strTemplateContents;
 
             if (file_exists($strTranslatedFile) && !is_writable($strTranslatedFile) && !unlink($strTranslatedFile)) {
-                $this->objLogger->err(sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
+                QApplication::$Logger->err(sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
             }
 
             if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
-                $this->objLogger->err(sprintf('Can\'t write to file "%s"', $strTranslatedFile));
+                QApplication::$Logger->err(sprintf('Can\'t write to file "%s"', $strTranslatedFile));
             }
 
             @chmod($strTranslatedFile, 0666);

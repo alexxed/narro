@@ -198,9 +198,7 @@
                 return '';
             }
             else {
-                $strTemplateFile = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE . $objNarroFile->FilePath;
-
-                if (!file_exists($strTemplateFile)) return 'No template on disk';
+                $strTemplateFile = $this->objNarroProject->DefaultTemplatePath . $objNarroFile->FilePath;
 
                 if (!$objExportButton = $this->Form->GetControl('btnExport' . $objNarroFile->FileId)) {
                     $objExportButton = new QButton($this->dtgNarroFile, 'btnExport' . $objNarroFile->FileId);
@@ -248,7 +246,7 @@
                     $strExportAction = t('Model to use') . ': ' . $objExportFile->Render(false) . $objExportButton->Render(false);
 
 
-                return $strImportAction . '<br />' . $strExportAction;
+                return $strImportAction . '<br />' . $strExportAction . (file_exists($strTemplateFile)?'':t('No template found on the server, you will have to upload one to export or import.'));
             }
         }
 
@@ -352,14 +350,6 @@
             $objFileImporter->TargetLanguage = QApplication::$Language;
             $objFileImporter->File = $objFile;
 
-            $strImportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import.log';
-
-            require_once('Zend/Log.php');
-            require_once('Zend/Log/Writer/Stream.php');
-            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strImportLogFile));
-
-            $objFileImporter->Logger = $objLogger;
-
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$Language->LanguageCode);
 
             if ($objFileControl instanceof QFileControl && file_exists($objFileControl->File)) {
@@ -367,7 +357,7 @@
                 unlink($objFileControl->File);
             }
             else
-                $objFileImporter->ExportFile(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE . $objFile->FilePath, $strTempFileName);
+                $objFileImporter->ExportFile($this->objNarroProject->DefaultTemplatePath . $objFile->FilePath, $strTempFileName);
 
             header(sprintf('Content-Disposition: attachment; filename="%s"', $objFile->FileName));
             readfile($strTempFileName);
@@ -417,14 +407,6 @@
             $objFileImporter->TargetLanguage = QApplication::$Language;
             $objFileImporter->CheckEqual = true;
             $objFileImporter->File = $objFile;
-
-            $strImportLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import.log';
-
-            require_once('Zend/Log.php');
-            require_once('Zend/Log/Writer/Stream.php');
-            $objLogger = new Zend_Log(new Zend_Log_Writer_Stream($strImportLogFile));
-
-            $objFileImporter->Logger = $objLogger;
             $objFileImporter->OnlySuggestions = !QApplication::HasPermissionForThisLang('Can approve', $objFile->ProjectId);
             $objFileImporter->DeactivateFiles = false;
             $objFileImporter->DeactivateContexts = false;
@@ -433,7 +415,7 @@
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$Language->LanguageCode);
 
-            $objFileImporter->ImportFile(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE . $objFile->FilePath, $objFileControl->File);
+            $objFileImporter->ImportFile($this->objNarroProject->DefaultTemplatePath . $objFile->FilePath, $objFileControl->File);
 
         }
 

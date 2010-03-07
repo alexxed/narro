@@ -44,4 +44,7 @@
         <script type="text/javascript" src="<?php echo __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__?>/assets/js/table_row_highlight.js"></script>
     </head>
     <body>
+        <?php if (SERVER_INSTANCE == 'dev') { ?>
+            <div style="background-color:red;color:white;font-weight:bold;padding:10px;text-align: center;display:block">THIS IS A DEVELOPMENT VERSION MEANT FOR TESTING ONLY ! PLEASE DON'T WASTE YOUR TIME TRANSLATING !</div>
+        <?php } ?>
         <div id="main">

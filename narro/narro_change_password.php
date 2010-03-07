@@ -30,7 +30,8 @@
                 $strPassHash = QApplication::QueryString('h');
                 $strUsername = QApplication::QueryString('u');
                 if ($strPassHash && $strUsername) {
-                    if ($objUser = NarroUser::LoadByUsernameAndPassword($strUsername, $strPassHash)) {
+                    $objUser = NarroUser::LoadByUsernameAndPassword($strUsername, $strPassHash);
+                    if ($objUser instanceof NarroUser) {
                         require_once 'Zend/Session/Namespace.php';
                         $objNarroSession = new Zend_Session_Namespace('Narro');
                         $objNarroSession->User = $objUser;

@@ -40,7 +40,7 @@
                 chmod($strTranslatedFile, 0666);
             }
             else {
-                $this->objLogger->err(sprintf('Cannot open file "%s".', $strFileToImport));
+                QApplication::$Logger->err(sprintf('Cannot open file "%s".', $strFileToImport));
             }
         }
 
@@ -56,7 +56,7 @@
                 }
             }
             else {
-                $this->objLogger->err(sprintf('Cannot open file "%s".', $strFileToImport));
+                QApplication::$Logger->err(sprintf('Cannot open file "%s".', $strFileToImport));
             }
         }
 

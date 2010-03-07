@@ -49,8 +49,6 @@
 
         protected $blnImportUnchangedFiles = false;
 
-        protected $objLogger;
-
         /**
          * what suggestions are exported
          * 1 = approved
@@ -89,10 +87,11 @@
         }
 
         public function ImportProject() {
+
             $this->startTimer();
 
             if (function_exists('popen') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/import.sh')) {
-                $this->objLogger->err('Found a before import script, trying to run it.');
+                QApplication::$Logger->info('Found a before import script, trying to run it.');
                  $fp = popen(
                         sprintf(
                             '/bin/sh %s %s %d %s %d %d 2>&1',
@@ -112,9 +111,9 @@
                     $strOutput .= fread($fp, 1024);
                 }
                 if (pclose($fp))
-                    $this->objLogger->err("Before import script failed:\n" . $strOutput);
+                    QApplication::$Logger->err("Before import script failed:\n" . $strOutput);
                 else
-                    $this->objLogger->err("Before import script finished successfully:\n" . $strOutput);
+                    QApplication::$Logger->info("Before import script finished successfully:\n" . $strOutput);
             }
 
             if ($this->objProject->ProjectName == 'Narro')
@@ -123,28 +122,42 @@
             if (!file_exists($this->strTemplatePath))
                 throw new Exception(sprintf('Template path %s does not exist.', $this->strTemplatePath));
 
-            $this->objLogger->info(sprintf('Starting import for the project %s', $this->objProject->ProjectName));
-            $this->objLogger->info(sprintf('Template path is %s', $this->strTemplatePath));
-            $this->objLogger->info(sprintf('Translation path is %s', $this->strTranslationPath));
+            QApplication::$Logger->info(sprintf('Starting import for the project %s', $this->objProject->ProjectName));
+            QApplication::$Logger->info(sprintf('Template path is %s', $this->strTemplatePath));
+            QApplication::$Logger->info(sprintf('Translation path is %s', $this->strTranslationPath));
 
 
             if (is_dir($this->strTemplatePath))
                 if ($this->ImportFromDirectory()) {
+                    if ($this->strTemplatePath != $this->objProject->DefaultTemplatePath)
+                        NarroUtils::RecursiveCopy($this->strTemplatePath, $this->objProject->DefaultTemplatePath);
+
+                    if ($this->strTranslationPath != $this->objProject->DefaultTranslationPath)
+                        NarroUtils::RecursiveCopy($this->strTranslationPath, $this->objProject->DefaultTranslationPath);
+
                     $this->stopTimer();
-                    $this->objLogger->info(sprintf('Import finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
+                    QApplication::$Logger->info(sprintf('Import finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
                 }
                 else {
-                    $this->objLogger->err('Import failed. See any messages above for details.');
+                    QApplication::$Logger->err('Import failed. See any messages above for details.');
                 }
             else
                 throw new Exception(sprintf('Template path "%s" is not a directory.', $this->strTemplatePath));
+
+            QApplication::$PluginHandler->ImportProject($this->objProject);
+
+            $strUploadPath = sprintf('%s/upload-u_%d-l_%s-p_%d', __TMP_PATH__, QApplication::GetUserId(), $this->objSourceLanguage->LanguageCode, $this->objProject->ProjectId);
+            if (file_exists($strUploadPath))
+                NarroUtils::RecursiveDelete($strUploadPath);
+
+            $strUploadPath = sprintf('%s/upload-u_%d-l_%s-p_%d', __TMP_PATH__, QApplication::GetUserId(), $this->objTargetLanguage->LanguageCode, $this->objProject->ProjectId);
+            if (file_exists($strUploadPath))
+                NarroUtils::RecursiveDelete($strUploadPath);
         }
 
         public function ImportFromDirectory() {
 
             $objDatabase = QApplication::$Database[1];
-
-            NarroLog::SetLogFile($this->objProject->ProjectId . '-' . $this->objTargetLanguage->LanguageCode . '-import.log');
 
             /**
              * get the file list with complete paths
@@ -152,7 +165,7 @@
             $arrFiles = $this->ListDir($this->strTemplatePath);
             $intTotalFilesToProcess = count($arrFiles);
 
-            $this->objLogger->debug(sprintf('Starting to process %d files using directory %s', $intTotalFilesToProcess, $this->strTemplatePath));
+            QApplication::$Logger->info(sprintf('Starting to process %d files using directory %s', $intTotalFilesToProcess, $this->strTemplatePath));
 
             if ($this->blnDeactivateFiles) {
                 $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
@@ -163,17 +176,8 @@
                 }
             }
 
-            if ($this->blnDeactivateContexts) {
-                $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
-                try {
-                    $objDatabase->NonQuery($strQuery);
-                }catch (Exception $objEx) {
-                    throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-                }
-            }
-
             $arrDirectories = array();
-            NarroProgress::SetProgress(0, $this->objProject->ProjectId, 'import');
+            NarroProgress::SetProgress(0, $this->objProject->ProjectId, 'import', $intTotalFilesToProcess);
 
             if (is_array($arrFiles))
             foreach($arrFiles as $intFileNo=>$strFileToImport) {
@@ -251,7 +255,7 @@
                             $objFile->Created = QDateTime::Now();
                             $objFile->Active = 1;
                             $objFile->Save();
-                            $this->objLogger->debug(sprintf('Added folder "%s" from "%s"', $strDir, $strPath));
+                            QApplication::$Logger->debug(sprintf('Added folder "%s" from "%s"', $strDir, $strPath));
                             NarroImportStatistics::$arrStatistics['Imported folders']++;
                         }
                         $arrDirectories[$strPath] = $objFile->FileId;
@@ -306,7 +310,7 @@
                     $objFile->Save();
                     $blnSourceFileChanged = true;
                     QApplication::$PluginHandler->ActivateFile($objFile, $this->objProject);
-                    $this->objLogger->debug(sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
+                    QApplication::$Logger->debug(sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
 
@@ -319,7 +323,7 @@
                     }
                     else {
                         $this->blnOnlySuggestions = true;
-                        $this->objLogger->debug(sprintf('Importing only suggestions from "%s" because it\'s unchanged from the last import', $strTranslatedFileToImport));
+                        QApplication::$Logger->info(sprintf('Importing only suggestions from "%s" because the source is unchanged from the last import', $strTranslatedFileToImport));
                         NarroImportStatistics::$arrStatistics['Unchanged template files']++;
                     }
 
@@ -332,7 +336,7 @@
                 }
 
                 $intElapsedTime = time() - $intTime;
-                $this->objLogger->debug(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
+                QApplication::$Logger->info(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
 
                 NarroProgress::SetProgress((int) ceil(($intFileNo*100)/$intTotalFilesToProcess), $this->objProject->ProjectId, 'import');
 
@@ -346,13 +350,22 @@
                 return false;
 
             if (is_file($strTemplateFile) && filesize($strTemplateFile) > __MAXIMUM_FILE_SIZE_TO_IMPORT__) {
-                $this->objLogger->err(sprintf('The file "%s" exceeds the maximum file size allowed to be imported, skipping it', $strTemplateFile));
+                QApplication::$Logger->err(sprintf('The file "%s" exceeds the maximum file size allowed to be imported, skipping it', $strTemplateFile));
                 return false;
             }
 
             if (is_file($strTranslatedFile) && filesize($strTranslatedFile) > __MAXIMUM_FILE_SIZE_TO_IMPORT__) {
-                $this->objLogger->err(sprintf('The file "%s" exceeds the maximum file size allowed to be imported, skipping it', $strTranslatedFile));
+                QApplication::$Logger->err(sprintf('The file "%s" exceeds the maximum file size allowed to be imported, skipping it', $strTranslatedFile));
                 return false;
+            }
+
+            if ($this->blnDeactivateContexts && $this->blnOnlySuggestions == false) {
+                $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d AND file_id=%d", $this->objProject->ProjectId, $objFile->FileId);
+                try {
+                    $objDatabase->NonQuery($strQuery);
+                }catch (Exception $objEx) {
+                    throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
+                }
             }
 
             switch($objFile->TypeId) {
@@ -386,14 +399,21 @@
 
             $objFileImporter->File = $objFile;
 
-            return $objFileImporter->ImportFile($strTemplateFile, $strTranslatedFile);
+            $blnFileImportResult = $objFileImporter->ImportFile($strTemplateFile, $strTranslatedFile);
+
+            QApplication::$PluginHandler->ImportFile($objFile);
+
+            return $blnFileImportResult;
         }
 
         public function ExportProject() {
 
-            $this->objLogger->err(sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
+            QApplication::$Logger->err(sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
 
             $this->startTimer();
+
+            $this->GetCorrectTemplatePath();
+            $this->GetCorrectTranslationPath();
 
             if ($this->objProject->ProjectName == 'Narro')
                 $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . NarroLanguage::SOURCE_LANGUAGE_CODE . '/LC_MESSAGES/';
@@ -401,17 +421,17 @@
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
                 if ($this->ExportFromDirectory()) {
                     $this->stopTimer();
-                    $this->objLogger->err(sprintf('Export finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
+                    QApplication::$Logger->err(sprintf('Export finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
                 }
                 else {
-                    $this->objLogger->err('Export failed.');
+                    QApplication::$Logger->err('Export failed.');
                 }
 
             else
                 throw new Exception(sprintf('Template path "%s" does not exist or it is not a directory', $this->strTemplatePath));
 
             if (function_exists('popen') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../export.sh')) {
-                $this->objLogger->err('Found an after export script, trying to run it.');
+                QApplication::$Logger->err('Found an after export script, trying to run it.');
                  $fp = popen(
                         sprintf(
                             '/bin/sh %s %s %d %s %d %d 2>&1',
@@ -431,9 +451,9 @@
                     $strOutput .= fread($fp, 1024);
                 }
                 if (pclose($fp))
-                    $this->objLogger->err("After export script failed:\n" . $strOutput);
+                    QApplication::$Logger->err("After export script failed:\n" . $strOutput);
                 else
-                    $this->objLogger->err("After export script finished successfully:\n" . $strOutput);
+                    QApplication::$Logger->err("After export script finished successfully:\n" . $strOutput);
             }
 
             if ($this->objProject->ProjectName == 'Narro') {
@@ -452,9 +472,9 @@
                     $strOutput .= fread($fp, 1024);
                 }
                 if (pclose($fp))
-                    $this->objLogger->err("Exporting Narro's translation failed:\n" . $strOutput);
+                    QApplication::$Logger->err("Exporting Narro's translation failed:\n" . $strOutput);
                 else
-                    $this->objLogger->err("Exported Narro's translation succesfully:\n" . $strOutput);
+                    QApplication::$Logger->err("Exported Narro's translation succesfully:\n" . $strOutput);
 
                 chmod(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/narro.mo', 0666);
             }
@@ -465,9 +485,7 @@
 
         public function ExportFromDirectory() {
 
-            NarroLog::SetLogFile($this->objProject->ProjectId . '-' . $this->objTargetLanguage->LanguageCode . '-export.log');
-
-            $this->objLogger->debug(sprintf('Starting to export in directory "%s"', $this->strTranslationPath));
+            QApplication::$Logger->debug(sprintf('Starting to export in directory "%s"', $this->strTranslationPath));
 
             /**
              * get the file list with complete paths
@@ -476,10 +494,10 @@
 
             $intTotalFilesToProcess = count($arrFiles);
 
-            $this->objLogger->debug(sprintf('Starting to process %d files', $intTotalFilesToProcess));
+            QApplication::$Logger->debug(sprintf('Starting to process %d files', $intTotalFilesToProcess));
 
             $arrDirectories = array();
-            NarroProgress::SetProgress(0, $this->objProject->ProjectId, 'export');
+            NarroProgress::SetProgress(0, $this->objProject->ProjectId, 'export', $intTotalFilesToProcess);
 
             if (is_array($arrFiles))
             foreach($arrFiles as $intFileNo=>$strFileToExport) {
@@ -516,7 +534,7 @@
                             );
 
                         if (!$objFile instanceof NarroFile) {
-                            $this->objLogger->warn(sprintf('Could not find folder "%s" with parent id "%d" in the database.', $strDir, $intParentId));
+                            QApplication::$Logger->warn(sprintf('Could not find folder "%s" with parent id "%d" in the database.', $strDir, $intParentId));
                             continue;
                         }
 
@@ -528,7 +546,7 @@
                 $strTranslatedFileToExport = str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToExport);
                 if (!file_exists(dirname($strTranslatedFileToExport))) {
                     if (!mkdir(dirname($strTranslatedFileToExport), 0777, true)) {
-                        $this->objLogger->warn(sprintf('Failed to create the parent directories for the file %s', $strFileToExport));
+                        QApplication::$Logger->warn(sprintf('Failed to create the parent directories for the file %s', $strFileToExport));
                         return false;
                     }
                     NarroUtils::RecursiveChmod(dirname($strTranslatedFileToExport));
@@ -537,11 +555,11 @@
                 if (!$intFileType = $this->GetFileType($strFileName)) {
                     if ($this->blnCopyUnhandledFiles && !file_exists($strTranslatedFileToExport)) {
                         if (@copy($strFileToExport, $strTranslatedFileToExport)) {
-                            $this->objLogger->warn(sprintf('Copying unhandled file type: %s', $strFileToExport));
+                            QApplication::$Logger->warn(sprintf('Copying unhandled file type: %s', $strFileToExport));
                             NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
                             chmod($strTranslatedFileToExport, 0666);
                         } else {
-                            $this->objLogger->warn(sprintf('Failed to copy the unhandled file to %s', $strTranslatedFileToExport));
+                            QApplication::$Logger->warn(sprintf('Failed to copy the unhandled file to %s', $strTranslatedFileToExport));
                             return false;
                         }
                     }
@@ -562,7 +580,7 @@
                     continue;
                 }
 
-                $this->objLogger->debug(sprintf('Exporting file "%s" using template "%s"', $objFile->FileName, $strTranslatedFileToExport));
+                QApplication::$Logger->debug(sprintf('Exporting file "%s" using template "%s"', $objFile->FileName, $strTranslatedFileToExport));
 
                 $this->ExportFile($objFile, $strFileToExport, $strTranslatedFileToExport);
                 NarroImportStatistics::$arrStatistics['Exported files']++;
@@ -576,7 +594,7 @@
 
         public function ExportFile ($objFile, $strTemplateFile, $strTranslatedFile) {
             if (!$objFile instanceof NarroFile) {
-                $this->objLogger->warn(sprintf('Failed to find a corresponding file in the database for %s', $strTemplateFile));
+                QApplication::$Logger->warn(sprintf('Failed to find a corresponding file in the database for %s', $strTemplateFile));
                 return false;
             }
 
@@ -606,7 +624,7 @@
                         $objFileImporter = new NarroPhpMyAdminFileImporter($this);
                         break;
                 default:
-                        $this->objLogger->warn(sprintf('Copying unhandled file type: %s', $strTemplateFile));
+                        QApplication::$Logger->warn(sprintf('Copying unhandled file type: %s', $strTemplateFile));
                         NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
                         copy($strTemplateFile, $strTranslatedFile);
                         return false;
@@ -663,7 +681,6 @@
                 case "DeactivateContexts": return $this->blnDeactivateContexts;
                 case "ExportedSuggestion": return $this->intExportedSuggestion;
                 case "CopyUnhandledFiles": return $this->blnCopyUnhandledFiles;
-                case "Logger": return $this->objLogger;
 
                 default: return false;
             }
@@ -808,15 +825,6 @@
                         throw $objExc;
                     }
 
-                case "Logger":
-                    try {
-                        $this->objLogger = QType::Cast($mixValue, 'Zend_Log');
-                        break;
-                    } catch (QInvalidCastException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
-
                 default:
                     return false;
             }
@@ -853,7 +861,5 @@
             }
             return $arrFiles;
         }
-
-
     }
 ?>

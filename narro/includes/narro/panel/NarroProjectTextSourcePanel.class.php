@@ -18,8 +18,9 @@
     class NarroProjectSourcePanel extends QPanel {
         protected $lstProject;
         protected $objProject;
+        protected $objLanguage;
 
-        public function __construct($objProject, $objParentObject, $strControlId = null) {
+        public function __construct(NarroProject $objProject, NarroLanguage $objLanguage, $objParentObject, $strControlId = null) {
             // Call the Parent
             try {
                 parent::__construct($objParentObject, $strControlId);
@@ -29,6 +30,7 @@
             }
 
             $this->objProject = $objProject;
+            $this->objLanguage = $objLanguage;
 
             $this->lstProject = new QListBox($this);
             $this->lstProject->DisplayStyle = QDisplayStyle::Block;
@@ -69,8 +71,9 @@
     class NarroDirectorySourcePanel extends QPanel {
         protected $txtDirectory;
         protected $objProject;
+        protected $objLanguage;
 
-        public function __construct($objProject, $objParentObject, $strControlId = null) {
+        public function __construct(NarroProject $objProject, NarroLanguage $objLanguage, $objParentObject, $strControlId = null) {
             // Call the Parent
             try {
                 parent::__construct($objParentObject, $strControlId);
@@ -80,6 +83,7 @@
             }
 
             $this->objProject = $objProject;
+            $this->objLanguage = $objLanguage;
 
             $this->txtDirectory = new QTextBox($this);
             $this->txtDirectory->DisplayStyle = QDisplayStyle::Block;
@@ -138,8 +142,10 @@
         protected $fileSource;
         protected $objProject;
         protected $strWorkingDirectory;
+        protected $objLanguage;
+        protected $chkCopyFilesToDefaultDirectory;
 
-        public function __construct($objProject, $objParentObject, $strControlId = null) {
+        public function __construct(NarroProject $objProject, NarroLanguage $objLanguage, $objParentObject, $strControlId = null) {
             // Call the Parent
             try {
                 parent::__construct($objParentObject, $strControlId);
@@ -149,16 +155,23 @@
             }
 
             $this->objProject = $objProject;
+            $this->objLanguage = $objLanguage;
 
             $this->fileSource = new QFileAsset($this);
             $this->fileSource->DisplayStyle = QDisplayStyle::Block;
             $this->fileSource->TemporaryUploadPath = __TMP_PATH__;
 
+            $this->chkCopyFilesToDefaultDirectory = new QCheckBox($this);
+            $this->chkCopyFilesToDefaultDirectory->Name = t('Copy files to the default project directory for later use');
+            $this->chkCopyFilesToDefaultDirectory->Instructions = sprintf(t('This will also delete the files from "%s/"'), __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode);
+            $this->chkCopyFilesToDefaultDirectory->Checked = true;
+
         }
 
         public function GetControlHtml() {
             $this->strText = t('Please upload an archive that contains the files') .
-                $this->fileSource->Render(false);
+                $this->fileSource->Render(false) .
+                $this->chkCopyFilesToDefaultDirectory->Render(false) . sprintf('<label for="%s">%s</label><br /><i style="color:gray;font-size:80%%">%s</i>', $this->chkCopyFilesToDefaultDirectory->ControlId, $this->chkCopyFilesToDefaultDirectory->Name, $this->chkCopyFilesToDefaultDirectory->Instructions);
             return parent::GetControlHtml();
         }
 
@@ -172,20 +185,20 @@
             if (!file_exists($this->fileSource->File))
                 throw new Exception('You have to upload a file');
 
-            $this->strWorkingDirectory = __TMP_PATH__ . '/upload-source-' . uniqid();
+            $this->strWorkingDirectory = sprintf('%s/upload-u_%d-l_%s-p_%d', __TMP_PATH__, QApplication::GetUserId(), $this->objLanguage->LanguageCode, $this->objProject->ProjectId);
 
             $this->CleanWorkingDirectory();
 
             mkdir($this->strWorkingDirectory);
             chmod($this->strWorkingDirectory, 0777);
 
-            NarroLog::LogMessage(3, sprintf('Trying to uncompress %s', $this->fileSource->File));
+            QApplication::$Logger->info(sprintf('Trying to uncompress %s', $this->fileSource->File));
             $objZipFile = new ZipArchive();
             $intErrCode = $objZipFile->open($this->fileSource->File);
             if ($intErrCode === TRUE) {
                 $objZipFile->extractTo($this->strWorkingDirectory);
                 $objZipFile->close();
-                NarroLog::LogMessage(3, sprintf('Sucessfully uncompressed %s.', $this->fileSource->File));
+                QApplication::$Logger->info(sprintf('Sucessfully uncompressed %s.', $this->fileSource->File));
             } else {
                 switch($intErrCode) {
                     case ZIPARCHIVE::ER_NOZIP:
@@ -194,14 +207,35 @@
                     default:
                         $strError = 'Error code: '. $intErrCode;
                 }
-                unlink($this->fileSource->File);
                 $this->fileSource->File = '';
 
                 throw new Exception(sprintf('Failed to uncompress %s: %s', $this->fileSource->File, $strError));
             }
 
-            unlink($this->fileSource->File);
+            if (file_exists($this->fileSource->File))
+                unlink($this->fileSource->File);
+
+
+            $arrSearchResult = NarroUtils::SearchDirectoryByName($this->strWorkingDirectory, $this->objLanguage->LanguageCode);
+
+            if ($arrSearchResult == false)
+                $arrSearchResult = NarroUtils::SearchDirectoryByName($this->strWorkingDirectory, $this->objLanguage->LanguageCode . '-' . $this->objLanguage->CountryCode);
+
+            if ($arrSearchResult == false)
+                $arrSearchResult = NarroUtils::SearchDirectoryByName($this->strWorkingDirectory, $this->objLanguage->LanguageCode . '_' . $this->objLanguage->CountryCode);
+
             NarroUtils::RecursiveChmod($this->strWorkingDirectory);
+
+            if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
+                QApplication::$Logger->warn(sprintf('Template path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $this->strWorkingDirectory, $arrSearchResult[0], $this->objLanguage->LanguageCode));
+                $this->strWorkingDirectory = $arrSearchResult[0];
+            }
+
+            if ($this->chkCopyFilesToDefaultDirectory->Checked) {
+                NarroUtils::RecursiveDelete(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode .'/*');
+                NarroUtils::RecursiveCopy($this->strWorkingDirectory, __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode);
+                NarroUtils::RecursiveChmod(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode);
+            }
 
             return $this->strWorkingDirectory;
         }
@@ -251,8 +285,9 @@
 
         public $pnlTextSource;
         protected $objProject;
+        protected $objLanguage;
 
-        public function __construct($objProject, $objParentObject, $strControlId = null) {
+        public function __construct(NarroProject $objProject, NarroLanguage $objLanguage, $objParentObject, $strControlId = null) {
             // Call the Parent
             try {
                 parent::__construct($objParentObject, $strControlId);
@@ -262,13 +297,14 @@
             }
 
             $this->objProject = $objProject;
+            $this->objLanguage = $objLanguage;
 
             $this->pnlTextSource = new QTabPanel($this);
             $this->pnlTextSource->UseAjax = QApplication::$UseAjax;
-            $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $this->pnlTextSource);
-            $objDirectoryPanel->Directory = __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
+            $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $objLanguage, $this->pnlTextSource);
+            $objDirectoryPanel->Directory = $this->objProject->DefaultTemplatePath;
             $this->pnlTextSource->addTab($objDirectoryPanel, t('On this server'));
-            $this->pnlTextSource->addTab(new NarroUploadSourcePanel($objProject, $this->pnlTextSource), t('On my computer'));
+            $this->pnlTextSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On my computer'));
         }
 
         public function GetControlHtml() {
@@ -298,8 +334,9 @@
 
         protected $pnlTranslationSource;
         protected $objProject;
+        protected $objLanguage;
 
-        public function __construct($objProject, $objParentObject, $strControlId = null) {
+        public function __construct(NarroProject $objProject, NarroLanguage $objLanguage, $objParentObject, $strControlId = null) {
             // Call the Parent
             try {
                 parent::__construct($objParentObject, $strControlId);
@@ -309,14 +346,15 @@
             }
 
             $this->objProject = $objProject;
+            $this->objLanguage = $objLanguage;
 
             $this->pnlTranslationSource = new QTabPanel($this);
             $this->pnlTranslationSource->UseAjax = QApplication::$UseAjax;
-            $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $this->pnlTranslationSource);
-            $objDirectoryPanel->Directory = __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . QApplication::$Language->LanguageCode;
+            $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
+            $objDirectoryPanel->Directory = $this->objProject->DefaultTranslationPath;
             $this->pnlTranslationSource->addTab($objDirectoryPanel, t('On this server'));
-            $this->pnlTranslationSource->addTab(new NarroUploadSourcePanel($objProject, $this->pnlTranslationSource), t('On my computer'));
-            $this->pnlTranslationSource->addTab(new NarroProjectSourcePanel($objProject, $this->pnlTranslationSource), t('In another project'));
+            $this->pnlTranslationSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('On my computer'));
+            $this->pnlTranslationSource->addTab(new NarroProjectSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('In another project'));
         }
 
         public function GetControlHtml() {

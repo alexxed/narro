@@ -225,21 +225,45 @@
 
         }
 
-        public static function ListDirectory($strDir = '.', $strIncludePattern = null, $strExcludePattern = null, $strExcludePath = null, $blnIncludeDirectories = false) {
+        public static function SearchDirectoryByName($strPathToStartFrom, $strDirectoryName, $blnCaseSensitive = false) {
+            $arrSearchResult = self::ListDirectory($strPathToStartFrom, null, null, null, true);
 
+            $arrFoundDirectory = array();
+            if (is_array($arrSearchResult))
+                foreach($arrSearchResult as $intIndex=>$strPath) {
+                    if (trim($strPath) == trim($strPathToStartFrom))
+                        continue;
+
+                    if ($blnCaseSensitive && is_dir($strPath) && trim($strDirectoryName) == trim(basename($strPath)))
+                        $arrFoundDirectory[] = $strPath;
+
+                    if (!$blnCaseSensitive && is_dir($strPath) && strtolower(trim($strDirectoryName)) == strtolower(trim(basename($strPath))))
+                        $arrFoundDirectory[] = $strPath;
+                }
+            else
+                return false;
+
+            if (count($arrFoundDirectory) > 0)
+                return $arrFoundDirectory;
+            else
+                return false;
+        }
+
+        public static function ListDirectory($strDir = '.', $strIncludePattern = null, $strExcludePattern = null, $strExcludePath = null, $blnIncludeDirectories = false) {
             $arrFiles = array();
             if (is_dir($strDir)) {
                 $hndFile = opendir($strDir);
                 if ($blnIncludeDirectories) {
                     $blnContinue = false;
-                    if ($strIncludePattern && !preg_match($strIncludePattern, $strDir))
+                    if (!is_null($strIncludePattern) && !preg_match($strIncludePattern, $strDir))
                         $blnContinue = true;
 
-                    if (!$blnContinue && $strExcludePattern && preg_match($strExcludePattern, $strDir))
+                    if (!$blnContinue && !is_null($strExcludePattern) && preg_match($strExcludePattern, $strDir))
                         $blnContinue = true;
 
-                    if (!$blnContinue)
-                        array_push($arrFiles, ($strExcludePath)?str_replace($strExcludePath, '', $strDir):$strDir);
+                    if (!$blnContinue) {
+                        array_push($arrFiles, (!is_null($strExcludePath))?str_replace($strExcludePath, '', $strDir):$strDir);
+                    }
                 }
 
                 while (($strFile = readdir($hndFile)) !== false) {
@@ -249,7 +273,7 @@
                     $strFilePath = $strDir . '/' . $strFile;
 
                     if ( is_dir($strFilePath) )
-                        $arrFiles = array_merge($arrFiles, self::ListDirectory($strFilePath, $strIncludePattern, $strExcludePattern, $strExcludePath));
+                        $arrFiles = array_merge($arrFiles, self::ListDirectory($strFilePath, $strIncludePattern, $strExcludePattern, $strExcludePath, $blnIncludeDirectories));
                     else {
                         if ($strIncludePattern && !preg_match($strIncludePattern, $strFilePath))
                             continue;

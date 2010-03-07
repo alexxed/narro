@@ -86,22 +86,15 @@
             $intUserId = $argv[array_search('--user', $argv)+1];
 
 
-        require_once('Zend/Log.php');
-        require_once('Zend/Log/Writer/Stream.php');
-
-        $objLogger = new Zend_Log(new Zend_Log_Writer_Stream(__TMP_PATH__ . '/' . $intProjectId . '-' . $strTargetLanguage . '-import.log'));
-
-        $objNarroImporter->Logger = $objLogger;
-
         /**
          * Load the specified user or the anonymous user if unspecified
          */
         $objUser = NarroUser::LoadByUserId($intUserId);
         if (!$objUser instanceof NarroUser) {
-            $objLogger->info(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
+            QApplication::$Logger->info(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
             $objUser = NarroUser::LoadAnonymousUser();
             if (!$objUser instanceof NarroUser) {
-                $objLogger->info(sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
+                QApplication::$Logger->info(sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
                 return false;
             }
         }
@@ -113,7 +106,7 @@
          */
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
-            $objLogger->info(sprintf('Project with id=%s does not exist in the database.', $intProjectId));
+            QApplication::$Logger->info(sprintf('Project with id=%s does not exist in the database.', $intProjectId));
             return false;
         }
 
@@ -122,7 +115,7 @@
          */
         $objLanguage = NarroLanguage::LoadByLanguageCode($strTargetLanguage);
         if (!$objLanguage instanceof NarroLanguage) {
-            $objLogger->info(sprintf('Language %s does not exist in the database.', $strTargetLanguage));
+            QApplication::$Logger->info(sprintf('Language %s does not exist in the database.', $strTargetLanguage));
             return false;
         }
 
@@ -130,18 +123,18 @@
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 
-        $objLogger->info(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
+        QApplication::$Logger->info(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
 
         /**
          * Load the specified source language
          */
         $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
         if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-            $objLogger->info(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
+            QApplication::$Logger->info(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
             return false;
         }
 
-        $objLogger->info(sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
+        QApplication::$Logger->info(sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
 
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
@@ -149,12 +142,12 @@
         if (array_search('--template-directory', $argv) !== false)
             $objNarroImporter->TemplatePath = $argv[array_search('--template-directory', $argv)+1];
         else
-            $objNarroImporter->TemplatePath = __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
+            $objNarroImporter->TemplatePath = $objNarroImporter->Project->DefaultTemplatePath;
 
         if (array_search('--translation-directory', $argv) !== false)
             $objNarroImporter->TranslationPath = $argv[array_search('--translation-directory', $argv)+1];
         else
-            $objNarroImporter->TranslationPath = __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
+            $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
 
         if (in_array('--force', $argv)) {
             $objNarroImporter->CleanImportDirectory();
@@ -177,7 +170,7 @@
             $objNarroImporter->ImportProject();
         }
         catch (Exception $objEx) {
-            $objLogger->info(sprintf('An error occured during import: %s', $objEx->getMessage()));
+            QApplication::$Logger->info(sprintf('An error occured during import: %s', $objEx->getMessage()));
             $objNarroImporter->CleanImportDirectory();
             exit();
         }
@@ -185,7 +178,7 @@
         $objNarroImporter->CleanImportDirectory();
         foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
             if ($strValue != 0)
-                $objLogger->info(stripslashes($strName) . ': ' . $strValue);
+                QApplication::$Logger->info(stripslashes($strName) . ': ' . $strValue);
         }
      }
      elseif (in_array('--export', $argv)) {
@@ -209,18 +202,12 @@
         if (array_search('--user', $argv) !== false)
             $intUserId = $argv[array_search('--user', $argv)+1];
 
-        require_once('Zend/Log.php');
-        require_once('Zend/Log/Writer/Stream.php');
-        $objLogger = new Zend_Log(new Zend_Log_Writer_Stream(__TMP_PATH__ . '/' . $intProjectId . '-' . $strTargetLanguage . '-export.log'));
-
-        $objNarroImporter->Logger = $objLogger;
-
         $objUser = NarroUser::LoadByUserId($intUserId);
         if (!$objUser instanceof NarroUser) {
-            $objLogger->info(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
+            QApplication::$Logger->info(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
             $objUser = NarroUser::LoadAnonymousUser();
             if (!$objUser instanceof NarroUser) {
-                $objLogger->info(sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
+                QApplication::$Logger->info(sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
                 return false;
             }
         }
@@ -229,13 +216,13 @@
 
         $objProject = NarroProject::Load($intProjectId);
         if (!$objProject instanceof NarroProject) {
-            $objLogger->info(sprintf('Project with id=%s does not exist in the database.', $intProjectId));
+            QApplication::$Logger->info(sprintf('Project with id=%s does not exist in the database.', $intProjectId));
             return false;
         }
 
         $objLanguage = NarroLanguage::LoadByLanguageCode($strTargetLanguage);
         if (!$objLanguage instanceof NarroLanguage) {
-            $objLogger->info(sprintf('Language %s does not exist in the database.', $strTargetLanguage));
+            QApplication::$Logger->info(sprintf('Language %s does not exist in the database.', $strTargetLanguage));
             return false;
         }
 
@@ -243,15 +230,15 @@
 
         $objNarroImporter->TargetLanguage = $objLanguage;
 
-        $objLogger->info(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
+        QApplication::$Logger->info(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
 
         $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
         if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-            $objLogger->info(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
+            QApplication::$Logger->info(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
             return false;
         }
 
-        $objLogger->info(sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
+        QApplication::$Logger->info(sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
 
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
@@ -262,12 +249,12 @@
         }
 
         try {
-            $objNarroImporter->TranslationPath = __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->TargetLanguage->LanguageCode;
-            $objNarroImporter->TemplatePath = __IMPORT_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '/' . $objNarroImporter->SourceLanguage->LanguageCode;
+            $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
+            $objNarroImporter->TemplatePath = $objNarroImporter->Project->DefaultTemplatePath;
             $intPid = NarroUtils::IsProcessRunning('export', $objNarroImporter->Project->ProjectId);
 
             if ($intPid && $intPid <> getmypid())
-                $objLogger->info(sprintf('An export process is already for this project with pid %d', $intPid));
+                QApplication::$Logger->info(sprintf('An export process is already for this project with pid %d', $intPid));
 
             $strProcPidFile = __TMP_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '-' . $objNarroImporter->TargetLanguage->LanguageCode . '-export-process.pid';
             if (file_exists($strProcPidFile))
@@ -278,7 +265,7 @@
             $objNarroImporter->ExportProject();
         }
         catch (Exception $objEx) {
-            $objLogger->info(sprintf('An error occured during export: %s', $objEx->getMessage()));
+            QApplication::$Logger->info(sprintf('An error occured during export: %s', $objEx->getMessage()));
             $objNarroImporter->CleanExportDirectory();
             exit();
         }
@@ -286,7 +273,7 @@
         $objNarroImporter->CleanExportDirectory();
         foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
             if ($strValue != 0)
-                $objLogger->info(stripslashes($strName) . ': ' . $strValue);
+                QApplication::$Logger->info(stripslashes($strName) . ': ' . $strValue);
         }
 
      }

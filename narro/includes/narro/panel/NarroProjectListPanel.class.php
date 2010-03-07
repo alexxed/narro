@@ -58,7 +58,26 @@
 
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroProjectListPanel.tpl.php';
 
-            // Setup DataGrid Columns
+            $this->colProjectName_Create();
+            $this->colLastActivity_Create();
+            $this->colPercentTranslated_Create();
+
+            $this->dtgProjectList_Create();
+
+            $this->dtgProjectList->AddColumn($this->colProjectName);
+            $this->dtgProjectList->AddColumn($this->colLastActivity);
+            $this->dtgProjectList->AddColumn($this->colPercentTranslated);
+
+            $this->dtgProjectList->SortColumnIndex = 0;
+
+
+            $this->txtSearch_Create();
+            $this->btnSearch_Create();
+            $this->btnAdd_Create();
+
+        }
+
+        protected function colProjectName_Create() {
             $this->colProjectName = new QDataGridColumn(
                 t('Name'),
                 '<?= $_CONTROL->ParentControl->dtgProjectList_ProjectNameColumn_Render($_ITEM) ?>',
@@ -68,7 +87,9 @@
                 )
             );
             $this->colProjectName->HtmlEntities = false;
-            
+        }
+
+        protected function colLastActivity_Create() {
             $this->colLastActivity = new QDataGridColumn(
                 t('Last Activity'),
                 '<?= $_CONTROL->ParentControl->dtgProjectList_LastActivityColumn_Render($_ITEM) ?>',
@@ -82,7 +103,9 @@
                 )
             );
             $this->colLastActivity->HtmlEntities = false;
+        }
 
+        protected function colPercentTranslated_Create() {
             $this->colPercentTranslated = new QDataGridColumn(
                 t('Progress'),
                 '<?= $_CONTROL->ParentControl->dtgProjectList_PercentTranslated_Render($_ITEM) ?>',
@@ -99,7 +122,9 @@
             );
             $this->colPercentTranslated->HtmlEntities = false;
             $this->colPercentTranslated->Wrap = false;
+        }
 
+        protected function dtgProjectList_Create() {
             // Setup DataGrid
             $this->dtgProjectList = new NarroDataGrid($this);
             $this->dtgProjectList->ShowHeader = true;
@@ -115,28 +140,28 @@
 
             // Specify the local databind method this datagrid will use
             $this->dtgProjectList->SetDataBinder('dtgProjectList_Bind', $this);
+        }
 
-            $this->dtgProjectList->AddColumn($this->colProjectName);
-            $this->dtgProjectList->AddColumn($this->colLastActivity);
-            $this->dtgProjectList->AddColumn($this->colPercentTranslated);
-
-            $this->dtgProjectList->SortColumnIndex = 0;
-
-            $this->txtSearch = new QTextBox($this);
-
+        protected function btnSearch_Create() {
             $this->btnSearch = new QButton($this);
             $this->btnSearch->Text = t('Search');
             $this->btnSearch->PrimaryButton = true;
-            
-            $this->btnAdd = new QButton($this);
-            $this->btnAdd->Text = t('Add');
-            $this->btnAdd->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnAdd_Click'));
 
             if (QApplication::$UseAjax)
                 $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
             else
                 $this->btnSearch->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnSearch_Click'));
+        }
 
+        protected function btnAdd_Create() {
+            $this->btnAdd = new QButton($this);
+            $this->btnAdd->Text = t('Add');
+            $this->btnAdd->Display = QApplication::HasPermission('Can add project');
+            $this->btnAdd->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnAdd_Click'));
+        }
+
+        protected function txtSearch_Create() {
+            $this->txtSearch = new QTextBox($this);
         }
 
         public function dtgProjectList_LastActivityColumn_Render(NarroProject $objNarroProject) {
@@ -207,7 +232,7 @@
         }
 
         public function dtgProjectList_Bind() {
-            
+
             if ($this->txtSearch->Text != '')
                 $objSearchCondition = QQ::Like(QQN::NarroProject()->ProjectName, sprintf('%%%s%%', $this->txtSearch->Text));
             else
@@ -245,7 +270,7 @@
                     $objFilterCondition = QQ::All();
 
             }
-            
+
             $objOverallCondition =
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId, QApplication::GetLanguageId()),
@@ -258,10 +283,10 @@
 
             // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
             $this->dtgProjectList->TotalItemCount = NarroProject::QueryCount($objOverallCondition);
-            
+
             // Setup the $objClauses Array
             $objClauses = array(QQ::Expand(QQN::NarroProject()->NarroProjectProgressAsProject->Project));
-            
+
             // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
             // the OrderByClause to the $objClauses array
             if ($objClause = $this->dtgProjectList->OrderByClause)
@@ -274,12 +299,12 @@
             // Set the DataSource to be the array of all NarroProject objects, given the clauses above
             $this->dtgProjectList->DataSource = NarroProject::QueryArray($objOverallCondition, $objClauses);
         }
-        
+
         public function btnSearch_Click($strFormId, $strControlId, $strParameter) {
             $this->dtgProjectList->PageNumber = 1;
             $this->dtgProjectList_Bind();
         }
-        
+
         public function btnAdd_Click($strFormId, $strControlId, $strParameter) {
             QApplication::Redirect(NarroLink::ProjectEdit(0));
         }
