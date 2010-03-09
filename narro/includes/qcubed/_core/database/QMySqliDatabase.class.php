@@ -93,15 +93,15 @@
             $intTime = time() - $intTime;
 
             if ($this->objMySqli->error) {
-                if (SERVER_INSTANCE == 'dev' && QFirebug::getEnabled())
-                    QFirebug::error($strQuery);
+                if (SERVER_INSTANCE == 'dev' && QApplication::$Logger instanceof Zend_Log)
+                    QApplication::$Logger->err($strQuery);
                 throw new QMySqliDatabaseException($this->objMySqli->error, $this->objMySqli->errno, $strQuery);
             }
-            elseif (SERVER_INSTANCE == 'dev' && QFirebug::getEnabled())  {
+            elseif (SERVER_INSTANCE == 'dev' && QApplication::$Logger instanceof Zend_Log)  {
                 if ($intTime)
-                    QFirebug::warn($intTime . ' seconds: ' . $strQuery);
+                    QApplication::$Logger->warn($intTime . ' seconds: ' . $strQuery);
                 else
-                    QFirebug::log($strQuery);
+                    QApplication::$Logger->debug(str_replace("\n", " ", $strQuery));
             }
 
             // Return the Result

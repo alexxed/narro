@@ -18,7 +18,13 @@
     class NarroProgress {
 
         public static function GetProgressFileName($intProjectId, $strOperation) {
-            return __TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode;
+            return __TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode . '.progress';
+        }
+
+        public static function ClearProgressFileName($intProjectId, $strOperation) {
+            if (file_exists(self::GetProgressFileName($intProjectId, $strOperation))) {
+                unlink(self::GetProgressFileName($intProjectId, $strOperation));
+            }
         }
 
         public static function GetProgressPerProject($intProjectId, $strOperation) {
@@ -33,7 +39,7 @@
         public static function GetProgress($intProjectId, $strOperation) {
             if (file_exists(self::GetProgressFileName($intProjectId, $strOperation))) {
                 list($intFiles, $intProgress, $intProgressPerFile) = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
-                return min(100, $intProgress + ceil(($intProgressPerFile/100)*(100/$intFiles)));
+                return min(100, $intProgress + intval($intProgressPerFile/$intFiles));
             }
             else
                 return 0;
@@ -58,8 +64,6 @@
         }
 
         public static function SetProgress($intValue, $intProjectId, $strOperation, $intFilesToProcess = 0, $intProgressPerFile = 0) {
-            $arrArguments = func_get_args();
-
             if ($intFilesToProcess == 0)
                 $intFilesToProcess = self::GetFilesToProcess($intProjectId, $strOperation);
 
@@ -76,7 +80,7 @@
         }
 
         public static function SetProgressPerFile($intValue, $intProjectId, $strOperation) {
-            self::SetProgress(0, $intProjectId, $strOperation, 0, min(100, ceil($intValue)));
+            self::SetProgress(0, $intProjectId, $strOperation, 0, min(100, floor($intValue)));
         }
 
     }

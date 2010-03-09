@@ -29,6 +29,22 @@
 
                 while (!feof($hndFile)) {
                     $arrFields = array();
+                    $arrFields['MsgContext'] = null;
+                    $arrFields['MsgId'] = null;
+                    $arrFields['ExtractedComment'] = null;
+                    $arrFields['Reference'] = null;
+                    $arrFields['Flag'] = null;
+                    $arrFields['PreviousContext'] = null;
+                    $arrFields['PreviousUntranslated'] = null;
+                    $arrFields['PreviousUntranslatedPlural'] = null;
+                    $arrFields['MsgStr'] = null;
+                    $arrFields['MsgStr0'] = null;
+                    $arrFields['MsgStr1'] = null;
+                    $arrFields['MsgStr2'] = null;
+                    $arrFields['MsgStr3'] = null;
+                    $arrFields['MsgStr4'] = null;
+                    $arrFields['MsgStr5'] = null;
+                    $arrFields['MsgPluralId'] = null;
 
                     $strLine = fgets($hndFile, 8192);
                     QApplication::$Logger->debug('Processing ' . trim($strLine));
@@ -225,8 +241,15 @@
                     /**
                      * Remove the source line numbers from the context, they change too often
                      */
-                    $arrFields['Context'] =  $arrFields['MsgContext'] . " " . md5($arrFields['MsgId']);
-                    $arrFields['ContextComment'] = $arrFields['ExtractedComment'] . preg_replace('/(:[0-9]+)/m', '', $arrFields['Reference']) . $arrFields['Flag'] . $arrFields['PreviousContext'] . $arrFields['PreviousUntranslated'] . $arrFields['PreviousUntranslatedPlural'] . $arrFields['MsgContext'];
+                    $arrFields['Context'] =  trim($arrFields['MsgContext']);
+                    $arrFields['ContextComment'] =
+                        $arrFields['ExtractedComment'] .
+                        preg_replace('/(:[0-9]+)/m', '', $arrFields['Reference']) .
+                        $arrFields['Flag'] .
+                        $arrFields['PreviousContext'] .
+                        $arrFields['PreviousUntranslated'] .
+                        $arrFields['PreviousUntranslatedPlural'] .
+                        $arrFields['MsgContext'];
 
                     if (!is_null($arrFields['MsgId'])) $arrFields['MsgId'] = str_replace('\"', '"', $arrFields['MsgId']);
                     if (!is_null($arrFields['MsgStr'])) $arrFields['MsgStr'] = str_replace('\"', '"', $arrFields['MsgStr']);
@@ -240,12 +263,16 @@
                         continue;
 
                     $intCurrentGroup++;
-                    if (isset($arrGroupFields[$arrFields['Context']])) {
-                        $arrFields['Context'] .= sprintf("\nFound duplicate context, group in file: %d", $intCurrentGroup);
-                        $arrGroupFields[$arrFields['Context']] = $arrFields;
+                    if (isset($arrGroupFields[$arrFields['MsgId'] . $arrFields['Context']])) {
+                        $i = 1;
+                        $arrFields['Context'] = $arrFields['Context'] . $i;
+                        while(!isset($arrGroupFields[$arrFields['MsgId'] . $arrFields['Context']])) {
+                            $i++;
+                            $arrFields['Context'] = $arrFields['Context'] . $i;
+                        }
                     }
-                    else
-                        $arrGroupFields[$arrFields['Context']] = $arrFields;
+
+                    $arrGroupFields[$arrFields['MsgId'] . $arrFields['Context']] = $arrFields;
                 }
             }
             else {
@@ -264,7 +291,7 @@
 
             $arrTemplateFile = $this->getFieldGroups($strTemplate);
 
-            foreach($arrTemplateFile as $strContext=>$arrTemplateFields) {
+            foreach($arrTemplateFile as $strIndex=>$arrTemplateFields) {
 
                 if (!is_null($arrTemplateFields['MsgId'])) $arrTemplateFields['MsgId'] = str_replace('\"', '"', $arrTemplateFields['MsgId']);
                 if (!is_null($arrTemplateFields['MsgStr'])) $arrTemplateFields['MsgStr'] = str_replace('\"', '"', $arrTemplateFields['MsgStr']);
@@ -381,25 +408,25 @@
                     }
                 }
 
-                if (!is_null($arrTemplateFields['TranslatorComment']))
+                if (isset($arrTemplateFields['TranslatorComment']) && !is_null($arrTemplateFields['TranslatorComment']))
                     fputs($hndExportFile, $arrTemplateFields['TranslatorComment']);
-                if (!is_null($arrTemplateFields['ExtractedComment']))
+                if (isset($arrTemplateFields['ExtractedComment']) && !is_null($arrTemplateFields['ExtractedComment']))
                     fputs($hndExportFile, $arrTemplateFields['ExtractedComment']);
-                if (!is_null($arrTemplateFields['Reference']))
+                if (isset($arrTemplateFields['Reference']) && !is_null($arrTemplateFields['Reference']))
                     fputs($hndExportFile, $arrTemplateFields['Reference']);
-                if (!is_null($arrTemplateFields['Flag']))
+                if (isset($arrTemplateFields['Flag']) && !is_null($arrTemplateFields['Flag']))
                     fputs($hndExportFile, $arrTemplateFields['Flag']);
-                if (!is_null($arrTemplateFields['PreviousContext']))
+                if (isset($arrTemplateFields['PreviousContext']) && !is_null($arrTemplateFields['PreviousContext']))
                     fputs($hndExportFile, $arrTemplateFields['PreviousContext']);
-                if (!is_null($arrTemplateFields['PreviousUntranslated']))
+                if (isset($arrTemplateFields['PreviousUntranslated']) && !is_null($arrTemplateFields['PreviousUntranslated']))
                     fputs($hndExportFile, $arrTemplateFields['PreviousUntranslated']);
-                if (!is_null($arrTemplateFields['PreviousUntranslatedPlural']))
+                if (isset($arrTemplateFields['PreviousUntranslatedPlural']) && !is_null($arrTemplateFields['PreviousUntranslatedPlural']))
                     fputs($hndExportFile, $arrTemplateFields['PreviousUntranslatedPlural']);
-                if (!is_null($arrTemplateFields['MsgContext']))
+                if (isset($arrTemplateFields['MsgContext']) && !is_null($arrTemplateFields['MsgContext']))
                     fputs($hndExportFile, sprintf('msgctxt "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgContext'])));
-                if (!is_null($arrTemplateFields['MsgId']))
+                if (isset($arrTemplateFields['MsgId']) && !is_null($arrTemplateFields['MsgId']))
                     fputs($hndExportFile, sprintf('msgid "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgId'])));
-                if (!is_null($arrTemplateFields['MsgPluralId']))
+                if (isset($arrTemplateFields['MsgPluralId']) && !is_null($arrTemplateFields['MsgPluralId']))
                     fputs($hndExportFile, sprintf('msgid_plural "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgPluralId'])));
 
                 if (!is_null($arrTemplateFields['MsgStr'])) {
@@ -419,9 +446,6 @@
 
                 fputs($hndExportFile, "\n");
 
-                if ($arrTemplateFields['MsgId'] == '') {
-                    fputs($hndExportFile, $strLine);
-                }
             }
 
             fclose($hndExportFile);
@@ -449,60 +473,63 @@
             $arrTemplateFile = $this->getFieldGroups($strTemplate);
             $arrTranslatedFile = $this->getFieldGroups($strTranslatedFile);
 
-            foreach($arrTemplateFile as $strContext=>$arrTemplateFields) {
+            $intTotalContexts = count($arrTemplateFile);
+            foreach($arrTemplateFile as $strIndex=>$arrTemplateFields) {
+                $intCurrentContext++;
+                NarroProgress::SetProgressPerFile(($intCurrentContext/$intTotalContexts)*100, $this->objProject->ProjectId, 'import');
                 /**
                  * ignore po header
                  */
                 if ($arrTemplateFields['MsgId'] === '') continue;
 
-                if (isset($arrTranslatedFile[$strContext]['MsgStr']) && $arrTranslatedFile[$strContext]['MsgStr'] != '' && isset($arrTranslatedFile[$strContext]['MsgId']) && $arrTranslatedFile[$strContext]['MsgId'] == $arrTemplateFields['MsgId'])
-                    $arrTranslatedFile[$strContext]['MsgStr'] = str_replace('\"', '"', $arrTranslatedFile[$strContext]['MsgStr']);
+                if (isset($arrTranslatedFile[$strIndex]['MsgStr']) && $arrTranslatedFile[$strIndex]['MsgStr'] != '' && isset($arrTranslatedFile[$strIndex]['MsgId']) && $arrTranslatedFile[$strIndex]['MsgId'] == $arrTemplateFields['MsgId'])
+                    $arrTranslatedFile[$strIndex]['MsgStr'] = str_replace('\"', '"', $arrTranslatedFile[$strIndex]['MsgStr']);
                 else
-                    $arrTranslatedFile[$strContext]['MsgStr'] = null;
+                    $arrTranslatedFile[$strIndex]['MsgStr'] = null;
 
-                if (strstr($arrTranslatedFile[$strContext]['Flag'], 'fuzzy')) {
+                if (strstr($arrTranslatedFile[$strIndex]['Flag'], 'fuzzy')) {
                     /**
                      * if the string is marked fuzzy, don't import the translation and delete fuzzy flag
                      */
-                    $arrTranslatedFile[$strContext]['MsgStr'] = '';
+                    $arrTranslatedFile[$strIndex]['MsgStr'] = '';
 
                 }
 
 
                 for($intPluralId=0; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
-                    if (strstr($arrTranslatedFile[$strContext]['Flag'], 'fuzzy')) {
+                    if (strstr($arrTranslatedFile[$strIndex]['Flag'], 'fuzzy')) {
                         /**
                          * if the string is marked fuzzy, don't import the translation and delete fuzzy flag
                          */
-                        $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] = '';
+                        $arrTranslatedFile[$strIndex]['MsgStr' . $intPluralId] = '';
 
-                        $arrTranslatedFile[$strContext]['Flag'] = str_replace(', fuzzy', '', $arrTranslatedFile[$strContext]['Flag']);
+                        $arrTranslatedFile[$strIndex]['Flag'] = str_replace(', fuzzy', '', $arrTranslatedFile[$strIndex]['Flag']);
                         /**
                          * if no other flags are found, just empty the variable
                          */
-                        if (strlen(trim($arrTranslatedFile[$strContext]['Flag'])) < 4) $arrTranslatedFile[$strContext]['Flag'] = null;
+                        if (strlen(trim($arrTranslatedFile[$strIndex]['Flag'])) < 4) $arrTranslatedFile[$strIndex]['Flag'] = null;
                     }
                     else {
 
                         if (
-                            isset($arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]) &&
-                            $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] != '' &&
-                            isset($arrTranslatedFile[$strContext]['MsgPluralId']) &&
-                            $arrTranslatedFile[$strContext]['MsgPluralId'] == $arrTemplateFields['MsgPluralId']
+                            isset($arrTranslatedFile[$strIndex]['MsgStr' . $intPluralId]) &&
+                            $arrTranslatedFile[$strIndex]['MsgStr' . $intPluralId] != '' &&
+                            isset($arrTranslatedFile[$strIndex]['MsgPluralId']) &&
+                            $arrTranslatedFile[$strIndex]['MsgPluralId'] == $arrTemplateFields['MsgPluralId']
                         ) {
-                            $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] = str_replace('\"', '"', $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]);
+                            $arrTranslatedFile[$strIndex]['MsgStr' . $intPluralId] = str_replace('\"', '"', $arrTranslatedFile[$strIndex]['MsgStr' . $intPluralId]);
                         }
                         else {
-                            $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId] = '';
+                            $arrTranslatedFile[$strIndex]['MsgStr' . $intPluralId] = '';
                         }
                     }
                 }
 
-                $arrTranslatedFile[$strContext]['Flag'] = str_replace(', fuzzy', '', $arrTranslatedFile[$strContext]['Flag']);
+                $arrTranslatedFile[$strIndex]['Flag'] = str_replace(', fuzzy', '', $arrTranslatedFile[$strIndex]['Flag']);
                 /**
                  * if no other flags are found, just empty the variable
                  */
-                if (strlen(trim($arrTranslatedFile[$strContext]['Flag'])) < 4) $arrTranslatedFile[$strContext]['Flag'] = null;
+                if (strlen(trim($arrTranslatedFile[$strIndex]['Flag'])) < 4) $arrTranslatedFile[$strIndex]['Flag'] = null;
 
 
                 /**
@@ -512,8 +539,8 @@
                         $this->AddTranslation(
                             $this->stripAccessKey($arrTemplateFields['MsgId']),
                             $this->getAccessKey($arrTemplateFields['MsgId']),
-                            $this->stripAccessKey($arrTranslatedFile[$strContext]['MsgStr']),
-                            $this->getAccessKey($arrTranslatedFile[$strContext]['MsgStr']),
+                            $this->stripAccessKey($arrTranslatedFile[$strIndex]['MsgStr']),
+                            $this->getAccessKey($arrTranslatedFile[$strIndex]['MsgStr']),
                             $arrTemplateFields['Context'],
                             $arrTemplateFields['ContextComment']
                         );
@@ -528,20 +555,20 @@
                         $this->AddTranslation(
                             $this->stripAccessKey($arrTemplateFields['MsgId']),
                             $this->getAccessKey($arrTemplateFields['MsgId']),
-                            $this->stripAccessKey($arrTranslatedFile[$strContext]['MsgStr0']),
-                            $this->getAccessKey($arrTranslatedFile[$strContext]['MsgStr0']),
+                            $this->stripAccessKey($arrTranslatedFile[$strIndex]['MsgStr0']),
+                            $this->getAccessKey($arrTranslatedFile[$strIndex]['MsgStr0']),
                             $arrTemplateFields['Context'] . "\nThis text has plurals.",
                             $arrTemplateFields['ContextComment']
                         );
                     }
 
                     for($intPluralId=1; $intPluralId < $this->objTargetLanguage->Plurals; $intPluralId++) {
-                        if (!is_null($arrTranslatedFile[$strContext]['MsgStr' . $intPluralId])) {
+                        if (!is_null($arrTranslatedFile[$strIndex]['MsgStr' . $intPluralId])) {
                             $this->AddTranslation(
                                 $this->stripAccessKey($arrTemplateFields['MsgPluralId']),
                                 $this->getAccessKey($arrTemplateFields['MsgPluralId']),
-                                $arrTranslatedFile[$strContext]['MsgStr' . $intPluralId],
-                                $this->getAccessKey($arrTranslatedFile[$strContext]['MsgStr' . $intPluralId]),
+                                $arrTranslatedFile[$strIndex]['MsgStr' . $intPluralId],
+                                $this->getAccessKey($arrTranslatedFile[$strIndex]['MsgStr' . $intPluralId]),
                                 $arrTemplateFields['Context'] . "\nThis is plural form $intPluralId for the text \"" . $arrTemplateFields['MsgId'] . "\".",
                                 $arrTemplateFields['ContextComment']
                             );
@@ -638,15 +665,26 @@
          * @return string valid suggestion
          */
         protected function GetTranslation($strOriginal, $strOriginalAccKey = null, $strOriginalAccKeyPrefix = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
-            $objNarroContextInfo = NarroContextInfo::QuerySingle(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5(trim($strContext))),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
-                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
-                )
-            );
+
+            if ($strContext != '')
+                $objNarroContextInfo = NarroContextInfo::QuerySingle(
+                    QQ::AndCondition(
+                        QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5($strContext)),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
+                    )
+                );
+            else
+                $objNarroContextInfo = NarroContextInfo::QuerySingle(
+                    QQ::AndCondition(
+                        QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
+                    )
+                );
 
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
                 $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
@@ -677,12 +715,14 @@
                     else
                         return $strSuggestionValue;
                 }
-                else
+                else {
+                    QApplication::$Logger->err(sprintf('No translation found for "%s", while searching for context "%s"', $strOriginal, $strContext));
                     return '';
+                }
             }
             else {
+                QApplication::$Logger->err(sprintf('No context found for "%s", while searching for context "%s"', $strOriginal, $strContext));
                 return '';
-                QApplication::$Logger->err('No context found for '.$strOriginal);
             }
         }
     }

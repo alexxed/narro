@@ -43,6 +43,11 @@
          */
         protected $blnApprove;
         /**
+         * whether to approve the import suggestions even if another suggestion is approved in Narro
+         * @var boolean
+         */
+        protected $blnApproveAlreadyApproved = false;
+        /**
          * whether to import only suggestions, that is don't add anything else than suggestions
          */
         protected $blnOnlySuggestions = false;
@@ -157,8 +162,6 @@
 
         public function ImportFromDirectory() {
 
-            $objDatabase = QApplication::$Database[1];
-
             /**
              * get the file list with complete paths
              */
@@ -170,6 +173,7 @@
             if ($this->blnDeactivateFiles) {
                 $strQuery = sprintf("UPDATE `narro_file` SET `active` = 0 WHERE project_id=%d", $this->objProject->ProjectId);
                 try {
+                    $objDatabase = QApplication::$Database[1];
                     $objDatabase->NonQuery($strQuery);
                 }catch (Exception $objEx) {
                     throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
@@ -338,7 +342,7 @@
                 $intElapsedTime = time() - $intTime;
                 QApplication::$Logger->info(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
 
-                NarroProgress::SetProgress((int) ceil(($intFileNo*100)/$intTotalFilesToProcess), $this->objProject->ProjectId, 'import');
+                NarroProgress::SetProgress((int) ceil((($intFileNo+1)*100)/$intTotalFilesToProcess), $this->objProject->ProjectId, 'import', $intTotalFilesToProcess, 1);
 
             }
 
@@ -362,6 +366,7 @@
             if ($this->blnDeactivateContexts && $this->blnOnlySuggestions == false) {
                 $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d AND file_id=%d", $this->objProject->ProjectId, $objFile->FileId);
                 try {
+                    $objDatabase = QApplication::$Database[1];
                     $objDatabase->NonQuery($strQuery);
                 }catch (Exception $objEx) {
                     throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
@@ -674,6 +679,7 @@
                 case "SourceLanguage": return $this->objSourceLanguage;
                 case "TargetLanguage": return $this->objTargetLanguage;
                 case "Approve": return $this->blnApprove;
+                case "ApproveAlreadyApproved": return $this->blnApproveAlreadyApproved;
                 case "CheckEqual": return $this->blnCheckEqual;
                 case "ImportUnchangedFiles": return $this->blnImportUnchangedFiles;
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
@@ -756,6 +762,15 @@
                 case "Approve":
                     try {
                         $this->blnApprove = QType::Cast($mixValue, QType::Boolean);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
+                case "ApproveAlreadyApproved":
+                    try {
+                        $this->blnApproveAlreadyApproved = QType::Cast($mixValue, QType::Boolean);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();

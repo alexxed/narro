@@ -18,6 +18,8 @@
 
     require_once(dirname(__FILE__) . '/../../configuration/prepend.inc.php');
 
+    QApplication::$Logger->info(sprintf('Starting %s with parameters "%s"', basename(__FILE__), join(' ', $argv)));
+
     if (!isset($argv[2])) {
         echo
             sprintf(
@@ -42,6 +44,7 @@
                     "--check-equal                check if the translation is equal to the original\n" .
                     "                             text and don't import it\n" .
                     "--approve                    approve the imported suggestions\n" .
+                    "--approve-already-approved   overwrite translations approved in Narro\n" .
                     "--import-unchanged-files     import files marked unchanged after the last import\n" .
                     "--copy-unhandled-files       copy unhandled files when exporting\n" .
                     "--only-suggestions           import only suggestions, don't add files, texts\n" .
@@ -64,13 +67,13 @@
         $objNarroImporter->DeactivateContexts = !((bool) array_search('--do-not-deactivate-contexts', $argv));
         $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
         $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
+        $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
         $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
         $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
 
         /**
          * Get specific options
          */
-
         if (array_search('--project', $argv) !== false)
             $intProjectId = $argv[array_search('--project', $argv)+1];
 
@@ -170,7 +173,7 @@
             $objNarroImporter->ImportProject();
         }
         catch (Exception $objEx) {
-            QApplication::$Logger->info(sprintf('An error occured during import: %s', $objEx->getMessage()));
+            QApplication::$Logger->err(sprintf('An error occurred during import: %s', $objEx->getMessage()));
             $objNarroImporter->CleanImportDirectory();
             exit();
         }
@@ -265,7 +268,7 @@
             $objNarroImporter->ExportProject();
         }
         catch (Exception $objEx) {
-            QApplication::$Logger->info(sprintf('An error occured during export: %s', $objEx->getMessage()));
+            QApplication::$Logger->err(sprintf('An error occurred during export: %s', $objEx->getMessage()));
             $objNarroImporter->CleanExportDirectory();
             exit();
         }

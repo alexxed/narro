@@ -161,7 +161,7 @@
                     $objNarroImporter->TemplatePath = $this->objNarroProject->DefaultTemplatePath;
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occurred during export: %s', $objEx->getMessage()));
                     $this->lblExport->Text = t('Export failed.');
                 }
 
@@ -169,7 +169,7 @@
                     $objNarroImporter->ExportProject();
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occurred during export: %s', $objEx->getMessage()));
                     $this->lblExport->Text = t('Export failed.');
                 }
 
@@ -204,7 +204,7 @@
                     );
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occured during export: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occurred during export: %s', $objEx->getMessage()));
                     $this->lblExport->Text = t('Export failed.');
 
                     $this->lblExport->Visible = true;

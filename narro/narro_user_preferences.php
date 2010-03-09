@@ -171,7 +171,7 @@
                 $this->lblMessage->Text = t('Your preferences were saved successfuly.');
                 $this->lblMessage->ForeColor = 'green';
             } catch( Exception $objEx) {
-                $this->lblMessage->Text = t('An error occured while trying to save your preferences.');
+                $this->lblMessage->Text = t('An error occurred while trying to save your preferences.');
                 $this->lblMessage->ForeColor = 'red';
             }
         }

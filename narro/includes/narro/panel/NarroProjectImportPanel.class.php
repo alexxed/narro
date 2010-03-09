@@ -185,6 +185,7 @@
                 $objNarroImporter->DeactivateContexts = !$this->chkImportOnlyTranslations->Checked;
                 $objNarroImporter->CheckEqual = true;
                 $objNarroImporter->Approve = $this->chkApproveImportedTranslations->Checked;
+                $objNarroImporter->ApproveAlreadyApproved = !$this->chkApproveOnlyNotApproved->Checked;
                 $objNarroImporter->OnlySuggestions = $this->chkImportOnlyTranslations->Checked;
                 $objNarroImporter->Project = $this->objNarroProject;
                 $objNarroImporter->User = NarroUser::LoadAnonymousUser();
@@ -195,7 +196,7 @@
                     $objNarroImporter->TemplatePath = $this->pnlTextsSource->Directory;
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occured during import: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occurred during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = t('Import failed.');
                 }
 
@@ -203,7 +204,7 @@
                     $objNarroImporter->ImportProject();
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occured during import: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occurred during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = t('Import failed.');
                 }
 
@@ -217,6 +218,7 @@
             }
             else {
                 QApplication::ClearLog();
+                NarroProgress::ClearProgressFileName($this->objNarroProject->ProjectId, 'import');
                 $this->pnlLogViewer->MarkAsModified();
                 $this->btnImport->Visible = false;
                 $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode) && !$this->btnImport->Visible;
@@ -229,6 +231,7 @@
                             escapeshellarg('includes/narro/importer/narro-cli.php').
                             ' --import --minloglevel 3 --project %d --user %d ' .
                             (($this->chkApproveImportedTranslations->Checked)?'--approve ':'') .
+                            (($this->chkApproveOnlyNotApproved->Checked)?'':'--approve-already-approved ') .
                             (($this->chkImportUnchangedFiles->Checked)?'--import-unchanged-files ':'') .
                             (($this->chkImportOnlyTranslations->Checked || !QApplication::HasPermission('Can import project', $this->objNarroProject->ProjectId))?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                             ' --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s"',
@@ -241,7 +244,7 @@
                     );
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occured during import: %s', $objEx->getMessage()));
+                    QApplication::$Logger->err(sprintf('An error occurred during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = t('Import failed.');
 
                     $this->lblImport->Visible = true;
