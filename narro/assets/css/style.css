@@ -441,3 +441,24 @@ a.main_navselected { color: #ffffff; font-weight: bold; text-transform: uppercas
 
 .file_asset a {color: #111;}
 .file_asset_icon {border-width: 2px; border-style: solid; border-color: #111;}
+
+span.error {
+    background-image: url('../images/errorIcon.png');
+    background-position: 0 2px;
+    background-repeat:no-repeat;
+    padding-left:18px;
+    color: red;
+}
+
+span.info {
+    background-image: url('../images/infoIcon.png');
+    background-position: 0 2px;
+    background-repeat:no-repeat;
+    padding-left:18px;
+}
+span.warning {
+    background-image: url('../images/warningIcon.png');
+    background-position: 0 2px;
+    background-repeat:no-repeat;
+    padding-left:18px;
+}
