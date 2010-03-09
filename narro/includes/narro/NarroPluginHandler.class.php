@@ -48,6 +48,7 @@
         );
 
         public static $blnEnablePlugins = true;
+        protected $strCurrentPluginName;
 
         public function __construct($strPluginFolder) {
 
@@ -78,6 +79,7 @@
 
             if (is_array($this->arrPlugins))
                 foreach($this->arrPlugins as $objPlugin) {
+                    $this->strCurrentPluginName = $objPlugin->Name;
                     if (method_exists($objPlugin, $strMethod)) {
                         $this->arrPluginReturnValues[$objPlugin->Name] = call_user_func_array(array($objPlugin, $strMethod), $arrParameters);
                         if ($this->arrPluginReturnValues[$objPlugin->Name] !== false) {
@@ -123,6 +125,7 @@
         public function __get($strName) {
             switch ($strName) {
                 case "PluginErrors": return $this->arrPluginErrors;
+                case "CurrentPluginName": return $this->strCurrentPluginName;
                 case "Error": return QType::Cast(count($this->arrPluginErrors), QType::Boolean);
                 default:
                     throw new QUndefinedPropertyException("GET", __CLASS__, $strName);
