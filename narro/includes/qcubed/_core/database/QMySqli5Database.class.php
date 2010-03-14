@@ -56,7 +56,7 @@
                 throw new QMySqliDatabaseException($this->objMySqli->error, $this->objMySqli->errno, $strQuery);
             }
             elseif (SERVER_INSTANCE == 'dev' && QApplication::$Logger instanceof Zend_Log) {
-                if ($intTime > 0)
+                if ($intTime > 1)
                     QApplication::$Logger->warn($intTime . ' seconds: ' . $strQuery);
                 else
                     QApplication::$Logger->debug(str_replace("\n", " ", $strQuery));
