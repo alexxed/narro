@@ -19,22 +19,27 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 ?>
-<?php if ($_CONTROL->objNarroProject->ProjectDescription) {?>
-<div class="section">
-    <?php echo $_CONTROL->objNarroProject->ProjectDescription ?>
-</div>
-<?php } ?>
-
-<?php
-$_CONTROL->pnlProjectReport->Render();
-?>
 <table width="1024">
-<tr>
-<td width="50%" valign="top" align="center" style="padding:1%">
-<?php $_CONTROL->btnShowTranslators->Render(); $_CONTROL->dtgTranslators->Render()?>
-</td>
-<td width="50%" valign="top" align="center" style="padding:1%">
-<?php $_CONTROL->btnShowReviewers->Render(); $_CONTROL->dtgReviewers->Render()?>
-</td>
-</tr>
+    <tr>
+        <th width="40%" align="center">
+        <?php
+            _t('From: ');
+            $_CONTROL->dtxFrom->Render();
+            $_CONTROL->calFrom->Render();
+        ?>
+        </th>
+        <th width="40%" align="center">
+        <?php
+            _t('To: ');
+            $_CONTROL->dtxTo->Render();
+            $_CONTROL->calTo->Render();
+        ?>
+        </th>
+        <th>
+        <?php $_CONTROL->btnRefresh->Render(); ?>
+        </th>
+    </tr>
+    <tr>
+        <td colspan="2"><?php $_CONTROL->flotReport->Render(); ?></td>
+    </tr>
 </table>
