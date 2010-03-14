@@ -20,7 +20,7 @@
 
     class NarroContextSuggestForm extends NarroForm {
         protected $objContextInfo;
-        
+
         protected $intTextFilter;
         protected $objNarroProject;
         protected $objFile;
@@ -28,23 +28,23 @@
         protected $strSearchText;
         protected $intCurrentContext;
         protected $intContextsCount;
-        
+
         protected $pnlMainTab;
         protected $pnlContextSuggest;
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             $this->SetupNarroContextInfo();
 
             $this->pnlBreadcrumb->setElements(
                 NarroLink::ProjectList(t('Projects')),
                 $this->objNarroProject->ProjectName
             );
-            
+
             $this->pnlMainTab = new QTabPanel($this);
             $this->pnlMainTab->UseAjax = false;
-            
+
             $this->pnlContextSuggest = new NarroContextSuggestPanel(
                 $this->pnlMainTab,
                 null,
@@ -57,8 +57,12 @@
                 $this->intContextsCount,
                 $this->intCurrentContext
             );
-            
+
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
+            if ($this->objNarroProject instanceof NarroProject && QApplication::HasPermission('Can edit project', $this->objNarroProject->ProjectId))
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Edit'), NarroLink::ProjectEdit($this->objNarroProject->ProjectId));
+            elseif (QApplication::HasPermission('Can add project'))
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Add'));
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId));
             if ($this->intTextFilter == NarroTextListPanel::SHOW_UNTRANSLATED_TEXTS) {
@@ -71,13 +75,13 @@
             }
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
-                        
+
             if ($this->intTextFilter == NarroTextListPanel::SHOW_UNTRANSLATED_TEXTS)
                 $this->pnlMainTab->SelectedTab = t('Translate');
             else
                 $this->pnlMainTab->SelectedTab = t('Review');
         }
-        
+
         protected function SetupNarroContextInfo() {
 
             // Lookup Object PK information from Query String (if applicable)
