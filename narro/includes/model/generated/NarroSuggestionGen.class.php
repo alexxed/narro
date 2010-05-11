@@ -971,6 +971,46 @@
 				QQ::Equal(QQN::NarroSuggestion()->LanguageId, $intLanguageId)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroSuggestion objects,
+		 * by TextId, LanguageId Index(es)
+		 * @param integer $intTextId
+		 * @param integer $intLanguageId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroSuggestion[]
+		*/
+		public static function LoadArrayByTextIdLanguageId($intTextId, $intLanguageId, $objOptionalClauses = null) {
+			// Call NarroSuggestion::QueryArray to perform the LoadArrayByTextIdLanguageId query
+			try {
+				return NarroSuggestion::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId),
+					QQ::Equal(QQN::NarroSuggestion()->LanguageId, $intLanguageId)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroSuggestions
+		 * by TextId, LanguageId Index(es)
+		 * @param integer $intTextId
+		 * @param integer $intLanguageId
+		 * @return int
+		*/
+		public static function CountByTextIdLanguageId($intTextId, $intLanguageId) {
+			// Call NarroSuggestion::QueryCount to perform the CountByTextIdLanguageId query
+			return NarroSuggestion::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId),
+				QQ::Equal(QQN::NarroSuggestion()->LanguageId, $intLanguageId)
+				)
+			);
+		}
 
 
 
