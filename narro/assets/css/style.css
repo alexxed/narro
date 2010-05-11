@@ -48,10 +48,6 @@ body {
 .dotted_box_title { display:block; background-color: #A5F7A5; font-weight:bold; padding:2px; }
 .dotted_box_content { padding:5px; }
 
-label {
-  white-space:nowrap;
-}
-
 a:link, a:visited {
   color: #557D0C;
   text-decoration: none;
@@ -308,10 +304,10 @@ div.calendar { width: 200px; border: 1px solid #111; background-color: #ccf; }
 div.renderWithName { padding: 4px 0 4px 0; overflow: auto; height: 100%; }
     div.renderWithName div.left { float: left; width: 200px; margin-right: 25px; }
     div.renderWithName div.required { font-weight: bold; text-transform: uppercase; }
-    div.renderWithName div.left span.instructions { font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #999; font-style: italic; text-transform: none;}
+    div.renderWithName div.left span.instructions { color: #999; font-style: italic; text-transform: none;}
 
     div.renderWithName div.right { }
-    div.renderWithName div.right span.error { margin-left: 15px; font: 10px 'Verdana', 'Arial', 'Helvetica'; color: #600;}
+    div.renderWithName div.right span.error { margin-left: 15px; color: #600;}
 
 /**
   *   Layout Specific IDs
@@ -391,8 +387,10 @@ p.create { }
 .code { background-color: #F6F6F6; padding:10px; font: 11px 'Lucida Console', 'Courier New', 'Courier', monospaced; overflow: auto; width: 98%; max-height: 560px;}
 .codeDisplay {background-color: #F6F6F6; width: 400px; height: 400px; overflow: auto; margin: 10px; padding: 10px;}
 
+/**
 .instructions { background-color: #F6F6F6; padding: 20px; margin:20px auto; line-height: 20px; max-height: 300px; width:90%; overflow: auto; text-align:left;border:1px solid #111;}
 .instruction_title { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 22px; font-weight: bold; color: #780000; margin-bottom: 20px;}
+*/
 
 .main_navigator { text-align: center; background-color: #111; padding: 5px 20px; color: #ffcc99; width:90%; margin:auto;border:1px solid #111;}
 a.main_navlink { color: #EEE; font-weight: normal; }
