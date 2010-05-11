@@ -16,6 +16,17 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroUtils {
+        /**
+         * Cleans form states older than two hours
+         */
+        public static function CleanStaleFormStates() {
+            $arrFileList = self::ListDirectory(__FILE_FORM_STATE_HANDLER_PATH__, '/qformstate_.*/');
+            foreach($arrFileList as $strFile) {
+                if (fileatime($strFile) < time() - 7200)
+                    unlink($strFile);
+            }
+        }
+
         public static function RecursiveDelete($strFilePath) {
             if (strstr($strFilePath, '/*')) {
                 $strFilePath = str_replace('/*', '', $strFilePath);
