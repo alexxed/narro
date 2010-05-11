@@ -96,10 +96,9 @@
         QApplication::Initialize();
         QApplication::InitializeDatabaseConnections();
 
-        NarroForm::$FormStateHandler = 'QFormStateHandler';
-        define('__FORM_STATE_HANDLER__', 'QFormStateHandler');
+        NarroForm::$FormStateHandler = 'QFileFormStateHandler';
+        define('__FORM_STATE_HANDLER__', 'QFileFormStateHandler');
         define('__FILE_FORM_STATE_HANDLER_PATH__',  __TMP_PATH__ . '/qform_state');
-
 
         if (strstr($_SERVER['SCRIPT_NAME'], 'assets/') === false) {
 
@@ -138,16 +137,19 @@
                 QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objLanguage->LanguageCode));
             }
 
-            QApplication::RegisterPreference('Items per page', 'number', 'How many items are displayed per page', 10);
-            QApplication::RegisterPreference('Font size', 'option', 'The application font size', 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
-            QApplication::RegisterPreference('Language', 'option', 'The language you are translating to.', QApplication::QueryString('l'), array(QApplication::QueryString('l')));
-            QApplication::RegisterPreference('Application language', 'option', 'The language you want to see Narro in.', (isset(QApplication::$Language))?QApplication::$Language->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE, array((isset(QApplication::$Language))?QApplication::$Language->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE));
-            QApplication::RegisterPreference('Special characters', 'text', 'Characters that are not on your keyboard, separated by spaces.', '$€');
-            QApplication::RegisterPreference('Other languages', 'text', 'Other languages that you want to check for suggestions, separated by spaces.', 'ro');
-            QApplication::RegisterPreference('Force ascii letters as access keys', 'option', '', 'No', array('Yes', 'No'));
+            QApplication::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
+            QApplication::RegisterPreference('Font size', 'option', t('The application font size'), 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
+            QApplication::RegisterPreference('Language', 'option', t('The language you are translating to'), QApplication::QueryString('l'), array(QApplication::QueryString('l')));
+            QApplication::RegisterPreference('Application language', 'option', t('The language you want to see Narro in'), (isset(QApplication::$Language))?QApplication::$Language->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE, array((isset(QApplication::$Language))?QApplication::$Language->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE));
+            QApplication::RegisterPreference('Special characters', 'text', t('Characters that are not on your keyboard, separated by spaces'), '$€');
+            QApplication::RegisterPreference('Other languages', 'text', t('Other languages that you want to check for suggestions, separated by spaces'), 'ro');
+            QApplication::RegisterPreference('Force ascii letters as access keys', 'option', t('Access keys are the letters that are underlined in menus and on buttons that you can use to quickly get to that button or menu item'), 'No', array('Yes', 'No'));
+            QApplication::RegisterPreference('Use AJAX', 'option', t('AJAX (transfers in background) will make Narro very fast. If you have problems because of this, choose No'), 'Yes', array('Yes', 'No'));
 
-            if (isset($objNarroSession->User) && $objNarroSession->User instanceof NarroUser)
+            if (isset($objNarroSession->User) && $objNarroSession->User instanceof NarroUser) {
                 QApplication::$User = $objNarroSession->User;
+                QApplication::$UseAjax = (QApplication::$User->getPreferenceValueByName('Use AJAX') == 'Yes');
+            }
             else
                 QApplication::$User = NarroUser::LoadAnonymousUser();
 
@@ -172,6 +174,7 @@
 
             require_once('Zend/Log.php');
             require_once('Zend/Log/Writer/Stream.php');
+            require_once('Zend/Log/Writer/Firebug.php');
             if (is_numeric(QApplication::QueryString('p')))
                 QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, QApplication::QueryString('p'), QApplication::GetLanguageId());
             elseif (isset($argv) && $intProjectId = $argv[array_search('--project', $argv)+1])
@@ -201,6 +204,8 @@
             }
 
             if (file_exists(__LOCALE_DIRECTORY__ . '/narro.mo')) {
+                require_once('Zend/Translate.php');
+                require_once('Zend/Translate/Adapter/Gettext.php');
                 QApplication::$TranslationEngine = new Zend_Translate('gettext', __LOCALE_DIRECTORY__ . '/narro.mo', QApplication::$User->getPreferenceValueByName('Application language'));
             }
 

@@ -19,7 +19,7 @@
     define ('__PHP_CLI_PATH__', '/usr/bin/php');
     define ('ADMIN_EMAIL_ADDRESS', 'user@host.com');
     define ('__HTTP_URL__', 'http://localhost');
-    define ('NARRO_VERSION', '0.9.5');
+    define ('NARRO_VERSION', '1.0beta');
     /**
      * this constant allows any user do export files or import up to this defined size
      * default is almost 10MB
@@ -74,8 +74,8 @@
         'includes' . '/narro/importer' . PATH_SEPARATOR .
         'includes' . '/narro/search' . PATH_SEPARATOR .
         'includes' . '/narro' . PATH_SEPARATOR .
-        'includes' . '/PEAR' . PATH_SEPARATOR /*.
-        get_include_path()*/
+        'includes' . '/PEAR' . PATH_SEPARATOR .
+        get_include_path()
         );
 
     ini_set('mbstring.encoding_translation', true);
