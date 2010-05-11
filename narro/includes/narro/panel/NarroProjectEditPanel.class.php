@@ -193,6 +193,8 @@
             $this->lblMessage->Text = t('Project saved sucessfully.');
 
             if ($this->strTitleVerb == t('Add')) {
+                if (!file_exists(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId))
+                    mkdir(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 0777);
                 QApplication::Redirect(NarroLink::ProjectImport($this->objNarroProject->ProjectId));
             }
         }
