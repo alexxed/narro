@@ -770,6 +770,26 @@
 		}
 			
 		/**
+		 * Load a single NarroContext object,
+		 * by TextId, ContextMd5, FileId Index(es)
+		 * @param integer $intTextId
+		 * @param string $strContextMd5
+		 * @param integer $intFileId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroContext
+		*/
+		public static function LoadByTextIdContextMd5FileId($intTextId, $strContextMd5, $intFileId, $objOptionalClauses = null) {
+			return NarroContext::QuerySingle(
+				QQ::AndCondition(
+					QQ::Equal(QQN::NarroContext()->TextId, $intTextId),
+					QQ::Equal(QQN::NarroContext()->ContextMd5, $strContextMd5),
+					QQ::Equal(QQN::NarroContext()->FileId, $intFileId)
+				),
+				$objOptionalClauses
+			);
+		}
+			
+		/**
 		 * Load an array of NarroContext objects,
 		 * by TextId Index(es)
 		 * @param integer $intTextId
@@ -894,6 +914,46 @@
 			// Call NarroContext::QueryCount to perform the CountByContextMd5 query
 			return NarroContext::QueryCount(
 				QQ::Equal(QQN::NarroContext()->ContextMd5, $strContextMd5)
+			);
+		}
+			
+		/**
+		 * Load an array of NarroContext objects,
+		 * by Active, ProjectId Index(es)
+		 * @param boolean $blnActive
+		 * @param integer $intProjectId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroContext[]
+		*/
+		public static function LoadArrayByActiveProjectId($blnActive, $intProjectId, $objOptionalClauses = null) {
+			// Call NarroContext::QueryArray to perform the LoadArrayByActiveProjectId query
+			try {
+				return NarroContext::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::NarroContext()->Active, $blnActive),
+					QQ::Equal(QQN::NarroContext()->ProjectId, $intProjectId)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroContexts
+		 * by Active, ProjectId Index(es)
+		 * @param boolean $blnActive
+		 * @param integer $intProjectId
+		 * @return int
+		*/
+		public static function CountByActiveProjectId($blnActive, $intProjectId) {
+			// Call NarroContext::QueryCount to perform the CountByActiveProjectId query
+			return NarroContext::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::NarroContext()->Active, $blnActive),
+				QQ::Equal(QQN::NarroContext()->ProjectId, $intProjectId)
+				)
 			);
 		}
 
