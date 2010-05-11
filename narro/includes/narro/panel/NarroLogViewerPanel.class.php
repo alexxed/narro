@@ -41,7 +41,6 @@
 
             if (file_exists($this->strLogFile)) {
                 $this->blnVisible = true;
-                $strLogContents = file_get_contents($this->strLogFile);
                 $hndFile = fopen($this->strLogFile, 'r');
                 if ($hndFile) {
                     $strLogContents = '';
