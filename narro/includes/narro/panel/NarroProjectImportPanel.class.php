@@ -111,6 +111,8 @@
 
             $this->btnImport = new QButton($this);
             $this->btnImport->Text = t('Import');
+            $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('if (document.getElementById(\'%s\')) document.getElementById(\'%s\').innerHTML=\'\'', $this->lblImport->ControlId, $this->lblImport->ControlId)));
+            $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\';this.value=\'%s\'', t('Please wait...'))));
             if (QApplication::$UseAjax)
                 $this->btnImport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnImport_Click'));
             else
@@ -123,7 +125,7 @@
                 QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnImport->ControlId, 2000));
             }
 
-            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode) && !$this->btnImport->Visible;
+            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objNarroProject->ProjectId, QApplication::$LanguageCode) && !$this->btnImport->Visible;
         }
 
         public function chkApproveImportedTranslations_Click($strFormId, $strControlId, $strParameter) {
@@ -138,6 +140,8 @@
             $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.log';
             $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.pid';
             $strProgressFile = __TMP_PATH__ . '/import-' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode;
+
+            $this->pnlLogViewer->LogFile = QApplication::$LogFile;
 
             if ($strParameter == 1) {
                 if (NarroUtils::IsProcessRunning('import', $this->objNarroProject->ProjectId)) {
@@ -169,7 +173,6 @@
                     $this->objImportProgress->Translated = 0;
                     $this->objImportProgress->Visible = false;
 
-                    $this->pnlLogViewer->LogFile = QApplication::$LogFile;
                     $this->pnlLogViewer->MarkAsModified();
                 }
             }
@@ -197,7 +200,8 @@
                 }
                 catch (Exception $objEx) {
                     QApplication::$Logger->err(sprintf('An error occurred during import: %s', $objEx->getMessage()));
-                    $this->lblImport->Text = t('Import failed.');
+                    $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
+                    return false;
                 }
 
                 try {
@@ -205,7 +209,7 @@
                 }
                 catch (Exception $objEx) {
                     QApplication::$Logger->err(sprintf('An error occurred during import: %s', $objEx->getMessage()));
-                    $this->lblImport->Text = t('Import failed.');
+                    $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
                 }
 
                 $this->lblImport->Visible = true;
@@ -245,7 +249,7 @@
                 }
                 catch (Exception $objEx) {
                     QApplication::$Logger->err(sprintf('An error occurred during import: %s', $objEx->getMessage()));
-                    $this->lblImport->Text = t('Import failed.');
+                    $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
 
                     $this->lblImport->Visible = true;
                     $this->btnImport->Visible = true;

@@ -77,6 +77,12 @@
             else
                 $this->btnKillProcess->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnKillProcess_Click'));
 
+            $this->btnExport = new QButton($this);
+            $this->btnExport->Text = t('Export');
+            if (QApplication::$UseAjax)
+                $this->btnExport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnExport_Click'));
+            else
+                $this->btnExport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnExport_Click'));
 
             if (NarroUtils::IsProcessRunning('export', $this->objNarroProject->ProjectId)) {
                 $this->btnExport->Visible = false;
@@ -85,14 +91,7 @@
                 QApplication::ExecuteJavaScript(sprintf('lastExportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnExport->ControlId, 2000));
             }
 
-            $this->btnExport = new QButton($this);
-            $this->btnExport->Text = t('Export');
-            if (QApplication::$UseAjax)
-                $this->btnExport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnExport_Click'));
-            else
-                $this->btnExport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnExport_Click'));
-
-            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode) && !$this->btnExport->Visible;
+            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objNarroProject->ProjectId, QApplication::$LanguageCode) && !$this->btnExport->Visible;
         }
 
         public function btnExport_Click($strFormId, $strControlId, $strParameter) {
@@ -124,20 +123,14 @@
                     $this->objExportProgress->Translated = 0;
                     $this->objExportProgress->Visible = false;
 
-                    $this->CreateExportArchive(
-                        $this->objNarroProject->DefaultTranslationPath,
-                        __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip'
-                    );
-                    if (file_exists(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip')) {
-                        // @todo replace this with a download method that can serve files from a non web public directory
-                        $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . str_replace(__DOCROOT__ . __SUBDIRECTORY__, '', __IMPORT_PATH__) . '/' . $this->objNarroProject->ProjectId . '/' . $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip';
-                        $this->lblExport->Text .= ' ' . sprintf(t('Download link: <a href="%s">%s</a>'), $strDownloadUrl, $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip');
-                    }
-                    else {
-                        $this->lblExport->Text .= ' ' . t('Failed to create an archive for download');
-                    }
+                    QApplication::$PluginHandler->DisplayExportMessage($this->objNarroProject);
 
-
+                    if (is_array(QApplication::$PluginHandler->PluginReturnValues))
+                    foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
+                        if ($mixReturnValue !== false && is_string($mixReturnValue)) {
+                            $this->lblExport->Text .= sprintf('<br /><span class="info"><b>%s</b>: %s</span>', $strPluginName, nl2br($mixReturnValue));
+                        }
+                    }
 
                     $this->pnlLogViewer->MarkAsModified();
                 }
@@ -242,36 +235,6 @@
                         $this->btnExport_Click($strFormId, $strControlId, 2);
                 }
             }
-        }
-
-        private function CreateExportArchive($strTranslationPath, $strArchive) {
-            if (file_exists($strArchive))
-                unlink($strArchive);
-
-            $arrFiles = NarroUtils::ListDirectory($strTranslationPath, null, null, null, true);
-
-            $objZipFile = new ZipArchive;
-            if ($objZipFile->open($strArchive, ZipArchive::OVERWRITE) === TRUE) {
-                foreach($arrFiles as $strFileName) {
-                    if (is_dir($strFileName)) {
-                        $objZipFile->addEmptyDir(str_replace($strTranslationPath, '', $strFileName ));
-                    }
-                    elseif (is_file($strFileName)) {
-                        $objZipFile->addFile($strFileName, str_replace($strTranslationPath . '/', '', $strFileName ));
-                    }
-                }
-            } else {
-                QApplication::$Logger->err(sprintf('Failed to create a new archive %s', $strArchive));
-                return false;
-            }
-            $objZipFile->close();
-            if (file_exists($strArchive))
-                chmod($strArchive, 0666);
-            else {
-                QApplication::$Logger->err(sprintf('Failed to create an archive %s', $strArchive));
-                return false;
-            }
-            return true;
         }
 
         public function btnKillProcess_Click($strFormId, $strControlId, $strParameter) {

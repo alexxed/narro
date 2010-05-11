@@ -26,9 +26,11 @@
 <label for="<?php echo $_CONTROL->chkCopyUnhandledFiles->ControlId?>"><?php echo $_CONTROL->chkCopyUnhandledFiles->Name?></label>
 <br />
 </div>
-<?php $_CONTROL->pnlLogViewer->Render() ?>
-<?php $_CONTROL->btnExport->Render(); ?>
-<?php $_CONTROL->objExportProgress->Render(); ?>
-&nbsp;
-<?php $_CONTROL->lblExport->Render() ?>
+<?php
+    $_CONTROL->pnlLogViewer->Render();
+    $_CONTROL->btnExport->Render();
+    $_CONTROL->btnKillProcess->Render();
+    $_CONTROL->objExportProgress->Render();
+    $_CONTROL->lblExport->Render()
+?>
 
