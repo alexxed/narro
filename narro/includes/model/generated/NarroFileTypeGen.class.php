@@ -28,8 +28,9 @@
 		const Svg = 8;
 		const DumbGettextPo = 9;
 		const PhpMyAdmin = 10;
+		const Unsupported = 11;
 
-		const MaxId = 10;
+		const MaxId = 11;
 
 		public static $NameArray = array(
 			1 => 'GettextPo',
@@ -41,7 +42,8 @@
 			7 => 'MozillaInc',
 			8 => 'Svg',
 			9 => 'DumbGettextPo',
-			10 => 'PhpMyAdmin');
+			10 => 'PhpMyAdmin',
+			11 => 'Unsupported');
 
 		public static $TokenArray = array(
 			1 => 'GettextPo',
@@ -53,7 +55,8 @@
 			7 => 'MozillaInc',
 			8 => 'Svg',
 			9 => 'DumbGettextPo',
-			10 => 'PhpMyAdmin');
+			10 => 'PhpMyAdmin',
+			11 => 'Unsupported');
 
 		public static function ToString($intNarroFileTypeId) {
 			switch ($intNarroFileTypeId) {
@@ -67,6 +70,7 @@
 				case 8: return 'Svg';
 				case 9: return 'DumbGettextPo';
 				case 10: return 'PhpMyAdmin';
+				case 11: return 'Unsupported';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroFileTypeId: %s', $intNarroFileTypeId));
 			}
@@ -84,6 +88,7 @@
 				case 8: return 'Svg';
 				case 9: return 'DumbGettextPo';
 				case 10: return 'PhpMyAdmin';
+				case 11: return 'Unsupported';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroFileTypeId: %s', $intNarroFileTypeId));
 			}

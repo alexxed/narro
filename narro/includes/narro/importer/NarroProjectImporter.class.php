@@ -270,8 +270,7 @@
                 /**
                  * import the file
                  */
-                if (!$intFileType = $this->GetFileType($strFileName))
-                    continue;
+                $intFileType = $this->GetFileType($strFileName);
 
                 $objFile = NarroFile::QuerySingle(
                                 QQ::AndCondition(
@@ -342,7 +341,7 @@
                 $intElapsedTime = time() - $intTime;
                 QApplication::$Logger->info(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
 
-                NarroProgress::SetProgress((int) ceil((($intFileNo+1)*100)/$intTotalFilesToProcess), $this->objProject->ProjectId, 'import', $intTotalFilesToProcess, 1);
+                NarroProgress::SetProgress(intval((($intFileNo+1)*100)/$intTotalFilesToProcess), $this->objProject->ProjectId, 'import', $intTotalFilesToProcess, 1);
 
             }
 
@@ -398,8 +397,10 @@
                 case NarroFileType::PhpMyAdmin:
                         $objFileImporter = new NarroPhpMyAdminFileImporter($this);
                         break;
+                case NarroFileType::Unsupported:
                 default:
-                        return false;
+                        $objFileImporter = new NarroUnsupportedFileImporter($this);
+
             }
 
             $objFileImporter->File = $objFile;
@@ -413,12 +414,9 @@
 
         public function ExportProject() {
 
-            QApplication::$Logger->err(sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
+            QApplication::$Logger->info(sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
 
             $this->startTimer();
-
-            $this->GetCorrectTemplatePath();
-            $this->GetCorrectTranslationPath();
 
             if ($this->objProject->ProjectName == 'Narro')
                 $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . NarroLanguage::SOURCE_LANGUAGE_CODE . '/LC_MESSAGES/';
@@ -426,7 +424,7 @@
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
                 if ($this->ExportFromDirectory()) {
                     $this->stopTimer();
-                    QApplication::$Logger->err(sprintf('Export finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
+                    QApplication::$Logger->info(sprintf('Export finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
                 }
                 else {
                     QApplication::$Logger->err('Export failed.');
@@ -458,7 +456,7 @@
                 if (pclose($fp))
                     QApplication::$Logger->err("After export script failed:\n" . $strOutput);
                 else
-                    QApplication::$Logger->err("After export script finished successfully:\n" . $strOutput);
+                    QApplication::$Logger->info("After export script finished successfully:\n" . $strOutput);
             }
 
             if ($this->objProject->ProjectName == 'Narro') {
@@ -629,10 +627,15 @@
                         $objFileImporter = new NarroPhpMyAdminFileImporter($this);
                         break;
                 default:
-                        QApplication::$Logger->warn(sprintf('Copying unhandled file type: %s', $strTemplateFile));
-                        NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
-                        copy($strTemplateFile, $strTranslatedFile);
-                        return false;
+                        if (file_exists($strTranslatedFile)) {
+                            $objFileImporter = new NarroUnsupportedFileImporter($this);
+                            break;
+                        }
+                        else {
+                            QApplication::$Logger->warn(sprintf('Copying unhandled file type: %s', $strTemplateFile));
+                            NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
+                            copy($strTemplateFile, $strTranslatedFile);
+                        }
             }
             $objFileImporter->File = $objFile;
             return $objFileImporter->ExportFile($strTemplateFile, $strTranslatedFile);
@@ -665,7 +668,7 @@
                 case 'php':
                         return NarroFileType::PhpMyAdmin;
                 default:
-                        return false;
+                        return NarroFileType::Unsupported;
             }
         }
 
