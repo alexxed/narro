@@ -51,6 +51,7 @@
             'Suggestions that kept the original text',
             'Approved suggestions',
             'Reused suggestions',
+            'Reused context informations',
             'Empty original texts',
             'Texts with no access key set, but fixed'
         )

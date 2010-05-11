@@ -18,6 +18,7 @@
 
     class NarroGettextPoFileImporter extends NarroFileImporter {
         protected function getFieldGroups($strFile) {
+            QApplication::$Logger->debug(sprintf('Starting to read contexts from %s', $this->objFile->FileName));
 
             $arrGroupFields = array();
             if (trim($strFile) == '') return $arrGroupFields;
@@ -248,8 +249,7 @@
                         $arrFields['Flag'] .
                         $arrFields['PreviousContext'] .
                         $arrFields['PreviousUntranslated'] .
-                        $arrFields['PreviousUntranslatedPlural'] .
-                        $arrFields['MsgContext'];
+                        $arrFields['PreviousUntranslatedPlural'];
 
                     if (!is_null($arrFields['MsgId'])) $arrFields['MsgId'] = str_replace('\"', '"', $arrFields['MsgId']);
                     if (!is_null($arrFields['MsgStr'])) $arrFields['MsgStr'] = str_replace('\"', '"', $arrFields['MsgStr']);
@@ -262,15 +262,15 @@
                     if ((!isset($arrFields['MsgId']) && !isset($arrFields['MsgPluralId'])) || (!isset($arrFields['MsgStr']) && !isset($arrFields['MsgStr0'])))
                         continue;
 
-                    $intCurrentGroup++;
-                    if (isset($arrGroupFields[$arrFields['MsgId'] . $arrFields['Context']])) {
-                        $i = 1;
+
+                    $i = 1;
+                    while(isset($arrGroupFields[$arrFields['MsgId'] . $arrFields['Context']])) {
+                        QApplication::$Logger->debug(sprintf('Found duplicate key for "%s", "%s", trying %s%s%d', $arrFields['MsgId'], $arrFields['Context'], $arrFields['MsgId'], $arrFields['Context'], $i));
                         $arrFields['Context'] = $arrFields['Context'] . $i;
-                        while(!isset($arrGroupFields[$arrFields['MsgId'] . $arrFields['Context']])) {
-                            $i++;
-                            $arrFields['Context'] = $arrFields['Context'] . $i;
-                        }
+                        $i++;
                     }
+
+                    $intCurrentGroup++;
 
                     $arrGroupFields[$arrFields['MsgId'] . $arrFields['Context']] = $arrFields;
                 }
@@ -278,6 +278,8 @@
             else {
                 QApplication::$Logger->err(sprintf('Cannot read "%s".', $strFile));
             }
+
+            QApplication::$Logger->debug(sprintf('Done reading contexts from %s', $this->objFile->FileName));
 
             return $arrGroupFields;
         }
@@ -474,6 +476,7 @@
             $arrTranslatedFile = $this->getFieldGroups($strTranslatedFile);
 
             $intTotalContexts = count($arrTemplateFile);
+            $intCurrentContext = 0;
             foreach($arrTemplateFile as $strIndex=>$arrTemplateFields) {
                 $intCurrentContext++;
                 NarroProgress::SetProgressPerFile(($intCurrentContext/$intTotalContexts)*100, $this->objProject->ProjectId, 'import');
@@ -716,7 +719,7 @@
                         return $strSuggestionValue;
                 }
                 else {
-                    QApplication::$Logger->err(sprintf('No translation found for "%s", while searching for context "%s"', $strOriginal, $strContext));
+                    QApplication::$Logger->debug(sprintf('No translation found for "%s", while searching for context "%s"', $strOriginal, $strContext));
                     return '';
                 }
             }

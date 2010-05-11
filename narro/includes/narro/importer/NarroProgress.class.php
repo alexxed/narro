@@ -29,8 +29,13 @@
 
         public static function GetProgressPerProject($intProjectId, $strOperation) {
             if (file_exists(self::GetProgressFileName($intProjectId, $strOperation))) {
-                list($intFiles, $intProgress, $intProgressPerFile) = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
-                return $intProgress;
+                $arrValues = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
+                if (count($arrValues) == 3) {
+                    list($intFiles, $intProgress, $intProgressPerFile) = $arrValues;
+                    return min(100, $intProgress);
+                }
+                else
+                    return 0;
             }
             else
                 return 0;
@@ -38,8 +43,16 @@
 
         public static function GetProgress($intProjectId, $strOperation) {
             if (file_exists(self::GetProgressFileName($intProjectId, $strOperation))) {
-                list($intFiles, $intProgress, $intProgressPerFile) = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
-                return min(100, $intProgress + intval($intProgressPerFile/$intFiles));
+                $arrValues = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
+                if (count($arrValues) == 3) {
+                    list($intFiles, $intProgress, $intProgressPerFile) = $arrValues;
+                    if ($intFiles > 0)
+                        return min(100, $intProgress + intval($intProgressPerFile/$intFiles));
+                    else
+                        return 0;
+                }
+                else
+                    return 0;
             }
             else
                 return 0;
@@ -47,8 +60,13 @@
 
         public static function GetProgressPerFile($intProjectId, $strOperation) {
             if (file_exists(self::GetProgressFileName($intProjectId, $strOperation))) {
-                list($intFiles, $intProgress, $intProgressPerFile) = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
-                return $intProgressPerFile;
+                $arrValues = explode(',', file_get_contents(self::GetProgressFileName($intProjectId, $strOperation)));
+                if (count($arrValues) == 3) {
+                    list($intFiles, $intProgress, $intProgressPerFile) = $arrValues;
+                    return $intProgressPerFile;
+                }
+                else
+                    return 0;
             }
             else
                 return 0;
