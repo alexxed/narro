@@ -19,19 +19,21 @@
     class NarroFileTextListPanel extends NarroTextListPanel {
         public $objNarroFile;
         public $pnlBreadcrumb;
+        public $pnlImportFile;
+        public $pnlExportFile;
 
         public function __construct(NarroProject $objNarroProject, NarroFile $objNarroFile, $objParentObject, $strControlId = null) {
             parent::__construct($objNarroProject, $objParentObject, $strControlId);
-            
+
             $this->objNarroFile = $objNarroFile;
-            
+
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroFileTextListPanel.tpl.php';
-            
+
             $this->pnlBreadcrumb = new NarroBreadcrumbPanel($this);
             $this->pnlBreadcrumb->strSeparator = ' / ';
             $this->pnlBreadcrumb->Visible = false;
             $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, '..')
+                NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, null, '..')
             );
             $arrPaths = explode('/', $this->objNarroFile->FilePath);
             $strProgressivePath = '';
@@ -49,14 +51,15 @@
                         NarroLink::ProjectFileList(
                                 $this->objNarroProject->ProjectId,
                                 $strProgressivePath,
+                                null,
                                 $strPathPart
                         )
                     );
                 }
-                
+
                 $this->pnlBreadcrumb->addElement($this->objNarroFile->FileName);
-            }          
-              
+            }
+
             switch($this->lstSearchType->SelectedValue) {
                 case NarroTextListForm::SEARCH_SUGGESTIONS:
                     $this->SetMessage(t('Note that, since you\'re searching suggestions, you won\'t see the texts without suggestions.'));
@@ -67,6 +70,9 @@
             }
 
             $this->dtgNarroContextInfo->Title = sprintf(t('Texts from the file "%s"'), $this->objNarroFile->FileName);
+
+            $this->pnlImportFile = new NarroFileImportPanel($this->objNarroFile, $this);
+            $this->pnlExportFile = new NarroFileExportPanel($this->objNarroFile, $this);
 
         }
 
@@ -95,7 +101,6 @@
         public function btnSearch_Click() {
             QApplication::Redirect(NarroLink::FileTextList($this->objNarroFile->ProjectId, $this->objNarroFile->FileId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
         }
-
 
         public function dtgNarroContextInfo_Bind() {
             $this->arrSuggestionList = array();

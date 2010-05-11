@@ -18,10 +18,9 @@
 
 ?>
 <?php $_CONTROL->pnlBreadcrumb->Render(); ?>
-<?php _t('Click on any file to view or on the progress bar to translate it. Depending on your permissions, you can export and import files here.') ?><br />
-<?php _t('If you prefer to work offline, just hit the Export button for the file you want, translate it with your favourite tool and upload it back here, even if it is not finished.') ?><br />
-<?php _t('For export, you can optionally upload your own source file as a model.')?><br />
+<?php _t('Click on any file to view or on the progress bar to translate it.') ?><br />
 <div style="text-align:right;">
+    <?php $_CONTROL->txtSearch->Render(); $_CONTROL->btnSearch->Render(); ?><br />
     <?php $_CONTROL->chkShowHierarchy->Render();?> <label for="<?php echo $_CONTROL->chkShowHierarchy->ControlId; ?>"><?php echo t('Show hierarchy') ?></label>
     &nbsp;&nbsp;&nbsp;
     <?php $_CONTROL->chkShowFolders->Render();?>  <label for="<?php echo $_CONTROL->chkShowFolders->ControlId; ?>"><?php echo t('Show folders') ?></label>

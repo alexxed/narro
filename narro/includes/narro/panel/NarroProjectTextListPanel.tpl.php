@@ -17,6 +17,7 @@
      */
 
 ?>
+    <p><?php _t('This is a list of all texts used in this project. Click on any translated text to start translating or approving one by one or use Mass Translate or Mass Approve to do it here in this list.')?></p>
     <?php $_CONTROL->lblMessage->Render(); ?>
     <div style="text-align:right;padding:3px;">
         <?php echo t('Show') ?>: <?php $_CONTROL->lstTextFilter->Render() ?>
@@ -27,6 +28,7 @@
         <br />
         <?php $_CONTROL->btnMultiApprove->Render(); ?>
         <?php $_CONTROL->btnMultiApproveCancel->Render(); ?>
+        &nbsp;
         <?php $_CONTROL->btnMultiTranslate->Render(); ?>
         <?php $_CONTROL->btnMultiTranslateCancel->Render(); ?>
     </div>
@@ -34,6 +36,7 @@
     <div style="text-align:right;padding:3px;">
         <?php $_CONTROL->btnMultiApproveBottom->Render(); ?>
         <?php $_CONTROL->btnMultiApproveCancelBottom->Render(); ?>
+        &nbsp;
         <?php $_CONTROL->btnMultiTranslateBottom->Render(); ?>
         <?php $_CONTROL->btnMultiTranslateCancelBottom->Render(); ?>
     </div>
