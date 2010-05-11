@@ -44,7 +44,8 @@
             'ImportFile',
             'ExportFile',
             'ImportProject',
-            'ExportProject'
+            'ExportProject',
+            'DisplayExportMessage'
         );
 
         public static $blnEnablePlugins = true;
@@ -125,6 +126,7 @@
         public function __get($strName) {
             switch ($strName) {
                 case "PluginErrors": return $this->arrPluginErrors;
+                case "PluginReturnValues": return $this->arrPluginReturnValues;
                 case "CurrentPluginName": return $this->strCurrentPluginName;
                 case "Error": return QType::Cast(count($this->arrPluginErrors), QType::Boolean);
                 default:
