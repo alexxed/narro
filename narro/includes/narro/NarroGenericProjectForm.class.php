@@ -30,22 +30,22 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             $this->SetupNarroProject();
 
             $this->pnlMainTab = new QTabPanel($this);
             $this->pnlMainTab->UseAjax = false;
-            
+
             if ($this->objNarroProject instanceof NarroProject)
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
-                
+
             if ($this->objNarroProject instanceof NarroProject && QApplication::HasPermission('Can edit project', $this->objNarroProject->ProjectId))
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Edit'), NarroLink::ProjectEdit($this->objNarroProject->ProjectId));
             elseif (QApplication::HasPermission('Can add project'))
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Add'));
-                
+
             if ($this->objNarroProject instanceof NarroProject) {
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId, ''));
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, ''));
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 2));
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 4));
@@ -54,9 +54,9 @@
                 if (QApplication::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
                     $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
             }
-            
+
         }
-        
+
         protected function SetupNarroProject() {
             // Lookup Object PK information from Query String (if applicable)
             $intProjectId = QApplication::QueryString('p');
@@ -78,6 +78,6 @@
                 $this->objNarroProject->ProjectName
             );
         }
-        
+
     }
 ?>
