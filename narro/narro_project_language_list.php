@@ -80,7 +80,7 @@
 
             $this->pnlBreadcrumb->setElements(
                 NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName),
-                NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, t('Files'))
+                NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, null, t('Files'))
             );
 
             if (QApplication::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
