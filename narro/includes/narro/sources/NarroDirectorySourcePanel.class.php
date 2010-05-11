@@ -16,9 +16,8 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    class NarroProjectTextSourcePanel extends QPanel {
-
-        public $pnlTextSource;
+    class NarroDirectorySourcePanel extends QPanel {
+        protected $txtDirectory;
         protected $objProject;
         protected $objLanguage;
 
@@ -34,25 +33,18 @@
             $this->objProject = $objProject;
             $this->objLanguage = $objLanguage;
 
-            $this->pnlTextSource = new QTabPanel($this);
-            $this->pnlTextSource->UseAjax = QApplication::$UseAjax;
-            $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $objLanguage, $this->pnlTextSource);
-            $objDirectoryPanel->Directory = $this->objProject->DefaultTemplatePath;
-            $this->pnlTextSource->addTab($objDirectoryPanel, t('On this server'));
-            $this->pnlTextSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On my computer'));
-            $this->pnlTextSource->addTab(new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On the web'));
-            $this->pnlTextSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('Mercurial'));
-        }
+            $this->blnAutoRenderChildren = true;
 
-        public function GetControlHtml() {
-            $this->strText = $this->pnlTextSource->Render(false);
-            return parent::GetControlHtml();
+            $this->txtDirectory = new QTextBox($this);
+            $this->txtDirectory->DisplayStyle = QDisplayStyle::Block;
+            $this->txtDirectory->Width = 500;
+            $this->txtDirectory->Instructions = t('Please enter the full path to the directory that contains the files');
         }
 
         public function __get($strName) {
             switch ($strName) {
                 case "Directory":
-                    return $this->pnlTextSource->SelectedTab->Directory;
+                    return $this->txtDirectory->Text;
 
                 default:
                     try {
@@ -65,5 +57,28 @@
             }
         }
 
-    }
+        public function __set($strName, $mixValue) {
+            $this->blnModified = true;
 
+            switch ($strName) {
+                case "Directory":
+                    try {
+                        $this->txtDirectory->Text = QType::Cast($mixValue, QType::String);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
+                default:
+                    try {
+                        parent::__set($strName, $mixValue);
+                    } catch (QCallerException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+                    break;
+            }
+        }
+
+    }

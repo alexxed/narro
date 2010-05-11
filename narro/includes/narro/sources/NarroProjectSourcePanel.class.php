@@ -15,10 +15,8 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-
-    class NarroProjectTextSourcePanel extends QPanel {
-
-        public $pnlTextSource;
+    class NarroProjectSourcePanel extends QPanel {
+        protected $lstProject;
         protected $objProject;
         protected $objLanguage;
 
@@ -34,25 +32,28 @@
             $this->objProject = $objProject;
             $this->objLanguage = $objLanguage;
 
-            $this->pnlTextSource = new QTabPanel($this);
-            $this->pnlTextSource->UseAjax = QApplication::$UseAjax;
-            $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $objLanguage, $this->pnlTextSource);
-            $objDirectoryPanel->Directory = $this->objProject->DefaultTemplatePath;
-            $this->pnlTextSource->addTab($objDirectoryPanel, t('On this server'));
-            $this->pnlTextSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On my computer'));
-            $this->pnlTextSource->addTab(new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On the web'));
-            $this->pnlTextSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('Mercurial'));
-        }
+            $this->lstProject = new QListBox($this);
+            $this->lstProject->DisplayStyle = QDisplayStyle::Block;
+            $this->lstProject->Instructions = t('Please choose the project from which you will import matching approved translations');
+            $this->lstProject->PreferedRenderMethod = 'RenderWithName';
 
-        public function GetControlHtml() {
-            $this->strText = $this->pnlTextSource->Render(false);
-            return parent::GetControlHtml();
+            $this->blnAutoRenderChildren = true;
+
+            foreach(
+                NarroProject::QueryArray(
+                        QQ::Equal(QQN::NarroProject()->Active, 1),
+                        array(QQ::OrderBy(QQN::NarroProject()->ProjectName))
+                ) as $objProject
+            )
+            {
+                $this->lstProject->AddItem($objProject->ProjectName, $objProject->ProjectId);
+            }
         }
 
         public function __get($strName) {
             switch ($strName) {
                 case "Directory":
-                    return $this->pnlTextSource->SelectedTab->Directory;
+                    return sprintf('%s/%s/%s', __IMPORT_PATH__, $this->lstProject->SelectedValue, QApplication::$LanguageCode);
 
                 default:
                     try {
@@ -64,6 +65,4 @@
                     }
             }
         }
-
     }
-

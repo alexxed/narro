@@ -52,6 +52,13 @@
 
         public static $LogFile;
 
+        /**
+         * An array of Database objects, as initialized by QApplication::InitializeDatabaseConnections()
+         *
+         * @var DatabaseBase[] QMySqli5Database
+         */
+        public static $Database;
+
         ////////////////////////////
         // Additional Static Methods
         ////////////////////////////
@@ -65,6 +72,8 @@
                 elseif (file_exists($strFilePath = sprintf('%s/narro/importer/%s.class.php', __NARRO_INCLUDES__, $strClassName)))
                     require_once($strFilePath);
                 elseif (file_exists($strFilePath = sprintf('%s/narro/panel/%s.class.php', __NARRO_INCLUDES__, $strClassName)))
+                    require_once($strFilePath);
+                elseif (file_exists($strFilePath = sprintf('%s/narro/sources/%s.class.php', __NARRO_INCLUDES__, $strClassName)))
                     require_once($strFilePath);
                 elseif (file_exists($strFilePath = sprintf('%s/narro/search/%s.class.php', __NARRO_INCLUDES__, $strClassName)))
                     require_once($strFilePath);

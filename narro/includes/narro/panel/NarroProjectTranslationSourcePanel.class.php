@@ -16,9 +16,9 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    class NarroProjectTextSourcePanel extends QPanel {
+    class NarroProjectTranslationSourcePanel extends QPanel {
 
-        public $pnlTextSource;
+        protected $pnlTranslationSource;
         protected $objProject;
         protected $objLanguage;
 
@@ -34,25 +34,25 @@
             $this->objProject = $objProject;
             $this->objLanguage = $objLanguage;
 
-            $this->pnlTextSource = new QTabPanel($this);
-            $this->pnlTextSource->UseAjax = QApplication::$UseAjax;
-            $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $objLanguage, $this->pnlTextSource);
-            $objDirectoryPanel->Directory = $this->objProject->DefaultTemplatePath;
-            $this->pnlTextSource->addTab($objDirectoryPanel, t('On this server'));
-            $this->pnlTextSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On my computer'));
-            $this->pnlTextSource->addTab(new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On the web'));
-            $this->pnlTextSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('Mercurial'));
+            $this->pnlTranslationSource = new QTabPanel($this);
+            $this->pnlTranslationSource->UseAjax = QApplication::$UseAjax;
+            $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
+            $objDirectoryPanel->Directory = $this->objProject->DefaultTranslationPath;
+            $this->pnlTranslationSource->addTab($objDirectoryPanel, t('On this server'));
+            $this->pnlTranslationSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('On my computer'));
+            $this->pnlTranslationSource->addTab(new NarroProjectSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('In another project'));
+            $this->pnlTranslationSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Mercurial'));
         }
 
         public function GetControlHtml() {
-            $this->strText = $this->pnlTextSource->Render(false);
+            $this->strText = $this->pnlTranslationSource->Render(false);
             return parent::GetControlHtml();
         }
 
         public function __get($strName) {
             switch ($strName) {
                 case "Directory":
-                    return $this->pnlTextSource->SelectedTab->Directory;
+                    return $this->pnlTranslationSource->SelectedTab->Directory;
 
                 default:
                     try {
@@ -64,6 +64,5 @@
                     }
             }
         }
-
     }
-
+?>
