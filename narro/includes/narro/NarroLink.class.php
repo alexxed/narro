@@ -80,8 +80,8 @@
                 return $strLink;
         }
 
-        public static function ProjectFileList($intProjectId, $strPath = '', $strLinkText = '') {
-            $strLink = sprintf('narro_project_file_list.php?l=%s&p=%d&pf=%s', QApplication::$Language->LanguageCode, $intProjectId, $strPath);
+        public static function ProjectFileList($intProjectId, $strPath = '', $strSearchText = '', $strLinkText = '') {
+            $strLink = sprintf('narro_project_file_list.php?l=%s&p=%d&pf=%s&s=%s', QApplication::$Language->LanguageCode, $intProjectId, $strPath, $strSearchText);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -95,7 +95,7 @@
             else
                 return $strLink;
         }
-        
+
         public static function UserProfile($intUserId, $strLinkText = '') {
             $strLink = sprintf('narro_user_profile.php?l=%s&u=%d', QApplication::$Language->LanguageCode, $intUserId);
             if ($strLinkText != '')

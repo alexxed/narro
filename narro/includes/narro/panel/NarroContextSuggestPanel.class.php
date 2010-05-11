@@ -58,12 +58,12 @@
         public $pnlProgress;
 
         public $lblProgress;
-        
+
         public $pnlBreadcrumb;
 
         public function __construct($objParentObject, $strControlId = null, NarroProject $objNarroProject, $objNarroFile = null, NarroContextInfo $objContextInfo, $intTextFilter = NarroTextListPanel::SHOW_ALL_TEXTS, $intSearchType = NarroTextListPanel::SEARCH_TEXTS, $strSearchText = '', $intContextsCount = 0, $intCurrentContext = 0) {
             parent::__construct($objParentObject, $strControlId);
-            
+
             $this->objProject = $objNarroProject;
             $this->objFile = $objNarroFile;
             $this->intTextFilter = $intTextFilter;
@@ -71,14 +71,17 @@
             $this->strSearchText = $strSearchText;
             $this->intCurrentContext = $intCurrentContext;
             $this->intContextsCount = $intContextsCount;
-            
+
             $this->objNarroContextInfo = $objContextInfo;
-            
+
+            if (is_null($this->objFile))
+                $this->objFile = $this->objNarroContextInfo->Context->File;
+
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroContextSuggestPanel.tpl.php';
 
             $this->pnlBreadcrumb = new NarroBreadcrumbPanel($this);
             $this->pnlBreadcrumb->strSeparator = ' / ';
-            
+
             $this->pnlOriginalText_Create();
 
             // Create/Setup Button Action controls
@@ -248,7 +251,7 @@
             QApplication::ExecuteJavaScript(sprintf('document.title="%s"', str_replace(array('\\', '"', "\n"), array('\\\\', '\\"', ' '), $strPageTitle)));
 
             $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectFileList($this->objProject->ProjectId, null, '..')
+                NarroLink::ProjectFileList($this->objProject->ProjectId, null, null, '..')
             );
 
             $arrPaths = explode('/', $this->objNarroContextInfo->Context->File->FilePath);
@@ -266,6 +269,7 @@
                         NarroLink::ProjectFileList(
                                 $this->objNarroContextInfo->Context->ProjectId,
                                 $strProgressivePath,
+                                null,
                                 $strPathPart
                         )
                     );
@@ -428,7 +432,7 @@
         protected function btnNext_Create() {
             $this->btnNext = new QButton($this);
             $this->btnNext->Text = t('Next');
-            
+
             $this->btnNext->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
 
             if (QApplication::$UseAjax)
@@ -445,7 +449,7 @@
         protected function btnNext100_Create() {
             $this->btnNext100 = new QButton($this);
             $this->btnNext100->Text = t('100 forward') . ' »';
-            
+
             $this->btnNext100->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
 
             if (QApplication::$UseAjax)
@@ -461,9 +465,9 @@
         protected function btnPrevious100_Create() {
             $this->btnPrevious100 = new QButton($this);
             $this->btnPrevious100->Text = '« ' . t('100 back');
-            
+
             $this->btnPrevious100->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
-            
+
             if (QApplication::$UseAjax)
                 $this->btnPrevious100->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnPrevious100_Click'));
             else
@@ -478,9 +482,9 @@
         protected function btnPrevious_Create() {
             $this->btnPrevious = new QButton($this);
             $this->btnPrevious->Text = t('Previous');
-            
+
             $this->btnPrevious->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
-            
+
             if (QApplication::$UseAjax)
                 $this->btnPrevious->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnPrevious_Click'));
             else
@@ -933,7 +937,7 @@
                     return QQ::OrderBy(QQN::NarroContextInfo()->ContextId, true);
             }
         }
-        
+
         public function __get($strName) {
             switch ($strName) {
                 case "NarroContextInfo":
@@ -948,7 +952,7 @@
                         throw $objExc;
                     }
             }
-        }        
+        }
 
     }
 ?>
