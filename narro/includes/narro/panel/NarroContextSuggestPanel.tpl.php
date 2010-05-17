@@ -25,8 +25,15 @@
 <div class="white3dbg" style="border:1px solid #DDDDDD; padding:5px<?php if ($_CONTROL->objNarroContextInfo->Context->Active == 0) echo ';color:gray;' ?>" title="<?php _t('Details about the place where the text appears'); ?>">
     <?php $_CONTROL->btnCopyOriginal->Render(); ?>
     <?php $_CONTROL->btnComments->Render(); ?>
-    <?php $_CONTROL->pnlContext->Render(); ?>    
+
+    <?php $_CONTROL->pnlContext->Render(); ?>
+    <?php $_CONTROL->txtContextComment->Render(); ?>
+    <?php if ($_CONTROL->txtContextComment->Display) { ?>
+        <span class="instructions"><?php echo $_CONTROL->txtContextComment->Instructions ?></span>
+    <?php } ?>
 </div>
+
+
 <?php $_CONTROL->pnlSuggestionList->Render(); ?>
 <?php $_CONTROL->pnlSimilarSuggestionList->Render(); ?>
 <br />

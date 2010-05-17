@@ -27,6 +27,8 @@
         public $btnPrevious100;
         public $btnPrevious;
         public $btnCopyOriginal;
+        public $pnlContextComment;
+        public $txtContextComment;
         public $btnComments;
 
         public $chkGoToNext;
@@ -74,8 +76,45 @@
 
             $this->objNarroContextInfo = $objContextInfo;
 
-            if (is_null($this->objFile))
-                $this->objFile = $this->objNarroContextInfo->Context->File;
+            if ($this->objFile instanceof NarroFile)
+                $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId);
+            else
+                $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId);
+
+            if (!$this->intContextsCount) {
+
+                $objExtraCondition = QQ::AndCondition(
+                                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
+                                        $objFilterCodition,
+                                        QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
+                );
+
+                $this->intContextsCount = NarroContextInfo::GetContextCount(
+                                                    $this->strSearchText,
+                                                    $this->intSearchType,
+                                                    $this->intTextFilter,
+                                                    null,
+                                                    $objExtraCondition
+                );
+            }
+
+            if (!$this->intCurrentContext) {
+                $objExtraCondition = QQ::AndCondition(
+                                        QQ::GreaterThan(QQN::NarroContextInfo()->ContextId, $this->objNarroContextInfo->ContextId),
+                                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
+                                        $objFilterCodition,
+                                        QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
+                );
+
+
+                $this->intCurrentContext = $this->intContextsCount - NarroContextInfo::GetContextCount(
+                                                    $this->strSearchText,
+                                                    $this->intSearchType,
+                                                    $this->intTextFilter,
+                                                    null,
+                                                    $objExtraCondition
+                );
+            }
 
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroContextSuggestPanel.tpl.php';
 
@@ -98,10 +137,12 @@
             $this->btnPrevious_Create();
             $this->btnCopyOriginal_Create();
             $this->btnComments_Create();
+            $this->txtContextComment_Create();
 
             $this->chkGoToNext_Create();
 
             $this->pnlContext_Create();
+            $this->pnlContextComment_Create();
             $this->pnlComments_Create();
             $this->txtSuggestionValue_Create();
 
@@ -173,17 +214,37 @@
                 $this->chkShowOtherLanguages->AddAction(new QClickEvent(), new QServerControlAction($this, 'chkShowOtherLanguages_Click'));
         }
 
+        // Create and Setup txtContextComment
+        protected function txtContextComment_Create() {
+            $this->txtContextComment = new QTextBox($this);
+            $this->txtContextComment->Instructions = t('You can help other translators by adding more context, preferably in English, so that anyone can read it; just type, it will be saved automatically');
+            $this->txtContextComment->SetCustomStyle('width', '100%');
+            $this->txtContextComment->Display = QApplication::HasPermission('Can add context comments', $this->objProject->ProjectId);
+
+            if (QApplication::$UseAjax)
+                $this->txtContextComment->AddAction(new QBlurEvent(), new QAjaxControlAction($this, 'txtContextComment_Blur'));
+            else
+                $this->txtContextComment->AddAction(new QBlurEvent(), new QServerControlAction($this, 'txtContextComment_Blur'));
+
+        }
+
+
+        // Create and Setup pnlContextComment
+        protected function pnlContextComment_Create() {
+            $this->pnlContextComment = new QPanel($this, 'contextcomments');
+        }
+
         // Create and Setup pnlComments
         protected function pnlComments_Create() {
-            $this->pnlComments = new NarroTextCommentListPanel($this, 'textcomments');
-            $this->pnlComments->Display = false;
+            $this->pnlComments = new NarroProjectTextCommentListPanel($this, 'textcomments');
+            if (QApplication::QueryString('sc') == 1)
+                $this->pnlComments->Display = true;
+            else
+                $this->pnlComments->Display = false;
         }
 
         // Update values from objNarroContextInfo
         protected function UpdateData() {
-            /**
-             * @todo Show somehow the leading spaces ' ' => &nbsp;
-             */
             $this->pnlOriginalText->Text = nl2br(NarroString::HtmlEntities($this->objNarroContextInfo->Context->Text->TextValue));
             $this->pnlOriginalText->Text = NarroString::ShowLeadingAndTrailingSpaces($this->pnlOriginalText->Text);
 
@@ -205,32 +266,43 @@
 
             if ($this->objNarroContextInfo->Context->Text->HasComments)
                 if ($this->pnlComments->Display)
-                    $this->btnComments->Text = t('Hide debate');
+                    $this->btnComments->Text = t('Hide comments');
                 else
                     if ($this->objNarroContextInfo->Context->Text->HasComments)
-                        $this->btnComments->Text = t('Show debate');
+                        $this->btnComments->Text = t('Show comments');
                     else
-                        $this->btnComments->Text = t('Start a debate');
+                        $this->btnComments->Text = t('Add a comment');
 
             $this->btnComments->MarkAsModified();
+
+            $this->txtContextComment->Text = '';
 
             if
             (
                 $arrContextComments =
                 NarroContextComment::QueryArray(
                     QQ::AndCondition(
-                        QQ::Equal(QQN::NarroContextComment()->ContextId, $this->objNarroContextInfo->ContextId),
-                        QQ::Equal(QQN::NarroContextComment()->LanguageId, QApplication::GetLanguageId())
+                        QQ::Equal(QQN::NarroContextComment()->ContextId, $this->objNarroContextInfo->ContextId)
                     )
                 )
             ) {
                 foreach($arrContextComments as $objContextComment) {
-                    $this->pnlContext->Text .= '<br />' . nl2br(NarroString::HtmlEntities($objContextComment->CommentText));
+                    if ($objContextComment->UserId == QApplication::GetUserId())
+                        $this->txtContextComment->Text = $objContextComment->CommentText;
+                    else
+                        $this->pnlContext->Text .=
+                            '<br />' .
+                            sprintf(
+                                '%s <a href="%s"><span class="instructions" title="%s">--%s</span></a>',
+                                nl2br(NarroString::HtmlEntities($objContextComment->CommentText)),
+                                NarroLink::UserProfile($objContextComment->UserId),
+                                (($objContextComment->Modified)?$objContextComment->Modified:$objContextComment->Created),
+                                $objContextComment->User->Username
+                            );
                 }
             }
 
             $this->pnlSuggestionList->NarroContextInfo = $this->objNarroContextInfo;
-            //$this->txtSuggestionComment->Text = '';
             $this->txtSuggestionValue->Text = '';
 
             $this->HidePluginErrors();
@@ -514,9 +586,9 @@
         protected function btnComments_Create() {
             $this->btnComments = new QButton($this);
             if ($this->objNarroContextInfo->Context->Text->HasComments)
-                $this->btnComments->Text = t('Hide debate');
+                $this->btnComments->Text = t('Hide comments');
             else
-                $this->btnComments->Text = t('Start a debate');
+                $this->btnComments->Text = t('Add a comment');
 
             if (QApplication::$UseAjax)
                 $this->btnComments->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnComments_Click'));
@@ -835,7 +907,10 @@
                 return true;
             }
             else {
-                QApplication::Redirect(NarroLink::ContextSuggest($this->objProject->ProjectId, $this->objFile->FileId, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText));
+                if ($this->objFile instanceof NarroFile)
+                    QApplication::Redirect(NarroLink::ContextSuggest($this->objProject->ProjectId, $this->objFile->FileId, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText));
+                else
+                    QApplication::Redirect(NarroLink::ContextSuggest($this->objProject->ProjectId, 0, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText));
             }
         }
 
@@ -892,16 +967,43 @@
             $this->txtSuggestionValue->Focus();
         }
 
+        public function txtContextComment_Blur($strFormId, $strControlId, $strParameter) {
+            $objContextComment = NarroContextComment::QuerySingle(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroContextComment()->UserId, QApplication::GetUserId()),
+                    QQ::Equal(QQN::NarroContextComment()->ContextId, $this->objNarroContextInfo->ContextId)
+                ),
+                QQ::OrderBy(QQN::NarroContextComment()->Modified)
+            );
+
+            if (!$objContextComment) {
+                $objContextComment = new NarroContextComment();
+                $objContextComment->ContextId = $this->objNarroContextInfo->ContextId;
+                $objContextComment->UserId = QApplication::GetUserId();
+                $objContextComment->Created = QDateTime::Now();
+                $objContextComment->LanguageId = QApplication::GetLanguageId();
+            }
+            else {
+                $objContextComment->Modified = QDateTime::Now();
+            }
+
+            $objContextComment->CommentText = $this->txtContextComment->Text;
+            $objContextComment->CommentTextMd5 = md5($this->txtContextComment->Text);
+
+            $objContextComment->Save();
+        }
+
+
         public function btnComments_Click($strFormId, $strControlId, $strParameter) {
             if ($this->pnlComments->Display) {
                 if ($this->objNarroContextInfo->Context->Text->HasComments)
-                    $this->btnComments->Text = t('Show debate');
+                    $this->btnComments->Text = t('Show comments');
                 else
-                    $this->btnComments->Text = t('Start a debate');
+                    $this->btnComments->Text = t('Add a comment');
                 $this->pnlComments->Display = false;
             }
             else {
-                $this->btnComments->Text = t('Hide debate');
+                $this->btnComments->Text = t('Hide comments');
                 $this->pnlComments->Display = true;
             }
         }

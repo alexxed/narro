@@ -80,6 +80,72 @@
                 return false;
         }
 
+        public static function GetContextLeft($intContextId, $strSearchText, $intSearchType, $intFilter, $objSortInfo, $objExtraCondition) {
+            switch($intSearchType) {
+                case NarroTextListForm::SEARCH_TEXTS:
+                    $intContextCount = self::CountByTextValue($strSearchText, $intFilter, $objExtraCondition);
+                    break;
+                case NarroTextListForm::SEARCH_SUGGESTIONS:
+                    $intContextCount = self::CountBySuggestionValue($strSearchText, $intFilter, $objExtraCondition);
+                    break;
+                case NarroTextListForm::SEARCH_AUTHORS:
+                    $intContextCount = self::CountByAuthor($strSearchText, $intFilter, $objExtraCondition);
+                    break;
+                case NarroTextListForm::SEARCH_FILES:
+                    $intContextCount = self::CountByFileName($strSearchText, $intFilter, $objExtraCondition);
+                    break;
+                case NarroTextListForm::SEARCH_CONTEXTS:
+                    $intContextCount = self::CountByContext($strSearchText, $intFilter, $objExtraCondition);
+                    break;
+                default:
+                    if ($intFilter == NarroTextListForm::SHOW_UNTRANSLATED_TEXTS)
+                        $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0));
+                    elseif ($intFilter == NarroTextListForm::SHOW_APPROVED_TEXTS)
+                        $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId));
+                    elseif ($intFilter == NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL)
+                        $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
+                    else
+                        $objFilterCondition = $objExtraCondition;
+
+                    $intContextCount = self::QueryCount($objFilterCondition, array(QQ::OrderBy(QQN::NarroContextInfo()->ContextId)));
+            }
+
+            return $intContextCount;
+        }
+
+        public static function GetContextCount($strSearchText, $intSearchType, $intFilter, $objSortInfo, $objExtraCondition) {
+            switch($intSearchType) {
+                case NarroTextListForm::SEARCH_TEXTS:
+                    $intContextCount = self::CountByTextValue($strSearchText, $intFilter, $objExtraCondition);
+                    break;
+                case NarroTextListForm::SEARCH_SUGGESTIONS:
+                    $intContextCount = self::CountBySuggestionValue($strSearchText, $intFilter, $objExtraCondition);
+                    break;
+                case NarroTextListForm::SEARCH_AUTHORS:
+                    $intContextCount = self::CountByAuthor($strSearchText, $intFilter, $objExtraCondition);
+                    break;
+                case NarroTextListForm::SEARCH_FILES:
+                    $intContextCount = self::CountByFileName($strSearchText, $intFilter, $objExtraCondition);
+                    break;
+                case NarroTextListForm::SEARCH_CONTEXTS:
+                    $intContextCount = self::CountByContext($strSearchText, $intFilter, $objExtraCondition);
+                    break;
+                default:
+                    if ($intFilter == NarroTextListForm::SHOW_UNTRANSLATED_TEXTS)
+                        $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0));
+                    elseif ($intFilter == NarroTextListForm::SHOW_APPROVED_TEXTS)
+                        $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId));
+                    elseif ($intFilter == NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL)
+                        $objFilterCondition = QQ::AndCondition($objExtraCondition, QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId), QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 1));
+                    else
+                        $objFilterCondition = $objExtraCondition;
+
+                    $intContextCount = self::QueryCount($objFilterCondition);
+            }
+
+            return $intContextCount;
+        }
+
         public static function LoadArrayByContext($strContext, $intFilter, $objLimitInfo = null, $objSortInfo = null, $objExtraCondition = null) {
             if (!is_object($objExtraCondition))
                 $objExtraCondition = QQ::All();
@@ -215,7 +281,10 @@
                     $objFilterCondition = QQ::All();
             }
 
-            $intContextCount = NarroContextInfo::QueryCount(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition));
+            if (is_object($objExtraCondition))
+                $intContextCount = NarroContextInfo::QueryCount(QQ::AndCondition($objSearchCondition, $objFilterCondition, $objExtraCondition));
+            else
+                $intContextCount = NarroContextInfo::QueryCount(QQ::AndCondition($objSearchCondition, $objFilterCondition));
 
             return $intContextCount;
         }

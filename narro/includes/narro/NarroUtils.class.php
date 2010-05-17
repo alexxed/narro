@@ -21,10 +21,11 @@
          */
         public static function CleanStaleFormStates() {
             $arrFileList = self::ListDirectory(__FILE_FORM_STATE_HANDLER_PATH__, '/qformstate_.*/');
-            foreach($arrFileList as $strFile) {
-                if (fileatime($strFile) < time() - 7200)
-                    unlink($strFile);
-            }
+            if (is_array($arrFileList))
+                foreach($arrFileList as $strFile) {
+                    if (fileatime($strFile) < time() - 7200)
+                        unlink($strFile);
+                }
         }
 
         public static function RecursiveDelete($strFilePath) {
