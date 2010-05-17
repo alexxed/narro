@@ -44,3 +44,26 @@ ALTER TABLE `narro_context_info` ADD INDEX ( `created` );
 ALTER TABLE `narro_context_info` ADD INDEX ( `modified` );
 
 ALTER TABLE  `narro_suggestion` ADD  `is_imported` TINYINT( 1 ) NOT NULL DEFAULT  '0' AFTER  `has_comments`;
+
+ALTER TABLE `narro_project_progress` ADD `last_modified` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `language_id` ;
+
+INSERT INTO `narro_file_type` (
+`file_type_id` ,
+`file_type`
+)
+VALUES (
+NULL , 'Unsupported'
+);
+
+ ALTER TABLE `narro_context_comment` DROP INDEX `context_id_2`;
+  ALTER TABLE `narro_text_comment` DROP INDEX `text_id_2` ;
+
+ INSERT INTO `narro_permission` (
+`permission_id` ,
+`permission_name`
+)
+VALUES (
+NULL , 'Can add context comments'
+);
+
+ ALTER TABLE `narro_project` ADD INDEX ( `active` ) ;
