@@ -18,17 +18,22 @@
 
     class NarroUnsupportedFileImporter extends NarroFileImporter {
 
-        public function ExportFile($strTemplate, $strTranslatedFile = null) {
+        public function ExportFile($strTemplateFile, $strTranslatedFile = null) {
             if ($strTranslatedFile != $this->objProject->DefaultTranslationPath . '/' . $this->objFile->FilePath && QApplication::HasPermissionForThisLang('Can import project', $this->objProject->ProjectId)) {
-                copy($this->objProject->DefaultTranslationPath . '/' . $this->objFile->FilePath, $strTranslatedFile);
+                if (file_exists($this->objProject->DefaultTranslationPath . '/' . $this->objFile->FilePath))
+                    copy($this->objProject->DefaultTranslationPath . '/' . $this->objFile->FilePath, $strTranslatedFile);
+                else
+                    copy($strTemplateFile, $strTranslatedFile);
             }
         }
 
-        public function ImportFile($strTemplate, $strTranslatedFile = null) {
-            if (!file_exists($strTranslatedFile)) {
+        public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
+            if ($strTranslatedFile != '' && !file_exists($strTranslatedFile)) {
                 QApplication::$Logger->warn(sprintf('Copying unhandled file type: %s', $strTemplateFile));
                 NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
-                copy($strTemplateFile, $strTranslatedFile);
+                if (@copy($strTemplateFile, $strTranslatedFile) == false) {
+                    QApplication::$Logger->err(sprintf('Failed to copy "%s" to "%s"', $strTemplateFile, $strTranslatedFile));
+                }
             }
         }
 
