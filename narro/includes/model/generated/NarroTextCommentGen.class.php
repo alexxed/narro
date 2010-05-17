@@ -592,28 +592,6 @@
 		}
 			
 		/**
-		 * Load a single NarroTextComment object,
-		 * by TextId, UserId, CommentTextMd5, LanguageId Index(es)
-		 * @param integer $intTextId
-		 * @param integer $intUserId
-		 * @param string $strCommentTextMd5
-		 * @param integer $intLanguageId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroTextComment
-		*/
-		public static function LoadByTextIdUserIdCommentTextMd5LanguageId($intTextId, $intUserId, $strCommentTextMd5, $intLanguageId, $objOptionalClauses = null) {
-			return NarroTextComment::QuerySingle(
-				QQ::AndCondition(
-					QQ::Equal(QQN::NarroTextComment()->TextId, $intTextId),
-					QQ::Equal(QQN::NarroTextComment()->UserId, $intUserId),
-					QQ::Equal(QQN::NarroTextComment()->CommentTextMd5, $strCommentTextMd5),
-					QQ::Equal(QQN::NarroTextComment()->LanguageId, $intLanguageId)
-				),
-				$objOptionalClauses
-			);
-		}
-			
-		/**
 		 * Load an array of NarroTextComment objects,
 		 * by TextId Index(es)
 		 * @param integer $intTextId

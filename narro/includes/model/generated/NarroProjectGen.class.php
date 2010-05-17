@@ -824,6 +824,38 @@
 				QQ::Equal(QQN::NarroProject()->ProjectCategoryId, $intProjectCategoryId)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroProject objects,
+		 * by Active Index(es)
+		 * @param integer $intActive
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroProject[]
+		*/
+		public static function LoadArrayByActive($intActive, $objOptionalClauses = null) {
+			// Call NarroProject::QueryArray to perform the LoadArrayByActive query
+			try {
+				return NarroProject::QueryArray(
+					QQ::Equal(QQN::NarroProject()->Active, $intActive),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroProjects
+		 * by Active Index(es)
+		 * @param integer $intActive
+		 * @return int
+		*/
+		public static function CountByActive($intActive) {
+			// Call NarroProject::QueryCount to perform the CountByActive query
+			return NarroProject::QueryCount(
+				QQ::Equal(QQN::NarroProject()->Active, $intActive)
+			);
+		}
 
 
 
