@@ -171,4 +171,7 @@
     }
 
     spl_autoload_register(array('QApplication', 'Autoload'));
+
+    if (file_exists(dirname(__FILE__) . '/application.narro.inc.php'))
+        require_once(dirname(__FILE__) . '/application.narro.inc.php');
 ?>
