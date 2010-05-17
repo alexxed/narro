@@ -16,6 +16,14 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroLink {
+        public static function TextCommentList($strLinkText = '') {
+            $strLink = sprintf('narro_text_comment_list.php?l=%s', QApplication::$Language->LanguageCode);
+            if ($strLinkText != '')
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
         public static function ProjectManage($intProjectId, $strLinkText = '') {
             $strLink = sprintf('narro_project_manage.php?l=%s&p=%d', QApplication::$Language->LanguageCode, $intProjectId);
             if ($strLinkText != '')
@@ -161,9 +169,9 @@
                 return $strLink;
         }
 
-        public static function ContextSuggest($intProjectId, $intFileId, $intContextId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $intCurrentContext = null, $intContextCount = null, $intSortColumnIndex = -1, $intSortDirection = 0, $strLinkText = '') {
+        public static function ContextSuggest($intProjectId, $intFileId, $intContextId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $intCurrentContext = null, $intContextCount = null, $intSortColumnIndex = -1, $intSortDirection = 0, $blnShowComments = 0, $strLinkText = '') {
             $strLink = sprintf(
-                'narro_context_suggest.php?l=%s&p=%d&f=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d&o=%d&a=%d',
+                'narro_context_suggest.php?l=%s&p=%d&f=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d&o=%d&a=%d&sc=%d',
                 QApplication::$Language->LanguageCode,
                 $intProjectId,
                 $intFileId,
@@ -174,7 +182,8 @@
                 $intCurrentContext,
                 $intContextCount,
                 $intSortColumnIndex,
-                $intSortDirection
+                $intSortDirection,
+                $blnShowComments
             );
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
