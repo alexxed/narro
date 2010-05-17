@@ -432,13 +432,13 @@
             if (!$objRssFeed = QApplication::$Cache->load($strCacheId)) {
                 if (isset($objProject) && $objProject instanceof NarroProject)
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('Debates on texts from %s'), $objProject->ProjectName),
+                            sprintf(t('Comments on texts from %s'), $objProject->ProjectName),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                             sprintf(t('Get the latest debates on texts from the project %s'), $objProject->ProjectName)
                     );
                 else
                     $objRssFeed  = new QRssFeed(
-                            t('Debates on texts'),
+                            t('Comments on texts'),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                             t('Get the latest debates on texts')
                     );
