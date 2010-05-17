@@ -272,6 +272,11 @@
                  */
                 $intFileType = $this->GetFileType($strFileName);
 
+                if ($intFileType === false) {
+                    QApplication::$Logger->err(sprintf('Skipping "%s" from "%s"', basename($strFileName), dirname($strFileName)));
+                    continue;
+                }
+
                 $objFile = NarroFile::QuerySingle(
                                 QQ::AndCondition(
                                     QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
@@ -361,6 +366,8 @@
                 QApplication::$Logger->err(sprintf('The file "%s" exceeds the maximum file size allowed to be imported, skipping it', $strTranslatedFile));
                 return false;
             }
+
+            QApplication::$Logger->info(sprintf('Starting to import texts from "%s" and translations from "%s"', $strTemplateFile, $strTranslatedFile));
 
             if ($this->blnDeactivateContexts && $this->blnOnlySuggestions == false) {
                 $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d AND file_id=%d", $this->objProject->ProjectId, $objFile->FileId);
