@@ -20,16 +20,16 @@
     $strCreatedWhen = $objDateSpan->SimpleDisplay();
 
 ?>
-    <div id="comment<?php echo $_CONTROL->CurrentItemIndex + 1; ?>" style="background: url(<?php echo __IMAGE_ASSETS__ ?>/bg_td1.jpg) repeat-x top;padding:3px;border:1px solid #DDDDDD;display:block">
+    <div id="comment<?php echo $_CONTROL->CurrentItemIndex + 1; ?>" style="background: url(<?php echo __IMAGE_ASSETS__ ?>/../../images/bg_td1.jpg) repeat-x top;padding:3px;border:1px solid #DDDDDD;display:block">
         <span style="font-size:80%;color:gray;"><?php echo sprintf('<a href="#comment%d">#%d:</a> ', $_CONTROL->CurrentItemIndex + 1, $_CONTROL->CurrentItemIndex + 1) . sprintf(t('%s wrote %s ago:'), NarroLink::UserProfile($_ITEM->UserId, '<b>' . $_ITEM->User->Username . '</b>'), $strCreatedWhen) ?></span>
         <br />
         <span style="margin-left:5px;padding:3px;">
         <?php
         $strResult = QApplication::$PluginHandler->DisplayTextComment($_ITEM->CommentText);
         if (!QApplication::$PluginHandler->Error)
-            echo nl2br($strResult);
+            echo nl2br(NarroString::HtmlEntities($strResult));
         else
-            echo nl2br($_ITEM->CommentText);
+            echo nl2br(NarroString::HtmlEntities($_ITEM->CommentText));
         ?>
         </span>
     </div>

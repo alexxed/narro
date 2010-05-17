@@ -201,6 +201,7 @@
                     $intTotalTexts - $intApprovedTexts - $intTranslatedTexts,
                     -1,
                     0,
+                    0,
                     $strOutput
                 );
 

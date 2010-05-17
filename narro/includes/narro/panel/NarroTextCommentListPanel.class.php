@@ -1,29 +1,35 @@
 <?php
     /**
-     * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
-     * http://code.google.com/p/narro/
+     * This is the abstract Panel class for the List All functionality
+     * of the NarroTextComment class.  This code-generated class
+     * contains a datagrid to display an HTML page that can
+     * list a collection of NarroTextComment objects.  It includes
+     * functionality to perform pagination and sorting on columns.
      *
-     * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
-     * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any
-     * later version.
+     * To take advantage of some (or all) of these control objects, you
+     * must create a new QPanel which extends this NarroTextCommentListPanelBase
+     * class.
      *
-     * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-     * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
-     * more details.
+     * Any and all changes to this file will be overwritten with any subsequent re-
+     * code generation.
      *
-     * You should have received a copy of the GNU General Public License along with this program; if not, write to the
-     * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+     * @package Narro
+     * @subpackage Drafts
+     *
      */
-
     class NarroTextCommentListPanel extends QPanel {
-        public $dtgNarroTextComment;
-        public $txtNarroTextComment;
-        public $btnAddTextComment;
-        protected $objNarroText;
+        // Local instance of the Meta DataGrid to list NarroTextComments
+        public $dtgTextComments;
 
-        public function __construct($objParentObject, $strControlId = null) {
-            $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroTextCommentListPanel.tpl.php';
+        // Other public QControls in this panel
+        public $btnCreateNew;
+        public $pxyEdit;
+
+        // Callback Method Names
+        protected $strSetEditPanelMethod;
+        protected $strCloseEditPanelMethod;
+
+        public function __construct($objParentObject, $strSetEditPanelMethod, $strCloseEditPanelMethod, $strControlId = null) {
             // Call the Parent
             try {
                 parent::__construct($objParentObject, $strControlId);
@@ -32,112 +38,83 @@
                 throw $objExc;
             }
 
-            // Setup DataGrid
-            $this->dtgNarroTextComment = new QDataRepeater($this);
-            $this->dtgNarroTextComment->Width = '100%';
-            $this->dtgNarroTextComment->Display = QDisplayStyle::Block;
+            // Record Method Callbacks
+            $this->strSetEditPanelMethod = $strSetEditPanelMethod;
+            $this->strCloseEditPanelMethod = $strCloseEditPanelMethod;
 
-            // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroTextComment->UseAjax = QApplication::$UseAjax;
+            // Setup the Template
+            $this->Template = dirname(__FILE__) . '/NarroTextCommentListPanel.tpl.php';
 
-            // Specify the local databind method this datagrid will use
-            $this->dtgNarroTextComment->SetDataBinder('dtgNarroTextComment_Bind', $this);
+            // Instantiate the Meta DataGrid
+            $this->dtgTextComments = new NarroTextCommentDataGrid($this);
 
-            $this->dtgNarroTextComment->Template = __NARRO_INCLUDES__ . '/narro/panel/NarroTextComment.tpl.php';
+            // Style the DataGrid (if desired)
+            $this->dtgTextComments->CssClass = 'datagrid';
+            $this->dtgTextComments->AlternateRowStyle->CssClass = 'alternate';
 
-            $this->txtNarroTextComment = new QTextBox($this);
-            $this->txtNarroTextComment->Text = '';
-            $this->txtNarroTextComment->CssClass = QApplication::$Language->TextDirection . ' green3dbg';
-            $this->txtNarroTextComment->Width = '60%';
-            $this->txtNarroTextComment->Height = 85;
-            $this->txtNarroTextComment->TextMode = QTextMode::MultiLine;
-            $this->txtNarroTextComment->CrossScripting = QCrossScripting::Allow;
+            // Add Pagination (if desired)
+            $this->dtgTextComments->Paginator = new QPaginator($this->dtgTextComments);
+            $this->dtgTextComments->ItemsPerPage = 8;
+            $this->dtgTextComments->AdditionalConditions = QQ::AndCondition(QQ::Equal(QQN::NarroTextComment()->LanguageId, QApplication::GetLanguageId()));
 
-            $this->btnAddTextComment = new QButton($this);
-            $this->btnAddTextComment->Text = t('Save');
-            $this->btnAddTextComment->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnAddTextComment_Click'));
+            // Create the Other Columns (note that you can use strings for narro_text_comment's properties, or you
+            // can traverse down QQN::narro_text_comment() to display fields that are down the hierarchy)
+            $colText = $this->dtgTextComments->MetaAddColumn(QQN::NarroTextComment()->Text->TextValue);
+            $colText->Name = t('Text');
+            $colText->Html = '<?= $_CONTROL->ParentControl->dtgTextComments_colText_Render($_ITEM) ?>';
 
+            $colUser = $this->dtgTextComments->MetaAddColumn(QQN::NarroTextComment()->User->Username);
+            $colUser->Name = t('User');
+            $colUser->Html = '<?= $_CONTROL->ParentControl->dtgTextComments_colUser_Render($_ITEM) ?>';
+            $colUser->HtmlEntities = false;
+
+            $colCreated = $this->dtgTextComments->MetaAddColumn('Created');
+            $colCreated->Html = '<?= $_CONTROL->ParentControl->dtgTextComments_colCreated_Render($_ITEM) ?>';
+            $colCreated->Name = t('Added');
+            $colCreated->Filter = null;
+            $colCreated->FilterType = null;
+
+            $colComment = $this->dtgTextComments->MetaAddColumn('CommentText');
+            $colComment->Html = '<?= $_CONTROL->ParentControl->dtgTextComments_colComment_Render($_ITEM) ?>';
+            $colComment->Name = t('Comment');
+            $colComment->FilterBoxSize = 50;
+
+            $colUsedIn = new QDataGridColumn(t('Found in'));
+            $colUsedIn->Html = '<?= $_CONTROL->ParentControl->dtgTextComments_colUsedIn_Render($_ITEM) ?>';
+            $colUsedIn->HtmlEntities = false;
+            $colUsedIn->Width = 200;
+
+            $this->dtgTextComments->AddColumn($colUsedIn);
         }
 
-        public function btnAddTextComment_Click($strFormId, $strControlId, $strParameter) {
-            if (trim($this->txtNarroTextComment->Text) == '') return false;
-            if (!QApplication::HasPermissionForThisLang('Can comment', QApplication::QueryString('p'))) return false;
+        public function dtgTextComments_colUsedIn_Render(NarroTextComment $objTextComment) {
+            $arrProjects = NarroProject::QueryArray(QQ::Equal(QQN::NarroProject()->NarroContextAsProject->TextId, $objTextComment->TextId), QQ::Distinct());
+            $strText = '';
 
-            $objNarroTextComment = new NarroTextComment();
-            $objNarroTextComment->TextId = $this->objNarroText->TextId;
-            $objNarroTextComment->UserId = QApplication::GetUserId();
-            $objNarroTextComment->LanguageId = QApplication::GetLanguageId();
-            $objNarroTextComment->Created = QDateTime::Now();
+            if (is_array($arrProjects))
+                foreach($arrProjects as $objProject) {
+                    $strText .= NarroLink::ProjectTextList($objProject->ProjectId, NarroTextListPanel::SHOW_ALL_TEXTS, NarroTextListPanel::SEARCH_TEXTS, "'" . $objTextComment->Text->TextValue . "'", $objProject->ProjectName) . '<br />';
+                }
 
-            $strResult = QApplication::$PluginHandler->SaveTextComment($this->txtNarroTextComment->Text);
-            if (!QApplication::$PluginHandler->Error)
-                $objNarroTextComment->CommentText = $strResult;
-            else
-                $objNarroTextComment->CommentText = $this->txtNarroTextComment->Text;
-
-            $objNarroTextComment->CommentTextMd5 = md5($this->txtNarroTextComment->Text);
-            try {
-                $objNarroTextComment->Save();
-            } catch (Exception $objEx) {
-                return false;
-            }
-
-            if ($this->objNarroText->HasComments != 1) {
-                $this->objNarroText->HasComments = 1;
-                $this->objNarroText->Modified = QDateTime::Now();
-                $this->objNarroText->Save();
-            }
-
-            $this->txtNarroTextComment->Text = '';
-            $this->dtgNarroTextComment_Bind();
+            return $strText;
         }
 
-        public function dtgNarroTextComment_Bind() {
-
-            $this->dtgNarroTextComment->DataSource =
-                NarroTextComment::QueryArray(
-                    QQ::AndCondition(
-                        QQ::Equal(QQN::NarroTextComment()->LanguageId, QApplication::GetLanguageId()),
-                        QQ::Equal(QQN::NarroTextComment()->TextId, $this->objNarroText->TextId)
-                    ),
-                    array(QQ::OrderBy(QQN::NarroTextComment()->Created, 1))
-                );
+        public function dtgTextComments_colComment_Render(NarroTextComment $objTextComment) {
+            return nl2br(NarroString::HtmlEntities($objTextComment->CommentText));
         }
 
-        public function __get($strName) {
-            switch ($strName) {
-                case "NarroText":
-                    return $this->objNarroText;
-
-                default:
-                    try {
-                        return parent::__get($strName);
-                        break;
-                    } catch (QCallerException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
-            }
+        public function dtgTextComments_colText_Render(NarroTextComment $objTextComment) {
+            return nl2br(NarroString::HtmlEntities($objTextComment->Text->TextValue));
         }
 
-        public function __set($strName, $mixValue) {
-            switch ($strName) {
-                case "NarroText":
-                    if ($mixValue instanceof NarroText)
-                        $this->objNarroText = $mixValue;
-                    else
-                        throw new Exception(t('NarroText should be set with an instance of NarroText'));
-                    $this->MarkAsModified();
-                    break;
-
-                default:
-                    try {
-                        return (parent::__set($strName, $mixValue));
-                    } catch (QCallerException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
-            }
+        public function dtgTextComments_colUser_Render(NarroTextComment $objTextComment) {
+            return NarroLink::UserProfile($objTextComment->UserId, $objTextComment->User->Username);
         }
+
+        public function dtgTextComments_colCreated_Render(NarroTextComment $objTextComment) {
+            $objDateSpan = new QDateTimeSpan(time() - strtotime($objTextComment->Created));
+            return sprintf(t('%s ago'), $objDateSpan->SimpleDisplay());
+        }
+
     }
 ?>

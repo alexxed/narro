@@ -51,13 +51,13 @@
                         if (trim($strLogLine))
                             if (!preg_match('/[0-9\-T:]+\sDEBUG\s\(7\)/', $strLogLine)) {
                                 if (strstr($strLogLine, 'WARN'))
-                                    $strLogContents .= sprintf('<span class="warning">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine)));
+                                    $strLogContents = sprintf('<span class="warning">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine))) . $strLogContents;
                                 elseif (strstr($strLogLine, 'ERR'))
-                                    $strLogContents .= sprintf('<span class="error">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine)));
+                                    $strLogContents = sprintf('<span class="error">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine))) . $strLogContents;
                                 elseif (strstr($strLogLine, 'INFO'))
-                                    $strLogContents .= sprintf('<span class="info">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine)));
+                                    $strLogContents = sprintf('<span class="info">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine))) . $strLogContents;
                                 else
-                                    $strLogContents .= nl2br(NarroString::HtmlEntities($strLogLine));
+                                    $strLogContents = nl2br(NarroString::HtmlEntities($strLogLine)) . $strLogContents;
                             }
 
                     }

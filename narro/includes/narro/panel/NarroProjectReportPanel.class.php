@@ -163,11 +163,12 @@
                     QApplication::$Cache->save($arrSeriesData, $strCacheId, array('Project' . $this->objNarroProject->ProjectId));
             }
 
-            foreach($arrSeriesData as $strDate=>$intCount) {
-                if (strtotime($strDate) < strtotime($strLowestFrom)) $strLowestFrom = $strDate;
-                if (strtotime($strDate) > strtotime($strHighestTo)) $strHighestTo = $strDate;
-                $objTranslatedSeries->AddDataPoint($strDate, $intCount);
-            }
+            if (is_array($arrSeriesData))
+                foreach($arrSeriesData as $strDate=>$intCount) {
+                    if (strtotime($strDate) < strtotime($strLowestFrom)) $strLowestFrom = $strDate;
+                    if (strtotime($strDate) > strtotime($strHighestTo)) $strHighestTo = $strDate;
+                    $objTranslatedSeries->AddDataPoint($strDate, $intCount);
+                }
 
             $this->flotReport->ReplaceSeries(1, $objTranslatedSeries);
 

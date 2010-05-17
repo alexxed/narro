@@ -24,23 +24,18 @@
 
     require_once('includes/configuration/prepend.inc.php');
 
-    /**
-     * This page is used to clean stale form states if FileFormStateHandler is used
-     */
-    NarroUtils::CleanStaleFormStates();
-
-    class NarroProjectListForm extends NarroForm {
+    class NarroTextCommentListForm extends NarroForm {
         /**
          * The main tab is the tab panel, used to group panels in a tabbed control for easy access
          * @var QTabPanel
          */
         protected $pnlMainTab;
         /**
-         * This is the project list panel
-         * @see includes/narro/panel/NarroProjectListPanel.class.php
-         * @var NarroProjectListPanel
+         * This is the debate panel
+         * @see includes/narro/panel/NarroDebatePanel.class.php
+         * @var NarroDebatePanel
          */
-        protected $pnlProjectList;
+        protected $pnlTextCommentList;
 
         protected function Form_Create() {
             parent::Form_Create();
@@ -53,10 +48,9 @@
              * The filter is used to show only projects of a given status based on their progress
              * (finished, empty, in progress).
              */
-            $this->pnlProjectList = new NarroProjectListPanel($this->pnlMainTab);
-            $this->pnlProjectList->Filter = QApplication::QueryString('f');
+            $this->pnlTextCommentList = new NarroTextCommentListPanel($this->pnlMainTab, 'pnlTextCommentList_SetEdit', 'pnlTextCommentList_CloseEdit');
 
-            $this->pnlMainTab->addTab($this->pnlProjectList, t('Projects'));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Projects'), NarroLink::ProjectList());
 
             /**
              * Do not show the langauge tab if only two languages are active (source and target
@@ -67,10 +61,12 @@
 
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Roles'), NarroLink::RoleList());
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Comments'), NarroLink::TextCommentList());
+            $this->pnlMainTab->addTab($this->pnlTextCommentList, t('Comments'));
+
+            $this->pnlMainTab->SelectedTab = t('Comments');
 
         }
     }
 
-    NarroProjectListForm::Run('NarroProjectListForm', 'templates/narro_project_list.tpl.php');
+    NarroTextCommentListForm::Run('NarroTextCommentListForm', 'templates/narro_text_comment_list.tpl.php');
 ?>

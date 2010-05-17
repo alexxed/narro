@@ -138,7 +138,11 @@
                             $this->intSearchType,
                             $this->strSearchText,
                             null,
-                            QApplication::QueryString('cc')
+                            QApplication::QueryString('cc'),
+                            null,
+                            null,
+                            QApplication::QueryString('sc')
+
                         )
                     );
                 }

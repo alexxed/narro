@@ -51,7 +51,8 @@
                     $this->dtgNarroContextInfo->CurrentRowIndex + 1 + (($this->dtgNarroContextInfo->PageNumber - 1) * $this->dtgNarroContextInfo->ItemsPerPage),
                     $this->dtgNarroContextInfo->TotalItemCount,
                     $this->dtgNarroContextInfo->SortColumnIndex,
-                    $this->dtgNarroContextInfo->SortDirection
+                    $this->dtgNarroContextInfo->SortDirection,
+                    0
                )
            );
         }

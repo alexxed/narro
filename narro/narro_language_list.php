@@ -37,6 +37,7 @@
             $this->pnlTab->addTab($this->pnlLanguageList, t('Languages'));
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::RoleList());
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Comments'), NarroLink::TextCommentList());
 
             $this->pnlTab->SelectedTab = 1;
             $this->pnlLanguageList->SelectedTab = 0;
