@@ -73,8 +73,12 @@
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, QApplication::QueryString('f'), null, NarroTextListPanel::SHOW_UNTRANSLATED_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
                 $this->pnlMainTab->addTab($this->pnlContextSuggest, t('Review'));
             }
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
+
+            if (QApplication::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
+            if (QApplication::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
+
 
             if ($this->intTextFilter == NarroTextListPanel::SHOW_UNTRANSLATED_TEXTS)
                 $this->pnlMainTab->SelectedTab = t('Translate');
