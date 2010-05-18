@@ -187,7 +187,7 @@
                         __PHP_CLI_PATH__,
                         escapeshellarg('includes/narro/importer/narro-cli.php'),
                         $this->objNarroProject->ProjectId,
-                        0,
+                        QApplication::$User->UserId,
                         NarroLanguage::SOURCE_LANGUAGE_CODE,
                         QApplication::$Language->LanguageCode,
                         $this->objNarroProject->DefaultTemplatePath,
