@@ -655,7 +655,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
             $arrResult = QApplication::$PluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
             if
             (
-            trim($arrResult[1]) != '' &&
+            $arrResult[1] != '' &&
             $arrResult[0] == $strOriginal &&
             $arrResult[2] == $strContext &&
             $arrResult[3] == $this->objFile &&
@@ -664,7 +664,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                 $strSuggestionValue = $arrResult[1];
             }
             else
-                QApplication::$Logger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strTranslation, $strTranslation));
+                QApplication::$Logger->warn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strTranslation, $strTranslation));
 
             if (!is_null($strOriginalAccKey) && !is_null($strOriginalAccKeyPrefix)) {
                 /**

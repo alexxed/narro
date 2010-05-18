@@ -451,7 +451,7 @@
             }
 
             fclose($hndExportFile);
-            chmod($strTranslatedFile, 0666);
+            @chmod($strTranslatedFile, 0666);
 
             /**
              * Try to format the file
@@ -467,8 +467,9 @@
                 copy($strTranslatedFile . '~', $strTranslatedFile);
             }
 
-            unlink($strTranslatedFile . '~');
-            chmod($strTranslatedFile, 0666);
+            if (file_exists($strTranslatedFile . '~'))
+                unlink($strTranslatedFile . '~');
+            @chmod($strTranslatedFile, 0666);
         }
 
         public function ImportFile($strTemplate, $strTranslatedFile = null) {
@@ -597,15 +598,15 @@
                          * if there's a _ and the word that contains it starts with a capital letter or is a number, + or -
                          */
                         if (strstr($strPossibleWord, '_') && preg_match('/^[A-Z0-9\+\-]/', str_replace('_', '', $strPossibleWord))) {
-                            preg_match('/_(\w)/', $strText, $arrMatches);
-                            return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
+                            if (preg_match('/_(\w)/', $strText, $arrMatches))
+                                return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
                         }
                     }
                 }
                 else {
                     if (strstr($strCleanText, '_') && preg_match('/^[A-Z0-9\+\-]/', str_replace('_', '', $strCleanText))) {
-                        preg_match('/_(\w)/', $strText, $arrMatches);
-                        return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
+                        if (preg_match('/_(\w)/', $strText, $arrMatches))
+                            return array(NarroString::Replace('_' . $arrMatches[1], $arrMatches[1], $strText), '_', $arrMatches[1]);
                     }
 
                 }
@@ -668,6 +669,10 @@
          * @return string valid suggestion
          */
         protected function GetTranslation($strOriginal, $strOriginalAccKey = null, $strOriginalAccKeyPrefix = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
+            /**
+             * The contexts are trimmed at import to avoid useless white space contexts, so we need to trim it when searching for it as well
+             */
+            $strContext = trim($strContext);
 
             if ($strContext != '')
                 $objNarroContextInfo = NarroContextInfo::QuerySingle(
@@ -697,7 +702,7 @@
                     $arrResult = QApplication::$PluginHandler->ExportSuggestion($strOriginal, $strSuggestionValue, $strContext, $this->objFile, $this->objProject);
                     if
                     (
-                        trim($arrResult[1]) != '' &&
+                        $arrResult[1] != '' &&
                         $arrResult[0] == $strOriginal &&
                         $arrResult[2] == $strContext &&
                         $arrResult[3] == $this->objFile &&
@@ -706,7 +711,7 @@
                         $strSuggestionValue = $arrResult[1];
                     }
                     else
-                        QApplication::$Logger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strSuggestionValue, join(';', $arrResult)));
+                        QApplication::$Logger->warn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strSuggestionValue, join(';', $arrResult)));
 
                     if (!is_null($strOriginalAccKey) && !is_null($strOriginalAccKeyPrefix)) {
                         /**
@@ -719,12 +724,12 @@
                         return $strSuggestionValue;
                 }
                 else {
-                    QApplication::$Logger->debug(sprintf('No translation found for "%s", while searching for context "%s"', $strOriginal, $strContext));
+                    QApplication::$Logger->debug(sprintf('No translation found for the text "%s", while searching for context "%s"', $strOriginal, $strContext));
                     return '';
                 }
             }
             else {
-                QApplication::$Logger->err(sprintf('No context found for "%s", while searching for context "%s"', $strOriginal, $strContext));
+                QApplication::$Logger->err(sprintf('No context found for the text "%s", while searching for context "%s"', $strOriginal, $strContext));
                 return '';
             }
         }

@@ -88,7 +88,7 @@
                 $arrResult = QApplication::$PluginHandler->ExportSuggestion($strText, $strSuggestionValue, $strContext, new NarroFile(), $this->objProject);
                 if
                 (
-                    trim($arrResult[1]) != '' &&
+                    $arrResult[1] != '' &&
                     $arrResult[0] == $strText &&
                     $arrResult[2] == $strContext &&
                     $arrResult[3] == new NarroFile() &&
@@ -98,7 +98,7 @@
                     $strSuggestionValue = $arrResult[1];
                 }
                 else
-                    QApplication::$Logger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $strSuggestionValue, print_r($arrResult, true)));
+                    QApplication::$Logger->warn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strSuggestionValue, print_r($arrResult, true)));
 
                 $arrTranslatedColumn[10] = str_replace(array("\n", "\r"), array("",""), $strSuggestionValue);
 

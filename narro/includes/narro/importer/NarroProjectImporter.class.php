@@ -642,6 +642,7 @@
                             QApplication::$Logger->warn(sprintf('Copying unhandled file type: %s', $strTemplateFile));
                             NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
                             copy($strTemplateFile, $strTranslatedFile);
+                            return false;
                         }
             }
             $objFileImporter->File = $objFile;

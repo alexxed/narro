@@ -128,7 +128,7 @@
 
                     if
                     (
-                        trim($arrResult[1]) != '' &&
+                        $arrResult[1] != '' &&
                         $arrResult[0] == $strOriginalText &&
                         $arrResult[2] == $strKey &&
                         $arrResult[3] == $this->objFile &&
@@ -138,7 +138,7 @@
                         $arrTranslation[$strKey] = $arrResult[1];
                     }
                     else
-                        QApplication::$Logger->warn(sprintf('A plugin returned an unexpected result while processing the suggestion "%s": %s', $arrTranslation[$strKey], var_export($arrResult, true)));
+                        QApplication::$Logger->warn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $arrTranslation[$strKey], var_export($arrResult, true)));
 
                     if (preg_match('/[\@A-Z0-9a-z\.\_\-\?\{\}]+(\s*=\s*)/', $arrTemplateLines[$strKey], $arrMiddleMatches)) {
                         $strGlue = $arrMiddleMatches[1];
