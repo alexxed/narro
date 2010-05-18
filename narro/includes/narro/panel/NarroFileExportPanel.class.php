@@ -30,28 +30,20 @@
             $this->btnExport->Text = t('Export');
             $this->btnExport->ActionParameter = $this->objNarroFile->FileId;
             $this->btnExport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnExport_Click'));
-            $this->btnExport->Display = QApplication::HasPermissionForThisLang('Can export file', $this->objNarroFile->ProjectId);
 
-            if (!$this->btnExport->Display) {
-                $strTemplateFile = $this->objNarroFile->Project->DefaultTemplatePath . $this->objNarroFile->FilePath;
-                if (file_exists($strTemplateFile) && filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_EXPORT__)
-                    $this->btnExport->Display = true;
-                else
-                    $this->btnExport->Display = false;
-            }
+            $strTemplateFile = $this->objNarroFile->Project->DefaultTemplatePath . $this->objNarroFile->FilePath;
+            if ((filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_EXPORT__ || QApplication::HasPermissionForThisLang('Can export file', $this->objNarroFile->ProjectId)) && file_exists($strTemplateFile))
+                $this->blnDisplay = true;
+            else
+                $this->blnDisplay = false;
 
             $this->fileToUpload = new QFileControl($this);
-            $this->fileToUpload->Display = true;
         }
 
         public function GetControlHtml() {
             $this->strText = '';
 
-            if ($this->fileToUpload->Display)
-                $this->strText .=  t('Model to use') . ': ' . $this->fileToUpload->Render(false) . $this->btnExport->Render(false);
-
-            if ($this->btnExport->Display && !$this->btnExport->Rendered)
-                $this->strText .=  $this->btnExport->Render(false);
+            $this->strText .=  t('Model to use') . ': ' . $this->fileToUpload->Render(false) . $this->btnExport->Render(false);
 
             return parent::GetControlHtml();
         }

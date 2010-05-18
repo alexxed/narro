@@ -33,18 +33,14 @@
             $this->btnImport->Text = t('Import');
             $this->btnImport->ActionParameter = $this->objNarroFile->FileId;
             $this->btnImport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnImport_Click'));
-            $this->btnImport->Display = QApplication::HasPermissionForThisLang('Can import file', $this->objNarroFile->ProjectId);
 
-            if (!$this->btnImport->Display) {
-                $strTemplateFile = $this->objNarroFile->Project->DefaultTemplatePath . $this->objNarroFile->FilePath;
-                if (file_exists($strTemplateFile) && filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_EXPORT__)
-                    $this->btnImport->Display = true;
-                else
-                    $this->btnImport->Display = false;
-            }
+            $strTemplateFile = $this->objNarroFile->Project->DefaultTemplatePath . $this->objNarroFile->FilePath;
+            if ((filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_IMPORT__ || QApplication::HasPermissionForThisLang('Can import file', $this->objNarroFile->ProjectId)) && file_exists($strTemplateFile))
+                $this->blnDisplay = true;
+            else
+                $this->blnDisplay = false;
 
             $this->fileToUpload = new QFileControl($this);
-            $this->fileToUpload->Display = true;
         }
 
         public function GetControlHtml() {
