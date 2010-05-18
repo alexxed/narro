@@ -76,7 +76,6 @@
          * @return array with the same parameters given
          */
         public function ApproveSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
 
             /**
              * replace CR, LF and tabs with a space
