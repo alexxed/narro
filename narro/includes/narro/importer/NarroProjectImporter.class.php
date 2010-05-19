@@ -37,7 +37,7 @@
          * whether to check if the suggestion value is the same as the original text
          * if it's true, the suggestions that are the same as the original text are not imported
          */
-        protected $blnCheckEqual;
+        protected $blnCheckEqual = true;
         /**
          * whether to approve the imported suggestions
          */

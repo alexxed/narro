@@ -233,7 +233,7 @@
                     $strCommand = sprintf(
                         __PHP_CLI_PATH__ . ' ' .
                             escapeshellarg('includes/narro/importer/narro-cli.php').
-                            ' --import --minloglevel 3 --project %d --user %d ' .
+                            ' --import --minloglevel 3 --project %d --user %d --check-equal ' .
                             (($this->chkApproveImportedTranslations->Checked)?'--approve ':'') .
                             (($this->chkApproveOnlyNotApproved->Checked)?'':'--approve-already-approved ') .
                             (($this->chkImportUnchangedFiles->Checked)?'--import-unchanged-files ':'') .
