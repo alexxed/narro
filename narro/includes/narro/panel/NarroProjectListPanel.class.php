@@ -68,7 +68,8 @@
             $this->dtgProjectList->AddColumn($this->colLastActivity);
             $this->dtgProjectList->AddColumn($this->colPercentTranslated);
 
-            $this->dtgProjectList->SortColumnIndex = 0;
+            $this->dtgProjectList->SortColumnIndex = 1;
+            $this->dtgProjectList->SortDirection = 1;
 
 
             $this->txtSearch_Create();
