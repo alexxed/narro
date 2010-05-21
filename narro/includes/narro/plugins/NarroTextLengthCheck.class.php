@@ -28,9 +28,9 @@
 
         public function ApproveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
             /**
-             * If the translated text is more than 30% shorter than the original, show a warning
+             * If the translated text is more than 50% shorter than the original, show a warning
              */
-            if ((abs(mb_strlen($strOriginal) - mb_strlen($strTranslation)) * 100) / mb_strlen($strOriginal) > 30) {
+            if ((abs(mb_strlen($strOriginal) - mb_strlen($strTranslation)) * 100) / mb_strlen($strOriginal) > 50) {
                 $this->arrErrors[] =
                     t('<span style="color:red">Your translation seems really short compared to the original, are you sure it is correct?</span>');
             }
