@@ -27,7 +27,7 @@
         <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/tabs.css" />
         <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/font-<?php if (QApplication::$User instanceof NarroUser) echo QApplication::$User->getPreferenceValueByName('Font size'); else echo 'medium' ?>.css" />
 
-        <?php if (QApplication::QueryString('p')) { ?>
+        <?php if (QApplication::QueryString('p') && isset($this) && $this->objNarroProject instanceof NarroProject) { ?>
             <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context changes for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
             <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Texts to translate for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=text&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
             <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Comments on texts from %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
