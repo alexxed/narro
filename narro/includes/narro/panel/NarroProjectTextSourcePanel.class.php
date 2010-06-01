@@ -42,6 +42,7 @@
             $this->pnlTextSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On my computer'));
             $this->pnlTextSource->addTab(new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On the web'));
             $this->pnlTextSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('Mercurial'));
+            $this->pnlTextSource->addTab(new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('SVN'));
         }
 
         public function GetControlHtml() {
