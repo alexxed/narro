@@ -184,6 +184,7 @@
 
             QApplication::$Logger = new Zend_Log();
             QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile));
+            chmod(QApplication::$LogFile, 0666);
             if (SERVER_INSTANCE == 'dev' && QFirebug::getEnabled())
                 QApplication::$Logger->addWriter(new Zend_Log_Writer_QFirebug());
 

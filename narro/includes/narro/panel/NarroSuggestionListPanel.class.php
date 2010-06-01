@@ -614,7 +614,7 @@
             $btnSaveIgnoreSuggestion = $this->Form->GetControl('btnSaveIgnoreSuggestion' . $strParameter);
             $btnSaveIgnoreSuggestion->Visible = false;
             $this->lblMessage->Text = '';
-            $this->Form->HidePluginErrors();
+            $this->ParentControl->HidePluginErrors();
             $this->MarkAsModified();
         }
 
@@ -668,13 +668,13 @@
                         if ($strControlId != 'btnSaveIgnoreSuggestion' . $objSuggestion->SuggestionId && QApplication::$PluginHandler->Error) {
                             if ($btnSaveIgnoreSuggestion instanceof QButton)
                                 $btnSaveIgnoreSuggestion->Visible = true;
-                            $this->Form->ShowPluginErrors();
+                            $this->ParentControl->ShowPluginErrors();
                             return false;
                         }
                         else {
                             if ($btnSaveIgnoreSuggestion instanceof QButton)
                                 $btnSaveIgnoreSuggestion->Visible = false;
-                            $this->Form->HidePluginErrors();
+                            $this->ParentControl->HidePluginErrors();
                         }
 
 

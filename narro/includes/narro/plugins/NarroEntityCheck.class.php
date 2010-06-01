@@ -97,21 +97,22 @@
 
             $strPreparedOriginal = self::StripIgnoreCharacters($strOriginal);
 
-            if (strstr($strOriginal, '%') || strstr($strOriginal, '$') || strstr($strOriginal, '&'))
+            if (strstr($strOriginal, '%') || strstr($strOriginal, '$') || strstr($strOriginal, '&')) {
                 $arrEntities = self::GetEntities($strOriginal);
-            if (count($arrEntities)) {
-                foreach($arrEntities as $strEntity) {
-                    if (strpos($strTranslation, trim($strEntity)) === false)
-                        $arrDiff[] = htmlspecialchars(trim($strEntity), null, 'utf-8');
-                }
+                if (count($arrEntities)) {
+                    foreach($arrEntities as $strEntity) {
+                        if (strpos($strTranslation, trim($strEntity)) === false)
+                            $arrDiff[] = htmlspecialchars(trim($strEntity), null, 'utf-8');
+                    }
 
-                if (isset($arrDiff) && $arrDiff) {
-                    $this->arrErrors[] =
-                        sprintf(
-                            t(
-                                'You translated or forgot some variables that should have been left as they were: <span style="color:red;font-size:large">%s</span>'),
-                            join(', ', $arrDiff)
-                        );
+                    if (isset($arrDiff) && $arrDiff) {
+                        $this->arrErrors[] =
+                            sprintf(
+                                t(
+                                    'You translated or forgot some variables that should have been left as they were: <span style="color:red;font-size:large">%s</span>'),
+                                join(', ', $arrDiff)
+                            );
+                    }
                 }
             }
 
