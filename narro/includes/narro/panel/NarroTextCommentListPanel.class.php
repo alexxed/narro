@@ -55,12 +55,26 @@
             // Add Pagination (if desired)
             $this->dtgTextComments->Paginator = new QPaginator($this->dtgTextComments);
             $this->dtgTextComments->ItemsPerPage = 8;
-            $this->dtgTextComments->AdditionalConditions = QQ::AndCondition(QQ::Equal(QQN::NarroTextComment()->LanguageId, QApplication::GetLanguageId()));
+            $this->dtgTextComments->AdditionalClauses = array(QQ::Distinct());
+            if (QApplication::QueryString('p'))
+                $this->dtgTextComments->AdditionalConditions = QQ::AndCondition(
+                    QQ::Equal(
+                        QQN::NarroTextComment()->LanguageId,
+                        QApplication::GetLanguageId()
+                    ),
+                    QQ::Equal(
+                        QQN::NarroTextComment()->Text->NarroContextAsText->ProjectId,
+                        QApplication::QueryString('p')
+                    )
+                );
+            else
+                $this->dtgTextComments->AdditionalConditions = QQ::AndCondition(QQ::Equal(QQN::NarroTextComment()->LanguageId, QApplication::GetLanguageId()));
 
             // Create the Other Columns (note that you can use strings for narro_text_comment's properties, or you
             // can traverse down QQN::narro_text_comment() to display fields that are down the hierarchy)
             $colText = $this->dtgTextComments->MetaAddColumn(QQN::NarroTextComment()->Text->TextValue);
             $colText->Name = t('Text');
+            $colText->HtmlEntities = false;
             $colText->Html = '<?= $_CONTROL->ParentControl->dtgTextComments_colText_Render($_ITEM) ?>';
 
             $colUser = $this->dtgTextComments->MetaAddColumn(QQN::NarroTextComment()->User->Username);
@@ -104,7 +118,10 @@
         }
 
         public function dtgTextComments_colText_Render(NarroTextComment $objTextComment) {
-            return nl2br(NarroString::HtmlEntities($objTextComment->Text->TextValue));
+            if ($this->dtgTextComments->GetColumnByName(t('Found in')))
+                return nl2br(NarroString::HtmlEntities($objTextComment->Text->TextValue));
+            else
+                return NarroLink::ContextSuggest(QApplication::QueryString('p'), null, null, null, NarroTextListPanel::SEARCH_TEXTS, sprintf("'%s'", $objTextComment->Text->TextValue), null, null, null, null, true, nl2br(NarroString::HtmlEntities($objTextComment->Text->TextValue)));
         }
 
         public function dtgTextComments_colUser_Render(NarroTextComment $objTextComment) {

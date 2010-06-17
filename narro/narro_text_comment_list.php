@@ -43,11 +43,6 @@
             $this->pnlMainTab = new QTabPanel($this);
             $this->pnlMainTab->UseAjax = false;
 
-            /**
-             * Create the project list panel and set the filter from the url.
-             * The filter is used to show only projects of a given status based on their progress
-             * (finished, empty, in progress).
-             */
             $this->pnlTextCommentList = new NarroTextCommentListPanel($this->pnlMainTab, 'pnlTextCommentList_SetEdit', 'pnlTextCommentList_CloseEdit');
 
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Projects'), NarroLink::ProjectList());

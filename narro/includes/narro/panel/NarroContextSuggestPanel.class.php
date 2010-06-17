@@ -57,13 +57,17 @@
 
         public $intCurrentContext;
         protected $intContextsCount;
+        protected $intSortColumnIndex;
+        protected $intSortDirection;
+        protected $blnShowComments;
+
         public $pnlProgress;
 
         public $lblProgress;
 
         public $pnlBreadcrumb;
 
-        public function __construct($objParentObject, $strControlId = null, NarroProject $objNarroProject, $objNarroFile = null, NarroContextInfo $objContextInfo, $intTextFilter = NarroTextListPanel::SHOW_ALL_TEXTS, $intSearchType = NarroTextListPanel::SEARCH_TEXTS, $strSearchText = '', $intContextsCount = 0, $intCurrentContext = 0) {
+        public function __construct($objParentObject, $strControlId = null, NarroProject $objNarroProject, $objNarroFile = null, NarroContextInfo $objContextInfo, $intTextFilter = NarroTextListPanel::SHOW_ALL_TEXTS, $intSearchType = NarroTextListPanel::SEARCH_TEXTS, $strSearchText = '', $intContextsCount = 0, $intCurrentContext = 0, $intSortColumnIndex = -1, $intSortDirection = 0, $blnShowComments = 0) {
             parent::__construct($objParentObject, $strControlId);
 
             $this->objProject = $objNarroProject;
@@ -73,6 +77,9 @@
             $this->strSearchText = $strSearchText;
             $this->intCurrentContext = $intCurrentContext;
             $this->intContextsCount = $intContextsCount;
+            $this->intSortColumnIndex = $intSortColumnIndex;
+            $this->intSortDirection = $intSortDirection;
+            $this->blnShowComments = $blnShowComments;
 
             $this->objNarroContextInfo = $objContextInfo;
 
@@ -908,9 +915,9 @@
             }
             else {
                 if ($this->objFile instanceof NarroFile)
-                    QApplication::Redirect(NarroLink::ContextSuggest($this->objProject->ProjectId, $this->objFile->FileId, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText));
+                    QApplication::Redirect(NarroLink::ContextSuggest($this->objProject->ProjectId, $this->objFile->FileId, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, urlencode($this->strSearchText), $this->intCurrentContext, $this->intContextCount, $this->intSortColumnIndex, $this->intSortDirection, $this->blnShowComments));
                 else
-                    QApplication::Redirect(NarroLink::ContextSuggest($this->objProject->ProjectId, 0, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, $this->strSearchText));
+                    QApplication::Redirect(NarroLink::ContextSuggest($this->objProject->ProjectId, 0, $objContext->ContextId, $this->intTextFilter, $this->intSearchType, urlencode($this->strSearchText), $this->intCurrentContext, $this->intContextCount, $this->intSortColumnIndex, $this->intSortDirection, $this->blnShowComments));
             }
         }
 

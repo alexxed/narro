@@ -28,6 +28,9 @@
         protected $strSearchText;
         protected $intCurrentContext;
         protected $intContextsCount;
+        protected $intSortColumnIndex;
+        protected $intSortDirection;
+        protected $blnShowComments;
 
         protected $pnlMainTab;
         protected $pnlContextSuggest;
@@ -55,7 +58,10 @@
                 $this->intSearchType,
                 $this->strSearchText,
                 $this->intContextsCount,
-                $this->intCurrentContext
+                $this->intCurrentContext,
+                $this->intSortColumnIndex,
+                $this->intSortDirection,
+                $this->blnShowComments
             );
 
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
@@ -65,6 +71,7 @@
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Add'));
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Comments'), NarroLink::ProjectTextCommentList($this->objNarroProject->ProjectId));
             if ($this->intTextFilter == NarroTextListPanel::SHOW_UNTRANSLATED_TEXTS) {
                 $this->pnlMainTab->addTab($this->pnlContextSuggest, t('Translate'));
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, QApplication::QueryString('f'), null, NarroTextListPanel::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, QApplication::QueryString('st'), QApplication::QueryString('s')));
@@ -99,6 +106,9 @@
 
             $this->intCurrentContext = QApplication::QueryString('ci');
             $this->intContextsCount = QApplication::QueryString('cc');
+            $this->intSortColumnIndex = QApplication::QueryString('o');
+            $this->intSortDirection = QApplication::QueryString('a');
+            $this->blnShowComments = QApplication::QueryString('sc');
 
             if (!$this->objNarroProject && !$this->objFile) {
                 QApplication::Redirect(NarroLink::ProjectList());
