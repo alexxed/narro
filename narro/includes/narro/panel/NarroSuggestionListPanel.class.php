@@ -638,8 +638,8 @@
                                 QApplication::GetUserId() != NarroUser::ANONYMOUS_USER_ID
                           );
             if (!$blnCanEdit || $this->objNarroContextInfo->ValidSuggestionId == $strParameter) {
-                $this->Form->txtSuggestionValue->Text = $objSuggestion->SuggestionValue;
-                $this->Form->txtSuggestionValue->Focus();
+                $this->ParentControl->txtSuggestionValue->Text = $objSuggestion->SuggestionValue;
+                $this->ParentControl->txtSuggestionValue->Focus();
                 return false;
             }
 
