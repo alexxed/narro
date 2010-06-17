@@ -579,7 +579,7 @@
                     return NarroSuggestion::Load($arrDbRow['suggestion_id']);
                 }
                 else {
-                    QApplication::$Logger->warn(sprintf('There are no votes recorded for context_id=%d', $intContextId));
+                    QApplication::$Logger->debug(sprintf('There are no votes recorded for context_id=%d', $intContextId));
                     return false;
                 }
             }

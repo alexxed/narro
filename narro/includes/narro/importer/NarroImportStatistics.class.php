@@ -53,7 +53,8 @@
             'Reused suggestions',
             'Reused context informations',
             'Empty original texts',
-            'Texts with no access key set, but fixed'
+            'Texts with no access key set, but fixed',
+            'Texts exported as fuzzy because they are not approved'
         )
         as $strPropertyName)
         NarroImportStatistics::$arrStatistics[$strPropertyName] = 0;

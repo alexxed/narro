@@ -17,6 +17,8 @@
      */
 
     class NarroGettextPoFileImporter extends NarroFileImporter {
+        private $objCurrentContext;
+
         protected function getFieldGroups($strFile) {
             QApplication::$Logger->debug(sprintf('Starting to read contexts from %s', $this->objFile->FileName));
 
@@ -295,6 +297,8 @@
 
             foreach($arrTemplateFile as $strIndex=>$arrTemplateFields) {
 
+                $this->objCurrentContext = null;
+
                 if (!is_null($arrTemplateFields['MsgId'])) $arrTemplateFields['MsgId'] = str_replace('\"', '"', $arrTemplateFields['MsgId']);
                 if (!is_null($arrTemplateFields['MsgStr'])) $arrTemplateFields['MsgStr'] = str_replace('\"', '"', $arrTemplateFields['MsgStr']);
 
@@ -426,8 +430,21 @@
                     fputs($hndExportFile, $arrTemplateFields['PreviousUntranslatedPlural']);
                 if (isset($arrTemplateFields['MsgContext']) && !is_null($arrTemplateFields['MsgContext']))
                     fputs($hndExportFile, sprintf('msgctxt "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgContext'])));
-                if (isset($arrTemplateFields['MsgId']) && !is_null($arrTemplateFields['MsgId']))
+                if (isset($arrTemplateFields['MsgId']) && !is_null($arrTemplateFields['MsgId'])) {
+                    /**
+                     * If we're exporting a translation that is not approved, mark it as fuzzy
+                     */
+                    if (
+                        $this->objCurrentContext instanceof NarroContextInfo &&
+                        !$this->objCurrentContext->ValidSuggestionId &&
+                        isset($arrTemplateFields['MsgStr']) &&
+                        $arrTemplateFields['MsgStr'] != '')
+                    {
+                        NarroImportStatistics::$arrStatistics['Texts exported as fuzzy because they are not approved']++;
+                        fputs($hndExportFile, "#, fuzzy\n");
+                    }
                     fputs($hndExportFile, sprintf('msgid "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgId'])));
+                }
                 if (isset($arrTemplateFields['MsgPluralId']) && !is_null($arrTemplateFields['MsgPluralId']))
                     fputs($hndExportFile, sprintf('msgid_plural "%s"' . "\n", str_replace('"', '\"', $arrTemplateFields['MsgPluralId'])));
 
@@ -695,6 +712,7 @@
                 );
 
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
+                $this->objCurrentContext = $objNarroContextInfo;
                 $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
 
                 if ($strSuggestionValue !== false) {
