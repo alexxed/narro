@@ -115,8 +115,10 @@
             $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\';this.value=\'%s\'', t('Please wait...'))));
             if (QApplication::$UseAjax)
                 $this->btnImport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnImport_Click'));
-            else
+            else {
+                $this->btnImport->ActionParameter = 2;
                 $this->btnImport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnImport_Click'));
+            }
 
             if (NarroUtils::IsProcessRunning('import', $this->objNarroProject->ProjectId)) {
                 $this->btnImport->Visible = false;
@@ -178,6 +180,15 @@
             }
             elseif ($strParameter == 2) {
                 set_time_limit(0);
+
+                if (file_exists($strProcLogFile))
+                    unlink($strProcLogFile);
+
+                if (file_exists($strProcPidFile))
+                    unlink($strProcPidFile);
+
+                if (file_exists($strProgressFile))
+                    unlink($strProgressFile);
 
                 $objNarroImporter = new NarroProjectImporter();
 

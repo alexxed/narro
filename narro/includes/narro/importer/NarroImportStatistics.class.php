@@ -27,6 +27,7 @@
         array
         (
             "Texts that don't have access keys",
+            'Unchanged template files',
             'Contexts to export',
             'Exported contexts',
             'Exported files',

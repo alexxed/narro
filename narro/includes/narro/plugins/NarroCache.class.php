@@ -28,7 +28,7 @@
             $objFile->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
             $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
 
-            return array($objFile, $objProject);
+            return array($objFile);
         }
 
         public function ImportProject(NarroProject $objProject) {

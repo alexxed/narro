@@ -275,7 +275,10 @@
 
             $objOverallCondition =
                 QQ::AndCondition(
-                    QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId, QApplication::GetLanguageId()),
+                    QQ::OrCondition(
+                        QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId, QApplication::GetLanguageId()),
+                        QQ::IsNull(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId)
+                    ),
                     $objSearchCondition,
                     $objFilterCondition
                 );

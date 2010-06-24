@@ -69,6 +69,7 @@
 
             switch(strtolower(pathinfo($this->fileSource->File, PATHINFO_EXTENSION))) {
                 case 'zip':
+                case 'xpi':
                     QApplication::$Logger->info(sprintf('Trying to uncompress %s', $this->fileSource->FileName));
                     $objZipFile = new ZipArchive();
                     $intErrCode = $objZipFile->open($this->fileSource->File);
