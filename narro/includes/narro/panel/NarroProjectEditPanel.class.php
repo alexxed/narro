@@ -193,8 +193,37 @@
             $this->lblMessage->Text = t('Project saved sucessfully.');
 
             if ($this->strTitleVerb == t('Add')) {
-                if (!file_exists(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId))
-                    mkdir(__IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId, 0777);
+                /**
+                 * If a new project is added, the project directory and source and target are created
+                 * Also sample export.sh and import.sh are written in the project directory, ready for use
+                 */
+                $strProjectDir = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
+                if (!file_exists($strProjectDir)) {
+                    mkdir($strProjectDir, 0777);
+                    file_put_contents(
+                        $strProjectDir . '/export.sh',
+                        "#!/bin/bash\n".
+                        "# \$1 - language code\n".
+                        "# \$2 - language id\n".
+                        "# \$3 - project name\n".
+                        "# \$4 - project id\n".
+                        "# \$5 - user id\n".
+                        "\n" .
+                        sprintf("echo \"You can run commands before import or after export by editing export.sh and import.sh from '%s'\"\n", $strProjectDir) .
+                        "export retVal=\$?\n".
+                        "# the script will exit with the echo command exit code, 0 = successful run\n".
+                        "exit \$retVal"
+                    );
+                    copy($strProjectDir . '/export.sh', $strProjectDir . '/import.sh');
+                    chmod($strProjectDir . '/export.sh', 0666);
+                    chmod($strProjectDir . '/import.sh', 0666);
+
+                    if (!file_exists($strProjectDir . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE))
+                        mkdir($strProjectDir . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE, 0777);
+
+                    if (!file_exists($strProjectDir . '/' . QApplication::GetLanguageId()))
+                        mkdir($strProjectDir . '/' . QApplication::GetLanguageId(), 0777);
+                }
                 QApplication::Redirect(NarroLink::ProjectImport($this->objNarroProject->ProjectId));
             }
         }
