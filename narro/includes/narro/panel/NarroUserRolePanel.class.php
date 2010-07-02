@@ -100,8 +100,10 @@
                 $this->dtgUserRole->AddColumn($this->colActions);
 
             $this->lstRole = new QListBox($this);
-            foreach(NarroRole::LoadAll(array(QQ::OrderBy(QQN::NarroRole()->RoleName))) as $objNarroRole)
+            foreach(NarroRole::LoadAll(array(QQ::OrderBy(QQN::NarroRole()->RoleName))) as $objNarroRole) {
+                if ($objNarroRole->RoleName == 'Administrator' && !QApplication::HasPermission('Administrator')) continue;
                 $this->lstRole->AddItem($objNarroRole->RoleName, $objNarroRole->RoleId);
+            }
 
             $this->btnAddRole = new QButton($this);
             $this->btnAddRole->Text = t('Add');
@@ -199,6 +201,11 @@
 
             if (!QApplication::HasPermission('Can manage user roles', $objUserRole->ProjectId, $objUserRole->LanguageId)) {
                 QApplication::ExecuteJavaScript(sprintf('alert(\'%s\')', sprintf(t('You don\\\'t have permissions to give permissions on the project %s, language %s'), $this->lstProject->SelectedName, $this->lstLanguage->SelectedName)));
+                return false;
+            }
+
+            if ($this->lstRole->SelectedName == 'Administrator' && !QApplication::HasPermission('Administrator')) {
+                QApplication::ExecuteJavaScript(sprintf('alert(\'%s\')', sprintf(t('You don\\\'t have the Administrator permission, so you cannot give it'))));
                 return false;
             }
 
