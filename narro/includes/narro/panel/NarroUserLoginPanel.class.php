@@ -35,6 +35,8 @@
                 $this->txtPreviousUrl = $_SERVER['HTTP_REFERER'];
 
             if (isset($_REQUEST['openid_mode'])) {
+                require_once "Zend/Uri.php";
+                require_once "Zend/Uri/Http.php";
                 require_once "Zend/Auth.php";
                 require_once "Zend/Auth/Adapter/OpenId.php";
                 require_once "Zend/Auth/Storage/NonPersistent.php";
@@ -79,6 +81,9 @@
 
         public function btnLogin_Click($strFormId, $strControlId, $strParameter) {
             if (trim($this->txtPassword->Text) == '') {
+                require_once "Zend/Uri.php";
+                require_once "Zend/Uri/Http.php";
+                require_once "Zend/Http/Client/Adapter/Socket.php";
                 require_once "Zend/Auth.php";
                 require_once "Zend/Auth/Adapter/OpenId.php";
                 require_once "Zend/Auth/Storage/NonPersistent.php";
