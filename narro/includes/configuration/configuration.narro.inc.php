@@ -75,6 +75,8 @@
         'includes' . '/narro/search' . PATH_SEPARATOR .
         'includes' . '/narro' . PATH_SEPARATOR .
         'includes' . '/PEAR' . PATH_SEPARATOR .
+        '/usr/share/php' . PATH_SEPARATOR .
+        '/usr/share/pear' . PATH_SEPARATOR .
         get_include_path()
         );
 
