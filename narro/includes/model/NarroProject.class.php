@@ -75,7 +75,7 @@
 
             if ($intTotalTexts === false) {
 
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND c.active=1', $this->ProjectId, $intLanguageId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci, narro_file f WHERE f.active=1 AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND c.active=1', $this->ProjectId, $intLanguageId);
 
                 // Perform the Query
                 $objDbResult = $objDatabase->Query($strQuery);
@@ -123,7 +123,7 @@
             $intTranslatedTexts = QApplication::$Cache->load('translated_texts_' . $this->ProjectId . '_' . $intLanguageId);
             if ($intTranslatedTexts === false) {
                 // Cache miss
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1', $this->ProjectId, $intLanguageId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci, narro_file f WHERE f.active=1 AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1', $this->ProjectId, $intLanguageId);
 
                 // Perform the Query
                 $objDbResult = $objDatabase->Query($strQuery);
@@ -162,7 +162,7 @@
             $intApprovedTexts = QApplication::$Cache->load('approved_texts_' . $this->ProjectId . '_' . $intLanguageId);
             if ($intApprovedTexts === false) {
                 // Cache miss
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1', $this->ProjectId, $intLanguageId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.active=1 AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1', $this->ProjectId, $intLanguageId);
                 // Perform the Query
                 $objDbResult = $objDatabase->Query($strQuery);
 
