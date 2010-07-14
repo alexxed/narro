@@ -316,7 +316,7 @@
                     $objContextComment = NarroContextComment::QuerySingle(
                                             QQ::AndCondition(
                                                 QQ::Equal(QQN::NarroContextComment()->ContextId, $objNarroContext->ContextId),
-                                                QQ::Equal(QQN::NarroContextComment()->LanguageId, $this->objTargetLanguage->LanguageId),
+                                                QQ::Equal(QQN::NarroContextComment()->LanguageId, $this->objSourceLanguage->LanguageId),
                                                 QQ::Equal(QQN::NarroContextComment()->CommentTextMd5, md5($strComment))
                                             )
                     );
@@ -325,7 +325,7 @@
                         $objContextComment = new NarroContextComment();
                         $objContextComment->ContextId = $objNarroContext->ContextId;
                         $objContextComment->UserId = $this->objUser->UserId;
-                        $objContextComment->LanguageId = $this->objTargetLanguage->LanguageId;
+                        $objContextComment->LanguageId = $this->objSourceLanguage->LanguageId;
                         $objContextComment->CommentText = $strComment;
                         $objContextComment->CommentTextMd5 = md5($strComment);
                         $objContextComment->Modified = QDateTime::Now();
