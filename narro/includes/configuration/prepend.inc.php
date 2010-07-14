@@ -207,7 +207,12 @@
             if (file_exists(__LOCALE_DIRECTORY__ . '/narro.mo')) {
                 require_once('Zend/Translate.php');
                 require_once('Zend/Translate/Adapter/Gettext.php');
-                QApplication::$TranslationEngine = new Zend_Translate('gettext', __LOCALE_DIRECTORY__ . '/narro.mo', QApplication::$User->getPreferenceValueByName('Application language'));
+                try {
+                    QApplication::$TranslationEngine = new Zend_Translate('gettext', __LOCALE_DIRECTORY__ . '/narro.mo', QApplication::$User->getPreferenceValueByName('Application language'));
+                }
+                catch (Exception $objEx) {
+                    QApplication::$Logger->error($objEx->getMessage());
+                }
             }
 
             if (!extension_loaded('mbstring'))
