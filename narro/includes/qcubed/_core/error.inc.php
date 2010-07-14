@@ -111,6 +111,7 @@
                 $__exc_strObjectType = "E_USER_WARNING";
                 break;
             case E_USER_NOTICE:
+                if (SERVER_INSTANCE == 'prod') return true;
                 $__exc_strObjectType = "E_USER_NOTICE";
                 break;
             default:
