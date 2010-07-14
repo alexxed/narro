@@ -809,14 +809,6 @@
                     return false;
             }
         }
-
-        abstract public function ExportFile($strTemplate, $strTranslatedFile = null) {
-
-        }
-
-        abstract public function ImportFile($strTemplate, $strTranslatedFile = null) {
-
-        }
     }
 
 ?>
