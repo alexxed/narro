@@ -289,7 +289,8 @@
                 $arrContextComments =
                 NarroContextComment::QueryArray(
                     QQ::AndCondition(
-                        QQ::Equal(QQN::NarroContextComment()->ContextId, $this->objNarroContextInfo->ContextId)
+                        QQ::Equal(QQN::NarroContextComment()->ContextId, $this->objNarroContextInfo->ContextId),
+                        QQ::Equal(QQN::NarroContextComment()->LanguageId, __SOURCE_LANGUAGE_ID__)
                     )
                 )
             ) {

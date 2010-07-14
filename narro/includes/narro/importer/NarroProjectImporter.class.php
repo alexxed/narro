@@ -121,8 +121,11 @@
                     QApplication::$Logger->info("Before import script finished successfully:\n" . $strOutput);
             }
 
-            if ($this->objProject->ProjectName == 'Narro')
+            if ($this->objProject->ProjectName == 'Narro') {
                 $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . NarroLanguage::SOURCE_LANGUAGE_CODE . '/LC_MESSAGES/';
+                $this->CleanImportDirectory();
+                $this->CreateNarroTemplate($this->objProject->ProjectId);
+            }
 
             if (!file_exists($this->strTemplatePath))
                 throw new Exception(sprintf('Template path %s does not exist.', $this->strTemplatePath));
@@ -488,7 +491,7 @@
                 if (pclose($fp))
                     QApplication::$Logger->err("Exporting Narro's translation failed:\n" . $strOutput);
                 else
-                    QApplication::$Logger->err("Exported Narro's translation succesfully:\n" . $strOutput);
+                    QApplication::$Logger->info("Exported Narro's translation succesfully. Press Ctrl+F5 to reload and see it.");
 
                 chmod(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/narro.mo', 0666);
             }
@@ -880,9 +883,9 @@
                     $strFilePath = $strDir . '/' . $strFile;
 
                     if ( is_dir($strFilePath) )
-                        $arrFiles = array_merge($arrFiles, $this->ListDir($strFilePath));
+                    $arrFiles = array_merge($arrFiles, $this->ListDir($strFilePath));
                     else
-                        array_push($arrFiles, $strFilePath);
+                    array_push($arrFiles, $strFilePath);
                 }
                 closedir($hndFile);
             } else {
@@ -890,6 +893,316 @@
                 $arrFiles = false;
             }
             return $arrFiles;
+        }
+
+        private function CreateNarroTemplate($intProjectId) {
+
+            $strPoFile = __IMPORT_PATH__ . '/' . $intProjectId . '/narro.po';
+
+            $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'));
+            foreach($allFiles as $strFileName) {
+                if (pathinfo($strFileName, PATHINFO_EXTENSION) != 'php') continue;
+
+                $strFile = file_get_contents($strFileName);
+                $strShortPath = str_ireplace(__DOCROOT__ . __SUBDIRECTORY__ . '/', '', $strFileName);
+
+                $strFile = str_replace("\'", "&&&escapedsimplequote&&&", $strFile);
+                $strFile = str_replace('\"', "&&&escapeddoublequote&&&", $strFile);
+
+                if ($strFile) {
+                    preg_match_all('/([^a-zA-Z]t|NarroApp::Translate|QApplication::Translate|__t)\s*\(\s*[\']([^\']{2,})[\']\s*\)/', $strFile, $arrMatches);
+                    if (isset($arrMatches[2])) {
+                        foreach($arrMatches[2] as $intMatchNo=>$strText) {
+                            if (trim($strText) != '') {
+                                $strText = str_replace(
+                                array(
+                                    "&&&escapedsimplequote&&&",
+                                    "&&&escapeddoublequote&&&",
+                                ),
+                                array(
+                                    "'",
+                                    '\"',
+                                ),
+                                $strText
+                                );
+                                $arrMessages[md5($strText)]['text'] = $strText;
+                                $arrMessages[md5($strText)]['files'][$strShortPath] = $strShortPath;
+                                $strSearchText = str_replace(
+                                array(
+                                    "&&&escapedsimplequote&&&",
+                                    "&&&escapeddoublequote&&&",
+                                ),
+                                array(
+                                    "'",
+                                    '\"',
+                                ),
+                                $arrMatches[0][$intMatchNo]
+                                );
+                                preg_match_all('/^.*'. preg_quote($strSearchText, '/') .'.*$/m', $strFile, $arrFullMatches);
+                                $arrMessages[md5($strText)]['context'] = '#. ';
+                                foreach($arrFullMatches[0] as $strFullMatch)
+                                if (trim($strFullMatch))
+                                $arrMessages[md5($strText)]['context'] .= trim($strFullMatch) . "\n";
+                            }
+                        }
+                    }
+
+                    preg_match_all('/([^a-zA-Z]t|NarroApp::Translate|QApplication::Translate|__t)\s*\(\s*[\"]([^\"]{2,})[\"]\s*\)/', $strFile, $arrMatches);
+                    if (isset($arrMatches[2])) {
+                        foreach($arrMatches[2] as $intMatchNo=>$strText) {
+                            if (trim($strText) != '') {
+                                $strText = str_replace(
+                                array(
+                                    "&&&escapedsimplequote&&&",
+                                    "&&&escapeddoublequote&&&",
+                                ),
+                                array(
+                                    "'",
+                                    '\"',
+                                ),
+                                $strText
+                                );
+                                $arrMessages[md5($strText)]['text'] = $strText;
+                                $arrMessages[md5($strText)]['files'][$strShortPath] = $strShortPath;
+                                $strSearchText = str_replace(
+                                array(
+                                    "&&&escapedsimplequote&&&",
+                                    "&&&escapeddoublequote&&&",
+                                ),
+                                array(
+                                    "'",
+                                    '\"',
+                                ),
+                                $arrMatches[0][$intMatchNo]
+                                );
+                                preg_match_all('/^.*'. preg_quote($strSearchText, '/') .'.*$/m', $strFile, $arrFullMatches);
+                                $arrMessages[md5($strText)]['context'] = '#. ';
+                                foreach($arrFullMatches[0] as $strFullMatch)
+                                if (trim($strFullMatch))
+                                $arrMessages[md5($strText)]['context'] .= trim($strFullMatch) . "\n";
+
+                            }
+                        }
+                    }
+
+                    preg_match_all('/([^a-zA-Z]t|NarroApp::Translate|QApplication::Translate|__t)\s*\(\s*[\']([^\']{2,})[\']\s*,\s*[\']([^\']{2,})[\']\s*,\s*([^\)]+)\s*\)/', $strFile, $arrMatches);
+                    if (isset($arrMatches[2])) {
+                        foreach($arrMatches[2] as $intMatchNo=>$strText) {
+                            if (trim($strText) != '') {
+                                $strText = str_replace(
+                                array(
+                                    "&&&escapedsimplequote&&&",
+                                    "&&&escapeddoublequote&&&",
+                                ),
+                                array(
+                                    "'",
+                                    '\"',
+                                ),
+                                $strText
+                                );
+                                $arrMessages[md5($strText)]['text'] = $strText;
+                                $arrMessages[md5($strText)]['files'][$strShortPath] = $strShortPath;
+                                $arrMessages[md5($strText)]['plural'] = $arrMatches[3][$intMatchNo];
+                                $strSearchText = str_replace(
+                                array(
+                                    "&&&escapedsimplequote&&&",
+                                    "&&&escapeddoublequote&&&",
+                                ),
+                                array(
+                                    "'",
+                                    '\"',
+                                ),
+                                $arrMatches[0][$intMatchNo]
+                                );
+                                preg_match_all('/^.*'. preg_quote($strSearchText, '/') .'.*$/m', $strFile, $arrFullMatches);
+                                $arrMessages[md5($strText)]['context'] = '#. ';
+                                foreach($arrFullMatches[0] as $strFullMatch)
+                                if (trim($strFullMatch))
+                                $arrMessages[md5($strText)]['context'] .= trim($strFullMatch) . "\n";
+                            }
+                        }
+                    }
+                    preg_match_all('/([^a-zA-Z]t|NarroApp::Translate|QApplication::Translate|__t)\s*\(\s*[\"]([^\"]{2,})[\"]\s*,\s*[\"]([^\"]{2,})[\"]\s*,\s*([^\)]+)\s*\)/', $strFile, $arrMatches);
+                    if (isset($arrMatches[2])) {
+                        foreach($arrMatches[2] as $intMatchNo=>$strText) {
+                            if (trim($strText) != '') {
+                                $strText = str_replace(
+                                array(
+                                    "&&&escapedsimplequote&&&",
+                                    "&&&escapeddoublequote&&&",
+                                ),
+                                array(
+                                    "'",
+                                    '\"',
+                                ),
+                                $strText
+                                );
+                                $arrMessages[md5($strText)]['text'] = $strText;
+                                $arrMessages[md5($strText)]['files'][$strShortPath] = $strShortPath;
+                                $arrMessages[md5($strText)]['plural'] = $arrMatches[3][$intMatchNo];
+                                $strSearchText = str_replace(
+                                array(
+                                    "&&&escapedsimplequote&&&",
+                                    "&&&escapeddoublequote&&&",
+                                ),
+                                array(
+                                    "'",
+                                    '\"',
+                                ),
+                                $arrMatches[0][$intMatchNo]
+                                );
+                                preg_match_all('/^.*'. preg_quote($strSearchText, '/') .'.*$/m', $strFile, $arrFullMatches);
+                                $arrMessages[md5($strText)]['context'] = '#. ';
+                                foreach($arrFullMatches[0] as $strFullMatch)
+                                if (trim($strFullMatch))
+                                $arrMessages[md5($strText)]['context'] .= trim($strFullMatch) . "\n";
+                            }
+                        }
+                    }
+
+                    preg_match_all('/NarroApp::RegisterPreference\(\s*\'([^\']+)\'\s*,\s*\'[^\']+\'\s*,\s*\'([^\']+)\'\s*,\s*/', $strFile, $arrMatches);
+                    if (isset($arrMatches[1])) {
+                        foreach($arrMatches[1] as $intMatchNo=>$strText) {
+                            if (trim($strText) != '') {
+                                $strText = str_replace(
+                                array(
+                                    "&&&escapedsimplequote&&&",
+                                    "&&&escapeddoublequote&&&",
+                                ),
+                                array(
+                                    "'",
+                                    '\"',
+                                ),
+                                $strText
+                                );
+                                $arrMessages[md5($strText)]['text'] = $strText;
+                                $arrMessages[md5($strText)]['files'][$strShortPath] = $strShortPath;
+                                $strSearchText = $arrMatches[0][$intMatchNo];
+                                preg_match_all('/^.*'. preg_quote($strSearchText, '/') .'.*$/m', $strFile, $arrFullMatches);
+                                $arrMessages[md5($strText)]['context'] = "#. Preference name\n";
+                                foreach($arrFullMatches[0] as $strLine)
+                                if (isset($strLine) && trim($strLine))
+                                $arrMessages[md5($strText)]['context'] .= trim($strLine) . "\n";
+                            }
+                        }
+
+                        foreach($arrMatches[2] as $intMatchNo=>$strText) {
+                            if (trim($strText) != '') {
+                                $strText = str_replace(
+                                array(
+                                    "&&&escapedsimplequote&&&",
+                                    "&&&escapeddoublequote&&&",
+                                ),
+                                array(
+                                    "'",
+                                    '\"',
+                                ),
+                                $strText
+                                );
+                                $arrMessages[md5($strText)]['text'] = $strText;
+                                $arrMessages[md5($strText)]['files'][$strShortPath] = $strShortPath;
+                                $strSearchText = $arrMatches[0][$intMatchNo];
+                                preg_match_all('/^.*'. preg_quote($strSearchText, '/') .'.*$/m', $strFile, $arrFullMatches);
+                                $arrMessages[md5($strText)]['context'] = "#. Preference description\n";
+                                foreach($arrFullMatches[0] as $strLine)
+                                if (isset($strLine) && trim($strLine))
+                                $arrMessages[md5($strText)]['context'] .= trim($strLine) . "\n";
+                            }
+                        }
+                    }
+
+                    if (preg_match_all('/t\(\$[a-zA-Z]+\-\>LanguageName/', $strFile, $arrMatches)) {
+                        if (!isset($arrLanguages)) {
+                            $arrLanguages = NarroLanguage::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
+                        }
+
+                        $strLangContext = '#. ';
+                        foreach($arrMatches as $intMatchNo=>$arrVal) {
+                            $strSearchText = $arrMatches[0][$intMatchNo];
+                            preg_match_all('/^.*'. preg_quote($strSearchText, '/') .'.*$/m', $strFile, $arrFullMatches);
+                            foreach($arrFullMatches[0] as $strLine)
+                            if (isset($strLine) && trim($strLine))
+                            $strLangContext .= trim($strLine) . "\n";
+                        }
+
+
+                        if(is_array($arrLanguages)) {
+                            foreach($arrLanguages as $objLanguage) {
+                                $arrMessages[md5($objLanguage->LanguageName)]['text'] = $objLanguage->LanguageName;
+                                $arrMessages[md5($objLanguage->LanguageName)]['files'][$strShortPath] = $strShortPath;
+                                $arrMessages[md5($objLanguage->LanguageName)]['context'] = $strLangContext;
+                            }
+                        }
+
+                    }
+
+                    if (preg_match_all('/t\(\$[a-zA-Z]+\-\>PermissionName/', $strFile, $arrMatches)) {
+                        if (!isset($arrPermissions)) {
+                            require_once dirname(__FILE__) . '/../includes/prepend.inc.php';
+                            $arrPermissions = NarroPermission::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroPermission()->PermissionName)));
+                        }
+
+                        $strLangContext = '#. ';
+                        foreach($arrMatches as $intMatchNo=>$arrVal) {
+                            $strSearchText = $arrMatches[0][$intMatchNo];
+                            preg_match_all('/^.*'. preg_quote($strSearchText, '/') .'.*$/m', $strFile, $arrFullMatches);
+                            foreach($arrFullMatches[0] as $strLine)
+                            if (isset($strLine) && trim($strLine))
+                            $strLangContext .= trim($strLine) . "\n";
+                        }
+
+                        if(is_array($arrPermissions))
+                        foreach($arrPermissions as $objPermission) {
+                            $arrMessages[md5($objPermission->PermissionName)]['text'] = $objPermission->PermissionName;
+                            $arrMessages[md5($objPermission->PermissionName)]['files'][$strShortPath] = $strShortPath;
+                            $arrMessages[md5($objPermission->PermissionName)]['context'] = $strLangContext;
+                        }
+                    }
+                }
+            }
+            $strPoHeader =
+            '#, fuzzy' . "\n" .
+            'msgid ""' . "\n" .
+            'msgstr ""' . "\n" .
+            '"Project-Id-Version: Narro ' . NARRO_VERSION . "\n" .
+            '"Report-Msgid-Bugs-To: alexxed@gmail.com\n"' . "\n" .
+            '"POT-Creation-Date: ' . date('Y-d-m H:iO'). '\n"' . "\n" .
+            '"PO-Revision-Date: ' . date('Y-d-m H:iO'). '\n"' . "\n" .
+            '"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"' . "\n" .
+            '"Language-Team: LANGUAGE <LL@li.org>\n"' . "\n" .
+            '"MIME-Version: 1.0\n"' . "\n" .
+            '"Content-Type: text/plain; charset=UTF-8\n"' . "\n" .
+            '"Content-Transfer-Encoding: 8bit\n"' . "\n" .
+            '"Plural-Forms: nplurals=2; plural=n != 1;\n"' . "\n" .
+            '"X-Generator: Narro\n"' . "\n";
+            $hndFile = fopen($strPoFile, 'w');
+            if (!$hndFile) {
+                QApplication::$Logger->error('Error while opening the po file "%s" for writing.', $strPoFile);
+            }
+            fputs($hndFile, $strPoHeader);
+
+            // Obtain a list of columns
+            foreach ($arrMessages as $key => $row) {
+                $texts[$key]  = $row['text'];
+            }
+
+            //array_multisort($texts, SORT_ASC, SORT_STRING, $arrMessages);
+
+            foreach($arrMessages as $intKey=>$arrMsgData) {
+                if (isset($arrMsgData['plural']))
+                fputs($hndFile, sprintf("#: %s\nmsgid \"%s\"\nmsgid_plural \"%s\"\nmsgstr[0] \"\"\nmsgstr[1] \"\"\n\n", join(' ', array_values($arrMsgData['files'])), str_replace(array('"', "\n"), array('\"', '\n'), $arrMsgData['text']), str_replace(array('"', "\n"), array('\"', '\n'), $arrMsgData['plural'])));
+                else {
+                    if (!isset($arrMsgData['files']))
+                        print_r($arrMsgData);
+                    else
+                        fputs($hndFile, sprintf("%s\n#: %s\nmsgid \"%s\"\nmsgstr \"\"\n\n", (isset($arrMsgData['context']))?str_replace("\n", "\n#. ", trim($arrMsgData['context'])) . '':'', join(' ', array_values($arrMsgData['files'])), str_replace(array('"', "\n"), array('\"', '\n'), $arrMsgData['text'])));
+                }
+            }
+
+            fclose($hndFile);
+
+            QApplication::$Logger->info('Wrote a new Narro template file in ' . $strPoFile);
+
         }
     }
 ?>
