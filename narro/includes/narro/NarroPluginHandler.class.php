@@ -45,7 +45,9 @@
             'ExportFile',
             'ImportProject',
             'ExportProject',
-            'DisplayExportMessage'
+            'DisplayExportMessage',
+            'DisplayInProjectListInProgressColumn',
+            'DisplayInProjectListInNameColumn'
         );
 
         public static $blnEnablePlugins = true;

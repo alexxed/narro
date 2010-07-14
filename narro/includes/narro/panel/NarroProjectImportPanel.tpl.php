@@ -16,12 +16,13 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 ?>
-
-<div class="section_title"><?php _t('Texts')?></div>
-<div class="section">
-<?php _t('Where are the texts to translate?')?>
-<?php $_CONTROL->pnlTextsSource->Render() ?>
-</div>
+<?php if ($_CONTROL->pnlTextsSource->Display) { ?>
+    <div class="section_title"><?php _t('Texts')?></div>
+    <div class="section">
+    <?php _t('Where are the texts to translate?')?>
+    <?php $_CONTROL->pnlTextsSource->Render() ?>
+    </div>
+<?php } ?>
 <div class="section_title"><?php _t('Translations')?></div>
 <div class="section">
 <?php _t('Where are the translated texts?')?>
@@ -45,7 +46,7 @@
 <br />
 <?php
     }
- 
+
     $_CONTROL->chkImportOnlyTranslations->Render();
     if ($_CONTROL->chkImportOnlyTranslations->Display) {
 ?>

@@ -350,6 +350,10 @@
 
             }
 
+            foreach(QApplication::$Cache->getIdsMatchingTags(array('Project' . $this->objProject->ProjectId)) as $strCacheId) {
+                QApplication::$Cache->remove($strCacheId);
+            }
+
             return true;
         }
 

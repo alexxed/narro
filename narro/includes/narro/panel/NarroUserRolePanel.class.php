@@ -221,6 +221,8 @@
                 }
             }
 
+            QApplication::ResetUser($objUserRole->UserId);
+
             $this->dtgUserRole_Bind();
         }
 

@@ -206,6 +206,18 @@
                     $strOutput
                 );
 
+            QApplication::$PluginHandler->DisplayInProjectListInProgressColumn($objNarroProject);
+
+            if (is_array(QApplication::$PluginHandler->PluginReturnValues)) {
+                $strOutput .= '<table style="font-size:small"><tr>';
+                foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
+                    if ($mixReturnValue !== false && is_string($mixReturnValue)) {
+                        $strOutput .= '<td>' . $mixReturnValue . '</td>';
+                    }
+                }
+                $strOutput .= '</tr></table>';
+            }
+
             return $strOutput;
         }
 

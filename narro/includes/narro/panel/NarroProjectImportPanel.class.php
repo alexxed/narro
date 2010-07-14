@@ -54,6 +54,7 @@
             $this->lblImport->Visible = false;
 
             $this->pnlTextsSource = new NarroProjectTextSourcePanel($this->objNarroProject, NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE), $this);
+            $this->pnlTextsSource->Display = QApplication::HasPermission('Can import project', $this->objNarroProject->ProjectId);
 
             $this->pnlTranslationsSource = new NarroProjectTranslationSourcePanel($this->objNarroProject, QApplication::$Language, $this);
 
@@ -85,7 +86,7 @@
 
             $this->chkImportUnchangedFiles = new QCheckBox($this);
             $this->chkImportUnchangedFiles->Name = t('Import the files that are marked as not changed');
-            $this->chkImportUnchangedFiles->Checked = false;
+            $this->chkImportUnchangedFiles->Checked = true;
 
             $this->chkImportOnlyTranslations = new QCheckBox($this);
             $this->chkImportOnlyTranslations->Name = t('Do not add texts, just add found translations for existing texts');
