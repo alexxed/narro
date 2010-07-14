@@ -445,7 +445,7 @@
                 throw new Exception(sprintf('Template path "%s" does not exist or it is not a directory', $this->strTemplatePath));
 
             if (function_exists('popen') && function_exists('escapeshellarg') && function_exists('escapeshellcmd') && file_exists($this->strTemplatePath . '/../export.sh')) {
-                QApplication::$Logger->err('Found an after export script, trying to run it.');
+                QApplication::$Logger->info('Found an after export script, trying to run it.');
                  $fp = popen(
                         sprintf(
                             '/bin/sh %s %s %d %s %d %d 2>&1',
