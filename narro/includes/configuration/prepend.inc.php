@@ -211,7 +211,7 @@
                     QApplication::$TranslationEngine = new Zend_Translate('gettext', __LOCALE_DIRECTORY__ . '/narro.mo', QApplication::$User->getPreferenceValueByName('Application language'));
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err($objEx->getMessage());
+                    // gettext installed on the system does not support the language
                 }
             }
 

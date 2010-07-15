@@ -906,6 +906,8 @@
                 $strFile = file_get_contents($strFileName);
                 $strShortPath = str_ireplace(__DOCROOT__ . __SUBDIRECTORY__ . '/', '', $strFileName);
 
+                if (strpos($strShortPath, 'data') === 0) continue;
+
                 $strFile = str_replace("\'", "&&&escapedsimplequote&&&", $strFile);
                 $strFile = str_replace('\"', "&&&escapeddoublequote&&&", $strFile);
 
