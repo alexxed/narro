@@ -133,9 +133,11 @@
             QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
             if (QApplication::QueryString('l'))
                 QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
-            elseif ($objLanguage = QApplication::GetBrowserLanguage() instanceof NarroLanguage) {
+            elseif ($objLanguage = QApplication::GetBrowserLanguage() instanceof NarroLanguage)
                 QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objLanguage->LanguageCode));
-            }
+            elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
+                QApplication::$Language = NarroLanguage::LoadByLanguageCode($strLanguage);
+
 
             QApplication::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
             QApplication::RegisterPreference('Font size', 'option', t('The application font size'), 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
@@ -178,7 +180,7 @@
             if (is_numeric(QApplication::QueryString('p')))
                 QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, QApplication::QueryString('p'), QApplication::GetLanguageId());
             elseif (isset($argv) && $intProjectId = $argv[array_search('--project', $argv)+1])
-                QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $argv[array_search('--project', $argv)+1], QApplication::GetLanguageId());
+                QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $intProjectId, $argv[array_search('--translation-lang', $argv)+1]);
             else
                 QApplication::$LogFile = sprintf('%s/app-%s.log', __TMP_PATH__, QApplication::GetLanguageId());
 
