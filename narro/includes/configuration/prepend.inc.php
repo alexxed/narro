@@ -178,11 +178,11 @@
             require_once('Zend/Log/Writer/Stream.php');
             require_once('Zend/Log/Writer/Firebug.php');
             if (is_numeric(QApplication::QueryString('p')))
-                QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, QApplication::QueryString('p'), QApplication::GetLanguageId());
+                QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, QApplication::QueryString('p'), QApplication::$Language->LanguageCode);
             elseif (isset($argv) && $intProjectId = $argv[array_search('--project', $argv)+1])
                 QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $intProjectId, $argv[array_search('--translation-lang', $argv)+1]);
             else
-                QApplication::$LogFile = sprintf('%s/app-%s.log', __TMP_PATH__, QApplication::GetLanguageId());
+                QApplication::$LogFile = sprintf('%s/app-%s.log', __TMP_PATH__, QApplication::$Language->LanguageCode);
 
             QApplication::$Logger = new Zend_Log();
             QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile));
