@@ -134,6 +134,7 @@
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $this->objNarroProject->ProjectId),
                     QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->LanguageId, QApplication::GetLanguageId()),
+                    QQ::GreaterThan(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->ValidSuggestion->SuggestionWordCount, 0),
                     QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
                 ),
                 $objClauses
@@ -143,6 +144,7 @@
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $this->objNarroProject->ProjectId),
                     QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->LanguageId, QApplication::GetLanguageId()),
+                    QQ::GreaterThan(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->ValidSuggestion->SuggestionWordCount, 0),
                     QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
                 ),
                 array(QQ::Distinct())
