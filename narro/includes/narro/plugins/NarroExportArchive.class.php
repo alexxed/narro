@@ -29,11 +29,11 @@
 
             $arrFiles = NarroUtils::ListDirectory($strTranslationPath, null, null, null, true);
 
-            $objZipFile = new ZipArchive;
+            $objZipFile = new ZipArchive();
             if ($objZipFile->open($strArchive, ZipArchive::OVERWRITE) === TRUE) {
                 foreach($arrFiles as $strFileName) {
                     if (is_dir($strFileName)) {
-                        $objZipFile->addEmptyDir(str_replace($strTranslationPath, '', $strFileName ));
+                        $objZipFile->addEmptyDir(str_replace($strTranslationPath . '/', '', $strFileName ));
                     }
                     elseif (is_file($strFileName)) {
                         $objZipFile->addFile($strFileName, str_replace($strTranslationPath . '/', '', $strFileName ));
