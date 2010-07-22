@@ -20,7 +20,7 @@
     if (QApplication::QueryString('pf')>0)
         $strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objNarroProject->ProjectName, $this->objParentFile->FileName);
 
-    require('configuration/header.inc.php')
+    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
@@ -29,4 +29,4 @@
     <?php $this->pnlMainTab->Render() ?>
     <?php $this->RenderEnd() ?>
 
-<?php require('configuration/footer.inc.php'); ?>
+<?php require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php'); ?>

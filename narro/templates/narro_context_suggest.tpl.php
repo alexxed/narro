@@ -19,7 +19,7 @@
     $strPageTitle = sprintf((QApplication::HasPermissionForThisLang('Can suggest', $this->pnlContextSuggest->NarroContextInfo->Context->ProjectId))?t('Translate "%s"'):t('See suggestions for "%s"'),
         (strlen($this->pnlContextSuggest->NarroContextInfo->Context->Text->TextValue)>30)?mb_substr($this->pnlContextSuggest->NarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->pnlContextSuggest->NarroContextInfo->Context->Text->TextValue);
 
-    require('configuration/header.inc.php')
+    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
@@ -28,5 +28,5 @@
     <?php $this->pnlMainTab->Render() ?>
     <?php $this->RenderEnd() ?>
 
-<?php require('configuration/footer.inc.php'); ?>
+<?php require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php'); ?>
         

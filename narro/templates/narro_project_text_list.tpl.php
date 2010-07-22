@@ -18,7 +18,7 @@
 
     $strPageTitle = sprintf(t('Texts from the project "%s"'), $this->objNarroProject->ProjectName);
 
-    require('configuration/header.inc.php')
+    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
@@ -27,4 +27,4 @@
     <?php $this->pnlMainTab->Render() ?>
     <?php $this->RenderEnd() ?>
 
-<?php require('configuration/footer.inc.php'); ?>
+<?php require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php'); ?>

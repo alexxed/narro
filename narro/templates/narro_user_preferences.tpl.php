@@ -18,11 +18,11 @@
 
     $strPageTitle = sprintf(t('Preferences for %s'), $this->objUser->Username);
 
-    require('configuration/header.inc.php');
+    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php');
     $this->RenderBegin();
     $this->pnlHeader->Render();
     $this->pnlBreadcrumb->Render();
     echo '<br />';
     $this->pnlTab->Render();
     $this->RenderEnd();
-    require('configuration/footer.inc.php');
+    require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php');

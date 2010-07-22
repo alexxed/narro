@@ -18,9 +18,9 @@
 
     $strPageTitle = t('Roles');
 
-    require('configuration/header.inc.php');
+    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php');
     $this->RenderBegin();
     $this->pnlHeader->Render();
     $this->pnlTab->Render();
     $this->RenderEnd();
-    require('configuration/footer.inc.php');
+    require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php');

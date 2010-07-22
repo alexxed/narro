@@ -2,7 +2,7 @@
     /**
      * @package Narro
      * @subpackage Templates
-     * 
+     *
      * Narro is an application that allows online software translation and maintenance.
      * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
@@ -21,11 +21,11 @@
 
     $strPageTitle = t('Projects');
 
-    require('configuration/header.inc.php');
-    
+    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php');
+
     $this->RenderBegin();
     $this->pnlHeader->Render();
     $this->pnlMainTab->Render();
     $this->RenderEnd();
 
-    require('configuration/footer.inc.php');
+    require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php');
