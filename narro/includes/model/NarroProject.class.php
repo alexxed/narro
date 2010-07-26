@@ -196,6 +196,22 @@
             return $intApprovedTexts;
         }
 
+        public function Save($blnForceInsert = false, $blnForceUpdate = false) {
+            $mixResult = parent::Save($blnForceInsert, $blnForceUpdate);
+
+            foreach(NarroLanguage::LoadAll() as $objLanguage) {
+                $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->intProjectId, $objLanguage->LanguageId);
+                if (!$objProjectProgress) {
+                    $this->DeleteTranslatedTextsByLanguage($objLanguage->LanguageId);
+                    $this->DeleteAllTextsCacheByLanguage($objLanguage->LanguageId);
+                    $this->DeleteApprovedTextsByLanguage($objLanguage->LanguageId);
+                    $this->CountAllTextsByLanguage($objLanguage->LanguageId);
+                }
+            }
+
+            return $mixResult;
+        }
+
         /**
          * Override method to perform a property "Get"
          * This will get the value of $strName

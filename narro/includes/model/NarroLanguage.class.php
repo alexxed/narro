@@ -59,13 +59,10 @@
         }
 
         public static function LoadAll($objOptionalClauses = null) {
-            $arrLanguage = QApplication::$Cache->load('narrolanguage_loadall');
+            $arrLanguage = QApplication::$Cache->load('narrolanguage_loadall_' . md5(serialize($objOptionalClauses)));
 
-            if (!$arrLanguage && $objOptionalClauses == QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName))) {
-                $arrLanguage = parent::QueryArray(
-                    QQ::Equal(QQN::NarroLanguage()->LanguageCode, NarroLanguage::SOURCE_LANGUAGE_CODE),
-                    $objOptionalClauses
-                );
+            if (!$arrLanguage) {
+                $arrLanguage = parent::LoadAll($objOptionalClauses);
                 if ($arrLanguage) {
                     QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadall');
                 }
@@ -75,14 +72,11 @@
         }
 
         public static function LoadAllActive($objOptionalClauses = null) {
-            $arrLanguage = QApplication::$Cache->load('narrolanguage_loadallactive');
+            $arrLanguage = QApplication::$Cache->load('narrolanguage_loadallactive_' . md5(serialize($objOptionalClauses)));
 
-            if (!$arrLanguage && $objOptionalClauses == QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName))) {
+            if (!$arrLanguage) {
                 $arrLanguage = parent::QueryArray(
-                    QQ::AndCondition(
-                        QQ::NotEqual(QQN::NarroLanguage()->LanguageCode, NarroLanguage::SOURCE_LANGUAGE_CODE),
-                        QQ::Equal(QQN::NarroLanguage()->Active, 1)
-                    ),
+                    QQ::Equal(QQN::NarroLanguage()->Active, 1),
                     $objOptionalClauses
                 );
                 if ($arrLanguage) {
@@ -149,7 +143,19 @@
             QApplication::$Cache->remove('narrolanguage_loadallactive');
             QApplication::$Cache->remove('narrolanguage_countallactive');
 
-            parent::Save($blnForceInsert, $blnForceUpdate);
+            $mixResult = parent::Save($blnForceInsert, $blnForceUpdate);
+
+            foreach(NarroProject::LoadAll() as $objProject) {
+                $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($objProject->ProjectId, $this->LanguageId);
+                if (!$objProjectProgress) {
+                    $objProject->DeleteTranslatedTextsByLanguage($this->LanguageId);
+                    $objProject->DeleteAllTextsCacheByLanguage($this->LanguageId);
+                    $objProject->DeleteApprovedTextsByLanguage($this->LanguageId);
+                    $objProject->CountAllTextsByLanguage($this->LanguageId);
+                }
+            }
+
+            return $mixResult;
         }
 
         public function Delete() {
