@@ -103,7 +103,18 @@
                     else
                         $objProjectProgress->ProgressPercent = 0;
 
-                    $objProjectProgress->LastModified = QDateTime::Now();
+                    $objLastContextInfo = NarroContextInfo::QuerySingle(
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->intProjectId),
+                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, $intLanguageId)
+                        ),
+                        QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0)
+                    );
+                    if ($objLastContextInfo)
+                        $objProjectProgress->LastModified = $objLastContextInfo->Modified;
+                    else
+                        $objProjectProgress->LastModified = QDateTime::Now();
+
                     $objProjectProgress->Save();
 
                     QApplication::$Cache->save($intTotalTexts, 'total_texts_' . $this->ProjectId . '_' . $intLanguageId, array('Project' . $this->ProjectId, 'total_texts'));
@@ -145,7 +156,19 @@
                     }
 
                     $objProjectProgress->FuzzyTextCount = $intTranslatedTexts;
-                    $objProjectProgress->LastModified = QDateTime::Now();
+
+                    $objLastContextInfo = NarroContextInfo::QuerySingle(
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->intProjectId),
+                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, $intLanguageId)
+                        ),
+                        QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0)
+                    );
+                    if ($objLastContextInfo)
+                        $objProjectProgress->LastModified = $objLastContextInfo->Modified;
+                    else
+                        $objProjectProgress->LastModified = QDateTime::Now();
+
                     $objProjectProgress->Save();
 
                     QApplication::$Cache->save($intTranslatedTexts, 'translated_texts_' . $this->ProjectId . '_' . $intLanguageId, array('Project' . $this->ProjectId, 'Language' . $intLanguageId, 'translated_texts'));
@@ -187,7 +210,19 @@
                         $objProjectProgress->ProgressPercent = floor($objProjectProgress->ApprovedTextCount*100/$objProjectProgress->TotalTextCount);
                     else
                         $objProjectProgress->ProgressPercent = 0;
-                    $objProjectProgress->LastModified = QDateTime::Now();
+
+                    $objLastContextInfo = NarroContextInfo::QuerySingle(
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->intProjectId),
+                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, $intLanguageId)
+                        ),
+                        QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0)
+                    );
+                    if ($objLastContextInfo)
+                        $objProjectProgress->LastModified = $objLastContextInfo->Modified;
+                    else
+                        $objProjectProgress->LastModified = QDateTime::Now();
+
                     $objProjectProgress->Save();
                     QApplication::$Cache->save($intApprovedTexts, 'approved_texts_' . $this->ProjectId . '_' . $intLanguageId, array('Project' . $this->ProjectId, 'Language' . $intLanguageId, 'approved_texts'));
                 }
