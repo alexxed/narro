@@ -96,10 +96,16 @@
                 QQ::AndCondition(
                     QQ::OrCondition(
                         QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->TextId, $this->objNarroText->TextId),
-                        QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->TextId, $this->objNarroText->TextId),
+                        QQ::Equal(QQN::NarroUser()->NarroTextCommentAsUser->TextId, $this->objNarroText->TextId),
                         QQ::Equal(QQN::NarroUser()->NarroSuggestionVoteAsUser->Suggestion->TextId, $this->objNarroText->TextId)
                     ),
-                    QQ::NotEqual(QQN::NarroUser()->UserId, QApplication::GetUserId())
+                    QQ::NotEqual(QQN::NarroUser()->UserId, QApplication::GetUserId()),
+                    QQ::OrCondition(
+                        QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->LanguageId, QApplication::GetLanguageId()),
+                        QQ::Equal(QQN::NarroUser()->NarroTextCommentAsUser->LanguageId, QApplication::GetLanguageId())
+                    ),
+                    QQ::NotEqual(QQN::NarroUser()->UserId, Narrouser::ANONYMOUS_USER_ID),
+                    QQ::Like(QQN::NarroUser()->Email, '%@%.%')
                 ),
                 QQ::Distinct()
             );
@@ -136,7 +142,8 @@ Narro running on %s
                 );
 
                 try {
-                    QEmailServer::Send($objMessage);
+                    if (SERVER_INSTANCE == 'prod')
+                        QEmailServer::Send($objMessage);
                 }
                 catch (Exception $objEx) {
                     //QApplication::$Logger->warn(sprintf('Error while sending out a notification email to %s: %s', $objMessage->To, $objEx->getMessage()));
