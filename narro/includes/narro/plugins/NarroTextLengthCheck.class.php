@@ -19,6 +19,7 @@
 
         public function __construct() {
             parent::__construct();
+            $this->blnEnable = false;
             $this->strName = t('Text length check');
         }
 
@@ -32,7 +33,7 @@
              */
             if ((abs(mb_strlen($strOriginal) - mb_strlen($strTranslation)) * 100) / mb_strlen($strOriginal) > 50) {
                 $this->arrErrors[] =
-                    t('<span style="color:red">Your translation seems really short compared to the original, are you sure it is correct?</span>');
+                    '<span style="color:red">' . t('Your translation seems really short compared to the original, or the other way around. Are you sure it is correct?') . '</span>';
             }
 
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
