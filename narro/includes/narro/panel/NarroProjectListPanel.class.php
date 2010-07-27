@@ -209,13 +209,13 @@
             QApplication::$PluginHandler->DisplayInProjectListInProgressColumn($objNarroProject);
 
             if (is_array(QApplication::$PluginHandler->PluginReturnValues)) {
-                $strOutput .= '<table style="font-size:small"><tr>';
+                $strOutput .= '';
                 foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
                     if (count($mixReturnValue) == 2 && $mixReturnValue[0] instanceof NarroProject && is_string($mixReturnValue[1]) && $mixReturnValue[1] != '') {
-                        $strOutput .= sprintf('<td><span title="%s">%s</span></td>', $strPluginName, $mixReturnValue[1]);
+                        $strOutput .= sprintf('<span style="font-size:small" title="%s">%s</span><br />', $strPluginName, $mixReturnValue[1]);
                     }
                 }
-                $strOutput .= '</tr></table>';
+                $strOutput .= '';
             }
 
             return $strOutput;
