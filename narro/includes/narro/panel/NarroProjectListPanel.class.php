@@ -211,8 +211,8 @@
             if (is_array(QApplication::$PluginHandler->PluginReturnValues)) {
                 $strOutput .= '<table style="font-size:small"><tr>';
                 foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
-                    if ($mixReturnValue !== false && is_string($mixReturnValue)) {
-                        $strOutput .= '<td>' . $mixReturnValue . '</td>';
+                    if (count($mixReturnValue) == 2 && $mixReturnValue[0] instanceof NarroProject && is_string($mixReturnValue[1]) && $mixReturnValue[1] != '') {
+                        $strOutput .= sprintf('<td><span title="%s">%s</span></td>', $strPluginName, $mixReturnValue[1]);
                     }
                 }
                 $strOutput .= '</tr></table>';

@@ -126,11 +126,11 @@
                     QApplication::$PluginHandler->DisplayExportMessage($this->objNarroProject);
 
                     if (is_array(QApplication::$PluginHandler->PluginReturnValues))
-                    foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
-                        if ($mixReturnValue !== false && is_string($mixReturnValue)) {
-                            $this->lblExport->Text .= sprintf('<br /><span class="info"><b>%s</b>: %s</span>', $strPluginName, nl2br($mixReturnValue));
+                        foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
+                            if (count($mixReturnValue) == 2 && $mixReturnValue[0] instanceof NarroProject && is_string($mixReturnValue[1]) && $mixReturnValue[1] != '') {
+                                $this->lblExport->Text .= sprintf('<br /><span class="info"><b>%s</b>: %s</span>', $strPluginName, nl2br($mixReturnValue[1]));
+                            }
                         }
-                    }
 
                     $this->pnlLogViewer->MarkAsModified();
                 }

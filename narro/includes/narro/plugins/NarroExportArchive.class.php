@@ -53,7 +53,21 @@
             return true;
         }
 
-        public function DisplayExportMessage(NarroProject $objProject) {
+        public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
+            if (file_exists(__IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip')) {
+                // @todo replace this with a download method that can serve files from a non web public directory
+                $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . str_replace(__DOCROOT__ . __SUBDIRECTORY__, '', __IMPORT_PATH__) . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip';
+                $strExportText = sprintf('<a href="%s">%s</a>', $strDownloadUrl, $objProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip');
+            }
+            else {
+                $strExportText = '';
+            }
+
+
+            return array($objProject, $strExportText);
+        }
+
+        public function DisplayExportMessage(NarroProject $objProject, $strText = '') {
             $this->CreateExportArchive(
                 $objProject->DefaultTranslationPath,
                 __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip'
@@ -61,14 +75,14 @@
             if (file_exists(__IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip')) {
                 // @todo replace this with a download method that can serve files from a non web public directory
                 $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . str_replace(__DOCROOT__ . __SUBDIRECTORY__, '', __IMPORT_PATH__) . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip';
-                $strExportText = sprintf(t('Download link: <a href="%s">%s</a>'), $strDownloadUrl, $objProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip');
+                $strExportText = sprintf(sprintf(t('Download link: %s'), '<a href="%s">%s</a>'), $strDownloadUrl, $objProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip');
             }
             else {
                 $strExportText = t('Failed to create an archive for download');
             }
 
 
-            return $strExportText;
+            return array($objProject, $strExportText);
         }
     }
 ?>
