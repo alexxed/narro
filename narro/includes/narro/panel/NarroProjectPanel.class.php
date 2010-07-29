@@ -116,11 +116,9 @@
         public function dtgTranslators_Bind() {
             if ($this->dtgTranslators->Display == false) return false;
             // Setup the $objClauses Array
-            $objNode = new QQNode('TotalWordsTranslated', 'TotalWordsTranslated', 'integer');
             $objClauses = array(
                 QQ::GroupBy(QQN::NarroUser()->UserId),
-                QQ::Sum(QQN::NarroUser()->NarroSuggestionAsUser->SuggestionWordCount, 'TotalWordsTranslated'),
-                QQ::OrderBy($objNode)
+                QQ::Sum(QQN::NarroUser()->NarroSuggestionAsUser->SuggestionWordCount, 'TotalWordsTranslated')
             );
 
             // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
