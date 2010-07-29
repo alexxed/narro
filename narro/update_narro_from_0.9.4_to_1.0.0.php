@@ -17,7 +17,25 @@
      */
     require_once('includes/configuration/prepend.inc.php');
 
-    if (QApplication::HasPermission('Administrator')) {
+    if (isset($argv[0])) {
+        $intCnt = 0;
+        $intSkipped = 0;
+        foreach(NarroSuggestion::QueryArray(QQ::AndCondition(QQ::NotEqual(QQN::NarroSuggestion()->UserId, 0), QQ::LessThan(QQN::NarroSuggestion()->SuggestionWordCount, 1)), array(QQ::OrderBy(QQN::NarroSuggestion()->SuggestionId, 0), QQ::LimitInfo(10000, 0))) as $intVal=>$objSuggestion) {
+            if ($objSuggestion->SuggestionValueMd5 != md5($objSuggestion->SuggestionValue)) {$intSkipped++; continue;}
+
+            try {
+                $objSuggestion->SaveWordCount();
+                $intCnt++;
+            }
+            catch (Exception $objEx) {
+                echo $objEx->getMessage();
+            }
+        }
+        printf("Skipped %d, saved %d suggestions, last suggestion id is %d\n", $intSkipped, $intCnt, $objSuggestion->SuggestionId);
+        die();
+    }
+
+//    if (QApplication::HasPermission('Administrator')) {
 //        $intDuplicateSuggestionsDeleted = 0;
 //        foreach(NarroSuggestion::LoadAll() as $intVal=>$objSuggestion) {
 //            if ($objSuggestion->SuggestionValue != md5($objSuggestion->SuggestionValue)) continue;
@@ -156,8 +174,8 @@
         }
 
         error_log(sprintf('Deleted %d duplicate suggestions and %d duplicate texts', $intDuplicateSuggestionsDeleted, $intDuplicateTextsDeleted));
-    }
-    else {
-        QApplication::Redirect('narro_login.php');
-    }
+//    }
+//    else {
+//        QApplication::Redirect('narro_login.php');
+//    }
 ?>

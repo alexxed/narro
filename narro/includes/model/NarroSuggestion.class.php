@@ -63,6 +63,16 @@
             );
         }
 
+        public function SaveWordCount($blnForceInsert = false, $blnForceUpdate = false) {
+            $this->intSuggestionWordCount = NarroString::WordCount($this->strSuggestionValue);
+            $this->intSuggestionCharCount = strlen($this->strSuggestionValue);
+
+            if ((!$this->__blnRestored) || ($blnForceInsert))
+                return false;
+
+            parent::Save($blnForceInsert, $blnForceUpdate);
+        }
+
         public function Save($blnForceInsert = false, $blnForceUpdate = false) {
             $this->intSuggestionWordCount = NarroString::WordCount($this->strSuggestionValue);
             $this->intSuggestionCharCount = strlen($this->strSuggestionValue);
