@@ -56,7 +56,7 @@
         public $pnlDiacritics;
 
         public $intCurrentContext;
-        protected $intContextsCount;
+        protected $intContextCount;
         protected $intSortColumnIndex;
         protected $intSortDirection;
         protected $blnShowComments;
@@ -67,7 +67,7 @@
 
         public $pnlBreadcrumb;
 
-        public function __construct($objParentObject, $strControlId = null, NarroProject $objNarroProject, $objNarroFile = null, NarroContextInfo $objContextInfo, $intTextFilter = NarroTextListPanel::SHOW_ALL_TEXTS, $intSearchType = NarroTextListPanel::SEARCH_TEXTS, $strSearchText = '', $intContextsCount = 0, $intCurrentContext = 0, $intSortColumnIndex = -1, $intSortDirection = 0, $blnShowComments = 0) {
+        public function __construct($objParentObject, $strControlId = null, NarroProject $objNarroProject, $objNarroFile = null, NarroContextInfo $objContextInfo, $intTextFilter = NarroTextListPanel::SHOW_ALL_TEXTS, $intSearchType = NarroTextListPanel::SEARCH_TEXTS, $strSearchText = '', $intContextCount = 0, $intCurrentContext = 0, $intSortColumnIndex = -1, $intSortDirection = 0, $blnShowComments = 0) {
             parent::__construct($objParentObject, $strControlId);
 
             $this->objProject = $objNarroProject;
@@ -76,7 +76,7 @@
             $this->intSearchType = $intSearchType;
             $this->strSearchText = $strSearchText;
             $this->intCurrentContext = $intCurrentContext;
-            $this->intContextsCount = $intContextsCount;
+            $this->intContextCount = $intContextCount;
             $this->intSortColumnIndex = $intSortColumnIndex;
             $this->intSortDirection = $intSortDirection;
             $this->blnShowComments = $blnShowComments;
@@ -88,7 +88,7 @@
             else
                 $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId);
 
-            if (!$this->intContextsCount) {
+            if (!$this->intContextCount) {
 
                 $objExtraCondition = QQ::AndCondition(
                                         QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
@@ -96,7 +96,7 @@
                                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
                 );
 
-                $this->intContextsCount = NarroContextInfo::GetContextCount(
+                $this->intContextCount = NarroContextInfo::GetContextCount(
                                                     $this->strSearchText,
                                                     $this->intSearchType,
                                                     $this->intTextFilter,
@@ -114,7 +114,7 @@
                 );
 
 
-                $this->intCurrentContext = $this->intContextsCount - NarroContextInfo::GetContextCount(
+                $this->intCurrentContext = $this->intContextCount - NarroContextInfo::GetContextCount(
                                                     $this->strSearchText,
                                                     $this->intSearchType,
                                                     $this->intTextFilter,
@@ -413,8 +413,8 @@
                 (strlen($this->objNarroContextInfo->Context->Text->TextValue)>30)?mb_substr($strText, 0, 30) . '...':$strText);
 
             $this->pnlBreadcrumb->MarkAsModified();
-            if ($this->intContextsCount) {
-                $this->lblProgress->Text = sprintf('%d/%d', $this->intCurrentContext, $this->intContextsCount);
+            if ($this->intContextCount) {
+                $this->lblProgress->Text = sprintf('%d/%d', $this->intCurrentContext, $this->intContextCount);
                 $this->pnlProgress->Text = sprintf(
                     '
                     <br />
@@ -424,10 +424,10 @@
                     <div class="untranslated" style="left:%d%%;width: %d%%;"></div>
                     </div>
                     ',
-                    sprintf(t('You are now translating a batch of %d texts. The bar below shows your progress through this batch'), $this->intContextsCount),
-                    ceil(($this->intCurrentContext * 100)/$this->intContextsCount),
-                    ceil(($this->intCurrentContext * 100)/$this->intContextsCount),
-                    100 - ceil(($this->intCurrentContext * 100)/$this->intContextsCount)
+                    sprintf(t('You are now translating a batch of %d texts. The bar below shows your progress through this batch'), $this->intContextCount),
+                    ceil(($this->intCurrentContext * 100)/$this->intContextCount),
+                    ceil(($this->intCurrentContext * 100)/$this->intContextCount),
+                    100 - ceil(($this->intCurrentContext * 100)/$this->intContextCount)
                 );
             }
         }
