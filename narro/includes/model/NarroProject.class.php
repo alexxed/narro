@@ -112,8 +112,6 @@
                     );
                     if ($objLastContextInfo)
                         $objProjectProgress->LastModified = $objLastContextInfo->Modified;
-                    else
-                        $objProjectProgress->LastModified = QDateTime::Now();
 
                     $objProjectProgress->Save();
 
@@ -166,8 +164,6 @@
                     );
                     if ($objLastContextInfo)
                         $objProjectProgress->LastModified = $objLastContextInfo->Modified;
-                    else
-                        $objProjectProgress->LastModified = QDateTime::Now();
 
                     $objProjectProgress->Save();
 
@@ -220,8 +216,6 @@
                     );
                     if ($objLastContextInfo)
                         $objProjectProgress->LastModified = $objLastContextInfo->Modified;
-                    else
-                        $objProjectProgress->LastModified = QDateTime::Now();
 
                     $objProjectProgress->Save();
                     QApplication::$Cache->save($intApprovedTexts, 'approved_texts_' . $this->ProjectId . '_' . $intLanguageId, array('Project' . $this->ProjectId, 'Language' . $intLanguageId, 'approved_texts'));
