@@ -51,7 +51,7 @@
             if (!$objLanguage instanceof NarroLanguage) {
                 $objLanguage = parent::Load($intLanguageId);
                 if ($objLanguage instanceof NarroLanguage) {
-                    QApplication::$Cache->save($objLanguage, 'narrolanguage_' . $intLanguageId);
+                    QApplication::$Cache->save($objLanguage, 'narrolanguage_' . $intLanguageId, array('language', 'language' . $intLanguageId));
                 }
             }
 
@@ -64,7 +64,7 @@
             if (!$arrLanguage) {
                 $arrLanguage = parent::LoadAll($objOptionalClauses);
                 if ($arrLanguage) {
-                    QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadall');
+                    QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadall_' . md5(serialize($objOptionalClauses)), array('language'));
                 }
             }
 
@@ -80,7 +80,7 @@
                     $objOptionalClauses
                 );
                 if ($arrLanguage) {
-                    QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadallactive');
+                    QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadallactive_' . md5(serialize($objOptionalClauses)), array('language'));
                 }
             }
 
@@ -95,7 +95,7 @@
                     QQ::NotEqual(QQN::NarroLanguage()->LanguageCode, NarroLanguage::SOURCE_LANGUAGE_CODE)
                 );
                 if ($intCount) {
-                    QApplication::$Cache->save($intCount, 'narrolanguage_countall');
+                    QApplication::$Cache->save($intCount, 'narrolanguage_countall', array('language'));
                 }
             }
 
@@ -103,7 +103,7 @@
         }
 
         public static function CountAllActive() {
-            $intCount = QApplication::$Cache->load('narrolanguage_countallactive');
+            $intCount = QApplication::$Cache->load('narrolanguage_countallactive', array('language'));
 
             if (!$intCount) {
                 $intCount = parent::QueryCount(
@@ -113,7 +113,7 @@
                     )
                 );
                 if ($intCount) {
-                    QApplication::$Cache->save($intCount, 'narrolanguage_countallactive');
+                    QApplication::$Cache->save($intCount, 'narrolanguage_countallactive', array('language'));
                 }
             }
 
@@ -128,7 +128,7 @@
             if (!$objLanguage instanceof NarroLanguage) {
                 $objLanguage = parent::LoadByLanguageCode($strLanguageCode);
                 if ($objLanguage instanceof NarroLanguage) {
-                    QApplication::$Cache->save($objLanguage, 'narrolanguage_' . str_replace('-', '_', $strLanguageCode));
+                    QApplication::$Cache->save($objLanguage, 'narrolanguage_' . str_replace('-', '_', $strLanguageCode), array('language', 'language' . $objLanguage->LanguageId));
                 }
             }
 
@@ -136,12 +136,9 @@
         }
 
         public function Save($blnForceInsert = false, $blnForceUpdate = false) {
-            QApplication::$Cache->remove('narrolanguage_' . str_replace('-', '_', $this->LanguageCode));
-            QApplication::$Cache->remove('narrolanguage_' . $this->LanguageId);
-            QApplication::$Cache->remove('narrolanguage_loadall');
-            QApplication::$Cache->remove('narrolanguage_countall');
-            QApplication::$Cache->remove('narrolanguage_loadallactive');
-            QApplication::$Cache->remove('narrolanguage_countallactive');
+            foreach(QApplication::$Cache->getIdsMatchingTags(array('language')) as $strCacheId) {
+                QApplication::$Cache->remove($strCacheId);
+            }
 
             $mixResult = parent::Save($blnForceInsert, $blnForceUpdate);
 
@@ -159,12 +156,9 @@
         }
 
         public function Delete() {
-            QApplication::$Cache->remove('narrolanguage_' . str_replace('-', '_', $this->LanguageCode));
-            QApplication::$Cache->remove('narrolanguage_' . $this->LanguageId);
-            QApplication::$Cache->remove('narrolanguage_loadall');
-            QApplication::$Cache->remove('narrolanguage_countall');
-            QApplication::$Cache->remove('narrolanguage_loadallactive');
-            QApplication::$Cache->remove('narrolanguage_countallactive');
+            foreach(QApplication::$Cache->getIdsMatchingTags(array('language')) as $strCacheId) {
+                QApplication::$Cache->remove($strCacheId);
+            }
 
             parent::Delete();
         }
