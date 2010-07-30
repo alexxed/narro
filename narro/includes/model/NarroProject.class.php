@@ -94,6 +94,7 @@
                         $objProjectProgress->ApprovedTextCount = 0;
                         $objProjectProgress->FuzzyTextCount = 0;
                         $objProjectProgress->ProgressPercent = 0;
+                        $objProjectProgress->LastModified = QDateTime::Now();
                     }
 
 
@@ -151,6 +152,7 @@
                         $objProjectProgress->ApprovedTextCount = 0;
                         $objProjectProgress->FuzzyTextCount = 0;
                         $objProjectProgress->ProgressPercent = 0;
+                        $objProjectProgress->LastModified = QDateTime::Now();
                     }
 
                     $objProjectProgress->FuzzyTextCount = $intTranslatedTexts;
@@ -199,6 +201,7 @@
                         $objProjectProgress->ApprovedTextCount = 0;
                         $objProjectProgress->FuzzyTextCount = 0;
                         $objProjectProgress->ProgressPercent = 0;
+                        $objProjectProgress->LastModified = QDateTime::Now();
                     }
 
                     $objProjectProgress->ApprovedTextCount = $intApprovedTexts;
