@@ -193,7 +193,7 @@
                                 )
                             );
                         else
-                            throw new Exception('Could not copy %s to %s. Unknown error.');
+                            throw new Exception(sprintf('Could not copy %s to %s. Unknown error.', $source, $target));
                     }
                 }
 
@@ -219,7 +219,7 @@
                             )
                         );
                     else
-                        throw new Exception('Could not copy %s to %s. Unknown error.');
+                        throw new Exception(sprintf('Could not copy %s to %s. Unknown error.', $source, $target));
                 }
             }
         }

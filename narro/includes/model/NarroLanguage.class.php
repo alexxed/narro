@@ -103,7 +103,7 @@
         }
 
         public static function CountAllActive() {
-            $intCount = QApplication::$Cache->load('narrolanguage_countallactive', array('language'));
+            $intCount = QApplication::$Cache->load('narrolanguage_countallactive');
 
             if (!$intCount) {
                 $intCount = parent::QueryCount(
