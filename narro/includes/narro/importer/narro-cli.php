@@ -162,7 +162,7 @@
             $intPid = NarroUtils::IsProcessRunning('import', $objNarroImporter->Project->ProjectId);
 
             if ($intPid && $intPid <> getmypid())
-                throw new Exception(sprintf('An import process is already for this project with pid %d', $intPid));
+                throw new Exception(sprintf('An import process is already running for this project with pid %d', $intPid));
 
             $strProcPidFile = __TMP_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '-' . $objNarroImporter->TargetLanguage->LanguageCode . '-import-process.pid';
             if (file_exists($strProcPidFile))
@@ -257,7 +257,7 @@
             $intPid = NarroUtils::IsProcessRunning('export', $objNarroImporter->Project->ProjectId);
 
             if ($intPid && $intPid <> getmypid())
-                QApplication::$Logger->info(sprintf('An export process is already for this project with pid %d', $intPid));
+                QApplication::$Logger->info(sprintf('An export process is already running for this project with pid %d', $intPid));
 
             $strProcPidFile = __TMP_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '-' . $objNarroImporter->TargetLanguage->LanguageCode . '-export-process.pid';
             if (file_exists($strProcPidFile))

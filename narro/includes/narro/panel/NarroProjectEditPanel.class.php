@@ -200,6 +200,7 @@
                 $strProjectDir = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
                 if (!file_exists($strProjectDir)) {
                     mkdir($strProjectDir, 0777);
+                    chmod($strProjectDir, 0777);
                     file_put_contents(
                         $strProjectDir . '/export.sh',
                         "#!/bin/bash\n".

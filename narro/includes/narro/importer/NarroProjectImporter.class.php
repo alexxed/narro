@@ -720,6 +720,7 @@
                     if (file_exists($mixValue))
                         $this->strTranslationPath = $mixValue;
                     else {
+                        @chmod($mixValue . '/..', 0777);
                         if (mkdir($mixValue, 0777, true))
                             $this->strTranslationPath = $mixValue;
                         else
