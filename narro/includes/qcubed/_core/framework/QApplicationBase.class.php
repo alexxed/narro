@@ -355,7 +355,7 @@
 
             // Preload Class Files
             foreach (QApplication::$PreloadedClassFile as $strClassFile)
-                require($strClassFile);
+                require_once($strClassFile);
         }
 
         public static function IsBrowser($intBrowserType) {
