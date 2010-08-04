@@ -173,6 +173,7 @@
 
             $this->btnMultiTranslate = new QButton($this);
             $this->btnMultiTranslate->Text = t('Mass translate');
+            $this->btnMultiTranslateCancel->Display = QApplication::HasPermissionForThisLang('Can suggest', $this->objNarroProject->ProjectId);
             if (QApplication::$UseAjax)
                 $this->btnMultiTranslate->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMultiTranslate_Click'));
             else
@@ -185,6 +186,7 @@
 
             $this->btnMultiTranslateBottom = new QButton($this);
             $this->btnMultiTranslateBottom->Text = t('Mass translate');
+            $this->btnMultiTranslateBottom->Display = QApplication::HasPermissionForThisLang('Can suggest', $this->objNarroProject->ProjectId);
             if (QApplication::$UseAjax)
                 $this->btnMultiTranslateBottom->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMultiTranslate_Click'));
             else
