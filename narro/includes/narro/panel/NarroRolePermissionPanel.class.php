@@ -85,7 +85,7 @@
         }
 
         public function dtgNarroPermission_Bind() {
-            $this->dtgNarroPermission->TotalItemCount = NarroPermission::CountAll();
+            $this->dtgNarroPermission->TotalItemCount = NarroPermission::QueryCount(QQ::Equal(QQN::NarroPermission()->NarroRolePermissionAsPermission->RoleId, $this->objRole->RoleId));
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
             // Setup the $objClauses Array
@@ -101,7 +101,7 @@
                 array_push($objClauses, $objClause);
 
             // Set the DataSource to be the array of all NarroUser objects, given the clauses above
-            $this->dtgNarroPermission->DataSource = NarroPermission::LoadAll($objClauses);
+            $this->dtgNarroPermission->DataSource = NarroPermission::QueryArray(QQ::Equal(QQN::NarroPermission()->NarroRolePermissionAsPermission->RoleId, $this->objRole->RoleId), $objClauses);
         }
 
         public function chkPermission_Click($strFormId, $strControlId, $strParameter) {
