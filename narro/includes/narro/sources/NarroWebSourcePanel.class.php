@@ -71,6 +71,7 @@
             chmod($strDownloadedFileName, 0666);
 
             switch(strtolower(pathinfo($strDownloadedFileName, PATHINFO_EXTENSION))) {
+                case 'xpi':
                 case 'zip':
                     QApplication::$Logger->info(sprintf('Trying to uncompress %s', $strDownloadedFileName));
                     $objZipFile = new ZipArchive();
