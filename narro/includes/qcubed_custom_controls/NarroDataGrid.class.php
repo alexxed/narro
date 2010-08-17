@@ -48,13 +48,6 @@
                 return parent::GetPaginatorRowHtml($objPaginator);
         }
 
-//        protected function GetHeaderRowHtml() {
-//            if (!$this->blnAlwaysShowPaginator && $this->objPaginator->TotalItemCount < $this->objPaginator->ItemsPerPage)
-//                return parent::GetHeaderRowHtml();
-//            else
-//                return '';
-//        }
-
         /////////////////////////
         // Public Properties: SET
         /////////////////////////
