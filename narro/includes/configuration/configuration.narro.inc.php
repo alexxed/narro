@@ -68,13 +68,13 @@
         'profiling' => false)));
 
     set_include_path(
-        dirname(__FILE__) . __SUBDIRECTORY__ . PATH_SEPARATOR .
-        dirname(__FILE__) . __SUBDIRECTORY__ . 'includes' . PATH_SEPARATOR .
-        dirname(__FILE__) . __SUBDIRECTORY__ . 'includes' . '/qcubed_custom_controls' . PATH_SEPARATOR .
-        dirname(__FILE__) . __SUBDIRECTORY__ . 'includes' . '/narro/importer' . PATH_SEPARATOR .
-        dirname(__FILE__) . __SUBDIRECTORY__ . 'includes' . '/narro/search' . PATH_SEPARATOR .
-        dirname(__FILE__) . __SUBDIRECTORY__ . 'includes' . '/narro' . PATH_SEPARATOR .
-        dirname(__FILE__) . __SUBDIRECTORY__ . 'includes' . '/PEAR' . PATH_SEPARATOR .
+        __DOCROOT__ . __SUBDIRECTORY__ . PATH_SEPARATOR .
+        __DOCROOT__ . __SUBDIRECTORY__ . '/includes' . PATH_SEPARATOR .
+        __DOCROOT__ . __SUBDIRECTORY__ . '/includes' . '/qcubed_custom_controls' . PATH_SEPARATOR .
+        __DOCROOT__ . __SUBDIRECTORY__ . '/includes' . '/narro/importer' . PATH_SEPARATOR .
+        __DOCROOT__ . __SUBDIRECTORY__ . '/includes' . '/narro/search' . PATH_SEPARATOR .
+        __DOCROOT__ . __SUBDIRECTORY__ . '/includes' . '/narro' . PATH_SEPARATOR .
+        __DOCROOT__ . __SUBDIRECTORY__ . '/includes' . '/PEAR' . PATH_SEPARATOR .
         '/usr/share/php' . PATH_SEPARATOR .
         '/usr/share/pear' . PATH_SEPARATOR .
         get_include_path()
