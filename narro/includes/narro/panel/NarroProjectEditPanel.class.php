@@ -136,10 +136,7 @@
         protected function btnSave_Create() {
             $this->btnSave = new QButton($this);
             $this->btnSave->Text = t('Save');
-            if (QApplication::$UseAjax)
-                $this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
-            else
-                $this->btnSave->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnSave_Click'));
+            $this->btnSave->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnSave_Click'));
             $this->btnSave->PrimaryButton = true;
             $this->btnSave->CausesValidation = true;
         }
@@ -148,10 +145,7 @@
         protected function btnCancel_Create() {
             $this->btnCancel = new QButton($this);
             $this->btnCancel->Text = t('Cancel');
-            if (QApplication::$UseAjax)
-                $this->btnCancel->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCancel_Click'));
-            else
-                $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
+            $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
             $this->btnCancel->CausesValidation = false;
         }
 
@@ -160,10 +154,7 @@
             $this->btnDelete = new QButton($this);
             $this->btnDelete->Text = t('Delete');
             $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(t('Are you SURE you want to DELETE %s?\nThe texts and associated suggestions will NOT be deleted.\nThey will be preserved for use in other projects.'), addslashes($this->objNarroProject->ProjectName))));
-            if (QApplication::$UseAjax)
-                $this->btnDelete->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
-            else
-                $this->btnDelete->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnDelete_Click'));
+            $this->btnDelete->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnDelete_Click'));
             $this->btnDelete->CausesValidation = false;
             $this->btnDelete->Visible = $this->blnEditMode;
         }

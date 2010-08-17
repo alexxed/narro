@@ -110,16 +110,15 @@ th.datagrid_header {
     color: #000000;
     font-weight: bold;
     text-align: left;
-    border-right: 1px solid #DDDDDD;
 }
 
 div.breadcrumb {
-    background: #DDDDDD url(../images/bg_td1.jpg) repeat-x;
+    background: #DEDEDE url(../images/bg_td1.jpg) repeat-x;
     padding: 4px;
     margin-top: 4px;
     margin-bottom: 4px;
     text-align: left;
-    border: 1px solid #DDDDDD;
+    border: 1px solid #DEDEDE;
 }
 
 th.datagrid_header a{
@@ -154,8 +153,7 @@ tbody th.datagrid_row,td.datagrid_row {
     font-family: Arial, Helvetica, sans-serif;
     color: #777777;
     padding: 10px 7px;
-    border-top: 1px solid #FFCA5E;
-    border-right: 1px solid #DDDDDD;
+    border-top: 1px solid #DEDEDE;
     text-align: left;
 }
 td.datagrid_row a {
@@ -207,22 +205,22 @@ td.datagrid_footer {
 }
 
 .section_title {
-    background: #DDDDDD url(../images/bg_td1.jpg) repeat-x;
+    background: #DEDEDE url(../images/bg_td1.jpg) repeat-x;
     padding: 4px;
     text-align: left;
-    border-left: 1px solid #DDDDDD;
-    border-right: 1px solid #DDDDDD;
-    border-top: 1px solid #DDDDDD;
-    border-bottom: 1px dotted #DDDDDD;
+    border-left: 1px solid #DEDEDE;
+    border-right: 1px solid #DEDEDE;
+    border-top: 1px solid #DEDEDE;
+    border-bottom: 1px dotted #DEDEDE;
     font-weight: bold;
     color: #000000;
 }
 
 .section {
     padding: 4px;
-    border-left: 1px solid #DDDDDD;
-    border-right: 1px solid #DDDDDD;
-    border-bottom: 1px solid #DDDDDD;
+    border-left: 1px solid #DEDEDE;
+    border-right: 1px solid #DEDEDE;
+    border-bottom: 1px solid #DEDEDE;
     margin-bottom: 4px;
 }
 
@@ -250,19 +248,24 @@ span.datetimepicker { }
     span.datetimepicker select.second { width: 45px; margin-left: 2px; }
 
 /* QDataGrid */
-table.datagrid { border: 1px solid #111; width:100%; overflow:auto;}
+table.datagrid { border: 1px solid #BDD4B3; width:100%; overflow:auto;}
     table.datagrid caption, table.datagrid tfoot { padding-bottom: 4px; overflow: auto; }
         table.datagrid span.left { float: left; display: block; }
         table.datagrid span.right { float: right; display: block; }
     table.datagrid tr { }
         table.datagrid tr.alternate {  }
-    table.datagrid th { background-color: #fff; padding: 3px 5px 3px 5px; text-align: left; color:#000;}
+    table.datagrid th {
+    padding: 3px 5px 3px 5px; text-align: left; color:#000;
+    background:none repeat scroll 0 0 #D4EDC9;
+    border-bottom:1px solid #BDD4B3;
+    }
         table.datagrid th a { color: #557D0C; text-decoration: none; }
         table.datagrid th a:hover { color: #000; text-decoration: underline;}
-    table.datagrid td { padding: 5px; }
+    table.datagrid td { padding: 5px; border-bottom:1px solid #DEDEDE;}
         table.datagrid td a { color: #557D0C; }
-        table.datagrid td a:hover { color: #000; text-decoration: underline; }
-    table.datagrid tfoot { border-top: 1px solid #111;}
+        table.datagrid td a:hover { color: #000; text-decoration: underline;}
+    table.datagrid tfoot {background:none repeat scroll 0 0 #D4EDC9;
+    border-bottom:1px solid #BDD4B3;}
 
 /* QPaginator */
 span.paginator { margin: 0; padding: 0; }

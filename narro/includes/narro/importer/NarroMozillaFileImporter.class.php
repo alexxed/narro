@@ -131,7 +131,7 @@
 
                 if ($objNarroContextInfo->TextAccessKey) {
                     if ($objNarroContextInfo->SuggestionAccessKey) {
-                        if (!preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->SuggestionAccessKey) && QApplication::$User->getPreferenceValueByName('Force ascii letters as access keys') == 'Yes') {
+                        if ($objNarroContextInfo->SuggestionAccessKey == '&' || (!preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->SuggestionAccessKey) && QApplication::$User->getPreferenceValueByName('Force ascii letters as access keys') == 'Yes')) {
                             if (preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches)) {
                                 $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $arrPossibleKeyMatches[0];
                                 QApplication::$Logger->warn(sprintf('For context "%s", found access key "%s" is not a ascii character, using the first ascii character as accesskey: "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $arrPossibleKeyMatches[0]));

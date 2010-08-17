@@ -166,7 +166,7 @@
         }
 
         public function dtgProjectList_LastActivityColumn_Render(NarroProject $objNarroProject) {
-            if ($objNarroProject->_NarroProjectProgressAsProject->LastModified->Timestamp > 0) {
+            if ($objNarroProject->_NarroProjectProgressAsProject && $objNarroProject->_NarroProjectProgressAsProject->LastModified->Timestamp > 0) {
                 $objDateSpan = new QDateTimeSpan(time() - $objNarroProject->_NarroProjectProgressAsProject->LastModified->Timestamp);
                 $strModifiedWhen = $objDateSpan->SimpleDisplay();
                 return sprintf(t('%s ago'), $strModifiedWhen);

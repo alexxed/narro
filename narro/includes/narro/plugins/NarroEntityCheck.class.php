@@ -93,7 +93,7 @@
                  * &entity; catch
                  */
                 if (strstr($strOriginal, '&'))
-                    self::RegisterEntityFormat('/&[a-zA-Z\-0-9]+\;/');
+                    self::RegisterEntityFormat('/&[\.a-zA-Z\-0-9]+\;/');
 
             $strPreparedOriginal = self::StripIgnoreCharacters($strOriginal);
 

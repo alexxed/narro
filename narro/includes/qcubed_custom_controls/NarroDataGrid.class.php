@@ -5,9 +5,9 @@
 
         // Let's Show a Footer
         protected $blnShowFooter = true;
-        
+
         protected $blnAlwaysShowPaginator = false;
-        
+
         // Let's define the footer to be to display our alternate paginator
         // We'll use the already built-in GetPaginatorRowHtml, sending in our ALTERNATE paginator, to help with the rendering
         protected function GetFooterRowHtml() {
@@ -28,13 +28,6 @@
                 $objExc->IncrementOffset();
                 throw $objExc;
             }
-                    //$this->CellSpacing = 0;
-            $this->CellPadding = 4;
-            $this->BorderStyle = QBorderStyle::Solid;
-            $this->BorderColor = '#DDDDDD';
-            $this->BorderWidth = 1;
-            $this->GridLines = QGridLines::Both;
-            $this->Width = '100%';
             $objStyle = new QDataGridRowStyle();
             $objStyle->CssClass = 'datagrid_header';
             $this->HeaderRowStyle = $objStyle;
@@ -81,7 +74,7 @@
                         $objExc->IncrementOffset();
                         throw $objExc;
                     }
-                    
+
                 case 'AlwaysShowPaginator':
                     try {
                         $this->blnAlwaysShowPaginator = QType::Cast($mixValue, QType::Boolean);
@@ -89,7 +82,7 @@
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
                         throw $objExc;
-                    }                    
+                    }
 
                 default:
                     try {
