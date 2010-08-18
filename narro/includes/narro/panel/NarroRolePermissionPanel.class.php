@@ -35,9 +35,6 @@
             $this->dtgNarroPermission = new NarroDataGrid($this);
             // Datagrid Paginator
             $this->dtgNarroPermission->ShowHeader = true;
-            $this->dtgNarroPermission->Paginator = new QPaginator($this->dtgNarroPermission);
-            $this->dtgNarroPermission->PaginatorAlternate = new QPaginator($this->dtgNarroPermission);
-            $this->dtgNarroPermission->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgNarroPermission->UseAjax = QApplication::$UseAjax;
@@ -85,7 +82,6 @@
         }
 
         public function dtgNarroPermission_Bind() {
-            $this->dtgNarroPermission->TotalItemCount = NarroPermission::QueryCount(QQ::Equal(QQN::NarroPermission()->NarroRolePermissionAsPermission->RoleId, $this->objRole->RoleId));
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
             // Setup the $objClauses Array
@@ -101,7 +97,7 @@
                 array_push($objClauses, $objClause);
 
             // Set the DataSource to be the array of all NarroUser objects, given the clauses above
-            $this->dtgNarroPermission->DataSource = NarroPermission::QueryArray(QQ::Equal(QQN::NarroPermission()->NarroRolePermissionAsPermission->RoleId, $this->objRole->RoleId), $objClauses);
+            $this->dtgNarroPermission->DataSource = NarroPermission::LoadAll($objClauses);
         }
 
         public function chkPermission_Click($strFormId, $strControlId, $strParameter) {

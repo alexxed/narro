@@ -69,12 +69,8 @@
             $this->dtgRole = new NarroDataGrid($this);
             $this->dtgRole->Title = t('Roles');
 
-            // Datagrid Paginator
-            $this->dtgRole->Paginator = new QPaginator($this->dtgRole);
-            $this->dtgRole->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
-
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgRole->UseAjax = QApplication::$UseAjax;
+            $this->dtgRole->UseAjax = false;
 
             // Specify the local databind method this datagrid will use
             $this->dtgRole->SetDataBinder('dtgRole_Bind', $this);
@@ -139,10 +135,7 @@
             if (!$btnPermissions) {
                 $btnPermissions = new QButton($this->dtgRole, $strControlId);
                 $btnPermissions->Text = t('Permissions');
-                if (QApplication::$UseAjax)
-                    $btnPermissions->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnPermissions_Click'));
-                else
-                    $btnPermissions->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnPermissions_Click'));
+                $btnPermissions->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnPermissions_Click'));
             }
             $btnPermissions->ActionParameter = $objNarroRole->RoleId;
 
@@ -151,10 +144,7 @@
             if (!$btnViewUsers) {
                 $btnViewUsers = new QButton($this->dtgRole, $strControlId);
                 $btnViewUsers->Text = t('View users');
-                if (QApplication::$UseAjax)
-                    $btnViewUsers->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnViewUsers_Click'));
-                else
-                    $btnViewUsers->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnViewUsers_Click'));
+                $btnViewUsers->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnViewUsers_Click'));
             }
             $btnViewUsers->ActionParameter = $objNarroRole->RoleId;
 
@@ -210,9 +200,6 @@
 
         public function dtgRole_Bind() {
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
-
-            // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-            $this->dtgRole->TotalItemCount = NarroRole::CountAll();
 
             // Setup the $objClauses Array
             $objClauses = array();
