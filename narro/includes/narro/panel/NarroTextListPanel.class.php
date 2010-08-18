@@ -147,7 +147,7 @@
 
             $this->btnMultiApprove = new QButton($this);
             $this->btnMultiApprove->Text = t('Mass approve');
-            $this->btnMultiApprove->Display = QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId);
+            $this->btnMultiApprove->Display = QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId);
             if (QApplication::$UseAjax)
                 $this->btnMultiApprove->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMultiApprove_Click'));
             else
@@ -155,12 +155,12 @@
 
             $this->btnMultiApproveCancel = new QButton($this);
             $this->btnMultiApproveCancel->Text = t('Cancel mass approval');
-            $this->btnMultiApproveCancel->Display = QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
+            $this->btnMultiApproveCancel->Display = QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
             $this->btnMultiApproveCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnMultiApproveCancel_Click'));
 
             $this->btnMultiApproveBottom = new QButton($this);
             $this->btnMultiApproveBottom->Text = t('Mass approve');
-            $this->btnMultiApproveBottom->Display = QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId);
+            $this->btnMultiApproveBottom->Display = QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId);
             if (QApplication::$UseAjax)
                 $this->btnMultiApproveBottom->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMultiApprove_Click'));
             else
@@ -168,7 +168,7 @@
 
             $this->btnMultiApproveCancelBottom = new QButton($this);
             $this->btnMultiApproveCancelBottom->Text = t('Cancel mass approval');
-            $this->btnMultiApproveCancelBottom->Display = QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
+            $this->btnMultiApproveCancelBottom->Display = QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
             $this->btnMultiApproveCancelBottom->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnMultiApproveCancel_Click'));
 
             $this->btnMultiTranslate = new QButton($this);
@@ -282,7 +282,7 @@
         }
 
         public function btnMultiApprove_Click($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId))
+            if (!QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId))
               return false;
 
             $this->btnMultiTranslateCancel->Display = false;
@@ -347,8 +347,8 @@
                 $this->dtgNarroContextInfo->MarkAsModified();
             }
 
-            $this->btnMultiApproveCancel->Display = QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
-            $this->btnMultiApproveCancelBottom->Display = QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
+            $this->btnMultiApproveCancel->Display = QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
+            $this->btnMultiApproveCancelBottom->Display = QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save');
 
         }
 
