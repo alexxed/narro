@@ -1,447 +1,530 @@
-SET FOREIGN_KEY_CHECKS=0;
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+-- MySQL Administrator dump 1.4
+--
+-- ------------------------------------------------------
+-- Server version   5.1.48
 
-CREATE TABLE narro_context (
-  context_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  text_id bigint(20) unsigned NOT NULL,
-  project_id int(10) unsigned NOT NULL,
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+
+CREATE TABLE `narro_context` (
+  `context_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `text_id` bigint(20) unsigned NOT NULL,
+  `project_id` int(10) unsigned NOT NULL,
   `context` text NOT NULL,
-  context_md5 varchar(255) NOT NULL,
-  file_id int(10) unsigned NOT NULL,
-  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  modified datetime DEFAULT '0000-00-00 00:00:00',
-  active tinyint(1) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (context_id),
-  UNIQUE KEY text_id (text_id,context_md5,file_id),
-  KEY string_id (text_id),
-  KEY file_id (file_id),
-  KEY project_id (project_id),
-  KEY context_md5 (context_md5),
-  KEY active (active,project_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_context_comment (
-  comment_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  context_id bigint(20) unsigned NOT NULL,
-  user_id int(11) unsigned NOT NULL,
-  language_id int(10) unsigned NOT NULL,
-  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  modified datetime DEFAULT '0000-00-00 00:00:00',
-  comment_text text NOT NULL,
-  comment_text_md5 varchar(128) NOT NULL,
-  PRIMARY KEY (comment_id),
-  KEY context_id (context_id),
-  KEY user_id (user_id),
-  KEY language_id (language_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-CREATE TABLE narro_context_info (
-  context_info_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  context_id bigint(20) unsigned NOT NULL,
-  language_id int(10) unsigned NOT NULL,
-  validator_user_id int(10) unsigned DEFAULT NULL,
-  valid_suggestion_id bigint(20) unsigned DEFAULT NULL,
-  popular_suggestion_id bigint(20) unsigned DEFAULT NULL,
-  has_comments tinyint(1) NOT NULL DEFAULT '0',
-  has_suggestions tinyint(1) unsigned DEFAULT '0',
-  text_access_key varchar(2) DEFAULT NULL,
-  suggestion_access_key varchar(2) DEFAULT NULL,
-  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  modified datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (context_info_id),
-  UNIQUE KEY context_id_2 (context_id,language_id),
-  KEY context_id (context_id),
-  KEY language_id (language_id),
-  KEY suggestion_id (valid_suggestion_id),
-  KEY popular_suggestion_id (popular_suggestion_id),
-  KEY validator_user_id (validator_user_id),
-  KEY created (created),
-  KEY modified (modified)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_file (
-  file_id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  file_name varchar(255) NOT NULL,
-  file_path varchar(255) NOT NULL,
-  file_md5 varchar(32) DEFAULT NULL,
-  parent_id int(10) unsigned DEFAULT NULL,
-  type_id tinyint(3) unsigned NOT NULL,
-  project_id int(10) unsigned NOT NULL,
-  active tinyint(1) NOT NULL DEFAULT '1',
-  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  modified datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (file_id),
-  UNIQUE KEY file_name (file_name,parent_id),
-  KEY type_id (type_id),
-  KEY project_id (project_id),
-  KEY parent_id (parent_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_file_progress (
-  file_progress_id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  file_id int(10) unsigned NOT NULL,
-  language_id int(10) unsigned NOT NULL,
-  total_text_count int(10) NOT NULL,
-  approved_text_count int(10) NOT NULL,
-  fuzzy_text_count int(10) NOT NULL,
-  progress_percent int(10) NOT NULL,
-  PRIMARY KEY (file_progress_id),
-  UNIQUE KEY file_id (file_id,language_id),
-  KEY language_id (language_id),
-  KEY file_id_2 (file_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_file_type (
-  file_type_id tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  file_type varchar(32) NOT NULL,
-  PRIMARY KEY (file_type_id),
-  UNIQUE KEY UQ_qdrupal_narro_file_type_1 (file_type)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_language (
-  language_id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  language_name varchar(128) NOT NULL,
-  language_code varchar(64) NOT NULL,
-  country_code varchar(64) NOT NULL,
-  dialect_code varchar(64) DEFAULT NULL,
-  encoding varchar(10) NOT NULL,
-  text_direction varchar(3) NOT NULL DEFAULT 'ltr',
-  special_characters varchar(255) DEFAULT NULL,
-  plural_form varchar(255) NOT NULL DEFAULT '"Plural-Forms: nplurals=2; plural=n != 1;\\n"',
-  active tinyint(1) DEFAULT '1',
-  PRIMARY KEY (language_id),
-  UNIQUE KEY language_name (language_name),
-  UNIQUE KEY language_code (language_code)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_permission (
-  permission_id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  permission_name varchar(128) NOT NULL,
-  PRIMARY KEY (permission_id),
-  UNIQUE KEY permission_name (permission_name)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_project (
-  project_id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  project_category_id int(11) unsigned DEFAULT '1',
-  project_name varchar(255) NOT NULL,
-  project_type smallint(5) unsigned NOT NULL,
-  project_description varchar(255) DEFAULT NULL,
-  active tinyint(3) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (project_id),
-  UNIQUE KEY project_name (project_name),
-  KEY project_type (project_type),
-  KEY narro_project_ibfk_2 (project_category_id),
-  KEY active (active)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_project_category (
-  project_category_id int(11) unsigned NOT NULL AUTO_INCREMENT,
-  category_name varchar(255) NOT NULL,
-  category_description varchar(255) NOT NULL,
-  PRIMARY KEY (project_category_id),
-  UNIQUE KEY category_name (category_name)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_project_progress (
-  project_progress_id int(10) NOT NULL AUTO_INCREMENT,
-  project_id int(10) unsigned NOT NULL,
-  language_id int(10) unsigned NOT NULL,
-  last_modified datetime NOT NULL,
-  total_text_count int(10) unsigned NOT NULL,
-  fuzzy_text_count int(10) unsigned NOT NULL,
-  approved_text_count int(10) unsigned NOT NULL,
-  progress_percent int(10) unsigned NOT NULL,
-  PRIMARY KEY (project_progress_id),
-  UNIQUE KEY project_id (project_id,language_id),
-  KEY language_id (language_id),
-  KEY project_id_2 (project_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_project_type (
-  project_type_id smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  project_type varchar(64) NOT NULL,
-  PRIMARY KEY (project_type_id),
-  UNIQUE KEY project_type (project_type)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_role (
-  role_id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  role_name varchar(128) NOT NULL,
-  PRIMARY KEY (role_id),
-  UNIQUE KEY role_name (role_name)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_role_permission (
-  role_permission_id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  role_id int(10) unsigned NOT NULL,
-  permission_id int(10) unsigned NOT NULL,
-  PRIMARY KEY (role_permission_id),
-  KEY role_id (role_id),
-  KEY permission_id (permission_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_suggestion (
-  suggestion_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  user_id int(10) unsigned DEFAULT NULL,
-  text_id bigint(20) unsigned NOT NULL,
-  language_id int(10) unsigned NOT NULL,
-  suggestion_value text NOT NULL,
-  suggestion_value_md5 varchar(128) NOT NULL,
-  suggestion_char_count smallint(5) unsigned DEFAULT '0',
-  suggestion_word_count smallint(5) unsigned DEFAULT '0',
-  has_comments tinyint(1) DEFAULT '0',
-  is_imported tinyint(1) NOT NULL DEFAULT '0',
-  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  modified datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (suggestion_id),
-  UNIQUE KEY text_id_2 (text_id,language_id,suggestion_value_md5),
-  KEY user_id (user_id),
-  KEY text_id (text_id),
-  KEY language_id (language_id),
-  KEY text_id_3 (text_id,language_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_suggestion_comment (
-  comment_id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  suggestion_id bigint(20) unsigned NOT NULL,
-  user_id int(10) unsigned NOT NULL,
-  comment_text text NOT NULL,
-  comment_text_md5 varchar(128) NOT NULL,
-  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  modified datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (comment_id),
-  UNIQUE KEY suggestion_id_2 (suggestion_id,user_id,comment_text_md5),
-  KEY suggestion_id (suggestion_id),
-  KEY user_id (user_id)
+  `context_md5` varchar(255) NOT NULL,
+  `file_id` int(10) unsigned NOT NULL,
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified` datetime DEFAULT '0000-00-00 00:00:00',
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`context_id`),
+  UNIQUE KEY `text_id` (`text_id`,`context_md5`,`file_id`),
+  KEY `string_id` (`text_id`),
+  KEY `file_id` (`file_id`),
+  KEY `project_id` (`project_id`),
+  KEY `context_md5` (`context_md5`),
+  KEY `active` (`active`,`project_id`),
+  CONSTRAINT `narro_context_ibfk_13` FOREIGN KEY (`text_id`) REFERENCES `narro_text` (`text_id`),
+  CONSTRAINT `narro_context_ibfk_14` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`),
+  CONSTRAINT `narro_context_ibfk_15` FOREIGN KEY (`file_id`) REFERENCES `narro_file` (`file_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_suggestion_vote (
-  suggestion_id bigint(20) unsigned NOT NULL,
-  context_id bigint(20) unsigned NOT NULL,
-  user_id int(10) unsigned NOT NULL,
-  vote_value tinyint(3) NOT NULL,
-  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  modified datetime DEFAULT '0000-00-00 00:00:00',
-  UNIQUE KEY suggestion_id (suggestion_id,user_id,context_id),
-  KEY suggestion_id_2 (suggestion_id),
-  KEY user_id (user_id),
-  KEY context_id (context_id)
+CREATE TABLE `narro_context_comment` (
+  `comment_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `context_id` bigint(20) unsigned NOT NULL,
+  `user_id` int(11) unsigned NOT NULL,
+  `language_id` int(10) unsigned NOT NULL,
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified` datetime DEFAULT '0000-00-00 00:00:00',
+  `comment_text` text NOT NULL,
+  `comment_text_md5` varchar(128) NOT NULL,
+  PRIMARY KEY (`comment_id`),
+  KEY `context_id` (`context_id`),
+  KEY `user_id` (`user_id`),
+  KEY `language_id` (`language_id`),
+  CONSTRAINT `narro_context_comment_ibfk_4` FOREIGN KEY (`context_id`) REFERENCES `narro_context` (`context_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `narro_context_comment_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`),
+  CONSTRAINT `narro_context_comment_ibfk_6` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=402 DEFAULT CHARSET=utf8;
+CREATE TABLE `narro_context_info` (
+  `context_info_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `context_id` bigint(20) unsigned NOT NULL,
+  `language_id` int(10) unsigned NOT NULL,
+  `validator_user_id` int(10) unsigned DEFAULT NULL,
+  `valid_suggestion_id` bigint(20) unsigned DEFAULT NULL,
+  `popular_suggestion_id` bigint(20) unsigned DEFAULT NULL,
+  `has_comments` tinyint(1) NOT NULL DEFAULT '0',
+  `has_suggestions` tinyint(1) unsigned DEFAULT '0',
+  `text_access_key` varchar(2) DEFAULT NULL,
+  `suggestion_access_key` varchar(2) DEFAULT NULL,
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified` datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`context_info_id`),
+  UNIQUE KEY `context_id_2` (`context_id`,`language_id`),
+  KEY `context_id` (`context_id`),
+  KEY `language_id` (`language_id`),
+  KEY `suggestion_id` (`valid_suggestion_id`),
+  KEY `popular_suggestion_id` (`popular_suggestion_id`),
+  KEY `validator_user_id` (`validator_user_id`),
+  KEY `created` (`created`),
+  KEY `modified` (`modified`),
+  CONSTRAINT `narro_context_info_ibfk_10` FOREIGN KEY (`popular_suggestion_id`) REFERENCES `narro_suggestion` (`suggestion_id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `narro_context_info_ibfk_15` FOREIGN KEY (`validator_user_id`) REFERENCES `narro_user` (`user_id`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `narro_context_info_ibfk_17` FOREIGN KEY (`context_id`) REFERENCES `narro_context` (`context_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `narro_context_info_ibfk_18` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`),
+  CONSTRAINT `narro_context_info_ibfk_9` FOREIGN KEY (`valid_suggestion_id`) REFERENCES `narro_suggestion` (`suggestion_id`) ON DELETE SET NULL ON UPDATE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=402 DEFAULT CHARSET=utf8;
+CREATE TABLE `narro_file` (
+  `file_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(255) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `file_md5` varchar(32) DEFAULT NULL,
+  `parent_id` int(10) unsigned DEFAULT NULL,
+  `type_id` tinyint(3) unsigned NOT NULL,
+  `project_id` int(10) unsigned NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified` datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`file_id`),
+  UNIQUE KEY `file_name` (`file_name`,`parent_id`),
+  KEY `type_id` (`type_id`),
+  KEY `project_id` (`project_id`),
+  KEY `parent_id` (`parent_id`),
+  CONSTRAINT `narro_file_ibfk_10` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`),
+  CONSTRAINT `narro_file_ibfk_4` FOREIGN KEY (`parent_id`) REFERENCES `narro_file` (`file_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `narro_file_ibfk_9` FOREIGN KEY (`type_id`) REFERENCES `narro_file_type` (`file_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_text (
-  text_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  text_value text NOT NULL,
-  text_value_md5 varchar(64) NOT NULL,
-  text_char_count smallint(5) unsigned NOT NULL DEFAULT '0',
-  text_word_count smallint(5) unsigned DEFAULT '0',
-  has_comments tinyint(1) DEFAULT '0',
-  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  modified datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (text_id),
-  UNIQUE KEY text_value_md5 (text_value_md5)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_text_comment (
-  text_comment_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  text_id bigint(20) unsigned NOT NULL,
-  user_id int(10) unsigned NOT NULL,
-  language_id int(10) unsigned NOT NULL,
-  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  modified datetime DEFAULT '0000-00-00 00:00:00',
-  comment_text text NOT NULL,
-  comment_text_md5 varchar(128) NOT NULL,
-  PRIMARY KEY (text_comment_id),
-  KEY text_id (text_id),
-  KEY user_id (user_id),
-  KEY language_id (language_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_user (
-  user_id int(10) unsigned NOT NULL,
-  username varchar(128) NOT NULL,
+CREATE TABLE `narro_file_progress` (
+  `file_progress_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `file_id` int(10) unsigned NOT NULL,
+  `language_id` int(10) unsigned NOT NULL,
+  `total_text_count` int(10) NOT NULL,
+  `approved_text_count` int(10) NOT NULL,
+  `fuzzy_text_count` int(10) NOT NULL,
+  `progress_percent` int(10) NOT NULL,
+  PRIMARY KEY (`file_progress_id`),
+  UNIQUE KEY `file_id` (`file_id`,`language_id`),
+  KEY `language_id` (`language_id`),
+  KEY `file_id_2` (`file_id`),
+  CONSTRAINT `narro_file_progress_ibfk_1` FOREIGN KEY (`file_id`) REFERENCES `narro_file` (`file_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `narro_file_progress_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `narro_file_type` (
+  `file_type_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `file_type` varchar(32) NOT NULL,
+  PRIMARY KEY (`file_type_id`),
+  UNIQUE KEY `UQ_qdrupal_narro_file_type_1` (`file_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+INSERT INTO `narro_file_type` VALUES  (9,'DumbGettextPo'),
+ (3,'Folder'),
+ (1,'GettextPo'),
+ (4,'MozillaDtd'),
+ (7,'MozillaInc'),
+ (5,'MozillaIni'),
+ (6,'Narro'),
+ (2,'OpenOfficeSdf'),
+ (10,'PhpMyAdmin'),
+ (8,'Svg'),
+ (11,'Unsupported');
+CREATE TABLE `narro_language` (
+  `language_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `language_name` varchar(128) NOT NULL,
+  `language_code` varchar(64) NOT NULL,
+  `country_code` varchar(64) NOT NULL,
+  `dialect_code` varchar(64) DEFAULT NULL,
+  `encoding` varchar(10) NOT NULL,
+  `text_direction` varchar(3) NOT NULL DEFAULT 'ltr',
+  `special_characters` varchar(255) DEFAULT NULL,
+  `plural_form` varchar(255) NOT NULL DEFAULT '"Plural-Forms: nplurals=2; plural=n != 1;\\n"',
+  `active` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`language_id`),
+  UNIQUE KEY `language_name` (`language_name`),
+  UNIQUE KEY `language_code` (`language_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8;
+INSERT INTO `narro_language` VALUES  (1,'Romanian','ro','ro',NULL,'UTF-8','ltr','','\"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\\n\"',1),
+ (2,'French','fr','fr',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (3,'Spanish, Spain','es-ES','es-ES',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (4,'Afrikaans','af','af',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (5,'Arabic','ar','ar',NULL,'UTF-8','rtl',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (6,'Belarusian','be','be',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (7,'Bulgarian','bg','bg',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (8,'Catalan','ca','ca',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (9,'Czech','cs','cs',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (10,'Danish','da','da',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (11,'German','de','de',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (12,'Greek','el','el',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (13,'English, UK','en-GB','en-GB',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (14,'English (South African)','en-ZA','en-ZA',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (15,'Spanish, Argentina','es-AR','es-AR',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (16,'Frisian','fy-NL','fy-NL',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (17,'Basque','eu','eu',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (18,'Finnish','fi','fi',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (19,'Irish','ga-IE','ga-IE',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (20,'Gujarati','gu-IN','gu-IN',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (21,'Hebrew','he','he',NULL,'UTF-8','rtl','','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (22,'Hungarian','hu','hu',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (23,'Armenian','hy-AM','hy-AM',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (24,'Italian','it','it',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (25,'Japanese','ja','ja',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (26,'Georgian','ka','ka',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (27,'Korean','ko','ko',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (28,'Kurdish','ku','ku',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (29,'Lithuanian','lt','lt',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (30,'Macedonian','mk','mk',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (31,'Mongolian','mn','mn',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (32,'Norwegian bokmaal','nb-NO','nb-NO',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (33,'Dutch','nl','nl',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (34,'Ndebele','nr','nr',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (35,'Northern Sotho','nso','nso',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (36,'Norwegian nynorsk','nn-NO','nn-NO',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (37,'Punjabi','pa-IN','pa-IN',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (38,'Polish','pl','pl',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (39,'Portuguese, Brazil','pt-BR','pt-BR',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (40,'Portuguese, Portugal','pt-PT','pt-PT',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (41,'Russian','ru','ru',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (42,'Slovak','sk','sk',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (43,'Slovenian','sl','sl',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (44,'Albanian','sq','sq',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (45,'Serbian','sr','sr',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 or n%100>=20) ? 1 : 2);\\n\"',1),
+ (46,'Swati','ss','ss',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (47,'Southern Sotho','st','st',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (48,'Swedish','sv-SE','sv-SE',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (49,'Tswana','tn','tn',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (50,'Turkish','tr','tr',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (51,'Tsonga','ts','ts',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (52,'Ukrainian','uk','uk',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (53,'Venda','ve','ve',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (54,'Xhosa','xh','xh',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (55,'Chinese Simplified, China','zh-CN','zh-CN',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (56,'Chinese Traditional, Taiwan','zh-TW','zh-TW',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (57,'Zulu','zu','zu',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (58,'English US','en-US','en-US',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (59,'Urdu (Pakistan)','ur-PK','ur-PK',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (60,'Vietnamese','vi','vi',NULL,'UTF-8','ltr',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (61,'Persian','fa','ir',NULL,'UTF-8','rtl',NULL,'\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (62,'Spanish, Chile','es-CL','es-CL',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (63,'Uyghur','ug','ug',NULL,'UTF-8','rtl','','',1),
+ (64,'Dzongkha','dz','dz',NULL,'UTF-8','ltr','','',1),
+ (65,'Amharic','am','am',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals = 2; plural=(n > 1);\\n\"',0),
+ (66,'Spanish, Mexico','es-MX','es-MX',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (67,'Bosnian','bs-BA','bs-BA',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10< =4 && (n%100<10 or n%100>=20) ? 1 : 2)\\n\"',1),
+ (68,'Malayalam','ml','ml',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (69,'Zapotec (OT19745)','zap-MX-OT19745','zap-MX-OT19745',NULL,'UTF-8','ltr','','',1),
+ (70,'Latvian','lv','lv',NULL,'UTF-8','ltr','ā č ē ģ ī ķ ļ ņ š ū ž Ā Č Ē Ģ Ī Ķ Ļ Ņ Š Ū Ž','\"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\\n\"',0),
+ (71,'Kazakh','kk','KZ',NULL,'UTF-8','ltr','','',0),
+ (72,'Kabyle','kab','kab',NULL,'UTF-8','ltr','','',0),
+ (73,'Romance, Spain (Valencian)','roa-ES-val','roa-ES-val',NULL,'UTF-8','ltr','','',1),
+ (74,'Mayan','myn-MX','myn-MX',NULL,'UTF-8','ltr','','',1),
+ (75,'Oromo','om','om',NULL,'UTF-8','ltr','','',1),
+ (76,'Iloko','ilo-PH','ilo-PH',NULL,'UTF-8','ltr','','',1),
+ (77,'Tagalog','tl-PH','tl-PH',NULL,'UTF-8','ltr','','',1),
+ (78,'Fijian','fj-FJ','fj-FJ',NULL,'UTF-8','ltr','','',0),
+ (79,'Latin','la','la',NULL,'UTF-8','ltr','','',1),
+ (80,'Romansch','rm','rm',NULL,'UTF-8','ltr','','',1),
+ (81,'Telugu','te','te',NULL,'UTF-8','ltr','','',0),
+ (82,'Croatian','hr','hr',NULL,'UTF-8','ltr','','',1),
+ (83,'Indonesian','id','id',NULL,'UTF-8','ltr','','',0),
+ (84,'Thai','th','TH',NULL,'UTF-8','ltr','','',0),
+ (85,'Tarahumara (Y08703)','tar-MX-Y08703','tar-MX-Y08703',NULL,'UTF-8','ltr','','',1),
+ (86,'Assamese','as','as',NULL,'UTF-8','ltr','','',1),
+ (87,'Friulian','fur','fur',NULL,'UTF-8','ltr','â ê î ô û ç','',1),
+ (88,'Tajik','tg-TJ','tg-TJ',NULL,'UTF-8','ltr','','',1),
+ (89,'Spanish, Peru','es-PE','es-PE',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (90,'Spanish, Bolivia','es-BO','es-BO',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (91,'Dari (Eastern Persian)','ps-AF','ps-AF',NULL,'UTF-8','rtl','','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',0),
+ (92,'Asturian','ast','ast',NULL,'UTF-8','ltr','','',1),
+ (93,'X-testing','xx-XX','xx-XX',NULL,'UTF-8','ltr','ă î ș ț â „ ”','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1),
+ (94,'Quechua, Bolivia','qu-BO','qu-BO',NULL,'UTF-8','ltr','','',1),
+ (95,'Norwegian hognorsk','nn-hognorsk','nn-hognorsk',NULL,'UTF-8','ltr','€','',1),
+ (96,'Guaraní','grn','grn',NULL,'UTF-8','ltr','','',1),
+ (97,'Azerbaijani','az','az',NULL,'UTF-8','ltr','','',1),
+ (98,'Welsh','cy','cy',NULL,'UTF-8','ltr','','',1),
+ (99,'Montenegrin','sla','sla',NULL,'UTF-8','ltr','','',1),
+ (100,'Spanish, Colombia','es-CO','es-CO',NULL,'UTF-8','ltr','á ¿','',1),
+ (101,'Spanish, Venezuela','es-VE','es-VE',NULL,'UTF-8','ltr','á ¿','',1),
+ (102,'Aymara, Bolivia','ay','ay',NULL,'UTF-8','ltr','ɲ','',1),
+ (103,'Aragonese','an','an',NULL,'UTF-8','ltr','','',1),
+ (104,'Galician','gl','gl',NULL,'UTF-8','ltr','á ¿','',1),
+ (105,'Scottish Gaelic','gd','gd',NULL,'UTF-8','ltr','á ¿','\"Plural-Forms: nplurals=4; plural=(n%10==1 && n < 40) ? 0 : (n%10==2 && n < 40) ? 1 : (n==10 || (n%10 > 2 && n < 40)) ? 2 : 3\\n\"',1),
+ (106,'Nepali','ne-NP','ne-NP',NULL,'UTF-8','ltr','भ प् र भा त','',1),
+ (107,'Bengali-Bangladesh','bn-BD','bn-BD',NULL,'UTF-8','ltr','á ¿','',1),
+ (108,'Hindi','hi-IN','hi-IN',NULL,'UTF-8','ltr','','',1),
+ (109,'Breton','br','br',NULL,'UTF-8','ltr','','',1),
+ (110,'Khmer','km','km',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=1; plural=0;\\n\"',1),
+ (111,'Haitian Creole','ht','ht',NULL,'UTF-8','ltr','','\"Plural-Forms: nplurals=2; plural=n != 1;\\n\"',1);
+CREATE TABLE `narro_permission` (
+  `permission_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `permission_name` varchar(128) NOT NULL,
+  PRIMARY KEY (`permission_id`),
+  UNIQUE KEY `permission_name` (`permission_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+INSERT INTO `narro_permission` VALUES  (12,'Administrator'),
+ (24,'Can add context comments'),
+ (16,'Can add language'),
+ (14,'Can add project'),
+ (3,'Can approve'),
+ (4,'Can comment'),
+ (5,'Can delete any suggestion'),
+ (17,'Can delete language'),
+ (11,'Can delete project'),
+ (6,'Can edit any suggestion'),
+ (15,'Can edit language'),
+ (13,'Can edit project'),
+ (9,'Can export file'),
+ (19,'Can export project'),
+ (8,'Can import file'),
+ (18,'Can import project'),
+ (10,'Can manage project'),
+ (21,'Can manage roles'),
+ (23,'Can manage user roles'),
+ (7,'Can manage users'),
+ (1,'Can suggest'),
+ (20,'Can upload project'),
+ (2,'Can vote');
+CREATE TABLE `narro_project` (
+  `project_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `project_category_id` int(11) unsigned DEFAULT '1',
+  `project_name` varchar(255) NOT NULL,
+  `project_type` smallint(5) unsigned NOT NULL,
+  `project_description` varchar(255) DEFAULT NULL,
+  `active` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (`project_id`),
+  UNIQUE KEY `project_name` (`project_name`),
+  KEY `project_type` (`project_type`),
+  KEY `narro_project_ibfk_2` (`project_category_id`),
+  KEY `active` (`active`),
+  CONSTRAINT `narro_project_ibfk_1` FOREIGN KEY (`project_type`) REFERENCES `narro_project_type` (`project_type_id`),
+  CONSTRAINT `narro_project_ibfk_2` FOREIGN KEY (`project_category_id`) REFERENCES `narro_project_category` (`project_category_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+INSERT INTO `narro_project` VALUES  (1,1,'Narro',4,'Narro itself. After you translate, even if you\'re not complete, if you export and your locale is supported on the server, you\'ll see the translation.',1);
+CREATE TABLE `narro_project_category` (
+  `project_category_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `category_name` varchar(255) NOT NULL,
+  `category_description` varchar(255) NOT NULL,
+  PRIMARY KEY (`project_category_id`),
+  UNIQUE KEY `category_name` (`category_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+INSERT INTO `narro_project_category` VALUES  (1,'General','');
+CREATE TABLE `narro_project_progress` (
+  `project_progress_id` int(10) NOT NULL AUTO_INCREMENT,
+  `project_id` int(10) unsigned NOT NULL,
+  `language_id` int(10) unsigned NOT NULL,
+  `last_modified` datetime NOT NULL,
+  `total_text_count` int(10) unsigned NOT NULL,
+  `fuzzy_text_count` int(10) unsigned NOT NULL,
+  `approved_text_count` int(10) unsigned NOT NULL,
+  `progress_percent` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`project_progress_id`),
+  UNIQUE KEY `project_id` (`project_id`,`language_id`),
+  KEY `language_id` (`language_id`),
+  KEY `project_id_2` (`project_id`),
+  CONSTRAINT `narro_project_progress_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `narro_project_progress_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+CREATE TABLE `narro_project_type` (
+  `project_type_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `project_type` varchar(64) NOT NULL,
+  PRIMARY KEY (`project_type_id`),
+  UNIQUE KEY `project_type` (`project_type`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+INSERT INTO `narro_project_type` VALUES  (6,'DumbGettextPo'),
+ (7,'Generic'),
+ (3,'Gettext'),
+ (1,'Mozilla'),
+ (4,'Narro'),
+ (2,'OpenOffice'),
+ (5,'Svg');
+CREATE TABLE `narro_role` (
+  `role_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(128) NOT NULL,
+  PRIMARY KEY (`role_id`),
+  UNIQUE KEY `role_name` (`role_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+INSERT INTO `narro_role` VALUES  (5,'Administrator'),
+ (1,'Anonymous'),
+ (3,'Approver'),
+ (4,'Project manager'),
+ (2,'User');
+CREATE TABLE `narro_role_permission` (
+  `role_permission_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` int(10) unsigned NOT NULL,
+  `permission_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`role_permission_id`),
+  KEY `role_id` (`role_id`),
+  KEY `permission_id` (`permission_id`),
+  CONSTRAINT `narro_role_permission_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `narro_role` (`role_id`),
+  CONSTRAINT `narro_role_permission_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `narro_permission` (`permission_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8;
+INSERT INTO `narro_role_permission` VALUES  (1,2,4),
+ (2,2,2),
+ (3,2,1),
+ (4,3,4),
+ (5,3,2),
+ (6,3,1),
+ (9,4,4),
+ (12,4,9),
+ (13,4,19),
+ (14,4,8),
+ (15,4,18),
+ (16,4,10),
+ (18,4,1),
+ (19,4,20),
+ (20,4,3),
+ (21,4,2),
+ (22,5,12),
+ (23,5,16),
+ (24,5,14),
+ (25,5,4),
+ (26,5,5),
+ (27,5,17),
+ (28,5,11),
+ (29,5,6),
+ (30,5,15),
+ (31,5,13),
+ (32,5,9),
+ (33,5,19),
+ (34,5,8),
+ (35,5,18),
+ (36,5,10),
+ (37,5,21),
+ (38,5,7),
+ (39,5,1),
+ (40,5,20),
+ (41,5,3),
+ (42,5,2),
+ (43,3,3),
+ (46,5,24),
+ (48,5,23),
+ (49,3,24),
+ (50,3,9),
+ (51,3,8),
+ (52,2,24),
+ (53,2,8),
+ (54,2,9),
+ (55,4,24);
+CREATE TABLE `narro_suggestion` (
+  `suggestion_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `text_id` bigint(20) unsigned NOT NULL,
+  `language_id` int(10) unsigned NOT NULL,
+  `suggestion_value` text NOT NULL,
+  `suggestion_value_md5` varchar(128) NOT NULL,
+  `suggestion_char_count` smallint(5) unsigned DEFAULT '0',
+  `suggestion_word_count` smallint(5) unsigned DEFAULT '0',
+  `has_comments` tinyint(1) DEFAULT '0',
+  `is_imported` tinyint(1) NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified` datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`suggestion_id`),
+  UNIQUE KEY `text_id_2` (`text_id`,`language_id`,`suggestion_value_md5`),
+  KEY `user_id` (`user_id`),
+  KEY `text_id` (`text_id`),
+  KEY `language_id` (`language_id`),
+  KEY `text_id_3` (`text_id`,`language_id`),
+  CONSTRAINT `narro_suggestion_ibfk_7` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`),
+  CONSTRAINT `narro_suggestion_ibfk_8` FOREIGN KEY (`text_id`) REFERENCES `narro_text` (`text_id`),
+  CONSTRAINT `narro_suggestion_ibfk_9` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `narro_suggestion_comment` (
+  `comment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `suggestion_id` bigint(20) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `comment_text` text NOT NULL,
+  `comment_text_md5` varchar(128) NOT NULL,
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified` datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`comment_id`),
+  UNIQUE KEY `suggestion_id_2` (`suggestion_id`,`user_id`,`comment_text_md5`),
+  KEY `suggestion_id` (`suggestion_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `narro_suggestion_comment_ibfk_4` FOREIGN KEY (`suggestion_id`) REFERENCES `narro_suggestion` (`suggestion_id`),
+  CONSTRAINT `narro_suggestion_comment_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `narro_suggestion_vote` (
+  `suggestion_id` bigint(20) unsigned NOT NULL,
+  `context_id` bigint(20) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `vote_value` tinyint(3) NOT NULL,
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified` datetime DEFAULT '0000-00-00 00:00:00',
+  UNIQUE KEY `suggestion_id` (`suggestion_id`,`user_id`,`context_id`),
+  KEY `suggestion_id_2` (`suggestion_id`),
+  KEY `user_id` (`user_id`),
+  KEY `context_id` (`context_id`),
+  CONSTRAINT `narro_suggestion_vote_ibfk_10` FOREIGN KEY (`suggestion_id`) REFERENCES `narro_suggestion` (`suggestion_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `narro_suggestion_vote_ibfk_7` FOREIGN KEY (`context_id`) REFERENCES `narro_context` (`context_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `narro_suggestion_vote_ibfk_9` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `narro_text` (
+  `text_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `text_value` text NOT NULL,
+  `text_value_md5` varchar(64) NOT NULL,
+  `text_char_count` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `text_word_count` smallint(5) unsigned DEFAULT '0',
+  `has_comments` tinyint(1) DEFAULT '0',
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified` datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`text_id`),
+  UNIQUE KEY `text_value_md5` (`text_value_md5`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `narro_text_comment` (
+  `text_comment_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `text_id` bigint(20) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `language_id` int(10) unsigned NOT NULL,
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified` datetime DEFAULT '0000-00-00 00:00:00',
+  `comment_text` text NOT NULL,
+  `comment_text_md5` varchar(128) NOT NULL,
+  PRIMARY KEY (`text_comment_id`),
+  KEY `text_id` (`text_id`),
+  KEY `user_id` (`user_id`),
+  KEY `language_id` (`language_id`),
+  CONSTRAINT `narro_text_comment_ibfk_10` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`),
+  CONSTRAINT `narro_text_comment_ibfk_11` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`),
+  CONSTRAINT `narro_text_comment_ibfk_9` FOREIGN KEY (`text_id`) REFERENCES `narro_text` (`text_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `narro_user` (
+  `user_id` int(10) unsigned NOT NULL,
+  `username` varchar(128) NOT NULL,
   `password` varchar(64) NOT NULL,
-  email varchar(128) NOT NULL,
+  `email` varchar(128) NOT NULL,
   `data` text,
-  PRIMARY KEY (user_id),
-  UNIQUE KEY username (username),
-  UNIQUE KEY email (email)
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE narro_user_role (
-  user_role_id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  user_id int(10) unsigned NOT NULL,
-  role_id int(10) unsigned NOT NULL,
-  project_id int(10) unsigned DEFAULT NULL,
-  language_id int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (user_role_id),
-  UNIQUE KEY user_id (user_id,role_id,project_id,language_id),
-  KEY role_id (role_id),
-  KEY project_id (project_id),
-  KEY language_id (language_id),
-  KEY user_id_2 (user_id)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-ALTER TABLE `narro_context`
-  ADD CONSTRAINT narro_context_ibfk_13 FOREIGN KEY (text_id) REFERENCES narro_text (text_id),
-  ADD CONSTRAINT narro_context_ibfk_14 FOREIGN KEY (project_id) REFERENCES narro_project (project_id),
-  ADD CONSTRAINT narro_context_ibfk_15 FOREIGN KEY (file_id) REFERENCES narro_file (file_id);
-ALTER TABLE `narro_context_comment`
-  ADD CONSTRAINT narro_context_comment_ibfk_4 FOREIGN KEY (context_id) REFERENCES narro_context (context_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT narro_context_comment_ibfk_5 FOREIGN KEY (user_id) REFERENCES narro_user (user_id),
-  ADD CONSTRAINT narro_context_comment_ibfk_6 FOREIGN KEY (language_id) REFERENCES narro_language (language_id);
-ALTER TABLE `narro_context_info`
-  ADD CONSTRAINT narro_context_info_ibfk_10 FOREIGN KEY (popular_suggestion_id) REFERENCES narro_suggestion (suggestion_id) ON DELETE SET NULL ON UPDATE SET NULL,
-  ADD CONSTRAINT narro_context_info_ibfk_15 FOREIGN KEY (validator_user_id) REFERENCES narro_user (user_id) ON DELETE SET NULL ON UPDATE SET NULL,
-  ADD CONSTRAINT narro_context_info_ibfk_17 FOREIGN KEY (context_id) REFERENCES narro_context (context_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT narro_context_info_ibfk_18 FOREIGN KEY (language_id) REFERENCES narro_language (language_id),
-  ADD CONSTRAINT narro_context_info_ibfk_9 FOREIGN KEY (valid_suggestion_id) REFERENCES narro_suggestion (suggestion_id) ON DELETE SET NULL ON UPDATE SET NULL;
-ALTER TABLE `narro_file`
-  ADD CONSTRAINT narro_file_ibfk_10 FOREIGN KEY (project_id) REFERENCES narro_project (project_id),
-  ADD CONSTRAINT narro_file_ibfk_4 FOREIGN KEY (parent_id) REFERENCES narro_file (file_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT narro_file_ibfk_9 FOREIGN KEY (type_id) REFERENCES narro_file_type (file_type_id);
-ALTER TABLE `narro_file_progress`
-  ADD CONSTRAINT narro_file_progress_ibfk_1 FOREIGN KEY (file_id) REFERENCES narro_file (file_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT narro_file_progress_ibfk_2 FOREIGN KEY (language_id) REFERENCES narro_language (language_id) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE `narro_project`
-  ADD CONSTRAINT narro_project_ibfk_1 FOREIGN KEY (project_type) REFERENCES narro_project_type (project_type_id),
-  ADD CONSTRAINT narro_project_ibfk_2 FOREIGN KEY (project_category_id) REFERENCES narro_project_category (project_category_id);
-ALTER TABLE `narro_project_progress`
-  ADD CONSTRAINT narro_project_progress_ibfk_1 FOREIGN KEY (project_id) REFERENCES narro_project (project_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT narro_project_progress_ibfk_2 FOREIGN KEY (language_id) REFERENCES narro_language (language_id) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE `narro_role_permission`
-  ADD CONSTRAINT narro_role_permission_ibfk_1 FOREIGN KEY (role_id) REFERENCES narro_role (role_id),
-  ADD CONSTRAINT narro_role_permission_ibfk_2 FOREIGN KEY (permission_id) REFERENCES narro_permission (permission_id);
-ALTER TABLE `narro_suggestion`
-  ADD CONSTRAINT narro_suggestion_ibfk_7 FOREIGN KEY (user_id) REFERENCES narro_user (user_id),
-  ADD CONSTRAINT narro_suggestion_ibfk_8 FOREIGN KEY (text_id) REFERENCES narro_text (text_id),
-  ADD CONSTRAINT narro_suggestion_ibfk_9 FOREIGN KEY (language_id) REFERENCES narro_language (language_id);
-ALTER TABLE `narro_suggestion_comment`
-  ADD CONSTRAINT narro_suggestion_comment_ibfk_4 FOREIGN KEY (suggestion_id) REFERENCES narro_suggestion (suggestion_id),
-  ADD CONSTRAINT narro_suggestion_comment_ibfk_5 FOREIGN KEY (user_id) REFERENCES narro_user (user_id);
-ALTER TABLE `narro_suggestion_vote`
-  ADD CONSTRAINT narro_suggestion_vote_ibfk_10 FOREIGN KEY (suggestion_id) REFERENCES narro_suggestion (suggestion_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT narro_suggestion_vote_ibfk_7 FOREIGN KEY (context_id) REFERENCES narro_context (context_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT narro_suggestion_vote_ibfk_9 FOREIGN KEY (user_id) REFERENCES narro_user (user_id) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE `narro_text_comment`
-  ADD CONSTRAINT narro_text_comment_ibfk_10 FOREIGN KEY (user_id) REFERENCES narro_user (user_id),
-  ADD CONSTRAINT narro_text_comment_ibfk_11 FOREIGN KEY (language_id) REFERENCES narro_language (language_id),
-  ADD CONSTRAINT narro_text_comment_ibfk_9 FOREIGN KEY (text_id) REFERENCES narro_text (text_id);
-ALTER TABLE `narro_user_role`
-  ADD CONSTRAINT narro_user_role_ibfk_1 FOREIGN KEY (user_id) REFERENCES narro_user (user_id),
-  ADD CONSTRAINT narro_user_role_ibfk_2 FOREIGN KEY (role_id) REFERENCES narro_role (role_id),
-  ADD CONSTRAINT narro_user_role_ibfk_3 FOREIGN KEY (project_id) REFERENCES narro_project (project_id),
-  ADD CONSTRAINT narro_user_role_ibfk_4 FOREIGN KEY (language_id) REFERENCES narro_language (language_id);
-
-INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES
-(9, 'DumbGettextPo'),
-(3, 'Folder'),
-(1, 'GettextPo'),
-(4, 'MozillaDtd'),
-(7, 'MozillaInc'),
-(5, 'MozillaIni'),
-(6, 'Narro'),
-(2, 'OpenOfficeSdf'),
-(10, 'PhpMyAdmin'),
-(8, 'Svg'),
-(11, 'Unsupported');
-
-INSERT INTO `narro_language` (`language_id`, `language_name`, `language_code`, `country_code`, `dialect_code`, `encoding`, `text_direction`, `special_characters`, `plural_form`, `active`) VALUES
-(1, 'Romanian', 'ro', 'ro', NULL, 'UTF-8', 'ltr', 'ă î ș ț â „” Ă Î Ș Ț Â « »', '"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\\n"', 1),
-(2, 'French', 'fr', 'fr', NULL, 'UTF-8', 'ltr', '', '"Plural-Forms: nplurals=2; plural=n != 1;\\n"', 0),
-(3, 'Spanish', 'es', 'es', NULL, 'UTF-8', 'ltr', '', '"Plural-Forms: nplurals=2; plural=n != 1;\\n"', 0),
-(11, 'German', 'de', 'de', NULL, 'UTF-8', 'ltr', '', '"Plural-Forms: nplurals=2; plural=n != 1;\\n"', 0),
-(24, 'Italian', 'it', 'it', NULL, 'UTF-8', 'ltr', '', '"Plural-Forms: nplurals=2; plural=n != 1;\\n"', 0),
-(58, 'English US', 'en-US', 'en-US', NULL, 'UTF-8', 'ltr', '', '"Plural-Forms: nplurals=2; plural=n != 1;\\n"', 0),
-(59, 'Portuguese, Brazil', 'pt-BR', 'pt-BR', NULL, 'UTF-8', 'ltr', '', '', 0),
-(60, 'Portuguese, Portugal', 'pt', 'pt', NULL, 'UTF-8', 'ltr', '', '', 0);
+INSERT INTO `narro_user` VALUES  (0,'','0d107d09f5bbe40cade3de5c71e9e9b7','','');
+CREATE TABLE `narro_user_role` (
+  `user_role_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL,
+  `role_id` int(10) unsigned NOT NULL,
+  `project_id` int(10) unsigned DEFAULT NULL,
+  `language_id` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`user_role_id`),
+  UNIQUE KEY `user_id` (`user_id`,`role_id`,`project_id`,`language_id`),
+  KEY `role_id` (`role_id`),
+  KEY `project_id` (`project_id`),
+  KEY `language_id` (`language_id`),
+  KEY `user_id_2` (`user_id`),
+  CONSTRAINT `narro_user_role_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`),
+  CONSTRAINT `narro_user_role_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `narro_role` (`role_id`),
+  CONSTRAINT `narro_user_role_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`),
+  CONSTRAINT `narro_user_role_ibfk_4` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `narro_permission` (`permission_id`, `permission_name`) VALUES
-(12, 'Administrator'),
-(24, 'Can add context comments'),
-(16, 'Can add language'),
-(14, 'Can add project'),
-(3, 'Can approve'),
-(4, 'Can comment'),
-(5, 'Can delete any suggestion'),
-(17, 'Can delete language'),
-(11, 'Can delete project'),
-(6, 'Can edit any suggestion'),
-(15, 'Can edit language'),
-(13, 'Can edit project'),
-(9, 'Can export file'),
-(19, 'Can export project'),
-(8, 'Can import file'),
-(18, 'Can import project'),
-(10, 'Can manage project'),
-(21, 'Can manage roles'),
-(23, 'Can manage user roles'),
-(7, 'Can manage users'),
-(22, 'Can mass approve'),
-(1, 'Can suggest'),
-(20, 'Can upload project'),
-(2, 'Can vote');
 
-INSERT INTO `narro_project_category` (`project_category_id`, `category_name`, `category_description`) VALUES
-(1, 'General', '');
-
-
-INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES
-(6, 'DumbGettextPo'),
-(7, 'Generic'),
-(3, 'Gettext'),
-(1, 'Mozilla'),
-(4, 'Narro'),
-(2, 'OpenOffice'),
-(5, 'Svg');
-
-INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES
-(5, 'Administrator'),
-(1, 'Anonymous'),
-(3, 'Approver'),
-(4, 'Project manager'),
-(2, 'User');
-
-INSERT INTO `narro_role_permission` (`role_permission_id`, `role_id`, `permission_id`) VALUES
-(1, 2, 4),
-(2, 2, 2),
-(3, 2, 1),
-(4, 3, 4),
-(5, 3, 2),
-(6, 3, 1),
-(9, 4, 4),
-(12, 4, 9),
-(13, 4, 19),
-(14, 4, 8),
-(15, 4, 18),
-(16, 4, 10),
-(18, 4, 1),
-(19, 4, 20),
-(20, 4, 3),
-(21, 4, 2),
-(22, 5, 12),
-(23, 5, 16),
-(24, 5, 14),
-(25, 5, 4),
-(26, 5, 5),
-(27, 5, 17),
-(28, 5, 11),
-(29, 5, 6),
-(30, 5, 15),
-(31, 5, 13),
-(32, 5, 9),
-(33, 5, 19),
-(34, 5, 8),
-(35, 5, 18),
-(36, 5, 10),
-(37, 5, 21),
-(38, 5, 7),
-(39, 5, 1),
-(40, 5, 20),
-(41, 5, 3),
-(42, 5, 2),
-(43, 3, 3),
-(44, 3, 22),
-(45, 4, 22);
-
-INSERT INTO `narro_user` (`user_id`, `username`, `password`, `email`, `data`) VALUES
-(0, '', '', '', '');
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
