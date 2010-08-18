@@ -80,7 +80,7 @@
 
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
-            if (QApplication::HasPermissionForThisLang('Can mass approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save'))
+            if (QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save'))
                 $objCommonCondition = QQ::AndCondition(
                     QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
