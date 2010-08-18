@@ -49,7 +49,7 @@
         if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data'))
             die(sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__));
 
-        foreach (array(__TMP_PATH__, __TMP_PATH__ . '/zend', __DOCROOT__ . __SUBDIRECTORY__ . '/data/dictionaries', __DOCROOT__ . __SUBDIRECTORY__ . '/data/import') as $strDirName) {
+        foreach (array(__TMP_PATH__, __TMP_PATH__ . '/zend', __DOCROOT__ . __SUBDIRECTORY__ . '/data/dictionaries', __DOCROOT__ . __SUBDIRECTORY__ . '/data/import', __TMP_PATH__ . '/session') as $strDirName) {
             if (!file_exists($strDirName)) {
                 if (!mkdir($strDirName))
                     die(sprintf('Could not create a directory. Please create the directory "%s" and give it write permissions for everyone (chmod 777)', $strDirName));
