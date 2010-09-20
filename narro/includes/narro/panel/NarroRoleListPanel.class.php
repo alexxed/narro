@@ -88,7 +88,7 @@
             if (!$lblRoleName) {
                 $lblRoleName = new QLabel($this->dtgRole, $strControlId);
                 $lblRoleName->DisplayStyle = QDisplayStyle::Inline;
-                $lblRoleName->Text = $objNarroRole->RoleName;
+                $lblRoleName->Text = t($objNarroRole->RoleName);
             }
 
             $strControlId = 'txtEditRole' . $objNarroRole->RoleId;

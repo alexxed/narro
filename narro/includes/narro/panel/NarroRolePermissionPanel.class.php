@@ -55,7 +55,7 @@
             if (QApplication::HasPermission('Can manage roles')) {
                 $strControlId = 'chkPermission' . $objNarroPermission->PermissionId;
                 $chkPermission = new QCheckBox($this->dtgNarroPermission);
-                $chkPermission->Text = $objNarroPermission->PermissionName;
+                $chkPermission->Text = t($objNarroPermission->PermissionName);
                 $chkPermission->ActionParameter = $objNarroPermission->PermissionId;
                 $chkPermission->Checked = NarroRolePermission::QueryCount(
                     QQ::AndCondition(
@@ -77,7 +77,7 @@
                 return $chkPermission->Render(false);
             }
             else {
-                return $objNarroPermission->PermissionName;
+                return t($objNarroPermission->PermissionName);
             }
         }
 
