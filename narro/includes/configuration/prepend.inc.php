@@ -49,7 +49,7 @@
         if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data'))
             die(sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__));
 
-        foreach (array(__TMP_PATH__, __TMP_PATH__ . '/zend', __DOCROOT__ . __SUBDIRECTORY__ . '/data/dictionaries', __DOCROOT__ . __SUBDIRECTORY__ . '/data/import', __TMP_PATH__ . '/session') as $strDirName) {
+        foreach (array(__TMP_PATH__, __TMP_PATH__ . '/zend', __DOCROOT__ . __SUBDIRECTORY__ . '/data/dictionaries', __DOCROOT__ . __SUBDIRECTORY__ . '/data/import', __TMP_PATH__ . '/session', __TMP_PATH__ . '/qform_state') as $strDirName) {
             if (!file_exists($strDirName)) {
                 if (!mkdir($strDirName))
                     die(sprintf('Could not create a directory. Please create the directory "%s" and give it write permissions for everyone (chmod 777)', $strDirName));
@@ -131,13 +131,13 @@
             );
 
             QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
-            if (QApplication::QueryString('l'))
+
+            if (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
+                QApplication::$Language = NarroLanguage::LoadByLanguageCode($strLanguage);
+            elseif (QApplication::QueryString('l'))
                 QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
             elseif ($objLanguage = QApplication::GetBrowserLanguage() instanceof NarroLanguage)
                 QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objLanguage->LanguageCode));
-            elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
-                QApplication::$Language = NarroLanguage::LoadByLanguageCode($strLanguage);
-
 
             QApplication::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
             QApplication::RegisterPreference('Font size', 'option', t('The application font size'), 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
@@ -160,6 +160,9 @@
                 throw new Exception('Could not create an instance of NarroUser');
 
             $objNarroSession->User = QApplication::$User;
+
+            if (SERVER_INSTANCE != 'prod')
+                QFirebug::info($objNarroSession->User);
 
             if (QApplication::$User->UserId != NarroUser::ANONYMOUS_USER_ID && !QApplication::$Cache->getIdsMatchingTags(array('NarroUser' . QApplication::$User->UserId))) {
                 QApplication::$User = NarroUser::LoadByUserId(QApplication::$User->UserId);
@@ -210,7 +213,7 @@
                 require_once('Zend/Translate.php');
                 require_once('Zend/Translate/Adapter/Gettext.php');
                 try {
-                    QApplication::$TranslationEngine = new Zend_Translate('gettext', __LOCALE_DIRECTORY__ . '/narro.mo', QApplication::$User->getPreferenceValueByName('Application language'));
+                    QApplication::$TranslationEngine = new Zend_Translate('gettext', __LOCALE_DIRECTORY__ . '/narro.mo', QApplication::$User->getPreferenceValueByName('Application language'), array('disableNotices'=>true));
                 }
                 catch (Exception $objEx) {
                     // gettext installed on the system does not support the language
