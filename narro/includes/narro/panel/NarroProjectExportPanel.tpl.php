@@ -25,6 +25,9 @@
 <?php $_CONTROL->chkCopyUnhandledFiles->Render(); ?>
 <label for="<?php echo $_CONTROL->chkCopyUnhandledFiles->ControlId?>"><?php echo $_CONTROL->chkCopyUnhandledFiles->Name?></label>
 <br />
+<?php $_CONTROL->chkCleanDirectory->Render(); ?>
+<label for="<?php echo $_CONTROL->chkCleanDirectory->ControlId?>"><?php echo $_CONTROL->chkCleanDirectory->Name?></label>
+<br />
 </div>
 <?php
     $_CONTROL->pnlLogViewer->Render();

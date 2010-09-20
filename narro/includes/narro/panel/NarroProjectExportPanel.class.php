@@ -25,6 +25,7 @@
         public $btnKillProcess;
 
         public $chkCopyUnhandledFiles;
+        public $chkCleanDirectory;
         public $lstExportSuggestionType;
 
         public $btnExport;
@@ -57,6 +58,9 @@
 
             $this->chkCopyUnhandledFiles = new QCheckBox($this);
             $this->chkCopyUnhandledFiles->Name = t('Copy unhandled files');
+
+            $this->chkCleanDirectory = new QCheckBox($this);
+            $this->chkCleanDirectory->Name = t('Clean export directory before exporting');
 
             $this->lstExportSuggestionType = new QListBox($this);
             $this->lstExportSuggestionType->Name = t('Export translations using') . ':';
@@ -135,8 +139,11 @@
                     $this->pnlLogViewer->MarkAsModified();
                 }
             }
-            elseif ($strParameter == 2) {
+            elseif ($strParameter == 2 || !function_exists('proc_open')) {
                 set_time_limit(0);
+
+                if ($this->chkCleanDirectory->Checked)
+                    NarroUtils::RecursiveDelete($this->objNarroProject->DefaultTranslationPath .'/*');
 
                 $objNarroImporter = new NarroProjectImporter();
 
@@ -176,6 +183,9 @@
             }
             else {
                 QApplication::ClearLog();
+                if ($this->chkCleanDirectory->Checked)
+                    NarroUtils::RecursiveDelete($this->objNarroProject->DefaultTranslationPath .'/*');
+
                 $this->btnExport->Visible = false;
                 $this->btnKillProcess->Visible = $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode);
                 $this->objExportProgress->Visible = true;

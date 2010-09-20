@@ -179,7 +179,7 @@
                     $this->pnlLogViewer->MarkAsModified();
                 }
             }
-            elseif ($strParameter == 2) {
+            elseif ($strParameter == 2 || !function_exists('proc_open')) {
                 set_time_limit(0);
 
                 if (file_exists($strProcLogFile))
