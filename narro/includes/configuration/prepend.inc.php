@@ -131,13 +131,13 @@
             );
 
             QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
-
-            if (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
-                QApplication::$Language = NarroLanguage::LoadByLanguageCode($strLanguage);
-            elseif (QApplication::QueryString('l'))
+            if (QApplication::QueryString('l'))
                 QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
             elseif ($objLanguage = QApplication::GetBrowserLanguage() instanceof NarroLanguage)
                 QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objLanguage->LanguageCode));
+            elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
+                QApplication::$Language = NarroLanguage::LoadByLanguageCode($strLanguage);
+
 
             QApplication::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
             QApplication::RegisterPreference('Font size', 'option', t('The application font size'), 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
