@@ -899,7 +899,8 @@
         private function CreateNarroTemplate($intProjectId) {
 
             $strPoFile = __IMPORT_PATH__ . '/' . $intProjectId . '/narro.po';
-
+            $arrPermissions = NarroPermission::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroPermission()->PermissionName)));
+            $arrRoles = NarroRole::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroRole()->RoleName)));
             $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'));
             foreach($allFiles as $strFileName) {
                 if (pathinfo($strFileName, PATHINFO_EXTENSION) != 'php') continue;
@@ -1140,11 +1141,7 @@
 
                     }
 
-                    if (preg_match_all('/t\(\$[a-zA-Z]+\-\>PermissionName/', $strFile, $arrMatches)) {
-                        if (!isset($arrPermissions)) {
-                            require_once dirname(__FILE__) . '/../includes/prepend.inc.php';
-                            $arrPermissions = NarroPermission::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroPermission()->PermissionName)));
-                        }
+                    if (preg_match_all('/t\(\$[a-zA-Z]+\-\>RoleName/', $strFile, $arrMatches)) {
 
                         $strLangContext = '#. ';
                         foreach($arrMatches as $intMatchNo=>$arrVal) {
@@ -1155,11 +1152,32 @@
                             $strLangContext .= trim($strLine) . "\n";
                         }
 
-                        if(is_array($arrPermissions))
-                        foreach($arrPermissions as $objPermission) {
-                            $arrMessages[md5($objPermission->PermissionName)]['text'] = $objPermission->PermissionName;
-                            $arrMessages[md5($objPermission->PermissionName)]['files'][$strShortPath] = $strShortPath;
-                            $arrMessages[md5($objPermission->PermissionName)]['context'] = $strLangContext;
+                        if (is_array($arrRoles)) {
+                            foreach($arrRoles as $objRole) {
+                                $arrMessages[md5($objRole->RoleName)]['text'] = $objRole->RoleName;
+                                $arrMessages[md5($objRole->RoleName)]['files'][$strShortPath] = $strShortPath;
+                                $arrMessages[md5($objRole->RoleName)]['context'] = $strLangContext;
+                            }
+                        }
+                    }
+
+                    if (preg_match_all('/t\(\$[a-zA-Z]+\-\>PermissionName/', $strFile, $arrMatches)) {
+
+                        $strLangContext = '#. ';
+                        foreach($arrMatches as $intMatchNo=>$arrVal) {
+                            $strSearchText = $arrMatches[0][$intMatchNo];
+                            preg_match_all('/^.*'. preg_quote($strSearchText, '/') .'.*$/m', $strFile, $arrFullMatches);
+                            foreach($arrFullMatches[0] as $strLine)
+                            if (isset($strLine) && trim($strLine))
+                            $strLangContext .= trim($strLine) . "\n";
+                        }
+
+                        if (is_array($arrPermissions)) {
+                            foreach($arrPermissions as $objPermission) {
+                                $arrMessages[md5($objPermission->PermissionName)]['text'] = $objPermission->PermissionName;
+                                $arrMessages[md5($objPermission->PermissionName)]['files'][$strShortPath] = $strShortPath;
+                                $arrMessages[md5($objPermission->PermissionName)]['context'] = $strLangContext;
+                            }
                         }
                     }
                 }
