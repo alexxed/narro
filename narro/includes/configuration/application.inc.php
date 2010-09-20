@@ -139,6 +139,7 @@
         }
 
         public static function GetBrowserLanguage() {
+
             if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
                 if (strstr($_SERVER['HTTP_ACCEPT_LANGUAGE'], ';')) {
                     $arrLangGroups = explode(';', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
@@ -146,14 +147,14 @@
                         if (strstr($strLangGroup, ',')) {
                             $arrLangCodes = explode(',', $strLangGroup);
                             foreach($arrLangCodes as $strLangCode) {
-                                $objLanguage = NarroLanguage::QueryArray(QQ::AndCondition(QQ::Equal(QQN::NarroLanguage()->LanguageCode, $strLangCode), QQ::Equal(QQN::NarroLanguage()->Active, 1)));
+                                $objLanguage = NarroLanguage::QuerySingle(QQ::AndCondition(QQ::Equal(QQN::NarroLanguage()->LanguageCode, $strLangCode), QQ::Equal(QQN::NarroLanguage()->Active, 1)));
                                 if ($objLanguage instanceof NarroLanguage) {
                                     return $objLanguage;
                                 }
                             }
                         }
                         else {
-                            $objLanguage = NarroLanguage::QueryArray(QQ::AndCondition(QQ::Equal(QQN::NarroLanguage()->LanguageCode, $strLangGroup), QQ::Equal(QQN::NarroLanguage()->Active, 1)));
+                            $objLanguage = NarroLanguage::QuerySingle(QQ::AndCondition(QQ::Equal(QQN::NarroLanguage()->LanguageCode, $strLangGroup), QQ::Equal(QQN::NarroLanguage()->Active, 1)));
                             if ($objLanguage instanceof NarroLanguage) {
                                 return $objLanguage;
                             }
