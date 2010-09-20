@@ -40,7 +40,7 @@
             foreach($arrFileContents as $intPos=>$strLine) {
                 if (preg_match('/^#define\s+([^\s]+)\s+(.+)$/s', trim($strLine), $arrMatches)) {
                     $arrTranslation[trim($arrMatches[1])] = trim($arrMatches[2]);
-                    if (preg_match('/&([a-zA-Z])/', trim($arrMatches[2]), $arrKeyMatches)) {
+                    if (preg_match('/&([a-zA-Z])/', str_replace(array('&amp;'), array(''), trim($arrMatches[2])), $arrKeyMatches)) {
                         $arrTranslationAccKeys[trim($arrMatches[1])] = $arrKeyMatches[1];
                         $arrTranslation[trim($arrMatches[1])] = str_replace('&' . $arrKeyMatches[1], $arrKeyMatches[1], trim($arrMatches[2]));
                     }
@@ -53,7 +53,7 @@
                 if (preg_match('/^#define\s+([^\s]+)\s+(.+)$/s', trim($strLine), $arrMatches)) {
                     $arrTemplate[trim($arrMatches[1])] = trim($arrMatches[2]);
                     $arrTemplateComments[trim($arrMatches[1])] = $strContext;
-                    if (preg_match('/&([a-zA-Z])/', trim($arrMatches[2]), $arrKeyMatches)) {
+                    if (preg_match('/&([a-zA-Z])/', str_replace(array('&amp;'), array(''), trim($arrMatches[2])), $arrKeyMatches)) {
                         $arrTemplateAccKeys[trim($arrMatches[1])] = $arrKeyMatches[1];
                         $arrTemplate[trim($arrMatches[1])] = str_replace('&' . $arrKeyMatches[1], $arrKeyMatches[1], trim($arrMatches[2]));
                     }
