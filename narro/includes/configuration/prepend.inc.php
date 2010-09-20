@@ -133,10 +133,15 @@
             QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
             if (QApplication::QueryString('l'))
                 QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
-            elseif ($objLanguage = QApplication::GetBrowserLanguage() instanceof NarroLanguage)
-                QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objLanguage->LanguageCode));
-            elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
-                QApplication::$Language = NarroLanguage::LoadByLanguageCode($strLanguage);
+            else {
+                $objLanguage = QApplication::GetBrowserLanguage();
+                if ($objLanguage instanceof NarroLanguage)
+                    QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objLanguage->LanguageCode));
+                elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
+                    QApplication::$Language = NarroLanguage::LoadByLanguageCode($strLanguage);
+                else
+                    QApplication::$Language = NarroLanguage::LoadByLanguageId(__SOURCE_LANGUAGE_ID__);
+            }
 
 
             QApplication::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
