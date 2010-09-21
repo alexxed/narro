@@ -32,6 +32,7 @@
             $objZipFile = new ZipArchive();
             if ($objZipFile->open($strArchive, ZipArchive::OVERWRITE) === TRUE) {
                 foreach($arrFiles as $strFileName) {
+                    if ($strTranslationPath == $strFileName) continue;
                     if (is_dir($strFileName)) {
                         $objZipFile->addEmptyDir(str_replace($strTranslationPath . '/', '', $strFileName ));
                     }
