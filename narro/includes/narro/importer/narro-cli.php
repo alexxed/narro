@@ -246,14 +246,22 @@
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
         $objNarroImporter->CopyUnhandledFiles = ((bool) array_search('--copy-unhandled-files', $argv));
+        if (array_search('--template-directory', $argv) !== false)
+            $objNarroImporter->TemplatePath = $argv[array_search('--template-directory', $argv)+1];
+        else
+            $objNarroImporter->TemplatePath = $objNarroImporter->Project->DefaultTemplatePath;
+
+        if (array_search('--translation-directory', $argv) !== false)
+            $objNarroImporter->TranslationPath = $argv[array_search('--translation-directory', $argv)+1];
+        else
+            $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
+
 
         if (in_array('--force', $argv)) {
             $objNarroImporter->CleanExportDirectory();
         }
 
         try {
-            $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
-            $objNarroImporter->TemplatePath = $objNarroImporter->Project->DefaultTemplatePath;
             $intPid = NarroUtils::IsProcessRunning('export', $objNarroImporter->Project->ProjectId);
 
             if ($intPid && $intPid <> getmypid())

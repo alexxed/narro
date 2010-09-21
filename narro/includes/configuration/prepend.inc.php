@@ -127,7 +127,8 @@
             );
 
             $backendOptions = array(
-                'cache_dir' => __TMP_PATH__ . '/zend'
+                'cache_dir' => __TMP_PATH__ . '/zend',
+                'cache_file_umask' => 0666
             );
 
             QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
