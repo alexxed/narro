@@ -136,7 +136,7 @@
                 QApplication::$Language = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
             else {
                 $objLanguage = QApplication::GetBrowserLanguage();
-                if ($objLanguage instanceof NarroLanguage)
+                if ($objLanguage instanceof NarroLanguage && !isset($_REQUEST['openid_mode']))
                     QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objLanguage->LanguageCode));
                 elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
                     QApplication::$Language = NarroLanguage::LoadByLanguageCode($strLanguage);
