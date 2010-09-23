@@ -184,7 +184,7 @@
              * Fetch the text by its md5; we could fetch it by the full text but it would be slower
              * @example $objNarroText = NarroText::QuerySingle(QQ::Equal(QQN::NarroText()->TextValue, mysql_real_escape_string($strOriginal)));
              */
-            $objNarroText = NarroText::QuerySingle(QQ::Equal(QQN::NarroText()->TextValueMd5, md5($strOriginal)));
+            $objNarroText = NarroText::LoadByTextValueMd5(md5($strOriginal));
 
             if (!$this->blnOnlySuggestions && !$objNarroText instanceof NarroText) {
 
@@ -425,41 +425,6 @@
                     $objContextInfo->SuggestionAccessKey = $strTranslationAccKey;
                 }
 
-            }
-
-            if ($objContextInfo instanceof NarroContextInfo && $objContextInfo->HasSuggestions == 0) {
-                $intSuggestionCnt = NarroSuggestion::QueryCount(
-                                        QQ::AndCondition(
-                                            QQ::Equal(
-                                                QQN::NarroSuggestion()->TextId,
-                                                $objNarroText->TextId
-                                            ),
-                                            QQ::Equal(
-                                                QQN::NarroSuggestion()->LanguageId,
-                                                $this->objTargetLanguage->LanguageId
-                                            )
-                                        )
-                );
-
-                if ($intSuggestionCnt > 0) {
-                    $blnContextInfoChanged = true;
-
-                    $arrContextInfo = NarroContextInfo::QueryArray(
-                            QQ::AndCondition(
-                                QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $objNarroText->TextId),
-                                QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId),
-                                QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0)
-                            )
-                    );
-
-                    foreach($arrContextInfo as $objOneContextInfo) {
-                        $objOneContextInfo->HasSuggestions = 1;
-                        $objOneContextInfo->Modified = QDateTime::Now();
-                        $objOneContextInfo->Save();
-                    }
-
-                    $objContextInfo->HasSuggestions = 1;
-                }
             }
 
             if (!$this->blnOnlySuggestions && $objNarroContext instanceof NarroContext) {

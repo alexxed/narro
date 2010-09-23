@@ -86,6 +86,28 @@
             else
                 $this->dttModified = QDateTime::Now();
             parent::Save($blnForceInsert, $blnForceUpdate);
+
+            /**
+             * Update all context infos with the has suggestion property
+             */
+            $arrContextInfo = NarroContextInfo::QueryArray(
+                    QQ::AndCondition(
+                        QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $this->intTextId),
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::$Language->LanguageId),
+                        QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, 0)
+                    )
+            );
+
+            foreach($arrContextInfo as $objOneContextInfo) {
+                $objOneContextInfo->HasSuggestions = 1;
+                $objOneContextInfo->Modified = QDateTime::Now();
+                try {
+                    $objOneContextInfo->Save();
+                }
+                catch (Exception $objEx) {
+                    QApplication::$Logger->warn($objEx->getMessage());
+                }
+            }
         }
 
 
