@@ -44,6 +44,28 @@
             return sprintf('NarroText Object %s',  $this->intTextId);
         }
 
+        public static function Load($intTextId, $objOptionalClauses = null) {
+            $strCacheId = __CLASS__ . __FUNCTION__ . 't' . $intTextId . 'o' . md5(serialize($objOptionalClauses));
+            $mixResult = QApplication::$Cache->load($strCacheId);
+            if ($mixResult === false) {
+                $mixResult = parent::Load($intTextId, $objOptionalClauses);
+                if ($mixResult !== false)
+                    QApplication::$Cache->save($mixResult, $strCacheId, array('text'), QDateTimeSpan::SecondsPerHour);
+            }
+            return $mixResult;
+        }
+
+        public static function LoadByTextValueMd5($strTextValueMd5, $objOptionalClauses = null) {
+            $strCacheId = __CLASS__ . __FUNCTION__ . 't' . $strTextValueMd5 . 'o' . md5(serialize($objOptionalClauses));
+            $mixResult = QApplication::$Cache->load($strCacheId, $objOptionalClauses);
+            if ($mixResult === false) {
+                $mixResult = parent::LoadByTextValueMd5($strTextValueMd5);
+                if ($mixResult !== false)
+                    QApplication::$Cache->save($mixResult, $strCacheId, array('text'), QDateTimeSpan::SecondsPerHour);
+            }
+            return $mixResult;
+        }
+
         public function Save($blnForceInsert = false, $blnForceUpdate = false) {
             $this->intTextWordCount = NarroString::WordCount($this->strTextValue);
             $this->intTextCharCount = strlen($this->strTextValue);
