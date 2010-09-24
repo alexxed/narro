@@ -80,8 +80,11 @@
         public function __call($strMethod, $arrParameters) {
             if (!self::$blnEnablePlugins) return $arrParameters;
 
+            $intStartTime = time();
+
             if (is_array($this->arrPlugins))
                 foreach($this->arrPlugins as $objPlugin) {
+                    $intStartPluginTime = time();
                     $this->strCurrentPluginName = $objPlugin->Name;
                     if (method_exists($objPlugin, $strMethod)) {
                         $this->arrPluginReturnValues[$objPlugin->Name] = call_user_func_array(array($objPlugin, $strMethod), $arrParameters);
@@ -111,6 +114,9 @@
                             default: $mixReturn = $arrParameters;
                         }
                     }
+                    $intElapsedPluginTime = time() - $intStartPluginTime;
+                    if ($intElapsedPluginTime)
+                        QApplication::$Logger->debug(sprintf('Processed method "%s" for the "%s" plugin in %d seconds', $objPlugin->Name, $strMethod, $intElapsedPluginTime));
                 }
 
             switch((count($arrParameters))) {
@@ -118,6 +124,10 @@
                 case 1: $mixReturn = $arrParameters[0]; break;
                 default: $mixReturn = $arrParameters;
             }
+
+            $intElapsedTime = time() - $intStartTime;
+            if ($intElapsedTime)
+                QApplication::$Logger->debug(sprintf('Processed method "%s" for all plugins in %d seconds', $strMethod, $intElapsedTime));
 
             return $mixReturn;
         }
