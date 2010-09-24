@@ -206,22 +206,7 @@
                     $strPath = $strPath . '/' . $strDir;
                     if (!isset($arrDirectories[$strPath])) {
                         if ($intParentId) {
-                            $objFile = NarroFile::QuerySingle(
-                                            QQ::AndCondition(
-                                                QQ::Equal(
-                                                    QQN::NarroFile()->ProjectId,
-                                                    $this->objProject->ProjectId
-                                                ),
-                                                QQ::Equal(
-                                                    QQN::NarroFile()->FileName,
-                                                    $strDir
-                                                ),
-                                                QQ::Equal(
-                                                    QQN::NarroFile()->ParentId,
-                                                    $intParentId
-                                                )
-                                            )
-                            );
+                            $objFile = NarroFile::LoadByProjectIdFileNameParentId($this->objProject->ProjectId, $strDir, $intParentId);
                         }
                         else {
                             $objFile = NarroFile::QuerySingle(
@@ -280,13 +265,7 @@
                     continue;
                 }
 
-                $objFile = NarroFile::QuerySingle(
-                                QQ::AndCondition(
-                                    QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
-                                    QQ::Equal(QQN::NarroFile()->FileName, $strFileName),
-                                    QQ::Equal(QQN::NarroFile()->ParentId, $intParentId)
-                                )
-                );
+                $objFile = NarroFile::LoadByProjectIdFileNameParentId($this->objProject->ProjectId, $strFileName, $intParentId);
 
                 if ($objFile instanceof NarroFile) {
                     $objFile->Active = 1;
@@ -330,16 +309,12 @@
                 $intTime = time();
                 if (file_exists($strTranslatedFileToImport)) {
                     if ($blnSourceFileChanged || $this->blnImportUnchangedFiles) {
-
+                        $this->ImportFile($objFile, $strFileToImport, $strTranslatedFileToImport);
                     }
                     else {
-                        $this->blnOnlySuggestions = true;
-                        QApplication::$Logger->info(sprintf('Importing only suggestions from "%s" because the source is unchanged from the last import', $strTranslatedFileToImport));
+                        QApplication::$Logger->info(sprintf('Skipping "%s" because the source is unchanged from the last import', $strTranslatedFileToImport));
                         NarroImportStatistics::$arrStatistics['Unchanged template files']++;
                     }
-
-                    $this->ImportFile($objFile, $strFileToImport, $strTranslatedFileToImport);
-
                 }
                 else {
                     // it's ok, equal strings won't be imported
@@ -374,7 +349,7 @@
                 return false;
             }
 
-            QApplication::$Logger->info(sprintf('Starting to import texts from "%s" and translations from "%s"', $strTemplateFile, $strTranslatedFile));
+            QApplication::$Logger->info(sprintf('Starting to import from "%s" and translations from "%s"', $strTemplateFile, $strTranslatedFile));
 
             if ($this->blnDeactivateContexts && $this->blnOnlySuggestions == false) {
                 $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d AND file_id=%d", $this->objProject->ProjectId, $objFile->FileId);
