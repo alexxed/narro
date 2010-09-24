@@ -44,5 +44,15 @@
             return sprintf('NarroContext Object %s',  $this->intContextId);
         }
 
+
+        public static function LoadByTextIdFileId($intTextId, $intFileId, $objOptionalClauses = null) {
+            return NarroContext::QuerySingle(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroContext()->TextId, $intTextId),
+                    QQ::Equal(QQN::NarroContext()->FileId, $intFileId)
+                ),
+                $objOptionalClauses
+            );
+        }
     }
 ?>
