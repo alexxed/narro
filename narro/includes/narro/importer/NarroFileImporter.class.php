@@ -221,28 +221,9 @@
              * fetch the context
              */
             if ($strContext == '')
-                $objNarroContext = NarroContext::QuerySingle(
-                                        QQ::AndCondition(
-                                            QQ::Equal(QQN::NarroContext()->TextId, $objNarroText->TextId),
-                                            /**
-                                             * If you change the file structure, and would like to reuse contexts, you might want to comment the following line
-                                             */
-                                            QQ::Equal(QQN::NarroContext()->FileId, $this->objFile->FileId),
-                                            QQ::Equal(QQN::NarroContext()->ProjectId, $this->objProject->ProjectId)
-                                        )
-                );
+                $objNarroContext = NarroContext::LoadByTextIdFileId($objNarroText->TextId, $this->objFile->FileId);
             else
-                $objNarroContext = NarroContext::QuerySingle(
-                                        QQ::AndCondition(
-                                            QQ::Equal(QQN::NarroContext()->TextId, $objNarroText->TextId),
-                                            /**
-                                             * If you change the file structure, and would like to reuse contexts, you might want to comment the following line
-                                             */
-                                            QQ::Equal(QQN::NarroContext()->FileId, $this->objFile->FileId),
-                                            QQ::Equal(QQN::NarroContext()->ProjectId, $this->objProject->ProjectId),
-                                            QQ::Equal(QQN::NarroContext()->ContextMd5, md5($strContext))
-                                        )
-                );
+                $objNarroContext = NarroContext::LoadByTextIdContextMd5FileId($objNarroText->TextId, md5($strContext), $this->objFile->FileId);
 
             if (!$this->blnOnlySuggestions && !$objNarroContext instanceof NarroContext) {
 
@@ -368,14 +349,7 @@
                 /**
                  * See if a suggestion already exists, fetch it
                  */
-                $objNarroSuggestion =
-                    NarroSuggestion::QuerySingle(
-                        QQ::AndCondition(
-                            QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroText->TextId),
-                            QQ::Equal(QQN::NarroSuggestion()->LanguageId, $this->objTargetLanguage->LanguageId),
-                            QQ::Equal(QQN::NarroSuggestion()->SuggestionValueMd5, md5($strTranslation))
-                        )
-                );
+                $objNarroSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($objNarroText->TextId, $this->objTargetLanguage->LanguageId, md5($strTranslation));
 
                 if (!$objNarroSuggestion instanceof NarroSuggestion) {
 
@@ -496,7 +470,8 @@
                 $objSuggestionVote = NarroSuggestionVote::QuerySingle(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroSuggestionVote()->UserId, $intUserId),
-                        QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $intContextId)
+                        QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $intContextId),
+                        QQ::Equal(QQN::NarroSuggestionVote()->Context->NarroContextInfoAsContext->LanguageId, QApplication::GetLanguageId())
                     )
                 );
 
@@ -524,11 +499,12 @@
         public function GetMostVotedSuggestion($intContextId) {
             $strQuery = sprintf(
                 'SELECT suggestion_id, SUM(vote_value) as votes ' .
-                'FROM narro_suggestion_vote ' .
-                'WHERE context_id=%d ' .
+                'FROM narro_suggestion_vote, narro_context_info ' .
+                'WHERE narro_context_info.context_id=narro_suggestion_vote.context_id AND narro_context_info.language_id=%d AND context_id=%d ' .
                 'GROUP BY suggestion_id ' .
                 'ORDER BY votes DESC ' .
                 'LIMIT 1',
+                QApplication::GetLanguageId(),
                 $intContextId
             );
             $objDatabase = QApplication::$Database[1];
