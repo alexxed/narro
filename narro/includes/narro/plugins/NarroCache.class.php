@@ -23,18 +23,23 @@
             $this->strName = t('Narro cache');
         }
 
-        public function ImportFile(NarroFile $objFile) {
-            $objFile->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
-            $objFile->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
-            $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
-
-            return array($objFile);
-        }
-
         public function ImportProject(NarroProject $objProject) {
             $objProject->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
             $objProject->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
             $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
+
+            foreach(QApplication::$Cache->getIdsMatchingTags(array('Project' . $objProject->ProjectId, 'total_texts_file')) as $strCacheId) {
+                QApplication::$Cache->remove($strCacheId);
+            }
+
+            foreach(QApplication::$Cache->getIdsMatchingTags(array('Language' . QApplication::GetLanguageId(), 'Project' . $objProject->ProjectId, 'translated_texts_file')) as $strCacheId) {
+                QApplication::$Cache->remove($strCacheId);
+            }
+
+            foreach(QApplication::$Cache->getIdsMatchingTags(array('Language' . QApplication::GetLanguageId(), 'Project' . $objProject->ProjectId, 'approved_texts_file')) as $strCacheId) {
+                QApplication::$Cache->remove($strCacheId);
+            }
+
             return array($objProject);
         }
 
