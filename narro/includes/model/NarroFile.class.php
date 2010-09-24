@@ -44,6 +44,16 @@
             return sprintf('NarroFile Object %s',  $this->intFileId);
         }
 
+        public function LoadByProjectIdFileNameParentId($intProjectId, $strFileName, $intParentId) {
+                return NarroFile::QuerySingle(
+                                QQ::AndCondition(
+                                    QQ::Equal(QQN::NarroFile()->ProjectId, $intProjectId),
+                                    QQ::Equal(QQN::NarroFile()->FileName, $strFileName),
+                                    QQ::Equal(QQN::NarroFile()->ParentId, $intParentId)
+                                )
+                );
+        }
+        
         public static function LoadArrayByFileName($strFileName, $objLimitInfo = null, $objSortInfo = null, $objExtraCondition = null) {
             if (!is_object($objExtraCondition))
                 $objExtraCondition = QQ::All();
@@ -79,37 +89,26 @@
         }
 
         public function DeleteAllTextsCacheByLanguage($intLanguageId = null) {
-            $strTag = '';
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
 
-            foreach(explode('/', preg_replace('/[^\/a-zA-Z0-9_]/', '__', substr($this->FilePath, 1))) as $strFilePathPart) {
-                $strTag .= '__' . $strFilePathPart;
-                foreach(QApplication::$Cache->getIdsMatchingTags(array($strTag, 'Project' . $this->ProjectId, 'total_texts_file')) as $strCacheId) {
-                    QApplication::$Cache->remove($strCacheId);
-                }
+            foreach(QApplication::$Cache->getIdsMatchingTags(array('Project' . $this->ProjectId, 'total_texts_file')) as $strCacheId) {
+                QApplication::$Cache->remove($strCacheId);
             }
         }
 
         public function DeleteTranslatedTextsByLanguage($intLanguageId = null) {
-            $strTag = '';
             if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
 
-            foreach(explode('/', preg_replace('/[^\/a-zA-Z0-9_]/', '__', substr($this->FilePath, 1))) as $strFilePathPart) {
-                $strTag .= '__' . $strFilePathPart;
-                foreach(QApplication::$Cache->getIdsMatchingTags(array($strTag, 'Language' . $intLanguageId, 'Project' . $this->ProjectId, 'translated_texts_file')) as $strCacheId) {
-                    QApplication::$Cache->remove($strCacheId);
-                }
+            foreach(QApplication::$Cache->getIdsMatchingTags(array('Language' . $intLanguageId, 'Project' . $this->ProjectId, 'translated_texts_file')) as $strCacheId) {
+                QApplication::$Cache->remove($strCacheId);
             }
         }
 
         public function DeleteApprovedTextsByLanguage($intLanguageId = null) {
-            $strTag = '';
             if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
 
-            foreach(explode('/', preg_replace('/[^\/a-zA-Z0-9_]/', '__', substr($this->FilePath, 1))) as $strFilePathPart) {
-                $strTag .= '__' . $strFilePathPart;
-                foreach(QApplication::$Cache->getIdsMatchingTags(array($strTag, 'Language' . $intLanguageId, 'Project' . $this->ProjectId, 'approved_texts_file')) as $strCacheId) {
-                    QApplication::$Cache->remove($strCacheId);
-                }
+            foreach(QApplication::$Cache->getIdsMatchingTags(array('Language' . $intLanguageId, 'Project' . $this->ProjectId, 'approved_texts_file')) as $strCacheId) {
+                QApplication::$Cache->remove($strCacheId);
             }
         }
 
