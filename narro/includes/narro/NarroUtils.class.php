@@ -89,6 +89,22 @@
             }
         }
 
+        public static function Chmod($strFilePath, $intFileMode = 0666) {
+            if (!@chmod($strFilePath, $intFileMode)) {
+                /**
+                 * If it's writable, we don't care if chmod failed, it's probably due to selinux
+                 */
+                if (!is_writable($strFilePath)) {
+                    $strError = sprintf('"%s" is not writable by "%s".', $strFilePath, get_current_user());
+                    throw new Exception(sprintf('Could not chmod file %s: %s', $strFilePath, $strError));
+                }
+
+                return false;
+            }
+            else
+                return true;
+        }
+
         public static function RecursiveChmod($strFilePath, $intFileMode = 0666, $intDirMode = 0777) {
             if (is_dir($strFilePath) && !is_link($strFilePath)) {
                 if ($hndDir = opendir($strFilePath)) {

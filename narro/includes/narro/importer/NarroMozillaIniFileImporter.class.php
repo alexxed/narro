@@ -112,7 +112,7 @@
             if (!isset($arrTemplate) || count($arrTemplate) < 1) {
                 QApplication::$Logger->warn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
-                chmod($strTranslatedFile, 0666);
+                NarroUtils::Chmod($strTranslatedFile, 0666);
                 return false;
             }
 
