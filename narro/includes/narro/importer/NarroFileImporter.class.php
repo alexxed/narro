@@ -500,7 +500,7 @@
             $strQuery = sprintf(
                 'SELECT suggestion_id, SUM(vote_value) as votes ' .
                 'FROM narro_suggestion_vote, narro_context_info ' .
-                'WHERE narro_context_info.context_id=narro_suggestion_vote.context_id AND narro_context_info.language_id=%d AND narro_suggestion_vote.context_id.context_id=%d ' .
+                'WHERE narro_context_info.context_id=narro_suggestion_vote.context_id AND narro_context_info.language_id=%d AND narro_suggestion_vote.context_id=%d ' .
                 'GROUP BY suggestion_id ' .
                 'ORDER BY votes DESC ' .
                 'LIMIT 1',
