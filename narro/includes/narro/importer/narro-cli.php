@@ -32,6 +32,7 @@
                     "--template-directory         the directory that holds the original texts" .
                     "--translation-directory      the directory that holds the translations" .
                     "--user                       user id that will be used for the added\n" .
+                    "--disable-plugins            disable plugins during import/export\n" .
                     "                             suggestions, optional, defaults to anonymous\n" .
                     "--exported-suggestion        1 for approved,\n" .
                     "                             2 - approved, then most voted,\n" .
@@ -70,6 +71,7 @@
         $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
         $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
         $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
+        NarroPluginHandler::$blnEnablePlugins = (bool) array_search('--disable-plugins', $argv);
 
         /**
          * Get specific options
@@ -187,6 +189,7 @@
      elseif (in_array('--export', $argv)) {
 
         $objNarroImporter = new NarroProjectImporter();
+        NarroPluginHandler::$blnEnablePlugins = (bool) array_search('--disable-plugins', $argv);
 
         if (array_search('--exported-suggestion', $argv))
             $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];
