@@ -119,7 +119,7 @@
                 NarroContextInfo::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $objFile->FileId),
-                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
+                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
                     )
                 );

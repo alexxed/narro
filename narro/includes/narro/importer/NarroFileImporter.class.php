@@ -471,7 +471,7 @@
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroSuggestionVote()->UserId, $intUserId),
                         QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $intContextId),
-                        QQ::Equal(QQN::NarroSuggestionVote()->Context->NarroContextInfoAsContext->LanguageId, QApplication::GetLanguageId())
+                        QQ::Equal(QQN::NarroSuggestionVote()->Context->NarroContextInfoAsContext->LanguageId, $this->objTargetLanguage->LanguageId)
                     )
                 );
 
@@ -504,7 +504,7 @@
                 'GROUP BY suggestion_id ' .
                 'ORDER BY votes DESC ' .
                 'LIMIT 1',
-                QApplication::GetLanguageId(),
+                $this->objTargetLanguage->LanguageId,
                 $intContextId
             );
             $objDatabase = QApplication::$Database[1];
