@@ -44,6 +44,10 @@
          */
         protected $blnApprove = true;
         /**
+         * whether to export the source text if no translation is found
+         */
+        protected $blnSkipUntranslated = false;
+        /**
          * whether to approve the import suggestions even if another suggestion is approved in Narro
          * @var boolean
          */
@@ -72,6 +76,7 @@
                 $this->objProject = $objImporter->Project;
                 $this->blnCheckEqual = $objImporter->CheckEqual;
                 $this->blnApprove = $objImporter->Approve;
+                $this->blnSkipUntranslated = $objImporter->SkipUntranslated;
                 $this->blnApproveAlreadyApproved = $objImporter->ApproveAlreadyApproved;
                 $this->blnOnlySuggestions = $objImporter->OnlySuggestions;
                 $this->intExportedSuggestion = $objImporter->ExportedSuggestion;

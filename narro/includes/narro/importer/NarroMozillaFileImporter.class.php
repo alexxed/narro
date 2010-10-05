@@ -126,8 +126,12 @@
 
             foreach($arrTranslationObjects as $objNarroContextInfo) {
                 $arrTranslation[$objNarroContextInfo->Context->Context] = $this->GetExportedSuggestion($objNarroContextInfo);
-                if ($arrTranslation[$objNarroContextInfo->Context->Context] === false)
-                    $arrTranslation[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->Context->Text->TextValue;
+                if ($arrTranslation[$objNarroContextInfo->Context->Context] === false) {
+                    if ($this->blnSkipUntranslated == false)
+                        $arrTranslation[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->Context->Text->TextValue;
+                    else
+                        unset($arrTranslation[$objNarroContextInfo->Context->Context]);
+                }
 
                 if ($objNarroContextInfo->TextAccessKey) {
                     if ($objNarroContextInfo->SuggestionAccessKey) {

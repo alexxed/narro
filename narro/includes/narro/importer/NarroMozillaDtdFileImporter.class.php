@@ -221,6 +221,10 @@
                 else {
                     QApplication::$Logger->err(sprintf('Couldn\'t find the key "%s" in the translations for "%s" from the file "%s". Using the original text.', $strKey, $strOriginalText, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
+
+                    if ($this->blnSkipUntranslated == true) {
+                        $strTemplateContents = str_replace($arrTemplateLines[$strKey], '', $strTemplateContents);
+                    }
                 }
             }
 

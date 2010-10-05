@@ -55,6 +55,11 @@
         protected $blnImportUnchangedFiles = false;
 
         /**
+         * whether to export the source text if no translation is found
+         */
+        protected $blnSkipUntranslated = false;
+
+        /**
          * what suggestions are exported
          * 1 = approved
          * 2 = approved and most voted
@@ -680,6 +685,7 @@
                 case "DeactivateContexts": return $this->blnDeactivateContexts;
                 case "ExportedSuggestion": return $this->intExportedSuggestion;
                 case "CopyUnhandledFiles": return $this->blnCopyUnhandledFiles;
+                case "SkipUntranslated": return $this->blnSkipUntranslated;
 
                 default: return false;
             }
@@ -756,6 +762,15 @@
                 case "Approve":
                     try {
                         $this->blnApprove = QType::Cast($mixValue, QType::Boolean);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
+                case "SkipUntranslated":
+                    try {
+                        $this->blnSkipUntranslated = QType::Cast($mixValue, QType::Boolean);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();

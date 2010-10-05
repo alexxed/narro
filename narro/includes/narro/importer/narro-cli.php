@@ -44,6 +44,7 @@
                     "                             importing\n" .
                     "--check-equal                check if the translation is equal to the original\n" .
                     "                             text and don't import it\n" .
+                    "--skip-untranslated          skip likes that don't have translated texts\n" .
                     "--approve                    approve the imported suggestions\n" .
                     "--approve-already-approved   overwrite translations approved in Narro\n" .
                     "--import-unchanged-files     import files marked unchanged after the last import\n" .
@@ -189,6 +190,7 @@
      elseif (in_array('--export', $argv)) {
 
         $objNarroImporter = new NarroProjectImporter();
+        $objNarroImporter->SkipUntranslated = (bool) array_search('--skip-untranslated', $argv);
         NarroPluginHandler::$blnEnablePlugins = (bool) array_search('--disable-plugins', $argv);
 
         if (array_search('--exported-suggestion', $argv))
