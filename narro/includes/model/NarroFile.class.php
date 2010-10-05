@@ -53,7 +53,7 @@
                                 )
                 );
         }
-        
+
         public static function LoadArrayByFileName($strFileName, $objLimitInfo = null, $objSortInfo = null, $objExtraCondition = null) {
             if (!is_object($objExtraCondition))
                 $objExtraCondition = QQ::All();
@@ -193,7 +193,7 @@
 
                     $objFileProgress->FuzzyTextCount = $intTranslatedTexts;
                     $objFileProgress->Save();
-                    QApplication::$Cache->save($intTranslatedTexts, 'translated_texts_file_' . $this->FileId . '_' . $intLanguageId, array(preg_replace('/[^a-zA-Z0-9_]/', '__', $this->FilePath), 'Project' . $this->Project->ProjectId, 'Language' . QApplication::GetLanguageId(), 'translated_texts_file'));
+                    QApplication::$Cache->save($intTranslatedTexts, 'translated_texts_file_' . $this->FileId . '_' . $intLanguageId, array(preg_replace('/[^a-zA-Z0-9_]/', '__', $this->FilePath), 'Project' . $this->Project->ProjectId, 'Language' . $intLanguageId, 'translated_texts_file'));
                 }
             }
 
@@ -239,7 +239,7 @@
                         $objFileProgress->ProgressPercent = 0;
 
                     $objFileProgress->Save();
-                    QApplication::$Cache->save($intApprovedTexts, 'approved_texts_file_' . $this->FileId . '_' . $intLanguageId, array(preg_replace('/[^a-zA-Z0-9_]/', '__', $this->FilePath), 'Project' . $this->Project->ProjectId, 'Language' . QApplication::GetLanguageId(), 'approved_texts_file'));
+                    QApplication::$Cache->save($intApprovedTexts, 'approved_texts_file_' . $this->FileId . '_' . $intLanguageId, array(preg_replace('/[^a-zA-Z0-9_]/', '__', $this->FilePath), 'Project' . $this->Project->ProjectId, 'Language' . $intLanguageId, 'approved_texts_file'));
                 }
             }
 
