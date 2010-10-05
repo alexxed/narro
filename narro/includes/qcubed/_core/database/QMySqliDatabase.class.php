@@ -116,8 +116,20 @@
             // Log Query (for Profiling, if applicable)
             $this->LogQuery($strNonQuery);
 
+            $intTime = time();
+
             // Perform the Query
             $this->objMySqli->query($strNonQuery);
+
+            $intTime = time() - $intTime;
+
+            if (SERVER_INSTANCE == 'dev' && QApplication::$Logger instanceof Zend_Log) {
+                if ($intTime > 1)
+                    QApplication::$Logger->warn($intTime . ' seconds: ' . $strNonQuery);
+                else
+                    QApplication::$Logger->debug(str_replace("\n", " ", $strNonQuery));
+            }
+
             if ($this->objMySqli->error)
                 throw new QMySqliDatabaseException($this->objMySqli->error, $this->objMySqli->errno, $strNonQuery);
         }
