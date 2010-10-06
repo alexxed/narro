@@ -223,7 +223,7 @@
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
 
                     if ($this->blnSkipUntranslated == true) {
-                        $strTemplateContents = str_replace($arrTemplateLines[$strKey], '', $strTemplateContents);
+                        $strTemplateContents = str_replace($arrTemplateLines[$strKey] . "\n", '', $strTemplateContents);
                     }
                 }
             }

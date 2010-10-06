@@ -109,7 +109,7 @@
                 elseif (trim($strLine) != '' && $strLine[0] != '#')
                     QApplication::$Logger->debug(sprintf('Skipped line "%s" from the template "%s".', $strLine, $this->objFile->FileName));
                 elseif ($strLine[0] == '#') {
-                    $strComment .= $strLine;
+                    $strComment .= $strLine . "\n";
                 }
             }
 
