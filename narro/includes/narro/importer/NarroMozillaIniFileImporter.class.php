@@ -169,9 +169,10 @@
                     QApplication::$Logger->debug(sprintf('Couldn\'t find the key "%s" in the translations, using the original text.', $strKey, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                     if ($this->blnSkipUntranslated == true) {
-                        if (isset($arrTemplateComment[$strKey]))
-                            $strTranslateContents = str_replace($arrTemplateComment[$strKey], '', $strTranslateContents);
-                        $strTranslateContents = str_replace($strKey . $strGlue . $strOriginalText . "\n", '', $strTranslateContents);
+                        if (isset($arrTemplateComment[$strKey]) && $arrTemplateComment[$strKey] != '') {
+                            $strTranslateContents = str_replace($arrTemplateComment[$strKey] . "\n", '', $strTranslateContents);
+                            $strTranslateContents = str_replace("\n" . $strKey . $strGlue . $strOriginalText . "\n", "\n", $strTranslateContents);
+                        }
                     }
                 }
             }
