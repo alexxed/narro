@@ -98,13 +98,19 @@
 
             $arrTemplateContents = explode("\n", $strTemplateContents);
 
+            $strComment = '';
             foreach($arrTemplateContents as $intPos=>$strLine) {
                 if (preg_match('/^\s*([\@0-9a-zA-Z\-\_\.\?\{\}]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches)) {
                     $arrTemplate[trim($arrMatches[1])] = trim($arrMatches[2]);
                     $arrTemplateLines[trim($arrMatches[1])] = $arrMatches[0];
+                    $arrTemplateComment[trim($arrMatches[1])] = $strComment;
+                    $strComment = '';
                 }
                 elseif (trim($strLine) != '' && $strLine[0] != '#')
                     QApplication::$Logger->debug(sprintf('Skipped line "%s" from the template "%s".', $strLine, $this->objFile->FileName));
+                elseif ($strLine[0] == '#') {
+                    $strComment .= $strLine;
+                }
             }
 
             $strTranslateContents = '';
@@ -163,6 +169,8 @@
                     QApplication::$Logger->debug(sprintf('Couldn\'t find the key "%s" in the translations, using the original text.', $strKey, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                     if ($this->blnSkipUntranslated == true) {
+                        if (isset($arrTemplateComment[$strKey]))
+                            $strTranslateContents = str_replace($arrTemplateComment[$strKey], '', $strTranslateContents);
                         $strTranslateContents = str_replace($strKey . $strGlue . $strOriginalText . "\n", '', $strTranslateContents);
                     }
                 }
