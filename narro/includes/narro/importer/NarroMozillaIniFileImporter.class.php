@@ -170,7 +170,7 @@
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                     if ($this->blnSkipUntranslated == true) {
                         if (isset($arrTemplateComment[$strKey]) && $arrTemplateComment[$strKey] != '') {
-                            $strTranslateContents = str_replace($arrTemplateComment[$strKey] . "\n", '', $strTranslateContents);
+                            $strTranslateContents = str_replace($arrTemplateComment[$strKey] . "\n", "\n", $strTranslateContents);
                             $strTranslateContents = str_replace("\n" . $strKey . $strGlue . $strOriginalText . "\n", "\n", $strTranslateContents);
                         }
                     }

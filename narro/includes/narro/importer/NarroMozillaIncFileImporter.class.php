@@ -202,7 +202,7 @@
 
                     if ($this->blnSkipUntranslated == true) {
                         if (isset($arrTemplateComment[$strKey]) && $arrTemplateComment[$strKey] != '') {
-                            $strTranslateContents = str_replace($arrTemplateComment[$strKey] . "\n", '', $strTranslateContents);
+                            $strTranslateContents = str_replace($arrTemplateComment[$strKey] . "\n", "\n", $strTranslateContents);
                             $strTranslateContents = str_replace(sprintf("#define %s %s\n", $strKey, $strOriginalText), '', $strTranslateContents);
                         }
                     }
