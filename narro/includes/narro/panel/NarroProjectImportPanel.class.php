@@ -198,6 +198,7 @@
                  */
                 $objNarroImporter->DeactivateFiles = !$this->chkImportOnlyTranslations->Checked;
                 $objNarroImporter->DeactivateContexts = !$this->chkImportOnlyTranslations->Checked;
+                $objNarroImporter->ImportUnchangedFiles = $this->chkImportUnchangedFiles->Checked;
                 $objNarroImporter->CheckEqual = true;
                 $objNarroImporter->Approve = $this->chkApproveImportedTranslations->Checked;
                 $objNarroImporter->ApproveAlreadyApproved = !$this->chkApproveOnlyNotApproved->Checked;
