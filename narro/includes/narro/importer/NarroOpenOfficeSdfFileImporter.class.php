@@ -251,7 +251,7 @@
 
                 if (!in_array($arrColumn[9], $arrLocale)) continue;
 
-                $strFilePath = $strPath . '/' . $arrColumn[9] . '/' . $arrColumn[0] . '/' . str_replace('\\', '/', $arrColumn[1]) . '.sdf';
+                $strFilePath = $strPath . '/' . $arrColumn[0] . '/' . str_replace('\\', '/', $arrColumn[1]) . '.sdf';
 
                 if (!file_exists($strFilePath)) {
                     if (!file_exists(dirname($strFilePath))) {

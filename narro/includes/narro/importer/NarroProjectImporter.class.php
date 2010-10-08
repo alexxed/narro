@@ -140,7 +140,22 @@
             QApplication::$Logger->info(sprintf('Translation path is %s', $this->strTranslationPath));
 
 
-            if (is_dir($this->strTemplatePath))
+            if (is_dir($this->strTemplatePath)) {
+                if ($this->objProject->ProjectType == NarroProjectType::OpenOffice) {
+                    $strBigGsiFile = $this->strTemplatePath . '/' . $this->objSourceLanguage->LanguageCode .'.sdf';
+                    if (file_exists($strBigGsiFile)) {
+                        QApplication::$Logger->info(sprintf('Found a big GSI file, splitting it in smaller files before import'));
+                        NarroOpenOfficeSdfFileImporter::SplitFile($strBigGsiFile, $this->strTemplatePath, array($this->objSourceLanguage->LanguageCode));
+                        unlink($strBigGsiFile);
+                    }
+
+                    $strBigGsiFile = $this->strTranslationPath . '/' . $this->objTargetLanguage->LanguageCode .'.sdf';
+                    if (file_exists($strBigGsiFile)) {
+                        QApplication::$Logger->info(sprintf('Found a big GSI file, splitting it in smaller files before import'));
+                        NarroOpenOfficeSdfFileImporter::SplitFile($strBigGsiFile, $this->strTranslationPath, array($this->objTargetLanguage->LanguageCode));
+                        unlink($strBigGsiFile);
+                    }
+                }
                 if ($this->ImportFromDirectory()) {
                     if ($this->strTemplatePath != $this->objProject->DefaultTemplatePath)
                         NarroUtils::RecursiveCopy($this->strTemplatePath, $this->objProject->DefaultTemplatePath);
@@ -154,6 +169,7 @@
                 else {
                     QApplication::$Logger->err('Import failed. See any messages above for details.');
                 }
+            }
             else
                 throw new Exception(sprintf('Template path "%s" is not a directory.', $this->strTemplatePath));
 
