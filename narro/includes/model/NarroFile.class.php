@@ -44,7 +44,7 @@
             return sprintf('NarroFile Object %s',  $this->intFileId);
         }
 
-        public function LoadByProjectIdFileNameParentId($intProjectId, $strFileName, $intParentId) {
+        public static function LoadByProjectIdFileNameParentId($intProjectId, $strFileName, $intParentId) {
                 return NarroFile::QuerySingle(
                                 QQ::AndCondition(
                                     QQ::Equal(QQN::NarroFile()->ProjectId, $intProjectId),
