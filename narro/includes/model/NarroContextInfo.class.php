@@ -489,6 +489,24 @@
 
             return $intContextCount;
         }
+        
+        public static function GetQueryForConditions(&$objQueryBuilder, QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = array(), $blnCountOnly = false) {
+            return parent::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, $blnCountOnly);
+        }
+        
+        /**
+		 * Save this NarroContextInfo
+		 * @param bool $blnForceInsert
+		 * @param bool $blnForceUpdate
+		 * @return int
+		 */
+		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
+		    $blnIsNew = false;
+		    if (((!$this->__blnRestored) || ($blnForceInsert))) {
+		        $this->blnHasSuggestions = QType::Cast(NarroSuggestion::CountByTextIdLanguageId($this->Context->TextId, $this->LanguageId), QType::Boolean);
+		    }
+		    $mixResult = parent::Save($blnForceInsert, $blnForceUpdate);
+		}
 
     }
 ?>
