@@ -408,17 +408,38 @@
             return $this->arrSuggestionList[$objNarroContextInfo->ContextInfoId]->Render(false);
         }
 
-        public function dtgNarroContextInfo_EditTranslatedText_Render(NarroContextInfo $objNarroContextInfo) {
+        public function dtgNarroContextInfo_EditTranslatedText_Render(NarroContextInfo $objNarroContextInfo, $strLink = null) {
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId] = new QTextBox($this->dtgNarroContextInfo);
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->ActionParameter = $objNarroContextInfo->Context->TextId;
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->TextMode = QTextMode::MultiLine;
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->Rows = 1;
+
             if ($objNarroContextInfo->ValidSuggestionId)
                 $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->Text = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->Columns = 50;
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->AddAction(new QFocusEvent(), new QJavaScriptAction(sprintf('this.rows=4; this.cols=100;highlight_datagrid_row_by_control(this);')));
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->AddAction(new QBlurEvent(), new QJavaScriptAction(sprintf('this.rows=1; this.cols=50;reset_datagrid_row_by_control(this);')));
-            return $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->RenderWithError(false);
+
+            $btnCopy = new QImageButton($this->dtgNarroContextInfo);
+            $btnCopy->ImageUrl = __IMAGE_ASSETS__ . '/../../images/edit-copy.png';
+            $btnCopy->AlternateText = 'Copy the original';
+            $btnCopy->SetCustomStyle('vertical-align', 'super');
+            $btnCopy->Cursor = QCursor::Pointer;
+            $btnCopy->ActionParameter = $objNarroContextInfo->Context->TextId . ',' . $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->ControlId;
+            $btnCopy->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCopy_Click'));
+
+            return $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->RenderWithError(false) . $btnCopy->Render(false) . sprintf('<a style="vertical-align:super" href="%s"><img src="%s/../../images/help-faq.png" alt="Details" /></a>', $strLink, __IMAGE_ASSETS__);
+        }
+
+        public function btnCopy_Click($strFormId, $strControlId, $strParameter) {
+            list($intTextId, $strTxtCtlId) = explode(',', $strParameter);
+            $objText = NarroText::Load($intTextId);
+            if ($objText) {
+                $txtCtl = $this->dtgNarroContextInfo->GetChildControl($strTxtCtlId);
+                if ($txtCtl) {
+                    $txtCtl->Text = $objText->TextValue;
+                }
+            }
         }
 
         public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo, $strLink = null) {
@@ -426,7 +447,7 @@
                 return $this->dtgNarroContextInfo_ApproveTranslatedText_Render($objNarroContextInfo);
             }
             elseif ($this->btnMultiTranslate->Text != t('Mass translate')) {
-                return $this->dtgNarroContextInfo_EditTranslatedText_Render($objNarroContextInfo);
+                return $this->dtgNarroContextInfo_EditTranslatedText_Render($objNarroContextInfo, $strLink);
             }
 
             /**
