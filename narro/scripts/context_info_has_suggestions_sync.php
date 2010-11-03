@@ -19,39 +19,53 @@
     require_once(dirname(__FILE__) . '/../includes/configuration/prepend.inc.php');
 
     if (!isset($argv)) exit;
-    
-	try {
-		$strQuery = NarroContextInfo::GetQueryForConditions($objQueryBuilder, QQ::All());
-	} catch (QCallerException $objExc) {
-		$objExc->IncrementOffset();
-		die($objExc);
-	}
-	
-	printf('Processing query "%s"... ', $strQuery);
 
-	// Perform the Query and Instantiate the Array Result
-	$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-	
-	printf("done\n");
+    try {
+        $strQuery = NarroContextInfo::GetQueryForConditions($objQueryBuilder, QQ::All());
+    } catch (QCallerException $objExc) {
+        $objExc->IncrementOffset();
+        die($objExc);
+    }
 
-	$intModified = 0;
-	$intNotModified = 0;
-	while ($objDbRow = $objDbResult->GetNextRow()) {
-		$objContextInfo = NarroContextInfo::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, null, $objQueryBuilder->ColumnAliasArray);
+    printf("\nProcessing query '%s'... ", $strQuery);
+    @ob_flush();
+
+    // Perform the Query and Instantiate the Array Result
+    $objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+    printf("done\n");
+    @ob_flush();
+
+    $intModified = 0;
+    $intNotModified = 0;
+    $intCurrentRow;
+    $intRowCount = $objDbResult->CountRows();
+    while ($objDbRow = $objDbResult->GetNextRow()) {
+        $objContextInfo = NarroContextInfo::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, null, $objQueryBuilder->ColumnAliasArray);
 
         $blnHasSuggestions = $objContextInfo->HasSuggestions;
         $objContextInfo->HasSuggestions = QType::Cast(NarroSuggestion::CountByTextIdLanguageId($objContextInfo->Context->TextId, $objContextInfo->LanguageId), QType::Boolean);
         if ($blnHasSuggestions != $objContextInfo->HasSuggestions) {
             $objContextInfo->Save();
-            echo '+';
+            echo "\r+";
             $intModified++;
         }
         else {
-            echo '-';
+            echo "\r-";
             $intNotModified++;
         }
-        
-        ob_flush();
+
+        $intCurrentRow++;
+        $strProgress = '';
+        for($i=1;$i<11;$i++) {
+          if (($intCurrentRow * 10)/$intRowCount <= $i)
+              $strProgress .= '-';
+          else
+              $strProgress .= '+';
+        }
+
+        printf("\rProgress: [%s], %s", $strProgress, sprintf('%d%% done %d modified, %d untouched', intval(($intCurrentRow * 100)/$intRowCount), $intModified, $intNotModified));
+        @ob_flush();
     }
-    
-    printf("\n%d modified, %d untouched\n", $intModified, $intNotModified);
+
+    printf("\n");
