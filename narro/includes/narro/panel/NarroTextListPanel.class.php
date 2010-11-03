@@ -425,10 +425,11 @@
             $btnCopy->AlternateText = 'Copy the original';
             $btnCopy->SetCustomStyle('vertical-align', 'super');
             $btnCopy->Cursor = QCursor::Pointer;
+            $btnCopy->TabIndex = -1;
             $btnCopy->ActionParameter = $objNarroContextInfo->Context->TextId . ',' . $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->ControlId;
             $btnCopy->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCopy_Click'));
 
-            return $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->RenderWithError(false) . $btnCopy->Render(false) . sprintf('<a style="vertical-align:super" href="%s"><img src="%s/../../images/help-faq.png" alt="Details" /></a>', $strLink, __IMAGE_ASSETS__);
+            return $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->RenderWithError(false) . $btnCopy->Render(false) . sprintf('<a tabindex="-1" style="vertical-align:super" href="%s"><img tabindex="-1" src="%s/../../images/help-faq.png" alt="Details" /></a>', $strLink, __IMAGE_ASSETS__);
         }
 
         public function btnCopy_Click($strFormId, $strControlId, $strParameter) {
