@@ -31,6 +31,7 @@
         public static function GetSpellSuggestions($strText) {
             if (QApplication::$User->getPreferenceValueByName('Spellchecking') == 'I don\'t need it')
                 return true;
+
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strText);
             $strCleanText = str_replace(array('\n', '\r'), array(' ', ' '), $strText);
             $strCleanText = mb_ereg_replace('http://[a-z\-A-Z\.]+', ' ', $strCleanText);
@@ -38,7 +39,7 @@
             /**
              * mozilla entitites: &xxx;
              */
-            $strCleanText = mb_ereg_replace('&[a-zA-Z\-0-9]+\;', ' ' , $strCleanText);
+            $strCleanText = mb_ereg_replace('&[\.\-a-zA-Z\-0-9]+\;', ' ' , $strCleanText);
             /**
              * keyboard shortcuts
              */
