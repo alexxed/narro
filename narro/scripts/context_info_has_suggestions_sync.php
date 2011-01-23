@@ -68,4 +68,4 @@
         @ob_flush();
     }
 
-    printf("\n");
+    printf("\rDone. %d modified, %d untouched", $intModified, $intNotModified);
