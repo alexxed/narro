@@ -62,13 +62,13 @@
 
         $link = mysql_connect($arrConData['server'].(($arrConData['port'])?':' . $arrConData['port']:''), $arrConData['username'], $arrConData['password']);
         if (!$link) {
-            print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php') . '<br />');
+            print(sprintf('Unable to connect to the database. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php') . '<br />');
             print(sprintf('Error: "%s"', mysql_error()));
             die();
         }
 
         if (!mysql_select_db($arrConData['database'], $link)) {
-            print(sprintf('Unable to connect to the dabase. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php') . '<br />');
+            print(sprintf('Unable to connect to the database. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php') . '<br />');
             print(sprintf('Error: "%s"', mysql_error()));
             die();
         }
