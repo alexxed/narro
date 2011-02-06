@@ -37,12 +37,28 @@
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->HtmlEntities = false;
             $this->txtUsername = new QTextBox($this);
+            $this->txtUsername->Required = true;
             $this->txtEmail = new QTextBox($this);
             $this->txtPassword = new QTextBox($this);
             $this->txtPassword->TextMode = QTextMode::Password;
             $this->btnRegister = new QButton($this);
             $this->btnRegister->Text = t('Register');
+            $this->btnRegister->PrimaryButton = true;
+            $this->btnRegister->CausesValidation = true;
             $this->btnRegister->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnRegister_Click'));
+        }
+
+        public function Validate() {
+            if (strstr($this->txtUsername->Text, '<')) {
+                $this->txtUsername->Warning = t("No <, please.");
+                return false;
+            }
+            elseif (strstr($this->txtEmail->Text, '<')) {
+                $this->txtEmail->Warning = t("No <, please.");
+                return false;
+            }
+            else
+                return true;
         }
 
         public function btnRegister_Click($strFormId, $strControlId, $strParameter) {

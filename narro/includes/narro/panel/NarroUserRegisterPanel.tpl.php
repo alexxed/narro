@@ -30,17 +30,17 @@
     <table>
         <tr>
             <td><?php echo t('Username') ?>:</td>
-            <td><?php $_CONTROL->txtUsername->Render() ?></td>
+            <td><?php $_CONTROL->txtUsername->RenderWithError() ?></td>
             <td><?php echo t('This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name.') ?></td>
         </tr>
         <tr>
             <td><?php echo t('Password') ?>:</td>
-            <td><?php $_CONTROL->txtPassword->Render() ?></td>
+            <td><?php $_CONTROL->txtPassword->RenderWithError() ?></td>
             <td><?php echo t('Alright, you don\'t have to type it twice, but please type it carefully.') ?></td>
         </tr>
         <tr>
             <td><?php echo t('Email') ?>:</td>
-            <td><?php $_CONTROL->txtEmail->Render() ?></td>
+            <td><?php $_CONTROL->txtEmail->RenderWithError() ?></td>
             <td><?php echo t('This is used for password recovery and opt-in notifications.') ?></td>
         </tr>
         <tr>
