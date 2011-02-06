@@ -48,6 +48,7 @@
                     while (!feof($hndFile)) {
                         $strLogLine = fgets($hndFile);
 
+                        // @todo deal with errors spreading on multiple lines
                         if (trim($strLogLine))
                             if (!preg_match('/[0-9\-T:]+\sDEBUG\s\(7\)/', $strLogLine)) {
                                 if (strstr($strLogLine, 'WARN'))

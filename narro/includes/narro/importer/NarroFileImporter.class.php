@@ -111,7 +111,7 @@
              * First, let the plug-ins process the data
              */
             if ($strOriginal == '') {
-                QApplication::$Logger->warn(sprintf('In file "%s", the context "%s" was skipped because the original text "%s" was empty.', $this->objFile->FileName, $strContext, $strOriginal));
+                QApplication::LogWarn(sprintf('In file "%s", the context "%s" was skipped because the original text "%s" was empty.', $this->objFile->FileName, $strContext, $strOriginal));
                 NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Skipped texts']++;
@@ -132,7 +132,7 @@
                     $strOriginal = $arrResult[0];
                 }
                 else
-                    QApplication::$Logger->warn(sprintf('The plug-in %s returned an unexpected result while processing the text "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strOriginal, print_r($arrResult, true)));
+                    QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the text "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strOriginal, print_r($arrResult, true)));
             }
 
             if ($strTranslation != '') {
@@ -148,7 +148,7 @@
                     $strTranslation = $arrResult[1];
                 }
                 else
-                    QApplication::$Logger->warn(sprintf('The plug-in %s returned an unexpected result while processing the translation "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strTranslation, print_r($arrResult, true)));
+                    QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the translation "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strTranslation, print_r($arrResult, true)));
             }
 
             $strContext = trim($strContext);
@@ -165,7 +165,7 @@
                 $strContext = $arrResult[2];
             }
             else
-                QApplication::$Logger->warn(sprintf('The plug-in %s returned an unexpected result while processing the context "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strContext, print_r($arrResult, true)));
+                QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the context "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strContext, print_r($arrResult, true)));
 
             if (!is_null($strComment) && trim($strComment) != '') {
                 $arrResult = QApplication::$PluginHandler->SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $this->objFile, $this->objProject);
@@ -182,7 +182,7 @@
                     $strComment = $arrResult[3];
                 }
                 else
-                    QApplication::$Logger->warn(sprintf('The plug-in %s returned an unexpected result while processing the comment "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strComment, print_r($arrResult, true)));
+                    QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the comment "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strComment, print_r($arrResult, true)));
             }
 
             /**
@@ -200,10 +200,10 @@
 
                 try {
                     $objNarroText->Save();
-                    QApplication::$Logger->debug(sprintf('Added text "%s" from the file "%s"', $strOriginal, $this->objFile->FileName));
+                    QApplication::LogDebug(sprintf('Added text "%s" from the file "%s"', $strOriginal, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Imported texts']++;
                 } catch(Exception $objExc) {
-                    QApplication::$Logger->err(sprintf('Error while adding "%s": %s', $strOriginal, $objExc->getMessage()));
+                    QApplication::LogError(sprintf('Error while adding "%s": %s', $strOriginal, $objExc->getMessage()));
                     NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                     NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                     NarroImportStatistics::$arrStatistics['Skipped texts']++;
@@ -245,18 +245,18 @@
                     $objNarroContext->Save();
                 }
                 catch (Exception $objException) {
-                    QApplication::$Logger->err(sprintf('An error occurred while saving the context: %s. Skipping the text "%s"', $objException->getMessage(), $strOriginal));
+                    QApplication::LogError(sprintf('An error occurred while saving the context: %s. Skipping the text "%s"', $objException->getMessage(), $strOriginal));
                     return false;
                 }
 
-                QApplication::$Logger->debug(sprintf('Added the context "%s" from the file "%s"', nl2br($strContext), $this->objFile->FileName));
+                QApplication::LogDebug(sprintf('Added the context "%s" from the file "%s"', nl2br($strContext), $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Imported contexts']++;
             }
             elseif($objNarroContext instanceof NarroContext) {
                 NarroImportStatistics::$arrStatistics['Reused contexts']++;
             }
             else {
-                QApplication::$Logger->warn(sprintf('Cannot add the context for text "%s" from the file "%s" because the importer is running with the option to import only suggestions.', $objNarroText->TextValue, $this->objFile->FilePath));
+                QApplication::LogWarn(sprintf('Cannot add the context for text "%s" from the file "%s" because the importer is running with the option to import only suggestions.', $objNarroText->TextValue, $this->objFile->FilePath));
                 return false;
             }
 
@@ -320,7 +320,7 @@
                             $objContextComment->Save();
                         }
                         catch (Exception $objException) {
-                            QApplication::$Logger->err(sprintf('An error occurred while saving the context comment: %s.', $objException->getMessage()));
+                            QApplication::LogError(sprintf('An error occurred while saving the context comment: %s.', $objException->getMessage()));
                         }
 
                     }
@@ -339,11 +339,10 @@
             }
             /**
              * if a translation is not empty and the suggestion is/isn't equal to the original
-             * also skip checking the texts with only one character (access keys)
              */
-            elseif ($this->blnCheckEqual && strlen($strOriginal)>1 && $strOriginal == $strTranslation)
+            elseif ($this->blnCheckEqual && $strOriginal == $strTranslation)
             {
-                QApplication::$Logger->debug(sprintf('Skipped "%s" because "%s" has the same value. From "%s".', $strOriginal, $strTranslation, $this->objFile->FileName));
+                QApplication::LogDebug(sprintf('Skipped "%s" because "%s" has the same value. From "%s".', $strOriginal, $strTranslation, $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
                 NarroImportStatistics::$arrStatistics['Suggestions that kept the original text']++;
             }
@@ -368,7 +367,7 @@
                         $objNarroSuggestion->Save();
                     }
                     catch (Exception $objException) {
-                        QApplication::$Logger->err(sprintf('An error occurred while adding the suggestion "%s": %s. Skipping the text "%s"', $strTranslation, $objException->getMessage(), $strOriginal));
+                        QApplication::LogError(sprintf('An error occurred while adding the suggestion "%s": %s. Skipping the text "%s"', $strTranslation, $objException->getMessage(), $strOriginal));
                         return false;
                     }
 
@@ -380,6 +379,7 @@
                      */
                     if ($objContextInfo instanceof NarroContextInfo && $objContextInfo->HasSuggestions == 0 && $objNarroSuggestion instanceof NarroSuggestion ) {
                         $objContextInfo->HasSuggestions = 1;
+                        $blnContextInfoChanged = true;
                     }
 
                     NarroImportStatistics::$arrStatistics['Imported suggestions']++;
@@ -412,7 +412,7 @@
                     $objNarroContext->Modified = QDateTime::Now();
                     $objNarroContext->Save();
                 } catch(Exception $objExc) {
-                    QApplication::$Logger->err(sprintf('Error while setting context "%s" to active: %s', $strContext, $objExc->getMessage()));
+                    QApplication::LogError(sprintf('Error while setting context "%s" to active: %s', $strContext, $objExc->getMessage()));
                     NarroImportStatistics::$arrStatistics['Skipped contexts']++;
                 }
             }
@@ -422,7 +422,7 @@
                 try {
                     $objContextInfo->Save();
                 } catch(Exception $objExc) {
-                    QApplication::$Logger->err(sprintf('Error while saving context info for context %s: %s', $strContext, $objExc->getMessage()));
+                    QApplication::LogError(sprintf('Error while saving context info for context %s: %s', $strContext, $objExc->getMessage()));
                     NarroImportStatistics::$arrStatistics['Skipped context infos']++;
                 }
             }
@@ -515,7 +515,7 @@
             $objDatabase = QApplication::$Database[1];
 
             if (!$objDbResult = $objDatabase->Query($strQuery)) {
-                QApplication::$Logger->err('db_query failed. $strQuery=' . $strQuery);
+                QApplication::LogError('db_query failed. $strQuery=' . $strQuery);
                 return false;
             }
             else {
@@ -525,7 +525,7 @@
                     return NarroSuggestion::Load($arrDbRow['suggestion_id']);
                 }
                 else {
-                    QApplication::$Logger->debug(sprintf('There are no votes recorded for context_id=%d', $intContextId));
+                    QApplication::LogDebug(sprintf('There are no votes recorded for context_id=%d', $intContextId));
                     return false;
                 }
             }
@@ -566,7 +566,7 @@
                 case 2:
                     $objSuggestion = $this->GetMostVotedSuggestion($objNarroContextInfo->ContextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        QApplication::$Logger->debug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        QApplication::LogDebug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -578,7 +578,7 @@
                 case 3:
                     $objSuggestion = $this->GetMostRecentSuggestion($objNarroContextInfo->Context->TextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        QApplication::$Logger->debug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        QApplication::LogDebug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -591,13 +591,13 @@
                 case 4:
                     $objSuggestion = $this->GetMostVotedSuggestion($objNarroContextInfo->ContextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        QApplication::$Logger->debug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        QApplication::LogDebug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
                         $objSuggestion = $this->GetMostRecentSuggestion($objNarroContextInfo->Context->TextId);
                         if ($objSuggestion instanceof NarroSuggestion) {
-                            QApplication::$Logger->debug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                            QApplication::LogDebug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                             return $objSuggestion->SuggestionValue;
                         }
                         else {
@@ -607,7 +607,7 @@
                 case 5:
                     $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, QApplication::GetUserId());
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        QApplication::$Logger->debug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$User->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        QApplication::LogDebug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$User->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -632,7 +632,7 @@
                 case "CheckEqual": return $this->blnCheckEqual;
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
                 case "ExportedSuggestion": return $this->intExportedSuggestion;
-                case "Logger": return QApplication::$Logger;
+                case "Logger": return QApplication::GetLogger();
 
                 default: return false;
             }
@@ -667,7 +667,7 @@
                 case "File":
                     if ($mixValue instanceof NarroFile) {
                         $this->objFile = $mixValue;
-                        QApplication::$Logger->debug(
+                        QApplication::LogDebug(
                             sprintf(
                                 'Importing "%s" with blnCheckEqual=%s, blnApprove=%s, blnApproveAlreadyApproved=%s, blnOnlySuggestions=%s, intExportedSuggestion=%s',
                                 $mixValue->FileName,

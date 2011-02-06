@@ -105,7 +105,7 @@
                     $objOneContextInfo->Save();
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->warn($objEx->getMessage());
+                    QApplication::LogWarn($objEx->getMessage());
                 }
             }
 

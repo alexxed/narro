@@ -159,7 +159,7 @@
                         QApplication::ExecuteJavaScript('if (typeof lastImportId != \'undefined\') clearInterval(lastImportId)');
 
                     if (file_exists($strProcLogFile) && filesize($strProcLogFile))
-                        QApplication::$Logger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+                        QApplication::LogInfo(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
 
                     if (file_exists($strProcLogFile))
                         unlink($strProcLogFile);
@@ -212,7 +212,7 @@
                     $objNarroImporter->TemplatePath = $this->pnlTextsSource->Directory;
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occurred during import: %s', $objEx->getMessage()));
+                    QApplication::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
                     return false;
                 }
@@ -221,7 +221,7 @@
                     $objNarroImporter->ImportProject();
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occurred during import: %s', $objEx->getMessage()));
+                    QApplication::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
                 }
 
@@ -261,7 +261,7 @@
                     );
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occurred during import: %s', $objEx->getMessage()));
+                    QApplication::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
 
                     $this->lblImport->Visible = true;
@@ -289,7 +289,7 @@
                 }
                 else {
                     $this->objImportProgress->Visible = false;
-                    QApplication::$Logger->err('Failed to launch a background process, there will be no progress displayed, and it might take a while, please wait for more messages');
+                    QApplication::LogError('Failed to launch a background process, there will be no progress displayed, and it might take a while, please wait for more messages');
                     $this->pnlLogViewer->MarkAsModified();
                     /**
                      * try importing without launching a background process
@@ -307,7 +307,7 @@
             $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.pid';
 
             if (!file_exists($strProcPidFile)) {
-                QApplication::$Logger->err('Could not find a pid file for the background process.');
+                QApplication::LogError('Could not find a pid file for the background process.');
                 $this->pnlLogViewer->MarkAsModified();
                 return false;
             }
@@ -320,14 +320,14 @@
 
                 if ($mixProcess) {
                     proc_close($mixProcess);
-                    QApplication::$Logger->err('Process killed');
+                    QApplication::LogError('Process killed');
                 }
                 else {
-                    QApplication::$Logger->err('Failed to kill process');
+                    QApplication::LogError('Failed to kill process');
                 }
 
                 if (file_exists($strProcLogFile) && filesize($strProcLogFile))
-                    QApplication::$Logger->warn(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+                    QApplication::LogWarn(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
 
                 $this->pnlLogViewer->MarkAsModified();
             }

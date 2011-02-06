@@ -51,15 +51,15 @@
             $intTime = time() - $intTime;
 
             if ($this->objMySqli->error) {
-                if (SERVER_INSTANCE == 'dev' && QApplication::$Logger instanceof Zend_Log)
-                    QApplication::$Logger->err($strQuery);
+                if (SERVER_INSTANCE == 'dev')
+                    QApplication::LogError($strQuery);
                 throw new QMySqliDatabaseException($this->objMySqli->error, $this->objMySqli->errno, $strQuery);
             }
-            elseif (SERVER_INSTANCE == 'dev' && QApplication::$Logger instanceof Zend_Log) {
+            elseif (SERVER_INSTANCE == 'dev') {
                 if ($intTime > 1)
-                    QApplication::$Logger->warn($intTime . ' seconds: ' . $strQuery);
+                    QApplication::LogWarn($intTime . ' seconds: ' . $strQuery);
                 else
-                    QApplication::$Logger->debug(str_replace("\n", " ", $strQuery));
+                    QApplication::LogDebug(str_replace("\n", " ", $strQuery));
             }
 
             // Return the Result

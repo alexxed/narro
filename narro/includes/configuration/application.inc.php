@@ -89,6 +89,30 @@
 
         }
 
+        public static function LogError($strError) {
+            if (QApplication::$Logger)
+                QApplication::$Logger->log($strError, Zend_Log::ERR);
+        }
+
+        public static function LogInfo($strError) {
+            if (QApplication::$Logger)
+                QApplication::$Logger->log($strError, Zend_Log::INFO);
+        }
+
+        public static function LogWarn($strError) {
+            if (QApplication::$Logger)
+                QApplication::$Logger->log($strError, Zend_Log::WARN);
+        }
+
+        public static function LogDebug($strError) {
+            if (QApplication::$Logger)
+                QApplication::$Logger->log($strError, Zend_Log::DEBUG);
+        }
+
+        public static function GetLogger() {
+            return QApplication::$Logger;
+        }
+
         public static function RegisterPreference($strName, $strType = 'text', $strDescription = '', $strDefaultValue = '', $arrValues = array()) {
             self::$AvailablePreferences[$strName] = array('type'=> $strType, 'description'=>$strDescription, 'default'=>$strDefaultValue, 'values'=>$arrValues);
         }

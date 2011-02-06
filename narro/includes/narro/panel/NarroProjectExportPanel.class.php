@@ -119,7 +119,7 @@
                         QApplication::ExecuteJavaScript('if (typeof lastExportId != \'undefined\') clearInterval(lastExportId)');
 
                     if (file_exists($strProcLogFile) && filesize($strProcLogFile))
-                        QApplication::$Logger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+                        QApplication::LogInfo(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
 
                     $this->lblExport->Visible = true;
                     $this->btnExport->Visible = true;
@@ -161,7 +161,7 @@
                     $objNarroImporter->TemplatePath = $this->objNarroProject->DefaultTemplatePath;
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occurred during export: %s', $objEx->getMessage()));
+                    QApplication::LogError(sprintf('An error occurred during export: %s', $objEx->getMessage()));
                     $this->lblExport->Text = t('Export failed.');
                 }
 
@@ -169,7 +169,7 @@
                     $objNarroImporter->ExportProject();
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occurred during export: %s', $objEx->getMessage()));
+                    QApplication::LogError(sprintf('An error occurred during export: %s', $objEx->getMessage()));
                     $this->lblExport->Text = t('Export failed.');
                 }
 
@@ -207,7 +207,7 @@
                     );
                 }
                 catch (Exception $objEx) {
-                    QApplication::$Logger->err(sprintf('An error occurred during export: %s', $objEx->getMessage()));
+                    QApplication::LogError(sprintf('An error occurred during export: %s', $objEx->getMessage()));
                     $this->lblExport->Text = t('Export failed.');
 
                     $this->lblExport->Visible = true;
@@ -234,7 +234,7 @@
                 }
                 else {
                     $this->objExportProgress->Visible = false;
-                    QApplication::$Logger->err('Failed to launch a background process, there will be no progress displayed, and it might take a while, please wait for more messages');
+                    QApplication::LogError('Failed to launch a background process, there will be no progress displayed, and it might take a while, please wait for more messages');
                     $this->pnlLogViewer->MarkAsModified();
                     /**
                      * try exporting without launching a background process
@@ -252,7 +252,7 @@
             $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export-process.pid';
 
             if (!file_exists($strProcPidFile)) {
-                QApplication::$Logger->err('Could not find a pid file for the background process.');
+                QApplication::LogError('Could not find a pid file for the background process.');
                 $this->pnlLogViewer->MarkAsModified();
                 return false;
             }
@@ -265,14 +265,14 @@
 
                 if ($mixProcess) {
                     proc_close($mixProcess);
-                    QApplication::$Logger->info('Process killed');
+                    QApplication::LogInfo('Process killed');
                 }
                 else {
-                    QApplication::$Logger->info('Failed to kill process');
+                    QApplication::LogInfo('Failed to kill process');
                 }
 
                 if (file_exists($strProcLogFile) && filesize($strProcLogFile))
-                    QApplication::$Logger->info(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+                    QApplication::LogInfo(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
 
                 $this->pnlLogViewer->MarkAsModified();
             }

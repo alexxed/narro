@@ -29,10 +29,10 @@
 
         public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
             if ($strTranslatedFile != '' && !file_exists($strTranslatedFile)) {
-                QApplication::$Logger->warn(sprintf('Copying unhandled file type: %s', $strTemplateFile));
+                QApplication::LogWarn(sprintf('Copying unhandled file type: %s', $strTemplateFile));
                 NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
                 if (@copy($strTemplateFile, $strTranslatedFile) == false) {
-                    QApplication::$Logger->err(sprintf('Failed to copy "%s" to "%s"', $strTemplateFile, $strTranslatedFile));
+                    QApplication::LogError(sprintf('Failed to copy "%s" to "%s"', $strTemplateFile, $strTranslatedFile));
                 }
             }
         }
