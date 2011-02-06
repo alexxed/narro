@@ -146,7 +146,7 @@ Narro running on %s
                         QEmailServer::Send($objMessage);
                 }
                 catch (Exception $objEx) {
-                    //QApplication::$Logger->warn(sprintf('Error while sending out a notification email to %s: %s', $objMessage->To, $objEx->getMessage()));
+                    //QApplication::LogWarn(sprintf('Error while sending out a notification email to %s: %s', $objMessage->To, $objEx->getMessage()));
                     error_log(sprintf('Error while sending out a notification email to %s %s: %s', $objUser->Username, $objUser->Email, $objEx->getMessage()));
                 }
             }

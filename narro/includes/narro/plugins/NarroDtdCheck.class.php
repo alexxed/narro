@@ -27,13 +27,12 @@
         public function ExportSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
             $strStrippedTranslation = preg_replace('/<\/?[a-z][^>]+>/', '', $strTranslation);
             if ($strTranslation && $objFile->TypeId == NarroFileType::MozillaDtd && strstr($strStrippedTranslation, '"')) {
-                QApplication::$Logger->log(
+                QApplication::LogError(
                     sprintf(
                         t('Your translation for "%s", in "%s" includes double quote characters. Those need to be written as HTML entities, otherwise the export will not be valid. You can use &quot; instead of each double quote.'),
                         str_replace("\n", '\\n', ((strlen($strOriginal) > 50)?substr($strOriginal, 0, 50) . '...':$strOriginal)),
                         $objFile->FilePath
-                    ),
-                    Zend_Log::ERR
+                    )
                 );
             }
 

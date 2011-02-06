@@ -65,7 +65,7 @@
             chmod($this->strWorkingDirectory, 0777);
 
             $strCommand = sprintf($strCheckoutCommand, escapeshellarg($this->txtRepository->Text), escapeshellarg($this->strWorkingDirectory));
-            QApplication::$Logger->info(sprintf('Running "%s"', $strCommand));
+            QApplication::LogInfo(sprintf('Running "%s"', $strCommand));
             $strProcLogFile = __TMP_PATH__ . '/' . $this->objProject->ProjectId . '-' . $this->objLanguage->LanguageCode . '-vcs.log';
 
             if (file_exists($strProcLogFile) && is_writable($strProcLogFile)) {
@@ -77,14 +77,14 @@
             if ($mixProcess === false) {
                 if (file_exists($strProcLogFile)) {
                     $strProcOutput = file_get_contents($strProcLogFile);
-                    QApplication::$Logger->err($strProcOutput);
+                    QApplication::LogError($strProcOutput);
                 }
                 throw new Exception('Checkout command failed, check the command output for errors');
             }
             else {
                 $intStatus = proc_close($mixProcess);
                 if (file_exists($strProcLogFile))
-                    QApplication::$Logger->info(file_get_contents($strProcLogFile));
+                    QApplication::LogInfo(file_get_contents($strProcLogFile));
 
                 if ($intStatus != 0)
                     throw new Exception(sprintf('Checkout command failed: %s', file_get_contents($strProcLogFile)));
@@ -104,7 +104,7 @@
             NarroUtils::RecursiveChmod($this->strWorkingDirectory);
 
             if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
-                QApplication::$Logger->warn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $this->strWorkingDirectory, $arrSearchResult[0], $this->objLanguage->LanguageCode));
+                QApplication::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $this->strWorkingDirectory, $arrSearchResult[0], $this->objLanguage->LanguageCode));
                 $this->strWorkingDirectory = $arrSearchResult[0];
             }
 
