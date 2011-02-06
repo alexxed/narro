@@ -16,16 +16,82 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroMozillaFileImporter extends NarroFileImporter {
+        protected function IsComment($strLine) {
+            return false;
+        }
+
+        protected function PreProcessFile($strFile) {
+            return $strFile;
+        }
+
+        protected function PreProcessLine($strLine, $arrComment, $arrLinesBefore) {
+            return array($strLine, $arrComment, $arrLinesBefore);
+        }
+
+        protected function ProcessLine($strLine, $arrComment, $arrLinesBefore) {
+            return array($strLine, $arrComment, $arrLinesBefore);
+        }
+
+        protected function FileAsArray($strFile) {
+            $strFile = file_get_contents($strFile);
+            if (!$strFile) {
+                QApplication::LogInfo(sprintf('%s is empty', $strFile));
+                return false;
+            }
+
+            $strFile = $this->PreProcessFile($strFile);
+
+            $arrFile = explode("\n", $strFile);
+
+            $arrKeys = array();
+            $arrComment = array();
+            $arrLinesBefore = array();
+            $strComment = null;
+            foreach($arrFile as $intPos=>$strLine) {
+                if (trim($strLine) == '') {
+                    $arrLinesBefore[] = $strLine;
+                    continue;
+                }
+
+                list($strLine, $arrComment, $arrLinesBefore) = $this->PreProcessLine($strLine, $arrComment, $arrLinesBefore);
+
+                if ($this->IsComment($strLine)) {
+                    // build the comment until one valid key/value is found
+                    $arrComment[] = $strLine;
+                }
+                else {
+                    list($arrData, $arrComment, $arrLinesBefore) = $this->ProcessLine($strLine, $arrComment, $arrLinesBefore);
+                    if ($arrData) {
+                        if (count($arrComment))
+                            $strComment = join("\n", $arrComment);
+
+                        // The key is the context and usually unique in ini/properties files
+                        $arrKeys[$arrData['key']] = array('text' => $arrData['value'], 'comment' => $strComment, 'full_line' => $strLine, 'before_line' => join("\n", $arrLinesBefore));
+
+                        $arrComment = array();
+                        $arrLinesBefore = array();
+                        $strComment = null;
+                    }
+                    else {
+                        QFirebug::warn(sprintf('Processing the line "%s" from %s failed, skipping it', $strLine, $this->objFile->FileName));
+                        $arrLinesBefore[] = $strLine . "\n";
+                    }
+                }
+            }
+            QFirebug::error($arrKeys);
+
+            return $arrKeys;
+        }
+
         /**
          * This function looks for accesskey entries and creates po style texts, e.g. &File
          * @param array $arrTexts an array with context as keys and texts as values
          */
         public function GetAccessKeys($arrTexts) {
-            $arrAccKey = array();
-
             if (is_array($arrTexts))
-                foreach($arrTexts as $strAccCtx=>$strAccKey) {
-                    if (stristr($strAccCtx, 'accesskey')) {
+                foreach($arrTexts as $strContext=>$arrData) {
+                    $strAccKey = $arrData['text'];
+                    if (stristr($strContext, 'accesskey')) {
                         /**
                          * if this is an accesskey, look for the label
                          * until now the following label and accesskeys are matched:
@@ -40,7 +106,7 @@
                         $strLabelCtx = false;
                         $strNewAcc = false;
 
-                        if (preg_match('/([A-Z0-9a-z\.\_\-]+)([\.\-\_]a|[\.\-\_]{0,1}A)ccesskey$/s', $strAccCtx, $arrMatches)) {
+                        if (preg_match('/([A-Z0-9a-z\.\_\-]+)([\.\-\_]a|[\.\-\_]{0,1}A)ccesskey$/s', $strContext, $arrMatches)) {
                             $arrMatches[2] = str_replace('a', '', $arrMatches[2]);
 
                             if (isset($arrTexts[$arrMatches[1] . $arrMatches[2] . 'label']))
@@ -53,16 +119,16 @@
                                 $strLabelCtx = $arrMatches[1];
                             else {
                                 $strLabelCtx = '';
-                                QApplication::$Logger->warn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
+                                QApplication::LogWarn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strContext, $arrMatches[1]));
                                 continue;
                             }
 
                             if ($strLabelCtx) {
-                                QApplication::$Logger->debug(sprintf('Found label context "%s", looking for an acceptable access key', $strLabelCtx));
+                                QApplication::LogDebug(sprintf('Found label context "%s", looking for an acceptable access key', $strLabelCtx));
                                 /**
                                  * strip mozilla entities when looking for an acceptable access key
                                  */
-                                $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]);
+                                $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]['text']);
                                 /**
                                  * search for the accesskey in the label
                                  * the case of the access keys doesn't matter in Mozilla, so it's a insensitive search
@@ -76,23 +142,23 @@
                                     if ($intKeySensitivePos !== false)
                                         $intPos = $intKeySensitivePos;
 
-                                    $arrAccKey[$strLabelCtx] = mb_substr($strOriginalText, $intPos, 1);
-                                    unset($arrTexts[$strAccCtx]);
-                                    QApplication::$Logger->debug(sprintf('Found access key %s, using it', $arrAccKey[$strLabelCtx]));
+                                    $arrTexts[$strLabelCtx]['access_key'] = mb_substr($strOriginalText, $intPos, 1);
+                                    unset($arrTexts[$strContext]);
+                                    QApplication::LogDebug(sprintf('Found access key %s, using it', $arrTexts[$strLabelCtx]['access_key']));
                                 }
                                 elseif (preg_match('/[a-z]/i', $strOriginalText, $arrPossibleKeyMatches)) {
-                                    $arrAccKey[$strLabelCtx] = $arrPossibleKeyMatches[0];
-                                    unset($arrTexts[$strAccCtx]);
-                                    QApplication::$Logger->warn(sprintf('Found access key %s does not exist in the label %s, using the first ascii character as accesskey: "%s"', $strAccKey, $arrTexts[$strLabelCtx], $arrPossibleKeyMatches[0]));
+                                    $arrTexts[$strLabelCtx]['access_key'] = $arrPossibleKeyMatches[0];
+                                    unset($arrTexts[$strContext]);
+                                    QApplication::LogWarn(sprintf('Found access key %s does not exist in the label %s, using the first ascii character as accesskey: "%s"', $strAccKey, $arrTexts[$strLabelCtx]['text'], $arrPossibleKeyMatches[0]));
                                 }
                                 else {
-                                    $arrAccKey[$strLabelCtx] = $strAccKey;
-                                    unset($arrTexts[$strAccCtx]);
-                                    QApplication::$Logger->warn(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
+                                    $arrTexts[$strLabelCtx]['access_key'] = $strAccKey;
+                                    unset($arrTexts[$strContext]);
+                                    QApplication::LogWarn(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
                                 }
                             }
                             else {
-                                QApplication::$Logger->warn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strAccCtx, $arrMatches[1]));
+                                QApplication::LogWarn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strContext, $arrMatches[1]));
                                 continue;
                             }
                         }
@@ -101,7 +167,7 @@
                         continue;
                 }
 
-            return array($arrTexts, $arrAccKey);
+            return $arrTexts;
 
 
         }
@@ -138,11 +204,11 @@
                         if ($objNarroContextInfo->SuggestionAccessKey == '&' || (!preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->SuggestionAccessKey) && QApplication::$User->getPreferenceValueByName('Force ascii letters as access keys') == 'Yes')) {
                             if (preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches)) {
                                 $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $arrPossibleKeyMatches[0];
-                                QApplication::$Logger->warn(sprintf('For context "%s", found access key "%s" is not a ascii character, using the first ascii character as accesskey: "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $arrPossibleKeyMatches[0]));
+                                QApplication::LogWarn(sprintf('For context "%s", found access key "%s" is not a ascii character, using the first ascii character as accesskey: "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $arrPossibleKeyMatches[0]));
                             }
                             else {
                                 $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->TextAccessKey;
-                                QApplication::$Logger->warn(sprintf('For context "%s", found access key "%s" is not a ascii character, and no ascii characters were found in "%s", keeping the original access key "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches[0]));
+                                QApplication::LogWarn(sprintf('For context "%s", found access key "%s" is not a ascii character, and no ascii characters were found in "%s", keeping the original access key "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches[0]));
                             }
                         }
                         else
