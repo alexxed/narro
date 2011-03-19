@@ -128,7 +128,7 @@
                 QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnImport->ControlId, 2000));
             }
 
-            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objNarroProject->ProjectId, QApplication::$TargetLanguageCode) && !$this->btnImport->Visible;
+            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objNarroProject->ProjectId, QApplication::$TargetLanguage->LanguageCode) && !$this->btnImport->Visible;
         }
 
         public function chkApproveImportedTranslations_Click($strFormId, $strControlId, $strParameter) {
@@ -238,7 +238,7 @@
                 NarroProgress::ClearProgressFileName($this->objNarroProject->ProjectId, 'import');
                 $this->pnlLogViewer->MarkAsModified();
                 $this->btnImport->Visible = false;
-                $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$TargetLanguageCode) && !$this->btnImport->Visible;
+                $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$TargetLanguage->LanguageCode) && !$this->btnImport->Visible;
                 $this->objImportProgress->Visible = true;
                 $this->objImportProgress->Translated = 0;
                 $this->lblImport->Text = '';
@@ -266,7 +266,7 @@
 
                     $this->lblImport->Visible = true;
                     $this->btnImport->Visible = true;
-                    $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$TargetLanguageCode) && !$this->btnImport->Visible;
+                    $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$TargetLanguage->LanguageCode) && !$this->btnImport->Visible;
                     $this->objImportProgress->Translated = 0;
                     $this->objImportProgress->Visible = false;
 

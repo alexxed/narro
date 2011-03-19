@@ -95,7 +95,7 @@
                 QApplication::ExecuteJavaScript(sprintf('lastExportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnExport->ControlId, 2000));
             }
 
-            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objNarroProject->ProjectId, QApplication::$TargetLanguageCode) && !$this->btnExport->Visible;
+            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objNarroProject->ProjectId, QApplication::$TargetLanguage->LanguageCode) && !$this->btnExport->Visible;
         }
 
         public function btnExport_Click($strFormId, $strControlId, $strParameter) {
@@ -187,7 +187,7 @@
                     NarroUtils::RecursiveDelete($this->objNarroProject->DefaultTranslationPath .'/*');
 
                 $this->btnExport->Visible = false;
-                $this->btnKillProcess->Visible = $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$TargetLanguageCode);
+                $this->btnKillProcess->Visible = $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$TargetLanguage->LanguageCode);
                 $this->objExportProgress->Visible = true;
                 $this->objExportProgress->Translated = 0;
                 $this->lblExport->Text = '';
