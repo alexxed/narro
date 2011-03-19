@@ -1,5 +1,8 @@
 <?php
     /**
+     * @package Narro
+     * @subpackage Templates
+     *
      * Narro is an application that allows online software translation and maintenance.
      * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
@@ -16,17 +19,13 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(t('%s :: File list'), $this->objNarroProject->ProjectName);
-    if (QApplication::QueryString('pf')>0)
-        $strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objNarroProject->ProjectName, $this->objParentFile->FileName);
+    $strPageTitle = t('Comments on texts');
 
-    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php')
-?>
+    require(dirname(__FILE__) . '/configuration/header.inc.php');
 
-    <?php $this->RenderBegin() ?>
-    <?php $this->pnlHeader->Render() ?>
-    <?php $this->pnlBreadcrumb->Render() ?>
-    <?php $this->pnlMainTab->Render() ?>
-    <?php $this->RenderEnd() ?>
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlMainTab->Render();
+    $this->RenderEnd();
 
-<?php require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php'); ?>
+    require(dirname(__FILE__) . '/configuration/footer.inc.php');

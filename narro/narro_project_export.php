@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/configuration/prepend.inc.php');
+    require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
 
     class NarroProjectExportForm extends NarroGenericProjectForm {
         protected function Form_Create() {
@@ -30,5 +30,5 @@
         }
     }
 
-    NarroProjectExportForm::Run('NarroProjectExportForm', 'templates/narro_project_export.tpl.php');
+    NarroProjectExportForm::Run('NarroProjectExportForm');
 ?>

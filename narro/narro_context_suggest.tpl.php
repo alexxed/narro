@@ -16,21 +16,17 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = t('Project language list');
+    $strPageTitle = sprintf((QApplication::HasPermissionForThisLang('Can suggest', $this->pnlContextSuggest->NarroContextInfo->Context->ProjectId))?t('Translate "%s"'):t('See suggestions for "%s"'),
+        (strlen($this->pnlContextSuggest->NarroContextInfo->Context->Text->TextValue)>30)?mb_substr($this->pnlContextSuggest->NarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->pnlContextSuggest->NarroContextInfo->Context->Text->TextValue);
 
-
-    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php')
+    require(dirname(__FILE__) . '/configuration/header.inc.php')
 ?>
 
     <?php $this->RenderBegin() ?>
-        <?php $this->pnlHeader->Render() ?>
-        <?php $this->pnlBreadcrumb->Render() ?>
-        <h3><?php echo sprintf(t('Language list for %s'), $this->objNarroProject->ProjectName); ?></h3>
-        <p><?php echo sprintf(t('This is a list of languages that %s is translated in.'), $this->objNarroProject->ProjectName); ?></p>
-        <br />
-
-        <?php $this->dtgNarroLanguage->Render() ?>
-
+    <?php $this->pnlHeader->Render() ?>
+    <?php $this->pnlBreadcrumb->Render() ?>
+    <?php $this->pnlMainTab->Render() ?>
     <?php $this->RenderEnd() ?>
 
-<?php require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php'); ?>
+<?php require(dirname(__FILE__) . '/configuration/footer.inc.php'); ?>
+        

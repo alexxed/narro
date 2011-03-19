@@ -16,15 +16,15 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = t('Language list');
 
 
-    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php')
-?>
+    $strPageTitle = $this->objNarroProject->ProjectName . ' :: ' . t('Manage');
 
-    <?php $this->RenderBegin() ?>
-    <?php $this->pnlHeader->Render() ?>
-    <?php $this->pnlTab->Render() ?>
-    <?php $this->RenderEnd() ?>
-
-<?php require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php'); ?>
+    require(dirname(__FILE__) . '/configuration/header.inc.php');
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlBreadcrumb->Render();
+    echo '<br />';
+    $this->pnlTab->Render();
+    $this->RenderEnd();
+    require(dirname(__FILE__) . '/configuration/footer.inc.php');

@@ -16,13 +16,15 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(t('%s\'s roles'), $this->objUser->Username);
+    $strPageTitle = sprintf(t('Texts from the file "%s"'), $this->objNarroFile->FileName);
 
-    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
-    $this->RenderEnd();
-    require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php');
+    require(dirname(__FILE__) . '/configuration/header.inc.php')
+?>
+
+    <?php $this->RenderBegin() ?>
+    <?php $this->pnlHeader->Render() ?>
+    <?php $this->pnlBreadcrumb->Render() ?>
+    <?php $this->pnlMainTab->Render() ?>
+    <?php $this->RenderEnd() ?>
+
+<?php require(dirname(__FILE__) . '/configuration/footer.inc.php'); ?>

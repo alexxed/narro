@@ -16,17 +16,15 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf((QApplication::HasPermissionForThisLang('Can suggest', $this->pnlContextSuggest->NarroContextInfo->Context->ProjectId))?t('Translate "%s"'):t('See suggestions for "%s"'),
-        (strlen($this->pnlContextSuggest->NarroContextInfo->Context->Text->TextValue)>30)?mb_substr($this->pnlContextSuggest->NarroContextInfo->Context->Text->TextValue, 0, 30) . '...':$this->pnlContextSuggest->NarroContextInfo->Context->Text->TextValue);
 
-    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php')
-?>
+    $strPageTitle = $this->objUser->Username;
 
-    <?php $this->RenderBegin() ?>
-    <?php $this->pnlHeader->Render() ?>
-    <?php $this->pnlBreadcrumb->Render() ?>
-    <?php $this->pnlMainTab->Render() ?>
-    <?php $this->RenderEnd() ?>
+    require(dirname(__FILE__) . '/configuration/header.inc.php');
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlBreadcrumb->Render();
+    echo '<br />';
+    $this->pnlTab->Render();
+    $this->RenderEnd();
+    require(dirname(__FILE__) . '/configuration/footer.inc.php');
 
-<?php require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php'); ?>
-        

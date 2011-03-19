@@ -16,15 +16,21 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
+    $strPageTitle = t('Project language list');
 
-    $strPageTitle = $this->objUser->Username;
 
-    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlBreadcrumb->Render();
-    echo '<br />';
-    $this->pnlTab->Render();
-    $this->RenderEnd();
-    require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php');
+    require(dirname(__FILE__) . '/configuration/header.inc.php')
+?>
 
+    <?php $this->RenderBegin() ?>
+        <?php $this->pnlHeader->Render() ?>
+        <?php $this->pnlBreadcrumb->Render() ?>
+        <h3><?php echo sprintf(t('Language list for %s'), $this->objNarroProject->ProjectName); ?></h3>
+        <p><?php echo sprintf(t('This is a list of languages that %s is translated in.'), $this->objNarroProject->ProjectName); ?></p>
+        <br />
+
+        <?php $this->dtgNarroLanguage->Render() ?>
+
+    <?php $this->RenderEnd() ?>
+
+<?php require(dirname(__FILE__) . '/configuration/footer.inc.php'); ?>

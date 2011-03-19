@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/configuration/prepend.inc.php');
+    require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
 
     class NarroLoginForm extends NarroForm {
         protected $pnlTab;
@@ -40,5 +40,5 @@
         }
     }
 
-    NarroLoginForm::Run('NarroLoginForm', 'templates/narro_login.tpl.php');
+    NarroLoginForm::Run('NarroLoginForm');
 ?>

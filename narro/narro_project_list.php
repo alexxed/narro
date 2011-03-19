@@ -22,7 +22,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/configuration/prepend.inc.php');
+    require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
 
     /**
      * This page is used to clean stale form states if FileFormStateHandler is used
@@ -72,5 +72,5 @@
         }
     }
 
-    NarroProjectListForm::Run('NarroProjectListForm', 'templates/narro_project_list.tpl.php');
+    NarroProjectListForm::Run('NarroProjectListForm');
 ?>

@@ -16,11 +16,15 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = (QApplication::QueryString('rid'))?t('Edit role'):t('Add role');
+    $strPageTitle = t('Language list');
 
-    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlTab->Render();
-    $this->RenderEnd();
-    require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php');
+
+    require(dirname(__FILE__) . '/configuration/header.inc.php')
+?>
+
+    <?php $this->RenderBegin() ?>
+    <?php $this->pnlHeader->Render() ?>
+    <?php $this->pnlTab->Render() ?>
+    <?php $this->RenderEnd() ?>
+
+<?php require(dirname(__FILE__) . '/configuration/footer.inc.php'); ?>

@@ -16,14 +16,16 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
+    $strPageTitle = $this->objNarroProject->ProjectName;
 
 
-    $strPageTitle = $this->objNarroProject->ProjectName . ' :: ' . t('Import');
+    require(dirname(__FILE__) . '/configuration/header.inc.php')
+?>
 
-    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php');
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlBreadcrumb->Render();
-    $this->pnlMainTab->Render();
-    $this->RenderEnd();
-    require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php');
+    <?php $this->RenderBegin() ?>
+    <?php $this->pnlHeader->Render() ?>
+    <?php $this->pnlBreadcrumb->Render() ?>
+    <?php $this->pnlMainTab->Render() ?>
+    <?php $this->RenderEnd() ?>
+
+<?php require(dirname(__FILE__) . '/configuration/footer.inc.php'); ?>

@@ -16,11 +16,14 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = (QApplication::QueryString('lid'))?t('Edit language'):t('Add language');
 
-    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php');
+
+    $strPageTitle = $this->objNarroProject->ProjectName . ' :: ' . t('Export');
+
+    require(dirname(__FILE__) . '/configuration/header.inc.php');
     $this->RenderBegin();
     $this->pnlHeader->Render();
-    $this->pnlTab->Render();
+    $this->pnlBreadcrumb->Render();
+    $this->pnlMainTab->Render();
     $this->RenderEnd();
-    require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php');
+    require(dirname(__FILE__) . '/configuration/footer.inc.php');

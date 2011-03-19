@@ -15,7 +15,7 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    require_once('includes/configuration/prepend.inc.php');
+    require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
 
     class NarroUserListForm extends NarroForm {
         protected $pnlTab;
@@ -39,6 +39,6 @@
         }
     }
 
-    NarroUserListForm::Run('NarroUserListForm', 'templates/narro_user_list.tpl.php');
+    NarroUserListForm::Run('NarroUserListForm');
 
 ?>

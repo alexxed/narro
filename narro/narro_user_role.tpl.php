@@ -16,14 +16,13 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
+    $strPageTitle = sprintf(t('%s\'s roles'), $this->objUser->Username);
 
-
-    $strPageTitle = ($this->objNarroProject instanceof NarroProject)?sprintf(t('Edit %s'), $this->objNarroProject->ProjectName):t('Add');
-
-    require(dirname(__FILE__) . '/../includes/configuration/header.inc.php');
+    require(dirname(__FILE__) . '/configuration/header.inc.php');
     $this->RenderBegin();
     $this->pnlHeader->Render();
     $this->pnlBreadcrumb->Render();
-    $this->pnlMainTab->Render();
+    echo '<br />';
+    $this->pnlTab->Render();
     $this->RenderEnd();
-    require(dirname(__FILE__) . '/../includes/configuration/footer.inc.php');
+    require(dirname(__FILE__) . '/configuration/footer.inc.php');

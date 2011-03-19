@@ -16,9 +16,9 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once('includes/configuration/prepend.inc.php');
+    require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
 
-    QApplication::$Language = NarroLanguage::Load(QApplication::QueryString('l'));
+    QApplication::$TargetLanguage = NarroLanguage::Load(QApplication::QueryString('l'));
     if (QApplication::QueryString('p'))
         $objProject = NarroProject::Load(QApplication::QueryString('p'));
 
@@ -34,13 +34,13 @@
                     $objRssFeed  = new QRssFeed(
                             sprintf(t('Translations for %s'), $objProject->ProjectName),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
-                            sprintf(t('Get the latest translation suggestions in %s for %s'), t(QApplication::$Language->LanguageName), $objProject->ProjectName)
+                            sprintf(t('Get the latest translation suggestions in %s for %s'), t(QApplication::$TargetLanguage->LanguageName), $objProject->ProjectName)
                     );
                 else
                     $objRssFeed  = new QRssFeed(
-                            sprintf(t('Translations for all projects'), t(QApplication::$Language->LanguageName)),
+                            sprintf(t('Translations for all projects'), t(QApplication::$TargetLanguage->LanguageName)),
                             __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
-                            sprintf(t('Get the latest translation suggestions in %s'), t(QApplication::$Language->LanguageName))
+                            sprintf(t('Get the latest translation suggestions in %s'), t(QApplication::$TargetLanguage->LanguageName))
                     );
 
 
@@ -145,7 +145,7 @@
                         $objRssFeed->AddItem($objItem);
                     }
                 }
-                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Language = strtolower(QApplication::$TargetLanguage->LanguageCode);
                 $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
                 QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
@@ -232,7 +232,7 @@
                                 __VIRTUAL_DIRECTORY__ .
                                 __SUBDIRECTORY__ .
                                 sprintf('/narro_context_suggest.php?l=%s&p=%d&c=%d#textcomments',
-                                    QApplication::$Language->LanguageCode,
+                                    QApplication::$TargetLanguage->LanguageCode,
                                     $objNarroContextInfo->Context->ProjectId,
                                     $objNarroContextInfo->ContextId
                                 )
@@ -279,7 +279,7 @@
                     $strDescription .= sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName);
 
                 }
-                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Language = strtolower(QApplication::$TargetLanguage->LanguageCode);
                 $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
                 QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
@@ -296,16 +296,16 @@
                 $objRssFeed  = new QRssFeed(
                         sprintf(
                             t('Context changes in %s'),
-                            t(QApplication::$Language->LanguageName)
+                            t(QApplication::$TargetLanguage->LanguageName)
                         ),
                         __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                         sprintf(
                             t('Get the latest context information changes in %s'),
-                            t(QApplication::$Language->LanguageName)
+                            t(QApplication::$TargetLanguage->LanguageName)
                         )
                 );
                 $objRssFeed->PubDate = new QDateTime(QDateTime::Now);
-                $objRssFeed->Language = strtolower(str_replace('_', '-', QApplication::$Language->LanguageCode));
+                $objRssFeed->Language = strtolower(str_replace('_', '-', QApplication::$TargetLanguage->LanguageCode));
 
                 $strDescription = '';
 
@@ -416,7 +416,7 @@
                     $objRssFeed->AddItem($objItem);
                     $strDescription = '';
                 }
-                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Language = strtolower(QApplication::$TargetLanguage->LanguageCode);
                 $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
                 QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
@@ -561,7 +561,7 @@
                         $objRssFeed->AddItem($objItem);
                     }
                 }
-                $objRssFeed->Language = strtolower(QApplication::$Language->LanguageCode);
+                $objRssFeed->Language = strtolower(QApplication::$TargetLanguage->LanguageCode);
                 $objRssFeed->Image = new QRssImage(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images/narro.png', t('Narro - Translate, we\'re open!'), __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/index.php');
                 QApplication::$Cache->save($objRssFeed, $strCacheId, array(), 3600);
             }
