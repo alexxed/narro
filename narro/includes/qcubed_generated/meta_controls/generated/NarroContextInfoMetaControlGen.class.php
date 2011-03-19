@@ -12,70 +12,178 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroContextInfo $NarroContextInfo the actual NarroContextInfo data class being edited
-	 * property QLabel $ContextInfoIdControl
-	 * property-read QLabel $ContextInfoIdLabel
-	 * property QListBox $ContextIdControl
-	 * property-read QLabel $ContextIdLabel
-	 * property QListBox $LanguageIdControl
-	 * property-read QLabel $LanguageIdLabel
-	 * property QListBox $ValidatorUserIdControl
-	 * property-read QLabel $ValidatorUserIdLabel
-	 * property QListBox $ValidSuggestionIdControl
-	 * property-read QLabel $ValidSuggestionIdLabel
-	 * property QListBox $PopularSuggestionIdControl
-	 * property-read QLabel $PopularSuggestionIdLabel
-	 * property QCheckBox $HasCommentsControl
-	 * property-read QLabel $HasCommentsLabel
-	 * property QCheckBox $HasSuggestionsControl
-	 * property-read QLabel $HasSuggestionsLabel
-	 * property QTextBox $TextAccessKeyControl
-	 * property-read QLabel $TextAccessKeyLabel
-	 * property QTextBox $SuggestionAccessKeyControl
-	 * property-read QLabel $SuggestionAccessKeyLabel
-	 * property QDateTimePicker $CreatedControl
-	 * property-read QLabel $CreatedLabel
-	 * property QDateTimePicker $ModifiedControl
-	 * property-read QLabel $ModifiedLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroContextInfo $NarroContextInfo the actual NarroContextInfo data class being edited
+	 * @property QLabel $ContextInfoIdControl
+	 * @property-read QLabel $ContextInfoIdLabel
+	 * @property QListBox $ContextIdControl
+	 * @property-read QLabel $ContextIdLabel
+	 * @property QListBox $LanguageIdControl
+	 * @property-read QLabel $LanguageIdLabel
+	 * @property QListBox $ValidatorUserIdControl
+	 * @property-read QLabel $ValidatorUserIdLabel
+	 * @property QListBox $ValidSuggestionIdControl
+	 * @property-read QLabel $ValidSuggestionIdLabel
+	 * @property QListBox $PopularSuggestionIdControl
+	 * @property-read QLabel $PopularSuggestionIdLabel
+	 * @property QCheckBox $HasCommentsControl
+	 * @property-read QLabel $HasCommentsLabel
+	 * @property QCheckBox $HasSuggestionsControl
+	 * @property-read QLabel $HasSuggestionsLabel
+	 * @property QTextBox $TextAccessKeyControl
+	 * @property-read QLabel $TextAccessKeyLabel
+	 * @property QTextBox $SuggestionAccessKeyControl
+	 * @property-read QLabel $SuggestionAccessKeyLabel
+	 * @property QDateTimePicker $CreatedControl
+	 * @property-read QLabel $CreatedLabel
+	 * @property QDateTimePicker $ModifiedControl
+	 * @property-read QLabel $ModifiedLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroContextInfoMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroContextInfo objNarroContextInfo
+		 * @access protected
+		 */
 		protected $objNarroContextInfo;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroContextInfo's individual data fields
+		/**
+		 * @var QLabel lblContextInfoId
+		 * @access protected
+		 */
 		protected $lblContextInfoId;
+		/**
+		 * @var QListBox lstContext
+		 * @access protected
+		 */
 		protected $lstContext;
+		/**
+		 * @var QListBox lstLanguage
+		 * @access protected
+		 */
 		protected $lstLanguage;
+		/**
+		 * @var QListBox lstValidatorUser
+		 * @access protected
+		 */
 		protected $lstValidatorUser;
+		/**
+		 * @var QListBox lstValidSuggestion
+		 * @access protected
+		 */
 		protected $lstValidSuggestion;
+		/**
+		 * @var QListBox lstPopularSuggestion
+		 * @access protected
+		 */
 		protected $lstPopularSuggestion;
+		/**
+		 * @var QCheckBox chkHasComments
+		 * @access protected
+		 */
 		protected $chkHasComments;
+		/**
+		 * @var QCheckBox chkHasSuggestions
+		 * @access protected
+		 */
 		protected $chkHasSuggestions;
+		/**
+		 * @var QTextBox txtTextAccessKey
+		 * @access protected
+		 */
 		protected $txtTextAccessKey;
+		/**
+		 * @var QTextBox txtSuggestionAccessKey
+		 * @access protected
+		 */
 		protected $txtSuggestionAccessKey;
+		/**
+		 * @var QDateTimePicker calCreated
+		 * @access protected
+		 */
 		protected $calCreated;
+		/**
+		 * @var QDateTimePicker calModified
+		 * @access protected
+		 */
 		protected $calModified;
 
 		// Controls that allow the viewing of NarroContextInfo's individual data fields
+		/**
+		 * @var QLabel lblContextId
+		 * @access protected
+		 */
 		protected $lblContextId;
+		/**
+		 * @var QLabel lblLanguageId
+		 * @access protected
+		 */
 		protected $lblLanguageId;
+		/**
+		 * @var QLabel lblValidatorUserId
+		 * @access protected
+		 */
 		protected $lblValidatorUserId;
+		/**
+		 * @var QLabel lblValidSuggestionId
+		 * @access protected
+		 */
 		protected $lblValidSuggestionId;
+		/**
+		 * @var QLabel lblPopularSuggestionId
+		 * @access protected
+		 */
 		protected $lblPopularSuggestionId;
+		/**
+		 * @var QLabel lblHasComments
+		 * @access protected
+		 */
 		protected $lblHasComments;
+		/**
+		 * @var QLabel lblHasSuggestions
+		 * @access protected
+		 */
 		protected $lblHasSuggestions;
+		/**
+		 * @var QLabel lblTextAccessKey
+		 * @access protected
+		 */
 		protected $lblTextAccessKey;
+		/**
+		 * @var QLabel lblSuggestionAccessKey
+		 * @access protected
+		 */
 		protected $lblSuggestionAccessKey;
+		/**
+		 * @var QLabel lblCreated
+		 * @access protected
+		 */
 		protected $lblCreated;
+		/**
+		 * @var QLabel lblModified
+		 * @access protected
+		 */
 		protected $lblModified;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -116,9 +224,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroContextInfoMetaControl
 		 * @param integer $intContextInfoId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroContextInfo object creation - defaults to CreateOrEdit
@@ -662,7 +770,7 @@
 		 */
 		public function DeleteNarroContextInfo() {
 			$this->objNarroContextInfo->Delete();
-		}		
+		}
 
 
 

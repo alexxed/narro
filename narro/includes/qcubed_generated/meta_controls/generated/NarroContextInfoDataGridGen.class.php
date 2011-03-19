@@ -11,19 +11,19 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent re-
 	 * code generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @property QQCondition $AdditionalConditions Any conditions to use during binding
 	 * @property QQClause $AdditionalClauses Any clauses to use during binding
 	 * @subpackage MetaControls
-	 * 
+	 *
 	 */
 	class NarroContextInfoDataGridGen extends QDataGrid {
 		protected $conAdditionalConditions;
 		protected $clsAdditionalClauses;
-		
+
 		protected $blnShowFilter = true;
-		
+
 		/**
 		 * Standard DataGrid constructor which also pre-configures the DataBinder
 		 * to its own SimpleDataBinder.  Also pre-configures UseAjax to true.
@@ -43,12 +43,12 @@
 		 * way of adding a column to this NarroContextInfo datagrid.  The description of a column's
 		 * content can be either a text string description of a simple field name
 		 * in the NarroContextInfo object, or it can be any QQNode extending from QQN::NarroContextInfo().
-		 * 
+		 *
 		 * MetaAddColumn will automatically pre-configure the column with the name, html
 		 * and sort rules given the content being specified.
-		 * 
+		 *
 		 * Any of these things can be overridden with OverrideParameters.
-		 * 
+		 *
 		 * Finally, $mixContents can also be an array of contents, if displaying and/or
 		 * sorting using two fields from the NarroContextInfo object.
 		 *
@@ -86,7 +86,7 @@
 				}
 
 				$objNewColumn = new QDataGridColumn(
-					implode(', ', $strNameArray), 
+					implode(', ', $strNameArray),
 					'<?=' . implode(' . ", " . ', $strHtmlArray) . '?>',
 					array(
 						'OrderByClause' => new QQOrderBy($objNodeArray),
@@ -131,7 +131,7 @@
 		/**
 		 * Similar to MetaAddColumn, except it creates a column for a Type-based Id.  You MUST specify
 		 * the name of the Type class that this will attempt to use $NameArray against.
-		 * 
+		 *
 		 * Also, $mixContent cannot be an array.  Only a single field can be specified.
 		 *
 		 * @param mixed $mixContent string or QQNode from NarroContextInfo
@@ -194,7 +194,7 @@
 		public function MetaAddEditLinkColumn($strLinkUrl, $strLinkHtml = 'Edit', $strColumnTitle = 'Edit', $intArgumentType = QMetaControlArgumentType::PathInfo) {
 			switch ($intArgumentType) {
 				case QMetaControlArgumentType::QueryString:
-					$strLinkUrl .= '?intContextInfoId=<?=urlencode($_ITEM->ContextInfoId)?>';
+					$strLinkUrl .= (strpos($strLinkUrl, '?') !== false ? '&' : '?').'intContextInfoId=<?=urlencode($_ITEM->ContextInfoId)?>';
 					break;
 				case QMetaControlArgumentType::PathInfo:
 					$strLinkUrl .= '/<?=urlencode($_ITEM->ContextInfoId)?>';
@@ -353,7 +353,7 @@
 				}
 				case 'AdditionalClauses':
 				try {
-					return ($this->clsAdditionalClauses = QType::Cast($mixValue, 'QQClause'));
+					return ($this->clsAdditionalClauses = QType::Cast($mixValue, QType::ArrayType));
 				} catch (QCallerException $objExc) {
 					$objExc->IncrementOffset();
 					throw $objExc;

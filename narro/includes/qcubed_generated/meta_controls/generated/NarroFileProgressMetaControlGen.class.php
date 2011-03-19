@@ -12,50 +12,118 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroFileProgress $NarroFileProgress the actual NarroFileProgress data class being edited
-	 * property QLabel $FileProgressIdControl
-	 * property-read QLabel $FileProgressIdLabel
-	 * property QListBox $FileIdControl
-	 * property-read QLabel $FileIdLabel
-	 * property QListBox $LanguageIdControl
-	 * property-read QLabel $LanguageIdLabel
-	 * property QIntegerTextBox $TotalTextCountControl
-	 * property-read QLabel $TotalTextCountLabel
-	 * property QIntegerTextBox $ApprovedTextCountControl
-	 * property-read QLabel $ApprovedTextCountLabel
-	 * property QIntegerTextBox $FuzzyTextCountControl
-	 * property-read QLabel $FuzzyTextCountLabel
-	 * property QIntegerTextBox $ProgressPercentControl
-	 * property-read QLabel $ProgressPercentLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroFileProgress $NarroFileProgress the actual NarroFileProgress data class being edited
+	 * @property QLabel $FileProgressIdControl
+	 * @property-read QLabel $FileProgressIdLabel
+	 * @property QListBox $FileIdControl
+	 * @property-read QLabel $FileIdLabel
+	 * @property QListBox $LanguageIdControl
+	 * @property-read QLabel $LanguageIdLabel
+	 * @property QIntegerTextBox $TotalTextCountControl
+	 * @property-read QLabel $TotalTextCountLabel
+	 * @property QIntegerTextBox $ApprovedTextCountControl
+	 * @property-read QLabel $ApprovedTextCountLabel
+	 * @property QIntegerTextBox $FuzzyTextCountControl
+	 * @property-read QLabel $FuzzyTextCountLabel
+	 * @property QIntegerTextBox $ProgressPercentControl
+	 * @property-read QLabel $ProgressPercentLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroFileProgressMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroFileProgress objNarroFileProgress
+		 * @access protected
+		 */
 		protected $objNarroFileProgress;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroFileProgress's individual data fields
+		/**
+		 * @var QLabel lblFileProgressId
+		 * @access protected
+		 */
 		protected $lblFileProgressId;
+		/**
+		 * @var QListBox lstFile
+		 * @access protected
+		 */
 		protected $lstFile;
+		/**
+		 * @var QListBox lstLanguage
+		 * @access protected
+		 */
 		protected $lstLanguage;
+		/**
+		 * @var QIntegerTextBox txtTotalTextCount
+		 * @access protected
+		 */
 		protected $txtTotalTextCount;
+		/**
+		 * @var QIntegerTextBox txtApprovedTextCount
+		 * @access protected
+		 */
 		protected $txtApprovedTextCount;
+		/**
+		 * @var QIntegerTextBox txtFuzzyTextCount
+		 * @access protected
+		 */
 		protected $txtFuzzyTextCount;
+		/**
+		 * @var QIntegerTextBox txtProgressPercent
+		 * @access protected
+		 */
 		protected $txtProgressPercent;
 
 		// Controls that allow the viewing of NarroFileProgress's individual data fields
+		/**
+		 * @var QLabel lblFileId
+		 * @access protected
+		 */
 		protected $lblFileId;
+		/**
+		 * @var QLabel lblLanguageId
+		 * @access protected
+		 */
 		protected $lblLanguageId;
+		/**
+		 * @var QLabel lblTotalTextCount
+		 * @access protected
+		 */
 		protected $lblTotalTextCount;
+		/**
+		 * @var QLabel lblApprovedTextCount
+		 * @access protected
+		 */
 		protected $lblApprovedTextCount;
+		/**
+		 * @var QLabel lblFuzzyTextCount
+		 * @access protected
+		 */
 		protected $lblFuzzyTextCount;
+		/**
+		 * @var QLabel lblProgressPercent
+		 * @access protected
+		 */
 		protected $lblProgressPercent;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -96,9 +164,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroFileProgressMetaControl
 		 * @param integer $intFileProgressId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroFileProgress object creation - defaults to CreateOrEdit
@@ -451,7 +519,7 @@
 		 */
 		public function DeleteNarroFileProgress() {
 			$this->objNarroFileProgress->Delete();
-		}		
+		}
 
 
 

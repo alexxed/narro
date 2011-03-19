@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroUserRole class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $UserRoleId the value for intUserRoleId (Read-Only PK)
@@ -31,7 +31,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_user_role.user_role_id
 		 * @var integer intUserRoleId
@@ -290,18 +290,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroUserRole object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroUserRole::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -384,10 +384,10 @@
 			$objDatabase = NarroUserRole::GetDatabase();
 
 			$strQuery = NarroUserRole::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrouserrole', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroUserRole::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -395,7 +395,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -521,7 +521,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -790,7 +790,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -1083,7 +1083,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroUser object
 						if (is_null($mixValue->UserId))
@@ -1115,7 +1115,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroRole object
 						if (is_null($mixValue->RoleId))
@@ -1147,7 +1147,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroProject object
 						if (is_null($mixValue->ProjectId))
@@ -1179,7 +1179,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroLanguage object
 						if (is_null($mixValue->LanguageId))
@@ -1332,7 +1332,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -1375,22 +1375,22 @@
 				case 'UserId':
 					return new QQNode('user_id', 'UserId', 'Integer', $this);
 				case 'User':
-					return new QQNodeNarroUser('user_id', 'User', 'integer', $this);
+					return new QQNodeNarroUser('user_id', 'User', 'Integer', $this);
 				case 'RoleId':
 					return new QQNode('role_id', 'RoleId', 'Integer', $this);
 				case 'Role':
-					return new QQNodeNarroRole('role_id', 'Role', 'integer', $this);
+					return new QQNodeNarroRole('role_id', 'Role', 'Integer', $this);
 				case 'ProjectId':
 					return new QQNode('project_id', 'ProjectId', 'Integer', $this);
 				case 'Project':
-					return new QQNodeNarroProject('project_id', 'Project', 'integer', $this);
+					return new QQNodeNarroProject('project_id', 'Project', 'Integer', $this);
 				case 'LanguageId':
 					return new QQNode('language_id', 'LanguageId', 'Integer', $this);
 				case 'Language':
-					return new QQNodeNarroLanguage('language_id', 'Language', 'integer', $this);
+					return new QQNodeNarroLanguage('language_id', 'Language', 'Integer', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNode('user_role_id', 'UserRoleId', 'integer', $this);
+					return new QQNode('user_role_id', 'UserRoleId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

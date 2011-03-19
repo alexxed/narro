@@ -12,54 +12,130 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroText $NarroText the actual NarroText data class being edited
-	 * property QLabel $TextIdControl
-	 * property-read QLabel $TextIdLabel
-	 * property QTextBox $TextValueControl
-	 * property-read QLabel $TextValueLabel
-	 * property QTextBox $TextValueMd5Control
-	 * property-read QLabel $TextValueMd5Label
-	 * property QIntegerTextBox $TextCharCountControl
-	 * property-read QLabel $TextCharCountLabel
-	 * property QIntegerTextBox $TextWordCountControl
-	 * property-read QLabel $TextWordCountLabel
-	 * property QCheckBox $HasCommentsControl
-	 * property-read QLabel $HasCommentsLabel
-	 * property QDateTimePicker $CreatedControl
-	 * property-read QLabel $CreatedLabel
-	 * property QDateTimePicker $ModifiedControl
-	 * property-read QLabel $ModifiedLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroText $NarroText the actual NarroText data class being edited
+	 * @property QLabel $TextIdControl
+	 * @property-read QLabel $TextIdLabel
+	 * @property QTextBox $TextValueControl
+	 * @property-read QLabel $TextValueLabel
+	 * @property QTextBox $TextValueMd5Control
+	 * @property-read QLabel $TextValueMd5Label
+	 * @property QIntegerTextBox $TextCharCountControl
+	 * @property-read QLabel $TextCharCountLabel
+	 * @property QIntegerTextBox $TextWordCountControl
+	 * @property-read QLabel $TextWordCountLabel
+	 * @property QCheckBox $HasCommentsControl
+	 * @property-read QLabel $HasCommentsLabel
+	 * @property QDateTimePicker $CreatedControl
+	 * @property-read QLabel $CreatedLabel
+	 * @property QDateTimePicker $ModifiedControl
+	 * @property-read QLabel $ModifiedLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroTextMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroText objNarroText
+		 * @access protected
+		 */
 		protected $objNarroText;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroText's individual data fields
+		/**
+		 * @var QLabel lblTextId
+		 * @access protected
+		 */
 		protected $lblTextId;
+		/**
+		 * @var QTextBox txtTextValue
+		 * @access protected
+		 */
 		protected $txtTextValue;
+		/**
+		 * @var QTextBox txtTextValueMd5
+		 * @access protected
+		 */
 		protected $txtTextValueMd5;
+		/**
+		 * @var QIntegerTextBox txtTextCharCount
+		 * @access protected
+		 */
 		protected $txtTextCharCount;
+		/**
+		 * @var QIntegerTextBox txtTextWordCount
+		 * @access protected
+		 */
 		protected $txtTextWordCount;
+		/**
+		 * @var QCheckBox chkHasComments
+		 * @access protected
+		 */
 		protected $chkHasComments;
+		/**
+		 * @var QDateTimePicker calCreated
+		 * @access protected
+		 */
 		protected $calCreated;
+		/**
+		 * @var QDateTimePicker calModified
+		 * @access protected
+		 */
 		protected $calModified;
 
 		// Controls that allow the viewing of NarroText's individual data fields
+		/**
+		 * @var QLabel lblTextValue
+		 * @access protected
+		 */
 		protected $lblTextValue;
+		/**
+		 * @var QLabel lblTextValueMd5
+		 * @access protected
+		 */
 		protected $lblTextValueMd5;
+		/**
+		 * @var QLabel lblTextCharCount
+		 * @access protected
+		 */
 		protected $lblTextCharCount;
+		/**
+		 * @var QLabel lblTextWordCount
+		 * @access protected
+		 */
 		protected $lblTextWordCount;
+		/**
+		 * @var QLabel lblHasComments
+		 * @access protected
+		 */
 		protected $lblHasComments;
+		/**
+		 * @var QLabel lblCreated
+		 * @access protected
+		 */
 		protected $lblCreated;
+		/**
+		 * @var QLabel lblModified
+		 * @access protected
+		 */
 		protected $lblModified;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -100,9 +176,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroTextMetaControl
 		 * @param integer $intTextId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroText object creation - defaults to CreateOrEdit
@@ -451,7 +527,7 @@
 		 */
 		public function DeleteNarroText() {
 			$this->objNarroText->Delete();
-		}		
+		}
 
 
 

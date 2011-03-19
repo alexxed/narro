@@ -12,34 +12,70 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroRolePermission $NarroRolePermission the actual NarroRolePermission data class being edited
-	 * property QLabel $RolePermissionIdControl
-	 * property-read QLabel $RolePermissionIdLabel
-	 * property QListBox $RoleIdControl
-	 * property-read QLabel $RoleIdLabel
-	 * property QListBox $PermissionIdControl
-	 * property-read QLabel $PermissionIdLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroRolePermission $NarroRolePermission the actual NarroRolePermission data class being edited
+	 * @property QLabel $RolePermissionIdControl
+	 * @property-read QLabel $RolePermissionIdLabel
+	 * @property QListBox $RoleIdControl
+	 * @property-read QLabel $RoleIdLabel
+	 * @property QListBox $PermissionIdControl
+	 * @property-read QLabel $PermissionIdLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroRolePermissionMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroRolePermission objNarroRolePermission
+		 * @access protected
+		 */
 		protected $objNarroRolePermission;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroRolePermission's individual data fields
+		/**
+		 * @var QLabel lblRolePermissionId
+		 * @access protected
+		 */
 		protected $lblRolePermissionId;
+		/**
+		 * @var QListBox lstRole
+		 * @access protected
+		 */
 		protected $lstRole;
+		/**
+		 * @var QListBox lstPermission
+		 * @access protected
+		 */
 		protected $lstPermission;
 
 		// Controls that allow the viewing of NarroRolePermission's individual data fields
+		/**
+		 * @var QLabel lblRoleId
+		 * @access protected
+		 */
 		protected $lblRoleId;
+		/**
+		 * @var QLabel lblPermissionId
+		 * @access protected
+		 */
 		protected $lblPermissionId;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -80,9 +116,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroRolePermissionMetaControl
 		 * @param integer $intRolePermissionId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroRolePermission object creation - defaults to CreateOrEdit
@@ -307,7 +343,7 @@
 		 */
 		public function DeleteNarroRolePermission() {
 			$this->objNarroRolePermission->Delete();
-		}		
+		}
 
 
 

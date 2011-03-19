@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroTextComment class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $TextCommentId the value for intTextCommentId (Read-Only PK)
@@ -33,7 +33,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_text_comment.text_comment_id
 		 * @var integer intTextCommentId
@@ -310,18 +310,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroTextComment object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroTextComment::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -404,10 +404,10 @@
 			$objDatabase = NarroTextComment::GetDatabase();
 
 			$strQuery = NarroTextComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrotextcomment', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroTextComment::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -415,7 +415,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -544,7 +544,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -768,7 +768,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -1109,7 +1109,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroText object
 						if (is_null($mixValue->TextId))
@@ -1141,7 +1141,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroUser object
 						if (is_null($mixValue->UserId))
@@ -1173,7 +1173,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroLanguage object
 						if (is_null($mixValue->LanguageId))
@@ -1336,7 +1336,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -1381,15 +1381,15 @@
 				case 'TextId':
 					return new QQNode('text_id', 'TextId', 'Integer', $this);
 				case 'Text':
-					return new QQNodeNarroText('text_id', 'Text', 'integer', $this);
+					return new QQNodeNarroText('text_id', 'Text', 'Integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'UserId', 'Integer', $this);
 				case 'User':
-					return new QQNodeNarroUser('user_id', 'User', 'integer', $this);
+					return new QQNodeNarroUser('user_id', 'User', 'Integer', $this);
 				case 'LanguageId':
 					return new QQNode('language_id', 'LanguageId', 'Integer', $this);
 				case 'Language':
-					return new QQNodeNarroLanguage('language_id', 'Language', 'integer', $this);
+					return new QQNodeNarroLanguage('language_id', 'Language', 'Integer', $this);
 				case 'Created':
 					return new QQNode('created', 'Created', 'DateTime', $this);
 				case 'Modified':
@@ -1400,7 +1400,7 @@
 					return new QQNode('comment_text_md5', 'CommentTextMd5', 'VarChar', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNode('text_comment_id', 'TextCommentId', 'integer', $this);
+					return new QQNode('text_comment_id', 'TextCommentId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

@@ -12,58 +12,142 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroContext $NarroContext the actual NarroContext data class being edited
-	 * property QLabel $ContextIdControl
-	 * property-read QLabel $ContextIdLabel
-	 * property QListBox $TextIdControl
-	 * property-read QLabel $TextIdLabel
-	 * property QListBox $ProjectIdControl
-	 * property-read QLabel $ProjectIdLabel
-	 * property QTextBox $ContextControl
-	 * property-read QLabel $ContextLabel
-	 * property QTextBox $ContextMd5Control
-	 * property-read QLabel $ContextMd5Label
-	 * property QListBox $FileIdControl
-	 * property-read QLabel $FileIdLabel
-	 * property QDateTimePicker $CreatedControl
-	 * property-read QLabel $CreatedLabel
-	 * property QDateTimePicker $ModifiedControl
-	 * property-read QLabel $ModifiedLabel
-	 * property QCheckBox $ActiveControl
-	 * property-read QLabel $ActiveLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroContext $NarroContext the actual NarroContext data class being edited
+	 * @property QLabel $ContextIdControl
+	 * @property-read QLabel $ContextIdLabel
+	 * @property QListBox $TextIdControl
+	 * @property-read QLabel $TextIdLabel
+	 * @property QListBox $ProjectIdControl
+	 * @property-read QLabel $ProjectIdLabel
+	 * @property QTextBox $ContextControl
+	 * @property-read QLabel $ContextLabel
+	 * @property QTextBox $ContextMd5Control
+	 * @property-read QLabel $ContextMd5Label
+	 * @property QListBox $FileIdControl
+	 * @property-read QLabel $FileIdLabel
+	 * @property QDateTimePicker $CreatedControl
+	 * @property-read QLabel $CreatedLabel
+	 * @property QDateTimePicker $ModifiedControl
+	 * @property-read QLabel $ModifiedLabel
+	 * @property QCheckBox $ActiveControl
+	 * @property-read QLabel $ActiveLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroContextMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroContext objNarroContext
+		 * @access protected
+		 */
 		protected $objNarroContext;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroContext's individual data fields
+		/**
+		 * @var QLabel lblContextId
+		 * @access protected
+		 */
 		protected $lblContextId;
+		/**
+		 * @var QListBox lstText
+		 * @access protected
+		 */
 		protected $lstText;
+		/**
+		 * @var QListBox lstProject
+		 * @access protected
+		 */
 		protected $lstProject;
+		/**
+		 * @var QTextBox txtContext
+		 * @access protected
+		 */
 		protected $txtContext;
+		/**
+		 * @var QTextBox txtContextMd5
+		 * @access protected
+		 */
 		protected $txtContextMd5;
+		/**
+		 * @var QListBox lstFile
+		 * @access protected
+		 */
 		protected $lstFile;
+		/**
+		 * @var QDateTimePicker calCreated
+		 * @access protected
+		 */
 		protected $calCreated;
+		/**
+		 * @var QDateTimePicker calModified
+		 * @access protected
+		 */
 		protected $calModified;
+		/**
+		 * @var QCheckBox chkActive
+		 * @access protected
+		 */
 		protected $chkActive;
 
 		// Controls that allow the viewing of NarroContext's individual data fields
+		/**
+		 * @var QLabel lblTextId
+		 * @access protected
+		 */
 		protected $lblTextId;
+		/**
+		 * @var QLabel lblProjectId
+		 * @access protected
+		 */
 		protected $lblProjectId;
+		/**
+		 * @var QLabel lblContext
+		 * @access protected
+		 */
 		protected $lblContext;
+		/**
+		 * @var QLabel lblContextMd5
+		 * @access protected
+		 */
 		protected $lblContextMd5;
+		/**
+		 * @var QLabel lblFileId
+		 * @access protected
+		 */
 		protected $lblFileId;
+		/**
+		 * @var QLabel lblCreated
+		 * @access protected
+		 */
 		protected $lblCreated;
+		/**
+		 * @var QLabel lblModified
+		 * @access protected
+		 */
 		protected $lblModified;
+		/**
+		 * @var QLabel lblActive
+		 * @access protected
+		 */
 		protected $lblActive;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -104,9 +188,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroContextMetaControl
 		 * @param integer $intContextId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroContext object creation - defaults to CreateOrEdit
@@ -540,7 +624,7 @@
 		 */
 		public function DeleteNarroContext() {
 			$this->objNarroContext->Delete();
-		}		
+		}
 
 
 

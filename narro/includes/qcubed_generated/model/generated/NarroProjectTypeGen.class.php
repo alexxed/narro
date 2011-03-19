@@ -4,16 +4,16 @@
 	 * code for the NarroProjectType enumerated type.  It represents
 	 * the enumerated values found in the "narro_project_type" table
 	 * in the database.
-	 * 
+	 *
 	 * To use, you should use the NarroProjectType subclass which
 	 * extends this NarroProjectTypeGen class.
-	 * 
+	 *
 	 * Because subsequent re-code generations will overwrite any changes to this
 	 * file, you should leave this file unaltered to prevent yourself from losing
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroProjectType class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 */
@@ -25,8 +25,9 @@
 		const Svg = 5;
 		const DumbGettextPo = 6;
 		const Generic = 7;
+		const Html = 8;
 
-		const MaxId = 7;
+		const MaxId = 8;
 
 		public static $NameArray = array(
 			1 => 'Mozilla',
@@ -35,7 +36,8 @@
 			4 => 'Narro',
 			5 => 'Svg',
 			6 => 'DumbGettextPo',
-			7 => 'Generic');
+			7 => 'Generic',
+			8 => 'Html');
 
 		public static $TokenArray = array(
 			1 => 'Mozilla',
@@ -44,7 +46,8 @@
 			4 => 'Narro',
 			5 => 'Svg',
 			6 => 'DumbGettextPo',
-			7 => 'Generic');
+			7 => 'Generic',
+			8 => 'Html');
 
 		public static function ToString($intNarroProjectTypeId) {
 			switch ($intNarroProjectTypeId) {
@@ -55,6 +58,7 @@
 				case 5: return 'Svg';
 				case 6: return 'DumbGettextPo';
 				case 7: return 'Generic';
+				case 8: return 'Html';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroProjectTypeId: %s', $intNarroProjectTypeId));
 			}
@@ -69,6 +73,7 @@
 				case 5: return 'Svg';
 				case 6: return 'DumbGettextPo';
 				case 7: return 'Generic';
+				case 8: return 'Html';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroProjectTypeId: %s', $intNarroProjectTypeId));
 			}

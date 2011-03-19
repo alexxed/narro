@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroFileProgress class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $FileProgressId the value for intFileProgressId (Read-Only PK)
@@ -31,7 +31,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_file_progress.file_progress_id
 		 * @var integer intFileProgressId
@@ -288,18 +288,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroFileProgress object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroFileProgress::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -382,10 +382,10 @@
 			$objDatabase = NarroFileProgress::GetDatabase();
 
 			$strQuery = NarroFileProgress::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrofileprogress', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroFileProgress::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -393,7 +393,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -513,7 +513,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -720,7 +720,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -1025,7 +1025,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroFile object
 						if (is_null($mixValue->FileId))
@@ -1057,7 +1057,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroLanguage object
 						if (is_null($mixValue->LanguageId))
@@ -1206,7 +1206,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -1249,11 +1249,11 @@
 				case 'FileId':
 					return new QQNode('file_id', 'FileId', 'Integer', $this);
 				case 'File':
-					return new QQNodeNarroFile('file_id', 'File', 'integer', $this);
+					return new QQNodeNarroFile('file_id', 'File', 'Integer', $this);
 				case 'LanguageId':
 					return new QQNode('language_id', 'LanguageId', 'Integer', $this);
 				case 'Language':
-					return new QQNodeNarroLanguage('language_id', 'Language', 'integer', $this);
+					return new QQNodeNarroLanguage('language_id', 'Language', 'Integer', $this);
 				case 'TotalTextCount':
 					return new QQNode('total_text_count', 'TotalTextCount', 'Integer', $this);
 				case 'ApprovedTextCount':
@@ -1264,7 +1264,7 @@
 					return new QQNode('progress_percent', 'ProgressPercent', 'Integer', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNode('file_progress_id', 'FileProgressId', 'integer', $this);
+					return new QQNode('file_progress_id', 'FileProgressId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

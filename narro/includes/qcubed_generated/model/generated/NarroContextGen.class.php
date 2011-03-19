@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroContext class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $ContextId the value for intContextId (Read-Only PK)
@@ -40,7 +40,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_context.context_id
 		 * @var integer intContextId
@@ -128,7 +128,7 @@
 		 * an ExpandAsArray on the narro_context_comment association table.
 		 * @var NarroContextComment[] _objNarroContextCommentAsContextArray;
 		 */
-		private $_objNarroContextCommentAsContextArray = array();
+		private $_objNarroContextCommentAsContextArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroContextInfoAsContext object
@@ -144,7 +144,7 @@
 		 * an ExpandAsArray on the narro_context_info association table.
 		 * @var NarroContextInfo[] _objNarroContextInfoAsContextArray;
 		 */
-		private $_objNarroContextInfoAsContextArray = array();
+		private $_objNarroContextInfoAsContextArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroSuggestionVoteAsContext object
@@ -160,7 +160,7 @@
 		 * an ExpandAsArray on the narro_suggestion_vote association table.
 		 * @var NarroSuggestionVote[] _objNarroSuggestionVoteAsContextArray;
 		 */
-		private $_objNarroSuggestionVoteAsContextArray = array();
+		private $_objNarroSuggestionVoteAsContextArray = null;
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -374,18 +374,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroContext object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroContext::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -468,10 +468,10 @@
 			$objDatabase = NarroContext::GetDatabase();
 
 			$strQuery = NarroContext::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrocontext', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroContext::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -479,7 +479,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -535,8 +535,8 @@
 			$strAlias = $strAliasPrefix . 'context_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (($strExpandAsArrayNodes) && is_array($arrPreviousItems) && count($arrPreviousItems)) {
-				foreach ($arrPreviousItems as $objPreviousItem) {            
-					if ($objPreviousItem->intContextId == $objDbRow->GetColumn($strAliasName, 'Integer')) {        
+				foreach ($arrPreviousItems as $objPreviousItem) {
+					if ($objPreviousItem->intContextId == $objDbRow->GetColumn($strAliasName, 'Integer')) {
 						// We are.  Now, prepare to check for ExpandAsArray clauses
 						$blnExpandedViaArray = false;
 						if (!$strAliasPrefix)
@@ -548,6 +548,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroContextCommentAsContextArray)
+								$objPreviousItem->_objNarroContextCommentAsContextArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextCommentAsContextArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroContextCommentAsContextArray;
 								$objChildItem = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentascontext__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -565,6 +567,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroContextInfoAsContextArray)
+								$objPreviousItem->_objNarroContextInfoAsContextArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextInfoAsContextArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroContextInfoAsContextArray;
 								$objChildItem = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoascontext__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -582,6 +586,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroSuggestionVoteAsContextArray)
+								$objPreviousItem->_objNarroSuggestionVoteAsContextArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroSuggestionVoteAsContextArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroSuggestionVoteAsContextArray;
 								$objChildItem = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteascontext__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -683,8 +689,11 @@
 			// Check for NarroContextCommentAsContext Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrocontextcommentascontext__comment_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroContextCommentAsContextArray)
+				$objToReturn->_objNarroContextCommentAsContextArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroContextCommentAsContextArray[] = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentascontext__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroContextCommentAsContext = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentascontext__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -693,8 +702,11 @@
 			// Check for NarroContextInfoAsContext Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrocontextinfoascontext__context_info_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroContextInfoAsContextArray)
+				$objToReturn->_objNarroContextInfoAsContextArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroContextInfoAsContextArray[] = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoascontext__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroContextInfoAsContext = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoascontext__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -703,8 +715,11 @@
 			// Check for NarroSuggestionVoteAsContext Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrosuggestionvoteascontext__suggestion_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroSuggestionVoteAsContextArray)
+				$objToReturn->_objNarroSuggestionVoteAsContextArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroSuggestionVoteAsContextArray[] = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteascontext__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroSuggestionVoteAsContext = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteascontext__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -722,7 +737,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -1041,7 +1056,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -1262,7 +1277,7 @@
 					 * if set due to an ExpandAsArray on the narro_context_comment.context_id reverse relationship
 					 * @return NarroContextComment[]
 					 */
-					return (array) $this->_objNarroContextCommentAsContextArray;
+					return $this->_objNarroContextCommentAsContextArray;
 
 				case '_NarroContextInfoAsContext':
 					/**
@@ -1278,7 +1293,7 @@
 					 * if set due to an ExpandAsArray on the narro_context_info.context_id reverse relationship
 					 * @return NarroContextInfo[]
 					 */
-					return (array) $this->_objNarroContextInfoAsContextArray;
+					return $this->_objNarroContextInfoAsContextArray;
 
 				case '_NarroSuggestionVoteAsContext':
 					/**
@@ -1294,7 +1309,7 @@
 					 * if set due to an ExpandAsArray on the narro_suggestion_vote.context_id reverse relationship
 					 * @return NarroSuggestionVote[]
 					 */
-					return (array) $this->_objNarroSuggestionVoteAsContextArray;
+					return $this->_objNarroSuggestionVoteAsContextArray;
 
 
 				case '__Restored':
@@ -1451,7 +1466,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroText object
 						if (is_null($mixValue->TextId))
@@ -1483,7 +1498,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroProject object
 						if (is_null($mixValue->ProjectId))
@@ -1515,7 +1530,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroFile object
 						if (is_null($mixValue->FileId))
@@ -1566,7 +1581,7 @@
 		 * Gets all associated NarroContextCommentsAsContext as an array of NarroContextComment objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroContextComment[]
-		*/ 
+		*/
 		public function GetNarroContextCommentAsContextArray($objOptionalClauses = null) {
 			if ((is_null($this->intContextId)))
 				return array();
@@ -1582,7 +1597,7 @@
 		/**
 		 * Counts all associated NarroContextCommentsAsContext
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroContextCommentsAsContext() {
 			if ((is_null($this->intContextId)))
 				return 0;
@@ -1594,7 +1609,7 @@
 		 * Associates a NarroContextCommentAsContext
 		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroContextCommentAsContext(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextCommentAsContext on this unsaved NarroContext.');
@@ -1619,7 +1634,7 @@
 		 * Unassociates a NarroContextCommentAsContext
 		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroContextCommentAsContext(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsContext on this unsaved NarroContext.');
@@ -1644,7 +1659,7 @@
 		/**
 		 * Unassociates all NarroContextCommentsAsContext
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroContextCommentsAsContext() {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsContext on this unsaved NarroContext.');
@@ -1667,7 +1682,7 @@
 		 * Deletes an associated NarroContextCommentAsContext
 		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroContextCommentAsContext(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsContext on this unsaved NarroContext.');
@@ -1690,7 +1705,7 @@
 		/**
 		 * Deletes all associated NarroContextCommentsAsContext
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroContextCommentsAsContext() {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsContext on this unsaved NarroContext.');
@@ -1716,7 +1731,7 @@
 		 * Gets all associated NarroContextInfosAsContext as an array of NarroContextInfo objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroContextInfo[]
-		*/ 
+		*/
 		public function GetNarroContextInfoAsContextArray($objOptionalClauses = null) {
 			if ((is_null($this->intContextId)))
 				return array();
@@ -1732,7 +1747,7 @@
 		/**
 		 * Counts all associated NarroContextInfosAsContext
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroContextInfosAsContext() {
 			if ((is_null($this->intContextId)))
 				return 0;
@@ -1744,7 +1759,7 @@
 		 * Associates a NarroContextInfoAsContext
 		 * @param NarroContextInfo $objNarroContextInfo
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroContextInfoAsContext(NarroContextInfo $objNarroContextInfo) {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextInfoAsContext on this unsaved NarroContext.');
@@ -1769,7 +1784,7 @@
 		 * Unassociates a NarroContextInfoAsContext
 		 * @param NarroContextInfo $objNarroContextInfo
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroContextInfoAsContext(NarroContextInfo $objNarroContextInfo) {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsContext on this unsaved NarroContext.');
@@ -1794,7 +1809,7 @@
 		/**
 		 * Unassociates all NarroContextInfosAsContext
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroContextInfosAsContext() {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsContext on this unsaved NarroContext.');
@@ -1817,7 +1832,7 @@
 		 * Deletes an associated NarroContextInfoAsContext
 		 * @param NarroContextInfo $objNarroContextInfo
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroContextInfoAsContext(NarroContextInfo $objNarroContextInfo) {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsContext on this unsaved NarroContext.');
@@ -1840,7 +1855,7 @@
 		/**
 		 * Deletes all associated NarroContextInfosAsContext
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroContextInfosAsContext() {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsContext on this unsaved NarroContext.');
@@ -1866,7 +1881,7 @@
 		 * Gets all associated NarroSuggestionVotesAsContext as an array of NarroSuggestionVote objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroSuggestionVote[]
-		*/ 
+		*/
 		public function GetNarroSuggestionVoteAsContextArray($objOptionalClauses = null) {
 			if ((is_null($this->intContextId)))
 				return array();
@@ -1882,7 +1897,7 @@
 		/**
 		 * Counts all associated NarroSuggestionVotesAsContext
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroSuggestionVotesAsContext() {
 			if ((is_null($this->intContextId)))
 				return 0;
@@ -1894,7 +1909,7 @@
 		 * Associates a NarroSuggestionVoteAsContext
 		 * @param NarroSuggestionVote $objNarroSuggestionVote
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroSuggestionVoteAsContext(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionVoteAsContext on this unsaved NarroContext.');
@@ -1921,7 +1936,7 @@
 		 * Unassociates a NarroSuggestionVoteAsContext
 		 * @param NarroSuggestionVote $objNarroSuggestionVote
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroSuggestionVoteAsContext(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsContext on this unsaved NarroContext.');
@@ -1948,7 +1963,7 @@
 		/**
 		 * Unassociates all NarroSuggestionVotesAsContext
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroSuggestionVotesAsContext() {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsContext on this unsaved NarroContext.');
@@ -1971,7 +1986,7 @@
 		 * Deletes an associated NarroSuggestionVoteAsContext
 		 * @param NarroSuggestionVote $objNarroSuggestionVote
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroSuggestionVoteAsContext(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsContext on this unsaved NarroContext.');
@@ -1996,7 +2011,7 @@
 		/**
 		 * Deletes all associated NarroSuggestionVotesAsContext
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroSuggestionVotesAsContext() {
 			if ((is_null($this->intContextId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsContext on this unsaved NarroContext.');
@@ -2138,7 +2153,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -2187,11 +2202,11 @@
 				case 'TextId':
 					return new QQNode('text_id', 'TextId', 'Integer', $this);
 				case 'Text':
-					return new QQNodeNarroText('text_id', 'Text', 'integer', $this);
+					return new QQNodeNarroText('text_id', 'Text', 'Integer', $this);
 				case 'ProjectId':
 					return new QQNode('project_id', 'ProjectId', 'Integer', $this);
 				case 'Project':
-					return new QQNodeNarroProject('project_id', 'Project', 'integer', $this);
+					return new QQNodeNarroProject('project_id', 'Project', 'Integer', $this);
 				case 'Context':
 					return new QQNode('context', 'Context', 'Blob', $this);
 				case 'ContextMd5':
@@ -2199,7 +2214,7 @@
 				case 'FileId':
 					return new QQNode('file_id', 'FileId', 'Integer', $this);
 				case 'File':
-					return new QQNodeNarroFile('file_id', 'File', 'integer', $this);
+					return new QQNodeNarroFile('file_id', 'File', 'Integer', $this);
 				case 'Created':
 					return new QQNode('created', 'Created', 'DateTime', $this);
 				case 'Modified':
@@ -2214,7 +2229,7 @@
 					return new QQReverseReferenceNodeNarroSuggestionVote($this, 'narrosuggestionvoteascontext', 'reverse_reference', 'context_id');
 
 				case '_PrimaryKeyNode':
-					return new QQNode('context_id', 'ContextId', 'integer', $this);
+					return new QQNode('context_id', 'ContextId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

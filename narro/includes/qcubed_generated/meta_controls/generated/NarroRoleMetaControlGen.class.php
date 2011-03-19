@@ -12,30 +12,58 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroRole $NarroRole the actual NarroRole data class being edited
-	 * property QLabel $RoleIdControl
-	 * property-read QLabel $RoleIdLabel
-	 * property QTextBox $RoleNameControl
-	 * property-read QLabel $RoleNameLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroRole $NarroRole the actual NarroRole data class being edited
+	 * @property QLabel $RoleIdControl
+	 * @property-read QLabel $RoleIdLabel
+	 * @property QTextBox $RoleNameControl
+	 * @property-read QLabel $RoleNameLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroRoleMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroRole objNarroRole
+		 * @access protected
+		 */
 		protected $objNarroRole;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroRole's individual data fields
+		/**
+		 * @var QLabel lblRoleId
+		 * @access protected
+		 */
 		protected $lblRoleId;
+		/**
+		 * @var QTextBox txtRoleName
+		 * @access protected
+		 */
 		protected $txtRoleName;
 
 		// Controls that allow the viewing of NarroRole's individual data fields
+		/**
+		 * @var QLabel lblRoleName
+		 * @access protected
+		 */
 		protected $lblRoleName;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -76,9 +104,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroRoleMetaControl
 		 * @param integer $intRoleId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroRole object creation - defaults to CreateOrEdit
@@ -236,7 +264,7 @@
 		 */
 		public function DeleteNarroRole() {
 			$this->objNarroRole->Delete();
-		}		
+		}
 
 
 

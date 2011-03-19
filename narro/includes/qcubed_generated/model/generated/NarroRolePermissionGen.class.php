@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroRolePermission class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $RolePermissionId the value for intRolePermissionId (Read-Only PK)
@@ -27,7 +27,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_role_permission.role_permission_id
 		 * @var integer intRolePermissionId
@@ -248,18 +248,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroRolePermission object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroRolePermission::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -342,10 +342,10 @@
 			$objDatabase = NarroRolePermission::GetDatabase();
 
 			$strQuery = NarroRolePermission::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrorolepermission', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroRolePermission::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -353,7 +353,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -461,7 +461,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -638,7 +638,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -859,7 +859,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroRole object
 						if (is_null($mixValue->RoleId))
@@ -891,7 +891,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroPermission object
 						if (is_null($mixValue->PermissionId))
@@ -1024,7 +1024,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -1063,14 +1063,14 @@
 				case 'RoleId':
 					return new QQNode('role_id', 'RoleId', 'Integer', $this);
 				case 'Role':
-					return new QQNodeNarroRole('role_id', 'Role', 'integer', $this);
+					return new QQNodeNarroRole('role_id', 'Role', 'Integer', $this);
 				case 'PermissionId':
 					return new QQNode('permission_id', 'PermissionId', 'Integer', $this);
 				case 'Permission':
-					return new QQNodeNarroPermission('permission_id', 'Permission', 'integer', $this);
+					return new QQNodeNarroPermission('permission_id', 'Permission', 'Integer', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNode('role_permission_id', 'RolePermissionId', 'integer', $this);
+					return new QQNode('role_permission_id', 'RolePermissionId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

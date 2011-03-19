@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroUser class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $UserId the value for intUserId (PK)
@@ -41,7 +41,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK column narro_user.user_id
 		 * @var integer intUserId
@@ -106,7 +106,7 @@
 		 * an ExpandAsArray on the narro_context_comment association table.
 		 * @var NarroContextComment[] _objNarroContextCommentAsUserArray;
 		 */
-		private $_objNarroContextCommentAsUserArray = array();
+		private $_objNarroContextCommentAsUserArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroContextInfoAsValidatorUser object
@@ -122,7 +122,7 @@
 		 * an ExpandAsArray on the narro_context_info association table.
 		 * @var NarroContextInfo[] _objNarroContextInfoAsValidatorUserArray;
 		 */
-		private $_objNarroContextInfoAsValidatorUserArray = array();
+		private $_objNarroContextInfoAsValidatorUserArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroSuggestionAsUser object
@@ -138,7 +138,7 @@
 		 * an ExpandAsArray on the narro_suggestion association table.
 		 * @var NarroSuggestion[] _objNarroSuggestionAsUserArray;
 		 */
-		private $_objNarroSuggestionAsUserArray = array();
+		private $_objNarroSuggestionAsUserArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroSuggestionCommentAsUser object
@@ -154,7 +154,7 @@
 		 * an ExpandAsArray on the narro_suggestion_comment association table.
 		 * @var NarroSuggestionComment[] _objNarroSuggestionCommentAsUserArray;
 		 */
-		private $_objNarroSuggestionCommentAsUserArray = array();
+		private $_objNarroSuggestionCommentAsUserArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroSuggestionVoteAsUser object
@@ -170,7 +170,7 @@
 		 * an ExpandAsArray on the narro_suggestion_vote association table.
 		 * @var NarroSuggestionVote[] _objNarroSuggestionVoteAsUserArray;
 		 */
-		private $_objNarroSuggestionVoteAsUserArray = array();
+		private $_objNarroSuggestionVoteAsUserArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroTextCommentAsUser object
@@ -186,7 +186,7 @@
 		 * an ExpandAsArray on the narro_text_comment association table.
 		 * @var NarroTextComment[] _objNarroTextCommentAsUserArray;
 		 */
-		private $_objNarroTextCommentAsUserArray = array();
+		private $_objNarroTextCommentAsUserArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroUserRoleAsUser object
@@ -202,7 +202,7 @@
 		 * an ExpandAsArray on the narro_user_role association table.
 		 * @var NarroUserRole[] _objNarroUserRoleAsUserArray;
 		 */
-		private $_objNarroUserRoleAsUserArray = array();
+		private $_objNarroUserRoleAsUserArray = null;
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -382,18 +382,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroUser object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroUser::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -476,10 +476,10 @@
 			$objDatabase = NarroUser::GetDatabase();
 
 			$strQuery = NarroUser::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrouser', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroUser::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -487,7 +487,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -539,8 +539,8 @@
 			$strAlias = $strAliasPrefix . 'user_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (($strExpandAsArrayNodes) && is_array($arrPreviousItems) && count($arrPreviousItems)) {
-				foreach ($arrPreviousItems as $objPreviousItem) {            
-					if ($objPreviousItem->intUserId == $objDbRow->GetColumn($strAliasName, 'Integer')) {        
+				foreach ($arrPreviousItems as $objPreviousItem) {
+					if ($objPreviousItem->intUserId == $objDbRow->GetColumn($strAliasName, 'Integer')) {
 						// We are.  Now, prepare to check for ExpandAsArray clauses
 						$blnExpandedViaArray = false;
 						if (!$strAliasPrefix)
@@ -552,6 +552,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroContextCommentAsUserArray)
+								$objPreviousItem->_objNarroContextCommentAsUserArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextCommentAsUserArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroContextCommentAsUserArray;
 								$objChildItem = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentasuser__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -569,6 +571,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroContextInfoAsValidatorUserArray)
+								$objPreviousItem->_objNarroContextInfoAsValidatorUserArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextInfoAsValidatorUserArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroContextInfoAsValidatorUserArray;
 								$objChildItem = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoasvalidatoruser__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -586,6 +590,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroSuggestionAsUserArray)
+								$objPreviousItem->_objNarroSuggestionAsUserArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroSuggestionAsUserArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroSuggestionAsUserArray;
 								$objChildItem = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionasuser__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -603,6 +609,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroSuggestionCommentAsUserArray)
+								$objPreviousItem->_objNarroSuggestionCommentAsUserArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroSuggestionCommentAsUserArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroSuggestionCommentAsUserArray;
 								$objChildItem = NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentasuser__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -620,6 +628,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroSuggestionVoteAsUserArray)
+								$objPreviousItem->_objNarroSuggestionVoteAsUserArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroSuggestionVoteAsUserArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroSuggestionVoteAsUserArray;
 								$objChildItem = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteasuser__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -637,6 +647,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroTextCommentAsUserArray)
+								$objPreviousItem->_objNarroTextCommentAsUserArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroTextCommentAsUserArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroTextCommentAsUserArray;
 								$objChildItem = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentasuser__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -654,6 +666,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroUserRoleAsUserArray)
+								$objPreviousItem->_objNarroUserRoleAsUserArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserRoleAsUserArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroUserRoleAsUserArray;
 								$objChildItem = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasuser__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -742,8 +756,11 @@
 			// Check for NarroContextCommentAsUser Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrocontextcommentasuser__comment_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroContextCommentAsUserArray)
+				$objToReturn->_objNarroContextCommentAsUserArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroContextCommentAsUserArray[] = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroContextCommentAsUser = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -752,8 +769,11 @@
 			// Check for NarroContextInfoAsValidatorUser Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrocontextinfoasvalidatoruser__context_info_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroContextInfoAsValidatorUserArray)
+				$objToReturn->_objNarroContextInfoAsValidatorUserArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroContextInfoAsValidatorUserArray[] = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoasvalidatoruser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroContextInfoAsValidatorUser = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoasvalidatoruser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -762,8 +782,11 @@
 			// Check for NarroSuggestionAsUser Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrosuggestionasuser__suggestion_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroSuggestionAsUserArray)
+				$objToReturn->_objNarroSuggestionAsUserArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroSuggestionAsUserArray[] = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroSuggestionAsUser = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -772,8 +795,11 @@
 			// Check for NarroSuggestionCommentAsUser Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrosuggestioncommentasuser__comment_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroSuggestionCommentAsUserArray)
+				$objToReturn->_objNarroSuggestionCommentAsUserArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroSuggestionCommentAsUserArray[] = NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroSuggestionCommentAsUser = NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -782,8 +808,11 @@
 			// Check for NarroSuggestionVoteAsUser Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrosuggestionvoteasuser__suggestion_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroSuggestionVoteAsUserArray)
+				$objToReturn->_objNarroSuggestionVoteAsUserArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroSuggestionVoteAsUserArray[] = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroSuggestionVoteAsUser = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -792,8 +821,11 @@
 			// Check for NarroTextCommentAsUser Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrotextcommentasuser__text_comment_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroTextCommentAsUserArray)
+				$objToReturn->_objNarroTextCommentAsUserArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroTextCommentAsUserArray[] = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroTextCommentAsUser = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -802,8 +834,11 @@
 			// Check for NarroUserRoleAsUser Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrouserroleasuser__user_role_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroUserRoleAsUserArray)
+				$objToReturn->_objNarroUserRoleAsUserArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroUserRoleAsUserArray[] = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroUserRoleAsUser = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -821,7 +856,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -975,7 +1010,7 @@
 			$this->__intUserId = $this->intUserId;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -1124,7 +1159,7 @@
 					 * if set due to an ExpandAsArray on the narro_context_comment.user_id reverse relationship
 					 * @return NarroContextComment[]
 					 */
-					return (array) $this->_objNarroContextCommentAsUserArray;
+					return $this->_objNarroContextCommentAsUserArray;
 
 				case '_NarroContextInfoAsValidatorUser':
 					/**
@@ -1140,7 +1175,7 @@
 					 * if set due to an ExpandAsArray on the narro_context_info.validator_user_id reverse relationship
 					 * @return NarroContextInfo[]
 					 */
-					return (array) $this->_objNarroContextInfoAsValidatorUserArray;
+					return $this->_objNarroContextInfoAsValidatorUserArray;
 
 				case '_NarroSuggestionAsUser':
 					/**
@@ -1156,7 +1191,7 @@
 					 * if set due to an ExpandAsArray on the narro_suggestion.user_id reverse relationship
 					 * @return NarroSuggestion[]
 					 */
-					return (array) $this->_objNarroSuggestionAsUserArray;
+					return $this->_objNarroSuggestionAsUserArray;
 
 				case '_NarroSuggestionCommentAsUser':
 					/**
@@ -1172,7 +1207,7 @@
 					 * if set due to an ExpandAsArray on the narro_suggestion_comment.user_id reverse relationship
 					 * @return NarroSuggestionComment[]
 					 */
-					return (array) $this->_objNarroSuggestionCommentAsUserArray;
+					return $this->_objNarroSuggestionCommentAsUserArray;
 
 				case '_NarroSuggestionVoteAsUser':
 					/**
@@ -1188,7 +1223,7 @@
 					 * if set due to an ExpandAsArray on the narro_suggestion_vote.user_id reverse relationship
 					 * @return NarroSuggestionVote[]
 					 */
-					return (array) $this->_objNarroSuggestionVoteAsUserArray;
+					return $this->_objNarroSuggestionVoteAsUserArray;
 
 				case '_NarroTextCommentAsUser':
 					/**
@@ -1204,7 +1239,7 @@
 					 * if set due to an ExpandAsArray on the narro_text_comment.user_id reverse relationship
 					 * @return NarroTextComment[]
 					 */
-					return (array) $this->_objNarroTextCommentAsUserArray;
+					return $this->_objNarroTextCommentAsUserArray;
 
 				case '_NarroUserRoleAsUser':
 					/**
@@ -1220,7 +1255,7 @@
 					 * if set due to an ExpandAsArray on the narro_user_role.user_id reverse relationship
 					 * @return NarroUserRole[]
 					 */
-					return (array) $this->_objNarroUserRoleAsUserArray;
+					return $this->_objNarroUserRoleAsUserArray;
 
 
 				case '__Restored':
@@ -1354,7 +1389,7 @@
 		 * Gets all associated NarroContextCommentsAsUser as an array of NarroContextComment objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroContextComment[]
-		*/ 
+		*/
 		public function GetNarroContextCommentAsUserArray($objOptionalClauses = null) {
 			if ((is_null($this->intUserId)))
 				return array();
@@ -1370,7 +1405,7 @@
 		/**
 		 * Counts all associated NarroContextCommentsAsUser
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroContextCommentsAsUser() {
 			if ((is_null($this->intUserId)))
 				return 0;
@@ -1382,7 +1417,7 @@
 		 * Associates a NarroContextCommentAsUser
 		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroContextCommentAsUser(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextCommentAsUser on this unsaved NarroUser.');
@@ -1407,7 +1442,7 @@
 		 * Unassociates a NarroContextCommentAsUser
 		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroContextCommentAsUser(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsUser on this unsaved NarroUser.');
@@ -1432,7 +1467,7 @@
 		/**
 		 * Unassociates all NarroContextCommentsAsUser
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroContextCommentsAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsUser on this unsaved NarroUser.');
@@ -1455,7 +1490,7 @@
 		 * Deletes an associated NarroContextCommentAsUser
 		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroContextCommentAsUser(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsUser on this unsaved NarroUser.');
@@ -1478,7 +1513,7 @@
 		/**
 		 * Deletes all associated NarroContextCommentsAsUser
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroContextCommentsAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsUser on this unsaved NarroUser.');
@@ -1504,7 +1539,7 @@
 		 * Gets all associated NarroContextInfosAsValidatorUser as an array of NarroContextInfo objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroContextInfo[]
-		*/ 
+		*/
 		public function GetNarroContextInfoAsValidatorUserArray($objOptionalClauses = null) {
 			if ((is_null($this->intUserId)))
 				return array();
@@ -1520,7 +1555,7 @@
 		/**
 		 * Counts all associated NarroContextInfosAsValidatorUser
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroContextInfosAsValidatorUser() {
 			if ((is_null($this->intUserId)))
 				return 0;
@@ -1532,7 +1567,7 @@
 		 * Associates a NarroContextInfoAsValidatorUser
 		 * @param NarroContextInfo $objNarroContextInfo
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroContextInfoAsValidatorUser(NarroContextInfo $objNarroContextInfo) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextInfoAsValidatorUser on this unsaved NarroUser.');
@@ -1557,7 +1592,7 @@
 		 * Unassociates a NarroContextInfoAsValidatorUser
 		 * @param NarroContextInfo $objNarroContextInfo
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroContextInfoAsValidatorUser(NarroContextInfo $objNarroContextInfo) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsValidatorUser on this unsaved NarroUser.');
@@ -1582,7 +1617,7 @@
 		/**
 		 * Unassociates all NarroContextInfosAsValidatorUser
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroContextInfosAsValidatorUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsValidatorUser on this unsaved NarroUser.');
@@ -1605,7 +1640,7 @@
 		 * Deletes an associated NarroContextInfoAsValidatorUser
 		 * @param NarroContextInfo $objNarroContextInfo
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroContextInfoAsValidatorUser(NarroContextInfo $objNarroContextInfo) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsValidatorUser on this unsaved NarroUser.');
@@ -1628,7 +1663,7 @@
 		/**
 		 * Deletes all associated NarroContextInfosAsValidatorUser
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroContextInfosAsValidatorUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsValidatorUser on this unsaved NarroUser.');
@@ -1654,7 +1689,7 @@
 		 * Gets all associated NarroSuggestionsAsUser as an array of NarroSuggestion objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroSuggestion[]
-		*/ 
+		*/
 		public function GetNarroSuggestionAsUserArray($objOptionalClauses = null) {
 			if ((is_null($this->intUserId)))
 				return array();
@@ -1670,7 +1705,7 @@
 		/**
 		 * Counts all associated NarroSuggestionsAsUser
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroSuggestionsAsUser() {
 			if ((is_null($this->intUserId)))
 				return 0;
@@ -1682,7 +1717,7 @@
 		 * Associates a NarroSuggestionAsUser
 		 * @param NarroSuggestion $objNarroSuggestion
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroSuggestionAsUser(NarroSuggestion $objNarroSuggestion) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionAsUser on this unsaved NarroUser.');
@@ -1707,7 +1742,7 @@
 		 * Unassociates a NarroSuggestionAsUser
 		 * @param NarroSuggestion $objNarroSuggestion
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroSuggestionAsUser(NarroSuggestion $objNarroSuggestion) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsUser on this unsaved NarroUser.');
@@ -1732,7 +1767,7 @@
 		/**
 		 * Unassociates all NarroSuggestionsAsUser
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroSuggestionsAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsUser on this unsaved NarroUser.');
@@ -1755,7 +1790,7 @@
 		 * Deletes an associated NarroSuggestionAsUser
 		 * @param NarroSuggestion $objNarroSuggestion
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroSuggestionAsUser(NarroSuggestion $objNarroSuggestion) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsUser on this unsaved NarroUser.');
@@ -1778,7 +1813,7 @@
 		/**
 		 * Deletes all associated NarroSuggestionsAsUser
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroSuggestionsAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsUser on this unsaved NarroUser.');
@@ -1804,7 +1839,7 @@
 		 * Gets all associated NarroSuggestionCommentsAsUser as an array of NarroSuggestionComment objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroSuggestionComment[]
-		*/ 
+		*/
 		public function GetNarroSuggestionCommentAsUserArray($objOptionalClauses = null) {
 			if ((is_null($this->intUserId)))
 				return array();
@@ -1820,7 +1855,7 @@
 		/**
 		 * Counts all associated NarroSuggestionCommentsAsUser
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroSuggestionCommentsAsUser() {
 			if ((is_null($this->intUserId)))
 				return 0;
@@ -1832,7 +1867,7 @@
 		 * Associates a NarroSuggestionCommentAsUser
 		 * @param NarroSuggestionComment $objNarroSuggestionComment
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroSuggestionCommentAsUser(NarroSuggestionComment $objNarroSuggestionComment) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionCommentAsUser on this unsaved NarroUser.');
@@ -1857,7 +1892,7 @@
 		 * Unassociates a NarroSuggestionCommentAsUser
 		 * @param NarroSuggestionComment $objNarroSuggestionComment
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroSuggestionCommentAsUser(NarroSuggestionComment $objNarroSuggestionComment) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsUser on this unsaved NarroUser.');
@@ -1882,7 +1917,7 @@
 		/**
 		 * Unassociates all NarroSuggestionCommentsAsUser
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroSuggestionCommentsAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsUser on this unsaved NarroUser.');
@@ -1905,7 +1940,7 @@
 		 * Deletes an associated NarroSuggestionCommentAsUser
 		 * @param NarroSuggestionComment $objNarroSuggestionComment
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroSuggestionCommentAsUser(NarroSuggestionComment $objNarroSuggestionComment) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsUser on this unsaved NarroUser.');
@@ -1928,7 +1963,7 @@
 		/**
 		 * Deletes all associated NarroSuggestionCommentsAsUser
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroSuggestionCommentsAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsUser on this unsaved NarroUser.');
@@ -1954,7 +1989,7 @@
 		 * Gets all associated NarroSuggestionVotesAsUser as an array of NarroSuggestionVote objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroSuggestionVote[]
-		*/ 
+		*/
 		public function GetNarroSuggestionVoteAsUserArray($objOptionalClauses = null) {
 			if ((is_null($this->intUserId)))
 				return array();
@@ -1970,7 +2005,7 @@
 		/**
 		 * Counts all associated NarroSuggestionVotesAsUser
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroSuggestionVotesAsUser() {
 			if ((is_null($this->intUserId)))
 				return 0;
@@ -1982,7 +2017,7 @@
 		 * Associates a NarroSuggestionVoteAsUser
 		 * @param NarroSuggestionVote $objNarroSuggestionVote
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroSuggestionVoteAsUser(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionVoteAsUser on this unsaved NarroUser.');
@@ -2009,7 +2044,7 @@
 		 * Unassociates a NarroSuggestionVoteAsUser
 		 * @param NarroSuggestionVote $objNarroSuggestionVote
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroSuggestionVoteAsUser(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsUser on this unsaved NarroUser.');
@@ -2036,7 +2071,7 @@
 		/**
 		 * Unassociates all NarroSuggestionVotesAsUser
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroSuggestionVotesAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsUser on this unsaved NarroUser.');
@@ -2059,7 +2094,7 @@
 		 * Deletes an associated NarroSuggestionVoteAsUser
 		 * @param NarroSuggestionVote $objNarroSuggestionVote
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroSuggestionVoteAsUser(NarroSuggestionVote $objNarroSuggestionVote) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsUser on this unsaved NarroUser.');
@@ -2084,7 +2119,7 @@
 		/**
 		 * Deletes all associated NarroSuggestionVotesAsUser
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroSuggestionVotesAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionVoteAsUser on this unsaved NarroUser.');
@@ -2110,7 +2145,7 @@
 		 * Gets all associated NarroTextCommentsAsUser as an array of NarroTextComment objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroTextComment[]
-		*/ 
+		*/
 		public function GetNarroTextCommentAsUserArray($objOptionalClauses = null) {
 			if ((is_null($this->intUserId)))
 				return array();
@@ -2126,7 +2161,7 @@
 		/**
 		 * Counts all associated NarroTextCommentsAsUser
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroTextCommentsAsUser() {
 			if ((is_null($this->intUserId)))
 				return 0;
@@ -2138,7 +2173,7 @@
 		 * Associates a NarroTextCommentAsUser
 		 * @param NarroTextComment $objNarroTextComment
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroTextCommentAsUser(NarroTextComment $objNarroTextComment) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextCommentAsUser on this unsaved NarroUser.');
@@ -2163,7 +2198,7 @@
 		 * Unassociates a NarroTextCommentAsUser
 		 * @param NarroTextComment $objNarroTextComment
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroTextCommentAsUser(NarroTextComment $objNarroTextComment) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsUser on this unsaved NarroUser.');
@@ -2188,7 +2223,7 @@
 		/**
 		 * Unassociates all NarroTextCommentsAsUser
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroTextCommentsAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsUser on this unsaved NarroUser.');
@@ -2211,7 +2246,7 @@
 		 * Deletes an associated NarroTextCommentAsUser
 		 * @param NarroTextComment $objNarroTextComment
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroTextCommentAsUser(NarroTextComment $objNarroTextComment) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsUser on this unsaved NarroUser.');
@@ -2234,7 +2269,7 @@
 		/**
 		 * Deletes all associated NarroTextCommentsAsUser
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroTextCommentsAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsUser on this unsaved NarroUser.');
@@ -2260,7 +2295,7 @@
 		 * Gets all associated NarroUserRolesAsUser as an array of NarroUserRole objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroUserRole[]
-		*/ 
+		*/
 		public function GetNarroUserRoleAsUserArray($objOptionalClauses = null) {
 			if ((is_null($this->intUserId)))
 				return array();
@@ -2276,7 +2311,7 @@
 		/**
 		 * Counts all associated NarroUserRolesAsUser
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroUserRolesAsUser() {
 			if ((is_null($this->intUserId)))
 				return 0;
@@ -2288,7 +2323,7 @@
 		 * Associates a NarroUserRoleAsUser
 		 * @param NarroUserRole $objNarroUserRole
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroUserRoleAsUser(NarroUserRole $objNarroUserRole) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserRoleAsUser on this unsaved NarroUser.');
@@ -2313,7 +2348,7 @@
 		 * Unassociates a NarroUserRoleAsUser
 		 * @param NarroUserRole $objNarroUserRole
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroUserRoleAsUser(NarroUserRole $objNarroUserRole) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsUser on this unsaved NarroUser.');
@@ -2338,7 +2373,7 @@
 		/**
 		 * Unassociates all NarroUserRolesAsUser
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroUserRolesAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsUser on this unsaved NarroUser.');
@@ -2361,7 +2396,7 @@
 		 * Deletes an associated NarroUserRoleAsUser
 		 * @param NarroUserRole $objNarroUserRole
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroUserRoleAsUser(NarroUserRole $objNarroUserRole) {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsUser on this unsaved NarroUser.');
@@ -2384,7 +2419,7 @@
 		/**
 		 * Deletes all associated NarroUserRolesAsUser
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroUserRolesAsUser() {
 			if ((is_null($this->intUserId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsUser on this unsaved NarroUser.');
@@ -2488,7 +2523,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -2555,7 +2590,7 @@
 					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleasuser', 'reverse_reference', 'user_id');
 
 				case '_PrimaryKeyNode':
-					return new QQNode('user_id', 'UserId', 'integer', $this);
+					return new QQNode('user_id', 'UserId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

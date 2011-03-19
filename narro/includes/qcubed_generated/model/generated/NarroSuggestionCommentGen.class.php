@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroSuggestionComment class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $CommentId the value for intCommentId (Read-Only PK)
@@ -31,7 +31,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_suggestion_comment.comment_id
 		 * @var integer intCommentId
@@ -289,18 +289,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroSuggestionComment object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroSuggestionComment::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -383,10 +383,10 @@
 			$objDatabase = NarroSuggestionComment::GetDatabase();
 
 			$strQuery = NarroSuggestionComment::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrosuggestioncomment', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroSuggestionComment::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -394,7 +394,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -514,7 +514,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -723,7 +723,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -1028,7 +1028,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroSuggestion object
 						if (is_null($mixValue->SuggestionId))
@@ -1060,7 +1060,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroUser object
 						if (is_null($mixValue->UserId))
@@ -1213,7 +1213,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -1256,11 +1256,11 @@
 				case 'SuggestionId':
 					return new QQNode('suggestion_id', 'SuggestionId', 'Integer', $this);
 				case 'Suggestion':
-					return new QQNodeNarroSuggestion('suggestion_id', 'Suggestion', 'integer', $this);
+					return new QQNodeNarroSuggestion('suggestion_id', 'Suggestion', 'Integer', $this);
 				case 'UserId':
 					return new QQNode('user_id', 'UserId', 'Integer', $this);
 				case 'User':
-					return new QQNodeNarroUser('user_id', 'User', 'integer', $this);
+					return new QQNodeNarroUser('user_id', 'User', 'Integer', $this);
 				case 'CommentText':
 					return new QQNode('comment_text', 'CommentText', 'Blob', $this);
 				case 'CommentTextMd5':
@@ -1271,7 +1271,7 @@
 					return new QQNode('modified', 'Modified', 'DateTime', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNode('comment_id', 'CommentId', 'integer', $this);
+					return new QQNode('comment_id', 'CommentId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

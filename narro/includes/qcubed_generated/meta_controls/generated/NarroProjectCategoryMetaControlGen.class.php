@@ -12,34 +12,70 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroProjectCategory $NarroProjectCategory the actual NarroProjectCategory data class being edited
-	 * property QLabel $ProjectCategoryIdControl
-	 * property-read QLabel $ProjectCategoryIdLabel
-	 * property QTextBox $CategoryNameControl
-	 * property-read QLabel $CategoryNameLabel
-	 * property QTextBox $CategoryDescriptionControl
-	 * property-read QLabel $CategoryDescriptionLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroProjectCategory $NarroProjectCategory the actual NarroProjectCategory data class being edited
+	 * @property QLabel $ProjectCategoryIdControl
+	 * @property-read QLabel $ProjectCategoryIdLabel
+	 * @property QTextBox $CategoryNameControl
+	 * @property-read QLabel $CategoryNameLabel
+	 * @property QTextBox $CategoryDescriptionControl
+	 * @property-read QLabel $CategoryDescriptionLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroProjectCategoryMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroProjectCategory objNarroProjectCategory
+		 * @access protected
+		 */
 		protected $objNarroProjectCategory;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroProjectCategory's individual data fields
+		/**
+		 * @var QLabel lblProjectCategoryId
+		 * @access protected
+		 */
 		protected $lblProjectCategoryId;
+		/**
+		 * @var QTextBox txtCategoryName
+		 * @access protected
+		 */
 		protected $txtCategoryName;
+		/**
+		 * @var QTextBox txtCategoryDescription
+		 * @access protected
+		 */
 		protected $txtCategoryDescription;
 
 		// Controls that allow the viewing of NarroProjectCategory's individual data fields
+		/**
+		 * @var QLabel lblCategoryName
+		 * @access protected
+		 */
 		protected $lblCategoryName;
+		/**
+		 * @var QLabel lblCategoryDescription
+		 * @access protected
+		 */
 		protected $lblCategoryDescription;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -80,9 +116,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroProjectCategoryMetaControl
 		 * @param integer $intProjectCategoryId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroProjectCategory object creation - defaults to CreateOrEdit
@@ -271,7 +307,7 @@
 		 */
 		public function DeleteNarroProjectCategory() {
 			$this->objNarroProjectCategory->Delete();
-		}		
+		}
 
 
 

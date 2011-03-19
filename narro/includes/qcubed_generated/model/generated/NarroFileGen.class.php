@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroFile class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $FileId the value for intFileId (Read-Only PK)
@@ -40,7 +40,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_file.file_id
 		 * @var integer intFileId
@@ -138,7 +138,7 @@
 		 * an ExpandAsArray on the narro_context association table.
 		 * @var NarroContext[] _objNarroContextAsFileArray;
 		 */
-		private $_objNarroContextAsFileArray = array();
+		private $_objNarroContextAsFileArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single ChildNarroFile object
@@ -154,7 +154,7 @@
 		 * an ExpandAsArray on the narro_file association table.
 		 * @var NarroFile[] _objChildNarroFileArray;
 		 */
-		private $_objChildNarroFileArray = array();
+		private $_objChildNarroFileArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroFileProgressAsFile object
@@ -170,7 +170,7 @@
 		 * an ExpandAsArray on the narro_file_progress association table.
 		 * @var NarroFileProgress[] _objNarroFileProgressAsFileArray;
 		 */
-		private $_objNarroFileProgressAsFileArray = array();
+		private $_objNarroFileProgressAsFileArray = null;
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -375,18 +375,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroFile object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroFile::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -469,10 +469,10 @@
 			$objDatabase = NarroFile::GetDatabase();
 
 			$strQuery = NarroFile::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrofile', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroFile::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -480,7 +480,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -537,8 +537,8 @@
 			$strAlias = $strAliasPrefix . 'file_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (($strExpandAsArrayNodes) && is_array($arrPreviousItems) && count($arrPreviousItems)) {
-				foreach ($arrPreviousItems as $objPreviousItem) {            
-					if ($objPreviousItem->intFileId == $objDbRow->GetColumn($strAliasName, 'Integer')) {        
+				foreach ($arrPreviousItems as $objPreviousItem) {
+					if ($objPreviousItem->intFileId == $objDbRow->GetColumn($strAliasName, 'Integer')) {
 						// We are.  Now, prepare to check for ExpandAsArray clauses
 						$blnExpandedViaArray = false;
 						if (!$strAliasPrefix)
@@ -550,6 +550,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroContextAsFileArray)
+								$objPreviousItem->_objNarroContextAsFileArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextAsFileArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroContextAsFileArray;
 								$objChildItem = NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasfile__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -567,6 +569,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objChildNarroFileArray)
+								$objPreviousItem->_objChildNarroFileArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objChildNarroFileArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objChildNarroFileArray;
 								$objChildItem = NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childnarrofile__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -584,6 +588,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroFileProgressAsFileArray)
+								$objPreviousItem->_objNarroFileProgressAsFileArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroFileProgressAsFileArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroFileProgressAsFileArray;
 								$objChildItem = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressasfile__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -681,8 +687,11 @@
 			// Check for NarroContextAsFile Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrocontextasfile__context_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroContextAsFileArray)
+				$objToReturn->_objNarroContextAsFileArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroContextAsFileArray[] = NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasfile__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroContextAsFile = NarroContext::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextasfile__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -691,8 +700,11 @@
 			// Check for ChildNarroFile Virtual Binding
 			$strAlias = $strAliasPrefix . 'childnarrofile__file_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objChildNarroFileArray)
+				$objToReturn->_objChildNarroFileArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objChildNarroFileArray[] = NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childnarrofile__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objChildNarroFile = NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'childnarrofile__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -701,8 +713,11 @@
 			// Check for NarroFileProgressAsFile Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrofileprogressasfile__file_progress_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroFileProgressAsFileArray)
+				$objToReturn->_objNarroFileProgressAsFileArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroFileProgressAsFileArray[] = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressasfile__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroFileProgressAsFile = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressasfile__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -720,7 +735,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -968,7 +983,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -1183,7 +1198,7 @@
 					 * if set due to an ExpandAsArray on the narro_context.file_id reverse relationship
 					 * @return NarroContext[]
 					 */
-					return (array) $this->_objNarroContextAsFileArray;
+					return $this->_objNarroContextAsFileArray;
 
 				case '_ChildNarroFile':
 					/**
@@ -1199,7 +1214,7 @@
 					 * if set due to an ExpandAsArray on the narro_file.parent_id reverse relationship
 					 * @return NarroFile[]
 					 */
-					return (array) $this->_objChildNarroFileArray;
+					return $this->_objChildNarroFileArray;
 
 				case '_NarroFileProgressAsFile':
 					/**
@@ -1215,7 +1230,7 @@
 					 * if set due to an ExpandAsArray on the narro_file_progress.file_id reverse relationship
 					 * @return NarroFileProgress[]
 					 */
-					return (array) $this->_objNarroFileProgressAsFileArray;
+					return $this->_objNarroFileProgressAsFileArray;
 
 
 				case '__Restored':
@@ -1384,7 +1399,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroFile object
 						if (is_null($mixValue->FileId))
@@ -1416,7 +1431,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroProject object
 						if (is_null($mixValue->ProjectId))
@@ -1467,7 +1482,7 @@
 		 * Gets all associated NarroContextsAsFile as an array of NarroContext objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroContext[]
-		*/ 
+		*/
 		public function GetNarroContextAsFileArray($objOptionalClauses = null) {
 			if ((is_null($this->intFileId)))
 				return array();
@@ -1483,7 +1498,7 @@
 		/**
 		 * Counts all associated NarroContextsAsFile
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroContextsAsFile() {
 			if ((is_null($this->intFileId)))
 				return 0;
@@ -1495,7 +1510,7 @@
 		 * Associates a NarroContextAsFile
 		 * @param NarroContext $objNarroContext
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroContextAsFile(NarroContext $objNarroContext) {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextAsFile on this unsaved NarroFile.');
@@ -1520,7 +1535,7 @@
 		 * Unassociates a NarroContextAsFile
 		 * @param NarroContext $objNarroContext
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroContextAsFile(NarroContext $objNarroContext) {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsFile on this unsaved NarroFile.');
@@ -1545,7 +1560,7 @@
 		/**
 		 * Unassociates all NarroContextsAsFile
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroContextsAsFile() {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsFile on this unsaved NarroFile.');
@@ -1568,7 +1583,7 @@
 		 * Deletes an associated NarroContextAsFile
 		 * @param NarroContext $objNarroContext
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroContextAsFile(NarroContext $objNarroContext) {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsFile on this unsaved NarroFile.');
@@ -1591,7 +1606,7 @@
 		/**
 		 * Deletes all associated NarroContextsAsFile
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroContextsAsFile() {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextAsFile on this unsaved NarroFile.');
@@ -1617,7 +1632,7 @@
 		 * Gets all associated ChildNarroFiles as an array of NarroFile objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroFile[]
-		*/ 
+		*/
 		public function GetChildNarroFileArray($objOptionalClauses = null) {
 			if ((is_null($this->intFileId)))
 				return array();
@@ -1633,7 +1648,7 @@
 		/**
 		 * Counts all associated ChildNarroFiles
 		 * @return int
-		*/ 
+		*/
 		public function CountChildNarroFiles() {
 			if ((is_null($this->intFileId)))
 				return 0;
@@ -1645,7 +1660,7 @@
 		 * Associates a ChildNarroFile
 		 * @param NarroFile $objNarroFile
 		 * @return void
-		*/ 
+		*/
 		public function AssociateChildNarroFile(NarroFile $objNarroFile) {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateChildNarroFile on this unsaved NarroFile.');
@@ -1670,7 +1685,7 @@
 		 * Unassociates a ChildNarroFile
 		 * @param NarroFile $objNarroFile
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateChildNarroFile(NarroFile $objNarroFile) {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateChildNarroFile on this unsaved NarroFile.');
@@ -1695,7 +1710,7 @@
 		/**
 		 * Unassociates all ChildNarroFiles
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllChildNarroFiles() {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateChildNarroFile on this unsaved NarroFile.');
@@ -1718,7 +1733,7 @@
 		 * Deletes an associated ChildNarroFile
 		 * @param NarroFile $objNarroFile
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedChildNarroFile(NarroFile $objNarroFile) {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateChildNarroFile on this unsaved NarroFile.');
@@ -1741,7 +1756,7 @@
 		/**
 		 * Deletes all associated ChildNarroFiles
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllChildNarroFiles() {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateChildNarroFile on this unsaved NarroFile.');
@@ -1767,7 +1782,7 @@
 		 * Gets all associated NarroFileProgressesAsFile as an array of NarroFileProgress objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroFileProgress[]
-		*/ 
+		*/
 		public function GetNarroFileProgressAsFileArray($objOptionalClauses = null) {
 			if ((is_null($this->intFileId)))
 				return array();
@@ -1783,7 +1798,7 @@
 		/**
 		 * Counts all associated NarroFileProgressesAsFile
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroFileProgressesAsFile() {
 			if ((is_null($this->intFileId)))
 				return 0;
@@ -1795,7 +1810,7 @@
 		 * Associates a NarroFileProgressAsFile
 		 * @param NarroFileProgress $objNarroFileProgress
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroFileProgressAsFile(NarroFileProgress $objNarroFileProgress) {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroFileProgressAsFile on this unsaved NarroFile.');
@@ -1820,7 +1835,7 @@
 		 * Unassociates a NarroFileProgressAsFile
 		 * @param NarroFileProgress $objNarroFileProgress
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroFileProgressAsFile(NarroFileProgress $objNarroFileProgress) {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsFile on this unsaved NarroFile.');
@@ -1845,7 +1860,7 @@
 		/**
 		 * Unassociates all NarroFileProgressesAsFile
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroFileProgressesAsFile() {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsFile on this unsaved NarroFile.');
@@ -1868,7 +1883,7 @@
 		 * Deletes an associated NarroFileProgressAsFile
 		 * @param NarroFileProgress $objNarroFileProgress
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroFileProgressAsFile(NarroFileProgress $objNarroFileProgress) {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsFile on this unsaved NarroFile.');
@@ -1891,7 +1906,7 @@
 		/**
 		 * Deletes all associated NarroFileProgressesAsFile
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroFileProgressesAsFile() {
 			if ((is_null($this->intFileId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsFile on this unsaved NarroFile.');
@@ -2031,7 +2046,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -2086,13 +2101,13 @@
 				case 'ParentId':
 					return new QQNode('parent_id', 'ParentId', 'Integer', $this);
 				case 'Parent':
-					return new QQNodeNarroFile('parent_id', 'Parent', 'integer', $this);
+					return new QQNodeNarroFile('parent_id', 'Parent', 'Integer', $this);
 				case 'TypeId':
 					return new QQNode('type_id', 'TypeId', 'Integer', $this);
 				case 'ProjectId':
 					return new QQNode('project_id', 'ProjectId', 'Integer', $this);
 				case 'Project':
-					return new QQNodeNarroProject('project_id', 'Project', 'integer', $this);
+					return new QQNodeNarroProject('project_id', 'Project', 'Integer', $this);
 				case 'Active':
 					return new QQNode('active', 'Active', 'Bit', $this);
 				case 'Created':
@@ -2107,7 +2122,7 @@
 					return new QQReverseReferenceNodeNarroFileProgress($this, 'narrofileprogressasfile', 'reverse_reference', 'file_id');
 
 				case '_PrimaryKeyNode':
-					return new QQNode('file_id', 'FileId', 'integer', $this);
+					return new QQNode('file_id', 'FileId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

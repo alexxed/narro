@@ -17,6 +17,9 @@
 	 */
 	abstract class NarroSuggestionCommentListFormBase extends QForm {
 		// Local instance of the Meta DataGrid to list NarroSuggestionComments
+		/**
+		 * @var NarroSuggestionCommentDataGrid dtgNarroSuggestionComments
+		 */
 		protected $dtgNarroSuggestionComments;
 
 		// Create QForm Event Handlers as Needed
@@ -27,12 +30,12 @@
 //		protected function Form_Validate() {}
 
 		protected function Form_Run() {
-			// Security check for ALLOW_REMOTE_ADMIN
-			// To allow access REGARDLESS of ALLOW_REMOTE_ADMIN, simply remove the line below
-			QApplication::CheckRemoteAdmin();
+			parent::Form_Run();
 		}
 
 		protected function Form_Create() {
+			parent::Form_Create();
+
 			// Instantiate the Meta DataGrid
 			$this->dtgNarroSuggestionComments = new NarroSuggestionCommentDataGrid($this);
 

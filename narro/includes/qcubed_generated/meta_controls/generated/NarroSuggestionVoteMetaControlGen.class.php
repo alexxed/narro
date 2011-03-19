@@ -12,47 +12,111 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroSuggestionVote $NarroSuggestionVote the actual NarroSuggestionVote data class being edited
-	 * property QListBox $SuggestionIdControl
-	 * property-read QLabel $SuggestionIdLabel
-	 * property QListBox $ContextIdControl
-	 * property-read QLabel $ContextIdLabel
-	 * property QListBox $UserIdControl
-	 * property-read QLabel $UserIdLabel
-	 * property QIntegerTextBox $VoteValueControl
-	 * property-read QLabel $VoteValueLabel
-	 * property QDateTimePicker $CreatedControl
-	 * property-read QLabel $CreatedLabel
-	 * property QDateTimePicker $ModifiedControl
-	 * property-read QLabel $ModifiedLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroSuggestionVote $NarroSuggestionVote the actual NarroSuggestionVote data class being edited
+	 * @property QListBox $SuggestionIdControl
+	 * @property-read QLabel $SuggestionIdLabel
+	 * @property QListBox $ContextIdControl
+	 * @property-read QLabel $ContextIdLabel
+	 * @property QListBox $UserIdControl
+	 * @property-read QLabel $UserIdLabel
+	 * @property QIntegerTextBox $VoteValueControl
+	 * @property-read QLabel $VoteValueLabel
+	 * @property QDateTimePicker $CreatedControl
+	 * @property-read QLabel $CreatedLabel
+	 * @property QDateTimePicker $ModifiedControl
+	 * @property-read QLabel $ModifiedLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroSuggestionVoteMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroSuggestionVote objNarroSuggestionVote
+		 * @access protected
+		 */
 		protected $objNarroSuggestionVote;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroSuggestionVote's individual data fields
+		/**
+		 * @var QListBox lstSuggestion
+		 * @access protected
+		 */
 		protected $lstSuggestion;
+		/**
+		 * @var QListBox lstContext
+		 * @access protected
+		 */
 		protected $lstContext;
+		/**
+		 * @var QListBox lstUser
+		 * @access protected
+		 */
 		protected $lstUser;
+		/**
+		 * @var QIntegerTextBox txtVoteValue
+		 * @access protected
+		 */
 		protected $txtVoteValue;
+		/**
+		 * @var QDateTimePicker calCreated
+		 * @access protected
+		 */
 		protected $calCreated;
+		/**
+		 * @var QDateTimePicker calModified
+		 * @access protected
+		 */
 		protected $calModified;
 
 		// Controls that allow the viewing of NarroSuggestionVote's individual data fields
+		/**
+		 * @var QLabel lblSuggestionId
+		 * @access protected
+		 */
 		protected $lblSuggestionId;
+		/**
+		 * @var QLabel lblContextId
+		 * @access protected
+		 */
 		protected $lblContextId;
+		/**
+		 * @var QLabel lblUserId
+		 * @access protected
+		 */
 		protected $lblUserId;
+		/**
+		 * @var QLabel lblVoteValue
+		 * @access protected
+		 */
 		protected $lblVoteValue;
+		/**
+		 * @var QLabel lblCreated
+		 * @access protected
+		 */
 		protected $lblCreated;
+		/**
+		 * @var QLabel lblModified
+		 * @access protected
+		 */
 		protected $lblModified;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -93,9 +157,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroSuggestionVoteMetaControl
 		 * @param integer $intSuggestionId primary key value
 		 * @param integer $intContextId primary key value
@@ -460,7 +524,7 @@
 		 */
 		public function DeleteNarroSuggestionVote() {
 			$this->objNarroSuggestionVote->Delete();
-		}		
+		}
 
 
 

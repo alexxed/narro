@@ -1,4 +1,4 @@
-<?php 
+<?php
 	// ClassPaths for the NarroContext class
 		QApplicationBase::$ClassFile['narrocontext'] = __MODEL__ . '/NarroContext.class.php';
 		QApplicationBase::$ClassFile['qqnodenarrocontext'] = __MODEL__ . '/NarroContext.class.php';

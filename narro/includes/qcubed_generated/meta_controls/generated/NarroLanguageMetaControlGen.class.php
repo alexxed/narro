@@ -12,62 +12,154 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroLanguage $NarroLanguage the actual NarroLanguage data class being edited
-	 * property QLabel $LanguageIdControl
-	 * property-read QLabel $LanguageIdLabel
-	 * property QTextBox $LanguageNameControl
-	 * property-read QLabel $LanguageNameLabel
-	 * property QTextBox $LanguageCodeControl
-	 * property-read QLabel $LanguageCodeLabel
-	 * property QTextBox $CountryCodeControl
-	 * property-read QLabel $CountryCodeLabel
-	 * property QTextBox $DialectCodeControl
-	 * property-read QLabel $DialectCodeLabel
-	 * property QTextBox $EncodingControl
-	 * property-read QLabel $EncodingLabel
-	 * property QTextBox $TextDirectionControl
-	 * property-read QLabel $TextDirectionLabel
-	 * property QTextBox $SpecialCharactersControl
-	 * property-read QLabel $SpecialCharactersLabel
-	 * property QTextBox $PluralFormControl
-	 * property-read QLabel $PluralFormLabel
-	 * property QCheckBox $ActiveControl
-	 * property-read QLabel $ActiveLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroLanguage $NarroLanguage the actual NarroLanguage data class being edited
+	 * @property QLabel $LanguageIdControl
+	 * @property-read QLabel $LanguageIdLabel
+	 * @property QTextBox $LanguageNameControl
+	 * @property-read QLabel $LanguageNameLabel
+	 * @property QTextBox $LanguageCodeControl
+	 * @property-read QLabel $LanguageCodeLabel
+	 * @property QTextBox $CountryCodeControl
+	 * @property-read QLabel $CountryCodeLabel
+	 * @property QTextBox $DialectCodeControl
+	 * @property-read QLabel $DialectCodeLabel
+	 * @property QTextBox $EncodingControl
+	 * @property-read QLabel $EncodingLabel
+	 * @property QTextBox $TextDirectionControl
+	 * @property-read QLabel $TextDirectionLabel
+	 * @property QTextBox $SpecialCharactersControl
+	 * @property-read QLabel $SpecialCharactersLabel
+	 * @property QTextBox $PluralFormControl
+	 * @property-read QLabel $PluralFormLabel
+	 * @property QCheckBox $ActiveControl
+	 * @property-read QLabel $ActiveLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroLanguageMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroLanguage objNarroLanguage
+		 * @access protected
+		 */
 		protected $objNarroLanguage;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroLanguage's individual data fields
+		/**
+		 * @var QLabel lblLanguageId
+		 * @access protected
+		 */
 		protected $lblLanguageId;
+		/**
+		 * @var QTextBox txtLanguageName
+		 * @access protected
+		 */
 		protected $txtLanguageName;
+		/**
+		 * @var QTextBox txtLanguageCode
+		 * @access protected
+		 */
 		protected $txtLanguageCode;
+		/**
+		 * @var QTextBox txtCountryCode
+		 * @access protected
+		 */
 		protected $txtCountryCode;
+		/**
+		 * @var QTextBox txtDialectCode
+		 * @access protected
+		 */
 		protected $txtDialectCode;
+		/**
+		 * @var QTextBox txtEncoding
+		 * @access protected
+		 */
 		protected $txtEncoding;
+		/**
+		 * @var QTextBox txtTextDirection
+		 * @access protected
+		 */
 		protected $txtTextDirection;
+		/**
+		 * @var QTextBox txtSpecialCharacters
+		 * @access protected
+		 */
 		protected $txtSpecialCharacters;
+		/**
+		 * @var QTextBox txtPluralForm
+		 * @access protected
+		 */
 		protected $txtPluralForm;
+		/**
+		 * @var QCheckBox chkActive
+		 * @access protected
+		 */
 		protected $chkActive;
 
 		// Controls that allow the viewing of NarroLanguage's individual data fields
+		/**
+		 * @var QLabel lblLanguageName
+		 * @access protected
+		 */
 		protected $lblLanguageName;
+		/**
+		 * @var QLabel lblLanguageCode
+		 * @access protected
+		 */
 		protected $lblLanguageCode;
+		/**
+		 * @var QLabel lblCountryCode
+		 * @access protected
+		 */
 		protected $lblCountryCode;
+		/**
+		 * @var QLabel lblDialectCode
+		 * @access protected
+		 */
 		protected $lblDialectCode;
+		/**
+		 * @var QLabel lblEncoding
+		 * @access protected
+		 */
 		protected $lblEncoding;
+		/**
+		 * @var QLabel lblTextDirection
+		 * @access protected
+		 */
 		protected $lblTextDirection;
+		/**
+		 * @var QLabel lblSpecialCharacters
+		 * @access protected
+		 */
 		protected $lblSpecialCharacters;
+		/**
+		 * @var QLabel lblPluralForm
+		 * @access protected
+		 */
 		protected $lblPluralForm;
+		/**
+		 * @var QLabel lblActive
+		 * @access protected
+		 */
 		protected $lblActive;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -108,9 +200,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroLanguageMetaControl
 		 * @param integer $intLanguageId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroLanguage object creation - defaults to CreateOrEdit
@@ -509,7 +601,7 @@
 		 */
 		public function DeleteNarroLanguage() {
 			$this->objNarroLanguage->Delete();
-		}		
+		}
 
 
 

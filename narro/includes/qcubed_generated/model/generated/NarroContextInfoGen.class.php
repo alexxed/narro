@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroContextInfo class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $ContextInfoId the value for intContextInfoId (Read-Only PK)
@@ -39,7 +39,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_context_info.context_info_id
 		 * @var integer intContextInfoId
@@ -373,18 +373,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroContextInfo object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroContextInfo::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -467,10 +467,10 @@
 			$objDatabase = NarroContextInfo::GetDatabase();
 
 			$strQuery = NarroContextInfo::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrocontextinfo', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroContextInfo::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -478,7 +478,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -631,7 +631,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -1013,7 +1013,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -1468,7 +1468,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroContext object
 						if (is_null($mixValue->ContextId))
@@ -1500,7 +1500,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroLanguage object
 						if (is_null($mixValue->LanguageId))
@@ -1532,7 +1532,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroUser object
 						if (is_null($mixValue->UserId))
@@ -1564,7 +1564,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroSuggestion object
 						if (is_null($mixValue->SuggestionId))
@@ -1596,7 +1596,7 @@
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
-						} 
+						}
 
 						// Make sure $mixValue is a SAVED NarroSuggestion object
 						if (is_null($mixValue->SuggestionId))
@@ -1787,7 +1787,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -1838,23 +1838,23 @@
 				case 'ContextId':
 					return new QQNode('context_id', 'ContextId', 'Integer', $this);
 				case 'Context':
-					return new QQNodeNarroContext('context_id', 'Context', 'integer', $this);
+					return new QQNodeNarroContext('context_id', 'Context', 'Integer', $this);
 				case 'LanguageId':
 					return new QQNode('language_id', 'LanguageId', 'Integer', $this);
 				case 'Language':
-					return new QQNodeNarroLanguage('language_id', 'Language', 'integer', $this);
+					return new QQNodeNarroLanguage('language_id', 'Language', 'Integer', $this);
 				case 'ValidatorUserId':
 					return new QQNode('validator_user_id', 'ValidatorUserId', 'Integer', $this);
 				case 'ValidatorUser':
-					return new QQNodeNarroUser('validator_user_id', 'ValidatorUser', 'integer', $this);
+					return new QQNodeNarroUser('validator_user_id', 'ValidatorUser', 'Integer', $this);
 				case 'ValidSuggestionId':
 					return new QQNode('valid_suggestion_id', 'ValidSuggestionId', 'Integer', $this);
 				case 'ValidSuggestion':
-					return new QQNodeNarroSuggestion('valid_suggestion_id', 'ValidSuggestion', 'integer', $this);
+					return new QQNodeNarroSuggestion('valid_suggestion_id', 'ValidSuggestion', 'Integer', $this);
 				case 'PopularSuggestionId':
 					return new QQNode('popular_suggestion_id', 'PopularSuggestionId', 'Integer', $this);
 				case 'PopularSuggestion':
-					return new QQNodeNarroSuggestion('popular_suggestion_id', 'PopularSuggestion', 'integer', $this);
+					return new QQNodeNarroSuggestion('popular_suggestion_id', 'PopularSuggestion', 'Integer', $this);
 				case 'HasComments':
 					return new QQNode('has_comments', 'HasComments', 'Bit', $this);
 				case 'HasSuggestions':
@@ -1869,7 +1869,7 @@
 					return new QQNode('modified', 'Modified', 'DateTime', $this);
 
 				case '_PrimaryKeyNode':
-					return new QQNode('context_info_id', 'ContextInfoId', 'integer', $this);
+					return new QQNode('context_info_id', 'ContextInfoId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

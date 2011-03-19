@@ -4,16 +4,16 @@
 	 * code for the NarroFileType enumerated type.  It represents
 	 * the enumerated values found in the "narro_file_type" table
 	 * in the database.
-	 * 
+	 *
 	 * To use, you should use the NarroFileType subclass which
 	 * extends this NarroFileTypeGen class.
-	 * 
+	 *
 	 * Because subsequent re-code generations will overwrite any changes to this
 	 * file, you should leave this file unaltered to prevent yourself from losing
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroFileType class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 */
@@ -29,8 +29,9 @@
 		const DumbGettextPo = 9;
 		const PhpMyAdmin = 10;
 		const Unsupported = 11;
+		const Html = 12;
 
-		const MaxId = 11;
+		const MaxId = 12;
 
 		public static $NameArray = array(
 			1 => 'GettextPo',
@@ -43,7 +44,8 @@
 			8 => 'Svg',
 			9 => 'DumbGettextPo',
 			10 => 'PhpMyAdmin',
-			11 => 'Unsupported');
+			11 => 'Unsupported',
+			12 => 'Html');
 
 		public static $TokenArray = array(
 			1 => 'GettextPo',
@@ -56,7 +58,8 @@
 			8 => 'Svg',
 			9 => 'DumbGettextPo',
 			10 => 'PhpMyAdmin',
-			11 => 'Unsupported');
+			11 => 'Unsupported',
+			12 => 'Html');
 
 		public static function ToString($intNarroFileTypeId) {
 			switch ($intNarroFileTypeId) {
@@ -71,6 +74,7 @@
 				case 9: return 'DumbGettextPo';
 				case 10: return 'PhpMyAdmin';
 				case 11: return 'Unsupported';
+				case 12: return 'Html';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroFileTypeId: %s', $intNarroFileTypeId));
 			}
@@ -89,6 +93,7 @@
 				case 9: return 'DumbGettextPo';
 				case 10: return 'PhpMyAdmin';
 				case 11: return 'Unsupported';
+				case 12: return 'Html';
 				default:
 					throw new QCallerException(sprintf('Invalid intNarroFileTypeId: %s', $intNarroFileTypeId));
 			}

@@ -12,62 +12,154 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroFile $NarroFile the actual NarroFile data class being edited
-	 * property QLabel $FileIdControl
-	 * property-read QLabel $FileIdLabel
-	 * property QTextBox $FileNameControl
-	 * property-read QLabel $FileNameLabel
-	 * property QTextBox $FilePathControl
-	 * property-read QLabel $FilePathLabel
-	 * property QTextBox $FileMd5Control
-	 * property-read QLabel $FileMd5Label
-	 * property QListBox $ParentIdControl
-	 * property-read QLabel $ParentIdLabel
-	 * property QListBox $TypeIdControl
-	 * property-read QLabel $TypeIdLabel
-	 * property QListBox $ProjectIdControl
-	 * property-read QLabel $ProjectIdLabel
-	 * property QCheckBox $ActiveControl
-	 * property-read QLabel $ActiveLabel
-	 * property QDateTimePicker $CreatedControl
-	 * property-read QLabel $CreatedLabel
-	 * property QDateTimePicker $ModifiedControl
-	 * property-read QLabel $ModifiedLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroFile $NarroFile the actual NarroFile data class being edited
+	 * @property QLabel $FileIdControl
+	 * @property-read QLabel $FileIdLabel
+	 * @property QTextBox $FileNameControl
+	 * @property-read QLabel $FileNameLabel
+	 * @property QTextBox $FilePathControl
+	 * @property-read QLabel $FilePathLabel
+	 * @property QTextBox $FileMd5Control
+	 * @property-read QLabel $FileMd5Label
+	 * @property QListBox $ParentIdControl
+	 * @property-read QLabel $ParentIdLabel
+	 * @property QListBox $TypeIdControl
+	 * @property-read QLabel $TypeIdLabel
+	 * @property QListBox $ProjectIdControl
+	 * @property-read QLabel $ProjectIdLabel
+	 * @property QCheckBox $ActiveControl
+	 * @property-read QLabel $ActiveLabel
+	 * @property QDateTimePicker $CreatedControl
+	 * @property-read QLabel $CreatedLabel
+	 * @property QDateTimePicker $ModifiedControl
+	 * @property-read QLabel $ModifiedLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroFileMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroFile objNarroFile
+		 * @access protected
+		 */
 		protected $objNarroFile;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroFile's individual data fields
+		/**
+		 * @var QLabel lblFileId
+		 * @access protected
+		 */
 		protected $lblFileId;
+		/**
+		 * @var QTextBox txtFileName
+		 * @access protected
+		 */
 		protected $txtFileName;
+		/**
+		 * @var QTextBox txtFilePath
+		 * @access protected
+		 */
 		protected $txtFilePath;
+		/**
+		 * @var QTextBox txtFileMd5
+		 * @access protected
+		 */
 		protected $txtFileMd5;
+		/**
+		 * @var QListBox lstParent
+		 * @access protected
+		 */
 		protected $lstParent;
+		/**
+		 * @var QListBox lstType
+		 * @access protected
+		 */
 		protected $lstType;
+		/**
+		 * @var QListBox lstProject
+		 * @access protected
+		 */
 		protected $lstProject;
+		/**
+		 * @var QCheckBox chkActive
+		 * @access protected
+		 */
 		protected $chkActive;
+		/**
+		 * @var QDateTimePicker calCreated
+		 * @access protected
+		 */
 		protected $calCreated;
+		/**
+		 * @var QDateTimePicker calModified
+		 * @access protected
+		 */
 		protected $calModified;
 
 		// Controls that allow the viewing of NarroFile's individual data fields
+		/**
+		 * @var QLabel lblFileName
+		 * @access protected
+		 */
 		protected $lblFileName;
+		/**
+		 * @var QLabel lblFilePath
+		 * @access protected
+		 */
 		protected $lblFilePath;
+		/**
+		 * @var QLabel lblFileMd5
+		 * @access protected
+		 */
 		protected $lblFileMd5;
+		/**
+		 * @var QLabel lblParentId
+		 * @access protected
+		 */
 		protected $lblParentId;
+		/**
+		 * @var QLabel lblTypeId
+		 * @access protected
+		 */
 		protected $lblTypeId;
+		/**
+		 * @var QLabel lblProjectId
+		 * @access protected
+		 */
 		protected $lblProjectId;
+		/**
+		 * @var QLabel lblActive
+		 * @access protected
+		 */
 		protected $lblActive;
+		/**
+		 * @var QLabel lblCreated
+		 * @access protected
+		 */
 		protected $lblCreated;
+		/**
+		 * @var QLabel lblModified
+		 * @access protected
+		 */
 		protected $lblModified;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -108,9 +200,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroFileMetaControl
 		 * @param integer $intFileId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroFile object creation - defaults to CreateOrEdit
@@ -551,7 +643,7 @@
 		 */
 		public function DeleteNarroFile() {
 			$this->objNarroFile->Delete();
-		}		
+		}
 
 
 

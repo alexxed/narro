@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroLanguage class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $LanguageId the value for intLanguageId (Read-Only PK)
@@ -46,7 +46,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_language.language_id
 		 * @var integer intLanguageId
@@ -149,7 +149,7 @@
 		 * an ExpandAsArray on the narro_context_comment association table.
 		 * @var NarroContextComment[] _objNarroContextCommentAsLanguageArray;
 		 */
-		private $_objNarroContextCommentAsLanguageArray = array();
+		private $_objNarroContextCommentAsLanguageArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroContextInfoAsLanguage object
@@ -165,7 +165,7 @@
 		 * an ExpandAsArray on the narro_context_info association table.
 		 * @var NarroContextInfo[] _objNarroContextInfoAsLanguageArray;
 		 */
-		private $_objNarroContextInfoAsLanguageArray = array();
+		private $_objNarroContextInfoAsLanguageArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroFileProgressAsLanguage object
@@ -181,7 +181,7 @@
 		 * an ExpandAsArray on the narro_file_progress association table.
 		 * @var NarroFileProgress[] _objNarroFileProgressAsLanguageArray;
 		 */
-		private $_objNarroFileProgressAsLanguageArray = array();
+		private $_objNarroFileProgressAsLanguageArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroProjectProgressAsLanguage object
@@ -197,7 +197,7 @@
 		 * an ExpandAsArray on the narro_project_progress association table.
 		 * @var NarroProjectProgress[] _objNarroProjectProgressAsLanguageArray;
 		 */
-		private $_objNarroProjectProgressAsLanguageArray = array();
+		private $_objNarroProjectProgressAsLanguageArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroSuggestionAsLanguage object
@@ -213,7 +213,7 @@
 		 * an ExpandAsArray on the narro_suggestion association table.
 		 * @var NarroSuggestion[] _objNarroSuggestionAsLanguageArray;
 		 */
-		private $_objNarroSuggestionAsLanguageArray = array();
+		private $_objNarroSuggestionAsLanguageArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroTextCommentAsLanguage object
@@ -229,7 +229,7 @@
 		 * an ExpandAsArray on the narro_text_comment association table.
 		 * @var NarroTextComment[] _objNarroTextCommentAsLanguageArray;
 		 */
-		private $_objNarroTextCommentAsLanguageArray = array();
+		private $_objNarroTextCommentAsLanguageArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroUserRoleAsLanguage object
@@ -245,7 +245,7 @@
 		 * an ExpandAsArray on the narro_user_role association table.
 		 * @var NarroUserRole[] _objNarroUserRoleAsLanguageArray;
 		 */
-		private $_objNarroUserRoleAsLanguageArray = array();
+		private $_objNarroUserRoleAsLanguageArray = null;
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -430,18 +430,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroLanguage object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroLanguage::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -524,10 +524,10 @@
 			$objDatabase = NarroLanguage::GetDatabase();
 
 			$strQuery = NarroLanguage::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrolanguage', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroLanguage::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -535,7 +535,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -592,8 +592,8 @@
 			$strAlias = $strAliasPrefix . 'language_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (($strExpandAsArrayNodes) && is_array($arrPreviousItems) && count($arrPreviousItems)) {
-				foreach ($arrPreviousItems as $objPreviousItem) {            
-					if ($objPreviousItem->intLanguageId == $objDbRow->GetColumn($strAliasName, 'Integer')) {        
+				foreach ($arrPreviousItems as $objPreviousItem) {
+					if ($objPreviousItem->intLanguageId == $objDbRow->GetColumn($strAliasName, 'Integer')) {
 						// We are.  Now, prepare to check for ExpandAsArray clauses
 						$blnExpandedViaArray = false;
 						if (!$strAliasPrefix)
@@ -605,6 +605,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroContextCommentAsLanguageArray)
+								$objPreviousItem->_objNarroContextCommentAsLanguageArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextCommentAsLanguageArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroContextCommentAsLanguageArray;
 								$objChildItem = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -622,6 +624,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroContextInfoAsLanguageArray)
+								$objPreviousItem->_objNarroContextInfoAsLanguageArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextInfoAsLanguageArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroContextInfoAsLanguageArray;
 								$objChildItem = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -639,6 +643,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroFileProgressAsLanguageArray)
+								$objPreviousItem->_objNarroFileProgressAsLanguageArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroFileProgressAsLanguageArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroFileProgressAsLanguageArray;
 								$objChildItem = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -656,6 +662,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroProjectProgressAsLanguageArray)
+								$objPreviousItem->_objNarroProjectProgressAsLanguageArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroProjectProgressAsLanguageArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroProjectProgressAsLanguageArray;
 								$objChildItem = NarroProjectProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectprogressaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -673,6 +681,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroSuggestionAsLanguageArray)
+								$objPreviousItem->_objNarroSuggestionAsLanguageArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroSuggestionAsLanguageArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroSuggestionAsLanguageArray;
 								$objChildItem = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -690,6 +700,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroTextCommentAsLanguageArray)
+								$objPreviousItem->_objNarroTextCommentAsLanguageArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroTextCommentAsLanguageArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroTextCommentAsLanguageArray;
 								$objChildItem = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -707,6 +719,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroUserRoleAsLanguageArray)
+								$objPreviousItem->_objNarroUserRoleAsLanguageArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserRoleAsLanguageArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroUserRoleAsLanguageArray;
 								$objChildItem = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -804,8 +818,11 @@
 			// Check for NarroContextCommentAsLanguage Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrocontextcommentaslanguage__comment_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroContextCommentAsLanguageArray)
+				$objToReturn->_objNarroContextCommentAsLanguageArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroContextCommentAsLanguageArray[] = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroContextCommentAsLanguage = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -814,8 +831,11 @@
 			// Check for NarroContextInfoAsLanguage Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrocontextinfoaslanguage__context_info_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroContextInfoAsLanguageArray)
+				$objToReturn->_objNarroContextInfoAsLanguageArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroContextInfoAsLanguageArray[] = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroContextInfoAsLanguage = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -824,8 +844,11 @@
 			// Check for NarroFileProgressAsLanguage Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrofileprogressaslanguage__file_progress_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroFileProgressAsLanguageArray)
+				$objToReturn->_objNarroFileProgressAsLanguageArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroFileProgressAsLanguageArray[] = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroFileProgressAsLanguage = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -834,8 +857,11 @@
 			// Check for NarroProjectProgressAsLanguage Virtual Binding
 			$strAlias = $strAliasPrefix . 'narroprojectprogressaslanguage__project_progress_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroProjectProgressAsLanguageArray)
+				$objToReturn->_objNarroProjectProgressAsLanguageArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroProjectProgressAsLanguageArray[] = NarroProjectProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectprogressaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroProjectProgressAsLanguage = NarroProjectProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectprogressaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -844,8 +870,11 @@
 			// Check for NarroSuggestionAsLanguage Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrosuggestionaslanguage__suggestion_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroSuggestionAsLanguageArray)
+				$objToReturn->_objNarroSuggestionAsLanguageArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroSuggestionAsLanguageArray[] = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroSuggestionAsLanguage = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -854,8 +883,11 @@
 			// Check for NarroTextCommentAsLanguage Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrotextcommentaslanguage__text_comment_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroTextCommentAsLanguageArray)
+				$objToReturn->_objNarroTextCommentAsLanguageArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroTextCommentAsLanguageArray[] = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroTextCommentAsLanguage = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -864,8 +896,11 @@
 			// Check for NarroUserRoleAsLanguage Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrouserroleaslanguage__user_role_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroUserRoleAsLanguageArray)
+				$objToReturn->_objNarroUserRoleAsLanguageArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroUserRoleAsLanguageArray[] = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroUserRoleAsLanguage = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -883,7 +918,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -1049,7 +1084,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -1236,7 +1271,7 @@
 					 * if set due to an ExpandAsArray on the narro_context_comment.language_id reverse relationship
 					 * @return NarroContextComment[]
 					 */
-					return (array) $this->_objNarroContextCommentAsLanguageArray;
+					return $this->_objNarroContextCommentAsLanguageArray;
 
 				case '_NarroContextInfoAsLanguage':
 					/**
@@ -1252,7 +1287,7 @@
 					 * if set due to an ExpandAsArray on the narro_context_info.language_id reverse relationship
 					 * @return NarroContextInfo[]
 					 */
-					return (array) $this->_objNarroContextInfoAsLanguageArray;
+					return $this->_objNarroContextInfoAsLanguageArray;
 
 				case '_NarroFileProgressAsLanguage':
 					/**
@@ -1268,7 +1303,7 @@
 					 * if set due to an ExpandAsArray on the narro_file_progress.language_id reverse relationship
 					 * @return NarroFileProgress[]
 					 */
-					return (array) $this->_objNarroFileProgressAsLanguageArray;
+					return $this->_objNarroFileProgressAsLanguageArray;
 
 				case '_NarroProjectProgressAsLanguage':
 					/**
@@ -1284,7 +1319,7 @@
 					 * if set due to an ExpandAsArray on the narro_project_progress.language_id reverse relationship
 					 * @return NarroProjectProgress[]
 					 */
-					return (array) $this->_objNarroProjectProgressAsLanguageArray;
+					return $this->_objNarroProjectProgressAsLanguageArray;
 
 				case '_NarroSuggestionAsLanguage':
 					/**
@@ -1300,7 +1335,7 @@
 					 * if set due to an ExpandAsArray on the narro_suggestion.language_id reverse relationship
 					 * @return NarroSuggestion[]
 					 */
-					return (array) $this->_objNarroSuggestionAsLanguageArray;
+					return $this->_objNarroSuggestionAsLanguageArray;
 
 				case '_NarroTextCommentAsLanguage':
 					/**
@@ -1316,7 +1351,7 @@
 					 * if set due to an ExpandAsArray on the narro_text_comment.language_id reverse relationship
 					 * @return NarroTextComment[]
 					 */
-					return (array) $this->_objNarroTextCommentAsLanguageArray;
+					return $this->_objNarroTextCommentAsLanguageArray;
 
 				case '_NarroUserRoleAsLanguage':
 					/**
@@ -1332,7 +1367,7 @@
 					 * if set due to an ExpandAsArray on the narro_user_role.language_id reverse relationship
 					 * @return NarroUserRole[]
 					 */
-					return (array) $this->_objNarroUserRoleAsLanguageArray;
+					return $this->_objNarroUserRoleAsLanguageArray;
 
 
 				case '__Restored':
@@ -1518,7 +1553,7 @@
 		 * Gets all associated NarroContextCommentsAsLanguage as an array of NarroContextComment objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroContextComment[]
-		*/ 
+		*/
 		public function GetNarroContextCommentAsLanguageArray($objOptionalClauses = null) {
 			if ((is_null($this->intLanguageId)))
 				return array();
@@ -1534,7 +1569,7 @@
 		/**
 		 * Counts all associated NarroContextCommentsAsLanguage
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroContextCommentsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				return 0;
@@ -1546,7 +1581,7 @@
 		 * Associates a NarroContextCommentAsLanguage
 		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroContextCommentAsLanguage(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
@@ -1571,7 +1606,7 @@
 		 * Unassociates a NarroContextCommentAsLanguage
 		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroContextCommentAsLanguage(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
@@ -1596,7 +1631,7 @@
 		/**
 		 * Unassociates all NarroContextCommentsAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroContextCommentsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
@@ -1619,7 +1654,7 @@
 		 * Deletes an associated NarroContextCommentAsLanguage
 		 * @param NarroContextComment $objNarroContextComment
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroContextCommentAsLanguage(NarroContextComment $objNarroContextComment) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
@@ -1642,7 +1677,7 @@
 		/**
 		 * Deletes all associated NarroContextCommentsAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroContextCommentsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
@@ -1668,7 +1703,7 @@
 		 * Gets all associated NarroContextInfosAsLanguage as an array of NarroContextInfo objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroContextInfo[]
-		*/ 
+		*/
 		public function GetNarroContextInfoAsLanguageArray($objOptionalClauses = null) {
 			if ((is_null($this->intLanguageId)))
 				return array();
@@ -1684,7 +1719,7 @@
 		/**
 		 * Counts all associated NarroContextInfosAsLanguage
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroContextInfosAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				return 0;
@@ -1696,7 +1731,7 @@
 		 * Associates a NarroContextInfoAsLanguage
 		 * @param NarroContextInfo $objNarroContextInfo
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroContextInfoAsLanguage(NarroContextInfo $objNarroContextInfo) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextInfoAsLanguage on this unsaved NarroLanguage.');
@@ -1721,7 +1756,7 @@
 		 * Unassociates a NarroContextInfoAsLanguage
 		 * @param NarroContextInfo $objNarroContextInfo
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroContextInfoAsLanguage(NarroContextInfo $objNarroContextInfo) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsLanguage on this unsaved NarroLanguage.');
@@ -1746,7 +1781,7 @@
 		/**
 		 * Unassociates all NarroContextInfosAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroContextInfosAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsLanguage on this unsaved NarroLanguage.');
@@ -1769,7 +1804,7 @@
 		 * Deletes an associated NarroContextInfoAsLanguage
 		 * @param NarroContextInfo $objNarroContextInfo
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroContextInfoAsLanguage(NarroContextInfo $objNarroContextInfo) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsLanguage on this unsaved NarroLanguage.');
@@ -1792,7 +1827,7 @@
 		/**
 		 * Deletes all associated NarroContextInfosAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroContextInfosAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsLanguage on this unsaved NarroLanguage.');
@@ -1818,7 +1853,7 @@
 		 * Gets all associated NarroFileProgressesAsLanguage as an array of NarroFileProgress objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroFileProgress[]
-		*/ 
+		*/
 		public function GetNarroFileProgressAsLanguageArray($objOptionalClauses = null) {
 			if ((is_null($this->intLanguageId)))
 				return array();
@@ -1834,7 +1869,7 @@
 		/**
 		 * Counts all associated NarroFileProgressesAsLanguage
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroFileProgressesAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				return 0;
@@ -1846,7 +1881,7 @@
 		 * Associates a NarroFileProgressAsLanguage
 		 * @param NarroFileProgress $objNarroFileProgress
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroFileProgressAsLanguage(NarroFileProgress $objNarroFileProgress) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroFileProgressAsLanguage on this unsaved NarroLanguage.');
@@ -1871,7 +1906,7 @@
 		 * Unassociates a NarroFileProgressAsLanguage
 		 * @param NarroFileProgress $objNarroFileProgress
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroFileProgressAsLanguage(NarroFileProgress $objNarroFileProgress) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsLanguage on this unsaved NarroLanguage.');
@@ -1896,7 +1931,7 @@
 		/**
 		 * Unassociates all NarroFileProgressesAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroFileProgressesAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsLanguage on this unsaved NarroLanguage.');
@@ -1919,7 +1954,7 @@
 		 * Deletes an associated NarroFileProgressAsLanguage
 		 * @param NarroFileProgress $objNarroFileProgress
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroFileProgressAsLanguage(NarroFileProgress $objNarroFileProgress) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsLanguage on this unsaved NarroLanguage.');
@@ -1942,7 +1977,7 @@
 		/**
 		 * Deletes all associated NarroFileProgressesAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroFileProgressesAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroFileProgressAsLanguage on this unsaved NarroLanguage.');
@@ -1968,7 +2003,7 @@
 		 * Gets all associated NarroProjectProgressesAsLanguage as an array of NarroProjectProgress objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroProjectProgress[]
-		*/ 
+		*/
 		public function GetNarroProjectProgressAsLanguageArray($objOptionalClauses = null) {
 			if ((is_null($this->intLanguageId)))
 				return array();
@@ -1984,7 +2019,7 @@
 		/**
 		 * Counts all associated NarroProjectProgressesAsLanguage
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroProjectProgressesAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				return 0;
@@ -1996,7 +2031,7 @@
 		 * Associates a NarroProjectProgressAsLanguage
 		 * @param NarroProjectProgress $objNarroProjectProgress
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroProjectProgressAsLanguage(NarroProjectProgress $objNarroProjectProgress) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroProjectProgressAsLanguage on this unsaved NarroLanguage.');
@@ -2021,7 +2056,7 @@
 		 * Unassociates a NarroProjectProgressAsLanguage
 		 * @param NarroProjectProgress $objNarroProjectProgress
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroProjectProgressAsLanguage(NarroProjectProgress $objNarroProjectProgress) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectProgressAsLanguage on this unsaved NarroLanguage.');
@@ -2046,7 +2081,7 @@
 		/**
 		 * Unassociates all NarroProjectProgressesAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroProjectProgressesAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectProgressAsLanguage on this unsaved NarroLanguage.');
@@ -2069,7 +2104,7 @@
 		 * Deletes an associated NarroProjectProgressAsLanguage
 		 * @param NarroProjectProgress $objNarroProjectProgress
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroProjectProgressAsLanguage(NarroProjectProgress $objNarroProjectProgress) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectProgressAsLanguage on this unsaved NarroLanguage.');
@@ -2092,7 +2127,7 @@
 		/**
 		 * Deletes all associated NarroProjectProgressesAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroProjectProgressesAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectProgressAsLanguage on this unsaved NarroLanguage.');
@@ -2118,7 +2153,7 @@
 		 * Gets all associated NarroSuggestionsAsLanguage as an array of NarroSuggestion objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroSuggestion[]
-		*/ 
+		*/
 		public function GetNarroSuggestionAsLanguageArray($objOptionalClauses = null) {
 			if ((is_null($this->intLanguageId)))
 				return array();
@@ -2134,7 +2169,7 @@
 		/**
 		 * Counts all associated NarroSuggestionsAsLanguage
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroSuggestionsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				return 0;
@@ -2146,7 +2181,7 @@
 		 * Associates a NarroSuggestionAsLanguage
 		 * @param NarroSuggestion $objNarroSuggestion
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroSuggestionAsLanguage(NarroSuggestion $objNarroSuggestion) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionAsLanguage on this unsaved NarroLanguage.');
@@ -2171,7 +2206,7 @@
 		 * Unassociates a NarroSuggestionAsLanguage
 		 * @param NarroSuggestion $objNarroSuggestion
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroSuggestionAsLanguage(NarroSuggestion $objNarroSuggestion) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsLanguage on this unsaved NarroLanguage.');
@@ -2196,7 +2231,7 @@
 		/**
 		 * Unassociates all NarroSuggestionsAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroSuggestionsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsLanguage on this unsaved NarroLanguage.');
@@ -2219,7 +2254,7 @@
 		 * Deletes an associated NarroSuggestionAsLanguage
 		 * @param NarroSuggestion $objNarroSuggestion
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroSuggestionAsLanguage(NarroSuggestion $objNarroSuggestion) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsLanguage on this unsaved NarroLanguage.');
@@ -2242,7 +2277,7 @@
 		/**
 		 * Deletes all associated NarroSuggestionsAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroSuggestionsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionAsLanguage on this unsaved NarroLanguage.');
@@ -2268,7 +2303,7 @@
 		 * Gets all associated NarroTextCommentsAsLanguage as an array of NarroTextComment objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroTextComment[]
-		*/ 
+		*/
 		public function GetNarroTextCommentAsLanguageArray($objOptionalClauses = null) {
 			if ((is_null($this->intLanguageId)))
 				return array();
@@ -2284,7 +2319,7 @@
 		/**
 		 * Counts all associated NarroTextCommentsAsLanguage
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroTextCommentsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				return 0;
@@ -2296,7 +2331,7 @@
 		 * Associates a NarroTextCommentAsLanguage
 		 * @param NarroTextComment $objNarroTextComment
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroTextCommentAsLanguage(NarroTextComment $objNarroTextComment) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroTextCommentAsLanguage on this unsaved NarroLanguage.');
@@ -2321,7 +2356,7 @@
 		 * Unassociates a NarroTextCommentAsLanguage
 		 * @param NarroTextComment $objNarroTextComment
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroTextCommentAsLanguage(NarroTextComment $objNarroTextComment) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsLanguage on this unsaved NarroLanguage.');
@@ -2346,7 +2381,7 @@
 		/**
 		 * Unassociates all NarroTextCommentsAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroTextCommentsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsLanguage on this unsaved NarroLanguage.');
@@ -2369,7 +2404,7 @@
 		 * Deletes an associated NarroTextCommentAsLanguage
 		 * @param NarroTextComment $objNarroTextComment
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroTextCommentAsLanguage(NarroTextComment $objNarroTextComment) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsLanguage on this unsaved NarroLanguage.');
@@ -2392,7 +2427,7 @@
 		/**
 		 * Deletes all associated NarroTextCommentsAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroTextCommentsAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroTextCommentAsLanguage on this unsaved NarroLanguage.');
@@ -2418,7 +2453,7 @@
 		 * Gets all associated NarroUserRolesAsLanguage as an array of NarroUserRole objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroUserRole[]
-		*/ 
+		*/
 		public function GetNarroUserRoleAsLanguageArray($objOptionalClauses = null) {
 			if ((is_null($this->intLanguageId)))
 				return array();
@@ -2434,7 +2469,7 @@
 		/**
 		 * Counts all associated NarroUserRolesAsLanguage
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroUserRolesAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				return 0;
@@ -2446,7 +2481,7 @@
 		 * Associates a NarroUserRoleAsLanguage
 		 * @param NarroUserRole $objNarroUserRole
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroUserRoleAsLanguage(NarroUserRole $objNarroUserRole) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserRoleAsLanguage on this unsaved NarroLanguage.');
@@ -2471,7 +2506,7 @@
 		 * Unassociates a NarroUserRoleAsLanguage
 		 * @param NarroUserRole $objNarroUserRole
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroUserRoleAsLanguage(NarroUserRole $objNarroUserRole) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsLanguage on this unsaved NarroLanguage.');
@@ -2496,7 +2531,7 @@
 		/**
 		 * Unassociates all NarroUserRolesAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroUserRolesAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsLanguage on this unsaved NarroLanguage.');
@@ -2519,7 +2554,7 @@
 		 * Deletes an associated NarroUserRoleAsLanguage
 		 * @param NarroUserRole $objNarroUserRole
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroUserRoleAsLanguage(NarroUserRole $objNarroUserRole) {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsLanguage on this unsaved NarroLanguage.');
@@ -2542,7 +2577,7 @@
 		/**
 		 * Deletes all associated NarroUserRolesAsLanguage
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroUserRolesAsLanguage() {
 			if ((is_null($this->intLanguageId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsLanguage on this unsaved NarroLanguage.');
@@ -2666,7 +2701,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -2748,7 +2783,7 @@
 					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleaslanguage', 'reverse_reference', 'language_id');
 
 				case '_PrimaryKeyNode':
-					return new QQNode('language_id', 'LanguageId', 'integer', $this);
+					return new QQNode('language_id', 'LanguageId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

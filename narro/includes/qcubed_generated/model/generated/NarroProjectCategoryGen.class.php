@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroProjectCategory class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $ProjectCategoryId the value for intProjectCategoryId (Read-Only PK)
@@ -27,7 +27,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_project_category.project_category_id
 		 * @var integer intProjectCategoryId
@@ -68,7 +68,7 @@
 		 * an ExpandAsArray on the narro_project association table.
 		 * @var NarroProject[] _objNarroProjectAsProjectCategoryArray;
 		 */
-		private $_objNarroProjectAsProjectCategoryArray = array();
+		private $_objNarroProjectAsProjectCategoryArray = null;
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -246,18 +246,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroProjectCategory object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroProjectCategory::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -340,10 +340,10 @@
 			$objDatabase = NarroProjectCategory::GetDatabase();
 
 			$strQuery = NarroProjectCategory::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narroprojectcategory', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroProjectCategory::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -351,7 +351,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -401,8 +401,8 @@
 			$strAlias = $strAliasPrefix . 'project_category_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (($strExpandAsArrayNodes) && is_array($arrPreviousItems) && count($arrPreviousItems)) {
-				foreach ($arrPreviousItems as $objPreviousItem) {            
-					if ($objPreviousItem->intProjectCategoryId == $objDbRow->GetColumn($strAliasName, 'Integer')) {        
+				foreach ($arrPreviousItems as $objPreviousItem) {
+					if ($objPreviousItem->intProjectCategoryId == $objDbRow->GetColumn($strAliasName, 'Integer')) {
 						// We are.  Now, prepare to check for ExpandAsArray clauses
 						$blnExpandedViaArray = false;
 						if (!$strAliasPrefix)
@@ -414,6 +414,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroProjectAsProjectCategoryArray)
+								$objPreviousItem->_objNarroProjectAsProjectCategoryArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroProjectAsProjectCategoryArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroProjectAsProjectCategoryArray;
 								$objChildItem = NarroProject::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectasprojectcategory__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -479,8 +481,11 @@
 			// Check for NarroProjectAsProjectCategory Virtual Binding
 			$strAlias = $strAliasPrefix . 'narroprojectasprojectcategory__project_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroProjectAsProjectCategoryArray)
+				$objToReturn->_objNarroProjectAsProjectCategoryArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroProjectAsProjectCategoryArray[] = NarroProject::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectasprojectcategory__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroProjectAsProjectCategory = NarroProject::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectasprojectcategory__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -498,7 +503,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -627,7 +632,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -758,7 +763,7 @@
 					 * if set due to an ExpandAsArray on the narro_project.project_category_id reverse relationship
 					 * @return NarroProject[]
 					 */
-					return (array) $this->_objNarroProjectAsProjectCategoryArray;
+					return $this->_objNarroProjectAsProjectCategoryArray;
 
 
 				case '__Restored':
@@ -853,7 +858,7 @@
 		 * Gets all associated NarroProjectsAsProjectCategory as an array of NarroProject objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroProject[]
-		*/ 
+		*/
 		public function GetNarroProjectAsProjectCategoryArray($objOptionalClauses = null) {
 			if ((is_null($this->intProjectCategoryId)))
 				return array();
@@ -869,7 +874,7 @@
 		/**
 		 * Counts all associated NarroProjectsAsProjectCategory
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroProjectsAsProjectCategory() {
 			if ((is_null($this->intProjectCategoryId)))
 				return 0;
@@ -881,7 +886,7 @@
 		 * Associates a NarroProjectAsProjectCategory
 		 * @param NarroProject $objNarroProject
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroProjectAsProjectCategory(NarroProject $objNarroProject) {
 			if ((is_null($this->intProjectCategoryId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroProjectAsProjectCategory on this unsaved NarroProjectCategory.');
@@ -906,7 +911,7 @@
 		 * Unassociates a NarroProjectAsProjectCategory
 		 * @param NarroProject $objNarroProject
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroProjectAsProjectCategory(NarroProject $objNarroProject) {
 			if ((is_null($this->intProjectCategoryId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectAsProjectCategory on this unsaved NarroProjectCategory.');
@@ -931,7 +936,7 @@
 		/**
 		 * Unassociates all NarroProjectsAsProjectCategory
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroProjectsAsProjectCategory() {
 			if ((is_null($this->intProjectCategoryId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectAsProjectCategory on this unsaved NarroProjectCategory.');
@@ -954,7 +959,7 @@
 		 * Deletes an associated NarroProjectAsProjectCategory
 		 * @param NarroProject $objNarroProject
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroProjectAsProjectCategory(NarroProject $objNarroProject) {
 			if ((is_null($this->intProjectCategoryId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectAsProjectCategory on this unsaved NarroProjectCategory.');
@@ -977,7 +982,7 @@
 		/**
 		 * Deletes all associated NarroProjectsAsProjectCategory
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroProjectsAsProjectCategory() {
 			if ((is_null($this->intProjectCategoryId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroProjectAsProjectCategory on this unsaved NarroProjectCategory.');
@@ -1073,7 +1078,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -1116,7 +1121,7 @@
 					return new QQReverseReferenceNodeNarroProject($this, 'narroprojectasprojectcategory', 'reverse_reference', 'project_category_id');
 
 				case '_PrimaryKeyNode':
-					return new QQNode('project_category_id', 'ProjectCategoryId', 'integer', $this);
+					return new QQNode('project_category_id', 'ProjectCategoryId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

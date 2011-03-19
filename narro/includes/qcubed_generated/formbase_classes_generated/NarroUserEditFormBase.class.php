@@ -17,6 +17,9 @@
 	 */
 	abstract class NarroUserEditFormBase extends QForm {
 		// Local instance of the NarroUserMetaControl
+		/**
+		 * @var NarroUserMetaControlGen mctNarroUser
+		 */
 		protected $mctNarroUser;
 
 		// Controls for NarroUser's Data Fields
@@ -29,8 +32,17 @@
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
 		// Other Controls
+		/**
+		 * @var QButton Save
+		 */
 		protected $btnSave;
+		/**
+		 * @var QButton Delete
+		 */
 		protected $btnDelete;
+		/**
+		 * @var QButton Cancel
+		 */
 		protected $btnCancel;
 
 		// Create QForm Event Handlers as Needed
@@ -40,12 +52,12 @@
 //		protected function Form_PreRender() {}
 
 		protected function Form_Run() {
-			// Security check for ALLOW_REMOTE_ADMIN
-			// To allow access REGARDLESS of ALLOW_REMOTE_ADMIN, simply remove the line below
-			QApplication::CheckRemoteAdmin();
+			parent::Form_Run();
 		}
 
 		protected function Form_Create() {
+			parent::Form_Create();
+
 			// Use the CreateFromPathInfo shortcut (this can also be done manually using the NarroUserMetaControl constructor)
 			// MAKE SURE we specify "$this" as the MetaControl's (and thus all subsequent controls') parent
 			$this->mctNarroUser = NarroUserMetaControl::CreateFromPathInfo($this);
@@ -69,7 +81,7 @@
 
 			$this->btnDelete = new QButton($this);
 			$this->btnDelete->Text = QApplication::Translate('Delete');
-			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(QApplication::Translate('Are you SURE you want to DELETE this') . ' ' . QApplication::Translate('NarroUser') . '?'));
+			$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'), QApplication::Translate('NarroUser'))));
 			$this->btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
 			$this->btnDelete->Visible = $this->mctNarroUser->EditMode;
 		}
@@ -79,8 +91,8 @@
 		 * It will also Blink() on all invalid controls, as well as Focus() on the top-most invalid control.
 		 */
 		protected function Form_Validate() {
-			// By default, we report that Custom Validations passed
-			$blnToReturn = true;
+			// By default, we report the result of validation from the parent
+			$blnToReturn = parent::Form_Validate();
 
 			// Custom Validation Rules
 			// TODO: Be sure to set $blnToReturn to false if any custom validation fails!

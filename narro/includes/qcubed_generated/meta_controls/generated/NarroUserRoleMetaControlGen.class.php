@@ -12,42 +12,94 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroUserRole $NarroUserRole the actual NarroUserRole data class being edited
-	 * property QLabel $UserRoleIdControl
-	 * property-read QLabel $UserRoleIdLabel
-	 * property QListBox $UserIdControl
-	 * property-read QLabel $UserIdLabel
-	 * property QListBox $RoleIdControl
-	 * property-read QLabel $RoleIdLabel
-	 * property QListBox $ProjectIdControl
-	 * property-read QLabel $ProjectIdLabel
-	 * property QListBox $LanguageIdControl
-	 * property-read QLabel $LanguageIdLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroUserRole $NarroUserRole the actual NarroUserRole data class being edited
+	 * @property QLabel $UserRoleIdControl
+	 * @property-read QLabel $UserRoleIdLabel
+	 * @property QListBox $UserIdControl
+	 * @property-read QLabel $UserIdLabel
+	 * @property QListBox $RoleIdControl
+	 * @property-read QLabel $RoleIdLabel
+	 * @property QListBox $ProjectIdControl
+	 * @property-read QLabel $ProjectIdLabel
+	 * @property QListBox $LanguageIdControl
+	 * @property-read QLabel $LanguageIdLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroUserRoleMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroUserRole objNarroUserRole
+		 * @access protected
+		 */
 		protected $objNarroUserRole;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroUserRole's individual data fields
+		/**
+		 * @var QLabel lblUserRoleId
+		 * @access protected
+		 */
 		protected $lblUserRoleId;
+		/**
+		 * @var QListBox lstUser
+		 * @access protected
+		 */
 		protected $lstUser;
+		/**
+		 * @var QListBox lstRole
+		 * @access protected
+		 */
 		protected $lstRole;
+		/**
+		 * @var QListBox lstProject
+		 * @access protected
+		 */
 		protected $lstProject;
+		/**
+		 * @var QListBox lstLanguage
+		 * @access protected
+		 */
 		protected $lstLanguage;
 
 		// Controls that allow the viewing of NarroUserRole's individual data fields
+		/**
+		 * @var QLabel lblUserId
+		 * @access protected
+		 */
 		protected $lblUserId;
+		/**
+		 * @var QLabel lblRoleId
+		 * @access protected
+		 */
 		protected $lblRoleId;
+		/**
+		 * @var QLabel lblProjectId
+		 * @access protected
+		 */
 		protected $lblProjectId;
+		/**
+		 * @var QLabel lblLanguageId
+		 * @access protected
+		 */
 		protected $lblLanguageId;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -88,9 +140,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroUserRoleMetaControl
 		 * @param integer $intUserRoleId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroUserRole object creation - defaults to CreateOrEdit
@@ -405,7 +457,7 @@
 		 */
 		public function DeleteNarroUserRole() {
 			$this->objNarroUserRole->Delete();
-		}		
+		}
 
 
 

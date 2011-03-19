@@ -12,43 +12,99 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroUser $NarroUser the actual NarroUser data class being edited
-	 * property QIntegerTextBox $UserIdControl
-	 * property-read QLabel $UserIdLabel
-	 * property QTextBox $UsernameControl
-	 * property-read QLabel $UsernameLabel
-	 * property QTextBox $PasswordControl
-	 * property-read QLabel $PasswordLabel
-	 * property QTextBox $EmailControl
-	 * property-read QLabel $EmailLabel
-	 * property QTextBox $DataControl
-	 * property-read QLabel $DataLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroUser $NarroUser the actual NarroUser data class being edited
+	 * @property QIntegerTextBox $UserIdControl
+	 * @property-read QLabel $UserIdLabel
+	 * @property QTextBox $UsernameControl
+	 * @property-read QLabel $UsernameLabel
+	 * @property QTextBox $PasswordControl
+	 * @property-read QLabel $PasswordLabel
+	 * @property QTextBox $EmailControl
+	 * @property-read QLabel $EmailLabel
+	 * @property QTextBox $DataControl
+	 * @property-read QLabel $DataLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroUserMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroUser objNarroUser
+		 * @access protected
+		 */
 		protected $objNarroUser;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroUser's individual data fields
+		/**
+		 * @var QIntegerTextBox txtUserId
+		 * @access protected
+		 */
 		protected $txtUserId;
+		/**
+		 * @var QTextBox txtUsername
+		 * @access protected
+		 */
 		protected $txtUsername;
+		/**
+		 * @var QTextBox txtPassword
+		 * @access protected
+		 */
 		protected $txtPassword;
+		/**
+		 * @var QTextBox txtEmail
+		 * @access protected
+		 */
 		protected $txtEmail;
+		/**
+		 * @var QTextBox txtData
+		 * @access protected
+		 */
 		protected $txtData;
 
 		// Controls that allow the viewing of NarroUser's individual data fields
+		/**
+		 * @var QLabel lblUserId
+		 * @access protected
+		 */
 		protected $lblUserId;
+		/**
+		 * @var QLabel lblUsername
+		 * @access protected
+		 */
 		protected $lblUsername;
+		/**
+		 * @var QLabel lblPassword
+		 * @access protected
+		 */
 		protected $lblPassword;
+		/**
+		 * @var QLabel lblEmail
+		 * @access protected
+		 */
 		protected $lblEmail;
+		/**
+		 * @var QLabel lblData
+		 * @access protected
+		 */
 		protected $lblData;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -89,9 +145,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroUserMetaControl
 		 * @param integer $intUserId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroUser object creation - defaults to CreateOrEdit
@@ -355,7 +411,7 @@
 		 */
 		public function DeleteNarroUser() {
 			$this->objNarroUser->Delete();
-		}		
+		}
 
 
 

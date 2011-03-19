@@ -12,54 +12,130 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroTextComment $NarroTextComment the actual NarroTextComment data class being edited
-	 * property QLabel $TextCommentIdControl
-	 * property-read QLabel $TextCommentIdLabel
-	 * property QListBox $TextIdControl
-	 * property-read QLabel $TextIdLabel
-	 * property QListBox $UserIdControl
-	 * property-read QLabel $UserIdLabel
-	 * property QListBox $LanguageIdControl
-	 * property-read QLabel $LanguageIdLabel
-	 * property QDateTimePicker $CreatedControl
-	 * property-read QLabel $CreatedLabel
-	 * property QDateTimePicker $ModifiedControl
-	 * property-read QLabel $ModifiedLabel
-	 * property QTextBox $CommentTextControl
-	 * property-read QLabel $CommentTextLabel
-	 * property QTextBox $CommentTextMd5Control
-	 * property-read QLabel $CommentTextMd5Label
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroTextComment $NarroTextComment the actual NarroTextComment data class being edited
+	 * @property QLabel $TextCommentIdControl
+	 * @property-read QLabel $TextCommentIdLabel
+	 * @property QListBox $TextIdControl
+	 * @property-read QLabel $TextIdLabel
+	 * @property QListBox $UserIdControl
+	 * @property-read QLabel $UserIdLabel
+	 * @property QListBox $LanguageIdControl
+	 * @property-read QLabel $LanguageIdLabel
+	 * @property QDateTimePicker $CreatedControl
+	 * @property-read QLabel $CreatedLabel
+	 * @property QDateTimePicker $ModifiedControl
+	 * @property-read QLabel $ModifiedLabel
+	 * @property QTextBox $CommentTextControl
+	 * @property-read QLabel $CommentTextLabel
+	 * @property QTextBox $CommentTextMd5Control
+	 * @property-read QLabel $CommentTextMd5Label
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroTextCommentMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroTextComment objNarroTextComment
+		 * @access protected
+		 */
 		protected $objNarroTextComment;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroTextComment's individual data fields
+		/**
+		 * @var QLabel lblTextCommentId
+		 * @access protected
+		 */
 		protected $lblTextCommentId;
+		/**
+		 * @var QListBox lstText
+		 * @access protected
+		 */
 		protected $lstText;
+		/**
+		 * @var QListBox lstUser
+		 * @access protected
+		 */
 		protected $lstUser;
+		/**
+		 * @var QListBox lstLanguage
+		 * @access protected
+		 */
 		protected $lstLanguage;
+		/**
+		 * @var QDateTimePicker calCreated
+		 * @access protected
+		 */
 		protected $calCreated;
+		/**
+		 * @var QDateTimePicker calModified
+		 * @access protected
+		 */
 		protected $calModified;
+		/**
+		 * @var QTextBox txtCommentText
+		 * @access protected
+		 */
 		protected $txtCommentText;
+		/**
+		 * @var QTextBox txtCommentTextMd5
+		 * @access protected
+		 */
 		protected $txtCommentTextMd5;
 
 		// Controls that allow the viewing of NarroTextComment's individual data fields
+		/**
+		 * @var QLabel lblTextId
+		 * @access protected
+		 */
 		protected $lblTextId;
+		/**
+		 * @var QLabel lblUserId
+		 * @access protected
+		 */
 		protected $lblUserId;
+		/**
+		 * @var QLabel lblLanguageId
+		 * @access protected
+		 */
 		protected $lblLanguageId;
+		/**
+		 * @var QLabel lblCreated
+		 * @access protected
+		 */
 		protected $lblCreated;
+		/**
+		 * @var QLabel lblModified
+		 * @access protected
+		 */
 		protected $lblModified;
+		/**
+		 * @var QLabel lblCommentText
+		 * @access protected
+		 */
 		protected $lblCommentText;
+		/**
+		 * @var QLabel lblCommentTextMd5
+		 * @access protected
+		 */
 		protected $lblCommentTextMd5;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -100,9 +176,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroTextCommentMetaControl
 		 * @param integer $intTextCommentId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroTextComment object creation - defaults to CreateOrEdit
@@ -508,7 +584,7 @@
 		 */
 		public function DeleteNarroTextComment() {
 			$this->objNarroTextComment->Delete();
-		}		
+		}
 
 
 

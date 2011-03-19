@@ -12,7 +12,7 @@
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
 	 * in the NarroRole class.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $RoleId the value for intRoleId (Read-Only PK)
@@ -28,7 +28,7 @@
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
-		
+
 		/**
 		 * Protected member variable that maps to the database PK Identity column narro_role.role_id
 		 * @var integer intRoleId
@@ -60,7 +60,7 @@
 		 * an ExpandAsArray on the narro_role_permission association table.
 		 * @var NarroRolePermission[] _objNarroRolePermissionAsRoleArray;
 		 */
-		private $_objNarroRolePermissionAsRoleArray = array();
+		private $_objNarroRolePermissionAsRoleArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroUserRoleAsRole object
@@ -76,7 +76,7 @@
 		 * an ExpandAsArray on the narro_user_role association table.
 		 * @var NarroUserRole[] _objNarroUserRoleAsRoleArray;
 		 */
-		private $_objNarroUserRoleAsRoleArray = array();
+		private $_objNarroUserRoleAsRoleArray = null;
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -253,18 +253,18 @@
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
-			
+
 			// Perform the Query, Get the First Row, and Instantiate a new NarroRole object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			
+
 			// Do we have to expand anything?
 			if ($objQueryBuilder->ExpandAsArrayNodes) {
 				$objToReturn = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
 					$objItem = NarroRole::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, $objToReturn, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem)
-						$objToReturn[] = $objItem;					
-				}			
+						$objToReturn[] = $objItem;
+				}
 				if (count($objToReturn)) {
 					// Since we only want the object to return, lets return the object and not the array.
 					return $objToReturn[0];
@@ -347,10 +347,10 @@
 			$objDatabase = NarroRole::GetDatabase();
 
 			$strQuery = NarroRole::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
-			
+
 			$objCache = new QCache('qquery/narrorole', $strQuery);
 			$cacheData = $objCache->GetData();
-			
+
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 				$arrResult = NarroRole::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNodes, $objQueryBuilder->ColumnAliasArray);
@@ -358,7 +358,7 @@
 			} else {
 				$arrResult = unserialize($cacheData);
 			}
-			
+
 			return $arrResult;
 		}
 
@@ -407,8 +407,8 @@
 			$strAlias = $strAliasPrefix . 'role_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (($strExpandAsArrayNodes) && is_array($arrPreviousItems) && count($arrPreviousItems)) {
-				foreach ($arrPreviousItems as $objPreviousItem) {            
-					if ($objPreviousItem->intRoleId == $objDbRow->GetColumn($strAliasName, 'Integer')) {        
+				foreach ($arrPreviousItems as $objPreviousItem) {
+					if ($objPreviousItem->intRoleId == $objDbRow->GetColumn($strAliasName, 'Integer')) {
 						// We are.  Now, prepare to check for ExpandAsArray clauses
 						$blnExpandedViaArray = false;
 						if (!$strAliasPrefix)
@@ -420,6 +420,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroRolePermissionAsRoleArray)
+								$objPreviousItem->_objNarroRolePermissionAsRoleArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroRolePermissionAsRoleArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroRolePermissionAsRoleArray;
 								$objChildItem = NarroRolePermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrorolepermissionasrole__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -437,6 +439,8 @@
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
 							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroUserRoleAsRoleArray)
+								$objPreviousItem->_objNarroUserRoleAsRoleArray = array();
 							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroUserRoleAsRoleArray)) {
 								$objPreviousChildItems = $objPreviousItem->_objNarroUserRoleAsRoleArray;
 								$objChildItem = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasrole__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
@@ -503,8 +507,11 @@
 			// Check for NarroRolePermissionAsRole Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrorolepermissionasrole__role_permission_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroRolePermissionAsRoleArray)
+				$objToReturn->_objNarroRolePermissionAsRoleArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroRolePermissionAsRoleArray[] = NarroRolePermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrorolepermissionasrole__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroRolePermissionAsRole = NarroRolePermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrorolepermissionasrole__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -513,8 +520,11 @@
 			// Check for NarroUserRoleAsRole Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrouserroleasrole__user_role_id';
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroUserRoleAsRoleArray)
+				$objToReturn->_objNarroUserRoleAsRoleArray = array();
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if (($strExpandAsArrayNodes) && (array_key_exists($strAlias, $strExpandAsArrayNodes)))
+				if ($blnExpanded)
 					$objToReturn->_objNarroUserRoleAsRoleArray[] = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasrole__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroUserRoleAsRole = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasrole__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
@@ -532,7 +542,7 @@
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $strExpandAsArrayNodes = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
-			
+
 			if (!$strColumnAliasArray)
 				$strColumnAliasArray = array();
 
@@ -658,7 +668,7 @@
 			$this->__blnRestored = true;
 
 
-			// Return 
+			// Return
 			return $mixToReturn;
 		}
 
@@ -781,7 +791,7 @@
 					 * if set due to an ExpandAsArray on the narro_role_permission.role_id reverse relationship
 					 * @return NarroRolePermission[]
 					 */
-					return (array) $this->_objNarroRolePermissionAsRoleArray;
+					return $this->_objNarroRolePermissionAsRoleArray;
 
 				case '_NarroUserRoleAsRole':
 					/**
@@ -797,7 +807,7 @@
 					 * if set due to an ExpandAsArray on the narro_user_role.role_id reverse relationship
 					 * @return NarroUserRole[]
 					 */
-					return (array) $this->_objNarroUserRoleAsRoleArray;
+					return $this->_objNarroUserRoleAsRoleArray;
 
 
 				case '__Restored':
@@ -879,7 +889,7 @@
 		 * Gets all associated NarroRolePermissionsAsRole as an array of NarroRolePermission objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroRolePermission[]
-		*/ 
+		*/
 		public function GetNarroRolePermissionAsRoleArray($objOptionalClauses = null) {
 			if ((is_null($this->intRoleId)))
 				return array();
@@ -895,7 +905,7 @@
 		/**
 		 * Counts all associated NarroRolePermissionsAsRole
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroRolePermissionsAsRole() {
 			if ((is_null($this->intRoleId)))
 				return 0;
@@ -907,7 +917,7 @@
 		 * Associates a NarroRolePermissionAsRole
 		 * @param NarroRolePermission $objNarroRolePermission
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroRolePermissionAsRole(NarroRolePermission $objNarroRolePermission) {
 			if ((is_null($this->intRoleId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroRolePermissionAsRole on this unsaved NarroRole.');
@@ -932,7 +942,7 @@
 		 * Unassociates a NarroRolePermissionAsRole
 		 * @param NarroRolePermission $objNarroRolePermission
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroRolePermissionAsRole(NarroRolePermission $objNarroRolePermission) {
 			if ((is_null($this->intRoleId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroRolePermissionAsRole on this unsaved NarroRole.');
@@ -957,7 +967,7 @@
 		/**
 		 * Unassociates all NarroRolePermissionsAsRole
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroRolePermissionsAsRole() {
 			if ((is_null($this->intRoleId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroRolePermissionAsRole on this unsaved NarroRole.');
@@ -980,7 +990,7 @@
 		 * Deletes an associated NarroRolePermissionAsRole
 		 * @param NarroRolePermission $objNarroRolePermission
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroRolePermissionAsRole(NarroRolePermission $objNarroRolePermission) {
 			if ((is_null($this->intRoleId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroRolePermissionAsRole on this unsaved NarroRole.');
@@ -1003,7 +1013,7 @@
 		/**
 		 * Deletes all associated NarroRolePermissionsAsRole
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroRolePermissionsAsRole() {
 			if ((is_null($this->intRoleId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroRolePermissionAsRole on this unsaved NarroRole.');
@@ -1029,7 +1039,7 @@
 		 * Gets all associated NarroUserRolesAsRole as an array of NarroUserRole objects
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroUserRole[]
-		*/ 
+		*/
 		public function GetNarroUserRoleAsRoleArray($objOptionalClauses = null) {
 			if ((is_null($this->intRoleId)))
 				return array();
@@ -1045,7 +1055,7 @@
 		/**
 		 * Counts all associated NarroUserRolesAsRole
 		 * @return int
-		*/ 
+		*/
 		public function CountNarroUserRolesAsRole() {
 			if ((is_null($this->intRoleId)))
 				return 0;
@@ -1057,7 +1067,7 @@
 		 * Associates a NarroUserRoleAsRole
 		 * @param NarroUserRole $objNarroUserRole
 		 * @return void
-		*/ 
+		*/
 		public function AssociateNarroUserRoleAsRole(NarroUserRole $objNarroUserRole) {
 			if ((is_null($this->intRoleId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroUserRoleAsRole on this unsaved NarroRole.');
@@ -1082,7 +1092,7 @@
 		 * Unassociates a NarroUserRoleAsRole
 		 * @param NarroUserRole $objNarroUserRole
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateNarroUserRoleAsRole(NarroUserRole $objNarroUserRole) {
 			if ((is_null($this->intRoleId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsRole on this unsaved NarroRole.');
@@ -1107,7 +1117,7 @@
 		/**
 		 * Unassociates all NarroUserRolesAsRole
 		 * @return void
-		*/ 
+		*/
 		public function UnassociateAllNarroUserRolesAsRole() {
 			if ((is_null($this->intRoleId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsRole on this unsaved NarroRole.');
@@ -1130,7 +1140,7 @@
 		 * Deletes an associated NarroUserRoleAsRole
 		 * @param NarroUserRole $objNarroUserRole
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAssociatedNarroUserRoleAsRole(NarroUserRole $objNarroUserRole) {
 			if ((is_null($this->intRoleId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsRole on this unsaved NarroRole.');
@@ -1153,7 +1163,7 @@
 		/**
 		 * Deletes all associated NarroUserRolesAsRole
 		 * @return void
-		*/ 
+		*/
 		public function DeleteAllNarroUserRolesAsRole() {
 			if ((is_null($this->intRoleId)))
 				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroUserRoleAsRole on this unsaved NarroRole.');
@@ -1245,7 +1255,7 @@
 			return new ArrayIterator($iArray);
 		}
 
-		// this function returns a Json formatted string using the 
+		// this function returns a Json formatted string using the
 		// IteratorAggregate interface
 		public function getJson() {
 			return json_encode($this->getIterator());
@@ -1288,7 +1298,7 @@
 					return new QQReverseReferenceNodeNarroUserRole($this, 'narrouserroleasrole', 'reverse_reference', 'role_id');
 
 				case '_PrimaryKeyNode':
-					return new QQNode('role_id', 'RoleId', 'integer', $this);
+					return new QQNode('role_id', 'RoleId', 'Integer', $this);
 				default:
 					try {
 						return parent::__get($strName);

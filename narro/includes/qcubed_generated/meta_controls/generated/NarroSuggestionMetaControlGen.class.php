@@ -12,70 +12,178 @@
 	 *
 	 * Any and all changes to this file will be overwritten with any subsequent
 	 * code re-generation.
-	 * 
+	 *
 	 * @package Narro
 	 * @subpackage MetaControls
-	 * property-read NarroSuggestion $NarroSuggestion the actual NarroSuggestion data class being edited
-	 * property QLabel $SuggestionIdControl
-	 * property-read QLabel $SuggestionIdLabel
-	 * property QListBox $UserIdControl
-	 * property-read QLabel $UserIdLabel
-	 * property QListBox $TextIdControl
-	 * property-read QLabel $TextIdLabel
-	 * property QListBox $LanguageIdControl
-	 * property-read QLabel $LanguageIdLabel
-	 * property QTextBox $SuggestionValueControl
-	 * property-read QLabel $SuggestionValueLabel
-	 * property QTextBox $SuggestionValueMd5Control
-	 * property-read QLabel $SuggestionValueMd5Label
-	 * property QIntegerTextBox $SuggestionCharCountControl
-	 * property-read QLabel $SuggestionCharCountLabel
-	 * property QIntegerTextBox $SuggestionWordCountControl
-	 * property-read QLabel $SuggestionWordCountLabel
-	 * property QCheckBox $HasCommentsControl
-	 * property-read QLabel $HasCommentsLabel
-	 * property QCheckBox $IsImportedControl
-	 * property-read QLabel $IsImportedLabel
-	 * property QDateTimePicker $CreatedControl
-	 * property-read QLabel $CreatedLabel
-	 * property QDateTimePicker $ModifiedControl
-	 * property-read QLabel $ModifiedLabel
-	 * property-read string $TitleVerb a verb indicating whether or not this is being edited or created
-	 * property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
+	 * @property-read NarroSuggestion $NarroSuggestion the actual NarroSuggestion data class being edited
+	 * @property QLabel $SuggestionIdControl
+	 * @property-read QLabel $SuggestionIdLabel
+	 * @property QListBox $UserIdControl
+	 * @property-read QLabel $UserIdLabel
+	 * @property QListBox $TextIdControl
+	 * @property-read QLabel $TextIdLabel
+	 * @property QListBox $LanguageIdControl
+	 * @property-read QLabel $LanguageIdLabel
+	 * @property QTextBox $SuggestionValueControl
+	 * @property-read QLabel $SuggestionValueLabel
+	 * @property QTextBox $SuggestionValueMd5Control
+	 * @property-read QLabel $SuggestionValueMd5Label
+	 * @property QIntegerTextBox $SuggestionCharCountControl
+	 * @property-read QLabel $SuggestionCharCountLabel
+	 * @property QIntegerTextBox $SuggestionWordCountControl
+	 * @property-read QLabel $SuggestionWordCountLabel
+	 * @property QCheckBox $HasCommentsControl
+	 * @property-read QLabel $HasCommentsLabel
+	 * @property QCheckBox $IsImportedControl
+	 * @property-read QLabel $IsImportedLabel
+	 * @property QDateTimePicker $CreatedControl
+	 * @property-read QLabel $CreatedLabel
+	 * @property QDateTimePicker $ModifiedControl
+	 * @property-read QLabel $ModifiedLabel
+	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
+	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
 
 	class NarroSuggestionMetaControlGen extends QBaseClass {
 		// General Variables
+		/**
+		 * @var NarroSuggestion objNarroSuggestion
+		 * @access protected
+		 */
 		protected $objNarroSuggestion;
+		/**
+		 * @var QForm|QControl objParentObject
+		 * @access protected
+		 */
 		protected $objParentObject;
+		/**
+		 * @var string strTitleVerb
+		 * @access protected
+		 */
 		protected $strTitleVerb;
+		/**
+		 * @var boolean blnEditMode
+		 * @access protected
+		 */
 		protected $blnEditMode;
 
 		// Controls that allow the editing of NarroSuggestion's individual data fields
+		/**
+		 * @var QLabel lblSuggestionId
+		 * @access protected
+		 */
 		protected $lblSuggestionId;
+		/**
+		 * @var QListBox lstUser
+		 * @access protected
+		 */
 		protected $lstUser;
+		/**
+		 * @var QListBox lstText
+		 * @access protected
+		 */
 		protected $lstText;
+		/**
+		 * @var QListBox lstLanguage
+		 * @access protected
+		 */
 		protected $lstLanguage;
+		/**
+		 * @var QTextBox txtSuggestionValue
+		 * @access protected
+		 */
 		protected $txtSuggestionValue;
+		/**
+		 * @var QTextBox txtSuggestionValueMd5
+		 * @access protected
+		 */
 		protected $txtSuggestionValueMd5;
+		/**
+		 * @var QIntegerTextBox txtSuggestionCharCount
+		 * @access protected
+		 */
 		protected $txtSuggestionCharCount;
+		/**
+		 * @var QIntegerTextBox txtSuggestionWordCount
+		 * @access protected
+		 */
 		protected $txtSuggestionWordCount;
+		/**
+		 * @var QCheckBox chkHasComments
+		 * @access protected
+		 */
 		protected $chkHasComments;
+		/**
+		 * @var QCheckBox chkIsImported
+		 * @access protected
+		 */
 		protected $chkIsImported;
+		/**
+		 * @var QDateTimePicker calCreated
+		 * @access protected
+		 */
 		protected $calCreated;
+		/**
+		 * @var QDateTimePicker calModified
+		 * @access protected
+		 */
 		protected $calModified;
 
 		// Controls that allow the viewing of NarroSuggestion's individual data fields
+		/**
+		 * @var QLabel lblUserId
+		 * @access protected
+		 */
 		protected $lblUserId;
+		/**
+		 * @var QLabel lblTextId
+		 * @access protected
+		 */
 		protected $lblTextId;
+		/**
+		 * @var QLabel lblLanguageId
+		 * @access protected
+		 */
 		protected $lblLanguageId;
+		/**
+		 * @var QLabel lblSuggestionValue
+		 * @access protected
+		 */
 		protected $lblSuggestionValue;
+		/**
+		 * @var QLabel lblSuggestionValueMd5
+		 * @access protected
+		 */
 		protected $lblSuggestionValueMd5;
+		/**
+		 * @var QLabel lblSuggestionCharCount
+		 * @access protected
+		 */
 		protected $lblSuggestionCharCount;
+		/**
+		 * @var QLabel lblSuggestionWordCount
+		 * @access protected
+		 */
 		protected $lblSuggestionWordCount;
+		/**
+		 * @var QLabel lblHasComments
+		 * @access protected
+		 */
 		protected $lblHasComments;
+		/**
+		 * @var QLabel lblIsImported
+		 * @access protected
+		 */
 		protected $lblIsImported;
+		/**
+		 * @var QLabel lblCreated
+		 * @access protected
+		 */
 		protected $lblCreated;
+		/**
+		 * @var QLabel lblModified
+		 * @access protected
+		 */
 		protected $lblModified;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
@@ -116,9 +224,9 @@
 		 * Static Helper Method to Create using PK arguments
 		 * You must pass in the PK arguments on an object to load, or leave it blank to create a new one.
 		 * If you want to load via QueryString or PathInfo, use the CreateFromQueryString or CreateFromPathInfo
-		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to 
+		 * static helper methods.  Finally, specify a CreateType to define whether or not we are only allowed to
 		 * edit, or if we are also allowed to create a new one, etc.
-		 * 
+		 *
 		 * @param mixed $objParentObject QForm or QPanel which will be using this NarroSuggestionMetaControl
 		 * @param integer $intSuggestionId primary key value
 		 * @param QMetaControlCreateType $intCreateType rules governing NarroSuggestion object creation - defaults to CreateOrEdit
@@ -636,7 +744,7 @@
 		 */
 		public function DeleteNarroSuggestion() {
 			$this->objNarroSuggestion->Delete();
-		}		
+		}
 
 
 
