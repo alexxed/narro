@@ -80,7 +80,7 @@
                 '<?= $_FORM->dtgNarroContextInfo_TranslatedText_Render($_ITEM); ?>'
             );
             $this->colTranslatedText->HtmlEntities = false;
-            $this->colTranslatedText->CssClass = QApplication::$Language->TextDirection;
+            $this->colTranslatedText->CssClass = QApplication::$TargetLanguage->TextDirection;
 
             // Setup DataGrid
             $this->dtgNarroContextInfo = new NarroDataGrid($this);
@@ -120,7 +120,7 @@
             $this->lstSearchType->AddItem(t('contexts'), self::SEARCH_CONTEXTS);
             $this->lstSearchType->AddItem(t('authors'), self::SEARCH_AUTHORS);
             $this->lstSearchType->AddItem(t('files'), self::SEARCH_FILES);
-            $this->lstSearchType->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('qc.getControl(\'%s\').className=((this.selectedIndex == 1)?\'%s\':\'ltr\');', $this->txtSearch->ControlId, QApplication::$Language->TextDirection)));
+            $this->lstSearchType->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('qc.getControl(\'%s\').className=((this.selectedIndex == 1)?\'%s\':\'ltr\');', $this->txtSearch->ControlId, QApplication::$TargetLanguage->TextDirection)));
             if (QApplication::QueryString('st') > 0)
                 $this->lstSearchType->SelectedValue = QApplication::QueryString('st');
 

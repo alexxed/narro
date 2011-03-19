@@ -18,7 +18,7 @@
     class NarroProgress {
 
         public static function GetProgressFileName($intProjectId, $strOperation) {
-            return __TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$Language->LanguageCode . '.progress';
+            return __TMP_PATH__ . '/' . $strOperation . '-' . $intProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '.progress';
         }
 
         public static function ClearProgressFileName($intProjectId, $strOperation) {

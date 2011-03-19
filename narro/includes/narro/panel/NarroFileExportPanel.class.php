@@ -87,10 +87,10 @@
             $objFileImporter->User = QApplication::$User;
             $objFileImporter->Project = $this->objNarroFile->Project;
             $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
-            $objFileImporter->TargetLanguage = QApplication::$Language;
+            $objFileImporter->TargetLanguage = QApplication::$TargetLanguage;
             $objFileImporter->File = $this->objNarroFile;
 
-            $strTempFileName = tempnam(__TMP_PATH__, QApplication::$Language->LanguageCode);
+            $strTempFileName = tempnam(__TMP_PATH__, QApplication::$TargetLanguage->LanguageCode);
 
             if (file_exists($this->fileToUpload->File)) {
                 $objFileImporter->ExportFile($this->fileToUpload->File, $strTempFileName);

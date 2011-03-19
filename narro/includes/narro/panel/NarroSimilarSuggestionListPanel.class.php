@@ -43,7 +43,7 @@
             // Setup DataGrid Columns
             $this->colSuggestion = new QDataGridColumn(t('Translation'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>');
             $this->colSuggestion->HtmlEntities = false;
-            $this->colSuggestion->CssClass = QApplication::$Language->TextDirection;
+            $this->colSuggestion->CssClass = QApplication::$TargetLanguage->TextDirection;
             $this->colSuggestion->Width = '50%';
 
             $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colActions_Render($_ITEM); ?>');

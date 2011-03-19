@@ -25,7 +25,7 @@
             ) . 
             sprintf(
                 ', <a href="%s">' . t('login or register to contribute') . '</a>',
-                'narro_login.php?l=' . QApplication::$Language->LanguageCode
+                'narro_login.php?l=' . QApplication::$TargetLanguage->LanguageCode
             );
 
     } else {
@@ -35,6 +35,6 @@
                 NarroLink::UserPreferences(QApplication::GetUserId(), QApplication::$User->Username),
                 ($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name
             ) .
-            '&nbsp;<a href="narro_logout.php?l=' . QApplication::$Language->LanguageCode . '" style="vertical-align:middle"><img src="assets/images/logout.png" alt="' . t('Logout') . '" border="0" title="' . t('Logout') . '" /></a>';
+            '&nbsp;<a href="narro_logout.php?l=' . QApplication::$TargetLanguage->LanguageCode . '" style="vertical-align:middle"><img src="assets/images/logout.png" alt="' . t('Logout') . '" border="0" title="' . t('Logout') . '" /></a>';
     }
 ?>

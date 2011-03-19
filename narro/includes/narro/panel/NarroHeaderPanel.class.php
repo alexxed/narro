@@ -27,7 +27,7 @@
             $this->lstLanguage->AddAction(new QChangeEvent(), new QServerControlAction($this, 'lstLanguage_Change'));
             $arrLanguages = NarroLanguage::LoadAllActive(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
             foreach($arrLanguages as $objLanguage) {
-                $this->lstLanguage->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == QApplication::$Language->LanguageCode));
+                $this->lstLanguage->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == QApplication::$TargetLanguage->LanguageCode));
             }
         }
 
@@ -36,7 +36,7 @@
              * @todo replace this code with a javascript one that keeps the #part
              */
             if (strstr($_SERVER['REQUEST_URI'], 'l='))
-                QApplication::Redirect(str_replace('l=' . QApplication::$Language->LanguageCode, 'l=' . $this->lstLanguage->SelectedValue, $_SERVER['REQUEST_URI']));
+                QApplication::Redirect(str_replace('l=' . QApplication::$TargetLanguage->LanguageCode, 'l=' . $this->lstLanguage->SelectedValue, $_SERVER['REQUEST_URI']));
             elseif (strstr($_SERVER['REQUEST_URI'], '?'))
                 QApplication::Redirect($_SERVER['REQUEST_URI'] . '&l=' . $this->lstLanguage->SelectedValue);
             else

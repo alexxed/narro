@@ -199,7 +199,7 @@
         protected function chkShowSimilarSuggestions_Create() {
             $this->chkShowSimilarSuggestions = new QCheckBox($this);
             $this->chkShowSimilarSuggestions->Text = t('Show translations of similar texts');
-            $this->chkShowSimilarSuggestions->Display = (file_exists(__SEARCH_INDEX_PATH__ . '/' . QApplication::$Language->LanguageCode . '/text_suggestion_idx'));
+            $this->chkShowSimilarSuggestions->Display = (file_exists(__SEARCH_INDEX_PATH__ . '/' . QApplication::$TargetLanguage->LanguageCode . '/text_suggestion_idx'));
             if (QApplication::$UseAjax)
                 $this->chkShowSimilarSuggestions->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkShowSimilarSuggestions_Click'));
             else
@@ -290,7 +290,7 @@
                 NarroContextComment::QueryArray(
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextComment()->ContextId, $this->objNarroContextInfo->ContextId),
-                        QQ::Equal(QQN::NarroContextComment()->LanguageId, __SOURCE_LANGUAGE_ID__)
+                        QQ::Equal(QQN::NarroContextComment()->LanguageId, QApplication::$SourceLanguage->LanguageId)
                     )
                 )
             ) {
@@ -443,7 +443,7 @@
         protected function txtSuggestionValue_Create() {
             $this->txtSuggestionValue = new QTextBox($this);
             $this->txtSuggestionValue->Text = '';
-            $this->txtSuggestionValue->CssClass = QApplication::$Language->TextDirection . ' green3dbg';
+            $this->txtSuggestionValue->CssClass = QApplication::$TargetLanguage->TextDirection . ' green3dbg';
             $this->txtSuggestionValue->Width = '100%';
             $this->txtSuggestionValue->Height = 85;
             $this->txtSuggestionValue->Required = true;

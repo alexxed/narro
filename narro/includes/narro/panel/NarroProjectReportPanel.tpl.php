@@ -19,27 +19,3 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 ?>
-<table width="1024">
-    <tr>
-        <th width="40%" align="center">
-        <?php
-            _t('From: ');
-            $_CONTROL->dtxFrom->Render();
-            $_CONTROL->calFrom->Render();
-        ?>
-        </th>
-        <th width="40%" align="center">
-        <?php
-            _t('To: ');
-            $_CONTROL->dtxTo->Render();
-            $_CONTROL->calTo->Render();
-        ?>
-        </th>
-        <th>
-        <?php $_CONTROL->btnRefresh->Render(); ?>
-        </th>
-    </tr>
-    <tr>
-        <td colspan="2"><?php $_CONTROL->flotReport->Render(); ?></td>
-    </tr>
-</table>

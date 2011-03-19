@@ -194,7 +194,7 @@
             if (!$this->blnEditMode)
                 $this->btnDelete->Visible = false;
 
-            $this->btnDelete->Visible = $this->objNarroLanguage->LanguageId != __SOURCE_LANGUAGE_ID__ && $this->objNarroLanguage->LanguageId != QApplication::GetLanguageId();
+            $this->btnDelete->Visible = $this->objNarroLanguage->LanguageId != QApplication::$SourceLanguage->LanguageId && $this->objNarroLanguage->LanguageId != QApplication::GetLanguageId();
         }
 
         // Protected Update Methods

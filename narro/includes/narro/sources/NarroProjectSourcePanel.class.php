@@ -53,7 +53,7 @@
         public function __get($strName) {
             switch ($strName) {
                 case "Directory":
-                    return sprintf('%s/%s/%s', __IMPORT_PATH__, $this->lstProject->SelectedValue, QApplication::$LanguageCode);
+                    return sprintf('%s/%s/%s', __IMPORT_PATH__, $this->lstProject->SelectedValue, QApplication::$TargetLanguageCode);
 
                 default:
                     try {

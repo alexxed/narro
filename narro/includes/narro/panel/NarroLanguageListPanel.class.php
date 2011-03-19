@@ -142,7 +142,7 @@
         }
 
         public function dtgLanguage_ActiveColumn_Render(NarroLanguage $objLanguage) {
-            if ($objLanguage->LanguageId == __SOURCE_LANGUAGE_ID__ || $objLanguage->LanguageId == QApplication::GetLanguageId())
+            if ($objLanguage->LanguageId == QApplication::$SourceLanguage->LanguageId || $objLanguage->LanguageId == QApplication::GetLanguageId())
                 return '';
             $objCheckBox = $this->Form->GetControl('activelang' . $objLanguage->LanguageId);
             if (!$objCheckBox instanceof QCheckBox) {
@@ -160,7 +160,7 @@
 
         public function dtgLanguage_Actions_Render(NarroLanguage $objLanguage) {
             if (QApplication::HasPermissionForThisLang('Can edit language', null))
-                return sprintf('<a href="narro_language_edit.php?l=%s&lid=%d">%s</a>', QApplication::$Language->LanguageCode, $objLanguage->LanguageId, t('Edit'));
+                return sprintf('<a href="narro_language_edit.php?l=%s&lid=%d">%s</a>', QApplication::$TargetLanguage->LanguageCode, $objLanguage->LanguageId, t('Edit'));
         }
 
         public function dtgLanguage_Bind() {

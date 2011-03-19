@@ -51,7 +51,7 @@
             // Setup DataGrid Columns
             $this->colSuggestion = new QDataGridColumn(t('Translation'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
             $this->colSuggestion->HtmlEntities = false;
-            $this->colSuggestion->CssClass = QApplication::$Language->TextDirection;
+            $this->colSuggestion->CssClass = QApplication::$TargetLanguage->TextDirection;
             $this->colSuggestion->Width = '100%';
 
             $this->colAuthor = new QDataGridColumn(t('Author'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colAuthor_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->UserId, false)));
@@ -224,7 +224,7 @@
                 if ($this->objNarroContextInfo->SuggestionAccessKey != '') {
                     $intAccPos = mb_strpos($strSuggestionValue, $this->objNarroContextInfo->SuggestionAccessKey);
 
-                    if (QApplication::$Language->TextDirection == 'rtl' && $intAccPos == 0)
+                    if (QApplication::$TargetLanguage->TextDirection == 'rtl' && $intAccPos == 0)
                         $strDirControlChar = "\xE2\x80\x8E"; //ltr = \xE2\x80\x8F"
                     else
                         $strDirControlChar = '';
@@ -255,7 +255,7 @@
                 $txtEditSuggestion = $this->objForm->GetControl($strControlId);
                 if (!$txtEditSuggestion) {
                     $txtEditSuggestion = new QTextBox($this->dtgSuggestions, $strControlId);
-                    $txtEditSuggestion->CssClass = QApplication::$Language->TextDirection . ' green3dbg';
+                    $txtEditSuggestion->CssClass = QApplication::$TargetLanguage->TextDirection . ' green3dbg';
                     $txtEditSuggestion->Width = '100%';
                     $txtEditSuggestion->Height = 85;
                     $txtEditSuggestion->Required = true;

@@ -50,7 +50,7 @@
 
             $this->txtNarroTextComment = new QTextBox($this);
             $this->txtNarroTextComment->Text = '';
-            $this->txtNarroTextComment->CssClass = QApplication::$Language->TextDirection . ' green3dbg';
+            $this->txtNarroTextComment->CssClass = QApplication::$TargetLanguage->TextDirection . ' green3dbg';
             $this->txtNarroTextComment->Width = '60%';
             $this->txtNarroTextComment->Height = 85;
             $this->txtNarroTextComment->TextMode = QTextMode::MultiLine;

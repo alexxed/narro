@@ -95,7 +95,7 @@
             $objFileImporter->User = QApplication::$User;
             $objFileImporter->Project = $this->objNarroFile->Project;
             $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
-            $objFileImporter->TargetLanguage = QApplication::$Language;
+            $objFileImporter->TargetLanguage = QApplication::$TargetLanguage;
             $objFileImporter->CheckEqual = true;
             $objFileImporter->File = $this->objNarroFile;
             $objFileImporter->OnlySuggestions = !QApplication::HasPermissionForThisLang('Can approve', $this->objNarroFile->ProjectId);
@@ -104,7 +104,7 @@
 
             $objFileImporter->Approve = QApplication::HasPermissionForThisLang('Can approve', $this->objNarroFile->ProjectId);
 
-            $strTempFileName = tempnam(__TMP_PATH__, QApplication::$Language->LanguageCode);
+            $strTempFileName = tempnam(__TMP_PATH__, QApplication::$TargetLanguage->LanguageCode);
 
             $objFileImporter->ImportFile($this->objNarroFile->Project->DefaultTemplatePath . $this->objNarroFile->FilePath, $this->fileToUpload->File);
 

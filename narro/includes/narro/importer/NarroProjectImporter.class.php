@@ -383,30 +383,30 @@
             }
 
             switch($objFile->TypeId) {
-                case NarroFileType::MozillaDtd:
-                        $objFileImporter = new NarroMozillaDtdFileImporter($this);
-                        break;
+//                case NarroFileType::MozillaDtd:
+//                        $objFileImporter = new NarroMozillaDtdFileImporter($this);
+//                        break;
                 case NarroFileType::MozillaIni:
                         $objFileImporter = new NarroMozillaIniFileImporter($this);
                         break;
                 case NarroFileType::MozillaInc:
                         $objFileImporter = new NarroMozillaIncFileImporter($this);
                         break;
-                case NarroFileType::GettextPo:
-                        $objFileImporter = new NarroGettextPoFileImporter($this);
-                        break;
-                case NarroFileType::OpenOfficeSdf:
-                        $objFileImporter = new NarroOpenOfficeSdfFileImporter($this);
-                        break;
-                case NarroFileType::Svg:
-                        $objFileImporter = new NarroSvgFileImporter($this);
-                        break;
-                case NarroFileType::DumbGettextPo:
-                        $objFileImporter = new NarroDumbGettextPoFileImporter($this);
-                        break;
-                case NarroFileType::PhpMyAdmin:
-                        $objFileImporter = new NarroPhpMyAdminFileImporter($this);
-                        break;
+//                case NarroFileType::GettextPo:
+//                        $objFileImporter = new NarroGettextPoFileImporter($this);
+//                        break;
+//                case NarroFileType::OpenOfficeSdf:
+//                        $objFileImporter = new NarroOpenOfficeSdfFileImporter($this);
+//                        break;
+//                case NarroFileType::Svg:
+//                        $objFileImporter = new NarroSvgFileImporter($this);
+//                        break;
+//                case NarroFileType::DumbGettextPo:
+//                        $objFileImporter = new NarroDumbGettextPoFileImporter($this);
+//                        break;
+//                case NarroFileType::PhpMyAdmin:
+//                        $objFileImporter = new NarroPhpMyAdminFileImporter($this);
+//                        break;
                 case NarroFileType::Unsupported:
                 default:
                         $objFileImporter = new NarroUnsupportedFileImporter($this);

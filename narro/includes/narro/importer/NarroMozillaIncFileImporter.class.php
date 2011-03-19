@@ -53,7 +53,7 @@
         }
 
         public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
-                    $intTime = time();
+            $intTime = time();
 
             if ($strTranslatedFile)
                 $arrTransKey = $this->FileAsArray($strTranslatedFile);
@@ -67,15 +67,15 @@
             QApplication::LogDebug(sprintf('Found %d contexts in file %s.', count($arrSourceKey), $this->objFile->FileName));
 
             if (is_array($arrSourceKey)) {
-                list($arrTemplate, $arrTemplateAccKeys) = $this->GetAccessKeys($arrTemplate);
-                list($arrTranslation, $arrTranslationAccKeys) = $this->GetAccessKeys($arrTranslation);
+                $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
+                $arrTransKey = $this->GetAccessKeys($arrTransKey);
 
                 foreach($arrSourceKey as $strKey=>$arrData) {
                     $this->AddTranslation(
                                 trim($arrData['text']),
-                                null,
+                                @$arrData['access_key'],
                                 isset($arrTransKey[$strKey])?trim($arrTransKey[$strKey]['text']):null,
-                                null,
+                                @$arrTransKey[$strKey]['access_key'],
                                 trim($strKey),
                                 trim($arrData['comment'])
                     );

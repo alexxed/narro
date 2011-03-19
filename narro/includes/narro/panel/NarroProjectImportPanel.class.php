@@ -56,7 +56,7 @@
             $this->pnlTextsSource = new NarroProjectTextSourcePanel($this->objNarroProject, NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE), $this);
             $this->pnlTextsSource->Display = QApplication::HasPermission('Can import project', $this->objNarroProject->ProjectId);
 
-            $this->pnlTranslationsSource = new NarroProjectTranslationSourcePanel($this->objNarroProject, QApplication::$Language, $this);
+            $this->pnlTranslationsSource = new NarroProjectTranslationSourcePanel($this->objNarroProject, QApplication::$TargetLanguage, $this);
 
             $this->chkApproveImportedTranslations = new QCheckBox($this);
             $this->chkApproveImportedTranslations->Name = t('Approve the imported translations');
@@ -128,7 +128,7 @@
                 QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnImport->ControlId, 2000));
             }
 
-            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objNarroProject->ProjectId, QApplication::$LanguageCode) && !$this->btnImport->Visible;
+            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objNarroProject->ProjectId, QApplication::$TargetLanguageCode) && !$this->btnImport->Visible;
         }
 
         public function chkApproveImportedTranslations_Click($strFormId, $strControlId, $strParameter) {
@@ -140,9 +140,9 @@
             if (!QApplication::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
                 return false;
 
-            $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.log';
-            $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.pid';
-            $strProgressFile = __TMP_PATH__ . '/import-' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode;
+            $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-import-process.log';
+            $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-import-process.pid';
+            $strProgressFile = __TMP_PATH__ . '/import-' . $this->objNarroProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode;
 
             $this->pnlLogViewer->LogFile = QApplication::$LogFile;
 
@@ -205,7 +205,7 @@
                 $objNarroImporter->OnlySuggestions = $this->chkImportOnlyTranslations->Checked;
                 $objNarroImporter->Project = $this->objNarroProject;
                 $objNarroImporter->User = NarroUser::LoadAnonymousUser();
-                $objNarroImporter->TargetLanguage = QApplication::$Language;
+                $objNarroImporter->TargetLanguage = QApplication::$TargetLanguage;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
                 try {
                     $objNarroImporter->TranslationPath = $this->pnlTranslationsSource->Directory;
@@ -238,7 +238,7 @@
                 NarroProgress::ClearProgressFileName($this->objNarroProject->ProjectId, 'import');
                 $this->pnlLogViewer->MarkAsModified();
                 $this->btnImport->Visible = false;
-                $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode) && !$this->btnImport->Visible;
+                $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$TargetLanguageCode) && !$this->btnImport->Visible;
                 $this->objImportProgress->Visible = true;
                 $this->objImportProgress->Translated = 0;
                 $this->lblImport->Text = '';
@@ -255,7 +255,7 @@
                         $this->objNarroProject->ProjectId,
                         0,
                         NarroLanguage::SOURCE_LANGUAGE_CODE,
-                        QApplication::$Language->LanguageCode,
+                        QApplication::$TargetLanguage->LanguageCode,
                         $this->pnlTextsSource->Directory,
                         $this->pnlTranslationsSource->Directory
                     );
@@ -266,7 +266,7 @@
 
                     $this->lblImport->Visible = true;
                     $this->btnImport->Visible = true;
-                    $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode) && !$this->btnImport->Visible;
+                    $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$TargetLanguageCode) && !$this->btnImport->Visible;
                     $this->objImportProgress->Translated = 0;
                     $this->objImportProgress->Visible = false;
 
@@ -303,8 +303,8 @@
         }
 
         public function btnKillProcess_Click($strFormId, $strControlId, $strParameter) {
-            $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.log';
-            $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-import-process.pid';
+            $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-import-process.log';
+            $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-import-process.pid';
 
             if (!file_exists($strProcPidFile)) {
                 QApplication::LogError('Could not find a pid file for the background process.');

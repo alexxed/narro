@@ -48,7 +48,7 @@
 
             $this->lblExport = new QLabel($this);
             $this->lblExport->HtmlEntities = false;
-            $strArchiveName = $this->objNarroProject->ProjectName . '-' . QApplication::$Language->LanguageCode . '.zip';
+            $strArchiveName = $this->objNarroProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip';
             $strExportFile = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId . '/' . $strArchiveName;
             if (file_exists($strExportFile)) {
                 $objDateSpan = new QDateTimeSpan(time() - filemtime($strExportFile));
@@ -95,14 +95,14 @@
                 QApplication::ExecuteJavaScript(sprintf('lastExportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnExport->ControlId, 2000));
             }
 
-            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objNarroProject->ProjectId, QApplication::$LanguageCode) && !$this->btnExport->Visible;
+            $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objNarroProject->ProjectId, QApplication::$TargetLanguageCode) && !$this->btnExport->Visible;
         }
 
         public function btnExport_Click($strFormId, $strControlId, $strParameter) {
             if (!QApplication::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
                 return false;
 
-            $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export-process.log';
+            $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-export-process.log';
 
             $this->pnlLogViewer->LogFile = QApplication::$LogFile;
 
@@ -154,7 +154,7 @@
                 $objNarroImporter->ExportedSuggestion = $this->lstExportSuggestionType->SelectedValue;
                 $objNarroImporter->Project = $this->objNarroProject;
                 $objNarroImporter->User = NarroUser::LoadAnonymousUser();
-                $objNarroImporter->TargetLanguage = QApplication::$Language;
+                $objNarroImporter->TargetLanguage = QApplication::$TargetLanguage;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
                 try {
                     $objNarroImporter->TranslationPath = $this->objNarroProject->DefaultTranslationPath;
@@ -187,7 +187,7 @@
                     NarroUtils::RecursiveDelete($this->objNarroProject->DefaultTranslationPath .'/*');
 
                 $this->btnExport->Visible = false;
-                $this->btnKillProcess->Visible = $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$LanguageCode);
+                $this->btnKillProcess->Visible = $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objNarroProject,QApplication::$TargetLanguageCode);
                 $this->objExportProgress->Visible = true;
                 $this->objExportProgress->Translated = 0;
                 $this->lblExport->Text = '';
@@ -199,7 +199,7 @@
                         $this->objNarroProject->ProjectId,
                         QApplication::$User->UserId,
                         NarroLanguage::SOURCE_LANGUAGE_CODE,
-                        QApplication::$Language->LanguageCode,
+                        QApplication::$TargetLanguage->LanguageCode,
                         $this->objNarroProject->DefaultTemplatePath,
                         $this->objNarroProject->DefaultTranslationPath,
                         $this->lstExportSuggestionType->SelectedValue,
@@ -248,8 +248,8 @@
         }
 
         public function btnKillProcess_Click($strFormId, $strControlId, $strParameter) {
-            $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export-process.log';
-            $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$Language->LanguageCode . '-export-process.pid';
+            $strProcLogFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-export-process.log';
+            $strProcPidFile = __TMP_PATH__ . '/' . $this->objNarroProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-export-process.pid';
 
             if (!file_exists($strProcPidFile)) {
                 QApplication::LogError('Could not find a pid file for the background process.');

@@ -66,13 +66,16 @@
                     $arrTransKey = $this->GetAccessKeys($arrTransKey);
 
                 foreach($arrSourceKey as $strKey=>$arrData) {
+                    // if it's a matched access key, keep going
+                    if (isset($arrData['label_ctx']))
+                        continue;
                     $this->AddTranslation(
                                 trim($arrData['text']),
                                 isset($arrData['access_key'])?trim($arrData['access_key']):null,
                                 isset($arrTransKey[$strKey])?trim($arrTransKey[$strKey]['text']):null,
-                                isset($arrTransKey[$strKey])?isset($arrTransKey[$strKey]['access_key'])?trim($arrTransKey[$strKey]['access_key']):null:null,
+                                isset($arrTransKey[$strKey])?(isset($arrTransKey[$strKey]['access_key'])?trim($arrTransKey[$strKey]['access_key']):null):null,
                                 trim($strKey),
-                                trim($arrData['comment'])
+                                (isset($arrData['access_key_ctx']))?trim($arrData['comment']) . "\n" . trim($arrSourceKey[$arrData['access_key_ctx']]['comment']):trim($arrData['comment'])
                     );
                 }
             }

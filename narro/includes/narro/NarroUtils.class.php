@@ -326,7 +326,7 @@
         }
 
         public static function IsProcessRunning($strOperation, $intProjectId) {
-            $strSearchCmd = sprintf('egrep -e "php.*--%s.*--project %d.*--translation-lang %s"', $strOperation, $intProjectId, QApplication::$Language->LanguageCode);
+            $strSearchCmd = sprintf('egrep -e "php.*--%s.*--project %d.*--translation-lang %s"', $strOperation, $intProjectId, QApplication::$TargetLanguage->LanguageCode);
             $strPsFindCmd = 'ps aux | ' . $strSearchCmd;
             $arrCmdLines = explode("\n", `$strPsFindCmd`);
 

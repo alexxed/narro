@@ -16,6 +16,66 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroMozillaFileImporter extends NarroFileImporter {
+            protected function FileAsArray($strFile) {
+            if (!file_exists($strFile)) {
+                QApplication::LogInfo(sprintf(t('%s does not exist'), $strFile));
+                return false;
+            }
+
+            $strFileContent = file_get_contents($strFile);
+            if (!$strFileContent) {
+                QApplication::LogInfo(sprintf(t('%s is empty'), $strFile));
+                return false;
+            }
+
+            $strFileContent = $this->PreProcessFile($strFileContent);
+
+            $arrFile = explode("\n", $strFileContent);
+
+            $arrKeys = array();
+            $arrComment = array();
+            $arrLinesBefore = array();
+            $strComment = null;
+            foreach($arrFile as $intPos=>$strLine) {
+                // if the line is empty, add it to the lines before
+                if (trim($strLine) == '') {
+                    $arrLinesBefore[] = $strLine;
+                    continue;
+                }
+
+                // prepare the line, comments and lines before if necessary
+                list($strLine, $arrComment, $arrLinesBefore) = $this->PreProcessLine($strLine, $arrComment, $arrLinesBefore);
+
+                // If the line is a comment
+                if ($this->IsComment($strLine)) {
+                    // build the comment until one valid key/value is found
+                    $arrComment[] = $strLine;
+                }
+                else {
+                    // process the line
+                    list($arrData, $arrComment, $arrLinesBefore) = $this->ProcessLine($strLine, $arrComment, $arrLinesBefore);
+                    if ($arrData) {
+                        if (count($arrComment))
+                            $strComment = join("\n", $arrComment);
+
+                        // The key is the context and usually unique in ini/properties files
+                        $arrKeys[$arrData['key']] = array('text' => $arrData['value'], 'comment' => $strComment, 'full_line' => $strLine, 'before_line' => join("\n", $arrLinesBefore));
+
+                        // we got all we need, reset the arrays
+                        $arrComment = array();
+                        $arrLinesBefore = array();
+                        $strComment = null;
+                    }
+                    else {
+                        QFirebug::warn(sprintf('Processing the line "%s" from %s failed, skipping it', $strLine, $this->objFile->FileName));
+                        $arrLinesBefore[] = $strLine . "\n";
+                    }
+                }
+            }
+
+            return $arrKeys;
+        }
+
         protected function IsComment($strLine) {
             return false;
         }
@@ -32,56 +92,6 @@
             return array($strLine, $arrComment, $arrLinesBefore);
         }
 
-        protected function FileAsArray($strFile) {
-            $strFile = file_get_contents($strFile);
-            if (!$strFile) {
-                QApplication::LogInfo(sprintf('%s is empty', $strFile));
-                return false;
-            }
-
-            $strFile = $this->PreProcessFile($strFile);
-
-            $arrFile = explode("\n", $strFile);
-
-            $arrKeys = array();
-            $arrComment = array();
-            $arrLinesBefore = array();
-            $strComment = null;
-            foreach($arrFile as $intPos=>$strLine) {
-                if (trim($strLine) == '') {
-                    $arrLinesBefore[] = $strLine;
-                    continue;
-                }
-
-                list($strLine, $arrComment, $arrLinesBefore) = $this->PreProcessLine($strLine, $arrComment, $arrLinesBefore);
-
-                if ($this->IsComment($strLine)) {
-                    // build the comment until one valid key/value is found
-                    $arrComment[] = $strLine;
-                }
-                else {
-                    list($arrData, $arrComment, $arrLinesBefore) = $this->ProcessLine($strLine, $arrComment, $arrLinesBefore);
-                    if ($arrData) {
-                        if (count($arrComment))
-                            $strComment = join("\n", $arrComment);
-
-                        // The key is the context and usually unique in ini/properties files
-                        $arrKeys[$arrData['key']] = array('text' => $arrData['value'], 'comment' => $strComment, 'full_line' => $strLine, 'before_line' => join("\n", $arrLinesBefore));
-
-                        $arrComment = array();
-                        $arrLinesBefore = array();
-                        $strComment = null;
-                    }
-                    else {
-                        QFirebug::warn(sprintf('Processing the line "%s" from %s failed, skipping it', $strLine, $this->objFile->FileName));
-                        $arrLinesBefore[] = $strLine . "\n";
-                    }
-                }
-            }
-            QFirebug::error($arrKeys);
-
-            return $arrKeys;
-        }
 
         /**
          * This function looks for accesskey entries and creates po style texts, e.g. &File
@@ -111,6 +121,8 @@
 
                             if (isset($arrTexts[$arrMatches[1] . $arrMatches[2] . 'label']))
                                 $strLabelCtx = $arrMatches[1] . $arrMatches[2] . 'label';
+                            elseif (isset($arrTexts[$arrMatches[1] . $arrMatches[2] . 'message']))
+                                $strLabelCtx = $arrMatches[1] . $arrMatches[2] . 'message';
                             elseif (isset($arrTexts[$arrMatches[1] . $arrMatches[2] . 'title']))
                                 $strLabelCtx = $arrMatches[1] . $arrMatches[2] . 'title';
                             elseif (isset($arrTexts[$arrMatches[1] . 'Label']))
@@ -143,19 +155,16 @@
                                         $intPos = $intKeySensitivePos;
 
                                     $arrTexts[$strLabelCtx]['access_key'] = mb_substr($strOriginalText, $intPos, 1);
-                                    unset($arrTexts[$strContext]);
                                     QApplication::LogDebug(sprintf('Found access key %s, using it', $arrTexts[$strLabelCtx]['access_key']));
-                                }
-                                elseif (preg_match('/[a-z]/i', $strOriginalText, $arrPossibleKeyMatches)) {
-                                    $arrTexts[$strLabelCtx]['access_key'] = $arrPossibleKeyMatches[0];
-                                    unset($arrTexts[$strContext]);
-                                    QApplication::LogWarn(sprintf('Found access key %s does not exist in the label %s, using the first ascii character as accesskey: "%s"', $strAccKey, $arrTexts[$strLabelCtx]['text'], $arrPossibleKeyMatches[0]));
                                 }
                                 else {
                                     $arrTexts[$strLabelCtx]['access_key'] = $strAccKey;
-                                    unset($arrTexts[$strContext]);
                                     QApplication::LogWarn(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
                                 }
+
+                                $arrTexts[$strContext]['label_ctx'] = $strLabelCtx;
+                                $arrTexts[$strLabelCtx]['access_key_ctx'] = $strContext;
+
                             }
                             else {
                                 QApplication::LogWarn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strContext, $arrMatches[1]));
@@ -236,6 +245,8 @@
                     $arrMatches[2] = str_replace('a', '', $arrMatches[2]);
                     if (isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'label']))
                         $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'label';
+                    if (isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'message']))
+                        $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'message';
                     elseif (isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'title']))
                         $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'title';
                     elseif (isset($arrTranslation[$arrMatches[1] . 'Label']))

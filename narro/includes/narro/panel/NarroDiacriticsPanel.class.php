@@ -288,7 +288,7 @@ class NarroDiacriticsPanel extends QPanel {
         $this->strText = '';
         $strSpecialChars = QApplication::$User->getPreferenceValueByName('Special characters');
         if (trim($strSpecialChars) == '') {
-            $strSpecialChars = QApplication::$Language->SpecialCharacters;
+            $strSpecialChars = QApplication::$TargetLanguage->SpecialCharacters;
         }
 
         foreach(explode(' ', $strSpecialChars) as $strChar) {
