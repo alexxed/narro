@@ -13,4 +13,28 @@ QApplicationBase::$ClassFile['qflot'] = __PLUGINS__ . '/QFlot/includes/QFlot.cla
 QApplicationBase::$ClassFile['qflotseries'] = __PLUGINS__ . '/QFlot/includes/QFlotSeries.class.php';
 //// END QFlot
 
+//// BEGIN QSlidePaginator
+QApplicationBase::$ClassFile['qslidepaginator'] = __PLUGINS__ . '/QSlidePaginator/includes/QSlidePaginator.class.php';
+//// END QSlidePaginator
+
+//// BEGIN QDateRangePicker
+QApplicationBase::$ClassFile['qdaterangepicker'] = __PLUGINS__ . '/QDateRangePicker/includes/QDateRangePicker.class.php';
+QApplicationBase::$ClassFile['qdaterangepickerbase'] = __PLUGINS__ . '/QDateRangePicker/includes/QDateRangePickerBase.class.php';
+//// END QDateRangePicker
+
+//// BEGIN DialogBoxes
+QApplicationBase::$ClassFile['qpromptdialog'] = __PLUGINS__ . '/DialogBoxes/includes/QPromptDialog.class.php';
+QApplicationBase::$ClassFile['qtextboxpromptdialog'] = __PLUGINS__ . '/DialogBoxes/includes/QTextBoxPromptDialog.class.php';
+QApplicationBase::$ClassFile['qradiobuttonpromptdialog'] = __PLUGINS__ . '/DialogBoxes/includes/QRadioButtonPromptDialog.class.php';
+QApplicationBase::$ClassFile['qconfirmationdialog'] = __PLUGINS__ . '/DialogBoxes/includes/QConfirmationDialog.class.php';
+//// END DialogBoxes
+
+//// BEGIN QQConditionRange
+QApplicationBase::$ClassFile['qqconditionrange'] = __PLUGINS__ . '/QQConditionRange/includes/QQConditionRange.class.php';
+//// END QQConditionRange
+
+//// BEGIN QCurl
+QApplicationBase::$ClassFile['qcurl'] = __PLUGINS__ . '/QCurl/includes/QCurl.class.php';
+//// END QCurl
+
 ?>

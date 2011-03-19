@@ -13,4 +13,24 @@ Examples::AddPluginExampleFile('QFlot', 'example/qflot-bar.php QFlot: Display a 
 Examples::AddPluginExampleFile('QFlot', 'example/qflot-timeseries.php QFlot: Display a time series chart');
 //// END QFlot
 
+//// BEGIN QSlidePaginator
+Examples::AddPluginExampleFile('QSlidePaginator', 'example/qslidepaginator.php QSliderPaginator: Data Grid Paginator Based on jQuery-based Slider');
+//// END QSlidePaginator
+
+//// BEGIN QDateRangePicker
+Examples::AddPluginExampleFile('QDateRangePicker', 'example/daterangepicker.php QDateRangePicker: Date range picker control');
+//// END QDateRangePicker
+
+//// BEGIN DialogBoxes
+Examples::AddPluginExampleFile('DialogBoxes', 'example/more_dialog_boxes.php * Pre-built Dialog Boxes: Confirmations and Prompts');
+//// END DialogBoxes
+
+//// BEGIN QQConditionRange
+Examples::AddPluginExampleFile('QQConditionRange', 'example/conditionrange.php QQConditionRange: Range query for QQuery');
+//// END QQConditionRange
+
+//// BEGIN QCurl
+Examples::AddPluginExampleFile('QCurl', 'example/qcurl.php QCurl: Making server-side HTTP requests using a Curl wrapper');
+//// END QCurl
+
 ?>
