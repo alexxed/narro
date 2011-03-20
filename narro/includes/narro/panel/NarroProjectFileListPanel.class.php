@@ -212,6 +212,9 @@
         }
 
         public function dtgNarroFile_ExportColumn_Render(NarroFile $objFile) {
+            if ($objNarroFile->TypeId == NarroFileType::Folder)
+                return '';
+
             $strControlId = 'chkExport' . $this->dtgNarroFile->CurrentRowIndex;
             $chkExport = $this->dtgNarroFile->GetChildControl($strControlId);
             if (!$chkExport) {
