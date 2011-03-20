@@ -16,35 +16,46 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    class NarroFileImporter {
+    abstract class NarroFileImporter {
         /**
          * the user object used for import
+         * @var NarroUser
          */
         protected $objUser;
         /**
          * the language object used to import in
+         * @var NarroLanguage
          */
         protected $objSourceLanguage;
         /**
          * the language object used to import from
+         * @var NarroLanguage
          */
         protected $objTargetLanguage;
         /**
          * the project object that is imported
+         * @var NarroProject
          */
         protected $objProject;
+        /**
+         * the file that is imported
+         * @var NarroFile
+         */
         protected $objFile;
         /**
          * whether to check if the suggestion value is the same as the original text
          * if it's true, the suggestions that are the same as the original text are not imported
+         * @var boolean
          */
         protected $blnCheckEqual = true;
         /**
          * whether to approve the imported suggestions
+         * @var boolean
          */
         protected $blnApprove = true;
         /**
          * whether to export the source text if no translation is found
+         * @var boolean
          */
         protected $blnSkipUntranslated = false;
         /**
@@ -54,6 +65,7 @@
         protected $blnApproveAlreadyApproved = false;
         /**
          * whether to import only suggestions, that is don't add anything else than suggestions
+         * @var boolean
          */
         protected $blnOnlySuggestions = false;
         /**
@@ -63,6 +75,7 @@
          * 3 = approved and most recent suggestion
          * 4 = approved and most voted and most recent suggestion
          * 5 = approved and current user's suggestion
+         * @var integer
          */
         protected $intExportedSuggestion = 1;
 
@@ -617,6 +630,11 @@
                     return false;
             }
         }
+
+        abstract public function ImportFile($strTemplateFile, $strTranslatedFile = null);
+        abstract public function ExportFile($strTemplateFile, $strTranslatedFile);
+
+
 
         /////////////////////////
         // Public Properties: GET
