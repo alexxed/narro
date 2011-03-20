@@ -79,6 +79,9 @@
                 case NarroFileType::PhpMyAdmin:
                     $objFileImporter = new NarroPhpMyAdminFileImporter();
                     break;
+                case NarroFileType::Html:
+                    $objFileImporter = new NarroHtmlFileImporter();
+                    break;
                 case NarroFileType::Unsupported:
                 default:
                     $objFileImporter = new NarroUnsupportedFileImporter();
@@ -99,6 +102,7 @@
             else
                 $objFileImporter->ExportFile($this->objNarroFile->Project->DefaultTemplatePath . $this->objNarroFile->FilePath, $strTempFileName);
 
+            ob_clean();
             header(sprintf('Content-Disposition: attachment; filename="%s"', $this->objNarroFile->FileName));
             readfile($strTempFileName);
             unlink($strTempFileName);

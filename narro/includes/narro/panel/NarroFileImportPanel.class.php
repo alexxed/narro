@@ -86,6 +86,9 @@
                 case NarroFileType::PhpMyAdmin:
                     $objFileImporter = new NarroPhpMyAdminFileImporter();
                     break;
+                case NarroFileType::Html:
+                    $objFileImporter = new NarroHtmlFileImporter();
+                    break;
                 case NarroFileType::Unsupported:
                 default:
                     $objFileImporter = new NarroUnsupportedFileImporter();
