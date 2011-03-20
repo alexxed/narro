@@ -30,6 +30,7 @@
 		protected $txtApprovedTextCount;
 		protected $txtFuzzyTextCount;
 		protected $txtProgressPercent;
+		protected $chkExport;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -72,6 +73,7 @@
 			$this->txtApprovedTextCount = $this->mctNarroFileProgress->txtApprovedTextCount_Create();
 			$this->txtFuzzyTextCount = $this->mctNarroFileProgress->txtFuzzyTextCount_Create();
 			$this->txtProgressPercent = $this->mctNarroFileProgress->txtProgressPercent_Create();
+			$this->chkExport = $this->mctNarroFileProgress->chkExport_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

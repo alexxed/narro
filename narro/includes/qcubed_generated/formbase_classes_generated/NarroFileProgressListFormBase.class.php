@@ -62,6 +62,7 @@
 			$this->dtgNarroFileProgresses->MetaAddColumn('ApprovedTextCount');
 			$this->dtgNarroFileProgresses->MetaAddColumn('FuzzyTextCount');
 			$this->dtgNarroFileProgresses->MetaAddColumn('ProgressPercent');
+			$this->dtgNarroFileProgresses->MetaAddColumn('Export');
 		}
 	}
 ?>

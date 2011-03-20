@@ -26,6 +26,7 @@
         // DataGrid Columns
         protected $colFileName;
         protected $colPercentTranslated;
+        protected $colExport;
 
         public $chkShowHierarchy;
         public $chkShowFolders;
@@ -55,6 +56,9 @@
             $this->colPercentTranslated->HtmlEntities = false;
             $this->colPercentTranslated->Width = 160;
 
+            $this->colExport = new QDataGridColumn(t('Export'), '<?= $_CONTROL->ParentControl->dtgNarroFile_ExportColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export, false)));
+            $this->colExport->HtmlEntities = false;
+
             // Setup DataGrid
             $this->dtgNarroFile = new NarroDataGrid($this);
 
@@ -72,6 +76,8 @@
 
             $this->dtgNarroFile->AddColumn($this->colFileName);
             $this->dtgNarroFile->AddColumn($this->colPercentTranslated);
+            if (QApplication::HasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::GetLanguageId()))
+                $this->dtgNarroFile->AddColumn($this->colExport);
 
             $this->chkShowHierarchy = new QCheckBox($this);
             $this->chkShowHierarchy->Checked = (QApplication::QueryString('s') == '');
@@ -190,6 +196,7 @@
                     default:
                             $strIcon = 'dtd_file.gif';
                 }
+
                 return sprintf('<img src="%s" style="vertical-align:middle" /> %s',
                     __IMAGE_ASSETS__ . '/../../images/' . $strIcon,
                     NarroLink::FileTextList(
@@ -201,6 +208,28 @@
                         $objNarroFile->FileName
                     )
                 );
+            }
+        }
+
+        public function dtgNarroFile_ExportColumn_Render(NarroFile $objFile) {
+            $strControlId = 'chkExport' . $this->dtgNarroFile->CurrentRowIndex;
+            $chkExport = $this->dtgNarroFile->GetChildControl($strControlId);
+            if (!$chkExport) {
+                $chkExport = new QCheckBox($this, $strControlId);
+                $chkExport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkExport_Click'));
+            }
+            $chkExport->ActionParameter = $objFile->FileId;
+            $chkExport->Checked = NarroFileProgress::CountByFileIdLanguageIdExport($objFile->FileId, QApplication::GetLanguageId(), 1);
+
+            return $chkExport->Render(false);
+        }
+
+        public function chkExport_Click($strFormId, $strControlId, $intFileId) {
+            $chkExport = $this->dtgNarroFile->GetChildControl($strControlId);
+            $objFileProgress = NarroFileProgress::LoadByFileIdLanguageId($intFileId, QApplication::GetLanguageId());
+            if ($objFileProgress) {
+                $objFileProgress->Export = !$objFileProgress->Export;
+                $objFileProgress->Save();
             }
         }
 

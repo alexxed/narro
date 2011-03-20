@@ -36,6 +36,8 @@
 	 * @property-read QLabel $CreatedLabel
 	 * @property QDateTimePicker $ModifiedControl
 	 * @property-read QLabel $ModifiedLabel
+	 * @property QTextBox $HeaderControl
+	 * @property-read QLabel $HeaderLabel
 	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -114,6 +116,11 @@
 		 * @access protected
 		 */
 		protected $calModified;
+		/**
+		 * @var QTextBox txtHeader
+		 * @access protected
+		 */
+		protected $txtHeader;
 
 		// Controls that allow the viewing of NarroFile's individual data fields
 		/**
@@ -161,6 +168,11 @@
 		 * @access protected
 		 */
 		protected $lblModified;
+		/**
+		 * @var QLabel lblHeader
+		 * @access protected
+		 */
+		protected $lblHeader;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -531,6 +543,33 @@
 		protected $strModifiedDateTimeFormat;
 
 
+		/**
+		 * Create and setup QTextBox txtHeader
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtHeader_Create($strControlId = null) {
+			$this->txtHeader = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtHeader->Name = QApplication::Translate('Header');
+			$this->txtHeader->Text = $this->objNarroFile->Header;
+			$this->txtHeader->Required = true;
+			$this->txtHeader->TextMode = QTextMode::MultiLine;
+			return $this->txtHeader;
+		}
+
+		/**
+		 * Create and setup QLabel lblHeader
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblHeader_Create($strControlId = null) {
+			$this->lblHeader = new QLabel($this->objParentObject, $strControlId);
+			$this->lblHeader->Name = QApplication::Translate('Header');
+			$this->lblHeader->Text = $this->objNarroFile->Header;
+			$this->lblHeader->Required = true;
+			return $this->lblHeader;
+		}
+
 
 
 		/**
@@ -592,6 +631,9 @@
 			if ($this->calModified) $this->calModified->DateTime = $this->objNarroFile->Modified;
 			if ($this->lblModified) $this->lblModified->Text = sprintf($this->objNarroFile->Modified) ? $this->objNarroFile->Modified->qFormat($this->strModifiedDateTimeFormat) : null;
 
+			if ($this->txtHeader) $this->txtHeader->Text = $this->objNarroFile->Header;
+			if ($this->lblHeader) $this->lblHeader->Text = $this->objNarroFile->Header;
+
 		}
 
 
@@ -624,6 +666,7 @@
 				if ($this->chkActive) $this->objNarroFile->Active = $this->chkActive->Checked;
 				if ($this->calCreated) $this->objNarroFile->Created = $this->calCreated->DateTime;
 				if ($this->calModified) $this->objNarroFile->Modified = $this->calModified->DateTime;
+				if ($this->txtHeader) $this->objNarroFile->Header = $this->txtHeader->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -726,6 +769,12 @@
 				case 'ModifiedLabel':
 					if (!$this->lblModified) return $this->lblModified_Create();
 					return $this->lblModified;
+				case 'HeaderControl':
+					if (!$this->txtHeader) return $this->txtHeader_Create();
+					return $this->txtHeader;
+				case 'HeaderLabel':
+					if (!$this->lblHeader) return $this->lblHeader_Create();
+					return $this->lblHeader;
 				default:
 					try {
 						return parent::__get($strName);
@@ -768,6 +817,8 @@
 						return ($this->calCreated = QType::Cast($mixValue, 'QControl'));
 					case 'ModifiedControl':
 						return ($this->calModified = QType::Cast($mixValue, 'QControl'));
+					case 'HeaderControl':
+						return ($this->txtHeader = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

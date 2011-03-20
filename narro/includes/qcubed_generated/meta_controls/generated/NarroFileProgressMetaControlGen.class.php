@@ -30,6 +30,8 @@
 	 * @property-read QLabel $FuzzyTextCountLabel
 	 * @property QIntegerTextBox $ProgressPercentControl
 	 * @property-read QLabel $ProgressPercentLabel
+	 * @property QCheckBox $ExportControl
+	 * @property-read QLabel $ExportLabel
 	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -93,6 +95,11 @@
 		 * @access protected
 		 */
 		protected $txtProgressPercent;
+		/**
+		 * @var QCheckBox chkExport
+		 * @access protected
+		 */
+		protected $chkExport;
 
 		// Controls that allow the viewing of NarroFileProgress's individual data fields
 		/**
@@ -125,6 +132,11 @@
 		 * @access protected
 		 */
 		protected $lblProgressPercent;
+		/**
+		 * @var QLabel lblExport
+		 * @access protected
+		 */
+		protected $lblExport;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -418,6 +430,30 @@
 			return $this->lblProgressPercent;
 		}
 
+		/**
+		 * Create and setup QCheckBox chkExport
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkExport_Create($strControlId = null) {
+			$this->chkExport = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkExport->Name = QApplication::Translate('Export');
+			$this->chkExport->Checked = $this->objNarroFileProgress->Export;
+			return $this->chkExport;
+		}
+
+		/**
+		 * Create and setup QLabel lblExport
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblExport_Create($strControlId = null) {
+			$this->lblExport = new QLabel($this->objParentObject, $strControlId);
+			$this->lblExport->Name = QApplication::Translate('Export');
+			$this->lblExport->Text = ($this->objNarroFileProgress->Export) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblExport;
+		}
+
 
 
 		/**
@@ -471,6 +507,9 @@
 			if ($this->txtProgressPercent) $this->txtProgressPercent->Text = $this->objNarroFileProgress->ProgressPercent;
 			if ($this->lblProgressPercent) $this->lblProgressPercent->Text = $this->objNarroFileProgress->ProgressPercent;
 
+			if ($this->chkExport) $this->chkExport->Checked = $this->objNarroFileProgress->Export;
+			if ($this->lblExport) $this->lblExport->Text = ($this->objNarroFileProgress->Export) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 		}
 
 
@@ -500,6 +539,7 @@
 				if ($this->txtApprovedTextCount) $this->objNarroFileProgress->ApprovedTextCount = $this->txtApprovedTextCount->Text;
 				if ($this->txtFuzzyTextCount) $this->objNarroFileProgress->FuzzyTextCount = $this->txtFuzzyTextCount->Text;
 				if ($this->txtProgressPercent) $this->objNarroFileProgress->ProgressPercent = $this->txtProgressPercent->Text;
+				if ($this->chkExport) $this->objNarroFileProgress->Export = $this->chkExport->Checked;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -584,6 +624,12 @@
 				case 'ProgressPercentLabel':
 					if (!$this->lblProgressPercent) return $this->lblProgressPercent_Create();
 					return $this->lblProgressPercent;
+				case 'ExportControl':
+					if (!$this->chkExport) return $this->chkExport_Create();
+					return $this->chkExport;
+				case 'ExportLabel':
+					if (!$this->lblExport) return $this->lblExport_Create();
+					return $this->lblExport;
 				default:
 					try {
 						return parent::__get($strName);
@@ -620,6 +666,8 @@
 						return ($this->txtFuzzyTextCount = QType::Cast($mixValue, 'QControl'));
 					case 'ProgressPercentControl':
 						return ($this->txtProgressPercent = QType::Cast($mixValue, 'QControl'));
+					case 'ExportControl':
+						return ($this->chkExport = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

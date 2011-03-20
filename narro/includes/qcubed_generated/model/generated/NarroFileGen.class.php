@@ -25,6 +25,7 @@
 	 * @property boolean $Active the value for blnActive (Not Null)
 	 * @property QDateTime $Created the value for dttCreated (Not Null)
 	 * @property QDateTime $Modified the value for dttModified 
+	 * @property string $Header the value for strHeader (Not Null)
 	 * @property NarroFile $Parent the value for the NarroFile object referenced by intParentId 
 	 * @property NarroProject $Project the value for the NarroProject object referenced by intProjectId (Not Null)
 	 * @property-read NarroContext $_NarroContextAsFile the value for the private _objNarroContextAsFile (Read-Only) if set due to an expansion on the narro_context.file_id reverse relationship
@@ -122,6 +123,14 @@
 		 */
 		protected $dttModified;
 		const ModifiedDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_file.header
+		 * @var string strHeader
+		 */
+		protected $strHeader;
+		const HeaderDefault = null;
 
 
 		/**
@@ -231,6 +240,7 @@
 			$this->blnActive = NarroFile::ActiveDefault;
 			$this->dttCreated = (NarroFile::CreatedDefault === null)?null:new QDateTime(NarroFile::CreatedDefault);
 			$this->dttModified = (NarroFile::ModifiedDefault === null)?null:new QDateTime(NarroFile::ModifiedDefault);
+			$this->strHeader = NarroFile::HeaderDefault;
 		}
 
 
@@ -508,6 +518,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
 			$objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
 			$objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+			$objBuilder->AddSelectItem($strTableName, 'header', $strAliasPrefix . 'header');
 		}
 
 
@@ -636,6 +647,8 @@
 			$objToReturn->dttCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'modified', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'modified'] : $strAliasPrefix . 'modified';
 			$objToReturn->dttModified = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAliasName = array_key_exists($strAliasPrefix . 'header', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'header'] : $strAliasPrefix . 'header';
+			$objToReturn->strHeader = $objDbRow->GetColumn($strAliasName, 'Blob');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
 				foreach ($arrPreviousItems as $objPreviousItem) {
@@ -934,7 +947,8 @@
 							`project_id`,
 							`active`,
 							`created`,
-							`modified`
+							`modified`,
+							`header`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strFileName) . ',
 							' . $objDatabase->SqlVariable($this->strFilePath) . ',
@@ -944,7 +958,8 @@
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							' . $objDatabase->SqlVariable($this->blnActive) . ',
 							' . $objDatabase->SqlVariable($this->dttCreated) . ',
-							' . $objDatabase->SqlVariable($this->dttModified) . '
+							' . $objDatabase->SqlVariable($this->dttModified) . ',
+							' . $objDatabase->SqlVariable($this->strHeader) . '
 						)
 					');
 
@@ -968,7 +983,8 @@
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
-							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . '
+							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . ',
+							`header` = ' . $objDatabase->SqlVariable($this->strHeader) . '
 						WHERE
 							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
 					');
@@ -1056,6 +1072,7 @@
 			$this->blnActive = $objReloaded->blnActive;
 			$this->dttCreated = $objReloaded->dttCreated;
 			$this->dttModified = $objReloaded->dttModified;
+			$this->strHeader = $objReloaded->strHeader;
 		}
 
 
@@ -1145,6 +1162,13 @@
 					 * @return QDateTime
 					 */
 					return $this->dttModified;
+
+				case 'Header':
+					/**
+					 * Gets the value for strHeader (Not Null)
+					 * @return string
+					 */
+					return $this->strHeader;
 
 
 				///////////////////
@@ -1373,6 +1397,19 @@
 					 */
 					try {
 						return ($this->dttModified = QType::Cast($mixValue, QType::DateTime));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Header':
+					/**
+					 * Sets the value for strHeader (Not Null)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strHeader = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1943,6 +1980,7 @@
 			$strToReturn .= '<element name="Active" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Created" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="Modified" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="Header" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1989,6 +2027,8 @@
 				$objToReturn->dttCreated = new QDateTime($objSoapObject->Created);
 			if (property_exists($objSoapObject, 'Modified'))
 				$objToReturn->dttModified = new QDateTime($objSoapObject->Modified);
+			if (property_exists($objSoapObject, 'Header'))
+				$objToReturn->strHeader = $objSoapObject->Header;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -2043,6 +2083,7 @@
 			$iArray['Active'] = $this->blnActive;
 			$iArray['Created'] = $this->dttCreated;
 			$iArray['Modified'] = $this->dttModified;
+			$iArray['Header'] = $this->strHeader;
 			return new ArrayIterator($iArray);
 		}
 
@@ -2076,6 +2117,7 @@
      * @property-read QQNode $Active
      * @property-read QQNode $Created
      * @property-read QQNode $Modified
+     * @property-read QQNode $Header
      *
      *
      * @property-read QQReverseReferenceNodeNarroContext $NarroContextAsFile
@@ -2114,6 +2156,8 @@
 					return new QQNode('created', 'Created', 'DateTime', $this);
 				case 'Modified':
 					return new QQNode('modified', 'Modified', 'DateTime', $this);
+				case 'Header':
+					return new QQNode('header', 'Header', 'Blob', $this);
 				case 'NarroContextAsFile':
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasfile', 'reverse_reference', 'file_id');
 				case 'ChildNarroFile':
@@ -2147,6 +2191,7 @@
      * @property-read QQNode $Active
      * @property-read QQNode $Created
      * @property-read QQNode $Modified
+     * @property-read QQNode $Header
      *
      *
      * @property-read QQReverseReferenceNodeNarroContext $NarroContextAsFile
@@ -2185,6 +2230,8 @@
 					return new QQNode('created', 'Created', 'QDateTime', $this);
 				case 'Modified':
 					return new QQNode('modified', 'Modified', 'QDateTime', $this);
+				case 'Header':
+					return new QQNode('header', 'Header', 'string', $this);
 				case 'NarroContextAsFile':
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasfile', 'reverse_reference', 'file_id');
 				case 'ChildNarroFile':

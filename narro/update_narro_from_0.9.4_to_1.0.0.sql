@@ -55,8 +55,8 @@ VALUES (
 NULL , 'Unsupported'
 );
 
- ALTER TABLE `narro_context_comment` DROP INDEX `context_id_2`;
-  ALTER TABLE `narro_text_comment` DROP INDEX `text_id_2` ;
+ALTER TABLE `narro_context_comment` DROP INDEX `context_id_2`;
+ALTER TABLE `narro_text_comment` DROP INDEX `text_id_2` ;
 
  INSERT INTO `narro_permission` (
 `permission_id` ,
@@ -67,3 +67,23 @@ NULL , 'Can add context comments'
 );
 
  ALTER TABLE `narro_project` ADD INDEX ( `active` ) ;
+
+INSERT INTO `narro_file_type` (
+`file_type_id` ,
+`file_type`
+)
+VALUES (
+NULL , 'Html'
+);
+
+INSERT INTO `narro_project_type` (
+`project_type_id` ,
+`project_type`
+)
+VALUES (
+NULL , 'Html'
+);
+
+ALTER TABLE `narro_suggestion_vote` DROP `text_id` ;
+ALTER TABLE `narro_file` ADD `header` TEXT NOT NULL ;
+ALTER TABLE `narro_file_progress` ADD `export` BOOL NULL DEFAULT TRUE;

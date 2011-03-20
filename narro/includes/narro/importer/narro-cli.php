@@ -48,7 +48,6 @@
                     "--approve                    approve the imported suggestions\n" .
                     "--approve-already-approved   overwrite translations approved in Narro\n" .
                     "--import-unchanged-files     import files marked unchanged after the last import\n" .
-                    "--copy-unhandled-files       copy unhandled files when exporting\n" .
                     "--only-suggestions           import only suggestions, don't add files, texts\n" .
                     "                             or contexts\n",
                 basename(__FILE__),
@@ -173,7 +172,7 @@
 
             file_put_contents($strProcPidFile, getmypid());
 
-            $objNarroImporter->ImportProject();
+            $blnResult = $objNarroImporter->ImportProject();
         }
         catch (Exception $objEx) {
             QApplication::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
@@ -182,7 +181,14 @@
         }
 
         $objNarroImporter->CleanImportDirectory();
+        if ($blnResult)
         foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
+            if ($strName == 'Start time')
+                $strValue = date('Y-m-d H:i:s', $strValue);
+
+            if ($strName == 'End time')
+                $strValue = date('Y-m-d H:i:s', $strValue);
+
             if ($strValue != 0)
                 QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);
         }
@@ -250,7 +256,6 @@
 
         $objNarroImporter->Project = $objProject;
         $objNarroImporter->User = $objUser;
-        $objNarroImporter->CopyUnhandledFiles = ((bool) array_search('--copy-unhandled-files', $argv));
         if (array_search('--template-directory', $argv) !== false)
             $objNarroImporter->TemplatePath = $argv[array_search('--template-directory', $argv)+1];
         else

@@ -301,6 +301,7 @@
 				case 'Active': return QQN::NarroFile()->Active;
 				case 'Created': return QQN::NarroFile()->Created;
 				case 'Modified': return QQN::NarroFile()->Modified;
+				case 'Header': return QQN::NarroFile()->Header;
 				default: throw new QCallerException('Simple Property not found in NarroFileDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

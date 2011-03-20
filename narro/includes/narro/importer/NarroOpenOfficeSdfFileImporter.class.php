@@ -266,5 +266,60 @@
 
             NarroUtils::RecursiveChmod($strPath);
         }
+
+        /**
+         * Preprocesses the whole file, e.g. removing trailing spaces
+         * @param string $strFile file content
+         * @return string
+         */
+        protected function PreProcessFile($strFile) {}
+
+        /**
+         * Converts the file to an associative array
+         * array(
+         *     'key' => ''
+         *     array(
+         *         'text' => '',
+         *         'comment' => '',
+         *         'full_line' => '',
+         *         'before_line' => ''
+         *     )
+         * );
+         *
+         * The key is something that must be unique to each text from that file; in most cases it can be the actual text
+         * @param string $strFile file path
+         * @return array
+         */
+        protected function FileAsArray($strFilePath) {}
+
+        /**
+         * Tells whether the file is a comment
+         * This function helps with comments that spread over multiple lines
+         * @param string $strLine
+         * @return boolean
+         */
+        protected function IsComment($strLine) {}
+
+        /**
+         * Preprocesses the line if needed
+         * e.g. in the source file there's a comment like '# #define MOZ_LANGPACK_CONTRIBUTORS that should be uncommented
+         * @param string $strLine
+         * @param array $arrComment
+         * @param array $arrLinesBefore
+         * @return array an array with the arguments received; processed if needed
+         */
+        protected function PreProcessLine($strLine, $arrComment, $arrLinesBefore) {}
+
+        /**
+         * Process the line by splitting the $strLine in key=>value
+         * array(array('key' => $strKey, 'value' => $strValue), $arrComment, $arrLinesBefore)
+         * or
+         * array(false, $arrComment, $arrLinesBefore)
+         * @param string $strLine
+         * @param array $arrComment
+         * @param array $arrLinesBefore
+         * @return array
+         */
+        protected function ProcessLine($strLine, $arrComment, $arrLinesBefore) {}
     }
 ?>

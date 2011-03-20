@@ -298,6 +298,7 @@
 				case 'ApprovedTextCount': return QQN::NarroFileProgress()->ApprovedTextCount;
 				case 'FuzzyTextCount': return QQN::NarroFileProgress()->FuzzyTextCount;
 				case 'ProgressPercent': return QQN::NarroFileProgress()->ProgressPercent;
+				case 'Export': return QQN::NarroFileProgress()->Export;
 				default: throw new QCallerException('Simple Property not found in NarroFileProgressDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

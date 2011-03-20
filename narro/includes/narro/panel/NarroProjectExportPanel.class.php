@@ -55,10 +55,6 @@
                 $this->lblExport->Text = sprintf(t('Link to last export: <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
             }
 
-
-            $this->chkCopyUnhandledFiles = new QCheckBox($this);
-            $this->chkCopyUnhandledFiles->Name = t('Copy unhandled files');
-
             $this->chkCleanDirectory = new QCheckBox($this);
             $this->chkCleanDirectory->Name = t('Clean export directory before exporting');
 
@@ -193,7 +189,7 @@
                 $this->lblExport->Text = '';
                 try {
                     $strCommand = sprintf(
-                        '%s %s --export --project %d --user %d --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s" --exported-suggestion %d %s',
+                        '%s %s --export --project %d --user %d --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s" --exported-suggestion %d',
                         __PHP_CLI_PATH__,
                         escapeshellarg('includes/narro/importer/narro-cli.php'),
                         $this->objNarroProject->ProjectId,
@@ -202,8 +198,7 @@
                         QApplication::$TargetLanguage->LanguageCode,
                         $this->objNarroProject->DefaultTemplatePath,
                         $this->objNarroProject->DefaultTranslationPath,
-                        $this->lstExportSuggestionType->SelectedValue,
-                        (($this->chkCopyUnhandledFiles->Checked)?'--copy-unhandled-files ':'')
+                        $this->lstExportSuggestionType->SelectedValue
                     );
                 }
                 catch (Exception $objEx) {

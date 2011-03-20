@@ -22,6 +22,7 @@
 	 * @property integer $ApprovedTextCount the value for intApprovedTextCount (Not Null)
 	 * @property integer $FuzzyTextCount the value for intFuzzyTextCount (Not Null)
 	 * @property integer $ProgressPercent the value for intProgressPercent (Not Null)
+	 * @property boolean $Export the value for blnExport 
 	 * @property NarroFile $File the value for the NarroFile object referenced by intFileId (Not Null)
 	 * @property NarroLanguage $Language the value for the NarroLanguage object referenced by intLanguageId (Not Null)
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -89,6 +90,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_file_progress.export
+		 * @var boolean blnExport
+		 */
+		protected $blnExport;
+		const ExportDefault = null;
+
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -144,6 +153,7 @@
 			$this->intApprovedTextCount = NarroFileProgress::ApprovedTextCountDefault;
 			$this->intFuzzyTextCount = NarroFileProgress::FuzzyTextCountDefault;
 			$this->intProgressPercent = NarroFileProgress::ProgressPercentDefault;
+			$this->blnExport = NarroFileProgress::ExportDefault;
 		}
 
 
@@ -418,6 +428,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'approved_text_count', $strAliasPrefix . 'approved_text_count');
 			$objBuilder->AddSelectItem($strTableName, 'fuzzy_text_count', $strAliasPrefix . 'fuzzy_text_count');
 			$objBuilder->AddSelectItem($strTableName, 'progress_percent', $strAliasPrefix . 'progress_percent');
+			$objBuilder->AddSelectItem($strTableName, 'export', $strAliasPrefix . 'export');
 		}
 
 
@@ -462,6 +473,8 @@
 			$objToReturn->intFuzzyTextCount = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'progress_percent', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'progress_percent'] : $strAliasPrefix . 'progress_percent';
 			$objToReturn->intProgressPercent = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'export', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'export'] : $strAliasPrefix . 'export';
+			$objToReturn->blnExport = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
 				foreach ($arrPreviousItems as $objPreviousItem) {
@@ -641,6 +654,50 @@
 				QQ::Equal(QQN::NarroFileProgress()->FileId, $intFileId)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroFileProgress objects,
+		 * by FileId, LanguageId, Export Index(es)
+		 * @param integer $intFileId
+		 * @param integer $intLanguageId
+		 * @param boolean $blnExport
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroFileProgress[]
+		*/
+		public static function LoadArrayByFileIdLanguageIdExport($intFileId, $intLanguageId, $blnExport, $objOptionalClauses = null) {
+			// Call NarroFileProgress::QueryArray to perform the LoadArrayByFileIdLanguageIdExport query
+			try {
+				return NarroFileProgress::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::NarroFileProgress()->FileId, $intFileId),
+					QQ::Equal(QQN::NarroFileProgress()->LanguageId, $intLanguageId),
+					QQ::Equal(QQN::NarroFileProgress()->Export, $blnExport)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroFileProgresses
+		 * by FileId, LanguageId, Export Index(es)
+		 * @param integer $intFileId
+		 * @param integer $intLanguageId
+		 * @param boolean $blnExport
+		 * @return int
+		*/
+		public static function CountByFileIdLanguageIdExport($intFileId, $intLanguageId, $blnExport) {
+			// Call NarroFileProgress::QueryCount to perform the CountByFileIdLanguageIdExport query
+			return NarroFileProgress::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::NarroFileProgress()->FileId, $intFileId),
+				QQ::Equal(QQN::NarroFileProgress()->LanguageId, $intLanguageId),
+				QQ::Equal(QQN::NarroFileProgress()->Export, $blnExport)
+				)
+			);
+		}
 
 
 
@@ -677,14 +734,16 @@
 							`total_text_count`,
 							`approved_text_count`,
 							`fuzzy_text_count`,
-							`progress_percent`
+							`progress_percent`,
+							`export`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intFileId) . ',
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
 							' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
 							' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
-							' . $objDatabase->SqlVariable($this->intProgressPercent) . '
+							' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
+							' . $objDatabase->SqlVariable($this->blnExport) . '
 						)
 					');
 
@@ -705,7 +764,8 @@
 							`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
 							`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
 							`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
-							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . '
+							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
+							`export` = ' . $objDatabase->SqlVariable($this->blnExport) . '
 						WHERE
 							`file_progress_id` = ' . $objDatabase->SqlVariable($this->intFileProgressId) . '
 					');
@@ -790,6 +850,7 @@
 			$this->intApprovedTextCount = $objReloaded->intApprovedTextCount;
 			$this->intFuzzyTextCount = $objReloaded->intFuzzyTextCount;
 			$this->intProgressPercent = $objReloaded->intProgressPercent;
+			$this->blnExport = $objReloaded->blnExport;
 		}
 
 
@@ -858,6 +919,13 @@
 					 * @return integer
 					 */
 					return $this->intProgressPercent;
+
+				case 'Export':
+					/**
+					 * Gets the value for blnExport 
+					 * @return boolean
+					 */
+					return $this->blnExport;
 
 
 				///////////////////
@@ -1004,6 +1072,19 @@
 						throw $objExc;
 					}
 
+				case 'Export':
+					/**
+					 * Sets the value for blnExport 
+					 * @param boolean $mixValue
+					 * @return boolean
+					 */
+					try {
+						return ($this->blnExport = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -1116,6 +1197,7 @@
 			$strToReturn .= '<element name="ApprovedTextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="FuzzyTextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="ProgressPercent" type="xsd:int"/>';
+			$strToReturn .= '<element name="Export" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1156,6 +1238,8 @@
 				$objToReturn->intFuzzyTextCount = $objSoapObject->FuzzyTextCount;
 			if (property_exists($objSoapObject, 'ProgressPercent'))
 				$objToReturn->intProgressPercent = $objSoapObject->ProgressPercent;
+			if (property_exists($objSoapObject, 'Export'))
+				$objToReturn->blnExport = $objSoapObject->Export;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1203,6 +1287,7 @@
 			$iArray['ApprovedTextCount'] = $this->intApprovedTextCount;
 			$iArray['FuzzyTextCount'] = $this->intFuzzyTextCount;
 			$iArray['ProgressPercent'] = $this->intProgressPercent;
+			$iArray['Export'] = $this->blnExport;
 			return new ArrayIterator($iArray);
 		}
 
@@ -1233,6 +1318,7 @@
      * @property-read QQNode $ApprovedTextCount
      * @property-read QQNode $FuzzyTextCount
      * @property-read QQNode $ProgressPercent
+     * @property-read QQNode $Export
      *
      *
 
@@ -1262,6 +1348,8 @@
 					return new QQNode('fuzzy_text_count', 'FuzzyTextCount', 'Integer', $this);
 				case 'ProgressPercent':
 					return new QQNode('progress_percent', 'ProgressPercent', 'Integer', $this);
+				case 'Export':
+					return new QQNode('export', 'Export', 'Bit', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('file_progress_id', 'FileProgressId', 'Integer', $this);
@@ -1286,6 +1374,7 @@
      * @property-read QQNode $ApprovedTextCount
      * @property-read QQNode $FuzzyTextCount
      * @property-read QQNode $ProgressPercent
+     * @property-read QQNode $Export
      *
      *
 
@@ -1315,6 +1404,8 @@
 					return new QQNode('fuzzy_text_count', 'FuzzyTextCount', 'integer', $this);
 				case 'ProgressPercent':
 					return new QQNode('progress_percent', 'ProgressPercent', 'integer', $this);
+				case 'Export':
+					return new QQNode('export', 'Export', 'boolean', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('file_progress_id', 'FileProgressId', 'integer', $this);

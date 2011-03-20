@@ -76,10 +76,6 @@
          * whether to make contexts inactive before import
          */
         protected $blnDeactivateContexts = true;
-        /**
-         * whether to copy unhandled files
-         */
-        protected $blnCopyUnhandledFiles = true;
 
         protected $strTranslationPath;
         protected $strTemplatePath;
@@ -281,9 +277,9 @@
                  */
                 $intFileType = $this->GetFileType($strFileName);
 
-                if ($intFileType === false) {
-                    QApplication::LogError(sprintf('Skipping "%s" from "%s"', basename($strFileName), dirname($strFileName)));
-                    continue;
+                if (!is_readable($strFileToImport)) {
+                    QApplication::LogError(sprintf('Cannot read "%s"', $strFileToImport));
+                    return false;
                 }
 
                 $objFile = NarroFile::LoadByProjectIdFileNameParentId($this->objProject->ProjectId, $strFileName, $intParentId);
@@ -370,7 +366,10 @@
                 return false;
             }
 
-            QApplication::LogInfo(sprintf('Starting to import from "%s" and translations from "%s"', $strTemplateFile, $strTranslatedFile));
+            if ($strTranslatedFile)
+                QApplication::LogInfo(sprintf('Starting to import from "%s" and translations from "%s"', $strTemplateFile, $strTranslatedFile));
+            else
+                QApplication::LogInfo(sprintf('Starting to import from "%s", no translations file', $strTemplateFile));
 
             if ($this->blnDeactivateContexts && $this->blnOnlySuggestions == false) {
                 $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d AND file_id=%d", $this->objProject->ProjectId, $objFile->FileId);
@@ -568,21 +567,6 @@
                     NarroUtils::RecursiveChmod(dirname($strTranslatedFileToExport));
                 }
 
-                if (!$intFileType = $this->GetFileType($strFileName)) {
-                    if ($this->blnCopyUnhandledFiles && !file_exists($strTranslatedFileToExport)) {
-                        if (@copy($strFileToExport, $strTranslatedFileToExport)) {
-                            QApplication::LogWarn(sprintf('Copying unhandled file type: %s', $strFileToExport));
-                            NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
-                            chmod($strTranslatedFileToExport, 0666);
-                        } else {
-                            QApplication::LogWarn(sprintf('Failed to copy the unhandled file to %s', $strTranslatedFileToExport));
-                            return false;
-                        }
-                    }
-
-                    continue;
-                }
-
                 $objFile = NarroFile::QuerySingle(
                                 QQ::AndCondition(
                                     QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
@@ -608,11 +592,17 @@
             return true;
         }
 
-        public function ExportFile ($objFile, $strTemplateFile, $strTranslatedFile) {
+        public function ExportFile($objFile, $strTemplateFile, $strTranslatedFile) {
             if (!$objFile instanceof NarroFile) {
                 QApplication::LogWarn(sprintf('Failed to find a corresponding file in the database for %s', $strTemplateFile));
                 return false;
             }
+
+            if (NarroFileProgress::CountByFileIdLanguageIdExport($objFile->FileId, $this->objTargetLanguage->LanguageId, 0)) {
+                QApplication::LogWarn(sprintf('Not exporting %s based on the file settings.', $strTemplateFile));
+                return false;
+            }
+
 
             switch($objFile->TypeId) {
                 case NarroFileType::MozillaDtd:
@@ -643,16 +633,8 @@
                         $objFileImporter = new NarroHtmlFileImporter($this);
                         break;
                 default:
-                        if (file_exists($strTranslatedFile)) {
-                            $objFileImporter = new NarroUnsupportedFileImporter($this);
-                            break;
-                        }
-                        else {
-                            QApplication::LogWarn(sprintf('Copying unhandled file type: %s', $strTemplateFile));
-                            NarroImportStatistics::$arrStatistics['Unhandled files that were copied from the source language']++;
-                            copy($strTemplateFile, $strTranslatedFile);
-                            return false;
-                        }
+                        $objFileImporter = new NarroUnsupportedFileImporter($this);
+                        break;
             }
             $objFileImporter->File = $objFile;
             return $objFileImporter->ExportFile($strTemplateFile, $strTranslatedFile);

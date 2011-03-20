@@ -81,7 +81,7 @@
                     );
                 }
             }
-            else {
+            elseif ($strTranslatedFile) {
                 QApplication::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 chmod($strTranslatedFile, 0666);

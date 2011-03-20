@@ -33,6 +33,7 @@
 		protected $chkActive;
 		protected $calCreated;
 		protected $calModified;
+		protected $txtHeader;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -78,6 +79,7 @@
 			$this->chkActive = $this->mctNarroFile->chkActive_Create();
 			$this->calCreated = $this->mctNarroFile->calCreated_Create();
 			$this->calModified = $this->mctNarroFile->calModified_Create();
+			$this->txtHeader = $this->mctNarroFile->txtHeader_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

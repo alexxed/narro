@@ -65,6 +65,7 @@
 			$this->dtgNarroFiles->MetaAddColumn('Active');
 			$this->dtgNarroFiles->MetaAddColumn('Created');
 			$this->dtgNarroFiles->MetaAddColumn('Modified');
+			$this->dtgNarroFiles->MetaAddColumn('Header');
 		}
 	}
 ?>

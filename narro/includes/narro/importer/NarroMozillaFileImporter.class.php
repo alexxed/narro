@@ -15,8 +15,8 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    class NarroMozillaFileImporter extends NarroFileImporter {
-            protected function FileAsArray($strFile) {
+    abstract class NarroMozillaFileImporter extends NarroFileImporter {
+        protected function FileAsArray($strFile) {
             if (!file_exists($strFile)) {
                 QApplication::LogInfo(sprintf(t('%s does not exist'), $strFile));
                 return false;
@@ -36,60 +36,65 @@
             $arrComment = array();
             $arrLinesBefore = array();
             $strComment = null;
+            $strLineOnMultipleRows = '';
             foreach($arrFile as $intPos=>$strLine) {
-                // if the line is empty, add it to the lines before
-                if (trim($strLine) == '') {
-                    $arrLinesBefore[] = $strLine;
-                    continue;
-                }
-
-                // prepare the line, comments and lines before if necessary
-                list($strLine, $arrComment, $arrLinesBefore) = $this->PreProcessLine($strLine, $arrComment, $arrLinesBefore);
-
                 // If the line is a comment
                 if ($this->IsComment($strLine)) {
                     // build the comment until one valid key/value is found
                     $arrComment[] = $strLine;
+                    continue;
+                }
+
+                // if the line is empty, add it to the lines before
+                if (trim($strLine) == '') {
+                    if (count($arrKeys) == 0 && count($arrComment) > 0) {
+                        // Found the file header
+                        $this->objFile->Header = join("\n", $arrComment);
+                        $this->objFile->Save();
+                    }
+                    $arrComment = array();
+                    $arrLinesBefore[] = "\n";
+                    continue;
+                }
+
+                if ($strLineOnMultipleRows !== '') {
+                    $strLine = $strLineOnMultipleRows . $strLine;
+                }
+
+                // prepare the line, comments and lines before if necessary
+                $arrProcessedLine = $this->PreProcessLine($strLine, $arrComment, $arrLinesBefore);
+                if ($arrProcessedLine === false) {
+                    // read lines until the line is preprocessed successfully
+                    $strLineOnMultipleRows .= $strLine;
+                    continue;
                 }
                 else {
-                    // process the line
-                    list($arrData, $arrComment, $arrLinesBefore) = $this->ProcessLine($strLine, $arrComment, $arrLinesBefore);
-                    if ($arrData) {
-                        if (count($arrComment))
-                            $strComment = join("\n", $arrComment);
+                    list($strLine, $arrComment, $arrLinesBefore) = $arrProcessedLine;
+                    $strLineOnMultipleRows = '';
+                }
 
-                        // The key is the context and usually unique in ini/properties files
-                        $arrKeys[$arrData['key']] = array('text' => $arrData['value'], 'comment' => $strComment, 'full_line' => $strLine, 'before_line' => join("\n", $arrLinesBefore));
 
-                        // we got all we need, reset the arrays
-                        $arrComment = array();
-                        $arrLinesBefore = array();
-                        $strComment = null;
-                    }
-                    else {
-                        QFirebug::warn(sprintf('Processing the line "%s" from %s failed, skipping it', $strLine, $this->objFile->FileName));
-                        $arrLinesBefore[] = $strLine . "\n";
-                    }
+                // process the line
+                list($arrData, $arrComment, $arrLinesBefore) = $this->ProcessLine($strLine, $arrComment, $arrLinesBefore);
+                if ($arrData) {
+                    if (count($arrComment))
+                        $strComment = join("\n", $arrComment);
+
+                    // The key is the context and usually unique in ini/properties files
+                    $arrKeys[$arrData['key']] = array('text' => $arrData['value'], 'comment' => $strComment, 'full_line' => $strLine, 'before_line' => join('', $arrLinesBefore));
+
+                    // we got all we need, reset the arrays
+                    $arrComment = array();
+                    $arrLinesBefore = array();
+                    $strComment = null;
+                }
+                else {
+                    QFirebug::warn(sprintf('Processing the line "%s" from %s failed, skipping it', $strLine, $this->objFile->FileName));
+                    $arrLinesBefore[] = $strLine . "\n";
                 }
             }
 
             return $arrKeys;
-        }
-
-        protected function IsComment($strLine) {
-            return false;
-        }
-
-        protected function PreProcessFile($strFile) {
-            return $strFile;
-        }
-
-        protected function PreProcessLine($strLine, $arrComment, $arrLinesBefore) {
-            return array($strLine, $arrComment, $arrLinesBefore);
-        }
-
-        protected function ProcessLine($strLine, $arrComment, $arrLinesBefore) {
-            return array($strLine, $arrComment, $arrLinesBefore);
         }
 
 
@@ -98,7 +103,7 @@
          * @param array $arrTexts an array with context as keys and texts as values
          */
         public function GetAccessKeys($arrTexts) {
-            if (is_array($arrTexts))
+            if (is_array($arrTexts)) {
                 foreach($arrTexts as $strContext=>$arrData) {
                     $strAccKey = $arrData['text'];
                     if (stristr($strContext, 'accesskey')) {
@@ -167,7 +172,7 @@
 
                             }
                             else {
-                                QApplication::LogWarn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strContext, $arrMatches[1]));
+                                QApplication::LogWarn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc). Importing it as a text.', $strAccKey, $strContext, $arrMatches[1]));
                                 continue;
                             }
                         }
@@ -175,6 +180,7 @@
                     else
                         continue;
                 }
+            }
 
             return $arrTexts;
 
@@ -184,19 +190,19 @@
         /**
          * This function does the opposite of GetAccessKeys
          * @param array $arrTemplate an array with context as keys and original texts as values
-         * @param array $arrTranslation an array with context as keys and translations as values
          * @return array $arrTranslation an array with context as keys and translations as values
          */
-        public function GetTranslations($objFile, $arrTemplate) {
+        public function GetTranslations($arrTemplate) {
             $arrTranslation = array();
 
             $arrTranslationObjects =
                 NarroContextInfo::QueryArray(
                     QQ::AndCondition(
-                        QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $objFile->FileId),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
                         QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
-                    )
+                    ),
+                    QQ::Expand(QQN::NarroContextInfo()->Context)
                 );
 
             foreach($arrTranslationObjects as $objNarroContextInfo) {
@@ -209,61 +215,13 @@
                 }
 
                 if ($objNarroContextInfo->TextAccessKey) {
-                    if ($objNarroContextInfo->SuggestionAccessKey) {
-                        if ($objNarroContextInfo->SuggestionAccessKey == '&' || (!preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->SuggestionAccessKey) && QApplication::$User->getPreferenceValueByName('Force ascii letters as access keys') == 'Yes')) {
-                            if (preg_match('/[a-z0-9\-\+]/i', $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches)) {
-                                $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $arrPossibleKeyMatches[0];
-                                QApplication::LogWarn(sprintf('For context "%s", found access key "%s" is not a ascii character, using the first ascii character as accesskey: "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $arrPossibleKeyMatches[0]));
-                            }
-                            else {
-                                $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->TextAccessKey;
-                                QApplication::LogWarn(sprintf('For context "%s", found access key "%s" is not a ascii character, and no ascii characters were found in "%s", keeping the original access key "%s"', $objNarroContextInfo->Context->Context, $objNarroContextInfo->SuggestionAccessKey, $objNarroContextInfo->ValidSuggestion->SuggestionValue, $arrPossibleKeyMatches[0]));
-                            }
-                        }
-                        else
-                            $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->SuggestionAccessKey;
+                    if ($objNarroContextInfo->SuggestionAccessKey && isset($arrTemplate[$objNarroContextInfo->Context->Context]['access_key_ctx'])) {
+                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]['access_key_ctx']] = $objNarroContextInfo->SuggestionAccessKey;
                     }
                     else
-                        $arrTranslationKeys[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->TextAccessKey;
+                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]['access_key_ctx']] = $objNarroContextInfo->TextAccessKey;
                 }
             }
-
-            foreach($arrTemplate as $strKey=>$strOriginalText) {
-                if (trim($strKey) == '') continue;
-
-                /**
-                 * if this is an accesskey, look for the label
-                 * until now the following label and accesskeys are matched:
-                 *
-                 * ctx.label / ctx.acesskey
-                 * ctxLabel / ctxAccesskey
-                 * ctx / ctx.accesskey
-                 *
-                 * and so on
-                 */
-                if (preg_match('/([A-Z0-9a-z\.\_\-]+)([\.\-\_]a|[\.\-\_]{0,1}A)ccesskey$/s', $strKey, $arrMatches)) {
-                    $arrMatches[2] = str_replace('a', '', $arrMatches[2]);
-                    if (isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'label']))
-                        $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'label';
-                    if (isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'message']))
-                        $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'message';
-                    elseif (isset($arrTranslation[$arrMatches[1] . $arrMatches[2] . 'title']))
-                        $strMatchedKey = $arrMatches[1] . $arrMatches[2] . 'title';
-                    elseif (isset($arrTranslation[$arrMatches[1] . 'Label']))
-                        $strMatchedKey = $arrMatches[1] . 'Label';
-                    elseif (isset($arrTranslation[$arrMatches[1]]))
-                        $strMatchedKey = $arrMatches[1];
-                    else {
-                        NarroImportStatistics::$arrStatistics['Orphan translation access keys']++;
-                        continue;
-                    }
-                    if (isset($arrTranslationKeys[$strMatchedKey]))
-                        $arrTranslation[$strKey] = $arrTranslationKeys[$strMatchedKey];
-                }
-            }
-
-            NarroImportStatistics::$arrStatistics['Contexts to export'] += count($arrTemplate);
-            NarroImportStatistics::$arrStatistics['Exported contexts'] += count($arrTranslation);
 
             return $arrTranslation;
         }

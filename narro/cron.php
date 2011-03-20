@@ -42,7 +42,7 @@
             echo "Exporting $objProject->ProjectName $objLanguage->LanguageName\n";
                 passthru(
                     sprintf('%s %s/includes/narro/importer/narro-cli.php ' .
-                    '--export --exported-suggestion 1 --copy-unhandled-files '.
+                    '--export --exported-suggestion 1 '.
                     '--project ' . $objProject->ProjectId . ' '.
                     '--user 0 '.
                     '--template-lang en-US '.
