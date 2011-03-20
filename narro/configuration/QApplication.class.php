@@ -224,17 +224,27 @@
         public static function InitializeCache() {
             require_once 'Zend/Cache.php';
 
+
             $frontendOptions = array(
-                    'lifetime' => null, // cache forever
-                    'automatic_serialization' => true
+                'lifetime' => null, // cache forever
+                'automatic_serialization' => true,
+                'caching' => defined('__ZEND_CACHE_ENABLED__')?__ZEND_CACHE_ENABLED__:true
             );
+
+            require_once __NARRO_INCLUDES__ . '/Zend_Cache_Backend_Pdomysql.php';
+            Zend_Cache::$standardExtendedBackends[] = 'Zend_Cache_Backend_Pdomysql';
+            Zend_Cache::$availableBackends[] = 'Zend_Cache_Backend_Pdomysql';
+            $arrDB = unserialize(DB_CONNECTION_1);
 
             $backendOptions = array(
-                    'cache_dir' => __TMP_PATH__ . '/zend',
-                    'cache_file_umask' => 0666
+                'host' => $arrDB['server'],
+                'port' => $arrDB['port'],
+                'dbname' => $arrDB['database'],
+                'user' => $arrDB['username'],
+                'password' => $arrDB['password'],
             );
 
-            QApplication::$Cache = Zend_Cache::factory('Core', 'File', $frontendOptions, $backendOptions);
+            QApplication::$Cache = Zend_Cache::factory('Core', 'Zend_Cache_Backend_Pdomysql', $frontendOptions, $backendOptions, true, true, true);
         }
 
         public static function InitializeLanguage() {
@@ -247,11 +257,16 @@
             elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
                 QApplication::$TargetLanguage = NarroLanguage::LoadByLanguageCode($strLanguage);
             // language guessed from the browser settings
-            elseif ($objGuessedLanguage = QApplication::GetBrowserLanguage() && $objGuessedLanguage instanceof NarroLanguage && !isset($_REQUEST['openid_mode']))
-                QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objGuessedLanguage->LanguageCode));
-            // default language
-            else
-                QApplication::$TargetLanguage = QApplication::$SourceLanguage;
+            else{
+                $objGuessedLanguage = QApplication::GetBrowserLanguage();
+                if ($objGuessedLanguage instanceof NarroLanguage && !isset($_REQUEST['openid_mode'])) {
+                    QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objGuessedLanguage->LanguageCode));
+                    exit;
+                }
+                else
+                    QApplication::$TargetLanguage = QApplication::$SourceLanguage;
+
+            }
         }
 
         public static function InitializeUser() {
