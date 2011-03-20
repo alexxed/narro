@@ -188,6 +188,11 @@
             $arrFiles = $this->ListDir($this->strTemplatePath);
             $intTotalFilesToProcess = count($arrFiles);
 
+            if ($intTotalFilesToProcess > __MAXIMUM_FILE_COUNT_TO_IMPORT__) {
+                QApplication::LogError('Too many files to process: %d. The maximum number of files to import is set in the configuration file at %d', $intTotalFilesToProcess, __MAXIMUM_FILE_COUNT_TO_IMPORT__);
+                return false;
+            }
+
             QApplication::LogInfo(sprintf('Starting to process %d files using directory %s', $intTotalFilesToProcess, $this->strTemplatePath));
 
             if ($this->blnDeactivateFiles) {
@@ -195,7 +200,7 @@
                 try {
                     $objDatabase = QApplication::$Database[1];
                     $objDatabase->NonQuery($strQuery);
-                }catch (Exception $objEx) {
+                } catch (Exception $objEx) {
                     throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
                 }
             }
@@ -508,6 +513,12 @@
             $arrFiles = $this->ListDir($this->strTemplatePath);
 
             $intTotalFilesToProcess = count($arrFiles);
+
+            if ($intTotalFilesToProcess > __MAXIMUM_FILE_COUNT_TO_EXPORT__) {
+                QApplication::LogError('Too many files to process: %d. The maximum number of files to export is set in the configuration file at %d', $intTotalFilesToProcess, __MAXIMUM_FILE_COUNT_TO_EXPORT__);
+                return false;
+            }
+
 
             QApplication::LogDebug(sprintf('Starting to process %d files', $intTotalFilesToProcess));
 

@@ -29,6 +29,8 @@
      */
     define ('__MAXIMUM_FILE_SIZE_TO_IMPORT__', 10048576);
     define ('__MAXIMUM_FILE_SIZE_TO_EXPORT__', 10048576);
+    define ('__MAXIMUM_FILE_COUNT_TO_IMPORT__', 500);
+    define ('__MAXIMUM_FILE_COUNT_TO_EXPORT__', 500);
     define ('__SOURCE_LANGUAGE_CODE__', 'en-US');
 
     /**
