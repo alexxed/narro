@@ -463,3 +463,27 @@ span.warning {
     background-repeat:no-repeat;
     padding-left:18px;
 }
+
+div.err {
+    background-image: url('../images/errorIcon.png');
+    background-position: 0 2px;
+    background-repeat:no-repeat;
+    background-color:lightred;
+    padding-left:18px;
+    color: red;
+}
+
+div.info {
+    background-image: url('../images/infoIcon.png');
+    background-position: 0 2px;
+    background-repeat:no-repeat;
+    background-color:lightblue;
+    padding-left:18px;
+}
+div.warn {
+    background-image: url('../images/warningIcon.png');
+    background-position: 0 2px;
+    background-repeat:no-repeat;
+    background-color:lightyellow;
+    padding-left:18px;
+}

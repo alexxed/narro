@@ -41,28 +41,10 @@
 
             if (file_exists($this->strLogFile)) {
                 $this->blnVisible = true;
-                $hndFile = fopen($this->strLogFile, 'r');
-                if ($hndFile) {
-                    $strLogContents = '';
-                    $strLogLine = '';
-                    while (!feof($hndFile)) {
-                        $strLogLine = fgets($hndFile);
-
-                        // @todo deal with errors spreading on multiple lines
-                        if (trim($strLogLine))
-                            if (!preg_match('/[0-9\-T:]+\sDEBUG\s\(7\)/', $strLogLine)) {
-                                if (strstr($strLogLine, 'WARN'))
-                                    $strLogContents = sprintf('<span class="warning">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine))) . $strLogContents;
-                                elseif (strstr($strLogLine, 'ERR'))
-                                    $strLogContents = sprintf('<span class="error">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine))) . $strLogContents;
-                                elseif (strstr($strLogLine, 'INFO'))
-                                    $strLogContents = sprintf('<span class="info">%s</span>', nl2br(NarroString::HtmlEntities($strLogLine))) . $strLogContents;
-                                else
-                                    $strLogContents = nl2br(NarroString::HtmlEntities($strLogLine)) . $strLogContents;
-                            }
-
-                    }
-                    fclose($hndFile);
+                $arrLogLine = preg_match_all('/([0-9]{4,4}\-[0-9]{2,2}-[0-9]{2,2}T[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}\+[0-9]{2,2}:[0-9]{2,2})\s([^\s]+)[^:]+:\s(.*)/', file_get_contents($this->strLogFile), $arrMatches);
+                foreach($arrMatches[0] as $intIndex=>$strMatch) {
+                    if (in_array($arrMatches[2][$intIndex], array('ERR', 'WARN', 'INFO')))
+                        $strLogContents .= sprintf('<div class="%s" title="%s">%s</div>', strtolower($arrMatches[2][$intIndex]), $arrMatches[1][$intIndex], nl2br(NarroString::HtmlEntities($arrMatches[3][$intIndex])));
                 }
             }
             else {
