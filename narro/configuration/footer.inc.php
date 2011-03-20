@@ -21,6 +21,13 @@
 <?php
     if (QApplication::$Database[1]->EnableProfiling)
         QApplication::$Database[1]->OutputProfiling();
+
+    if (SERVER_INSTANCE == 'dev') {
+        QFirebug::table('Queries', @$GLOBALS['arrQueries']);
+        QFirebug::info(sprintf('%d queries in total', count(@$GLOBALS['arrQueries'])));
+        QFirebug::table('Cache', @$GLOBALS['arrCacheQueries']);
+        QFirebug::info(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
+    }
 ?>
 <?php
     /**
