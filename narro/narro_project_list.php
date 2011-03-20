@@ -53,8 +53,7 @@
              * The filter is used to show only projects of a given status based on their progress
              * (finished, empty, in progress).
              */
-            $this->pnlProjectList = new NarroProjectListPanel($this->pnlMainTab);
-            $this->pnlProjectList->Filter = QApplication::QueryString('f');
+            $this->pnlProjectList = new NarroSearchPanel($this->pnlMainTab);
 
             $this->pnlMainTab->addTab($this->pnlProjectList, t('Projects'));
 

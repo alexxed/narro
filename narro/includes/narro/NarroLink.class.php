@@ -177,7 +177,7 @@
                 return $strLink;
         }
 
-        public static function ContextSuggest($intProjectId, $intFileId, $intContextId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $intCurrentContext = null, $intContextCount = null, $intSortColumnIndex = -1, $intSortDirection = 0, $blnShowComments = 0, $strLinkText = '') {
+        public static function ContextSuggest($intProjectId, $intFileId, $intContextId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $intCurrentContext = null, $intContextCount = null, $intSortColumnIndex = -1, $intSortDirection = 0, $blnShowComments = 0, $strLinkText = '', $strCssClass = '') {
             $strLink = sprintf(
                 'narro_context_suggest.php?l=%s&p=%d&f=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d&o=%d&a=%d&sc=%d',
                 QApplication::$TargetLanguage->LanguageCode,
@@ -194,7 +194,7 @@
                 $blnShowComments
             );
             if ($strLinkText != '')
-                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+                return sprintf('<a href="%s"%s>%s</a>', $strLink, (($strCssClass != '')?sprintf(' class="%s"', $strCssClass):''), $strLinkText);
             else
                 return $strLink;
         }
