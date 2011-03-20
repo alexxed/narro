@@ -81,6 +81,7 @@
                 )
             );
             $this->colOriginalText->HtmlEntities = false;
+            $this->colOriginalText->Width = '50%';
 
             $this->colTranslatedText = new QDataGridColumn(
                 t('Translated text'),
@@ -88,6 +89,7 @@
             );
             $this->colTranslatedText->HtmlEntities = false;
             $this->colTranslatedText->CssClass = QApplication::$TargetLanguage->TextDirection;
+            $this->colTranslatedText->Width = '50%';
 
             // Setup DataGrid
             $this->dtgNarroContextInfo = new NarroDataGrid($this);
@@ -210,6 +212,8 @@
 
             if ($this->btnMultiTranslate->Text == t('Mass translate')) {
                 $this->btnMultiTranslate->Text = t('Save');
+                $this->btnMultiApprove->Display = false;
+                $this->btnMultiApproveBottom->Display = false;
                 $this->btnMultiTranslateBottom->Text = t('Save');
                 $this->SetMessage(t('Mass translate mode is the quick and dirty way to translate. If a text has an approved translation, it will be prefilled in the translation textbox. All the translations are added as new and not approved.'));
                 $this->dtgNarroContextInfo->MarkAsModified();
@@ -252,6 +256,7 @@
                             $objContextInfo->HasSuggestions = 1;
                             try {
                                 $objContextInfo->Save();
+                                $this->dtgNarroContextInfo->RemoveChildControl($this->arrTexBoxList[$intContextInfoId]->ControlId, true);
                             }
                             catch (Exception $objEx) {
                                 $this->arrTexBoxList[$intContextInfoId]->Warning .= $objEx->getMessage();
@@ -275,10 +280,13 @@
                 else
                     $this->SetMessage(t('No translations added.'));
 
+                $this->btnMultiApprove->Display = true;
+                $this->btnMultiApproveBottom->Display = true;
             }
 
             $this->btnMultiTranslateCancel->Display = $this->btnMultiTranslate->Text == t('Save');
             $this->btnMultiTranslateCancelBottom->Display = $this->btnMultiTranslateBottom->Text == t('Save');
+
         }
 
         public function btnMultiApprove_Click($strFormId, $strControlId, $strParameter) {
@@ -293,6 +301,8 @@
 
             if ($this->btnMultiApprove->Text == t('Mass approve')) {
                 $this->btnMultiApprove->Text = t('Save');
+                $this->btnMultiTranslate->Display = false;
+                $this->btnMultiTranslateBottom->Display = false;
                 $this->btnMultiApproveBottom->Text = t('Save');
                 $this->SetMessage(t('Mass approve mode is the quick way to approve short translations. Leave empty to disapprove.'));
                 if (QApplication::QueryString('st') != 3)
@@ -342,6 +352,9 @@
 
                     // Reset the stored listboxes
                     $this->arrSuggestionList = array();
+
+                    $this->btnMultiTranslate->Display = true;
+                    $this->btnMultiTranslateBottom->Display = true;
                 }
 
                 $this->dtgNarroContextInfo->MarkAsModified();
@@ -368,20 +381,17 @@
             $this->lblMessage->Visible = false;
         }
 
-        public function dtgNarroContextInfo_OriginalText_Render(NarroContextInfo $objNarroContextInfo) {
+        public function dtgNarroContextInfo_OriginalText_Render(NarroContextInfo $objNarroContextInfo, $strLink = null) {
             if (!is_null($objNarroContextInfo->Context->Text)) {
                 $strText = QApplication::$PluginHandler->DisplayText($objNarroContextInfo->Context->Text->TextValue);
 
                 if (!$strText)
                     $strText = $objNarroContextInfo->Context->Text->TextValue;
-                $strText = (strlen($strText)>100)?substr($strText, 0, 100) . '...':$strText;
 
-                $strText = htmlentities($strText, null, 'utf-8');
-
-                if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->ValidSuggestionId && QApplication::HasPermissionForThisLang('Can approve', $objNarroContextInfo->Context->ProjectId))
+                if ($objNarroContextInfo->TextAccessKey)
                     $strText = preg_replace('/' . $objNarroContextInfo->TextAccessKey . '/', '<u>' . $objNarroContextInfo->TextAccessKey . '</u>', $strText, 1);
 
-                return $strText;
+                return sprintf('<a href="%s" style="color:black">%s</a>', $strLink, NarroString::HtmlEntities($strText));
             }
             else
                 return null;
@@ -392,7 +402,7 @@
                 $strContext = QApplication::$PluginHandler->DisplayContext($objNarroContextInfo->Context->Context);
                 if (!$strContext)
                     $strContext = $objNarroContextInfo->Context->Context;
-                return (strlen($strContext)>100)?substr($strContext, 0, 100) . '...':$strContext;
+                return $strContext;
             }
             else
                 return '<div width="100%" style="background:gray">&nbsp;</div>';
@@ -413,6 +423,8 @@
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->ActionParameter = $objNarroContextInfo->Context->TextId;
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->TextMode = QTextMode::MultiLine;
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->Rows = 1;
+            $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->Width = '100%';
+            $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->DisplayStyle = QDisplayStyle::Block;
 
             if ($objNarroContextInfo->ValidSuggestionId)
                 $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->Text = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
@@ -421,15 +433,22 @@
             $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->AddAction(new QBlurEvent(), new QJavaScriptAction(sprintf('this.rows=1; this.cols=50;reset_datagrid_row_by_control(this);')));
 
             $btnCopy = new QImageButton($this->dtgNarroContextInfo);
-            $btnCopy->ImageUrl = __IMAGE_ASSETS__ . '/../../images/edit-copy.png';
-            $btnCopy->AlternateText = 'Copy the original';
+            $btnCopy->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/edit-copy.png';
+            $btnCopy->AlternateText = t('Copy the original');
+            $btnCopy->ToolTip = t('Copy the original');
             $btnCopy->SetCustomStyle('vertical-align', 'super');
             $btnCopy->Cursor = QCursor::Pointer;
             $btnCopy->TabIndex = -1;
             $btnCopy->ActionParameter = $objNarroContextInfo->Context->TextId . ',' . $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->ControlId;
             $btnCopy->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnCopy_Click'));
 
-            return $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->RenderWithError(false) . $btnCopy->Render(false) . sprintf('<a tabindex="-1" style="vertical-align:super" href="%s"><img tabindex="-1" src="%s/../../images/help-faq.png" alt="Details" /></a>', $strLink, __IMAGE_ASSETS__);
+            return
+                $this->arrTexBoxList[$objNarroContextInfo->ContextInfoId]->RenderWithError(false) .
+                $btnCopy->Render(false) .
+                sprintf(
+                    '<a tabindex="-1" style="vertical-align:super" href="%s" title="Open the translation page"><img tabindex="-1" src="%s/edit-find-replace.png" alt="Details" /></a>',
+                    $strLink, __NARRO_IMAGE_ASSETS__
+                );
         }
 
         public function btnCopy_Click($strFormId, $strControlId, $strParameter) {
@@ -439,6 +458,7 @@
                 $txtCtl = $this->dtgNarroContextInfo->GetChildControl($strTxtCtlId);
                 if ($txtCtl) {
                     $txtCtl->Text = $objText->TextValue;
+                    $txtCtl->Focus();
                 }
             }
         }
@@ -461,9 +481,6 @@
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objNarroContextInfo->ValidSuggestion->SuggestionValue;
 
-
-                $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
-
                 $strSuggestionValue = NarroString::HtmlEntities($strSuggestionValue);
 
                 if ($objNarroContextInfo->TextAccessKey && $objNarroContextInfo->SuggestionAccessKey && QApplication::HasPermissionForThisLang('Can approve', $objNarroContextInfo->Context->ProjectId))
@@ -484,8 +501,6 @@
                 $strSuggestionValue = QApplication::$PluginHandler->DisplaySuggestion($objSuggestion->SuggestionValue);
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objSuggestion->SuggestionValue;
-
-                $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
 
                 return sprintf('<a href="%s" title="%s"><div style="width:100%%;color:green">%s</div></a>', $strLink, t('Your translation, not approved yet. Click for details'), NarroString::HtmlEntities($strSuggestionValue));
             }
@@ -512,7 +527,6 @@
                 if (!$strSuggestionValue)
                     $strSuggestionValue = $objSuggestion->SuggestionValue;
 
-                $strSuggestionValue = (strlen($strSuggestionValue)>100)?mb_substr($strSuggestionValue, 0, 100) . '...':$strSuggestionValue;
                 return sprintf('<a href="%s" title="%s"><div style="width:100%%;color:blue">%s</div></a>', $strLink, t('Translation not approved yet. Click to help'), NarroString::HtmlEntities($strSuggestionValue));
             }
             else {

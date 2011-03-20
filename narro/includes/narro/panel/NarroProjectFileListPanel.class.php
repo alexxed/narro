@@ -150,40 +150,40 @@
             }
         }
 
-        public function dtgNarroFile_PercentTranslated_Render(NarroFile $objNarroFile) {
+        public function dtgNarroFile_PercentTranslated_Render(NarroFile $objFile) {
             $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroFile);
 
-            $objProgressBar->Total = $objNarroFile->CountAllTextsByLanguage();
-            $objProgressBar->Translated = $objNarroFile->CountApprovedTextsByLanguage();
-            $objProgressBar->Fuzzy = $objNarroFile->CountTranslatedTextsByLanguage();
+            $objProgressBar->Total = $objFile->CountAllTextsByLanguage();
+            $objProgressBar->Translated = $objFile->CountApprovedTextsByLanguage();
+            $objProgressBar->Fuzzy = $objFile->CountTranslatedTextsByLanguage();
 
             $sOutput = $objProgressBar->Render(false);
 
-            if ($objNarroFile->TypeId == NarroFileType::Folder)
+            if ($objFile->TypeId == NarroFileType::Folder)
                 return $sOutput;
 
             if ($objProgressBar->Translated + $objProgressBar->Fuzzy < $objProgressBar->Total)
-                return NarroLink::FileTextList($objNarroFile->ProjectId, $objNarroFile->FileId, NarroTextListForm::SHOW_UNTRANSLATED_TEXTS, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
+                return NarroLink::FileTextList($objFile->ProjectId, $objFile->FileId, NarroTextListForm::SHOW_UNTRANSLATED_TEXTS, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
             elseif ($objProgressBar->Translated < $objProgressBar->Total)
-                return NarroLink::FileTextList($objNarroFile->ProjectId, $objNarroFile->FileId, NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
+                return NarroLink::FileTextList($objFile->ProjectId, $objFile->FileId, NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
             else
-                return NarroLink::FileTextList($objNarroFile->ProjectId, $objNarroFile->FileId, NarroTextListForm::SHOW_ALL_TEXTS, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
+                return NarroLink::FileTextList($objFile->ProjectId, $objFile->FileId, NarroTextListForm::SHOW_ALL_TEXTS, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
 
         }
 
-        public function dtgNarroFile_FileNameColumn_Render(NarroFile $objNarroFile) {
-            if ($objNarroFile->TypeId == NarroFileType::Folder)
+        public function dtgNarroFile_FileNameColumn_Render(NarroFile $objFile) {
+            if ($objFile->TypeId == NarroFileType::Folder)
                 return sprintf('<img src="%s" style="vertical-align:middle" /> %s',
                     'assets/images/folder.png',
                     NarroLink::ProjectFileList(
                         $this->objNarroProject->ProjectId,
-                        $objNarroFile->FilePath,
+                        $objFile->FilePath,
                         null,
-                        $objNarroFile->FileName
+                        $objFile->FileName
                     )
                 );
             else {
-                switch($objNarroFile->TypeId) {
+                switch($objFile->TypeId) {
                     case NarroFileType::MozillaDtd:
                             $strIcon = 'dtd_file.gif';
                             break;
@@ -200,19 +200,19 @@
                 return sprintf('<img src="%s" style="vertical-align:middle" /> %s',
                     __IMAGE_ASSETS__ . '/../../images/' . $strIcon,
                     NarroLink::FileTextList(
-                        $objNarroFile->ProjectId,
-                        $objNarroFile->FileId,
+                        $objFile->ProjectId,
+                        $objFile->FileId,
                         1,
                         1,
                         '',
-                        $objNarroFile->FileName
+                        $objFile->FileName
                     )
                 );
             }
         }
 
         public function dtgNarroFile_ExportColumn_Render(NarroFile $objFile) {
-            if ($objNarroFile->TypeId == NarroFileType::Folder)
+            if ($objFile->TypeId == NarroFileType::Folder)
                 return '';
 
             $strControlId = 'chkExport' . $this->dtgNarroFile->CurrentRowIndex;

@@ -18,10 +18,14 @@
 
 ?>
     <?php $_CONTROL->pnlBreadcrumb->Render(); ?>
-    <p>
-        <?php printf(t('This is a list of texts used in "%s". Click on any translated text to start translating or approving one by one or use Mass Translate or Mass Approve to do it here in this list.'), $this->objNarroFile->FileName) ?>
-        <?php echo ($_CONTROL->pnlImportFile->Display)?'<br />' . t('If you rather work offline, use the import and export buttons below. Optionally, you can upload your own source file when exporting.'):''?>
-    </p>
+    <ul>
+        <li><?php printf(t('This is a list of texts used in "%s"'), $this->objNarroFile->FileName)?></li>
+        <li><?php printf(t('Click on any line to start translating or approving one by one or use Mass Translate or Mass Approve to do it here in this list.'))?></li>
+        <?php if ($_CONTROL->pnlImportFile->Display) { ?>
+            <li><?php _t('If you rather work offline, use the import and export buttons below.')?></li>
+            <li><?php _t('Optionally, you can upload your own source file when exporting.')?></li>
+        <?php } ?>
+    </ul>
     <?php $_CONTROL->lblMessage->Render(); ?>
     <table width="100%">
     <tr>

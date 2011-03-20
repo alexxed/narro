@@ -76,6 +76,25 @@
 
         }
 
+        public function dtgNarroContextInfo_OriginalText_Render(NarroContextInfo $objNarroContextInfo, $strLink = null) {
+            return parent::dtgNarroContextInfo_OriginalText_Render(
+                $objNarroContextInfo,
+                NarroLink::ContextSuggest(
+                        $this->objNarroFile->Project->ProjectId,
+                        $this->objNarroFile->FileId,
+                        $objNarroContextInfo->ContextId,
+                        $this->lstTextFilter->SelectedValue,
+                        $this->lstSearchType->SelectedValue,
+                        $this->txtSearch->Text,
+                        $this->dtgNarroContextInfo->CurrentRowIndex + 1 + (($this->dtgNarroContextInfo->PageNumber - 1) * $this->dtgNarroContextInfo->ItemsPerPage),
+                        $this->dtgNarroContextInfo->TotalItemCount,
+                        $this->dtgNarroContextInfo->SortColumnIndex,
+                        $this->dtgNarroContextInfo->SortDirection,
+                        0
+                   )
+               );
+        }
+
         public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo, $strLink = null) {
             return parent::dtgNarroContextInfo_TranslatedText_Render(
                 $objNarroContextInfo,
