@@ -248,6 +248,8 @@
         }
 
         public static function InitializeLanguage() {
+            if (strstr($_SERVER['REQUEST_URI'], '_devtools')) return false;
+
             QApplication::$SourceLanguage = NarroLanguage::LoadByLanguageCode(__SOURCE_LANGUAGE_CODE__);
 
             // language passed through the l parameter
@@ -257,7 +259,7 @@
             elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
                 QApplication::$TargetLanguage = NarroLanguage::LoadByLanguageCode($strLanguage);
             // language guessed from the browser settings
-            else{
+            else {
                 $objGuessedLanguage = QApplication::GetBrowserLanguage();
                 if ($objGuessedLanguage instanceof NarroLanguage && !isset($_REQUEST['openid_mode'])) {
                     QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objGuessedLanguage->LanguageCode));
@@ -287,6 +289,8 @@
         }
 
         public static function InitializeLogging() {
+            global $argv;
+
             require_once('Zend/Log.php');
             require_once('Zend/Log/Writer/Stream.php');
             require_once('Zend/Log/Writer/Firebug.php');
@@ -308,8 +312,8 @@
             if (isset($argv[0]))
                 QApplication::$Logger->addWriter(new Zend_Log_Writer_Syslog());
 
-//            if (SERVER_INSTANCE == 'dev' && QFirebug::getEnabled())
-//                QApplication::$Logger->addWriter(new Zend_Log_Writer_QFirebug());
+            if (SERVER_INSTANCE == 'dev')
+                QApplication::$Logger->addWriter(new Zend_Log_Writer_QFirebug());
         }
 
         public static function InitializeTranslationEngine() {
