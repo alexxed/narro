@@ -79,6 +79,19 @@
          */
         protected $intExportedSuggestion = 1;
 
+        /**
+         * An array with all the context info objects from this file
+         * @var NarroContextInfo[]
+         */
+        protected $arrContextInfo;
+
+        /**
+         * A list of context ids from this file; whenever a context is found, the id is removed from the list
+         * all remaining ids will be marked as inactive
+         * @var array
+         */
+        protected $arrContextId;
+
         public function __construct($objImporter = null) {
 
             if ($objImporter instanceof NarroProjectImporter) {
@@ -95,6 +108,36 @@
                 $this->intExportedSuggestion = $objImporter->ExportedSuggestion;
             }
 
+        }
+
+        protected function GetContextInfoArray() {
+            $this->arrContextInfo = NarroContextInfo::QueryArray(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
+                ),
+                array(
+                    QQ::Expand(QQN::NarroContextInfo()->Context->Text)
+                )
+            );
+
+            foreach($this->arrContextInfo as $objContextInfo) {
+                $this->arrContextId[$objContextInfo->ContextId] = $objContextInfo->ContextId;
+            }
+        }
+
+        /**
+         * Returns a text from this file, in the current language
+         * @param string $strText
+         * @return NarroText
+         */
+        protected function GetText($strText, $strContext) {
+            foreach($this->arrContextInfo as $objContextInfo) {
+                if ($objContextInfo->Context->Text->TextValue == $strText && $objContextInfo->Context->Context == $strContext)
+                    return $objContextInfo->Context->Text;
+            }
+
+            return false;
         }
 
 
@@ -117,6 +160,9 @@
          * @param string $strComment a comment from the imported file
          */
         protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
+
+            error_log($strOriginal);
+
             $blnContextInfoChanged = false;
             $blnContextChanged = false;
 
@@ -198,11 +244,7 @@
                     QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the comment "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strComment, print_r($arrResult, true)));
             }
 
-            /**
-             * Fetch the text by its md5; we could fetch it by the full text but it would be slower
-             * @example $objNarroText = NarroText::QuerySingle(QQ::Equal(QQN::NarroText()->TextValue, mysql_real_escape_string($strOriginal)));
-             */
-            $objNarroText = NarroText::LoadByTextValueMd5(md5($strOriginal));
+            $objNarroText = $this->GetText($strOriginal, $strContext);
 
             if (!$this->blnOnlySuggestions && !$objNarroText instanceof NarroText) {
 
@@ -235,13 +277,7 @@
                 return false;
             }
 
-            /**
-             * fetch the context
-             */
-            if ($strContext == '')
-                $objNarroContext = NarroContext::LoadByTextIdFileId($objNarroText->TextId, $this->objFile->FileId);
-            else
-                $objNarroContext = NarroContext::LoadByTextIdContextMd5FileId($objNarroText->TextId, md5($strContext), $this->objFile->FileId);
+            $objNarroContext = $this->GetContext($strOriginal, $strContext);
 
             if (!$this->blnOnlySuggestions && !$objNarroContext instanceof NarroContext) {
 
@@ -266,6 +302,7 @@
                 NarroImportStatistics::$arrStatistics['Imported contexts']++;
             }
             elseif($objNarroContext instanceof NarroContext) {
+                unset($this->arrContextId[$objNarroContext->ContextId]);
                 NarroImportStatistics::$arrStatistics['Reused contexts']++;
             }
             else {
@@ -277,7 +314,7 @@
             /**
              * load the context info
              */
-            $objContextInfo = NarroContextInfo::LoadByContextIdLanguageId($objNarroContext->ContextId, $this->objTargetLanguage->LanguageId);
+            $objContextInfo = $this->GetContextInfo($strOriginal, $strContext);
 
             /**
              * Add context infos even if only suggestion is selected to allow users that have permissions only on one language to approve suggestions
@@ -308,39 +345,6 @@
                 if ($objContextInfo->TextAccessKey != $strOriginalAccKey) {
                     $blnContextInfoChanged = true;
                     $objContextInfo->TextAccessKey = $strOriginalAccKey;
-                }
-
-                if (!$this->blnOnlySuggestions && trim($strComment) != '') {
-
-                    $objContextComment = NarroContextComment::QuerySingle(
-                                            QQ::AndCondition(
-                                                QQ::Equal(QQN::NarroContextComment()->ContextId, $objNarroContext->ContextId),
-                                                QQ::Equal(QQN::NarroContextComment()->LanguageId, $this->objSourceLanguage->LanguageId),
-                                                QQ::Equal(QQN::NarroContextComment()->CommentTextMd5, md5($strComment))
-                                            )
-                    );
-
-                    if (!$objContextComment instanceof NarroContextComment) {
-                        $objContextComment = new NarroContextComment();
-                        $objContextComment->ContextId = $objNarroContext->ContextId;
-                        $objContextComment->UserId = $this->objUser->UserId;
-                        $objContextComment->LanguageId = $this->objSourceLanguage->LanguageId;
-                        $objContextComment->CommentText = $strComment;
-                        $objContextComment->CommentTextMd5 = md5($strComment);
-                        $objContextComment->Modified = QDateTime::Now();
-                        $objContextComment->Created = QDateTime::Now();
-                        try {
-                            $objContextComment->Save();
-                        }
-                        catch (Exception $objException) {
-                            QApplication::LogError(sprintf('An error occurred while saving the context comment: %s.', $objException->getMessage()));
-                        }
-
-                    }
-
-
-                    $objContextInfo->HasComments = 1;
-                    $blnContextInfoChanged = true;
                 }
             }
 
@@ -419,17 +423,6 @@
 
             }
 
-            if (!$this->blnOnlySuggestions && $objNarroContext instanceof NarroContext) {
-                try {
-                    $objNarroContext->Active = 1;
-                    $objNarroContext->Modified = QDateTime::Now();
-                    $objNarroContext->Save();
-                } catch(Exception $objExc) {
-                    QApplication::LogError(sprintf('Error while setting context "%s" to active: %s', $strContext, $objExc->getMessage()));
-                    NarroImportStatistics::$arrStatistics['Skipped contexts']++;
-                }
-            }
-
             if ($blnContextInfoChanged && $objContextInfo instanceof NarroContextInfo) {
                 $objContextInfo->Modified = QDateTime::Now();
                 try {
@@ -446,20 +439,45 @@
         /**
          * Get the context info for a certain context
          *
+         * @param string $strText
          * @param string $strContext
-         * @param integer $intType
          * @return NarroContextInfo
          */
         public function GetContextInfo($strOriginal, $strContext) {
-            return NarroContextInfo::QuerySingle(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5($strContext)),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
-                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
+            foreach($this->arrContextInfo as $objContextInfo) {
+                if (
+                    $objContextInfo->Context->ProjectId == $this->objProject->ProjectId &&
+                    $objContextInfo->Context->FileId == $this->objFile->FileId &&
+                    $objContextInfo->Context->Context == $strContext &&
+                    $objContextInfo->Context->Text->TextValue == $strOriginal &&
+                    $objContextInfo->LanguageId == $this->objTargetLanguage->LanguageId
                 )
-            );
+                    return $objContextInfo;
+            }
+
+            return false;
+        }
+
+        /**
+         * Get the context for a certain text
+         *
+         * @param string $strText
+         * @param string $strContext
+         * @return NarroContext
+         */
+        public function GetContext($strOriginal, $strContext) {
+            foreach($this->arrContextInfo as $objContextInfo) {
+                if (
+                    $objContextInfo->Context->ProjectId == $this->objProject->ProjectId &&
+                    $objContextInfo->Context->FileId == $this->objFile->FileId &&
+                    $objContextInfo->Context->Context == $strContext &&
+                    $objContextInfo->Context->Text->TextValue == $strOriginal &&
+                    $objContextInfo->LanguageId == $this->objTargetLanguage->LanguageId
+                )
+                    return $objContextInfo->Context;
+            }
+
+            return false;
         }
 
         /**
@@ -689,6 +707,16 @@
         abstract public function ImportFile($strTemplateFile, $strTranslatedFile = null);
         abstract public function ExportFile($strTemplateFile, $strTranslatedFile);
 
+        public function MarkUnusedContextsAsInactive() {
+            if (count($this->arrContextId))
+                NarroFile::GetDatabase()->NonQuery(
+                    sprintf(
+                        'UPDATE narro_context SET active=0 WHERE context_id IN (%s)',
+                        join(',', $this->arrContextId)
+                    )
+                );
+        }
+
 
 
         /////////////////////////
@@ -740,6 +768,7 @@
                 case "File":
                     if ($mixValue instanceof NarroFile) {
                         $this->objFile = $mixValue;
+                        $this->GetContextInfoArray();
                         QApplication::LogDebug(
                             sprintf(
                                 'Importing "%s" with blnCheckEqual=%s, blnApprove=%s, blnApproveAlreadyApproved=%s, blnOnlySuggestions=%s, intExportedSuggestion=%s',

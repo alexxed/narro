@@ -24,7 +24,6 @@
         public $lblExport;
         public $btnKillProcess;
 
-        public $chkCopyUnhandledFiles;
         public $chkCleanDirectory;
         public $lstExportSuggestionType;
 
@@ -146,7 +145,6 @@
                 /**
                  * Get boolean options
                  */
-                $objNarroImporter->CopyUnhandledFiles = $this->chkCopyUnhandledFiles->Checked;
                 $objNarroImporter->ExportedSuggestion = $this->lstExportSuggestionType->SelectedValue;
                 $objNarroImporter->Project = $this->objProject;
                 $objNarroImporter->User = NarroUser::LoadAnonymousUser();

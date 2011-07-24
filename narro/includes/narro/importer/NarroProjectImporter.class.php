@@ -16,6 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
+    NarroPluginHandler::$blnEnablePlugins = false;
     class NarroProjectImporter {
         /**
          * the user object used for import
@@ -376,16 +377,6 @@
             else
                 QApplication::LogInfo(sprintf('Starting to import from "%s", no translations file', $strTemplateFile));
 
-            if ($this->blnDeactivateContexts && $this->blnOnlySuggestions == false) {
-                $strQuery = sprintf("UPDATE `narro_context` SET `active` = 0 WHERE project_id=%d AND file_id=%d", $this->objProject->ProjectId, $objFile->FileId);
-                try {
-                    $objDatabase = QApplication::$Database[1];
-                    $objDatabase->NonQuery($strQuery);
-                }catch (Exception $objEx) {
-                    throw new Exception(sprintf(t('Error while executing sql query in file %s, line %d: %s'), __FILE__, __LINE__ - 4, $objEx->getMessage()));
-                }
-            }
-
             switch($objFile->TypeId) {
                 case NarroFileType::MozillaDtd:
                         $objFileImporter = new NarroMozillaDtdFileImporter($this);
@@ -423,6 +414,7 @@
             $objFileImporter->File = $objFile;
 
             $blnFileImportResult = $objFileImporter->ImportFile($strTemplateFile, $strTranslatedFile);
+            $objFileImporter->MarkUnusedContextsAsInactive();
 
             QApplication::$PluginHandler->ImportFile($objFile);
 
