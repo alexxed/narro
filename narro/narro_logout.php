@@ -17,5 +17,5 @@
      */
     require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
     session_destroy();
-    header('Location: narro_project_list.php');
+    header('Location: projects.php');
 ?>

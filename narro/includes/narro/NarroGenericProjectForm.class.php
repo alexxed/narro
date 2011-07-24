@@ -21,7 +21,7 @@
          *
          * @var NarroProject
          */
-        protected $objNarroProject;
+        protected $objProject;
         /**
          * @var QTabPanel
          */
@@ -36,24 +36,21 @@
             $this->pnlMainTab = new QTabPanel($this);
             $this->pnlMainTab->UseAjax = false;
 
-            if ($this->objNarroProject instanceof NarroProject)
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
+            if ($this->objProject instanceof NarroProject)
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objProject->ProjectId));
 
-            if ($this->objNarroProject instanceof NarroProject && QApplication::HasPermission('Can edit project', $this->objNarroProject->ProjectId))
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Edit'), NarroLink::ProjectEdit($this->objNarroProject->ProjectId));
+            if ($this->objProject instanceof NarroProject && QApplication::HasPermission('Can edit project', $this->objProject->ProjectId))
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Edit'), NarroLink::ProjectEdit($this->objProject->ProjectId));
             elseif (QApplication::HasPermission('Can add project'))
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Add'));
 
-            if ($this->objNarroProject instanceof NarroProject) {
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, ''));
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Comments'), NarroLink::ProjectTextCommentList($this->objNarroProject->ProjectId));
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 2));
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, 4));
-                if (QApplication::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
-                    $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
-                if (QApplication::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
-                    $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
+            if ($this->objProject instanceof NarroProject) {
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objProject->ProjectId));
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::Translate($this->objProject->ProjectId));
+                if (QApplication::HasPermissionForThisLang('Can import project', $this->objProject->ProjectId))
+                    $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objProject->ProjectId));
+                if (QApplication::HasPermissionForThisLang('Can export project', $this->objProject->ProjectId))
+                    $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objProject->ProjectId));
             }
 
         }
@@ -62,9 +59,9 @@
             // Lookup Object PK information from Query String (if applicable)
             $intProjectId = QApplication::QueryString('p');
             if (($intProjectId)) {
-                $this->objNarroProject = NarroProject::Load(($intProjectId));
+                $this->objProject = NarroProject::Load(($intProjectId));
 
-                if (!$this->objNarroProject) {
+                if (!$this->objProject) {
                     QApplication::Redirect(NarroLink::ProjectList());
                     return false;
                 }
@@ -76,7 +73,7 @@
 
             $this->pnlBreadcrumb->setElements(
                 NarroLink::ProjectList(t('Projects')),
-                $this->objNarroProject->ProjectName
+                $this->objProject->ProjectName
             );
         }
 

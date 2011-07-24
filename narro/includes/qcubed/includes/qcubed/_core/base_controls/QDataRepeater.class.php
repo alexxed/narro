@@ -1,133 +1,133 @@
 <?php
-	/**
-	 * This file contains the QDataRepeater class.
-	 *
-	 * @package Controls
-	 */
+    /**
+    * This file contains the QDataRepeater class.
+    *
+    * @package Controls
+    */
 
-	/**
-	 * @package Controls
-	 *
-	 * @property string $Template
-	 * @property-read integer $CurrentItemIndex
-	 * @property string $TagName
-	 *
-	 */
-	class QDataRepeater extends QPaginatedControl {
-		///////////////////////////
-		// Private Member Variables
-		///////////////////////////
+    /**
+    * @package Controls
+    *
+    * @property string $Template
+    * @property-read integer $CurrentItemIndex
+    * @property string $TagName
+    *
+    */
+    class QDataRepeater extends QPaginatedControl {
+        ///////////////////////////
+        // Private Member Variables
+        ///////////////////////////
 
-		// APPEARANCE
-		protected $strTemplate = null;
-		protected $intCurrentItemIndex = null;
+        // APPEARANCE
+        protected $strTemplate = null;
+        protected $intCurrentItemIndex = null;
 
-		protected $strTagName = 'div';
+        protected $strTagName = 'div';
 
-		//////////
-		// Methods
-		//////////
-		public function ParsePostData() {}
+        //////////
+        // Methods
+        //////////
+        public function ParsePostData() {}
 
-		protected function GetControlHtml() {
-			$this->DataBind();
+        protected function GetControlHtml() {
+            $this->DataBind();
 
-			// Setup Style
-			$strStyle = $this->GetStyleAttributes();
-			if ($strStyle)
-				$strStyle = sprintf('style="%s"', $strStyle);
+            // Setup Style
+            $strStyle = $this->GetStyleAttributes();
+            if ($strStyle)
+                $strStyle = sprintf('style="%s"', $strStyle);
 
-			// Iterate through everything
-			$this->intCurrentItemIndex = 0;
-			$strEvalledItems = '';
-			$strToReturn = '';
-			if (($this->strTemplate) && ($this->objDataSource)) {
-				global $_FORM;
-				global $_CONTROL;
-				global $_ITEM;
-				$_FORM = $this->objForm;
-				$objCurrentControl = $_CONTROL;
-				$_CONTROL = $this;
+            // Iterate through everything
+            $this->intCurrentItemIndex = 0;
+            $strEvalledItems = '';
+            $strToReturn = '';
+            if (($this->strTemplate) && ($this->objDataSource)) {
+                global $_FORM;
+                global $_CONTROL;
+                global $_ITEM;
+                $_FORM = $this->objForm;
+                $objCurrentControl = $_CONTROL;
+                $_CONTROL = $this;
 
-				foreach ($this->objDataSource as $objObject) {
-					$_ITEM = $objObject;
-					$strEvalledItems .= $this->objForm->EvaluateTemplate($this->strTemplate);
-					$this->intCurrentItemIndex++;
-				}
+                foreach ($this->objDataSource as $objObject) {
+                    $_ITEM = $objObject;
+                    $strEvalledItems .= $this->objForm->EvaluateTemplate($this->strTemplate);
+                    $this->intCurrentItemIndex++;
+                }
 
-				$strToReturn = sprintf('<%s id="%s" %s%s>%s</%s>',
-					$this->strTagName,
-					$this->strControlId,
-					$this->GetAttributes(),
-					$strStyle,
-					$strEvalledItems,
-					$this->strTagName);
+                $strToReturn = sprintf('<%s id="%s" %s%s>%s</%s>',
+                    $this->strTagName,
+                    $this->strControlId,
+                    $this->GetAttributes(),
+                    $strStyle,
+                    $strEvalledItems,
+                    $this->strTagName);
 
-				$_CONTROL = $objCurrentControl;
-			}
+                $_CONTROL = $objCurrentControl;
+            }
 
-			$this->objDataSource = null;
-			return $strToReturn;
-		}
+            $this->objDataSource = null;
+            return $strToReturn;
+        }
 
-		/////////////////////////
-		// Public Properties: GET
-		/////////////////////////
-		public function __get($strName) {
-			switch ($strName) {
-				// APPEARANCE
-				case "Template": return $this->strTemplate;
-				case "CurrentItemIndex": return $this->intCurrentItemIndex;
-				case "TagName": return $this->strTagName;
-				
-				default:
-					try {
-						return parent::__get($strName);
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-			}
-		}
+        /////////////////////////
+        // Public Properties: GET
+        /////////////////////////
+        public function __get($strName) {
+            switch ($strName) {
+                // APPEARANCE
+                case "Template": return $this->strTemplate;
+                case "CurrentItemIndex": return $this->intCurrentItemIndex;
+                case "TagName": return $this->strTagName;
 
-		/////////////////////////
-		// Public Properties: SET
-		/////////////////////////
-		public function __set($strName, $mixValue) {
-			$this->blnModified = true;
+                default:
+                    try {
+                        return parent::__get($strName);
+                    } catch (QCallerException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+            }
+        }
 
-			switch ($strName) {
-				// APPEARANCE
-				case "Template":
-					try {
-						if (file_exists($mixValue))
-							$this->strTemplate = QType::Cast($mixValue, QType::String);
-						else
-							throw new QCallerException('Template file does not exist: ' . $mixValue);
-						break;
-					} catch (QInvalidCastException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
+        /////////////////////////
+        // Public Properties: SET
+        /////////////////////////
+        public function __set($strName, $mixValue) {
+            $this->blnModified = true;
 
-				case "TagName":
-					try {
-						$this->strTagName = QType::Cast($mixValue, QType::String);
-						break;
-					} catch (QInvalidCastException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
+            switch ($strName) {
+                // APPEARANCE
+                case "Template":
+                    try {
+                        if (file_exists($mixValue))
+                            $this->strTemplate = QType::Cast($mixValue, QType::String);
+                        else
+                            throw new QCallerException('Template file does not exist: ' . $mixValue);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
 
-				default:
-					try {
-						parent::__set($strName, $mixValue);
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-					break;
-			}
-		}
-	}
+                case "TagName":
+                    try {
+                        $this->strTagName = QType::Cast($mixValue, QType::String);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
+                default:
+                    try {
+                        parent::__set($strName, $mixValue);
+                    } catch (QCallerException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+                    break;
+            }
+        }
+    }
 ?>

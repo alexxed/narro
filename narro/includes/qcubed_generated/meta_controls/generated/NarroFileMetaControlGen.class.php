@@ -552,7 +552,6 @@
 			$this->txtHeader = new QTextBox($this->objParentObject, $strControlId);
 			$this->txtHeader->Name = QApplication::Translate('Header');
 			$this->txtHeader->Text = $this->objNarroFile->Header;
-			$this->txtHeader->Required = true;
 			$this->txtHeader->TextMode = QTextMode::MultiLine;
 			return $this->txtHeader;
 		}
@@ -566,7 +565,6 @@
 			$this->lblHeader = new QLabel($this->objParentObject, $strControlId);
 			$this->lblHeader->Name = QApplication::Translate('Header');
 			$this->lblHeader->Text = $this->objNarroFile->Header;
-			$this->lblHeader->Required = true;
 			return $this->lblHeader;
 		}
 

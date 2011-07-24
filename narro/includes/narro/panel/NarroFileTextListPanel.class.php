@@ -33,7 +33,7 @@
             $this->pnlBreadcrumb->strSeparator = ' / ';
             $this->pnlBreadcrumb->Visible = false;
             $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, null, '..')
+                NarroLink::ProjectFileList($this->objProject->ProjectId, null, null, '..')
             );
             $arrPaths = explode('/', $this->objNarroFile->FilePath);
             $strProgressivePath = '';
@@ -49,7 +49,7 @@
                     $strProgressivePath .= '/' . $strPathPart;
                     $this->pnlBreadcrumb->addElement(
                         NarroLink::ProjectFileList(
-                                $this->objNarroProject->ProjectId,
+                                $this->objProject->ProjectId,
                                 $strProgressivePath,
                                 null,
                                 $strPathPart
@@ -126,7 +126,7 @@
             $this->arrSuggestionList = array();
 
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
-            if (QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save'))
+            if (QApplication::HasPermissionForThisLang('Can approve', $this->objProject->ProjectId) && $this->btnMultiApprove->Text == t('Save'))
                 $objCommonCondition = QQ::AndCondition(
                     QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objNarroFile->FileId),
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),

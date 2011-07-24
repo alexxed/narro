@@ -25,8 +25,8 @@
     <?php $this->RenderBegin() ?>
         <?php $this->pnlHeader->Render() ?>
         <?php $this->pnlBreadcrumb->Render() ?>
-        <h3><?php echo sprintf(t('Language list for %s'), $this->objNarroProject->ProjectName); ?></h3>
-        <p><?php echo sprintf(t('This is a list of languages that %s is translated in.'), $this->objNarroProject->ProjectName); ?></p>
+        <h3><?php echo sprintf(t('Language list for %s'), $this->objProject->ProjectName); ?></h3>
+        <p><?php echo sprintf(t('This is a list of languages that %s is translated in.'), $this->objProject->ProjectName); ?></p>
         <br />
 
         <?php $this->dtgNarroLanguage->Render() ?>

@@ -20,6 +20,7 @@
 	 * @property string $ProjectName the value for strProjectName (Unique)
 	 * @property integer $ProjectType the value for intProjectType (Not Null)
 	 * @property string $ProjectDescription the value for strProjectDescription 
+	 * @property string $Source the value for strSource 
 	 * @property integer $Active the value for intActive (Not Null)
 	 * @property NarroProjectCategory $ProjectCategory the value for the NarroProjectCategory object referenced by intProjectCategoryId 
 	 * @property-read NarroContext $_NarroContextAsProject the value for the private _objNarroContextAsProject (Read-Only) if set due to an expansion on the narro_context.project_id reverse relationship
@@ -78,6 +79,14 @@
 		protected $strProjectDescription;
 		const ProjectDescriptionMaxLength = 255;
 		const ProjectDescriptionDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_project.source
+		 * @var string strSource
+		 */
+		protected $strSource;
+		const SourceDefault = null;
 
 
 		/**
@@ -196,6 +205,7 @@
 			$this->strProjectName = NarroProject::ProjectNameDefault;
 			$this->intProjectType = NarroProject::ProjectTypeDefault;
 			$this->strProjectDescription = NarroProject::ProjectDescriptionDefault;
+			$this->strSource = NarroProject::SourceDefault;
 			$this->intActive = NarroProject::ActiveDefault;
 		}
 
@@ -469,6 +479,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'project_name', $strAliasPrefix . 'project_name');
 			$objBuilder->AddSelectItem($strTableName, 'project_type', $strAliasPrefix . 'project_type');
 			$objBuilder->AddSelectItem($strTableName, 'project_description', $strAliasPrefix . 'project_description');
+			$objBuilder->AddSelectItem($strTableName, 'source', $strAliasPrefix . 'source');
 			$objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
 		}
 
@@ -607,6 +618,8 @@
 			$objToReturn->intProjectType = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'project_description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_description'] : $strAliasPrefix . 'project_description';
 			$objToReturn->strProjectDescription = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'source', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'source'] : $strAliasPrefix . 'source';
+			$objToReturn->strSource = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'active', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active'] : $strAliasPrefix . 'active';
 			$objToReturn->intActive = $objDbRow->GetColumn($strAliasName, 'Integer');
 
@@ -911,12 +924,14 @@
 							`project_name`,
 							`project_type`,
 							`project_description`,
+							`source`,
 							`active`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intProjectCategoryId) . ',
 							' . $objDatabase->SqlVariable($this->strProjectName) . ',
 							' . $objDatabase->SqlVariable($this->intProjectType) . ',
 							' . $objDatabase->SqlVariable($this->strProjectDescription) . ',
+							' . $objDatabase->SqlVariable($this->strSource) . ',
 							' . $objDatabase->SqlVariable($this->intActive) . '
 						)
 					');
@@ -937,6 +952,7 @@
 							`project_name` = ' . $objDatabase->SqlVariable($this->strProjectName) . ',
 							`project_type` = ' . $objDatabase->SqlVariable($this->intProjectType) . ',
 							`project_description` = ' . $objDatabase->SqlVariable($this->strProjectDescription) . ',
+							`source` = ' . $objDatabase->SqlVariable($this->strSource) . ',
 							`active` = ' . $objDatabase->SqlVariable($this->intActive) . '
 						WHERE
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
@@ -1020,6 +1036,7 @@
 			$this->strProjectName = $objReloaded->strProjectName;
 			$this->ProjectType = $objReloaded->ProjectType;
 			$this->strProjectDescription = $objReloaded->strProjectDescription;
+			$this->strSource = $objReloaded->strSource;
 			$this->intActive = $objReloaded->intActive;
 		}
 
@@ -1075,6 +1092,13 @@
 					 * @return string
 					 */
 					return $this->strProjectDescription;
+
+				case 'Source':
+					/**
+					 * Gets the value for strSource 
+					 * @return string
+					 */
+					return $this->strSource;
 
 				case 'Active':
 					/**
@@ -1246,6 +1270,19 @@
 					 */
 					try {
 						return ($this->strProjectDescription = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Source':
+					/**
+					 * Sets the value for strSource 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strSource = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1942,6 +1979,7 @@
 			$strToReturn .= '<element name="ProjectName" type="xsd:string"/>';
 			$strToReturn .= '<element name="ProjectType" type="xsd:int"/>';
 			$strToReturn .= '<element name="ProjectDescription" type="xsd:string"/>';
+			$strToReturn .= '<element name="Source" type="xsd:string"/>';
 			$strToReturn .= '<element name="Active" type="xsd:int"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -1977,6 +2015,8 @@
 				$objToReturn->intProjectType = $objSoapObject->ProjectType;
 			if (property_exists($objSoapObject, 'ProjectDescription'))
 				$objToReturn->strProjectDescription = $objSoapObject->ProjectDescription;
+			if (property_exists($objSoapObject, 'Source'))
+				$objToReturn->strSource = $objSoapObject->Source;
 			if (property_exists($objSoapObject, 'Active'))
 				$objToReturn->intActive = $objSoapObject->Active;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -2020,6 +2060,7 @@
 			$iArray['ProjectName'] = $this->strProjectName;
 			$iArray['ProjectType'] = $this->intProjectType;
 			$iArray['ProjectDescription'] = $this->strProjectDescription;
+			$iArray['Source'] = $this->strSource;
 			$iArray['Active'] = $this->intActive;
 			return new ArrayIterator($iArray);
 		}
@@ -2048,6 +2089,7 @@
      * @property-read QQNode $ProjectName
      * @property-read QQNode $ProjectType
      * @property-read QQNode $ProjectDescription
+     * @property-read QQNode $Source
      * @property-read QQNode $Active
      *
      *
@@ -2076,6 +2118,8 @@
 					return new QQNode('project_type', 'ProjectType', 'Integer', $this);
 				case 'ProjectDescription':
 					return new QQNode('project_description', 'ProjectDescription', 'VarChar', $this);
+				case 'Source':
+					return new QQNode('source', 'Source', 'Blob', $this);
 				case 'Active':
 					return new QQNode('active', 'Active', 'Integer', $this);
 				case 'NarroContextAsProject':
@@ -2107,6 +2151,7 @@
      * @property-read QQNode $ProjectName
      * @property-read QQNode $ProjectType
      * @property-read QQNode $ProjectDescription
+     * @property-read QQNode $Source
      * @property-read QQNode $Active
      *
      *
@@ -2135,6 +2180,8 @@
 					return new QQNode('project_type', 'ProjectType', 'integer', $this);
 				case 'ProjectDescription':
 					return new QQNode('project_description', 'ProjectDescription', 'string', $this);
+				case 'Source':
+					return new QQNode('source', 'Source', 'string', $this);
 				case 'Active':
 					return new QQNode('active', 'Active', 'integer', $this);
 				case 'NarroContextAsProject':

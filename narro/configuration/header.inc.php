@@ -15,6 +15,10 @@
  * You should have received a copy of the GNU General Public License along with this program; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
+
+ if (QApplication::QueryString('p')) {
+     $objProject = NarroProject::Load(QApplication::QueryString('p'));
+ }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -23,15 +27,15 @@
         <?php if (isset($strPageTitle)) { ?>
             <title><?php _p($strPageTitle); ?></title>
         <?php } ?>
-        <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/style.css" />
-        <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/tabs.css" />
-        <link rel="stylesheet" type="text/css" href="<?php _p(__VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/font-<?php if (QApplication::$User instanceof NarroUser) echo QApplication::$User->getPreferenceValueByName('Font size'); else echo 'medium' ?>.css" />
+        <link rel="stylesheet" type="text/css" href="<?php _p(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/style.css" />
+        <link rel="stylesheet" type="text/css" href="<?php _p(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/tabs.css" />
+        <link rel="stylesheet" type="text/css" href="<?php _p(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/font-<?php if (QApplication::$User instanceof NarroUser) echo QApplication::$User->getPreferenceValueByName('Font size'); else echo 'medium' ?>.css" />
 
-        <?php if (QApplication::QueryString('p') && isset($this) && $this->objNarroProject instanceof NarroProject) { ?>
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context changes for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Texts to translate for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=text&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Comments on texts from %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Translations for %s'), $this->objNarroProject->ProjectName) ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $this->objNarroProject->ProjectId ?>" />
+        <?php if (QApplication::QueryString('p') && isset($this) && $objProject instanceof NarroProject) { ?>
+            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context changes for %s'), $objProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Texts to translate for %s'), $objProject->ProjectName) ?>" href="rss.php?t=text&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Comments on texts from %s'), $objProject->ProjectName) ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Translations for %s'), $objProject->ProjectName) ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
         <?php } ?>
         <?php if (QApplication::$User instanceof NarroUser) { ?>
         <link rel="alternate" type="application/rss+xml" title="<?php echo t('Context changes for all projects') ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>" />

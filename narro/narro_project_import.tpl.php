@@ -18,7 +18,7 @@
 
 
 
-    $strPageTitle = $this->objNarroProject->ProjectName . ' :: ' . t('Import');
+    $strPageTitle = $this->objProject->ProjectName . ' :: ' . t('Import');
 
     require(dirname(__FILE__) . '/configuration/header.inc.php');
     $this->RenderBegin();

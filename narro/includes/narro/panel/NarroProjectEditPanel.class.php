@@ -18,7 +18,7 @@
 
     class NarroProjectEditPanel extends QPanel {
         // General Panel Variables
-        protected $objNarroProject;
+        protected $objProject;
         public $strTitleVerb;
         protected $blnEditMode;
 
@@ -41,11 +41,11 @@
 
         protected function SetupNarroProject($objNarroProject) {
             if ($objNarroProject) {
-                $this->objNarroProject = $objNarroProject;
+                $this->objProject = $objNarroProject;
                 $this->strTitleVerb = t('Edit');
                 $this->blnEditMode = true;
             } else {
-                $this->objNarroProject = new NarroProject();
+                $this->objProject = new NarroProject();
                 $this->strTitleVerb = t('Add');
                 $this->blnEditMode = false;
             }
@@ -93,7 +93,7 @@
             $objProjectCategoryArray = NarroProjectCategory::LoadAll();
             if ($objProjectCategoryArray) foreach ($objProjectCategoryArray as $objProjectCategory) {
                 $objListItem = new QListItem($objProjectCategory->CategoryName, $objProjectCategory->ProjectCategoryId);
-                if (($this->objNarroProject->ProjectCategory) && ($this->objNarroProject->ProjectCategory->ProjectCategoryId == $objProjectCategory->ProjectCategoryId))
+                if (($this->objProject->ProjectCategory) && ($this->objProject->ProjectCategory->ProjectCategoryId == $objProjectCategory->ProjectCategoryId))
                     $objListItem->Selected = true;
                 $this->lstProjectCategory->AddItem($objListItem);
             }
@@ -102,7 +102,7 @@
         // Create and Setup txtProjectName
         protected function txtProjectName_Create() {
             $this->txtProjectName = new QTextBox($this);
-            $this->txtProjectName->Text = $this->objNarroProject->ProjectName;
+            $this->txtProjectName->Text = $this->objProject->ProjectName;
             $this->txtProjectName->Required = true;
             $this->txtProjectName->MaxLength = NarroProject::ProjectNameMaxLength;
         }
@@ -112,13 +112,13 @@
             $this->lstProjectType = new QListBox($this);
             $this->lstProjectType->Required = true;
             foreach (NarroProjectType::$NameArray as $intId => $strValue)
-                $this->lstProjectType->AddItem(new QListItem($strValue, $intId, $this->objNarroProject->ProjectType == $intId));
+                $this->lstProjectType->AddItem(new QListItem($strValue, $intId, $this->objProject->ProjectType == $intId));
         }
 
         // Create and Setup txtProjectDescription
         protected function txtProjectDescription_Create() {
             $this->txtProjectDescription = new QTextBox($this);
-            $this->txtProjectDescription->Text = $this->objNarroProject->ProjectDescription;
+            $this->txtProjectDescription->Text = $this->objProject->ProjectDescription;
             $this->txtProjectDescription->MaxLength = NarroProject::ProjectDescriptionMaxLength;
             $this->txtProjectDescription->TextMode = QTextMode::MultiLine;
             $this->txtProjectDescription->Rows = 3;
@@ -128,7 +128,7 @@
         // Create and Setup txtActive
         protected function txtActive_Create() {
             $this->txtActive = new QCheckBox($this);
-            $this->txtActive->Checked = $this->objNarroProject->Active;
+            $this->txtActive->Checked = $this->objProject->Active;
         }
 
 
@@ -153,7 +153,7 @@
         protected function btnDelete_Create() {
             $this->btnDelete = new QButton($this);
             $this->btnDelete->Text = t('Delete');
-            $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(t('Are you SURE you want to DELETE %s?\nThe texts and associated suggestions will NOT be deleted.\nThey will be preserved for use in other projects.'), addslashes($this->objNarroProject->ProjectName))));
+            $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(t('Are you SURE you want to DELETE %s?\nThe texts and associated suggestions will NOT be deleted.\nThey will be preserved for use in other projects.'), addslashes($this->objProject->ProjectName))));
             $this->btnDelete->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnDelete_Click'));
             $this->btnDelete->CausesValidation = false;
             $this->btnDelete->Visible = $this->blnEditMode;
@@ -161,11 +161,11 @@
 
         // Protected Update Methods
         protected function UpdateNarroProjectFields() {
-            $this->objNarroProject->ProjectCategoryId = $this->lstProjectCategory->SelectedValue;
-            $this->objNarroProject->ProjectName = $this->txtProjectName->Text;
-            $this->objNarroProject->ProjectType = $this->lstProjectType->SelectedValue;
-            $this->objNarroProject->ProjectDescription = $this->txtProjectDescription->Text;
-            $this->objNarroProject->Active = (int) $this->txtActive->Checked;
+            $this->objProject->ProjectCategoryId = $this->lstProjectCategory->SelectedValue;
+            $this->objProject->ProjectName = $this->txtProjectName->Text;
+            $this->objProject->ProjectType = $this->lstProjectType->SelectedValue;
+            $this->objProject->ProjectDescription = $this->txtProjectDescription->Text;
+            $this->objProject->Active = (int) $this->txtActive->Checked;
         }
 
 
@@ -174,7 +174,7 @@
             $this->UpdateNarroProjectFields();
 
             try {
-                $this->objNarroProject->Save();
+                $this->objProject->Save();
             }
             catch (Exception $objEx) {
                 $this->lblMessage->Text = $objEx->getMessage();
@@ -188,7 +188,7 @@
                  * If a new project is added, the project directory and source and target are created
                  * Also sample export.sh and import.sh are written in the project directory, ready for use
                  */
-                $strProjectDir = __IMPORT_PATH__ . '/' . $this->objNarroProject->ProjectId;
+                $strProjectDir = __IMPORT_PATH__ . '/' . $this->objProject->ProjectId;
                 if (!file_exists($strProjectDir)) {
                     mkdir($strProjectDir, 0777);
                     chmod($strProjectDir, 0777);
@@ -216,7 +216,7 @@
                     if (!file_exists($strProjectDir . '/' . QApplication::GetLanguageId()))
                         mkdir($strProjectDir . '/' . QApplication::GetLanguageId(), 0777);
                 }
-                QApplication::Redirect(NarroLink::ProjectImport($this->objNarroProject->ProjectId));
+                QApplication::Redirect(NarroLink::ProjectImport($this->objProject->ProjectId));
             }
         }
 
@@ -225,24 +225,24 @@
         }
 
         public function btnDelete_Click($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::HasPermission('Can delete project', $this->objNarroProject->ProjectId))
+            if (!QApplication::HasPermission('Can delete project', $this->objProject->ProjectId))
                 QApplication::Redirect(NarroLink::ProjectList());
 
             $objDatabase = QApplication::$Database[1];
 
             try {
-                $strQuery = sprintf("DELETE FROM narro_context_comment USING narro_context_comment LEFT JOIN narro_context ON narro_context_comment.context_id=narro_context.context_id WHERE narro_context_comment.language_id=%d AND narro_context.project_id=%d", QApplication::GetLanguageId(), $this->objNarroProject->ProjectId);
+                $strQuery = sprintf("DELETE FROM narro_context_comment USING narro_context_comment LEFT JOIN narro_context ON narro_context_comment.context_id=narro_context.context_id WHERE narro_context_comment.language_id=%d AND narro_context.project_id=%d", QApplication::GetLanguageId(), $this->objProject->ProjectId);
                 $objDatabase->NonQuery($strQuery);
-                $strQuery = sprintf("DELETE FROM narro_context_info USING narro_context_info LEFT JOIN narro_context ON narro_context_info.context_id=narro_context.context_id WHERE narro_context_info.language_id=%d AND narro_context.project_id=%d", QApplication::GetLanguageId(), $this->objNarroProject->ProjectId);
+                $strQuery = sprintf("DELETE FROM narro_context_info USING narro_context_info LEFT JOIN narro_context ON narro_context_info.context_id=narro_context.context_id WHERE narro_context_info.language_id=%d AND narro_context.project_id=%d", QApplication::GetLanguageId(), $this->objProject->ProjectId);
                 $objDatabase->NonQuery($strQuery);
-                $strQuery = sprintf("DELETE FROM `narro_context` WHERE project_id = %d", $this->objNarroProject->ProjectId);
+                $strQuery = sprintf("DELETE FROM `narro_context` WHERE project_id = %d", $this->objProject->ProjectId);
                 $objDatabase->NonQuery($strQuery);
-                $strQuery = sprintf("DELETE FROM `narro_file` WHERE project_id = %d", $this->objNarroProject->ProjectId);
+                $strQuery = sprintf("DELETE FROM `narro_file` WHERE project_id = %d", $this->objProject->ProjectId);
                 $objDatabase->NonQuery($strQuery);
-                $strQuery = sprintf("DELETE FROM `narro_user_role` WHERE project_id = %d", $this->objNarroProject->ProjectId);
+                $strQuery = sprintf("DELETE FROM `narro_user_role` WHERE project_id = %d", $this->objProject->ProjectId);
                 $objDatabase->NonQuery($strQuery);
 
-                $this->objNarroProject->Delete();
+                $this->objProject->Delete();
             }
             catch (Exception $objEx) {
                 $this->lblMessage->Text = $objEx->getMessage();

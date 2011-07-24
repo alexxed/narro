@@ -26,11 +26,13 @@
 		protected $lblProjectProgressId;
 		protected $lstProject;
 		protected $lstLanguage;
+		protected $chkActive;
 		protected $calLastModified;
 		protected $txtTotalTextCount;
 		protected $txtFuzzyTextCount;
 		protected $txtApprovedTextCount;
 		protected $txtProgressPercent;
+		protected $txtSource;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -69,11 +71,13 @@
 			$this->lblProjectProgressId = $this->mctNarroProjectProgress->lblProjectProgressId_Create();
 			$this->lstProject = $this->mctNarroProjectProgress->lstProject_Create();
 			$this->lstLanguage = $this->mctNarroProjectProgress->lstLanguage_Create();
+			$this->chkActive = $this->mctNarroProjectProgress->chkActive_Create();
 			$this->calLastModified = $this->mctNarroProjectProgress->calLastModified_Create();
 			$this->txtTotalTextCount = $this->mctNarroProjectProgress->txtTotalTextCount_Create();
 			$this->txtFuzzyTextCount = $this->mctNarroProjectProgress->txtFuzzyTextCount_Create();
 			$this->txtApprovedTextCount = $this->mctNarroProjectProgress->txtApprovedTextCount_Create();
 			$this->txtProgressPercent = $this->mctNarroProjectProgress->txtProgressPercent_Create();
+			$this->txtSource = $this->mctNarroProjectProgress->txtSource_Create();
 
 			// Create Buttons and Actions on this Form
 			$this->btnSave = new QButton($this);

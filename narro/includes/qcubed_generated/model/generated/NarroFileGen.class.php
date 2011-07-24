@@ -25,7 +25,7 @@
 	 * @property boolean $Active the value for blnActive (Not Null)
 	 * @property QDateTime $Created the value for dttCreated (Not Null)
 	 * @property QDateTime $Modified the value for dttModified 
-	 * @property string $Header the value for strHeader (Not Null)
+	 * @property string $Header the value for strHeader 
 	 * @property NarroFile $Parent the value for the NarroFile object referenced by intParentId 
 	 * @property NarroProject $Project the value for the NarroProject object referenced by intProjectId (Not Null)
 	 * @property-read NarroContext $_NarroContextAsFile the value for the private _objNarroContextAsFile (Read-Only) if set due to an expansion on the narro_context.file_id reverse relationship
@@ -1165,7 +1165,7 @@
 
 				case 'Header':
 					/**
-					 * Gets the value for strHeader (Not Null)
+					 * Gets the value for strHeader 
 					 * @return string
 					 */
 					return $this->strHeader;
@@ -1404,7 +1404,7 @@
 
 				case 'Header':
 					/**
-					 * Sets the value for strHeader (Not Null)
+					 * Sets the value for strHeader 
 					 * @param string $mixValue
 					 * @return string
 					 */

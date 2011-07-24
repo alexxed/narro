@@ -686,6 +686,46 @@
 				QQ::Equal(QQN::NarroContextComment()->LanguageId, $intLanguageId)
 			);
 		}
+			
+		/**
+		 * Load an array of NarroContextComment objects,
+		 * by ContextId, LanguageId Index(es)
+		 * @param integer $intContextId
+		 * @param integer $intLanguageId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroContextComment[]
+		*/
+		public static function LoadArrayByContextIdLanguageId($intContextId, $intLanguageId, $objOptionalClauses = null) {
+			// Call NarroContextComment::QueryArray to perform the LoadArrayByContextIdLanguageId query
+			try {
+				return NarroContextComment::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::NarroContextComment()->ContextId, $intContextId),
+					QQ::Equal(QQN::NarroContextComment()->LanguageId, $intLanguageId)
+					),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroContextComments
+		 * by ContextId, LanguageId Index(es)
+		 * @param integer $intContextId
+		 * @param integer $intLanguageId
+		 * @return int
+		*/
+		public static function CountByContextIdLanguageId($intContextId, $intLanguageId) {
+			// Call NarroContextComment::QueryCount to perform the CountByContextIdLanguageId query
+			return NarroContextComment::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::NarroContextComment()->ContextId, $intContextId),
+				QQ::Equal(QQN::NarroContextComment()->LanguageId, $intLanguageId)
+				)
+			);
+		}
 
 
 

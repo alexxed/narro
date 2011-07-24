@@ -26,6 +26,7 @@
 		protected $lblFileProgressId;
 		protected $lstFile;
 		protected $lstLanguage;
+		protected $txtHeader;
 		protected $txtTotalTextCount;
 		protected $txtApprovedTextCount;
 		protected $txtFuzzyTextCount;
@@ -69,6 +70,7 @@
 			$this->lblFileProgressId = $this->mctNarroFileProgress->lblFileProgressId_Create();
 			$this->lstFile = $this->mctNarroFileProgress->lstFile_Create();
 			$this->lstLanguage = $this->mctNarroFileProgress->lstLanguage_Create();
+			$this->txtHeader = $this->mctNarroFileProgress->txtHeader_Create();
 			$this->txtTotalTextCount = $this->mctNarroFileProgress->txtTotalTextCount_Create();
 			$this->txtApprovedTextCount = $this->mctNarroFileProgress->txtApprovedTextCount_Create();
 			$this->txtFuzzyTextCount = $this->mctNarroFileProgress->txtFuzzyTextCount_Create();

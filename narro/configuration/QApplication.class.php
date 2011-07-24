@@ -262,7 +262,7 @@
             else {
                 $objGuessedLanguage = QApplication::GetBrowserLanguage();
                 if ($objGuessedLanguage instanceof NarroLanguage && !isset($_REQUEST['openid_mode'])) {
-                    QApplication::Redirect(sprintf('narro_project_list.php?l=%s', $objGuessedLanguage->LanguageCode));
+                    QApplication::Redirect(sprintf('projects.php?l=%s', $objGuessedLanguage->LanguageCode));
                     exit;
                 }
                 else

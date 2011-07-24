@@ -20,7 +20,7 @@
         /**
          * @var NarroProject
          */
-        public $objNarroProject;
+        public $objProject;
         public $pnlProjectReport;
         protected $strTemplate;
 
@@ -31,7 +31,7 @@
         public $btnShowReviewers;
 
         protected function SetupNarroProject(NarroProject $objNarroProject) {
-            $this->objNarroProject = $objNarroProject;
+            $this->objProject = $objNarroProject;
         }
 
         public function __construct(NarroProject $objNarroProject, $objParentObject, $strControlId = null) {
@@ -80,7 +80,7 @@
 
             $colTextsApproved = new QDataGridColumn(t('Texts Approved'), '<?= $_ITEM->GetVirtualAttribute("TotalTextsApproved") ?>');
 
-            //NarroLink::ProjectTextList($this->objNarroProject->ProjectId, NarroTextListForm::SHOW_APPROVED_TEXTS)
+            //NarroLink::ProjectTextList($this->objProject->ProjectId, NarroTextListForm::SHOW_APPROVED_TEXTS)
 
             // Setup DataGrid
             $this->dtgReviewers = new NarroDataGrid($this);
@@ -100,7 +100,7 @@
             $this->dtgReviewers->AddColumn($colUsername);
             $this->dtgReviewers->AddColumn($colTextsApproved);
 
-            $this->pnlProjectReport = new NarroProjectReportPanel($this->objNarroProject, $this);
+            $this->pnlProjectReport = new NarroProjectReportPanel($this->objProject, $this);
 
             $this->btnShowTranslators = new QButton($this);
             $this->btnShowTranslators->Text = t('Show Translators');
@@ -132,7 +132,7 @@
 
             $this->dtgTranslators->DataSource = NarroUser::QueryArray(
                 QQ::AndCondition(
-                    QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $this->objNarroProject->ProjectId),
+                    QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $this->objProject->ProjectId),
                     QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->LanguageId, QApplication::GetLanguageId()),
                     QQ::GreaterThan(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->ValidSuggestion->SuggestionWordCount, 0),
                     QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
@@ -142,7 +142,7 @@
 
             $this->dtgTranslators->TotalItemCount = NarroUser::QueryCount(
                 QQ::AndCondition(
-                    QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $this->objNarroProject->ProjectId),
+                    QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $this->objProject->ProjectId),
                     QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->LanguageId, QApplication::GetLanguageId()),
                     QQ::GreaterThan(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->ValidSuggestion->SuggestionWordCount, 0),
                     QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
@@ -172,7 +172,7 @@
 
             $this->dtgReviewers->DataSource = NarroContextInfo::QueryArray(
                 QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
                     QQ::NotEqual(QQN::NarroContextInfo()->ValidatorUserId, NarroUser::ANONYMOUS_USER_ID)
                 ),
@@ -181,7 +181,7 @@
 
             $this->dtgReviewers->TotalItemCount = NarroContextInfo::QueryCount(
                 QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
                     QQ::NotEqual(QQN::NarroContextInfo()->ValidatorUserId, NarroUser::ANONYMOUS_USER_ID)
                 ),
@@ -190,7 +190,7 @@
         }
 
         public function colWorldsTranslated_Render(NarroUser $objUser) {
-            return NarroLink::ProjectTextList($this->objNarroProject->ProjectId, NarroTextListForm::SHOW_ALL_TEXTS, NarroTextListForm::SEARCH_AUTHORS, '\'' . $objUser->Username . '\'', $objUser->GetVirtualAttribute("TotalWordsTranslated"));
+            return NarroLink::ProjectTextList($this->objProject->ProjectId, NarroTextListForm::SHOW_ALL_TEXTS, NarroTextListForm::SEARCH_AUTHORS, '\'' . $objUser->Username . '\'', $objUser->GetVirtualAttribute("TotalWordsTranslated"));
         }
 
         public function btnShowTranslators_Click() {

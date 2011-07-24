@@ -58,11 +58,13 @@
 			$this->dtgNarroProjectProgresses->MetaAddColumn('ProjectProgressId');
 			$this->dtgNarroProjectProgresses->MetaAddColumn(QQN::NarroProjectProgress()->Project);
 			$this->dtgNarroProjectProgresses->MetaAddColumn(QQN::NarroProjectProgress()->Language);
+			$this->dtgNarroProjectProgresses->MetaAddColumn('Active');
 			$this->dtgNarroProjectProgresses->MetaAddColumn('LastModified');
 			$this->dtgNarroProjectProgresses->MetaAddColumn('TotalTextCount');
 			$this->dtgNarroProjectProgresses->MetaAddColumn('FuzzyTextCount');
 			$this->dtgNarroProjectProgresses->MetaAddColumn('ApprovedTextCount');
 			$this->dtgNarroProjectProgresses->MetaAddColumn('ProgressPercent');
+			$this->dtgNarroProjectProgresses->MetaAddColumn('Source');
 		}
 	}
 ?>

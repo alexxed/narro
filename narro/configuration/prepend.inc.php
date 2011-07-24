@@ -45,6 +45,6 @@ if (!defined('__PREPEND_INCLUDED__')) {
     QApplication::$EncodingType = 'UTF-8';
     QApplication::$Database[1]->NonQuery("SET NAMES 'utf8'");
 
-    QApplication::$PluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/../narro/plugins');
+    QApplication::$PluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/../includes/narro/plugins');
 }
 ?>

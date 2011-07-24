@@ -1,5 +1,5 @@
  <?php
-	class QTabPanel extends QPanel {
+    class QTabPanel extends QPanel {
 
         protected $arrTab;
         protected $arrTabUrl;
@@ -9,7 +9,6 @@
         protected $blnUseAjax = true;
 
         public function __construct($objParentObject, $strControlId = null) {
-            $this->strStyleSheets = '../../css/tabs.css';
             parent::__construct($objParentObject, $strControlId);
 
         }
@@ -21,13 +20,13 @@
             $this->arrTabTitle[$intTabCount] = $strTitle;
             $this->arrTabUrl[$intTabCount] = $strUrl;
         }
-        
-	    public function replaceTab($objPanel, $strTitle, $strUrl = null) {
-	        foreach($this->arrTabTitle as $intTabNo=>$strTabTitle) {
-	            if ($strTabTitle == $strTitle)
-	               break;
-	        }
-	        
+
+        public function replaceTab($objPanel, $strTitle, $strUrl = null) {
+            foreach($this->arrTabTitle as $intTabNo=>$strTabTitle) {
+                if ($strTabTitle == $strTitle)
+                break;
+            }
+
             $objPanel->CssClass = 'tabs-container';
             $this->arrTab[$intTabNo] = $objPanel;
             $this->arrTabTitle[$intTabNo] = $strTitle;
@@ -108,7 +107,7 @@
         /////////////////////////
         // Public Properties: GET
         /////////////////////////
-	    public function __get($strName) {
+        public function __get($strName) {
             switch ($strName) {
                 case "SelectedTab":
                     return $this->arrTab[$this->intSelectedTab];
@@ -173,5 +172,5 @@
             }
         }
 
-	}
+    }
 ?>

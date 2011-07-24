@@ -18,7 +18,7 @@
 
 
 
-    $strPageTitle = ($this->objNarroProject instanceof NarroProject)?sprintf(t('Edit %s'), $this->objNarroProject->ProjectName):t('Add');
+    $strPageTitle = ($this->objProject instanceof NarroProject)?sprintf(t('Edit %s'), $this->objProject->ProjectName):t('Add');
 
     require(dirname(__FILE__) . '/configuration/header.inc.php');
     $this->RenderBegin();

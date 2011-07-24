@@ -112,7 +112,7 @@
 
         public function dtgLanguage_LanguageNameColumn_Render(NarroLanguage $objLanguage) {
             if ($objLanguage->Active)
-                return sprintf('<a href="%s?l=%s">%s</a>', 'narro_project_list.php', $objLanguage->LanguageCode, $objLanguage->LanguageName);
+                return sprintf('<a href="%s?l=%s">%s</a>', 'projects.php', $objLanguage->LanguageCode, $objLanguage->LanguageName);
             else
                 return sprintf('<a style="color:gray;font-style:italic;" href="%s?l=%s">%s</a>', basename(__FILE__), $objLanguage->LanguageCode, $objLanguage->LanguageName);
         }

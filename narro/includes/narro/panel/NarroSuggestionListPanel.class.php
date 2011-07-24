@@ -68,8 +68,8 @@
 
             // Setup DataGrid
             $this->dtgSuggestions = new NarroDataGrid($this);
-            $this->dtgSuggestions->ShowHeader = true;
-            $this->dtgSuggestions->AlwaysShowPaginator = true;
+            $this->dtgSuggestions->ShowHeader = false;
+            $this->dtgSuggestions->AlwaysShowPaginator = false;
             $this->dtgSuggestions->Title = t('Translations for this text');
 
             // Datagrid Paginator
@@ -303,7 +303,7 @@
                 );
             elseif (strtotime($objNarroSuggestion->Modified) > 0 && $strModifiedWhen && !$objNarroSuggestion->User->Username)
                 $strAuthorInfo = sprintf(t('%s ago'), $strModifiedWhen);
-            elseif ($objNarroSuggestion->User->Username)
+            elseif ($objNarroSuggestion->User)
                 $strAuthorInfo = sprintf(($objNarroSuggestion->IsImported)?t('imported by %s'):'%s', NarroLink::UserProfile($objNarroSuggestion->User->UserId, $objNarroSuggestion->User->Username));
             else
                 $strAuthorInfo = t('Unknown');

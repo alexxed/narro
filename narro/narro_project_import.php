@@ -22,10 +22,10 @@
         protected function Form_Create() {
             parent::Form_Create();
             
-            if (!QApplication::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
+            if (!QApplication::HasPermissionForThisLang('Can import project', $this->objProject->ProjectId))
                 QApplication::Redirect(NarroLink::ProjectList());
             
-            $this->pnlMainTab->replaceTab(new NarroProjectImportPanel($this->objNarroProject, $this->pnlMainTab), t('Import'));
+            $this->pnlMainTab->replaceTab(new NarroProjectImportPanel($this->objProject, $this->pnlMainTab), t('Import'));
             $this->pnlMainTab->SelectedTab = t('Import');
         }
     }

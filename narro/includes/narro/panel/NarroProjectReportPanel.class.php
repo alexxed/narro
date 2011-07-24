@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroProjectReportPanel extends QPanel {
-        protected $objNarroProject;
+        protected $objProject;
 
         public function __construct(NarroProject $objNarroProject, $objParentObject, $strControlId = null) {
             // Call the Parent
@@ -27,7 +27,7 @@
                 throw $objExc;
             }
 
-            $this->objNarroProject = $objNarroProject;
+            $this->objProject = $objNarroProject;
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroProjectReportPanel.tpl.php';
         }
     }

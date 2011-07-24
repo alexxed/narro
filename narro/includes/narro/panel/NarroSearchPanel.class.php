@@ -40,12 +40,12 @@
 
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroSearchPanel.tpl.php';
 
-            $this->dtgProject = new NarroProjectDataGrid($this);
+            $this->dtgProject = new NarroProjectProgressDataGrid($this);
             $this->dtgProject->Title = t('Projects');
             $this->dtgProject->ShowHeader = true;
             $this->dtgProject->ShowFilter = false;
             $this->dtgProject->SetCustomStyle('margin-bottom', '1em');
-            $colName = $this->dtgProject->MetaAddColumn('ProjectName');
+            $colName = $this->dtgProject->MetaAddColumn(QQN::NarroProjectProgress()->Project->ProjectName);
             $colName->Html = '<?=$_CONTROL->ParentControl->dtgProject_colName_Render($_ITEM)?>';
             $colName->HtmlEntities = false;
             // Datagrid Paginator
@@ -58,12 +58,12 @@
                 '<?= $_CONTROL->ParentControl->dtgProject_colPercentTranslated_Render($_ITEM) ?>',
                 array(
                     'OrderByClause' => QQ::OrderBy(
-                        QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, true,
-                        QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, true
+                        QQN::NarroProjectProgress()->ProgressPercent, true,
+                        QQN::NarroProjectProgress()->FuzzyTextCount, true
                     ),
                     'ReverseOrderByClause' => QQ::OrderBy(
-                        QQN::NarroProject()->NarroProjectProgressAsProject->ProgressPercent, false,
-                        QQN::NarroProject()->NarroProjectProgressAsProject->FuzzyTextCount, false
+                        QQN::NarroProjectProgress()->ProgressPercent, false,
+                        QQN::NarroProjectProgress()->FuzzyTextCount, false
                     )
                 )
             );
@@ -75,10 +75,10 @@
                 '<?= $_CONTROL->ParentControl->dtgProject_colLastActivity_Render($_ITEM) ?>',
                 array(
                     'OrderByClause' => QQ::OrderBy(
-                        QQN::NarroProject()->NarroProjectProgressAsProject->LastModified, true
+                        QQN::NarroProjectProgress()->LastModified, true
                     ),
                     'ReverseOrderByClause' => QQ::OrderBy(
-                        QQN::NarroProject()->NarroProjectProgressAsProject->LastModified, false
+                        QQN::NarroProjectProgress()->LastModified, false
                     )
                 )
             );
@@ -136,6 +136,12 @@
             $colText->Name = 'Untranslated text';
             $colText->Html = '<?=NarroLink::ContextSuggest($_ITEM->Context->ProjectId, $_ITEM->Context->FileId, $_ITEM->ContextId, null, null, null, null, null, -1, 0, 0, nl2br(NarroString::HtmlEntities($_ITEM->Context->Text->TextValue)), "nolink")?>';
             $colText->HtmlEntities = false;
+
+            $colProject = $this->dtgText->MetaAddColumn(QQN::NarroContextInfo()->Context->Project->ProjectName);
+            $colProject->Name = 'Project';
+            $colProject->Html = '<?=NarroLink::ContextSuggest($_ITEM->Context->ProjectId, $_ITEM->Context->FileId, $_ITEM->ContextId, null, null, null, null, null, -1, 0, 0, nl2br(NarroString::HtmlEntities($_ITEM->Context->Project->ProjectName)), "nolink")?>';
+            $colProject->HtmlEntities = false;
+
             // Datagrid Paginator
             $this->dtgText->Paginator = new QPaginator($this->dtgText);
             $this->dtgText->PaginatorAlternate = new QPaginator($this->dtgText);
@@ -170,9 +176,9 @@
                 $this->btnSearch->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnSearch_Click'));
         }
 
-        public function dtgProject_colLastActivity_Render(NarroProject $objProject) {
-            if ($objProject->_NarroProjectProgressAsProject && $objProject->_NarroProjectProgressAsProject->LastModified->Timestamp > 0) {
-                $objDateSpan = new QDateTimeSpan(time() - $objProject->_NarroProjectProgressAsProject->LastModified->Timestamp);
+        public function dtgProject_colLastActivity_Render(NarroProjectProgress $objProjectProgress) {
+            if ($objProjectProgress->LastModified->Timestamp > 0) {
+                $objDateSpan = new QDateTimeSpan(time() - $objProjectProgress->LastModified->Timestamp);
                 $strModifiedWhen = $objDateSpan->SimpleDisplay();
                 return sprintf(t('%s ago'), $strModifiedWhen);
             }
@@ -181,10 +187,10 @@
             }
         }
 
-        public function dtgProject_colPercentTranslated_Render(NarroProject $objProject) {
-            $intTotalTexts = $objProject->CountAllTextsByLanguage();
-            $intTranslatedTexts = $objProject->CountTranslatedTextsByLanguage();
-            $intApprovedTexts = $objProject->CountApprovedTextsByLanguage();
+        public function dtgProject_colPercentTranslated_Render(NarroProjectProgress $objProjectProgress) {
+            $intTotalTexts = $objProjectProgress->TotalTextCount;
+            $intTranslatedTexts = $objProjectProgress->FuzzyTextCount;
+            $intApprovedTexts = $objProjectProgress->ApprovedTextCount;
             $strOutput = '';
 
             $objProgressBar = new NarroTranslationProgressBar($this->dtgProject);
@@ -196,22 +202,13 @@
             $strOutput .= $objProgressBar->Render(false);
 
             $strOutput =
-                NarroLink::ContextSuggest(
-                    $objProject->ProjectId,
-                    0,
-                    0,
-                    NarroTextListForm::SHOW_UNTRANSLATED_TEXTS,
-                    NarroTextListForm::SEARCH_TEXTS,
-                    '',
-                    0,
-                    $intTotalTexts - $intApprovedTexts - $intTranslatedTexts,
-                    -1,
-                    0,
-                    0,
+                NarroLink::Translate(
+                    $objProjectProgress->ProjectId,
+                    null, null, null, null, null,
                     $strOutput
                 );
 
-            QApplication::$PluginHandler->DisplayInProjectListInProgressColumn($objProject);
+            QApplication::$PluginHandler->DisplayInProjectListInProgressColumn($objProjectProgress->Project);
 
             if (is_array(QApplication::$PluginHandler->PluginReturnValues)) {
                 $strOutput .= '';
@@ -226,27 +223,26 @@
             return $strOutput;
         }
 
-        public function dtgProject_colName_Render(NarroProject $objProject) {
+        public function dtgProject_colName_Render(NarroProjectProgress $objProjectProgress) {
+            $intTotalTexts = $objProjectProgress->TotalTextCount;
+            $intTranslatedTexts = $objProjectProgress->FuzzyTextCount;
+            $intApprovedTexts = $objProjectProgress->ApprovedTextCount;
 
-            $intTotalTexts = $objProject->CountAllTextsByLanguage();
-            $intTranslatedTexts = $objProject->CountTranslatedTextsByLanguage();
-            $intApprovedTexts = $objProject->CountApprovedTextsByLanguage();
-
-            if ($objProject->Active)
+            if ($objProjectProgress->Active)
                 $strProjectName =
                     '<span style="font-size:1.2em;font-weight:bold;">' .
-                    $objProject->ProjectName .
+                    $objProjectProgress->Project->ProjectName .
                     '</span>';
             else
                 $strProjectName =
                     '<span style="color:gray;font-style:italic;font-size:1.2em">' .
-                    $objProject->ProjectName .
+                    $objProjectProgress->Project->ProjectName .
                     '</span>';
 
             return
-                NarroLink::Project($objProject->ProjectId, $strProjectName) .
+                NarroLink::Project($objProjectProgress->ProjectId, $strProjectName) .
                 '<div style="display:block">' .
-                htmlspecialchars($objProject->ProjectDescription) .
+                $objProjectProgress->Project->ProjectDescription .
                 '</div>';
         }
 
@@ -268,7 +264,10 @@
         }
 
         public function dtgProject_Bind() {
-            $this->dtgProject->AdditionalConditions = QQ::Like(QQN::NarroProject()->ProjectName, '%' . $this->txtSearch->Text . '%');
+            $this->dtgProject->AdditionalConditions = QQ::AndCondition(
+                QQ::Equal(QQN::NarroProjectProgress()->LanguageId, QApplication::GetLanguageId()),
+                QQ::Like(QQN::NarroProjectProgress()->Project->ProjectName, '%' . $this->txtSearch->Text . '%')
+            );
             $this->dtgProject->MetaDataBinder();
             $this->dtgProject->Display = (bool) $this->dtgProject->TotalItemCount;
         }

@@ -67,6 +67,11 @@
                 return parent::GetPaginatorRowHtml($objPaginator);
         }
 
+        public function GetEndScript() {
+            QApplication::ExecuteJavaScript(sprintf('highlight_datagrid("%s");', $this->ControlId));
+            return parent::GetEndScript();
+        }
+
         /////////////////////////
         // Public Properties: SET
         /////////////////////////

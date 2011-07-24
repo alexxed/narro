@@ -60,6 +60,7 @@
 			$this->dtgNarroProjects->MetaAddColumn('ProjectName');
 			$this->dtgNarroProjects->MetaAddTypeColumn('ProjectType', 'NarroProjectType');
 			$this->dtgNarroProjects->MetaAddColumn('ProjectDescription');
+			$this->dtgNarroProjects->MetaAddColumn('Source');
 			$this->dtgNarroProjects->MetaAddColumn('Active');
 		}
 	}

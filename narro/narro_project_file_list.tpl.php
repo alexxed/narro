@@ -16,9 +16,9 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(t('%s :: File list'), $this->objNarroProject->ProjectName);
+    $strPageTitle = sprintf(t('%s :: File list'), $this->objProject->ProjectName);
     if (QApplication::QueryString('pf')>0)
-        $strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objNarroProject->ProjectName, $this->objParentFile->FileName);
+        $strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objProject->ProjectName, $this->objParentFile->FileName);
 
     require(dirname(__FILE__) . '/configuration/header.inc.php')
 ?>

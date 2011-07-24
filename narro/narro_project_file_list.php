@@ -24,7 +24,7 @@
         protected function Form_Create() {
             parent::Form_Create();
             
-            $this->pnlSelectedTab = new NarroProjectFileListPanel($this->objNarroProject, $this->objParentFile, $this->pnlMainTab);
+            $this->pnlSelectedTab = new NarroProjectFileListPanel($this->objProject, $this->objParentFile, $this->pnlMainTab);
             $this->pnlSelectedTab->ChangeDirectory(QApplication::QueryString('pf'));
             
             $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Files'));

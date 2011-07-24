@@ -17,7 +17,7 @@
      */
 
     class NarroProjectFileListPanel extends QPanel {
-        protected $objNarroProject;
+        protected $objProject;
         public $pnlBreadcrumb;
 
         public $dtgNarroFile;
@@ -46,7 +46,7 @@
             $this->pnlBreadcrumb = new NarroBreadcrumbPanel($this);
             $this->pnlBreadcrumb->strSeparator = ' / ';
 
-            $this->objNarroProject = $objNarroProject;
+            $this->objProject = $objNarroProject;
 
             // Setup DataGrid Columns
             $this->colFileName = new QDataGridColumn(t('File name'), '<?= $_CONTROL->ParentControl->dtgNarroFile_FileNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName, false)));
@@ -76,7 +76,7 @@
 
             $this->dtgNarroFile->AddColumn($this->colFileName);
             $this->dtgNarroFile->AddColumn($this->colPercentTranslated);
-            if (QApplication::HasPermission('Can manage project', $this->objNarroProject->ProjectId, QApplication::GetLanguageId()))
+            if (QApplication::HasPermission('Can manage project', $this->objProject->ProjectId, QApplication::GetLanguageId()))
                 $this->dtgNarroFile->AddColumn($this->colExport);
 
             $this->chkShowHierarchy = new QCheckBox($this);
@@ -109,7 +109,7 @@
             if ($strPath)
                 $this->objParentFile = NarroFile::QuerySingle(
                     QQ::AndCondition(
-                        QQ::Equal(QQN::NarroFile()->ProjectId, $this->objNarroProject->ProjectId),
+                        QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
                         QQ::Equal(QQN::NarroFile()->Active, 1),
                         QQ::Equal(QQN::NarroFile()->FilePath, $strPath)
                     )
@@ -117,7 +117,7 @@
 
             $this->pnlBreadcrumb->Visible = false;
             $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, null, '..')
+                NarroLink::ProjectFileList($this->objProject->ProjectId, null, null, '..')
             );
 
             if ($this->objParentFile) {
@@ -134,7 +134,7 @@
                         $strProgressivePath .= '/' . $strPathPart;
                         $this->pnlBreadcrumb->addElement(
                             NarroLink::ProjectFileList(
-                                    $this->objNarroProject->ProjectId,
+                                    $this->objProject->ProjectId,
                                     $strProgressivePath,
                                     null,
                                     $strPathPart
@@ -176,7 +176,7 @@
                 return sprintf('<img src="%s" style="vertical-align:middle" /> %s',
                     'assets/images/folder.png',
                     NarroLink::ProjectFileList(
-                        $this->objNarroProject->ProjectId,
+                        $this->objProject->ProjectId,
                         $objFile->FilePath,
                         null,
                         $objFile->FileName
@@ -242,12 +242,12 @@
             if ($this->txtSearch->Text == '')
                 $objCommonCondition = QQ::AndCondition(
                     QQ::Equal(QQN::NarroFile()->Active, 1),
-                    QQ::Equal(QQN::NarroFile()->ProjectId, $this->objNarroProject->ProjectId)
+                    QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId)
                 );
             else {
                 $objCommonCondition = QQ::AndCondition(
                     QQ::Equal(QQN::NarroFile()->Active, 1),
-                    QQ::Equal(QQN::NarroFile()->ProjectId, $this->objNarroProject->ProjectId),
+                    QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
                     QQ::Like(QQN::NarroFile()->FileName, sprintf('%%%s%%', $this->txtSearch->Text))
                 );
                 $this->chkShowHierarchy->Checked = false;
@@ -309,7 +309,7 @@
         }
 
         public function btnSearch_Click() {
-            QApplication::Redirect(NarroLink::ProjectFileList($this->objNarroProject->ProjectId, ($this->objParentFile instanceof NarroFile)?$this->objParentFile->FilePath:'', $this->txtSearch->Text));
+            QApplication::Redirect(NarroLink::ProjectFileList($this->objProject->ProjectId, ($this->objParentFile instanceof NarroFile)?$this->objParentFile->FilePath:'', $this->txtSearch->Text));
         }
     }
 ?>

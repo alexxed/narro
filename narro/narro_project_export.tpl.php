@@ -18,7 +18,7 @@
 
 
 
-    $strPageTitle = $this->objNarroProject->ProjectName . ' :: ' . t('Export');
+    $strPageTitle = $this->objProject->ProjectName . ' :: ' . t('Export');
 
     require(dirname(__FILE__) . '/configuration/header.inc.php');
     $this->RenderBegin();

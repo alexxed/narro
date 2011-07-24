@@ -22,10 +22,10 @@
         protected function Form_Create() {
             parent::Form_Create();
             
-            if (!QApplication::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
+            if (!QApplication::HasPermissionForThisLang('Can export project', $this->objProject->ProjectId))
                 QApplication::Redirect(NarroLink::ProjectList());
             
-            $this->pnlMainTab->replaceTab(new NarroProjectExportPanel($this->objNarroProject, $this->pnlMainTab), t('Export'));
+            $this->pnlMainTab->replaceTab(new NarroProjectExportPanel($this->objProject, $this->pnlMainTab), t('Export'));
             $this->pnlMainTab->SelectedTab = t('Export');
         }
     }

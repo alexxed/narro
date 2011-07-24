@@ -17,7 +17,7 @@
      */
 
     class NarroProjectTextListPanel extends NarroTextListPanel {
-        public $objNarroProject;
+        public $objProject;
 
         public function __construct(NarroProject $objNarroProject, $objParentObject, $strControlId = null) {
             parent::__construct($objNarroProject, $objParentObject, $strControlId);
@@ -41,7 +41,7 @@
             return parent::dtgNarroContextInfo_OriginalText_Render(
                         $objNarroContextInfo,
                 NarroLink::ContextSuggest(
-                    $this->objNarroProject->ProjectId,
+                    $this->objProject->ProjectId,
                     0,
                     $objNarroContextInfo->Context->ContextId,
                     $this->lstTextFilter->SelectedValue,
@@ -60,7 +60,7 @@
             return parent::dtgNarroContextInfo_TranslatedText_Render(
                 $objNarroContextInfo,
                 NarroLink::ContextSuggest(
-                    $this->objNarroProject->ProjectId,
+                    $this->objProject->ProjectId,
                     0,
                     $objNarroContextInfo->Context->ContextId,
                     $this->lstTextFilter->SelectedValue,
@@ -76,11 +76,11 @@
         }
 
         public function lstTextFilter_Change() {
-            QApplication::Redirect(NarroLink::ProjectTextList($this->objNarroProject->ProjectId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
+            QApplication::Redirect(NarroLink::ProjectTextList($this->objProject->ProjectId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
         }
 
         public function btnSearch_Click() {
-            QApplication::Redirect(NarroLink::ProjectTextList($this->objNarroProject->ProjectId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
+            QApplication::Redirect(NarroLink::ProjectTextList($this->objProject->ProjectId, $this->lstTextFilter->SelectedValue, $this->lstSearchType->SelectedValue, $this->txtSearch->Text));
         }
 
 
@@ -98,9 +98,9 @@
 
             // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
 
-            if (QApplication::HasPermissionForThisLang('Can approve', $this->objNarroProject->ProjectId) && $this->btnMultiApprove->Text == t('Save'))
+            if (QApplication::HasPermissionForThisLang('Can approve', $this->objProject->ProjectId) && $this->btnMultiApprove->Text == t('Save'))
                 $objCommonCondition = QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1),
                     QQ::LessThan(QQN::NarroContextInfo()->Context->Text->TextCharCount, 100),
@@ -108,7 +108,7 @@
                 );
             else
                 $objCommonCondition = QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
                     QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1)
                 );

@@ -22,25 +22,25 @@
         protected function Form_Create() {
             parent::Form_Create();
             
-            $this->pnlSelectedTab = new NarroProjectTextListPanel($this->objNarroProject, $this->pnlMainTab);
+            $this->pnlSelectedTab = new NarroProjectTextListPanel($this->objProject, $this->pnlMainTab);
             
             switch(QApplication::QueryString('tf')) {
                 case NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL:
-                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, NarroTextListForm::SHOW_ALL_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
-                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, NarroTextListForm::SHOW_UNTRANSLATED_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objProject->ProjectId, NarroTextListForm::SHOW_ALL_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objProject->ProjectId, null, null, NarroTextListForm::SHOW_UNTRANSLATED_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
                     $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Review'));
                     $this->pnlMainTab->SelectedTab = t('Review');
                     break;
                 case NarroTextListForm::SHOW_UNTRANSLATED_TEXTS:
-                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId, NarroTextListForm::SHOW_ALL_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objProject->ProjectId, NarroTextListForm::SHOW_ALL_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
                     $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Translate'));
-                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objProject->ProjectId, null, null, NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, QApplication::QueryString('st'), QApplication::QueryString('s')));
                     $this->pnlMainTab->SelectedTab = t('Translate');
                     break;
                 default:
                     $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Texts'));
-                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, NarroTextListForm::SHOW_UNTRANSLATED_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
-                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, null, null, NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objProject->ProjectId, null, null, NarroTextListForm::SHOW_UNTRANSLATED_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                    $this->pnlMainTab->replaceTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objProject->ProjectId, null, null, NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, QApplication::QueryString('st'), QApplication::QueryString('s')));
                     $this->pnlMainTab->SelectedTab = t('Texts');
             }
         }

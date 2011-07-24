@@ -22,6 +22,8 @@
 	 * @property-read QLabel $FileIdLabel
 	 * @property QListBox $LanguageIdControl
 	 * @property-read QLabel $LanguageIdLabel
+	 * @property QTextBox $HeaderControl
+	 * @property-read QLabel $HeaderLabel
 	 * @property QIntegerTextBox $TotalTextCountControl
 	 * @property-read QLabel $TotalTextCountLabel
 	 * @property QIntegerTextBox $ApprovedTextCountControl
@@ -76,6 +78,11 @@
 		 */
 		protected $lstLanguage;
 		/**
+		 * @var QTextBox txtHeader
+		 * @access protected
+		 */
+		protected $txtHeader;
+		/**
 		 * @var QIntegerTextBox txtTotalTextCount
 		 * @access protected
 		 */
@@ -112,6 +119,11 @@
 		 * @access protected
 		 */
 		protected $lblLanguageId;
+		/**
+		 * @var QLabel lblHeader
+		 * @access protected
+		 */
+		protected $lblHeader;
 		/**
 		 * @var QLabel lblTotalTextCount
 		 * @access protected
@@ -319,6 +331,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtHeader
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtHeader_Create($strControlId = null) {
+			$this->txtHeader = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtHeader->Name = QApplication::Translate('Header');
+			$this->txtHeader->Text = $this->objNarroFileProgress->Header;
+			$this->txtHeader->TextMode = QTextMode::MultiLine;
+			return $this->txtHeader;
+		}
+
+		/**
+		 * Create and setup QLabel lblHeader
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblHeader_Create($strControlId = null) {
+			$this->lblHeader = new QLabel($this->objParentObject, $strControlId);
+			$this->lblHeader->Name = QApplication::Translate('Header');
+			$this->lblHeader->Text = $this->objNarroFileProgress->Header;
+			return $this->lblHeader;
+		}
+
+		/**
 		 * Create and setup QIntegerTextBox txtTotalTextCount
 		 * @param string $strControlId optional ControlId to use
 		 * @return QIntegerTextBox
@@ -495,6 +532,9 @@
 			}
 			if ($this->lblLanguageId) $this->lblLanguageId->Text = ($this->objNarroFileProgress->Language) ? $this->objNarroFileProgress->Language->__toString() : null;
 
+			if ($this->txtHeader) $this->txtHeader->Text = $this->objNarroFileProgress->Header;
+			if ($this->lblHeader) $this->lblHeader->Text = $this->objNarroFileProgress->Header;
+
 			if ($this->txtTotalTextCount) $this->txtTotalTextCount->Text = $this->objNarroFileProgress->TotalTextCount;
 			if ($this->lblTotalTextCount) $this->lblTotalTextCount->Text = $this->objNarroFileProgress->TotalTextCount;
 
@@ -535,6 +575,7 @@
 				// Update any fields for controls that have been created
 				if ($this->lstFile) $this->objNarroFileProgress->FileId = $this->lstFile->SelectedValue;
 				if ($this->lstLanguage) $this->objNarroFileProgress->LanguageId = $this->lstLanguage->SelectedValue;
+				if ($this->txtHeader) $this->objNarroFileProgress->Header = $this->txtHeader->Text;
 				if ($this->txtTotalTextCount) $this->objNarroFileProgress->TotalTextCount = $this->txtTotalTextCount->Text;
 				if ($this->txtApprovedTextCount) $this->objNarroFileProgress->ApprovedTextCount = $this->txtApprovedTextCount->Text;
 				if ($this->txtFuzzyTextCount) $this->objNarroFileProgress->FuzzyTextCount = $this->txtFuzzyTextCount->Text;
@@ -600,6 +641,12 @@
 				case 'LanguageIdLabel':
 					if (!$this->lblLanguageId) return $this->lblLanguageId_Create();
 					return $this->lblLanguageId;
+				case 'HeaderControl':
+					if (!$this->txtHeader) return $this->txtHeader_Create();
+					return $this->txtHeader;
+				case 'HeaderLabel':
+					if (!$this->lblHeader) return $this->lblHeader_Create();
+					return $this->lblHeader;
 				case 'TotalTextCountControl':
 					if (!$this->txtTotalTextCount) return $this->txtTotalTextCount_Create();
 					return $this->txtTotalTextCount;
@@ -658,6 +705,8 @@
 						return ($this->lstFile = QType::Cast($mixValue, 'QControl'));
 					case 'LanguageIdControl':
 						return ($this->lstLanguage = QType::Cast($mixValue, 'QControl'));
+					case 'HeaderControl':
+						return ($this->txtHeader = QType::Cast($mixValue, 'QControl'));
 					case 'TotalTextCountControl':
 						return ($this->txtTotalTextCount = QType::Cast($mixValue, 'QControl'));
 					case 'ApprovedTextCountControl':

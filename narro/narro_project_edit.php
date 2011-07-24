@@ -22,17 +22,17 @@
         protected function Form_Create() {
             parent::Form_Create();
             
-            if ($this->objNarroProject instanceof NarroProject && !QApplication::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId))
+            if ($this->objProject instanceof NarroProject && !QApplication::HasPermissionForThisLang('Can edit project', $this->objProject->ProjectId))
                 QApplication::Redirect(NarroLink::ProjectList());
-            elseif (!$this->objNarroProject && !QApplication::HasPermissionForThisLang('Can add project'))
+            elseif (!$this->objProject && !QApplication::HasPermissionForThisLang('Can add project'))
                 QApplication::Redirect(NarroLink::ProjectList());
             
-            if ($this->objNarroProject instanceof NarroProject)
+            if ($this->objProject instanceof NarroProject)
                 $strTabTitle = t('Edit');
             else
                 $strTabTitle = t('Add');
                 
-            $this->pnlMainTab->replaceTab(new NarroProjectEditPanel($this->objNarroProject, $this->pnlMainTab), $strTabTitle);
+            $this->pnlMainTab->replaceTab(new NarroProjectEditPanel($this->objProject, $this->pnlMainTab), $strTabTitle);
             $this->pnlMainTab->SelectedTab = $strTabTitle;
         }
         
@@ -40,11 +40,11 @@
             // Lookup Object PK information from Query String (if applicable)
             $intProjectId = QApplication::QueryString('p');
             if (($intProjectId)) {
-                $this->objNarroProject = NarroProject::Load(($intProjectId));
+                $this->objProject = NarroProject::Load(($intProjectId));
 
                 $this->pnlBreadcrumb->setElements(
                     NarroLink::ProjectList(t('Projects')),
-                    $this->objNarroProject->ProjectName
+                    $this->objProject->ProjectName
                 );
             }
             else {

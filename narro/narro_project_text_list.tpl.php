@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(t('Texts from the project "%s"'), $this->objNarroProject->ProjectName);
+    $strPageTitle = sprintf(t('Texts from the project "%s"'), $this->objProject->ProjectName);
 
     require(dirname(__FILE__) . '/configuration/header.inc.php')
 ?>

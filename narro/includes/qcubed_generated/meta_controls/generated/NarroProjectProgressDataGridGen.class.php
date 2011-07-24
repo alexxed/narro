@@ -294,11 +294,13 @@
 				case 'Project': return QQN::NarroProjectProgress()->Project;
 				case 'LanguageId': return QQN::NarroProjectProgress()->LanguageId;
 				case 'Language': return QQN::NarroProjectProgress()->Language;
+				case 'Active': return QQN::NarroProjectProgress()->Active;
 				case 'LastModified': return QQN::NarroProjectProgress()->LastModified;
 				case 'TotalTextCount': return QQN::NarroProjectProgress()->TotalTextCount;
 				case 'FuzzyTextCount': return QQN::NarroProjectProgress()->FuzzyTextCount;
 				case 'ApprovedTextCount': return QQN::NarroProjectProgress()->ApprovedTextCount;
 				case 'ProgressPercent': return QQN::NarroProjectProgress()->ProgressPercent;
+				case 'Source': return QQN::NarroProjectProgress()->Source;
 				default: throw new QCallerException('Simple Property not found in NarroProjectProgressDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)
 				throw new QCallerException('Content QQNode cannot go through any "To Many" association nodes.');

@@ -65,7 +65,7 @@
         }
 
         public static function ProjectList($strLinkText = '', $intFilter = 0) {
-            $strLink = sprintf('narro_project_list.php?l=%s&f=%d', QApplication::$TargetLanguage->LanguageCode, $intFilter);
+            $strLink = sprintf('projects.php?l=%s&f=%d', QApplication::$TargetLanguage->LanguageCode, $intFilter);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -105,7 +105,24 @@
         }
 
         public static function Project($intProjectId, $strLinkText = '') {
-            $strLink = sprintf('narro_project.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
+            $strLink = sprintf('project.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
+            if ($strLinkText != '')
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        public static function Translate($intProjectId = null, $strFilePath = null, $intFilter = NarroTranslatePanel::SHOW_NOT_TRANSLATED, $strSearch = '', $strSortBy = null, $intSortDir = SORT_ASC, $strLinkText = '') {
+            $strLink = sprintf(
+                'translate.php?l=%s&p=%d&f=%s&t=%s&s=%s&o=%s&h=%s',
+                QApplication::$TargetLanguage->LanguageCode,
+                $intProjectId,
+                $strFilePath,
+                $intFilter,
+                $strSearch,
+                $strSortBy,
+                $intSortDir
+            );
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else

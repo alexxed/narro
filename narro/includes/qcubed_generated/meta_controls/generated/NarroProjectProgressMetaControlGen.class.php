@@ -22,6 +22,8 @@
 	 * @property-read QLabel $ProjectIdLabel
 	 * @property QListBox $LanguageIdControl
 	 * @property-read QLabel $LanguageIdLabel
+	 * @property QCheckBox $ActiveControl
+	 * @property-read QLabel $ActiveLabel
 	 * @property QDateTimePicker $LastModifiedControl
 	 * @property-read QLabel $LastModifiedLabel
 	 * @property QIntegerTextBox $TotalTextCountControl
@@ -32,6 +34,8 @@
 	 * @property-read QLabel $ApprovedTextCountLabel
 	 * @property QIntegerTextBox $ProgressPercentControl
 	 * @property-read QLabel $ProgressPercentLabel
+	 * @property QTextBox $SourceControl
+	 * @property-read QLabel $SourceLabel
 	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -76,6 +80,11 @@
 		 */
 		protected $lstLanguage;
 		/**
+		 * @var QCheckBox chkActive
+		 * @access protected
+		 */
+		protected $chkActive;
+		/**
 		 * @var QDateTimePicker calLastModified
 		 * @access protected
 		 */
@@ -100,6 +109,11 @@
 		 * @access protected
 		 */
 		protected $txtProgressPercent;
+		/**
+		 * @var QTextBox txtSource
+		 * @access protected
+		 */
+		protected $txtSource;
 
 		// Controls that allow the viewing of NarroProjectProgress's individual data fields
 		/**
@@ -112,6 +126,11 @@
 		 * @access protected
 		 */
 		protected $lblLanguageId;
+		/**
+		 * @var QLabel lblActive
+		 * @access protected
+		 */
+		protected $lblActive;
 		/**
 		 * @var QLabel lblLastModified
 		 * @access protected
@@ -137,6 +156,11 @@
 		 * @access protected
 		 */
 		protected $lblProgressPercent;
+		/**
+		 * @var QLabel lblSource
+		 * @access protected
+		 */
+		protected $lblSource;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -319,6 +343,30 @@
 		}
 
 		/**
+		 * Create and setup QCheckBox chkActive
+		 * @param string $strControlId optional ControlId to use
+		 * @return QCheckBox
+		 */
+		public function chkActive_Create($strControlId = null) {
+			$this->chkActive = new QCheckBox($this->objParentObject, $strControlId);
+			$this->chkActive->Name = QApplication::Translate('Active');
+			$this->chkActive->Checked = $this->objNarroProjectProgress->Active;
+			return $this->chkActive;
+		}
+
+		/**
+		 * Create and setup QLabel lblActive
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblActive_Create($strControlId = null) {
+			$this->lblActive = new QLabel($this->objParentObject, $strControlId);
+			$this->lblActive->Name = QApplication::Translate('Active');
+			$this->lblActive->Text = ($this->objNarroProjectProgress->Active) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+			return $this->lblActive;
+		}
+
+		/**
 		 * Create and setup QDateTimePicker calLastModified
 		 * @param string $strControlId optional ControlId to use
 		 * @return QDateTimePicker
@@ -462,6 +510,31 @@
 			return $this->lblProgressPercent;
 		}
 
+		/**
+		 * Create and setup QTextBox txtSource
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtSource_Create($strControlId = null) {
+			$this->txtSource = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtSource->Name = QApplication::Translate('Source');
+			$this->txtSource->Text = $this->objNarroProjectProgress->Source;
+			$this->txtSource->TextMode = QTextMode::MultiLine;
+			return $this->txtSource;
+		}
+
+		/**
+		 * Create and setup QLabel lblSource
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblSource_Create($strControlId = null) {
+			$this->lblSource = new QLabel($this->objParentObject, $strControlId);
+			$this->lblSource->Name = QApplication::Translate('Source');
+			$this->lblSource->Text = $this->objNarroProjectProgress->Source;
+			return $this->lblSource;
+		}
+
 
 
 		/**
@@ -503,6 +576,9 @@
 			}
 			if ($this->lblLanguageId) $this->lblLanguageId->Text = ($this->objNarroProjectProgress->Language) ? $this->objNarroProjectProgress->Language->__toString() : null;
 
+			if ($this->chkActive) $this->chkActive->Checked = $this->objNarroProjectProgress->Active;
+			if ($this->lblActive) $this->lblActive->Text = ($this->objNarroProjectProgress->Active) ? QApplication::Translate('Yes') : QApplication::Translate('No');
+
 			if ($this->calLastModified) $this->calLastModified->DateTime = $this->objNarroProjectProgress->LastModified;
 			if ($this->lblLastModified) $this->lblLastModified->Text = sprintf($this->objNarroProjectProgress->LastModified) ? $this->objNarroProjectProgress->LastModified->qFormat($this->strLastModifiedDateTimeFormat) : null;
 
@@ -517,6 +593,9 @@
 
 			if ($this->txtProgressPercent) $this->txtProgressPercent->Text = $this->objNarroProjectProgress->ProgressPercent;
 			if ($this->lblProgressPercent) $this->lblProgressPercent->Text = $this->objNarroProjectProgress->ProgressPercent;
+
+			if ($this->txtSource) $this->txtSource->Text = $this->objNarroProjectProgress->Source;
+			if ($this->lblSource) $this->lblSource->Text = $this->objNarroProjectProgress->Source;
 
 		}
 
@@ -543,11 +622,13 @@
 				// Update any fields for controls that have been created
 				if ($this->lstProject) $this->objNarroProjectProgress->ProjectId = $this->lstProject->SelectedValue;
 				if ($this->lstLanguage) $this->objNarroProjectProgress->LanguageId = $this->lstLanguage->SelectedValue;
+				if ($this->chkActive) $this->objNarroProjectProgress->Active = $this->chkActive->Checked;
 				if ($this->calLastModified) $this->objNarroProjectProgress->LastModified = $this->calLastModified->DateTime;
 				if ($this->txtTotalTextCount) $this->objNarroProjectProgress->TotalTextCount = $this->txtTotalTextCount->Text;
 				if ($this->txtFuzzyTextCount) $this->objNarroProjectProgress->FuzzyTextCount = $this->txtFuzzyTextCount->Text;
 				if ($this->txtApprovedTextCount) $this->objNarroProjectProgress->ApprovedTextCount = $this->txtApprovedTextCount->Text;
 				if ($this->txtProgressPercent) $this->objNarroProjectProgress->ProgressPercent = $this->txtProgressPercent->Text;
+				if ($this->txtSource) $this->objNarroProjectProgress->Source = $this->txtSource->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -608,6 +689,12 @@
 				case 'LanguageIdLabel':
 					if (!$this->lblLanguageId) return $this->lblLanguageId_Create();
 					return $this->lblLanguageId;
+				case 'ActiveControl':
+					if (!$this->chkActive) return $this->chkActive_Create();
+					return $this->chkActive;
+				case 'ActiveLabel':
+					if (!$this->lblActive) return $this->lblActive_Create();
+					return $this->lblActive;
 				case 'LastModifiedControl':
 					if (!$this->calLastModified) return $this->calLastModified_Create();
 					return $this->calLastModified;
@@ -638,6 +725,12 @@
 				case 'ProgressPercentLabel':
 					if (!$this->lblProgressPercent) return $this->lblProgressPercent_Create();
 					return $this->lblProgressPercent;
+				case 'SourceControl':
+					if (!$this->txtSource) return $this->txtSource_Create();
+					return $this->txtSource;
+				case 'SourceLabel':
+					if (!$this->lblSource) return $this->lblSource_Create();
+					return $this->lblSource;
 				default:
 					try {
 						return parent::__get($strName);
@@ -666,6 +759,8 @@
 						return ($this->lstProject = QType::Cast($mixValue, 'QControl'));
 					case 'LanguageIdControl':
 						return ($this->lstLanguage = QType::Cast($mixValue, 'QControl'));
+					case 'ActiveControl':
+						return ($this->chkActive = QType::Cast($mixValue, 'QControl'));
 					case 'LastModifiedControl':
 						return ($this->calLastModified = QType::Cast($mixValue, 'QControl'));
 					case 'TotalTextCountControl':
@@ -676,6 +771,8 @@
 						return ($this->txtApprovedTextCount = QType::Cast($mixValue, 'QControl'));
 					case 'ProgressPercentControl':
 						return ($this->txtProgressPercent = QType::Cast($mixValue, 'QControl'));
+					case 'SourceControl':
+						return ($this->txtSource = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

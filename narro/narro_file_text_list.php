@@ -19,13 +19,13 @@
     require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
 
     class NarroFileTextListForm extends NarroGenericProjectForm {
-        protected $objNarroProject;
+        protected $objProject;
         protected $objNarroFile;
 
         protected function Form_Create() {
             parent::Form_Create();
             
-            $this->pnlSelectedTab = new NarroFileTextListPanel($this->objNarroProject, $this->objNarroFile, $this->pnlMainTab);
+            $this->pnlSelectedTab = new NarroFileTextListPanel($this->objProject, $this->objNarroFile, $this->pnlMainTab);
             $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Texts'));
             $this->pnlMainTab->SelectedTab = t('Texts');
         }
@@ -39,12 +39,12 @@
                 $this->objNarroFile = NarroFile::Load(($intFileId));
 
                 if (!$this->objNarroFile instanceof NarroFile) {
-                    QApplication::Redirect(NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
+                    QApplication::Redirect(NarroLink::ProjectFileList($this->objProject->ProjectId));
                     return false;
                 }
 
             } else {
-                QApplication::Redirect(NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
+                QApplication::Redirect(NarroLink::ProjectFileList($this->objProject->ProjectId));
                 return false;
             }
         }

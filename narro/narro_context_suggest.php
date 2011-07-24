@@ -22,7 +22,7 @@
         protected $objContextInfo;
 
         protected $intTextFilter;
-        protected $objNarroProject;
+        protected $objProject;
         protected $objFile;
         protected $intSearchType;
         protected $strSearchText;
@@ -42,7 +42,7 @@
 
             $this->pnlBreadcrumb->setElements(
                 NarroLink::ProjectList(t('Projects')),
-                $this->objNarroProject->ProjectName
+                $this->objProject->ProjectName
             );
 
             $this->pnlMainTab = new QTabPanel($this);
@@ -51,7 +51,7 @@
             $this->pnlContextSuggest = new NarroContextSuggestPanel(
                 $this->pnlMainTab,
                 null,
-                $this->objNarroProject,
+                $this->objProject,
                 $this->objFile,
                 $this->objContextInfo,
                 $this->intTextFilter,
@@ -64,27 +64,27 @@
                 $this->blnShowComments
             );
 
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objNarroProject->ProjectId));
-            if ($this->objNarroProject instanceof NarroProject && QApplication::HasPermission('Can edit project', $this->objNarroProject->ProjectId))
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Edit'), NarroLink::ProjectEdit($this->objNarroProject->ProjectId));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objProject->ProjectId));
+            if ($this->objProject instanceof NarroProject && QApplication::HasPermission('Can edit project', $this->objProject->ProjectId))
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Edit'), NarroLink::ProjectEdit($this->objProject->ProjectId));
             elseif (QApplication::HasPermission('Can add project'))
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Add'));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objNarroProject->ProjectId));
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Comments'), NarroLink::ProjectTextCommentList($this->objNarroProject->ProjectId));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objProject->ProjectId));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Texts'), NarroLink::ProjectTextList($this->objProject->ProjectId));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Comments'), NarroLink::ProjectTextCommentList($this->objProject->ProjectId));
             if ($this->intTextFilter == NarroTextListPanel::SHOW_UNTRANSLATED_TEXTS) {
                 $this->pnlMainTab->addTab($this->pnlContextSuggest, t('Translate'));
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, QApplication::QueryString('f'), null, NarroTextListPanel::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::ContextSuggest($this->objProject->ProjectId, QApplication::QueryString('f'), null, NarroTextListPanel::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, QApplication::QueryString('st'), QApplication::QueryString('s')));
             }
             else {
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objNarroProject->ProjectId, QApplication::QueryString('f'), null, NarroTextListPanel::SHOW_UNTRANSLATED_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::ContextSuggest($this->objProject->ProjectId, QApplication::QueryString('f'), null, NarroTextListPanel::SHOW_UNTRANSLATED_TEXTS, QApplication::QueryString('st'), QApplication::QueryString('s')));
                 $this->pnlMainTab->addTab($this->pnlContextSuggest, t('Review'));
             }
 
-            if (QApplication::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objNarroProject->ProjectId));
-            if (QApplication::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objNarroProject->ProjectId));
+            if (QApplication::HasPermissionForThisLang('Can import project', $this->objProject->ProjectId))
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Import'), NarroLink::ProjectImport($this->objProject->ProjectId));
+            if (QApplication::HasPermissionForThisLang('Can export project', $this->objProject->ProjectId))
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Export'), NarroLink::ProjectExport($this->objProject->ProjectId));
 
 
             if ($this->intTextFilter == NarroTextListPanel::SHOW_UNTRANSLATED_TEXTS)
@@ -99,7 +99,7 @@
             $intContextId = QApplication::QueryString('c');
 
             $this->intTextFilter = QApplication::QueryString('tf');
-            $this->objNarroProject = NarroProject::Load(QApplication::QueryString('p'));
+            $this->objProject = NarroProject::Load(QApplication::QueryString('p'));
             $this->objFile = NarroFile::Load(QApplication::QueryString('f'));
             $this->intSearchType = QApplication::QueryString('st');
             $this->strSearchText = QApplication::QueryString('s');
@@ -110,7 +110,7 @@
             $this->intSortDirection = QApplication::QueryString('a');
             $this->blnShowComments = QApplication::QueryString('sc');
 
-            if (!$this->objNarroProject && !$this->objFile) {
+            if (!$this->objProject && !$this->objFile) {
                 QApplication::Redirect(NarroLink::ProjectList());
             }
 
@@ -122,7 +122,7 @@
                 if ($this->objFile instanceof NarroFile)
                     $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId);
                 else
-                    $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objNarroProject->ProjectId);
+                    $objFilterCodition = QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId);
 
                 $objExtraCondition = QQ::AndCondition(
                     QQ::GreaterThan(QQN::NarroContextInfo()->ContextId, 1),
@@ -145,7 +145,7 @@
                 {
                     QApplication::Redirect(
                         NarroLink::ContextSuggest(
-                            $this->objNarroProject->ProjectId,
+                            $this->objProject->ProjectId,
                             ($this->objFile instanceof NarroFile)?$this->objFile->FileId:null,
                             $objContext->ContextId,
                             $this->intTextFilter,
@@ -161,9 +161,9 @@
                     );
                 }
                 elseif ($this->objFile instanceof NarroFile)
-                    QApplication::Redirect(NarroLink::FileTextList($this->objNarroProject->ProjectId, $this->objFile->FileId, $this->intTextFilter, $this->intSearchType, $this->strSearchText ));
-                elseif ($this->objNarroProject->ProjectId)
-                    QApplication::Redirect(NarroLink::ProjectTextList($this->objNarroProject->ProjectId, $this->intTextFilter, $this->intSearchType, $this->strSearchText));
+                    QApplication::Redirect(NarroLink::FileTextList($this->objProject->ProjectId, $this->objFile->FileId, $this->intTextFilter, $this->intSearchType, $this->strSearchText ));
+                elseif ($this->objProject->ProjectId)
+                    QApplication::Redirect(NarroLink::ProjectTextList($this->objProject->ProjectId, $this->intTextFilter, $this->intSearchType, $this->strSearchText));
                 else
                     QApplication::Redirect(NarroLink::ProjectList());
             }

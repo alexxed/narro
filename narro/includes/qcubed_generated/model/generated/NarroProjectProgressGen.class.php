@@ -18,11 +18,13 @@
 	 * @property-read integer $ProjectProgressId the value for intProjectProgressId (Read-Only PK)
 	 * @property integer $ProjectId the value for intProjectId (Not Null)
 	 * @property integer $LanguageId the value for intLanguageId (Not Null)
+	 * @property boolean $Active the value for blnActive 
 	 * @property QDateTime $LastModified the value for dttLastModified (Not Null)
 	 * @property integer $TotalTextCount the value for intTotalTextCount (Not Null)
 	 * @property integer $FuzzyTextCount the value for intFuzzyTextCount (Not Null)
 	 * @property integer $ApprovedTextCount the value for intApprovedTextCount (Not Null)
 	 * @property integer $ProgressPercent the value for intProgressPercent (Not Null)
+	 * @property string $Source list of sources of translations 
 	 * @property NarroProject $Project the value for the NarroProject object referenced by intProjectId (Not Null)
 	 * @property NarroLanguage $Language the value for the NarroLanguage object referenced by intLanguageId (Not Null)
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -55,6 +57,14 @@
 		 */
 		protected $intLanguageId;
 		const LanguageIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_project_progress.active
+		 * @var boolean blnActive
+		 */
+		protected $blnActive;
+		const ActiveDefault = null;
 
 
 		/**
@@ -95,6 +105,15 @@
 		 */
 		protected $intProgressPercent;
 		const ProgressPercentDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_project_progress.source
+		 * list of sources of translations
+		 * @var string strSource
+		 */
+		protected $strSource;
+		const SourceDefault = null;
 
 
 		/**
@@ -149,11 +168,13 @@
 			$this->intProjectProgressId = NarroProjectProgress::ProjectProgressIdDefault;
 			$this->intProjectId = NarroProjectProgress::ProjectIdDefault;
 			$this->intLanguageId = NarroProjectProgress::LanguageIdDefault;
+			$this->blnActive = NarroProjectProgress::ActiveDefault;
 			$this->dttLastModified = (NarroProjectProgress::LastModifiedDefault === null)?null:new QDateTime(NarroProjectProgress::LastModifiedDefault);
 			$this->intTotalTextCount = NarroProjectProgress::TotalTextCountDefault;
 			$this->intFuzzyTextCount = NarroProjectProgress::FuzzyTextCountDefault;
 			$this->intApprovedTextCount = NarroProjectProgress::ApprovedTextCountDefault;
 			$this->intProgressPercent = NarroProjectProgress::ProgressPercentDefault;
+			$this->strSource = NarroProjectProgress::SourceDefault;
 		}
 
 
@@ -424,11 +445,13 @@
 			$objBuilder->AddSelectItem($strTableName, 'project_progress_id', $strAliasPrefix . 'project_progress_id');
 			$objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
 			$objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+			$objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
 			$objBuilder->AddSelectItem($strTableName, 'last_modified', $strAliasPrefix . 'last_modified');
 			$objBuilder->AddSelectItem($strTableName, 'total_text_count', $strAliasPrefix . 'total_text_count');
 			$objBuilder->AddSelectItem($strTableName, 'fuzzy_text_count', $strAliasPrefix . 'fuzzy_text_count');
 			$objBuilder->AddSelectItem($strTableName, 'approved_text_count', $strAliasPrefix . 'approved_text_count');
 			$objBuilder->AddSelectItem($strTableName, 'progress_percent', $strAliasPrefix . 'progress_percent');
+			$objBuilder->AddSelectItem($strTableName, 'source', $strAliasPrefix . 'source');
 		}
 
 
@@ -465,6 +488,8 @@
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'language_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_id'] : $strAliasPrefix . 'language_id';
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'active', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active'] : $strAliasPrefix . 'active';
+			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'last_modified', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'last_modified'] : $strAliasPrefix . 'last_modified';
 			$objToReturn->dttLastModified = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'total_text_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'total_text_count'] : $strAliasPrefix . 'total_text_count';
@@ -475,6 +500,8 @@
 			$objToReturn->intApprovedTextCount = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'progress_percent', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'progress_percent'] : $strAliasPrefix . 'progress_percent';
 			$objToReturn->intProgressPercent = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'source', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'source'] : $strAliasPrefix . 'source';
+			$objToReturn->strSource = $objDbRow->GetColumn($strAliasName, 'Blob');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
 				foreach ($arrPreviousItems as $objPreviousItem) {
@@ -687,19 +714,23 @@
 						INSERT INTO `narro_project_progress` (
 							`project_id`,
 							`language_id`,
+							`active`,
 							`last_modified`,
 							`total_text_count`,
 							`fuzzy_text_count`,
 							`approved_text_count`,
-							`progress_percent`
+							`progress_percent`,
+							`source`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							' . $objDatabase->SqlVariable($this->blnActive) . ',
 							' . $objDatabase->SqlVariable($this->dttLastModified) . ',
 							' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
 							' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
 							' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
-							' . $objDatabase->SqlVariable($this->intProgressPercent) . '
+							' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
+							' . $objDatabase->SqlVariable($this->strSource) . '
 						)
 					');
 
@@ -717,11 +748,13 @@
 						SET
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . ',
 							`last_modified` = ' . $objDatabase->SqlVariable($this->dttLastModified) . ',
 							`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
 							`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
 							`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
-							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . '
+							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
+							`source` = ' . $objDatabase->SqlVariable($this->strSource) . '
 						WHERE
 							`project_progress_id` = ' . $objDatabase->SqlVariable($this->intProjectProgressId) . '
 					');
@@ -802,11 +835,13 @@
 			// Update $this's local variables to match
 			$this->ProjectId = $objReloaded->ProjectId;
 			$this->LanguageId = $objReloaded->LanguageId;
+			$this->blnActive = $objReloaded->blnActive;
 			$this->dttLastModified = $objReloaded->dttLastModified;
 			$this->intTotalTextCount = $objReloaded->intTotalTextCount;
 			$this->intFuzzyTextCount = $objReloaded->intFuzzyTextCount;
 			$this->intApprovedTextCount = $objReloaded->intApprovedTextCount;
 			$this->intProgressPercent = $objReloaded->intProgressPercent;
+			$this->strSource = $objReloaded->strSource;
 		}
 
 
@@ -848,6 +883,13 @@
 					 */
 					return $this->intLanguageId;
 
+				case 'Active':
+					/**
+					 * Gets the value for blnActive 
+					 * @return boolean
+					 */
+					return $this->blnActive;
+
 				case 'LastModified':
 					/**
 					 * Gets the value for dttLastModified (Not Null)
@@ -882,6 +924,13 @@
 					 * @return integer
 					 */
 					return $this->intProgressPercent;
+
+				case 'Source':
+					/**
+					 * Gets the value for strSource 
+					 * @return string
+					 */
+					return $this->strSource;
 
 
 				///////////////////
@@ -976,6 +1025,19 @@
 						throw $objExc;
 					}
 
+				case 'Active':
+					/**
+					 * Sets the value for blnActive 
+					 * @param boolean $mixValue
+					 * @return boolean
+					 */
+					try {
+						return ($this->blnActive = QType::Cast($mixValue, QType::Boolean));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'LastModified':
 					/**
 					 * Sets the value for dttLastModified (Not Null)
@@ -1036,6 +1098,19 @@
 					 */
 					try {
 						return ($this->intProgressPercent = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Source':
+					/**
+					 * Sets the value for strSource 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strSource = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1149,11 +1224,13 @@
 			$strToReturn .= '<element name="ProjectProgressId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Project" type="xsd1:NarroProject"/>';
 			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
+			$strToReturn .= '<element name="Active" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="LastModified" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="TotalTextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="FuzzyTextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="ApprovedTextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="ProgressPercent" type="xsd:int"/>';
+			$strToReturn .= '<element name="Source" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1186,6 +1263,8 @@
 			if ((property_exists($objSoapObject, 'Language')) &&
 				($objSoapObject->Language))
 				$objToReturn->Language = NarroLanguage::GetObjectFromSoapObject($objSoapObject->Language);
+			if (property_exists($objSoapObject, 'Active'))
+				$objToReturn->blnActive = $objSoapObject->Active;
 			if (property_exists($objSoapObject, 'LastModified'))
 				$objToReturn->dttLastModified = new QDateTime($objSoapObject->LastModified);
 			if (property_exists($objSoapObject, 'TotalTextCount'))
@@ -1196,6 +1275,8 @@
 				$objToReturn->intApprovedTextCount = $objSoapObject->ApprovedTextCount;
 			if (property_exists($objSoapObject, 'ProgressPercent'))
 				$objToReturn->intProgressPercent = $objSoapObject->ProgressPercent;
+			if (property_exists($objSoapObject, 'Source'))
+				$objToReturn->strSource = $objSoapObject->Source;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1241,11 +1322,13 @@
 			$iArray['ProjectProgressId'] = $this->intProjectProgressId;
 			$iArray['ProjectId'] = $this->intProjectId;
 			$iArray['LanguageId'] = $this->intLanguageId;
+			$iArray['Active'] = $this->blnActive;
 			$iArray['LastModified'] = $this->dttLastModified;
 			$iArray['TotalTextCount'] = $this->intTotalTextCount;
 			$iArray['FuzzyTextCount'] = $this->intFuzzyTextCount;
 			$iArray['ApprovedTextCount'] = $this->intApprovedTextCount;
 			$iArray['ProgressPercent'] = $this->intProgressPercent;
+			$iArray['Source'] = $this->strSource;
 			return new ArrayIterator($iArray);
 		}
 
@@ -1272,11 +1355,13 @@
      * @property-read QQNodeNarroProject $Project
      * @property-read QQNode $LanguageId
      * @property-read QQNodeNarroLanguage $Language
+     * @property-read QQNode $Active
      * @property-read QQNode $LastModified
      * @property-read QQNode $TotalTextCount
      * @property-read QQNode $FuzzyTextCount
      * @property-read QQNode $ApprovedTextCount
      * @property-read QQNode $ProgressPercent
+     * @property-read QQNode $Source
      *
      *
 
@@ -1298,6 +1383,8 @@
 					return new QQNode('language_id', 'LanguageId', 'Integer', $this);
 				case 'Language':
 					return new QQNodeNarroLanguage('language_id', 'Language', 'Integer', $this);
+				case 'Active':
+					return new QQNode('active', 'Active', 'Bit', $this);
 				case 'LastModified':
 					return new QQNode('last_modified', 'LastModified', 'DateTime', $this);
 				case 'TotalTextCount':
@@ -1308,6 +1395,8 @@
 					return new QQNode('approved_text_count', 'ApprovedTextCount', 'Integer', $this);
 				case 'ProgressPercent':
 					return new QQNode('progress_percent', 'ProgressPercent', 'Integer', $this);
+				case 'Source':
+					return new QQNode('source', 'Source', 'Blob', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('project_progress_id', 'ProjectProgressId', 'Integer', $this);
@@ -1328,11 +1417,13 @@
      * @property-read QQNodeNarroProject $Project
      * @property-read QQNode $LanguageId
      * @property-read QQNodeNarroLanguage $Language
+     * @property-read QQNode $Active
      * @property-read QQNode $LastModified
      * @property-read QQNode $TotalTextCount
      * @property-read QQNode $FuzzyTextCount
      * @property-read QQNode $ApprovedTextCount
      * @property-read QQNode $ProgressPercent
+     * @property-read QQNode $Source
      *
      *
 
@@ -1354,6 +1445,8 @@
 					return new QQNode('language_id', 'LanguageId', 'integer', $this);
 				case 'Language':
 					return new QQNodeNarroLanguage('language_id', 'Language', 'integer', $this);
+				case 'Active':
+					return new QQNode('active', 'Active', 'boolean', $this);
 				case 'LastModified':
 					return new QQNode('last_modified', 'LastModified', 'QDateTime', $this);
 				case 'TotalTextCount':
@@ -1364,6 +1457,8 @@
 					return new QQNode('approved_text_count', 'ApprovedTextCount', 'integer', $this);
 				case 'ProgressPercent':
 					return new QQNode('progress_percent', 'ProgressPercent', 'integer', $this);
+				case 'Source':
+					return new QQNode('source', 'Source', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('project_progress_id', 'ProjectProgressId', 'integer', $this);

@@ -18,6 +18,7 @@
 	 * @property-read integer $FileProgressId the value for intFileProgressId (Read-Only PK)
 	 * @property integer $FileId the value for intFileId (Not Null)
 	 * @property integer $LanguageId the value for intLanguageId (Not Null)
+	 * @property string $Header the value for strHeader 
 	 * @property integer $TotalTextCount the value for intTotalTextCount (Not Null)
 	 * @property integer $ApprovedTextCount the value for intApprovedTextCount (Not Null)
 	 * @property integer $FuzzyTextCount the value for intFuzzyTextCount (Not Null)
@@ -55,6 +56,14 @@
 		 */
 		protected $intLanguageId;
 		const LanguageIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_file_progress.header
+		 * @var string strHeader
+		 */
+		protected $strHeader;
+		const HeaderDefault = null;
 
 
 		/**
@@ -149,6 +158,7 @@
 			$this->intFileProgressId = NarroFileProgress::FileProgressIdDefault;
 			$this->intFileId = NarroFileProgress::FileIdDefault;
 			$this->intLanguageId = NarroFileProgress::LanguageIdDefault;
+			$this->strHeader = NarroFileProgress::HeaderDefault;
 			$this->intTotalTextCount = NarroFileProgress::TotalTextCountDefault;
 			$this->intApprovedTextCount = NarroFileProgress::ApprovedTextCountDefault;
 			$this->intFuzzyTextCount = NarroFileProgress::FuzzyTextCountDefault;
@@ -424,6 +434,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'file_progress_id', $strAliasPrefix . 'file_progress_id');
 			$objBuilder->AddSelectItem($strTableName, 'file_id', $strAliasPrefix . 'file_id');
 			$objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+			$objBuilder->AddSelectItem($strTableName, 'header', $strAliasPrefix . 'header');
 			$objBuilder->AddSelectItem($strTableName, 'total_text_count', $strAliasPrefix . 'total_text_count');
 			$objBuilder->AddSelectItem($strTableName, 'approved_text_count', $strAliasPrefix . 'approved_text_count');
 			$objBuilder->AddSelectItem($strTableName, 'fuzzy_text_count', $strAliasPrefix . 'fuzzy_text_count');
@@ -465,6 +476,8 @@
 			$objToReturn->intFileId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'language_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_id'] : $strAliasPrefix . 'language_id';
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'header', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'header'] : $strAliasPrefix . 'header';
+			$objToReturn->strHeader = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAliasName = array_key_exists($strAliasPrefix . 'total_text_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'total_text_count'] : $strAliasPrefix . 'total_text_count';
 			$objToReturn->intTotalTextCount = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'approved_text_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'approved_text_count'] : $strAliasPrefix . 'approved_text_count';
@@ -731,6 +744,7 @@
 						INSERT INTO `narro_file_progress` (
 							`file_id`,
 							`language_id`,
+							`header`,
 							`total_text_count`,
 							`approved_text_count`,
 							`fuzzy_text_count`,
@@ -739,6 +753,7 @@
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intFileId) . ',
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							' . $objDatabase->SqlVariable($this->strHeader) . ',
 							' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
 							' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
 							' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
@@ -761,6 +776,7 @@
 						SET
 							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . ',
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							`header` = ' . $objDatabase->SqlVariable($this->strHeader) . ',
 							`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
 							`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
 							`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
@@ -846,6 +862,7 @@
 			// Update $this's local variables to match
 			$this->FileId = $objReloaded->FileId;
 			$this->LanguageId = $objReloaded->LanguageId;
+			$this->strHeader = $objReloaded->strHeader;
 			$this->intTotalTextCount = $objReloaded->intTotalTextCount;
 			$this->intApprovedTextCount = $objReloaded->intApprovedTextCount;
 			$this->intFuzzyTextCount = $objReloaded->intFuzzyTextCount;
@@ -891,6 +908,13 @@
 					 * @return integer
 					 */
 					return $this->intLanguageId;
+
+				case 'Header':
+					/**
+					 * Gets the value for strHeader 
+					 * @return string
+					 */
+					return $this->strHeader;
 
 				case 'TotalTextCount':
 					/**
@@ -1015,6 +1039,19 @@
 					try {
 						$this->objLanguage = null;
 						return ($this->intLanguageId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Header':
+					/**
+					 * Sets the value for strHeader 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strHeader = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1193,6 +1230,7 @@
 			$strToReturn .= '<element name="FileProgressId" type="xsd:int"/>';
 			$strToReturn .= '<element name="File" type="xsd1:NarroFile"/>';
 			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
+			$strToReturn .= '<element name="Header" type="xsd:string"/>';
 			$strToReturn .= '<element name="TotalTextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="ApprovedTextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="FuzzyTextCount" type="xsd:int"/>';
@@ -1230,6 +1268,8 @@
 			if ((property_exists($objSoapObject, 'Language')) &&
 				($objSoapObject->Language))
 				$objToReturn->Language = NarroLanguage::GetObjectFromSoapObject($objSoapObject->Language);
+			if (property_exists($objSoapObject, 'Header'))
+				$objToReturn->strHeader = $objSoapObject->Header;
 			if (property_exists($objSoapObject, 'TotalTextCount'))
 				$objToReturn->intTotalTextCount = $objSoapObject->TotalTextCount;
 			if (property_exists($objSoapObject, 'ApprovedTextCount'))
@@ -1283,6 +1323,7 @@
 			$iArray['FileProgressId'] = $this->intFileProgressId;
 			$iArray['FileId'] = $this->intFileId;
 			$iArray['LanguageId'] = $this->intLanguageId;
+			$iArray['Header'] = $this->strHeader;
 			$iArray['TotalTextCount'] = $this->intTotalTextCount;
 			$iArray['ApprovedTextCount'] = $this->intApprovedTextCount;
 			$iArray['FuzzyTextCount'] = $this->intFuzzyTextCount;
@@ -1314,6 +1355,7 @@
      * @property-read QQNodeNarroFile $File
      * @property-read QQNode $LanguageId
      * @property-read QQNodeNarroLanguage $Language
+     * @property-read QQNode $Header
      * @property-read QQNode $TotalTextCount
      * @property-read QQNode $ApprovedTextCount
      * @property-read QQNode $FuzzyTextCount
@@ -1340,6 +1382,8 @@
 					return new QQNode('language_id', 'LanguageId', 'Integer', $this);
 				case 'Language':
 					return new QQNodeNarroLanguage('language_id', 'Language', 'Integer', $this);
+				case 'Header':
+					return new QQNode('header', 'Header', 'Blob', $this);
 				case 'TotalTextCount':
 					return new QQNode('total_text_count', 'TotalTextCount', 'Integer', $this);
 				case 'ApprovedTextCount':
@@ -1370,6 +1414,7 @@
      * @property-read QQNodeNarroFile $File
      * @property-read QQNode $LanguageId
      * @property-read QQNodeNarroLanguage $Language
+     * @property-read QQNode $Header
      * @property-read QQNode $TotalTextCount
      * @property-read QQNode $ApprovedTextCount
      * @property-read QQNode $FuzzyTextCount
@@ -1396,6 +1441,8 @@
 					return new QQNode('language_id', 'LanguageId', 'integer', $this);
 				case 'Language':
 					return new QQNodeNarroLanguage('language_id', 'Language', 'integer', $this);
+				case 'Header':
+					return new QQNode('header', 'Header', 'string', $this);
 				case 'TotalTextCount':
 					return new QQNode('total_text_count', 'TotalTextCount', 'integer', $this);
 				case 'ApprovedTextCount':

@@ -25,16 +25,16 @@
         protected $colLanguageName;
         protected $colPercentTranslated;
 
-        protected $objNarroProject;
+        protected $objProject;
 
         protected function SetupNarroProject() {
             // Lookup Object PK information from Query String (if applicable)
             // Set mode to Edit or New depending on what's found
             $intProjectId = QApplication::QueryString('p');
             if ($intProjectId > 0) {
-                $this->objNarroProject = NarroProject::Load(($intProjectId));
+                $this->objProject = NarroProject::Load(($intProjectId));
 
-                if (!$this->objNarroProject)
+                if (!$this->objProject)
                     QApplication::Redirect(NarroLink::ProjectList());
 
             } else
@@ -79,19 +79,19 @@
             $this->pnlBreadcrumb->strSeparator = ' | ';
 
             $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectTextList($this->objNarroProject->ProjectId, 1, 1, '', $this->objNarroProject->ProjectName),
-                NarroLink::ProjectFileList($this->objNarroProject->ProjectId, null, null, t('Files'))
+                NarroLink::ProjectTextList($this->objProject->ProjectId, 1, 1, '', $this->objProject->ProjectName),
+                NarroLink::ProjectFileList($this->objProject->ProjectId, null, null, t('Files'))
             );
 
-            if (QApplication::HasPermissionForThisLang('Can import project', $this->objNarroProject->ProjectId))
-                $this->pnlBreadcrumb->addElement(NarroLink::ProjectImport($this->objNarroProject->ProjectId, t('Import')));
+            if (QApplication::HasPermissionForThisLang('Can import project', $this->objProject->ProjectId))
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectImport($this->objProject->ProjectId, t('Import')));
 
-            if (QApplication::HasPermissionForThisLang('Can export project', $this->objNarroProject->ProjectId))
-                $this->pnlBreadcrumb->addElement(NarroLink::ProjectExport($this->objNarroProject->ProjectId, t('Export')));
+            if (QApplication::HasPermissionForThisLang('Can export project', $this->objProject->ProjectId))
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectExport($this->objProject->ProjectId, t('Export')));
 
 
-            if (QApplication::HasPermissionForThisLang('Can edit project', $this->objNarroProject->ProjectId))
-                $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($this->objNarroProject->ProjectId, t('Edit')));
+            if (QApplication::HasPermissionForThisLang('Can edit project', $this->objProject->ProjectId))
+                $this->pnlBreadcrumb->addElement(NarroLink::ProjectEdit($this->objProject->ProjectId, t('Edit')));
 
             $this->pnlBreadcrumb->addElement(t('Languages'));
 
@@ -102,7 +102,7 @@
 
             $objDatabase = QApplication::$Database[1];
 
-            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND c.active=1', $this->objNarroProject->ProjectId, $objNarroLanguage->LanguageId);
+            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND c.active=1', $this->objProject->ProjectId, $objNarroLanguage->LanguageId);
 
             // Perform the Query
             $objDbResult = $objDatabase->Query($strQuery);
@@ -111,7 +111,7 @@
                 $mixRow = $objDbResult->FetchArray();
                 $intTotalTexts = $mixRow['cnt'];
 
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1', $this->objNarroProject->ProjectId, $objNarroLanguage->LanguageId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1', $this->objProject->ProjectId, $objNarroLanguage->LanguageId);
 
                 // Perform the Query
                 $objDbResult = $objDatabase->Query($strQuery);
@@ -121,7 +121,7 @@
                     $intTranslatedTexts = $mixRow['cnt'];
                 }
 
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1', $this->objNarroProject->ProjectId, $objNarroLanguage->LanguageId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1', $this->objProject->ProjectId, $objNarroLanguage->LanguageId);
                 // Perform the Query
                 $objDbResult = $objDatabase->Query($strQuery);
 
