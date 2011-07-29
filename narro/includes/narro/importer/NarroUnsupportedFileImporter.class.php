@@ -18,7 +18,7 @@
 
     class NarroUnsupportedFileImporter extends NarroFileImporter {
 
-        public function ExportFile($strTemplateFile, $strTranslatedFile = null) {
+        public function ExportFile($strTemplateFile, $strTranslatedFile) {
             if ($strTranslatedFile != $this->objProject->DefaultTranslationPath . '/' . $this->objFile->FilePath && QApplication::HasPermissionForThisLang('Can import project', $this->objProject->ProjectId)) {
                 if (file_exists($this->objProject->DefaultTranslationPath . '/' . $this->objFile->FilePath))
                     copy($this->objProject->DefaultTranslationPath . '/' . $this->objFile->FilePath, $strTranslatedFile);
@@ -27,7 +27,7 @@
             }
         }
 
-        public function ImportFile($strTemplateFile, $strTranslatedFile) {
+        public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
             if ($strTranslatedFile != '' && !file_exists($strTranslatedFile)) {
                 QApplication::LogWarn(sprintf('Copying unsupported file type: %s', $strTemplateFile));
                 NarroImportStatistics::$arrStatistics['Unsupported files that were copied from the source language']++;
