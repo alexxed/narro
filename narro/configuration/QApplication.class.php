@@ -248,7 +248,9 @@
         }
 
         public static function InitializeLanguage() {
-            if (strstr($_SERVER['REQUEST_URI'], '_devtools') || $_SERVER['REQUEST_METHOD'] != 'GET') return false;
+            global $argv;
+
+            if (strstr($_SERVER['REQUEST_URI'], '_devtools')) return false;
 
             QApplication::$SourceLanguage = NarroLanguage::LoadByLanguageCode(__SOURCE_LANGUAGE_CODE__);
 
