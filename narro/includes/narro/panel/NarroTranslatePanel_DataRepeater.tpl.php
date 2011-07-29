@@ -17,10 +17,10 @@ $pnlEditor->Index = sprintf(
         $_CONTROL->ParentControl->lstFilter->SelectedValue,
         $_CONTROL->ParentControl->txtSearch->Text,
         $_CONTROL->ParentControl->lstSort->SelectedValue,
-        $_CONTROL->ParentControl->lstSortDir->SelectedValue
+        $_CONTROL->ParentControl->lstSortDir->SelectedValue,
+        $intCurrentItem - 1,
+        $_ITEM->ContextInfoId
     ),
-    $intCurrentItem - 1,
-    $_ITEM->ContextInfoId,
     $_ITEM->ContextInfoId,
     ($intCurrentItem) . '/' . $_CONTROL->ParentControl->intTotalItemCount
 );
