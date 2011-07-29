@@ -54,7 +54,7 @@
 
     /**
      * Uncomment this lines and fill in the values if you want to use external authentication
-     * @see narro_login.php for more detailes
+     * @see login.php for more detailes
      */
 //    define ('__AUTH_EXTERNAL_DB_HOST__', 'localhost');
 //    define ('__AUTH_EXTERNAL_DB_USERNAME__', 'root');

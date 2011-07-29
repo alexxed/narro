@@ -56,7 +56,7 @@
     </tr>
     </table>
 <?php } else
-          echo sprintf(t('You can add suggestions if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . QApplication::$TargetLanguage->LanguageCode, 'narro_login.php?l=' . QApplication::$TargetLanguage->LanguageCode) . '<br /><br />';
+          echo sprintf(t('You can add suggestions if you are logged in. <a href="%s">Register</a> or <a href="%s">Log in</a> if you already have an account or an OpenId.'), 'narro_register.php?l=' . QApplication::$TargetLanguage->LanguageCode, 'login.php?l=' . QApplication::$TargetLanguage->LanguageCode) . '<br /><br />';
 ?>
 &nbsp;&nbsp;&nbsp;&nbsp;
 <?php $_CONTROL->btnPrevious100->Render() ?>

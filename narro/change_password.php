@@ -38,10 +38,10 @@
                         QApplication::$User = $objUser;
                     }
                     else
-                        QApplication::Redirect('narro_login.php');
+                        QApplication::Redirect('login.php');
                 }
                 else
-                    QApplication::Redirect('narro_login.php');
+                    QApplication::Redirect('login.php');
             }
 
             $this->lblMessage = new QLabel($this);

@@ -160,7 +160,7 @@
 
         public function dtgLanguage_Actions_Render(NarroLanguage $objLanguage) {
             if (QApplication::HasPermissionForThisLang('Can edit language', null))
-                return sprintf('<a href="narro_language_edit.php?l=%s&lid=%d">%s</a>', QApplication::$TargetLanguage->LanguageCode, $objLanguage->LanguageId, t('Edit'));
+                return sprintf('<a href="language_edit.php?l=%s&lid=%d">%s</a>', QApplication::$TargetLanguage->LanguageCode, $objLanguage->LanguageId, t('Edit'));
         }
 
         public function dtgLanguage_Bind() {

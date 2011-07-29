@@ -73,6 +73,6 @@
         }
     }
     else {
-        QApplication::Redirect('narro_login.php');
+        QApplication::Redirect('login.php');
     }
 ?>

@@ -176,6 +176,6 @@
         error_log(sprintf('Deleted %d duplicate suggestions and %d duplicate texts', $intDuplicateSuggestionsDeleted, $intDuplicateTextsDeleted));
 //    }
 //    else {
-//        QApplication::Redirect('narro_login.php');
+//        QApplication::Redirect('login.php');
 //    }
 ?>

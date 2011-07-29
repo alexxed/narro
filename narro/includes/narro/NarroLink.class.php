@@ -236,7 +236,7 @@
         }
 
         public static function LanguageList($strLinkText = '') {
-            $strLink = sprintf('narro_language_list.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
+            $strLink = sprintf('languages.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -252,7 +252,7 @@
         }
 
         public static function UserLogin($strLinkText = '') {
-            $strLink = sprintf('narro_login.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
+            $strLink = sprintf('login.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -268,7 +268,7 @@
         }
 
         public static function LanguageEdit($intLanguageId = null, $strLinkText = '') {
-            $strLink = sprintf('narro_language_edit.php?l=%s&lid=%d', QApplication::$TargetLanguage->LanguageCode, $intLanguageId);
+            $strLink = sprintf('language_edit.php?l=%s&lid=%d', QApplication::$TargetLanguage->LanguageCode, $intLanguageId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
