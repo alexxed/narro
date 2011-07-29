@@ -237,44 +237,16 @@
             else
                 $objSearchCondition = QQ::All();
 
-            switch ($this->intFilter) {
-                /**
-                 * In progress
-                 */
-                case self::SHOW_IN_PROGRESS:
-                    $objFilterCondition = QQ::NotIn(QQN::NarroProjectProgress()->ProgressPercent, array(0, 100));
-                    break;
-                /**
-                 * Completed
-                 */
-                case self::SHOW_COMPLETED:
-                    $objFilterCondition = QQ::Equal(QQN::NarroProjectProgress()->ProgressPercent, 100);
-                    break;
-                /**
-                 * Empty
-                 */
-                case self::SHOW_EMPTY:
-                    $objFilterCondition = QQ::Equal(QQN::NarroProjectProgress()->ProgressPercent, 0);
-                    break;
-                /**
-                 * Inactive
-                 */
-                case self::SHOW_INACTIVE:
-                    $objFilterCondition = QQ::Equal(QQN::NarroProjectProgress()->Active, 0);
-                    break;
-                /**
-                 * 0 - show all
-                 */
-                default:
-                    $objFilterCondition = QQ::All();
 
-            }
+            if (QApplication::HasPermissionForThisLang('Project manager'))
+                $objFilterCondition = QQ::All();
+            else
+                $objFilterCondition = QQ::Equal(QQN::NarroProjectProgress()->Active, 0);
 
             $objOverallCondition =
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroProjectProgress()->LanguageId, QApplication::GetLanguageId()),
-                    $objSearchCondition,
-                    $objFilterCondition
+                    $objSearchCondition
                 );
 
 

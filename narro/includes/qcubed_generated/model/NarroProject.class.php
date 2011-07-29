@@ -206,6 +206,7 @@
                     $objProjectProgress->ApprovedTextCount = 0;
                     $objProjectProgress->FuzzyTextCount = 0;
                     $objProjectProgress->ProgressPercent = 0;
+                    $objProjectProgress->Active = 1;
                     $objProjectProgress->LastModified = QDateTime::Now();
                     $objProjectProgress->Save();
 
