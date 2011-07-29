@@ -30,7 +30,13 @@
         protected function GetWorkingDirectory($strCheckoutCommand = null) {
             if ($this->txtRepository->Text == '')
                 throw new Exception('You have to enter a path to a Mercurial repository');
-            if (!@fopen(sprintf('%s/summary', $this->txtRepository->Text), 'r'))
+
+            $ch = curl_init(sprintf('%s/summary', $this->txtRepository->Text));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $data = curl_exec($ch);
+            curl_close($ch);
+
+            if (!$data)
                 throw new Exception('This does not look like a valid Mercurial repository');
 
             return parent::GetWorkingDirectory(self::CHECKOUT_COMMAND);

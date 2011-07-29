@@ -67,7 +67,13 @@
             mkdir($this->strWorkingDirectory);
             chmod($this->strWorkingDirectory, 0777);
             $strDownloadedFileName = $this->strWorkingDirectory . '/' . basename($this->txtWebAddress->Text);
-            copy($this->txtWebAddress->Text, $strDownloadedFileName);
+            if (!@copy($this->txtWebAddress->Text, $strDownloadedFileName)) {
+                $ch = curl_init($this->txtWebAddress->Text);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $data = curl_exec($ch);
+                curl_close($ch);
+                file_put_contents($strDownloadedFileName, $data);
+            }
             chmod($strDownloadedFileName, 0666);
 
             switch(strtolower(pathinfo($strDownloadedFileName, PATHINFO_EXTENSION))) {
