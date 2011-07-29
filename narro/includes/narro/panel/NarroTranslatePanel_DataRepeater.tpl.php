@@ -18,6 +18,7 @@ $pnlEditor->Index = sprintf(
         $_CONTROL->ParentControl->txtSearch->Text,
         $_CONTROL->ParentControl->lstSort->SelectedValue,
         $_CONTROL->ParentControl->lstSortDir->SelectedValue,
+        10,
         $intCurrentItem - 1,
         $_ITEM->ContextInfoId
     ),
