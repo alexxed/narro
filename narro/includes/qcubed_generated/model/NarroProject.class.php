@@ -211,7 +211,7 @@
                     $objProjectProgress->Save();
 
                     if (!file_exists($this->DefaultTranslationPath))
-                        mkdir($this->DefaultTranslationPath, 0777, true);
+                        @mkdir($this->DefaultTranslationPath, 0777, true);
                     NarroUtils::RecursiveChmod($this->DefaultTranslationPath, 0666, 0777);
                 }
             }

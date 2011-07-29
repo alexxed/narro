@@ -173,6 +173,10 @@
         public function btnSave_Click($strFormId, $strControlId, $strParameter) {
             $this->UpdateNarroProjectFields();
 
+            $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->objProject->ProjectId, QApplication::GetLanguageId());
+            $objProjectProgress->Active = $this->txtActive->Checked;
+            $objProjectProgress->Save();
+
             try {
                 $this->objProject->Save();
             }
