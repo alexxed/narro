@@ -194,7 +194,7 @@
 
             if ($blnNew) {
                 if (!file_exists($this->DefaultTemplatePath))
-                    mkdir($this->DefaultTemplatePath, 0777);
+                    @mkdir($this->DefaultTemplatePath, 0777, true);
 
                 foreach(NarroLanguage::LoadAll() as $objLanguage) {
 
