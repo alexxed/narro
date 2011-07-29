@@ -41,7 +41,7 @@
 
             if (file_exists($this->strLogFile)) {
                 $this->blnVisible = true;
-                $arrLogLine = preg_match_all('/([0-9]{4,4}\-[0-9]{2,2}-[0-9]{2,2}T[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}\+[0-9]{2,2}:[0-9]{2,2})\s([^\s]+)[^:]+:\s(.*)/', file_get_contents($this->strLogFile), $arrMatches);
+                $arrLogLine = preg_match_all('/([0-9]{4,4}\-[0-9]{2,2}-[0-9]{2,2}T[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}[\+\-][0-9]{2,2}:[0-9]{2,2})\s([^\s]+)[^:]+:\s(.*)/', file_get_contents($this->strLogFile), $arrMatches);
                 foreach($arrMatches[0] as $intIndex=>$strMatch) {
                     if (in_array($arrMatches[2][$intIndex], array('ERR', 'WARN', 'INFO')))
                         $strLogContents .= sprintf('<div class="%s" title="%s">%s</div>', strtolower($arrMatches[2][$intIndex]), $arrMatches[1][$intIndex], nl2br(NarroString::HtmlEntities($arrMatches[3][$intIndex])));
