@@ -83,7 +83,13 @@
          * An array with all the context info objects from this file
          * @var NarroContextInfo[]
          */
-        protected $arrContextInfo;
+        protected $arrContextInfo = array();
+
+        /**
+         * An array with all the suggestions for the texts from this file
+         * @var NarroSuggestion[];
+         */
+        protected $arrSuggestion = array();
 
         /**
          * A list of context ids from this file; whenever a context is found, the id is removed from the list
@@ -126,6 +132,34 @@
             }
         }
 
+        protected function GetSugestionArray() {
+            $this->arrSuggestion = NarroSuggestion::QueryArray(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroSuggestion()->Text->NarroContextAsText->FileId, $this->objFile->FileId),
+                    QQ::Equal(QQN::NarroSuggestion()->LanguageId, $this->objTargetLanguage->LanguageId)
+                ),
+                array(
+                    QQ::Expand(QQN::NarroSuggestion()->User),
+                    QQ::Expand(QQN::NarroSuggestion()->Text)
+                )
+            );
+        }
+
+        /**
+         * Returns a suggestion object from this file based on the text and translation text
+         * @param string $strOriginal
+         * @param string $strTranslation
+         * @return NarroSuggestion
+         */
+        protected function GetSuggestion($strOriginal, $strTranslation) {
+            foreach($this->arrSuggestion as $objSuggestion) {
+                if ($objSuggestion->Text->TextValue == $strOriginal && $objSuggestion->SuggestionValue == $strTranslation)
+                    return $objSuggestion;
+            }
+
+            return false;
+        }
+
         /**
          * Returns a text from this file, in the current language
          * @param string $strText
@@ -160,8 +194,6 @@
          * @param string $strComment a comment from the imported file
          */
         protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
-
-            error_log($strOriginal);
 
             $blnContextInfoChanged = false;
             $blnContextChanged = false;
@@ -244,17 +276,20 @@
                     QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the comment "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strComment, print_r($arrResult, true)));
             }
 
-            $objNarroText = $this->GetText($strOriginal, $strContext);
+            $objText = $this->GetText($strOriginal, $strContext);
 
-            if (!$this->blnOnlySuggestions && !$objNarroText instanceof NarroText) {
+            if (!$objText)
+                $objText = NarroText::LoadByTextValueMd5(md5($strOriginal));
 
-                $objNarroText = new NarroText();
-                $objNarroText->TextValue = $strOriginal;
+            if (!$this->blnOnlySuggestions && !$objText instanceof NarroText) {
+
+                $objText = new NarroText();
+                $objText->TextValue = $strOriginal;
 
                 QApplication::$PluginHandler->AddText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
 
                 try {
-                    $objNarroText->Save();
+                    $objText->Save();
                     QApplication::LogDebug(sprintf('Added text "%s" from the file "%s"', $strOriginal, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Imported texts']++;
                 } catch(Exception $objExc) {
@@ -270,28 +305,31 @@
                 }
 
             }
-            elseif (!$objNarroText instanceof NarroText) {
+            elseif (!$objText instanceof NarroText) {
                 /**
                  * If there's no text, there's no context and no suggestion
                  */
                 return false;
             }
 
-            $objNarroContext = $this->GetContext($strOriginal, $strContext);
+            $objContext = $this->GetContext($strOriginal, $strContext);
+            if (!$objContext)
+                $objContext = NarroContext::LoadByTextIdContextMd5FileId($objText->TextId, md5($strContext), $this->objFile->FileId);
 
-            if (!$this->blnOnlySuggestions && !$objNarroContext instanceof NarroContext) {
 
-                $objNarroContext = new NarroContext();
-                $objNarroContext->TextId = $objNarroText->TextId;
-                $objNarroContext->ProjectId = $this->objProject->ProjectId;
-                $objNarroContext->Context = $strContext;
-                $objNarroContext->ContextMd5 = md5($strContext);
-                $objNarroContext->FileId = $this->objFile->FileId;
-                $objNarroContext->Active = 1;
-                $objNarroContext->Modified = QDateTime::Now();
-                $objNarroContext->Created = QDateTime::Now();
+            if (!$this->blnOnlySuggestions && !$objContext instanceof NarroContext) {
+
+                $objContext = new NarroContext();
+                $objContext->TextId = $objText->TextId;
+                $objContext->ProjectId = $this->objProject->ProjectId;
+                $objContext->Context = $strContext;
+                $objContext->ContextMd5 = md5($strContext);
+                $objContext->FileId = $this->objFile->FileId;
+                $objContext->Active = 1;
+                $objContext->Modified = QDateTime::Now();
+                $objContext->Created = QDateTime::Now();
                 try {
-                    $objNarroContext->Save();
+                    $objContext->Save();
                 }
                 catch (Exception $objException) {
                     QApplication::LogError(sprintf('An error occurred while saving the context: %s. Skipping the text "%s"', $objException->getMessage(), $strOriginal));
@@ -301,12 +339,12 @@
                 QApplication::LogDebug(sprintf('Added the context "%s" from the file "%s"', nl2br($strContext), $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Imported contexts']++;
             }
-            elseif($objNarroContext instanceof NarroContext) {
-                unset($this->arrContextId[$objNarroContext->ContextId]);
+            elseif($objContext instanceof NarroContext) {
+                unset($this->arrContextId[$objContext->ContextId]);
                 NarroImportStatistics::$arrStatistics['Reused contexts']++;
             }
             else {
-                QApplication::LogWarn(sprintf('Cannot add the context for text "%s" from the file "%s" because the importer is running with the option to import only suggestions.', $objNarroText->TextValue, $this->objFile->FilePath));
+                QApplication::LogWarn(sprintf('Cannot add the context for text "%s" from the file "%s" because the importer is running with the option to import only suggestions.', $objText->TextValue, $this->objFile->FilePath));
                 return false;
             }
 
@@ -315,6 +353,8 @@
              * load the context info
              */
             $objContextInfo = $this->GetContextInfo($strOriginal, $strContext);
+            if (!$objContextInfo)
+                $objContextInfo = NarroContextInfo::LoadByContextIdLanguageId($objContext->ContextId, $this->objTargetLanguage->LanguageId);
 
             /**
              * Add context infos even if only suggestion is selected to allow users that have permissions only on one language to approve suggestions
@@ -322,7 +362,7 @@
             if (!$objContextInfo instanceof NarroContextInfo) {
 
                 $objContextInfo = new NarroContextInfo();
-                $objContextInfo->ContextId = $objNarroContext->ContextId;
+                $objContextInfo->ContextId = $objContext->ContextId;
                 $objContextInfo->LanguageId = $this->objTargetLanguage->LanguageId;
                 $objContextInfo->HasSuggestions = 0;
                 $objContextInfo->HasComments = 0;
@@ -333,13 +373,13 @@
                 NarroImportStatistics::$arrStatistics['Reused context informations']++;
             }
 
-            if ($objNarroContext instanceof NarroContext && $objContextInfo instanceof NarroContextInfo) {
+            if ($objContext instanceof NarroContext && $objContextInfo instanceof NarroContextInfo) {
                 /**
                  * this lies outside the if/else if reusing contexts is activated, so if a context was moved in another file, we'll just update the file_id
                  */
-                if ($objNarroContext->FileId != $this->objFile->FileId) {
+                if ($objContext->FileId != $this->objFile->FileId) {
                     $blnContextChanged = true;
-                    $objNarroContext->FileId = $this->objFile->FileId;
+                    $objContext->FileId = $this->objFile->FileId;
                 }
 
                 if ($objContextInfo->TextAccessKey != $strOriginalAccKey) {
@@ -370,18 +410,20 @@
                 /**
                  * See if a suggestion already exists, fetch it
                  */
-                $objNarroSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($objNarroText->TextId, $this->objTargetLanguage->LanguageId, md5($strTranslation));
+                $objSuggestion = $this->GetSuggestion($strOriginal, $strTranslation);
+                if (!$objSuggestion)
+                    $objSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($objText->TextId, $this->objTargetLanguage->LanguageId, md5($strTranslation));
 
-                if (!$objNarroSuggestion instanceof NarroSuggestion) {
+                if (!$objSuggestion instanceof NarroSuggestion) {
 
-                    $objNarroSuggestion = new NarroSuggestion();
-                    $objNarroSuggestion->IsImported = 1;
-                    $objNarroSuggestion->UserId = $this->objUser->UserId;
-                    $objNarroSuggestion->TextId = $objNarroText->TextId;
-                    $objNarroSuggestion->LanguageId = $this->objTargetLanguage->LanguageId;
-                    $objNarroSuggestion->SuggestionValue = $strTranslation;
+                    $objSuggestion = new NarroSuggestion();
+                    $objSuggestion->IsImported = 1;
+                    $objSuggestion->UserId = $this->objUser->UserId;
+                    $objSuggestion->TextId = $objText->TextId;
+                    $objSuggestion->LanguageId = $this->objTargetLanguage->LanguageId;
+                    $objSuggestion->SuggestionValue = $strTranslation;
                     try {
-                        $objNarroSuggestion->Save();
+                        $objSuggestion->Save();
                     }
                     catch (Exception $objException) {
                         QApplication::LogError(sprintf('An error occurred while adding the suggestion "%s": %s. Skipping the text "%s"', $strTranslation, $objException->getMessage(), $strOriginal));
@@ -394,7 +436,7 @@
                     /**
                      * update the HasSuggestions if it was 0 and we added a suggestion
                      */
-                    if ($objContextInfo instanceof NarroContextInfo && $objContextInfo->HasSuggestions == 0 && $objNarroSuggestion instanceof NarroSuggestion ) {
+                    if ($objContextInfo instanceof NarroContextInfo && $objContextInfo->HasSuggestions == 0 && $objSuggestion instanceof NarroSuggestion ) {
                         $objContextInfo->HasSuggestions = 1;
                         $blnContextInfoChanged = true;
                     }
@@ -409,8 +451,8 @@
                         $objContextInfo instanceof NarroContextInfo &&
                         $this->blnApprove &&
                         (is_null($objContextInfo->ValidSuggestionId) || $this->blnApproveAlreadyApproved) &&
-                        $objContextInfo->ValidSuggestionId != $objNarroSuggestion->SuggestionId) {
-                    $objContextInfo->ValidSuggestionId = $objNarroSuggestion->SuggestionId;
+                        $objContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
+                    $objContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
                     $objContextInfo->ValidatorUserId = QApplication::GetUserId();
                     $blnContextInfoChanged = true;
                     NarroImportStatistics::$arrStatistics['Approved suggestions']++;
@@ -581,23 +623,23 @@
 
         /**
          * Returns a suggestion based on intExportedSuggestion value
-         * @param NarroContextInfo $objNarroContextInfo
+         * @param NarroContextInfo $objContextInfo
          * @return string or false
          */
-        public function GetExportedSuggestion(NarroContextInfo $objNarroContextInfo) {
+        public function GetExportedSuggestion(NarroContextInfo $objContextInfo) {
             switch($this->ExportedSuggestion) {
                 case 1:
-                    if ($objNarroContextInfo->ValidSuggestionId)
-                        return $objNarroContextInfo->ValidSuggestion->SuggestionValue;
+                    if ($objContextInfo->ValidSuggestionId)
+                        return $objContextInfo->ValidSuggestion->SuggestionValue;
                     else
                         return false;
                 /**
                  * If there is no approved suggestion, export the most voted one (minimum 1 vote required)
                  */
                 case 2:
-                    $objSuggestion = $this->GetMostVotedSuggestion($objNarroContextInfo->ContextId);
+                    $objSuggestion = $this->GetMostVotedSuggestion($objContextInfo->ContextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        QApplication::LogDebug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        QApplication::LogDebug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -607,9 +649,9 @@
                  * If there is no approved suggestion, export the most recent one added
                  */
                 case 3:
-                    $objSuggestion = $this->GetMostRecentSuggestion($objNarroContextInfo->Context->TextId);
+                    $objSuggestion = $this->GetMostRecentSuggestion($objContextInfo->Context->TextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        QApplication::LogDebug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        QApplication::LogDebug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -620,15 +662,15 @@
                  * If there is no voted suggestion, export the most recent one
                  */
                 case 4:
-                    $objSuggestion = $this->GetMostVotedSuggestion($objNarroContextInfo->ContextId);
+                    $objSuggestion = $this->GetMostVotedSuggestion($objContextInfo->ContextId);
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        QApplication::LogDebug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        QApplication::LogDebug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
-                        $objSuggestion = $this->GetMostRecentSuggestion($objNarroContextInfo->Context->TextId);
+                        $objSuggestion = $this->GetMostRecentSuggestion($objContextInfo->Context->TextId);
                         if ($objSuggestion instanceof NarroSuggestion) {
-                            QApplication::LogDebug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                            QApplication::LogDebug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                             return $objSuggestion->SuggestionValue;
                         }
                         else {
@@ -636,9 +678,9 @@
                         }
                     }
                 case 5:
-                    $objSuggestion = $this->GetUserSuggestion($objNarroContextInfo->ContextId, $objNarroContextInfo->Context->TextId, QApplication::GetUserId());
+                    $objSuggestion = $this->GetUserSuggestion($objContextInfo->ContextId, $objContextInfo->Context->TextId, QApplication::GetUserId());
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        QApplication::LogDebug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$User->Username, $objSuggestion->SuggestionValue, $objNarroContextInfo->Context->Text->TextValue));
+                        QApplication::LogDebug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$User->Username, $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -769,6 +811,7 @@
                     if ($mixValue instanceof NarroFile) {
                         $this->objFile = $mixValue;
                         $this->GetContextInfoArray();
+                        $this->GetSugestionArray();
                         QApplication::LogDebug(
                             sprintf(
                                 'Importing "%s" with blnCheckEqual=%s, blnApprove=%s, blnApproveAlreadyApproved=%s, blnOnlySuggestions=%s, intExportedSuggestion=%s',

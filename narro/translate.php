@@ -25,13 +25,11 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            $this->pnlTranslate = new NarroTranslatePanel($this->pnlMainTab);
-
             if (QApplication::QueryString('p') == '') {
-
                 $this->pnlMainTab = new QTabPanel($this);
                 $this->pnlMainTab->UseAjax = false;
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Projects'), NarroLink::ProjectList());
+                $this->pnlTranslate = new NarroTranslatePanel($this->pnlMainTab);
                 $this->pnlMainTab->addTab($this->pnlTranslate, t('Translate'));
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Roles'), NarroLink::RoleList());
@@ -40,6 +38,7 @@
                 $this->pnlMainTab->SelectedTab = 1;
             }
             else {
+                $this->pnlTranslate = new NarroTranslatePanel($this->pnlMainTab);
                 $this->pnlMainTab->replaceTab($this->pnlTranslate, t('Translate'));
                 $this->pnlMainTab->SelectedTab = 3;
             }

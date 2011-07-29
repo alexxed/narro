@@ -31,7 +31,8 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            $this->SetupNarroProject();
+            if ($this->SetupNarroProject() === false)
+                return false;
 
             $this->pnlMainTab = new QTabPanel($this);
             $this->pnlMainTab->UseAjax = false;
@@ -56,25 +57,31 @@
         }
 
         protected function SetupNarroProject() {
+
             // Lookup Object PK information from Query String (if applicable)
             $intProjectId = QApplication::QueryString('p');
-            if (($intProjectId)) {
+            if ($intProjectId) {
                 $this->objProject = NarroProject::Load(($intProjectId));
 
                 if (!$this->objProject) {
                     QApplication::Redirect(NarroLink::ProjectList());
                     return false;
                 }
+                else {
+                    $this->pnlBreadcrumb->setElements(
+                        NarroLink::ProjectList(t('Projects')),
+                        $this->objProject->ProjectName
+                    );
 
-            } else {
+                    return true;
+
+                }
+
+            } elseif(!$this instanceof NarroTranslateForm) {
                 QApplication::Redirect(NarroLink::ProjectList());
                 return false;
             }
 
-            $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectList(t('Projects')),
-                $this->objProject->ProjectName
-            );
         }
 
     }

@@ -67,169 +67,151 @@
         }
 
 
-        public function RefreshTotalTextCount($intLanguageId = null) {
-            $objDatabase = self::GetDatabase();
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
-
-            $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->ProjectId, $intLanguageId);
-
-            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c WHERE c.project_id = %d AND c.active=1', $this->ProjectId, $intLanguageId);
-
-            // Perform the Query
-            $objDbResult = $objDatabase->Query($strQuery);
-
-            if ($objDbResult) {
-                $mixRow = $objDbResult->FetchArray();
-                $intTotalTexts = $mixRow['cnt'];
-
-                if (!$objProjectProgress instanceof NarroProjectProgress) {
-                    $objProjectProgress = new NarroProjectProgress();
-                    $objProjectProgress->ProjectId = $this->ProjectId;
-                    $objProjectProgress->LanguageId = $intLanguageId;
-                    $objProjectProgress->TotalTextCount = 0;
-                    $objProjectProgress->ApprovedTextCount = 0;
-                    $objProjectProgress->FuzzyTextCount = 0;
-                    $objProjectProgress->ProgressPercent = 0;
-                    $objProjectProgress->LastModified = QDateTime::Now();
-                }
-
-
-                $objProjectProgress->TotalTextCount = $intTotalTexts;
-                if ($objProjectProgress->TotalTextCount)
-                    $objProjectProgress->ProgressPercent = floor($objProjectProgress->ApprovedTextCount * 100 / $objProjectProgress->TotalTextCount);
-                else
-                    $objProjectProgress->ProgressPercent = 0;
-
-                $objLastContextInfo = NarroContextInfo::QuerySingle(
-                    QQ::AndCondition(
-                        QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->intProjectId),
-                        QQ::Equal(QQN::NarroContextInfo()->LanguageId, $intLanguageId)
-                    ),
-                    QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0)
-                );
-                if ($objLastContextInfo)
-                    $objProjectProgress->LastModified = $objLastContextInfo->Modified;
-
-                $objProjectProgress->Save();
-
-                return $objProjectProgress->TotalTextCount;
-            }
-            else
-                return 0;
-        }
-
         public function CountTranslatedTextsByLanguage($intLanguageId = null) {
-            $objDatabase = QApplication::$Database[1];
+            $intTranslatedTexts = 0;
 
             if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
+
             $intTranslatedTexts = QApplication::$Cache->load('translated_texts_' . $this->ProjectId . '_' . $intLanguageId);
+
             if ($intTranslatedTexts === false) {
                 // Cache miss
                 $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci, narro_file f WHERE f.active=1 AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1', $this->ProjectId, $intLanguageId);
 
                 // Perform the Query
-                $objDbResult = $objDatabase->Query($strQuery);
+                $objDbResult = self::GetDatabase()->Query($strQuery);
 
                 if ($objDbResult) {
                     $mixRow = $objDbResult->FetchArray();
                     $intTranslatedTexts = $mixRow['cnt'];
 
-                    $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->ProjectId, $intLanguageId);
-
-                    if (!$objProjectProgress instanceof NarroProjectProgress) {
-                        $objProjectProgress = new NarroProjectProgress();
-                        $objProjectProgress->ProjectId = $this->ProjectId;
-                        $objProjectProgress->LanguageId = $intLanguageId;
-                        $objProjectProgress->TotalTextCount = 0;
-                        $objProjectProgress->ApprovedTextCount = 0;
-                        $objProjectProgress->FuzzyTextCount = 0;
-                        $objProjectProgress->ProgressPercent = 0;
-                        $objProjectProgress->LastModified = QDateTime::Now();
-                    }
-
-                    $objProjectProgress->FuzzyTextCount = $intTranslatedTexts;
-
-                    $objLastContextInfo = NarroContextInfo::QuerySingle(
-                        QQ::AndCondition(
-                            QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->intProjectId),
-                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, $intLanguageId)
-                        ),
-                        QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0)
-                    );
-                    if ($objLastContextInfo)
-                        $objProjectProgress->LastModified = $objLastContextInfo->Modified;
-
-                    $objProjectProgress->Save();
-
-                    QApplication::$Cache->save($intTranslatedTexts, 'translated_texts_' . $this->ProjectId . '_' . $intLanguageId, array('Project' . $this->ProjectId, 'Language' . $intLanguageId, 'translated_texts'));
+                    $this->UpdateProjectProgress('FuzzyTextCount', $intTranslatedTexts);
                 }
             }
+
+            QApplication::$Cache->save($intTranslatedTexts, 'translated_texts_' . $this->ProjectId . '_' . $intLanguageId, array('Project' . $this->ProjectId, 'Language' . $intLanguageId, 'translated_texts'));
 
             return $intTranslatedTexts;
         }
 
+        public function CountAllTextsByLanguage($intLanguageId = null) {
+            $intTotalTexts = 0;
+
+            $intTranslatedTexts = QApplication::$Cache->load('total_texts' . $this->ProjectId);
+
+            if ($intTotalTexts === false) {
+                // Cache miss
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c WHERE c.project_id = %d AND c.active=1', $this->ProjectId);
+
+                // Perform the Query
+                $objDbResult = self::GetDatabase()->Query($strQuery);
+
+                if ($objDbResult) {
+                    $mixRow = $objDbResult->FetchArray();
+                    $intTotalTexts = $mixRow['cnt'];
+
+                    $this->UpdateProjectProgress('FuzzyTextCount', $intTotalTexts);
+                }
+            }
+
+            QApplication::$Cache->save($intTotalTexts, 'total_texts' . $this->ProjectId, array('Project' . $this->ProjectId, 'total_texts'));
+
+            return $intTotalTexts;
+        }
+
+        protected function UpdateProjectProgress($strColumn, $intValue) {
+            $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->ProjectId, $intLanguageId);
+
+            $blnChanged = false;
+
+            if (!$objProjectProgress instanceof NarroProjectProgress) {
+                $objProjectProgress = new NarroProjectProgress();
+                $objProjectProgress->LanguageId = $intLanguageId;
+                $objProjectProgress->ProjectId = $this->ProjectId;
+                $objProjectProgress->TotalTextCount = 0;
+                $objProjectProgress->ApprovedTextCount = 0;
+                $objProjectProgress->FuzzyTextCount = 0;
+                $objProjectProgress->ProgressPercent = 0;
+                $objProjectProgress->LastModified = QDateTime::Now();
+
+                $blnChanged = true;
+            }
+
+            // Nothing changed
+            if (!$blnChanged && $objProjectProgress->$strColumn == $intValue)
+                return true;
+
+            $objProjectProgress->$strColumn = $intValue;
+
+            if ($objProjectProgress->TotalTextCount)
+                $objProjectProgress->ProgressPercent = floor($objProjectProgress->ApprovedTextCount*100 / $objProjectProgress->TotalTextCount);
+            else
+                $objProjectProgress->ProgressPercent = 0;
+
+            $objLastContextInfo = NarroContextInfo::QuerySingle(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->intProjectId),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->Active, true),
+                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, $intLanguageId)
+                ),
+                QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0)
+            );
+            if ($objLastContextInfo)
+                $objProjectProgress->LastModified = $objLastContextInfo->Modified;
+
+            $objProjectProgress->Save();
+
+            return true;
+        }
+
         public function CountApprovedTextsByLanguage($intLanguageId = null) {
-            $objDatabase = QApplication::$Database[1];
+            $intApprovedTexts = 0;
+            $intApprovedTexts = QApplication::$Cache->load('approved_texts_' . $this->ProjectId . '_' . $intLanguageId);
 
             if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
-            $intApprovedTexts = QApplication::$Cache->load('approved_texts_' . $this->ProjectId . '_' . $intLanguageId);
+
             if ($intApprovedTexts === false) {
                 // Cache miss
                 $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.active=1 AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1', $this->ProjectId, $intLanguageId);
                 // Perform the Query
-                $objDbResult = $objDatabase->Query($strQuery);
+                $objDbResult = self::GetDatabase()->Query($strQuery);
 
                 if ($objDbResult) {
                     $mixRow = $objDbResult->FetchArray();
                     $intApprovedTexts = $mixRow['cnt'];
 
-                    $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->ProjectId, $intLanguageId);
-
-                    if (!$objProjectProgress instanceof NarroProjectProgress) {
-                        $objProjectProgress = new NarroProjectProgress();
-                        $objProjectProgress->LanguageId = $intLanguageId;
-                        $objProjectProgress->ProjectId = $this->ProjectId;
-                        $objProjectProgress->TotalTextCount = 0;
-                        $objProjectProgress->ApprovedTextCount = 0;
-                        $objProjectProgress->FuzzyTextCount = 0;
-                        $objProjectProgress->ProgressPercent = 0;
-                        $objProjectProgress->LastModified = QDateTime::Now();
-                    }
-
-                    $objProjectProgress->ApprovedTextCount = $intApprovedTexts;
-                    if ($objProjectProgress->TotalTextCount)
-                        $objProjectProgress->ProgressPercent = floor($objProjectProgress->ApprovedTextCount*100/$objProjectProgress->TotalTextCount);
-                    else
-                        $objProjectProgress->ProgressPercent = 0;
-
-                    $objLastContextInfo = NarroContextInfo::QuerySingle(
-                        QQ::AndCondition(
-                            QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->intProjectId),
-                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, $intLanguageId)
-                        ),
-                        QQ::OrderBy(QQN::NarroContextInfo()->Modified, 0)
-                    );
-                    if ($objLastContextInfo)
-                        $objProjectProgress->LastModified = $objLastContextInfo->Modified;
-
-                    $objProjectProgress->Save();
-                    QApplication::$Cache->save($intApprovedTexts, 'approved_texts_' . $this->ProjectId . '_' . $intLanguageId, array('Project' . $this->ProjectId, 'Language' . $intLanguageId, 'approved_texts'));
+                    $this->UpdateProjectProgress('ApprovedTextCount', $intApprovedTexts);
                 }
             }
 
+            QApplication::$Cache->save($intApprovedTexts, 'approved_texts_' . $this->ProjectId . '_' . $intLanguageId, array('Project' . $this->ProjectId, 'Language' . $intLanguageId, 'approved_texts'));
             return $intApprovedTexts;
         }
 
         public function Save($blnForceInsert = false, $blnForceUpdate = false) {
+            $blnNew = (!$this->__blnRestored) || ($blnForceInsert);
             $mixResult = parent::Save($blnForceInsert, $blnForceUpdate);
 
-            foreach(NarroLanguage::LoadAll() as $objLanguage) {
-                $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->intProjectId, $objLanguage->LanguageId);
-                if (!$objProjectProgress) {
-                    $this->DeleteTranslatedTextsByLanguage($objLanguage->LanguageId);
-                    $this->DeleteAllTextsCacheByLanguage($objLanguage->LanguageId);
-                    $this->DeleteApprovedTextsByLanguage($objLanguage->LanguageId);
-                    $this->CountAllTextsByLanguage($objLanguage->LanguageId);
+            if ($blnNew) {
+                if (!file_exists($this->DefaultTemplatePath))
+                    mkdir($this->DefaultTemplatePath, 0777);
+
+                foreach(NarroLanguage::LoadAll() as $objLanguage) {
+
+                    $objProjectProgress = new NarroProjectProgress();
+                    $objProjectProgress->LanguageId = $objLanguage->LanguageId;
+                    $objProjectProgress->ProjectId = $this->ProjectId;
+                    $objProjectProgress->Active = $this->Active;
+                    $objProjectProgress->TotalTextCount = 0;
+                    $objProjectProgress->ApprovedTextCount = 0;
+                    $objProjectProgress->FuzzyTextCount = 0;
+                    $objProjectProgress->ProgressPercent = 0;
+                    $objProjectProgress->LastModified = QDateTime::Now();
+                    $objProjectProgress->Save();
+
+                    if (!file_exists($this->DefaultTranslationPath))
+                        mkdir($this->DefaultTranslationPath, 0777, true);
+                    NarroUtils::RecursiveChmod($this->DefaultTranslationPath, 0666, 0777);
                 }
             }
 
@@ -249,10 +231,10 @@
                 // Member Variables
                 ///////////////////
                 case 'DefaultTemplatePath':
-                    return __IMPORT_PATH__ . '/' . $this->intProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
+                    return __IMPORT_PATH__ . '/' . $this->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
 
                 case 'DefaultTranslationPath':
-                    return __IMPORT_PATH__ . '/' . $this->intProjectId . '/' . QApplication::$TargetLanguage->LanguageCode;
+                    return __IMPORT_PATH__ . '/' . $this->ProjectId . '/' . QApplication::$TargetLanguage->LanguageCode;
 
                 default:
                     try {

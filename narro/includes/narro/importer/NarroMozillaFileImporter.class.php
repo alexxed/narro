@@ -136,7 +136,7 @@
                                 $strLabelCtx = $arrMatches[1];
                             else {
                                 $strLabelCtx = '';
-                                QApplication::LogWarn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strContext, $arrMatches[1]));
+                                QApplication::LogDebug(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strContext, $arrMatches[1]));
                                 continue;
                             }
 
@@ -162,7 +162,10 @@
                                     $arrTexts[$strLabelCtx]['access_key'] = mb_substr($strOriginalText, $intPos, 1);
                                     QApplication::LogDebug(sprintf('Found access key %s, using it', $arrTexts[$strLabelCtx]['access_key']));
                                 }
-                                else {
+                                elseif (preg_match('/[a-z]/i', $strOriginalText, $arrMatches)) {
+                                    $arrTexts[$strLabelCtx]['access_key'] = $arrMatches[0];
+                                    QApplication::LogDebug(sprintf('Using as access key the first ascii letter from the translation, %s', $arrMatches[0]));
+                                } else {
                                     $arrTexts[$strLabelCtx]['access_key'] = $strAccKey;
                                     QApplication::LogWarn(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
                                 }

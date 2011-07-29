@@ -38,5 +38,8 @@
             }
         }
 
+        public function ClearErrors() {
+            $this->arrErrors = array();
+        }
     }
 ?>

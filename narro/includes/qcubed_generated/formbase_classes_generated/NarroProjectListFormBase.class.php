@@ -50,7 +50,7 @@
 			// Use the MetaDataGrid functionality to add Columns for this datagrid
 
 			// Create an Edit Column
-			$strEditPageUrl = __VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__ . '/narro_project_edit.php';
+			$strEditPageUrl = __VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__ . '/project_edit.php';
 			$this->dtgNarroProjects->MetaAddEditLinkColumn($strEditPageUrl, 'Edit', 'Edit');
 
 			// Create the Other Columns (note that you can use strings for narro_project's properties, or you

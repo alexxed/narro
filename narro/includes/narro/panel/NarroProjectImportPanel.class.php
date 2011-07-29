@@ -179,7 +179,7 @@
                     $this->pnlLogViewer->MarkAsModified();
                 }
             }
-            elseif ($strParameter == 2 || !function_exists('proc_open1')) {
+            elseif ($strParameter == 2 || !function_exists('proc_open')) {
                 set_time_limit(0);
 
                 if (file_exists($strProcLogFile))
@@ -279,7 +279,7 @@
                     unlink($strProcLogFile);
                 }
 
-                $mixProcess = proc_open1("$strCommand &", array(2 => array("file", $strProcLogFile, 'a')), $foo);
+                $mixProcess = proc_open("$strCommand &", array(2 => array("file", $strProcLogFile, 'a')), $foo);
 
                 if ($mixProcess) {
                     if (QApplication::$UseAjax)
@@ -316,7 +316,7 @@
 
             if (is_numeric(trim($intPid))) {
 
-                $mixProcess = proc_open1(sprintf('kill -9 %d', $intPid), array(2 => array("file", $strProcLogFile, 'a')), $foo);
+                $mixProcess = proc_open(sprintf('kill -9 %d', $intPid), array(2 => array("file", $strProcLogFile, 'a')), $foo);
 
                 if ($mixProcess) {
                     proc_close($mixProcess);

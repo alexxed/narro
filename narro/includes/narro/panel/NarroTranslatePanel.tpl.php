@@ -36,8 +36,9 @@
 }
 
 .narro_context_info_editor pre.originalText {
-    margin-left: 5px;
-    font-weight: bold;
+    margin-left: 3px;
+    font-weight: normal;
+    font-size: 1.2em;
 }
 
 .narro_context_info_editor table.datagrid {
@@ -78,6 +79,19 @@
 
 .narro_context_info_editor .warning .plugin_message {
     display: block;
+}
+
+.narro_context_info_editor .warning {
+    background: none;
+    padding-left: 0px;
+    font-weight: normal;
+}
+
+.narro_context_info_editor .warning b {
+    background-image: url("assets/images/warningIcon.png");
+    background-position: 0 2px;
+    background-repeat: no-repeat;
+    padding-left: 20px;
     border-bottom: 1px dotted black;
 }
 
@@ -90,14 +104,48 @@
     font-weight: bold;
 }
 
+.narro_context_info_editor .translation_box {
+    font-weight: normal;
+    font-size: 1.2em;
+}
+
 </style>
+
+<script type="text/javascript">
+
+function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
+    transCtl = jQuery("#" + trans);
+    transCtl.attr("rows", "4");
+    transCtl.attr("cols", "100");
+
+    jQuery(".narro_context_info_editor").each(
+            function() {
+                if (this.id != ctl && jQuery('#' + this.id + ' .error').length == 0) {
+                    jQuery(this).removeClass("narro_context_info_editor_selected");
+                    jQuery('#' + this.id + ' .ctxinfo').hide();
+                    jQuery('#' + this.id + ' .help').hide();
+                    jQuery('#' + this.id + ' .copy').hide();
+                    jQuery('#' + this.id + ' .translation_box').attr("rows", "1");
+                    jQuery('#' + this.id + ' .translation_box').attr("height", "auto");
+                }
+                else {
+                    jQuery(this).addClass("narro_context_info_editor_selected");
+                    jQuery('#' + this.id + ' .ctxinfo').show();
+                    jQuery('#' + this.id + ' .help').show();
+                    jQuery('#' + this.id + ' .copy').show();
+                }
+            }
+    );
+}
+
+</script>
 
     Project: <?php $_CONTROL->lstProject->Render(); ?>
     File: <?php  $_CONTROL->txtFile->Render();  ?>
     Filter: <?php $_CONTROL->lstFilter->Render();  ?>
     Search: <?php $_CONTROL->txtSearch->Render();?>
     Sort: <?php $_CONTROL->lstSort->Render(); $_CONTROL->lstSortDir->Render(); $_CONTROL->btnSearch->Render();?><br />
-    <?php $_CONTROL->dtrText->Render(); $_CONTROL->objWaitIcon->Render(); $_CONTROL->btnMore->Render(); $_CONTROL->chkLast->Render(); ?>
+    <?php $_CONTROL->btnLess->Render();$_CONTROL->dtrText->Render(); $_CONTROL->objWaitIcon->Render(); $_CONTROL->btnMore->Render(); $_CONTROL->chkLast->Render(); ?>
     <?php QApplication::ExecuteJavaScript(sprintf("jQuery(window).scroll(function(){
         if  (jQuery(window).scrollTop() == jQuery(document).height() - jQuery(window).height() && jQuery('#endReached').attr('checked') == false) {
            qc.pA('%s', '%s', 'QClickEvent', '', '%s');

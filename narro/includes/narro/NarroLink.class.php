@@ -33,7 +33,7 @@
         }
 
         public static function ProjectEdit($intProjectId, $strLinkText = '') {
-            $strLink = sprintf('narro_project_edit.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
+            $strLink = sprintf('project_edit.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -41,7 +41,7 @@
         }
 
         public static function ProjectImport($intProjectId, $strLinkText = '') {
-            $strLink = sprintf('narro_project_import.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
+            $strLink = sprintf('import.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -49,7 +49,7 @@
         }
 
         public static function ProjectExport($intProjectId, $strLinkText = '') {
-            $strLink = sprintf('narro_project_export.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
+            $strLink = sprintf('export.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -89,7 +89,7 @@
         }
 
         public static function FileTextList($intProjectId, $intFileId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $strLinkText = '') {
-            $strLink = sprintf('narro_file_text_list.php?l=%s&p=%d&f=%d&tf=%d&st=%d&s=%s', QApplication::$TargetLanguage->LanguageCode, $intProjectId, $intFileId, $intTextFilter, $intSearchType, urlencode($strSearchText));
+            $strLink = sprintf('file_texts.php?l=%s&p=%d&f=%d&tf=%d&st=%d&s=%s', QApplication::$TargetLanguage->LanguageCode, $intProjectId, $intFileId, $intTextFilter, $intSearchType, urlencode($strSearchText));
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -97,7 +97,7 @@
         }
 
         public static function ProjectFileList($intProjectId, $strPath = '', $strSearchText = '', $strLinkText = '') {
-            $strLink = sprintf('narro_project_file_list.php?l=%s&p=%d&pf=%s&s=%s', QApplication::$TargetLanguage->LanguageCode, $intProjectId, $strPath, $strSearchText);
+            $strLink = sprintf('files.php?l=%s&p=%d&pf=%s&s=%s', QApplication::$TargetLanguage->LanguageCode, $intProjectId, $strPath, $strSearchText);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -112,16 +112,35 @@
                 return $strLink;
         }
 
-        public static function Translate($intProjectId = null, $strFilePath = null, $intFilter = NarroTranslatePanel::SHOW_NOT_TRANSLATED, $strSearch = '', $strSortBy = null, $intSortDir = SORT_ASC, $strLinkText = '') {
+        /**
+         * Creates a link to the translation page
+         *
+         * @param integer $intProjectId
+         * @param string $strFilePath
+         * @param integer $intFilter
+         * @param string $strSearch
+         * @param string $strSortBy
+         * @param integer $intSortDir
+         * @param integer $intMaxRowCount
+         * @param integer $intStart
+         * @param integer $intContextInfoId
+         * @param string $strLinkText
+         *
+         * @return string if you provide the last parameter, a full <a> string is return, if not, just the href value
+         */
+        public static function Translate($intProjectId = null, $strFilePath = null, $intFilter = NarroTranslatePanel::SHOW_NOT_TRANSLATED, $strSearch = '', $strSortBy = null, $intSortDir = 1, $intMaxRowCount = 10, $intStart = 0, $intContextInfoId = '', $strLinkText = '') {
             $strLink = sprintf(
-                'translate.php?l=%s&p=%d&f=%s&t=%s&s=%s&o=%s&h=%s',
+                'translate.php?l=%s&p=%s&f=%s&t=%s&s=%s&o=%s&h=%s&m=%d&i=%d#i%s',
                 QApplication::$TargetLanguage->LanguageCode,
                 $intProjectId,
                 $strFilePath,
                 $intFilter,
                 $strSearch,
                 $strSortBy,
-                $intSortDir
+                $intSortDir,
+                $intMaxRowCount,
+                $intStart,
+                $intContextInfoId
             );
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);

@@ -163,6 +163,7 @@
 
         protected function txtSearch_Create() {
             $this->txtSearch = new QTextBox($this);
+            $this->txtSearch->AddAction(new QKeyUpEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
         }
 
         public function dtgProjectList_LastActivityColumn_Render(NarroProjectProgress $objProjectProgress) {
@@ -189,22 +190,6 @@
             $objProgressBar->Fuzzy = $intTranslatedTexts;
 
             $strOutput .= $objProgressBar->Render(false);
-
-            $strOutput =
-                NarroLink::ContextSuggest(
-                    $objProjectProgress->ProjectId,
-                    0,
-                    0,
-                    NarroTextListForm::SHOW_UNTRANSLATED_TEXTS,
-                    NarroTextListForm::SEARCH_TEXTS,
-                    '',
-                    0,
-                    $intTotalTexts - $intApprovedTexts - $intTranslatedTexts,
-                    -1,
-                    0,
-                    0,
-                    $strOutput
-                );
 
             QApplication::$PluginHandler->DisplayInProjectListInProgressColumn($objProjectProgress->Project);
 

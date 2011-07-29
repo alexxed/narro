@@ -98,18 +98,16 @@
         public function dtgNarroContextInfo_TranslatedText_Render(NarroContextInfo $objNarroContextInfo, $strLink = null) {
             return parent::dtgNarroContextInfo_TranslatedText_Render(
                 $objNarroContextInfo,
-                NarroLink::ContextSuggest(
+                NarroLink::Translate(
                         $this->objNarroFile->Project->ProjectId,
-                        $this->objNarroFile->FileId,
-                        $objNarroContextInfo->ContextId,
-                        $this->lstTextFilter->SelectedValue,
-                        $this->lstSearchType->SelectedValue,
-                        $this->txtSearch->Text,
-                        $this->dtgNarroContextInfo->CurrentRowIndex + 1 + (($this->dtgNarroContextInfo->PageNumber - 1) * $this->dtgNarroContextInfo->ItemsPerPage),
-                        $this->dtgNarroContextInfo->TotalItemCount,
-                        $this->dtgNarroContextInfo->SortColumnIndex,
-                        $this->dtgNarroContextInfo->SortDirection,
-                        0
+                        $this->objNarroFile->FilePath,
+                        NarroTranslatePanel::SHOW_ALL,
+                        $objNarroContextInfo->Context->Text->TextValue,
+                        null,
+                        null,
+                        10,
+                        0,
+                        $objNarroContextInfo->ContextInfoId
                    )
                );
         }

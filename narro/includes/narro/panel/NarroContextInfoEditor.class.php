@@ -14,6 +14,8 @@
      *
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+     *
+     * @property QLabel $Message
      */
 
     class NarroContextInfoEditor extends QPanel {
@@ -24,6 +26,7 @@
         protected $lblContextInfo;
         protected $txtAccessKey;
         protected $dtgTranslation;
+        protected $lblMessage;
         protected $btnCopy;
         protected $btnHelp;
         protected $btnSave;
@@ -36,6 +39,11 @@
 
             $this->lblIndex = new QLabel($this);
             $this->lblIndex->CssClass = 'index';
+            $this->lblIndex->HtmlEntities = false;
+
+            $this->lblMessage = new QLabel($this);
+            $this->lblMessage->CssClass = 'message';
+            $this->lblMessage->HtmlEntities = false;
 
             $this->chkChanged = new QCheckBox($this);
             $this->chkChanged->DisplayStyle = QDisplayStyle::None;
@@ -63,7 +71,7 @@
 
             $this->btnCopy = new QImageButton($this);
             $this->btnCopy->AlternateText = t('Copy');
-            $this->btnCopy->CssClass = 'imgbutton';
+            $this->btnCopy->CssClass = 'imgbutton copy';
             $this->btnCopy->ToolTip = $this->btnCopy->AlternateText;
             $this->btnCopy->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/copy.png';
             $this->btnCopy->TabIndex = -1;
@@ -77,7 +85,7 @@
 
             $this->btnHelp = new QImageButton($this);
             $this->btnHelp->AlternateText = t('Help');
-            $this->btnHelp->CssClass = 'imgbutton';
+            $this->btnHelp->CssClass = 'imgbutton help';
             $this->btnHelp->ToolTip = $this->btnHelp->AlternateText;
             $this->btnHelp->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/help.png';
             $this->btnHelp->TabIndex = -1;
@@ -86,7 +94,7 @@
 
             $this->btnSave = new QImageButton($this);
             $this->btnSave->AlternateText = t('Save');
-            $this->btnSave->CssClass = 'imgbutton';
+            $this->btnSave->CssClass = 'imgbutton save';
             $this->btnSave->ToolTip = $this->btnSave->AlternateText;
             $this->btnSave->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/save.png';
             $this->btnSave->TabIndex = -1;
@@ -95,12 +103,9 @@
 
             $this->lblContextInfo_Create();
 
-            $this->txtTranslation->AddAction(new QFocusEvent(), new QJavaScriptAction(sprintf('this.rows=4; this.cols=100;jQuery("#%s").addClass("narro_context_info_editor_selected");', $this->ControlId)));
-            $this->txtTranslation->AddAction(new QFocusEvent(), new QJavaScriptAction(sprintf('jQuery("#%s").show()', $this->btnCopy->ControlId)));
-            $this->txtTranslation->AddAction(new QFocusEvent(), new QJavaScriptAction(sprintf('jQuery("#%s").show()', $this->btnHelp->ControlId)));
-            $this->txtTranslation->AddAction(new QFocusEvent(), new QJavaScriptAction(sprintf('jQuery("#%s").show()', $this->lblContextInfo->ControlId)));
+            $this->txtTranslation->AddAction(new QFocusEvent(), new QJavaScriptAction(sprintf('ctx_editor_focus("%s", "%s", "%s", "%s", "%s", "%s")', $this->ControlId, $this->txtTranslation->ControlId, $this->btnCopy->ControlId, $this->btnHelp->ControlId, $this->lblContextInfo->ControlId, $this->chkChanged->ControlId)));
 
-            $this->txtTranslation->AddAction(new QFocusEvent(), new QJavaScriptAction(sprintf('jQuery("#%s").attr("checked", true)', $this->chkChanged->ControlId)));
+            $this->txtTranslation->AddAction(new QChangeEvent(), new QJavaScriptAction(sprintf('jQuery("#%s").attr("checked", true);', $this->chkChanged->ControlId)));
             $this->txtTranslation->AddAction(new QFocusEvent(), new QAjaxControlAction($this, 'txtTranslation_Focus'));
 
             $this->btnCopy->AddAction(
@@ -130,13 +135,13 @@
         public function lblContextInfo_Create() {
             if (!$this->lblContextInfo) {
                 $this->lblContextInfo = new QLabel($this);
-                $this->lblContextInfo->CssClass = 'instructions';
+                $this->lblContextInfo->CssClass = 'instructions ctxinfo';
+                $this->lblContextInfo->TagName = 'div';
                 $this->lblContextInfo->DisplayStyle = QDisplayStyle::None;
-                $strComments = '';
-                foreach(NarroContextComment::LoadArrayByContextIdLanguageId($this->objContextInfo->ContextId, QApplication::GetLanguageId()) as $objComment) {
-                    $strComments .= $objComment->CommentText . '<br />--';
-                }
-                $this->lblContextInfo->Text = sprintf('<b>%s</b>%s<br /><span>%s</span><br />%s', $this->objContextInfo->Context->Project->ProjectName, $this->objContextInfo->Context->File->FilePath, $this->objContextInfo->Context->Context, $strComments);
+                if (QApplication::QueryString('p'))
+                    $this->lblContextInfo->Text = sprintf('%s<br /><span>%s</span>', $this->objContextInfo->Context->File->FilePath, $this->objContextInfo->Context->Context);
+                else
+                    $this->lblContextInfo->Text = sprintf('<b>%s</b>%s<br /><span>%s</span>', $this->objContextInfo->Context->Project->ProjectName, $this->objContextInfo->Context->File->FilePath, $this->objContextInfo->Context->Context);
                 $this->lblContextInfo->HtmlEntities = false;
             }
         }
@@ -311,22 +316,9 @@
             $this->txtTranslation->Focus();
         }
 
-        public function ShowPluginErrors() {
-            $this->txtTranslation->Warning = '';
-            if (QApplication::$PluginHandler->Error) {
-                $this->txtTranslation->Warning = '<br />';
-                foreach(QApplication::$PluginHandler->PluginErrors as $strPluginName=>$arrErors) {
-                    $this->txtTranslation->Warning .= '<b>' . $strPluginName . '</b><span class="plugin_message">' . join('<br />', $arrErors) . '</span>';
-                }
-            }
-        }
 
-        public function HidePluginErrors() {
-            $this->txtTranslation->Warning = '';
-        }
-
-        public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            $blnEmpty = $this->txtTranslation->Text == '';
+        public function Validate() {
+            $blnEmpty = ($this->txtTranslation->Text == '');
             $blnCanSuggest = QApplication::HasPermissionForThisLang('Can suggest', $this->objContextInfo->Context->ProjectId);
 
             if (!$blnEmpty && $blnCanSuggest) {
@@ -344,41 +336,74 @@
                     $strSuggestionValue = $this->txtTranslation->Text;
 
                 if (QApplication::$PluginHandler->Error) {
-                    // $this->btnSaveIgnore->Visible = true;
-                    $this->ShowPluginErrors();
+                    $this->lblMessage->Text = '';
+                    foreach(QApplication::$PluginHandler->PluginErrors as $strPluginName=>$arrErors)
+                        $this->lblMessage->Text .= '<b class="error">' . $strPluginName . '</b><div class="plugin_message">' . join('<br />', $arrErors) . '</div>';
+                    return false;
+                }
+                else {
+                    /**
+                     * Make sure that we're not putting in a empty suggestion
+                     */
+                    if ($strSuggestionValue == '' && $this->txtTranslation->Text != '') {
+                        $this->lblMessage->Text = t('A plugin returned an empty value after processing your translation.');
+                        return false;
+                    }
+                    else
+                        return true;
+                }
+            }
+            else {
+                if (!$blnCanSuggest) {
+                    $this->lblMessage->Text = t("You don't have the permission to add translations.");
+                    return false;
+                }
+                else
+                    return false;
+            }
+        }
+
+        public function btnSave_Click($strFormId, $strControlId, $strParameter) {
+            if ($this->txtTranslation->Text != '' && $this->chkChanged->Checked) {
+                if (!$this->Validate()) {
+                    $this->chkChanged->Checked = false;
                     return false;
                 }
 
-                /**
-                 * Make sure that we're not putting in a empty suggestion
-                 */
-                if ($strSuggestionValue == '')
-                    return false;
 
-                if (!$objSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($this->objContextInfo->Context->TextId, QApplication::GetLanguageId(), md5($strSuggestionValue))) {
+                if (!$objSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($this->objContextInfo->Context->TextId, QApplication::GetLanguageId(), md5($this->txtTranslation->Text))) {
                     $objSuggestion = new NarroSuggestion();
                     $objSuggestion->IsImported = false;
                     $objSuggestion->HasComments = false;
                     $objSuggestion->LanguageId = QApplication::GetLanguageId();
                     $objSuggestion->TextId = $this->objContextInfo->Context->TextId;
-                    $objSuggestion->SuggestionValue = $strSuggestionValue;
+                    $objSuggestion->SuggestionValue = $this->txtTranslation->Text;
                     $objSuggestion->UserId = QApplication::GetUserId();
                     $objSuggestion->Save();
+
+                    if ($this->objContextInfo->HasSuggestions != 1) {
+                        $this->objContextInfo->HasSuggestions = 1;
+                        $this->objContextInfo->Save();
+                    }
+
                     if ($this->dtgTranslation)
                         $this->dtgTranslation->MarkAsModified();
                 }
 
                 $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
+
+                $this->chkChanged->Checked = false;
+
+                $this->lblMessage->Text = '';
             }
 
-            $this->btnCopy->DisplayStyle = QDisplayStyle::None;
-            $this->btnHelp->DisplayStyle = QDisplayStyle::None;
-            $this->lblContextInfo->DisplayStyle = QDisplayStyle::None;
-            QApplication::ExecuteJavaScript(sprintf('jQuery("#%s").attr("rows", 1); jQuery("#%s").height("auto"); jQuery("#%s").removeClass("narro_context_info_editor_selected");', $this->txtTranslation->ControlId, $this->txtTranslation->ControlId, $this->ControlId));
+            return true;
         }
 
         public function txtTranslation_Focus($strFormId, $strControlId, $strParameter) {
-            if (method_exists($this->ParentControl->ParentControl, 'txtTranslation_Focus') && !$this->txtTranslation->Warning)
+            if (
+                method_exists($this->ParentControl->ParentControl, 'txtTranslation_Focus')
+            )
                 $this->ParentControl->ParentControl->txtTranslation_Focus($strFormId, $strControlId, $strParameter);
         }
 
@@ -406,7 +431,8 @@
                 $this->objContextInfo->Modified = QDateTime::Now();
                 $this->objContextInfo->Save();
 
-                $this->dtgTranslation->MarkAsModified();
+                if ($this->dtgTranslation)
+                    $this->dtgTranslation->MarkAsModified();
             }
         }
 
@@ -528,6 +554,7 @@
                 case 'Translation': return $this->txtTranslation;
                 case 'ContextInfo': return $this->lblContextInfo;
                 case 'TranslationList': return $this->dtgTranslation;
+                case 'Message': return $this->lblMessage;
                 case 'Changed': return $this->chkChanged->Checked;
                 case 'Index': return $this->lblIndex;
                 case 'ChangedCheckbox': return $this->chkChanged;
@@ -550,6 +577,15 @@
             $this->blnModified = true;
 
             switch ($strName) {
+                case 'Changed':
+                    try {
+                        $this->chkChanged->Checked = QType::Cast($mixValue, QType::Boolean);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+                    return;
                 case "Index":
                     try {
                         $this->lblIndex->Text = QType::Cast($mixValue, QType::String);
@@ -558,6 +594,7 @@
                         $objExc->IncrementOffset();
                         throw $objExc;
                     }
+                    return;
 
                 default:
                     try {

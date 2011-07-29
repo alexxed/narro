@@ -75,7 +75,7 @@
 
         public function Save($blnForceInsert = false, $blnForceUpdate = false) {
             $this->intSuggestionWordCount = NarroString::WordCount($this->strSuggestionValue);
-            $this->intSuggestionCharCount = strlen($this->strSuggestionValue);
+            $this->intSuggestionCharCount = mb_strlen($this->strSuggestionValue);
             $this->strSuggestionValueMd5 = md5($this->strSuggestionValue);
 
             if (!isset($this->blnIsImported))

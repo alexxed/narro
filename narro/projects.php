@@ -53,9 +53,10 @@
              * The filter is used to show only projects of a given status based on their progress
              * (finished, empty, in progress).
              */
-            $this->pnlProjectList = new NarroSearchPanel($this->pnlMainTab);
+            $this->pnlProjectList = new NarroProjectListPanel($this->pnlMainTab);
 
             $this->pnlMainTab->addTab($this->pnlProjectList, t('Projects'));
+            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::Translate());
 
             /**
              * Do not show the langauge tab if only two languages are active (source and target

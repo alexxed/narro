@@ -199,12 +199,16 @@
 
                 return sprintf('<img src="%s" style="vertical-align:middle" /> %s',
                     __IMAGE_ASSETS__ . '/../../images/' . $strIcon,
-                    NarroLink::FileTextList(
+                    NarroLink::Translate(
                         $objFile->ProjectId,
-                        $objFile->FileId,
-                        1,
-                        1,
-                        '',
+                        $objFile->FilePath,
+                        NarroTranslatePanel::SHOW_ALL,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
                         $objFile->FileName
                     )
                 );

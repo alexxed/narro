@@ -20,6 +20,7 @@ $_CONTROL->ChangedCheckbox->Render();
 $_CONTROL->Index->Render();
 $_CONTROL->Text->Render();
 $_CONTROL->Translation->RenderWithError();
+$_CONTROL->Message->Render();
 if ($_CONTROL->ContextInfo)
     $_CONTROL->ContextInfo->Render();
 if ($_CONTROL->AccessKey)

@@ -14,6 +14,8 @@
      *
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+     *
+     * @property array $PluginErrors
      */
 
     class NarroPluginHandler {
@@ -43,7 +45,8 @@
             'VoteSuggestion',
             'ImportFile',
             'ExportFile',
-            'ImportProject',
+            'BeforeImportProject',
+            'AfterImportProject',
             'ExportProject',
             'DisplayExportMessage',
             'DisplayInProjectListInProgressColumn',
@@ -78,12 +81,17 @@
 
 
         public function __call($strMethod, $arrParameters) {
+            $this->arrPluginErrors = array();
+            $this->arrPluginReturnValues = array();
+
+
             if (!self::$blnEnablePlugins) return $arrParameters;
 
             $intStartTime = time();
 
             if (is_array($this->arrPlugins))
                 foreach($this->arrPlugins as $objPlugin) {
+                    $objPlugin->ClearErrors();
                     $intStartPluginTime = time();
                     $this->strCurrentPluginName = $objPlugin->Name;
                     if (method_exists($objPlugin, $strMethod)) {
