@@ -27,7 +27,7 @@
             }
         }
 
-        public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
+        public function ImportFile($strTemplateFile, $strTranslatedFile) {
             if ($strTranslatedFile != '' && !file_exists($strTranslatedFile)) {
                 QApplication::LogWarn(sprintf('Copying unsupported file type: %s', $strTemplateFile));
                 NarroImportStatistics::$arrStatistics['Unsupported files that were copied from the source language']++;
