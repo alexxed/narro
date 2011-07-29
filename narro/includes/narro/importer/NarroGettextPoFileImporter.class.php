@@ -286,7 +286,7 @@
             return $arrGroupFields;
         }
 
-        public function ExportFile($strTemplate, $strTranslatedFile = null) {
+        public function ExportFile($strTemplate, $strTranslatedFile) {
             $hndExportFile = fopen($strTranslatedFile, 'w');
             if (!$hndExportFile) {
                 QApplication::LogError(sprintf('Cannot create or write to "%s".', $strTranslatedFile));

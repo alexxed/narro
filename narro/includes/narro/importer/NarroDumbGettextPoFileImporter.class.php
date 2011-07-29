@@ -259,7 +259,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
         return $arrGroupFields;
     }
 
-    public function ExportFile($strTemplate, $strTranslatedFile = null) {
+    public function ExportFile($strTemplate, $strTranslatedFile) {
         $hndExportFile = fopen($strTranslatedFile, 'w');
         if (!$hndExportFile) {
             QApplication::LogWarn(sprintf('Cannot create or write to "%s".', $strTranslatedFile));

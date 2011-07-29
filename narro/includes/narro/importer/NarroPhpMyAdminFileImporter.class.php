@@ -19,7 +19,7 @@
     class NarroPhpMyAdminFileImporter extends NarroFileImporter {
         protected $objFile;
 
-        public function ExportFile($strTemplate, $strTranslatedFile = null) {
+        public function ExportFile($strTemplate, $strTranslatedFile) {
             if ($strTemplateFileContents = file_get_contents($strTemplate)) {
                 $arrTemplate = array();
                 if (preg_match_all('/([^$]+)\$([^\s]+)\s*=\s*([\']?.*[\']?);(.*)/m', $strTemplateFileContents, $arrTemplateMatches)) {
