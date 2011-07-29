@@ -93,13 +93,13 @@
         // Public Properties: SET
         /////////////////////////
         public function __set($strName, $mixValue) {
+            $this->blnModified = true;
 
             switch ($strName) {
                 case "LogFile":
                     try {
                         $this->strLogFile = QType::Cast($mixValue, QType::String);
-                        $this->blnVisible = true;
-                        $this->blnModified = true;
+                        $this->strDisplayStyle = QDisplayStyle::Block;
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();

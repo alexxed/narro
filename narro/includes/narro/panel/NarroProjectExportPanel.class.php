@@ -43,7 +43,7 @@
             $this->objProject = $objNarroProject;
 
             $this->pnlLogViewer = new NarroLogViewerPanel($this);
-            $this->pnlLogViewer->Visible = false;
+            $this->pnlLogViewer->DisplayStyle = QDisplayStyle::None;
 
             $this->lblExport = new QLabel($this);
             $this->lblExport->HtmlEntities = false;
