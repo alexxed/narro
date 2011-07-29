@@ -10,7 +10,7 @@ if (!$pnlEditor) {
 $intCurrentItem = $_CONTROL->CurrentItemIndex + 1 + $_CONTROL->ParentControl->intStart;
 
 $pnlEditor->Index = sprintf(
-    '<a href="%s&i=%d#i%d" id="#i%d" tabindex="-1">%s</a>',
+    '<a href="%s" id="#i%d" tabindex="-1">%s</a>',
     NarroLink::Translate(
         $_CONTROL->ParentControl->lstProject->SelectedValue,
         $_CONTROL->ParentControl->txtFile->Text,
