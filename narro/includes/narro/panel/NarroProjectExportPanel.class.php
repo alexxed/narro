@@ -87,7 +87,7 @@
                 $this->btnExport->Visible = false;
                 $this->objExportProgress->Visible = true;
                 $this->objExportProgress->Translated = NarroProgress::GetProgress($this->objProject->ProjectId, 'export');
-                QApplication::ExecuteJavaScript(sprintf('lastExportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnExport->ControlId, 2000));
+                QApplication::ExecuteJavaScript(sprintf('lastExportId = setInterval("qc.pA(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnExport->ControlId, 2000));
             }
 
             $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objProject->ProjectId, QApplication::$TargetLanguage->LanguageCode) && !$this->btnExport->Visible;

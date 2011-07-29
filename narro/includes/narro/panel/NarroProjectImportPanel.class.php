@@ -125,7 +125,7 @@
                 $this->btnImport->Visible = false;
                 $this->objImportProgress->Visible = true;
                 $this->objImportProgress->Translated = NarroProgress::GetProgress($this->objProject->ProjectId, 'import');
-                QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qcodo.postAjax(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnImport->ControlId, 2000));
+                QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qc.pA(\'%s\', \'%s\', \'QClickEvent\', \'1\');", %d);', $this->Form->FormId, $this->btnImport->ControlId, 2000));
             }
 
             $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objProject->ProjectId, QApplication::$TargetLanguage->LanguageCode) && !$this->btnImport->Visible;

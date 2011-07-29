@@ -1,5 +1,6 @@
 <?php
-    require_once (dirname(__FILE__) . '/configuration/prepend.inc.php');
+    require_once (dirname(__FILE__) . '/../../configuration/configuration.qcubed.inc.php');
+    require_once (dirname(__FILE__) . '/../../includes/narro/NarroUtils.class.php');
 
     if (!file_exists(__DOCROOT__ . __SUBDIRECTORY__ . '/data'))
         die(sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __DOCROOT__ . __SUBDIRECTORY__));
