@@ -40,6 +40,7 @@
             $objDirectoryPanel->Directory = $this->objProject->DefaultTranslationPath;
             $this->pnlTranslationSource->addTab($objDirectoryPanel, t('On this server'));
             $this->pnlTranslationSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('On my computer'));
+            $this->pnlTranslationSource->addTab(new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('On the web'));
             $this->pnlTranslationSource->addTab(new NarroProjectSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('In another project'));
             $this->pnlTranslationSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Mercurial'));
             $this->pnlTranslationSource->addTab(new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('SVN'));
