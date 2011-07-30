@@ -36,11 +36,12 @@
             $this->pnlLanguageTab->addTab($this->pnlLanguageEdit, (QApplication::QueryString('lid')?t('Edit'):t('Add')));
 
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Translate'), NarroLink::Translate());
             $this->pnlTab->addTab($this->pnlLanguageTab, t('Languages'));
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::RoleList());
 
-            $this->pnlTab->SelectedTab = 1;
+            $this->pnlTab->SelectedTab = 2;
             $this->pnlLanguageTab->SelectedTab = 1;
         }
     }

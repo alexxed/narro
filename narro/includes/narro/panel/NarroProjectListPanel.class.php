@@ -71,7 +71,6 @@
             $this->dtgProjectList->SortColumnIndex = 1;
             $this->dtgProjectList->SortDirection = 1;
 
-
             $this->txtSearch_Create();
             $this->btnSearch_Create();
             $this->btnAdd_Create();

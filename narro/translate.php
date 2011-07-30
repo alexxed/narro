@@ -31,9 +31,10 @@
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Projects'), NarroLink::ProjectList());
                 $this->pnlTranslate = new NarroTranslatePanel($this->pnlMainTab);
                 $this->pnlMainTab->addTab($this->pnlTranslate, t('Translate'));
+                if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator'))
+                    $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Languages'), NarroLink::LanguageList());
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Roles'), NarroLink::RoleList());
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Comments'), NarroLink::TextCommentList());
 
                 $this->pnlMainTab->SelectedTab = 1;
             }

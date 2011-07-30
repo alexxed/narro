@@ -34,8 +34,13 @@
         }
 
         public function GetControlHTML() {
-            if (is_array($this->arrElements))
+            if (is_array($this->arrElements) && count($this->arrElements)) {
                 $this->strText = join($this->strSeparator, $this->arrElements);
+                $this->blnDisplay = true;
+            }
+            else {
+                $this->blnDisplay = false;
+            }
 
             return parent::GetControlHTML();
         }

@@ -256,7 +256,7 @@ table.datagrid { border: 1px solid #BDD4B3; width:100%; overflow:auto;}
         table.datagrid tr.alternate {  }
     table.datagrid th {
     padding: 3px 5px 3px 5px; text-align: left; color:#000;
-    background:none repeat scroll 0 0 #D4EDC9;
+    background: url("../images/bg_td3.jpg") repeat-x scroll center top transparent;
     border-bottom:1px solid #BDD4B3;
     }
         table.datagrid th a { color: #557D0C; text-decoration: none; }
