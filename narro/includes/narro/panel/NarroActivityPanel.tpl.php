@@ -4,7 +4,7 @@
      * @subpackage Templates
      *
      * Narro is an application that allows online software translation and maintenance.
-     * Copyright (C) 2008-2010 Alexandru Szasz <alexxed@gmail.com>
+     * Copyright (C) 2008-2011 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
      *
      * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
