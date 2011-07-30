@@ -67,7 +67,6 @@
 
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
             $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Roles'), NarroLink::RoleList());
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Comments'), NarroLink::TextCommentList());
 
         }
     }

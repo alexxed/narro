@@ -16,13 +16,6 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     class NarroLink {
-        public static function TextCommentList($strLinkText = '') {
-            $strLink = sprintf('narro_text_comment_list.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
-            if ($strLinkText != '')
-                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
-            else
-                return $strLink;
-        }
 
         public static function ProjectManage($intProjectId, $strLinkText = '') {
             $strLink = sprintf('narro_project_manage.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
@@ -57,7 +50,7 @@
         }
 
         public static function ProjectLanguages($intProjectId, $strLinkText = '') {
-            $strLink = sprintf('narro_project_language_list.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
+            $strLink = sprintf('project_languages.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -66,22 +59,6 @@
 
         public static function ProjectList($strLinkText = '', $intFilter = 0) {
             $strLink = sprintf('projects.php?l=%s&f=%d', QApplication::$TargetLanguage->LanguageCode, $intFilter);
-            if ($strLinkText != '')
-                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
-            else
-                return $strLink;
-        }
-
-        public static function ProjectTextList($intProjectId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $strLinkText = '') {
-            $strLink = sprintf('narro_project_text_list.php?l=%s&p=%d&tf=%d&st=%d&s=%s', QApplication::$TargetLanguage->LanguageCode, $intProjectId, $intTextFilter, $intSearchType, urlencode($strSearchText));
-            if ($strLinkText != '')
-                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
-            else
-                return $strLink;
-        }
-
-        public static function ProjectTextCommentList($intProjectId, $strLinkText = '') {
-            $strLink = sprintf('narro_project_text_comment_list.php?l=%s&p=%d', QApplication::$TargetLanguage->LanguageCode, $intProjectId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -149,7 +126,7 @@
         }
 
         public static function UserProfile($intUserId, $strLinkText = '') {
-            $strLink = sprintf('narro_user_profile.php?l=%s&u=%d', QApplication::$TargetLanguage->LanguageCode, $intUserId);
+            $strLink = sprintf('user.php?l=%s&u=%d', QApplication::$TargetLanguage->LanguageCode, $intUserId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -157,7 +134,7 @@
         }
 
         public static function UserRole($intUserId, $strLinkText = '') {
-            $strLink = sprintf('narro_user_role.php?l=%s&u=%d', QApplication::$TargetLanguage->LanguageCode, $intUserId);
+            $strLink = sprintf('user_role.php?l=%s&u=%d', QApplication::$TargetLanguage->LanguageCode, $intUserId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -177,9 +154,9 @@
             }
 
             if ($intRoleId)
-                $strLink = sprintf('narro_role_list.php?l=%s&r=%d', QApplication::$TargetLanguage->LanguageCode, $intRoleId);
+                $strLink = sprintf('roles.php?l=%s&r=%d', QApplication::$TargetLanguage->LanguageCode, $intRoleId);
             else
-                $strLink = sprintf('narro_role_list.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
+                $strLink = sprintf('roles.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
 
             $strLink .= $strExtraLink;
 
@@ -190,7 +167,7 @@
         }
 
         public static function RoleEdit($intRoleId = null, $strLinkText = '') {
-            $strLink = sprintf('narro_role_edit.php?l=%s&rid=%d', QApplication::$TargetLanguage->LanguageCode, $intRoleId);
+            $strLink = sprintf('role.php?l=%s&rid=%d', QApplication::$TargetLanguage->LanguageCode, $intRoleId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -198,7 +175,7 @@
         }
 
         public static function UserPreferences($intUserId, $strLinkText = '') {
-            $strLink = sprintf('narro_user_preferences.php?l=%s&u=%d', QApplication::$TargetLanguage->LanguageCode, $intUserId);
+            $strLink = sprintf('preferences.php?l=%s&u=%d', QApplication::$TargetLanguage->LanguageCode, $intUserId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -206,31 +183,9 @@
         }
 
         public static function UserEdit($intUserId, $strLinkText = '') {
-            $strLink = sprintf('narro_user_edit.php?l=%s&u=%d', QApplication::$TargetLanguage->LanguageCode, $intUserId);
+            $strLink = sprintf('account.php?l=%s&u=%d', QApplication::$TargetLanguage->LanguageCode, $intUserId);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
-            else
-                return $strLink;
-        }
-
-        public static function ContextSuggest($intProjectId, $intFileId, $intContextId, $intTextFilter = 1, $intSearchType = 1, $strSearchText = '', $intCurrentContext = null, $intContextCount = null, $intSortColumnIndex = -1, $intSortDirection = 0, $blnShowComments = 0, $strLinkText = '', $strCssClass = '') {
-            $strLink = sprintf(
-                'narro_context_suggest.php?l=%s&p=%d&f=%d&c=%d&tf=%d&st=%d&s=%s&ci=%d&cc=%d&o=%d&a=%d&sc=%d',
-                QApplication::$TargetLanguage->LanguageCode,
-                $intProjectId,
-                $intFileId,
-                $intContextId,
-                $intTextFilter,
-                $intSearchType,
-                urlencode($strSearchText),
-                $intCurrentContext,
-                $intContextCount,
-                $intSortColumnIndex,
-                $intSortDirection,
-                $blnShowComments
-            );
-            if ($strLinkText != '')
-                return sprintf('<a href="%s"%s>%s</a>', $strLink, (($strCssClass != '')?sprintf(' class="%s"', $strCssClass):''), $strLinkText);
             else
                 return $strLink;
         }
@@ -244,7 +199,7 @@
         }
 
         public static function UserRegister($strLinkText = '') {
-            $strLink = sprintf('narro_register.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
+            $strLink = sprintf('join.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -260,7 +215,7 @@
         }
 
         public static function UserRecoverPassword($strLinkText = '') {
-            $strLink = sprintf('narro_recover_password.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
+            $strLink = sprintf('password.php?l=%s', QApplication::$TargetLanguage->LanguageCode);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -276,7 +231,7 @@
         }
 
         public static function UserList($strSearch = '', $strLinkText = '') {
-            $strLink = sprintf('narro_user_list.php?l=%s&s=%s', QApplication::$TargetLanguage->LanguageCode, $strSearch);
+            $strLink = sprintf('users.php?l=%s&s=%s', QApplication::$TargetLanguage->LanguageCode, $strSearch);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else

@@ -231,7 +231,7 @@
                                 __HTTP_URL__ .
                                 __VIRTUAL_DIRECTORY__ .
                                 __SUBDIRECTORY__ .
-                                sprintf('/narro_context_suggest.php?l=%s&p=%d&c=%d#textcomments',
+                                sprintf('/translate.php?l=%s&p=%d&c=%d#textcomments',
                                     QApplication::$TargetLanguage->LanguageCode,
                                     $objNarroContextInfo->Context->ProjectId,
                                     $objNarroContextInfo->ContextId
