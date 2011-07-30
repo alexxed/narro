@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    class NarroTranslationProgressBar extends QControl {
+    class NarroTranslationProgressBar extends QPanel {
         protected $intTotal;
         protected $intTranslated;
         protected $intFuzzy;
@@ -29,7 +29,9 @@
 
         protected function GetControlHtml() {
             if ($this->intTotal == 0) {
-                return t('Nothing to translate');
+                $this->strText = t('Nothing to translate');
+
+                return parent::GetControlHtml();
             }
 
             $intPercentTranslated = 0;
@@ -65,7 +67,9 @@
 
             $strText .= sprintf(' %d%%</div>', $intPercentTranslated);
 
-            return $strText;
+            $this->strText = $strText;
+
+            return parent::GetControlHtml();
         }
 
         /////////////////////////

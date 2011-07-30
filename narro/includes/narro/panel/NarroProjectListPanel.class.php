@@ -178,18 +178,23 @@
         }
 
         public function dtgProjectList_PercentTranslated_Render(NarroProjectProgress $objProjectProgress) {
-            $intTotalTexts = $objProjectProgress->TotalTextCount;
-            $intTranslatedTexts = $objProjectProgress->FuzzyTextCount;
-            $intApprovedTexts = $objProjectProgress->ApprovedTextCount;
             $strOutput = '';
 
-            $objProgressBar = new NarroTranslationProgressBar($this->dtgProjectList);
+            if (!$objProgressBar = $this->dtgProjectList->GetChildControl('prg' . $objProjectProgress->ProjectId)) {
+                $objWaitIcon = new QWaitIcon($this->dtgProjectList);
+                $objWaitIcon->Text = t('Counting texts and translations...');
 
-            $objProgressBar->Total = $intTotalTexts;
-            $objProgressBar->Translated = $intApprovedTexts;
-            $objProgressBar->Fuzzy = $intTranslatedTexts;
+                $objProgressBar = new NarroTranslationProgressBar($this->dtgProjectList, 'prg' . $objProjectProgress->ProjectId);
+                $objProgressBar->ActionParameter = $objProjectProgress->ProjectId;
+                $objProgressBar->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click', $objWaitIcon));
+            }
+
+            $objProgressBar->Total = $objProjectProgress->TotalTextCount;
+            $objProgressBar->Translated = $objProjectProgress->FuzzyTextCount;
+            $objProgressBar->Fuzzy = $objProjectProgress->ApprovedTextCount;
 
             $strOutput .= $objProgressBar->Render(false);
+            $strOutput .= $objWaitIcon->Render(false);
 
             QApplication::$PluginHandler->DisplayInProjectListInProgressColumn($objProjectProgress->Project);
 
@@ -204,6 +209,22 @@
             }
 
             return $strOutput;
+        }
+
+        public function btnRefresh_Click($strFormId, $strControlId, $intProjectId) {
+            $objProject = NarroProject::Load($intProjectId);
+            if ($objProject) {
+                $intTotalTexts = $objProject->CountAllTextsByLanguage();
+                $intApprovedTexts = $objProject->CountApprovedTextsByLanguage();
+                $intTranslatedTexts = $objProject->CountTranslatedTextsByLanguage();
+                $objProgressBar = $this->dtgProjectList->GetChildControl('prg' . $intProjectId);
+                if ($objProgressBar) {
+                    $objProgressBar->Total = $intTotalTexts;
+                    $objProgressBar->Translated = $intApprovedTexts;
+                    $objProgressBar->Fuzzy = $intTranslatedTexts;
+                    $objProgressBar->MarkAsModified();
+                }
+            }
         }
 
         public function dtgProjectList_ProjectNameColumn_Render(NarroProjectProgress $objProjectProgress) {
@@ -238,7 +259,7 @@
                 $objSearchCondition = QQ::All();
 
 
-            if (QApplication::HasPermissionForThisLang('Project manager'))
+            if (QApplication::HasPermissionForThisLang('Can manage project'))
                 $objFilterCondition = QQ::All();
             else
                 $objFilterCondition = QQ::Equal(QQN::NarroProjectProgress()->Active, 0);

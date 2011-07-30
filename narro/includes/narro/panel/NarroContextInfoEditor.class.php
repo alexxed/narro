@@ -241,9 +241,9 @@
                     $btnApprove->ToolTip = $btnApprove->AlternateText;
                     $btnApprove->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     if (QApplication::$UseAjax)
-                        $btnApprove->AddAction(new QClickEvent(), new QAjaxControlAction($this->ParentControl, 'btnApprove_Click'));
+                        $btnApprove->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnApprove_Click'));
                     else
-                        $btnApprove->AddAction(new QClickEvent(), new QServerControlAction($this->ParentControl, 'btnApprove_Click')
+                        $btnApprove->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnApprove_Click')
                     );
                 }
 
@@ -392,9 +392,25 @@
 
                 $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
 
+                foreach($this->Form->GetAllControls() as $ctl) {
+                    if ($ctl instanceof NarroContextInfoEditor) {
+                        if ($ctl->TranslationList && $ctl->Text->Text == $this->lblText->Text) {
+                            $ctl->btnHelp_Click($this->Form->FormId, $ctl->btnHelp->ControlId, '');
+                        }
+                    }
+                }
+
                 $this->chkChanged->Checked = false;
 
                 $this->lblMessage->Text = '';
+            }
+            elseif ($this->txtTranslation->Text == '' && $this->objContextInfo->ValidSuggestionId) {
+                $this->objContextInfo->ValidSuggestionId = null;
+                $this->objContextInfo->ValidatorUserId = null;
+                $this->objContextInfo->Save();
+
+                if ($this->dtgTranslation)
+                    $this->dtgTranslation->MarkAsModified();
             }
 
             return true;
@@ -430,6 +446,8 @@
 
                 $this->objContextInfo->Modified = QDateTime::Now();
                 $this->objContextInfo->Save();
+
+                $this->txtTranslation->Text = $objSuggestion->SuggestionValue;
 
                 if ($this->dtgTranslation)
                     $this->dtgTranslation->MarkAsModified();
@@ -475,11 +493,16 @@
         public function btnDelete_Click($strFormId, $strControlId, $strParameter) {
             $objSuggestion = NarroSuggestion::Load($strParameter);
             if (!$this->IsSuggestionUsed($objSuggestion)) {
-                return true;
 
                 QApplication::$PluginHandler->DeleteSuggestion($this->objContextInfo->Context->Text->TextValue, $objSuggestion->SuggestionValue, $this->objContextInfo->Context->Context, $this->objContextInfo->Context->File, $this->objContextInfo->Context->Project);
 
-                if (!QApplication::HasPermissionForThisLang('Can delete any suggestion', $this->objContextInfo->Context->ProjectId) && ($objSuggestion->UserId != QApplication::GetUserId() || QApplication::GetUserId() == NarroUser::ANONYMOUS_USER_ID ))
+                if (
+                    !QApplication::HasPermissionForThisLang('Can delete any suggestion', $this->objContextInfo->Context->ProjectId) &&
+                    (
+                        $objSuggestion->UserId != QApplication::GetUserId() ||
+                        QApplication::GetUserId() == NarroUser::ANONYMOUS_USER_ID
+                    )
+                )
                   return false;
 
                 $objSuggestion->Delete();
@@ -494,6 +517,14 @@
                     }
 
                     $this->objContextInfo->HasSuggestions = 0;
+                }
+
+                foreach($this->Form->GetAllControls() as $ctl) {
+                    if ($ctl instanceof NarroContextInfoEditor) {
+                        if ($ctl->TranslationList && $ctl->Text->Text == $this->lblText->Text) {
+                            $ctl->btnHelp_Click($this->Form->FormId, $ctl->btnHelp->ControlId, '');
+                        }
+                    }
                 }
 
                 $this->lblMessage->Text = t('Suggestion succesfully deleted.');

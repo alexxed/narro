@@ -44,52 +44,23 @@
             return sprintf('NarroProject Object %s',  $this->intProjectId);
         }
 
-        public function DeleteAllTextsCacheByLanguage($intLanguageId = null) {
-            foreach(QApplication::$Cache->getIdsMatchingTags(array('Project' . $this->ProjectId, 'total_texts')) as $strCacheId) {
-                QApplication::$Cache->remove($strCacheId);
-            }
-        }
-
-        public function DeleteTranslatedTextsByLanguage($intLanguageId = null) {
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
-
-            foreach(QApplication::$Cache->getIdsMatchingTags(array('Language' . $intLanguageId, 'Project' . $this->ProjectId, 'translated_texts')) as $strCacheId) {
-                QApplication::$Cache->remove($strCacheId);
-            }
-        }
-
-        public function DeleteApprovedTextsByLanguage($intLanguageId = null) {
-            if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
-
-            foreach(QApplication::$Cache->getIdsMatchingTags(array('Language' . $intLanguageId, 'Project' . $this->ProjectId, 'approved_texts')) as $strCacheId) {
-                QApplication::$Cache->remove($strCacheId);
-            }
-        }
-
-
         public function CountTranslatedTextsByLanguage($intLanguageId = null) {
             $intTranslatedTexts = 0;
 
             if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
 
-            $intTranslatedTexts = QApplication::$Cache->load('translated_texts_' . $this->ProjectId . '_' . $intLanguageId);
+            // Cache miss
+            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci, narro_file f WHERE f.active=1 AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1', $this->ProjectId, $intLanguageId);
 
-            if ($intTranslatedTexts === false) {
-                // Cache miss
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c, narro_context_info ci, narro_file f WHERE f.active=1 AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1', $this->ProjectId, $intLanguageId);
+            // Perform the Query
+            $objDbResult = self::GetDatabase()->Query($strQuery);
 
-                // Perform the Query
-                $objDbResult = self::GetDatabase()->Query($strQuery);
+            if ($objDbResult) {
+                $mixRow = $objDbResult->FetchArray();
+                $intTranslatedTexts = $mixRow['cnt'];
 
-                if ($objDbResult) {
-                    $mixRow = $objDbResult->FetchArray();
-                    $intTranslatedTexts = $mixRow['cnt'];
-
-                    $this->UpdateProjectProgress('FuzzyTextCount', $intTranslatedTexts);
-                }
+                $this->UpdateProjectProgress($intLanguageId, 'FuzzyTextCount', $intTranslatedTexts);
             }
-
-            QApplication::$Cache->save($intTranslatedTexts, 'translated_texts_' . $this->ProjectId . '_' . $intLanguageId, array('Project' . $this->ProjectId, 'Language' . $intLanguageId, 'translated_texts'));
 
             return $intTranslatedTexts;
         }
@@ -97,29 +68,25 @@
         public function CountAllTextsByLanguage($intLanguageId = null) {
             $intTotalTexts = 0;
 
-            $intTranslatedTexts = QApplication::$Cache->load('total_texts' . $this->ProjectId);
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
 
-            if ($intTotalTexts === false) {
-                // Cache miss
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c WHERE c.project_id = %d AND c.active=1', $this->ProjectId);
+            // Cache miss
+            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c WHERE c.project_id = %d AND c.active=1', $this->ProjectId);
 
-                // Perform the Query
-                $objDbResult = self::GetDatabase()->Query($strQuery);
+            // Perform the Query
+            $objDbResult = self::GetDatabase()->Query($strQuery);
 
-                if ($objDbResult) {
-                    $mixRow = $objDbResult->FetchArray();
-                    $intTotalTexts = $mixRow['cnt'];
+            if ($objDbResult) {
+                $mixRow = $objDbResult->FetchArray();
+                $intTotalTexts = $mixRow['cnt'];
 
-                    $this->UpdateProjectProgress('FuzzyTextCount', $intTotalTexts);
-                }
+                $this->UpdateProjectProgress($intLanguageId, 'TotalTextCount', $intTotalTexts);
             }
-
-            QApplication::$Cache->save($intTotalTexts, 'total_texts' . $this->ProjectId, array('Project' . $this->ProjectId, 'total_texts'));
 
             return $intTotalTexts;
         }
 
-        protected function UpdateProjectProgress($strColumn, $intValue) {
+        protected function UpdateProjectProgress($intLanguageId, $strColumn, $intValue) {
             $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->ProjectId, $intLanguageId);
 
             $blnChanged = false;
@@ -166,25 +133,21 @@
 
         public function CountApprovedTextsByLanguage($intLanguageId = null) {
             $intApprovedTexts = 0;
-            $intApprovedTexts = QApplication::$Cache->load('approved_texts_' . $this->ProjectId . '_' . $intLanguageId);
 
             if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
 
-            if ($intApprovedTexts === false) {
-                // Cache miss
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.active=1 AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1', $this->ProjectId, $intLanguageId);
-                // Perform the Query
-                $objDbResult = self::GetDatabase()->Query($strQuery);
+            // Cache miss
+            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.active=1 AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1', $this->ProjectId, $intLanguageId);
+            // Perform the Query
+            $objDbResult = self::GetDatabase()->Query($strQuery);
 
-                if ($objDbResult) {
-                    $mixRow = $objDbResult->FetchArray();
-                    $intApprovedTexts = $mixRow['cnt'];
+            if ($objDbResult) {
+                $mixRow = $objDbResult->FetchArray();
+                $intApprovedTexts = $mixRow['cnt'];
 
-                    $this->UpdateProjectProgress('ApprovedTextCount', $intApprovedTexts);
-                }
+                $this->UpdateProjectProgress($intLanguageId, 'ApprovedTextCount', $intApprovedTexts);
             }
 
-            QApplication::$Cache->save($intApprovedTexts, 'approved_texts_' . $this->ProjectId . '_' . $intLanguageId, array('Project' . $this->ProjectId, 'Language' . $intLanguageId, 'approved_texts'));
             return $intApprovedTexts;
         }
 
