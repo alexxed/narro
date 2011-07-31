@@ -25,9 +25,6 @@
 </div>
 <?php } ?>
 
-<?php
-$_CONTROL->pnlProjectReport->Render();
-?>
 <table width="1024">
 <tr>
 <td width="50%" valign="top" align="center" style="padding:1%">

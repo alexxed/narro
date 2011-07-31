@@ -21,8 +21,6 @@
          * @var NarroProject
          */
         public $objProject;
-        public $pnlProjectReport;
-        protected $strTemplate;
 
         public $dtgTranslators;
         public $dtgReviewers;
@@ -108,7 +106,6 @@
             $colWordCount->ReverseOrderByClause =  QQ::OrderBy('__translations_reviewed', false);
             $this->dtgReviewers->AddColumn($colWordCount);
 
-            $this->pnlProjectReport = new NarroProjectReportPanel($this->objProject, $this);
         }
 
         public function dtgTranslators_Bind() {

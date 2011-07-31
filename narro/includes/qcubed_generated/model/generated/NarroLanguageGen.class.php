@@ -25,8 +25,6 @@
 	 * @property string $SpecialCharacters the value for strSpecialCharacters 
 	 * @property string $PluralForm the value for strPluralForm (Not Null)
 	 * @property boolean $Active the value for blnActive 
-	 * @property-read NarroContextComment $_NarroContextCommentAsLanguage the value for the private _objNarroContextCommentAsLanguage (Read-Only) if set due to an expansion on the narro_context_comment.language_id reverse relationship
-	 * @property-read NarroContextComment[] $_NarroContextCommentAsLanguageArray the value for the private _objNarroContextCommentAsLanguageArray (Read-Only) if set due to an ExpandAsArray on the narro_context_comment.language_id reverse relationship
 	 * @property-read NarroContextInfo $_NarroContextInfoAsLanguage the value for the private _objNarroContextInfoAsLanguage (Read-Only) if set due to an expansion on the narro_context_info.language_id reverse relationship
 	 * @property-read NarroContextInfo[] $_NarroContextInfoAsLanguageArray the value for the private _objNarroContextInfoAsLanguageArray (Read-Only) if set due to an ExpandAsArray on the narro_context_info.language_id reverse relationship
 	 * @property-read NarroFileProgress $_NarroFileProgressAsLanguage the value for the private _objNarroFileProgressAsLanguage (Read-Only) if set due to an expansion on the narro_file_progress.language_id reverse relationship
@@ -134,22 +132,6 @@
 		protected $blnActive;
 		const ActiveDefault = null;
 
-
-		/**
-		 * Private member variable that stores a reference to a single NarroContextCommentAsLanguage object
-		 * (of type NarroContextComment), if this NarroLanguage object was restored with
-		 * an expansion on the narro_context_comment association table.
-		 * @var NarroContextComment _objNarroContextCommentAsLanguage;
-		 */
-		private $_objNarroContextCommentAsLanguage;
-
-		/**
-		 * Private member variable that stores a reference to an array of NarroContextCommentAsLanguage objects
-		 * (of type NarroContextComment[]), if this NarroLanguage object was restored with
-		 * an ExpandAsArray on the narro_context_comment association table.
-		 * @var NarroContextComment[] _objNarroContextCommentAsLanguageArray;
-		 */
-		private $_objNarroContextCommentAsLanguageArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroContextInfoAsLanguage object
@@ -600,25 +582,6 @@
 							$strAliasPrefix = 'narro_language__';
 
 
-						// Expanding reverse references: NarroContextCommentAsLanguage
-						$strAlias = $strAliasPrefix . 'narrocontextcommentaslanguage__comment_id';
-						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
-							(!is_null($objDbRow->GetColumn($strAliasName)))) {
-							if(null === $objPreviousItem->_objNarroContextCommentAsLanguageArray)
-								$objPreviousItem->_objNarroContextCommentAsLanguageArray = array();
-							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextCommentAsLanguageArray)) {
-								$objPreviousChildItems = $objPreviousItem->_objNarroContextCommentAsLanguageArray;
-								$objChildItem = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
-								if ($objChildItem) {
-									$objPreviousItem->_objNarroContextCommentAsLanguageArray[] = $objChildItem;
-								}
-							} else {
-								$objPreviousItem->_objNarroContextCommentAsLanguageArray[] = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-							}
-							$blnExpandedViaArray = true;
-						}
-
 						// Expanding reverse references: NarroContextInfoAsLanguage
 						$strAlias = $strAliasPrefix . 'narrocontextinfoaslanguage__context_info_id';
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -773,9 +736,6 @@
 					if ($objToReturn->LanguageId != $objPreviousItem->LanguageId) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroContextCommentAsLanguageArray, $objToReturn->_objNarroContextCommentAsLanguageArray) != null) {
-						continue;
-					}
 					if (array_diff($objPreviousItem->_objNarroContextInfoAsLanguageArray, $objToReturn->_objNarroContextInfoAsLanguageArray) != null) {
 						continue;
 					}
@@ -814,19 +774,6 @@
 
 
 
-
-			// Check for NarroContextCommentAsLanguage Virtual Binding
-			$strAlias = $strAliasPrefix . 'narrocontextcommentaslanguage__comment_id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
-			if ($blnExpanded && null === $objToReturn->_objNarroContextCommentAsLanguageArray)
-				$objToReturn->_objNarroContextCommentAsLanguageArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded)
-					$objToReturn->_objNarroContextCommentAsLanguageArray[] = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-				else
-					$objToReturn->_objNarroContextCommentAsLanguage = NarroContextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextcommentaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-			}
 
 			// Check for NarroContextInfoAsLanguage Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrocontextinfoaslanguage__context_info_id';
@@ -1257,22 +1204,6 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_NarroContextCommentAsLanguage':
-					/**
-					 * Gets the value for the private _objNarroContextCommentAsLanguage (Read-Only)
-					 * if set due to an expansion on the narro_context_comment.language_id reverse relationship
-					 * @return NarroContextComment
-					 */
-					return $this->_objNarroContextCommentAsLanguage;
-
-				case '_NarroContextCommentAsLanguageArray':
-					/**
-					 * Gets the value for the private _objNarroContextCommentAsLanguageArray (Read-Only)
-					 * if set due to an ExpandAsArray on the narro_context_comment.language_id reverse relationship
-					 * @return NarroContextComment[]
-					 */
-					return $this->_objNarroContextCommentAsLanguageArray;
-
 				case '_NarroContextInfoAsLanguage':
 					/**
 					 * Gets the value for the private _objNarroContextInfoAsLanguage (Read-Only)
@@ -1543,156 +1474,6 @@
 		///////////////////////////////
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
-
-			
-		
-		// Related Objects' Methods for NarroContextCommentAsLanguage
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated NarroContextCommentsAsLanguage as an array of NarroContextComment objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroContextComment[]
-		*/
-		public function GetNarroContextCommentAsLanguageArray($objOptionalClauses = null) {
-			if ((is_null($this->intLanguageId)))
-				return array();
-
-			try {
-				return NarroContextComment::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated NarroContextCommentsAsLanguage
-		 * @return int
-		*/
-		public function CountNarroContextCommentsAsLanguage() {
-			if ((is_null($this->intLanguageId)))
-				return 0;
-
-			return NarroContextComment::CountByLanguageId($this->intLanguageId);
-		}
-
-		/**
-		 * Associates a NarroContextCommentAsLanguage
-		 * @param NarroContextComment $objNarroContextComment
-		 * @return void
-		*/
-		public function AssociateNarroContextCommentAsLanguage(NarroContextComment $objNarroContextComment) {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
-			if ((is_null($objNarroContextComment->CommentId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextCommentAsLanguage on this NarroLanguage with an unsaved NarroContextComment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_context_comment`
-				SET
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-				WHERE
-					`comment_id` = ' . $objDatabase->SqlVariable($objNarroContextComment->CommentId) . '
-			');
-		}
-
-		/**
-		 * Unassociates a NarroContextCommentAsLanguage
-		 * @param NarroContextComment $objNarroContextComment
-		 * @return void
-		*/
-		public function UnassociateNarroContextCommentAsLanguage(NarroContextComment $objNarroContextComment) {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
-			if ((is_null($objNarroContextComment->CommentId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this NarroLanguage with an unsaved NarroContextComment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_context_comment`
-				SET
-					`language_id` = null
-				WHERE
-					`comment_id` = ' . $objDatabase->SqlVariable($objNarroContextComment->CommentId) . ' AND
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all NarroContextCommentsAsLanguage
-		 * @return void
-		*/
-		public function UnassociateAllNarroContextCommentsAsLanguage() {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_context_comment`
-				SET
-					`language_id` = null
-				WHERE
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated NarroContextCommentAsLanguage
-		 * @param NarroContextComment $objNarroContextComment
-		 * @return void
-		*/
-		public function DeleteAssociatedNarroContextCommentAsLanguage(NarroContextComment $objNarroContextComment) {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
-			if ((is_null($objNarroContextComment->CommentId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this NarroLanguage with an unsaved NarroContextComment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_context_comment`
-				WHERE
-					`comment_id` = ' . $objDatabase->SqlVariable($objNarroContextComment->CommentId) . ' AND
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated NarroContextCommentsAsLanguage
-		 * @return void
-		*/
-		public function DeleteAllNarroContextCommentsAsLanguage() {
-			if ((is_null($this->intLanguageId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextCommentAsLanguage on this unsaved NarroLanguage.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroLanguage::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_context_comment`
-				WHERE
-					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
-			');
-		}
 
 			
 		
@@ -2731,7 +2512,6 @@
      * @property-read QQNode $Active
      *
      *
-     * @property-read QQReverseReferenceNodeNarroContextComment $NarroContextCommentAsLanguage
      * @property-read QQReverseReferenceNodeNarroContextInfo $NarroContextInfoAsLanguage
      * @property-read QQReverseReferenceNodeNarroFileProgress $NarroFileProgressAsLanguage
      * @property-read QQReverseReferenceNodeNarroProjectProgress $NarroProjectProgressAsLanguage
@@ -2767,8 +2547,6 @@
 					return new QQNode('plural_form', 'PluralForm', 'VarChar', $this);
 				case 'Active':
 					return new QQNode('active', 'Active', 'Bit', $this);
-				case 'NarroContextCommentAsLanguage':
-					return new QQReverseReferenceNodeNarroContextComment($this, 'narrocontextcommentaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroContextInfoAsLanguage':
 					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroFileProgressAsLanguage':
@@ -2808,7 +2586,6 @@
      * @property-read QQNode $Active
      *
      *
-     * @property-read QQReverseReferenceNodeNarroContextComment $NarroContextCommentAsLanguage
      * @property-read QQReverseReferenceNodeNarroContextInfo $NarroContextInfoAsLanguage
      * @property-read QQReverseReferenceNodeNarroFileProgress $NarroFileProgressAsLanguage
      * @property-read QQReverseReferenceNodeNarroProjectProgress $NarroProjectProgressAsLanguage
@@ -2844,8 +2621,6 @@
 					return new QQNode('plural_form', 'PluralForm', 'string', $this);
 				case 'Active':
 					return new QQNode('active', 'Active', 'boolean', $this);
-				case 'NarroContextCommentAsLanguage':
-					return new QQReverseReferenceNodeNarroContextComment($this, 'narrocontextcommentaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroContextInfoAsLanguage':
 					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroFileProgressAsLanguage':

@@ -25,8 +25,6 @@
 		// Controls for NarroContextComment's Data Fields
 		protected $lblCommentId;
 		protected $lstContext;
-		protected $lstUser;
-		protected $lstLanguage;
 		protected $calCreated;
 		protected $calModified;
 		protected $txtCommentText;
@@ -68,8 +66,6 @@
 			// Call MetaControl's methods to create qcontrols based on NarroContextComment's data fields
 			$this->lblCommentId = $this->mctNarroContextComment->lblCommentId_Create();
 			$this->lstContext = $this->mctNarroContextComment->lstContext_Create();
-			$this->lstUser = $this->mctNarroContextComment->lstUser_Create();
-			$this->lstLanguage = $this->mctNarroContextComment->lstLanguage_Create();
 			$this->calCreated = $this->mctNarroContextComment->calCreated_Create();
 			$this->calModified = $this->mctNarroContextComment->calModified_Create();
 			$this->txtCommentText = $this->mctNarroContextComment->txtCommentText_Create();

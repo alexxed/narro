@@ -9,8 +9,8 @@
 	 * here by overriding existing or implementing new methods, properties and variables.
 	 * 
 	 * NOTE: This file is overwritten on any code regenerations.  If you want to make
-	 * permanent changes, it is STRONGLY RECOMMENDED to move both project_edit.php AND
-	 * project_edit.tpl.php out of this Form Drafts directory.
+	 * permanent changes, it is STRONGLY RECOMMENDED to move both narro_project_edit.php AND
+	 * narro_project_edit.tpl.php out of this Form Drafts directory.
 	 *
 	 * @package Narro
 	 * @subpackage FormBaseObjects

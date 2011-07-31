@@ -57,8 +57,6 @@
 			// can traverse down QQN::narro_context_comment() to display fields that are down the hierarchy)
 			$this->dtgNarroContextComments->MetaAddColumn('CommentId');
 			$this->dtgNarroContextComments->MetaAddColumn(QQN::NarroContextComment()->Context);
-			$this->dtgNarroContextComments->MetaAddColumn(QQN::NarroContextComment()->User);
-			$this->dtgNarroContextComments->MetaAddColumn(QQN::NarroContextComment()->Language);
 			$this->dtgNarroContextComments->MetaAddColumn('Created');
 			$this->dtgNarroContextComments->MetaAddColumn('Modified');
 			$this->dtgNarroContextComments->MetaAddColumn('CommentText');

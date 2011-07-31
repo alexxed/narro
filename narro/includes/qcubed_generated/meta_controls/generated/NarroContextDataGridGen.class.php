@@ -296,6 +296,7 @@
 				case 'Project': return QQN::NarroContext()->Project;
 				case 'Context': return QQN::NarroContext()->Context;
 				case 'ContextMd5': return QQN::NarroContext()->ContextMd5;
+				case 'Comment': return QQN::NarroContext()->Comment;
 				case 'FileId': return QQN::NarroContext()->FileId;
 				case 'File': return QQN::NarroContext()->File;
 				case 'Created': return QQN::NarroContext()->Created;

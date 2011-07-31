@@ -300,7 +300,6 @@
 				case 'ValidSuggestion': return QQN::NarroContextInfo()->ValidSuggestion;
 				case 'PopularSuggestionId': return QQN::NarroContextInfo()->PopularSuggestionId;
 				case 'PopularSuggestion': return QQN::NarroContextInfo()->PopularSuggestion;
-				case 'HasComments': return QQN::NarroContextInfo()->HasComments;
 				case 'HasSuggestions': return QQN::NarroContextInfo()->HasSuggestions;
 				case 'TextAccessKey': return QQN::NarroContextInfo()->TextAccessKey;
 				case 'SuggestionAccessKey': return QQN::NarroContextInfo()->SuggestionAccessKey;

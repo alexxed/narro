@@ -7,12 +7,6 @@
 			return new QQNodeNarroContext('narro_context', null, null);
 		}
 		/**
-		 * @return QQNodeNarroContextComment
-		 */
-		static public function NarroContextComment() {
-			return new QQNodeNarroContextComment('narro_context_comment', null, null);
-		}
-		/**
 		 * @return QQNodeNarroContextInfo
 		 */
 		static public function NarroContextInfo() {

@@ -222,9 +222,15 @@
 
             if ($this->txtSearch->Text) {
                 if (preg_match("/^'.*'$/", $this->txtSearch->Text))
-                    $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValue, substr($this->txtSearch->Text, 1, -1));
+                    $this->arrConditions[] = QQ::OrCondition(
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValue, substr($this->txtSearch->Text, 1, -1)),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Context, substr($this->txtSearch->Text, 1, -1))
+                    );
                 else
-                    $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, '%' . $this->txtSearch->Text . '%');
+                    $this->arrConditions[] = QQ::OrCondition(
+                        QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, '%' . $this->txtSearch->Text . '%'),
+                        QQ::Like(QQN::NarroContextInfo()->Context->Context, '%' . $this->txtSearch->Text . '%')
+                    );
 
             }
 

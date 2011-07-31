@@ -292,10 +292,6 @@
 				case 'CommentId': return QQN::NarroContextComment()->CommentId;
 				case 'ContextId': return QQN::NarroContextComment()->ContextId;
 				case 'Context': return QQN::NarroContextComment()->Context;
-				case 'UserId': return QQN::NarroContextComment()->UserId;
-				case 'User': return QQN::NarroContextComment()->User;
-				case 'LanguageId': return QQN::NarroContextComment()->LanguageId;
-				case 'Language': return QQN::NarroContextComment()->Language;
 				case 'Created': return QQN::NarroContextComment()->Created;
 				case 'Modified': return QQN::NarroContextComment()->Modified;
 				case 'CommentText': return QQN::NarroContextComment()->CommentText;

@@ -29,7 +29,6 @@
 		protected $lstValidatorUser;
 		protected $lstValidSuggestion;
 		protected $lstPopularSuggestion;
-		protected $chkHasComments;
 		protected $chkHasSuggestions;
 		protected $txtTextAccessKey;
 		protected $txtSuggestionAccessKey;
@@ -76,7 +75,6 @@
 			$this->lstValidatorUser = $this->mctNarroContextInfo->lstValidatorUser_Create();
 			$this->lstValidSuggestion = $this->mctNarroContextInfo->lstValidSuggestion_Create();
 			$this->lstPopularSuggestion = $this->mctNarroContextInfo->lstPopularSuggestion_Create();
-			$this->chkHasComments = $this->mctNarroContextInfo->chkHasComments_Create();
 			$this->chkHasSuggestions = $this->mctNarroContextInfo->chkHasSuggestions_Create();
 			$this->txtTextAccessKey = $this->mctNarroContextInfo->txtTextAccessKey_Create();
 			$this->txtSuggestionAccessKey = $this->mctNarroContextInfo->txtSuggestionAccessKey_Create();

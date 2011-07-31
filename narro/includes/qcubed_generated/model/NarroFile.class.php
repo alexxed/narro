@@ -165,6 +165,7 @@
                 $objFileProgress->LanguageId = $intLanguageId;
                 $objFileProgress->FileId = $this->FileId;
                 $objFileProgress->TotalTextCount = 0;
+                $objFileProgress->Export = 1;
                 $objFileProgress->ApprovedTextCount = 0;
                 $objFileProgress->FuzzyTextCount = 0;
                 $objFileProgress->ProgressPercent = 0;

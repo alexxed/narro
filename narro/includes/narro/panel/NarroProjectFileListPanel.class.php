@@ -220,7 +220,10 @@
             $chkExport->ActionParameter = $objProgress->File->FileId;
             $chkExport->Checked = NarroFileProgress::CountByFileIdLanguageIdExport($objProgress->File->FileId, QApplication::GetLanguageId(), 1);
 
-            return $chkExport->Render(false);
+            $pnlImport = new NarroFileImportPanel($objProgress->File, $this->dtgFile);
+            $pnlExport = new NarroFileExportPanel($objProgress->File, $this->dtgFile);
+
+            return $chkExport->Render(false) . $pnlImport->Render(false) . $pnlExport->Render(false);
         }
 
         public function chkExport_Click($strFormId, $strControlId, $intFileId) {

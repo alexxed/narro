@@ -406,9 +406,6 @@
                                 ''
                         );
 
-                    if ($objNarroContextInfo->HasComments)
-                        $objItem->Comments = sprintf(t('%d comments'), NarroContextComment::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroContextComment()->ContextId, $objNarroContextInfo->ContextId), QQ::Equal(QQN::NarroContextComment()->LanguageId, $objNarroContextInfo->LanguageId))));
-
                     $objItem->PubDate = new QDateTime($objNarroContextInfo->Modified);
 
                     $objItem->Author = ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:'';

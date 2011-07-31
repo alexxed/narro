@@ -28,6 +28,7 @@
 		protected $lstProject;
 		protected $txtContext;
 		protected $txtContextMd5;
+		protected $txtComment;
 		protected $lstFile;
 		protected $calCreated;
 		protected $calModified;
@@ -72,6 +73,7 @@
 			$this->lstProject = $this->mctNarroContext->lstProject_Create();
 			$this->txtContext = $this->mctNarroContext->txtContext_Create();
 			$this->txtContextMd5 = $this->mctNarroContext->txtContextMd5_Create();
+			$this->txtComment = $this->mctNarroContext->txtComment_Create();
 			$this->lstFile = $this->mctNarroContext->lstFile_Create();
 			$this->calCreated = $this->mctNarroContext->calCreated_Create();
 			$this->calModified = $this->mctNarroContext->calModified_Create();

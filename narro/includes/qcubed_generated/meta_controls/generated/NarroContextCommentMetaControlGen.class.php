@@ -20,10 +20,6 @@
 	 * @property-read QLabel $CommentIdLabel
 	 * @property QListBox $ContextIdControl
 	 * @property-read QLabel $ContextIdLabel
-	 * @property QListBox $UserIdControl
-	 * @property-read QLabel $UserIdLabel
-	 * @property QListBox $LanguageIdControl
-	 * @property-read QLabel $LanguageIdLabel
 	 * @property QDateTimePicker $CreatedControl
 	 * @property-read QLabel $CreatedLabel
 	 * @property QDateTimePicker $ModifiedControl
@@ -71,16 +67,6 @@
 		 */
 		protected $lstContext;
 		/**
-		 * @var QListBox lstUser
-		 * @access protected
-		 */
-		protected $lstUser;
-		/**
-		 * @var QListBox lstLanguage
-		 * @access protected
-		 */
-		protected $lstLanguage;
-		/**
 		 * @var QDateTimePicker calCreated
 		 * @access protected
 		 */
@@ -107,16 +93,6 @@
 		 * @access protected
 		 */
 		protected $lblContextId;
-		/**
-		 * @var QLabel lblUserId
-		 * @access protected
-		 */
-		protected $lblUserId;
-		/**
-		 * @var QLabel lblLanguageId
-		 * @access protected
-		 */
-		protected $lblLanguageId;
 		/**
 		 * @var QLabel lblCreated
 		 * @access protected
@@ -285,74 +261,6 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstUser
-		 * @param string $strControlId optional ControlId to use
-		 * @return QListBox
-		 */
-		public function lstUser_Create($strControlId = null) {
-			$this->lstUser = new QListBox($this->objParentObject, $strControlId);
-			$this->lstUser->Name = QApplication::Translate('User');
-			$this->lstUser->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstUser->AddItem(QApplication::Translate('- Select One -'), null);
-			$objUserArray = NarroUser::LoadAll();
-			if ($objUserArray) foreach ($objUserArray as $objUser) {
-				$objListItem = new QListItem($objUser->__toString(), $objUser->UserId);
-				if (($this->objNarroContextComment->User) && ($this->objNarroContextComment->User->UserId == $objUser->UserId))
-					$objListItem->Selected = true;
-				$this->lstUser->AddItem($objListItem);
-			}
-			return $this->lstUser;
-		}
-
-		/**
-		 * Create and setup QLabel lblUserId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblUserId_Create($strControlId = null) {
-			$this->lblUserId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblUserId->Name = QApplication::Translate('User');
-			$this->lblUserId->Text = ($this->objNarroContextComment->User) ? $this->objNarroContextComment->User->__toString() : null;
-			$this->lblUserId->Required = true;
-			return $this->lblUserId;
-		}
-
-		/**
-		 * Create and setup QListBox lstLanguage
-		 * @param string $strControlId optional ControlId to use
-		 * @return QListBox
-		 */
-		public function lstLanguage_Create($strControlId = null) {
-			$this->lstLanguage = new QListBox($this->objParentObject, $strControlId);
-			$this->lstLanguage->Name = QApplication::Translate('Language');
-			$this->lstLanguage->Required = true;
-			if (!$this->blnEditMode)
-				$this->lstLanguage->AddItem(QApplication::Translate('- Select One -'), null);
-			$objLanguageArray = NarroLanguage::LoadAll();
-			if ($objLanguageArray) foreach ($objLanguageArray as $objLanguage) {
-				$objListItem = new QListItem($objLanguage->__toString(), $objLanguage->LanguageId);
-				if (($this->objNarroContextComment->Language) && ($this->objNarroContextComment->Language->LanguageId == $objLanguage->LanguageId))
-					$objListItem->Selected = true;
-				$this->lstLanguage->AddItem($objListItem);
-			}
-			return $this->lstLanguage;
-		}
-
-		/**
-		 * Create and setup QLabel lblLanguageId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblLanguageId_Create($strControlId = null) {
-			$this->lblLanguageId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblLanguageId->Name = QApplication::Translate('Language');
-			$this->lblLanguageId->Text = ($this->objNarroContextComment->Language) ? $this->objNarroContextComment->Language->__toString() : null;
-			$this->lblLanguageId->Required = true;
-			return $this->lblLanguageId;
-		}
-
-		/**
 		 * Create and setup QDateTimePicker calCreated
 		 * @param string $strControlId optional ControlId to use
 		 * @return QDateTimePicker
@@ -495,34 +403,6 @@
 			}
 			if ($this->lblContextId) $this->lblContextId->Text = ($this->objNarroContextComment->Context) ? $this->objNarroContextComment->Context->__toString() : null;
 
-			if ($this->lstUser) {
-					$this->lstUser->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstUser->AddItem(QApplication::Translate('- Select One -'), null);
-				$objUserArray = NarroUser::LoadAll();
-				if ($objUserArray) foreach ($objUserArray as $objUser) {
-					$objListItem = new QListItem($objUser->__toString(), $objUser->UserId);
-					if (($this->objNarroContextComment->User) && ($this->objNarroContextComment->User->UserId == $objUser->UserId))
-						$objListItem->Selected = true;
-					$this->lstUser->AddItem($objListItem);
-				}
-			}
-			if ($this->lblUserId) $this->lblUserId->Text = ($this->objNarroContextComment->User) ? $this->objNarroContextComment->User->__toString() : null;
-
-			if ($this->lstLanguage) {
-					$this->lstLanguage->RemoveAllItems();
-				if (!$this->blnEditMode)
-					$this->lstLanguage->AddItem(QApplication::Translate('- Select One -'), null);
-				$objLanguageArray = NarroLanguage::LoadAll();
-				if ($objLanguageArray) foreach ($objLanguageArray as $objLanguage) {
-					$objListItem = new QListItem($objLanguage->__toString(), $objLanguage->LanguageId);
-					if (($this->objNarroContextComment->Language) && ($this->objNarroContextComment->Language->LanguageId == $objLanguage->LanguageId))
-						$objListItem->Selected = true;
-					$this->lstLanguage->AddItem($objListItem);
-				}
-			}
-			if ($this->lblLanguageId) $this->lblLanguageId->Text = ($this->objNarroContextComment->Language) ? $this->objNarroContextComment->Language->__toString() : null;
-
 			if ($this->calCreated) $this->calCreated->DateTime = $this->objNarroContextComment->Created;
 			if ($this->lblCreated) $this->lblCreated->Text = sprintf($this->objNarroContextComment->Created) ? $this->objNarroContextComment->Created->qFormat($this->strCreatedDateTimeFormat) : null;
 
@@ -559,8 +439,6 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstContext) $this->objNarroContextComment->ContextId = $this->lstContext->SelectedValue;
-				if ($this->lstUser) $this->objNarroContextComment->UserId = $this->lstUser->SelectedValue;
-				if ($this->lstLanguage) $this->objNarroContextComment->LanguageId = $this->lstLanguage->SelectedValue;
 				if ($this->calCreated) $this->objNarroContextComment->Created = $this->calCreated->DateTime;
 				if ($this->calModified) $this->objNarroContextComment->Modified = $this->calModified->DateTime;
 				if ($this->txtCommentText) $this->objNarroContextComment->CommentText = $this->txtCommentText->Text;
@@ -619,18 +497,6 @@
 				case 'ContextIdLabel':
 					if (!$this->lblContextId) return $this->lblContextId_Create();
 					return $this->lblContextId;
-				case 'UserIdControl':
-					if (!$this->lstUser) return $this->lstUser_Create();
-					return $this->lstUser;
-				case 'UserIdLabel':
-					if (!$this->lblUserId) return $this->lblUserId_Create();
-					return $this->lblUserId;
-				case 'LanguageIdControl':
-					if (!$this->lstLanguage) return $this->lstLanguage_Create();
-					return $this->lstLanguage;
-				case 'LanguageIdLabel':
-					if (!$this->lblLanguageId) return $this->lblLanguageId_Create();
-					return $this->lblLanguageId;
 				case 'CreatedControl':
 					if (!$this->calCreated) return $this->calCreated_Create();
 					return $this->calCreated;
@@ -681,10 +547,6 @@
 						return ($this->lblCommentId = QType::Cast($mixValue, 'QControl'));
 					case 'ContextIdControl':
 						return ($this->lstContext = QType::Cast($mixValue, 'QControl'));
-					case 'UserIdControl':
-						return ($this->lstUser = QType::Cast($mixValue, 'QControl'));
-					case 'LanguageIdControl':
-						return ($this->lstLanguage = QType::Cast($mixValue, 'QControl'));
 					case 'CreatedControl':
 						return ($this->calCreated = QType::Cast($mixValue, 'QControl'));
 					case 'ModifiedControl':

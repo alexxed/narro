@@ -28,8 +28,6 @@
 	 * @property-read QLabel $ValidSuggestionIdLabel
 	 * @property QListBox $PopularSuggestionIdControl
 	 * @property-read QLabel $PopularSuggestionIdLabel
-	 * @property QCheckBox $HasCommentsControl
-	 * @property-read QLabel $HasCommentsLabel
 	 * @property QCheckBox $HasSuggestionsControl
 	 * @property-read QLabel $HasSuggestionsLabel
 	 * @property QTextBox $TextAccessKeyControl
@@ -99,11 +97,6 @@
 		 */
 		protected $lstPopularSuggestion;
 		/**
-		 * @var QCheckBox chkHasComments
-		 * @access protected
-		 */
-		protected $chkHasComments;
-		/**
 		 * @var QCheckBox chkHasSuggestions
 		 * @access protected
 		 */
@@ -155,11 +148,6 @@
 		 * @access protected
 		 */
 		protected $lblPopularSuggestionId;
-		/**
-		 * @var QLabel lblHasComments
-		 * @access protected
-		 */
-		protected $lblHasComments;
 		/**
 		 * @var QLabel lblHasSuggestions
 		 * @access protected
@@ -460,30 +448,6 @@
 		}
 
 		/**
-		 * Create and setup QCheckBox chkHasComments
-		 * @param string $strControlId optional ControlId to use
-		 * @return QCheckBox
-		 */
-		public function chkHasComments_Create($strControlId = null) {
-			$this->chkHasComments = new QCheckBox($this->objParentObject, $strControlId);
-			$this->chkHasComments->Name = QApplication::Translate('Has Comments');
-			$this->chkHasComments->Checked = $this->objNarroContextInfo->HasComments;
-			return $this->chkHasComments;
-		}
-
-		/**
-		 * Create and setup QLabel lblHasComments
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblHasComments_Create($strControlId = null) {
-			$this->lblHasComments = new QLabel($this->objParentObject, $strControlId);
-			$this->lblHasComments->Name = QApplication::Translate('Has Comments');
-			$this->lblHasComments->Text = ($this->objNarroContextInfo->HasComments) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-			return $this->lblHasComments;
-		}
-
-		/**
 		 * Create and setup QCheckBox chkHasSuggestions
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -699,9 +663,6 @@
 			}
 			if ($this->lblPopularSuggestionId) $this->lblPopularSuggestionId->Text = ($this->objNarroContextInfo->PopularSuggestion) ? $this->objNarroContextInfo->PopularSuggestion->__toString() : null;
 
-			if ($this->chkHasComments) $this->chkHasComments->Checked = $this->objNarroContextInfo->HasComments;
-			if ($this->lblHasComments) $this->lblHasComments->Text = ($this->objNarroContextInfo->HasComments) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-
 			if ($this->chkHasSuggestions) $this->chkHasSuggestions->Checked = $this->objNarroContextInfo->HasSuggestions;
 			if ($this->lblHasSuggestions) $this->lblHasSuggestions->Text = ($this->objNarroContextInfo->HasSuggestions) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 
@@ -745,7 +706,6 @@
 				if ($this->lstValidatorUser) $this->objNarroContextInfo->ValidatorUserId = $this->lstValidatorUser->SelectedValue;
 				if ($this->lstValidSuggestion) $this->objNarroContextInfo->ValidSuggestionId = $this->lstValidSuggestion->SelectedValue;
 				if ($this->lstPopularSuggestion) $this->objNarroContextInfo->PopularSuggestionId = $this->lstPopularSuggestion->SelectedValue;
-				if ($this->chkHasComments) $this->objNarroContextInfo->HasComments = $this->chkHasComments->Checked;
 				if ($this->chkHasSuggestions) $this->objNarroContextInfo->HasSuggestions = $this->chkHasSuggestions->Checked;
 				if ($this->txtTextAccessKey) $this->objNarroContextInfo->TextAccessKey = $this->txtTextAccessKey->Text;
 				if ($this->txtSuggestionAccessKey) $this->objNarroContextInfo->SuggestionAccessKey = $this->txtSuggestionAccessKey->Text;
@@ -829,12 +789,6 @@
 				case 'PopularSuggestionIdLabel':
 					if (!$this->lblPopularSuggestionId) return $this->lblPopularSuggestionId_Create();
 					return $this->lblPopularSuggestionId;
-				case 'HasCommentsControl':
-					if (!$this->chkHasComments) return $this->chkHasComments_Create();
-					return $this->chkHasComments;
-				case 'HasCommentsLabel':
-					if (!$this->lblHasComments) return $this->lblHasComments_Create();
-					return $this->lblHasComments;
 				case 'HasSuggestionsControl':
 					if (!$this->chkHasSuggestions) return $this->chkHasSuggestions_Create();
 					return $this->chkHasSuggestions;
@@ -899,8 +853,6 @@
 						return ($this->lstValidSuggestion = QType::Cast($mixValue, 'QControl'));
 					case 'PopularSuggestionIdControl':
 						return ($this->lstPopularSuggestion = QType::Cast($mixValue, 'QControl'));
-					case 'HasCommentsControl':
-						return ($this->chkHasComments = QType::Cast($mixValue, 'QControl'));
 					case 'HasSuggestionsControl':
 						return ($this->chkHasSuggestions = QType::Cast($mixValue, 'QControl'));
 					case 'TextAccessKeyControl':

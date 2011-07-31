@@ -143,6 +143,9 @@
                 else
                     $this->lblContextInfo->Text = sprintf('<b>%s</b>%s<br /><span>%s</span>', $this->objContextInfo->Context->Project->ProjectName, $this->objContextInfo->Context->File->FilePath, $this->objContextInfo->Context->Context);
                 $this->lblContextInfo->HtmlEntities = false;
+
+                if ($this->objContextInfo->Context->Comment)
+                $this->lblContextInfo->Text .= '<br />' . nl2br($this->objContextInfo->Context->Comment);
             }
         }
 

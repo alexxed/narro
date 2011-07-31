@@ -6,13 +6,6 @@
 		QApplicationBase::$ClassFile['narrocontextmetacontrol'] = __META_CONTROLS__ . '/NarroContextMetaControl.class.php';
 		QApplicationBase::$ClassFile['narrocontextdatagrid'] = __META_CONTROLS__ . '/NarroContextDataGrid.class.php';
 
-	// ClassPaths for the NarroContextComment class
-		QApplicationBase::$ClassFile['narrocontextcomment'] = __MODEL__ . '/NarroContextComment.class.php';
-		QApplicationBase::$ClassFile['qqnodenarrocontextcomment'] = __MODEL__ . '/NarroContextComment.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodenarrocontextcomment'] = __MODEL__ . '/NarroContextComment.class.php';
-		QApplicationBase::$ClassFile['narrocontextcommentmetacontrol'] = __META_CONTROLS__ . '/NarroContextCommentMetaControl.class.php';
-		QApplicationBase::$ClassFile['narrocontextcommentdatagrid'] = __META_CONTROLS__ . '/NarroContextCommentDataGrid.class.php';
-
 	// ClassPaths for the NarroContextInfo class
 		QApplicationBase::$ClassFile['narrocontextinfo'] = __MODEL__ . '/NarroContextInfo.class.php';
 		QApplicationBase::$ClassFile['qqnodenarrocontextinfo'] = __MODEL__ . '/NarroContextInfo.class.php';

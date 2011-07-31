@@ -61,7 +61,6 @@
 			$this->dtgNarroContextInfos->MetaAddColumn(QQN::NarroContextInfo()->ValidatorUser);
 			$this->dtgNarroContextInfos->MetaAddColumn(QQN::NarroContextInfo()->ValidSuggestion);
 			$this->dtgNarroContextInfos->MetaAddColumn(QQN::NarroContextInfo()->PopularSuggestion);
-			$this->dtgNarroContextInfos->MetaAddColumn('HasComments');
 			$this->dtgNarroContextInfos->MetaAddColumn('HasSuggestions');
 			$this->dtgNarroContextInfos->MetaAddColumn('TextAccessKey');
 			$this->dtgNarroContextInfos->MetaAddColumn('SuggestionAccessKey');

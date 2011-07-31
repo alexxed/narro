@@ -81,7 +81,6 @@
         __DOCROOT__ . __SUBDIRECTORY__ . '/includes' . '/narro/importer' . PATH_SEPARATOR .
         __DOCROOT__ . __SUBDIRECTORY__ . '/includes' . '/narro/search' . PATH_SEPARATOR .
         __DOCROOT__ . __SUBDIRECTORY__ . '/includes' . '/narro' . PATH_SEPARATOR .
-        __DOCROOT__ . __SUBDIRECTORY__ . '/includes' . '/PEAR' . PATH_SEPARATOR .
         '/usr/share/php' . PATH_SEPARATOR .
         '/usr/share/pear' . PATH_SEPARATOR .
         get_include_path()

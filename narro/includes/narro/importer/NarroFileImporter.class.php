@@ -258,24 +258,6 @@
             else
                 QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the context "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strContext, print_r($arrResult, true)));
 
-            if (!is_null($strComment) && trim($strComment) != '') {
-                $arrResult = QApplication::$PluginHandler->SaveContextComment($strOriginal, $strTranslation, $strContext, $strComment, $this->objFile, $this->objProject);
-                if
-                (
-                    trim($arrResult[3]) != '' &&
-                    $arrResult[0] == $strOriginal &&
-                    $arrResult[1] == $strTranslation &&
-                    $arrResult[2] == $strContext &&
-                    $arrResult[4] == $this->objFile &&
-                    $arrResult[5] == $this->objProject
-                ) {
-
-                    $strComment = $arrResult[3];
-                }
-                else
-                    QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the comment "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strComment, print_r($arrResult, true)));
-            }
-
             $objText = $this->GetText($strOriginal, $strContext);
 
             if (!$objText)
@@ -312,10 +294,9 @@
                 return false;
             }
 
-            $objContext = $this->GetContext($strOriginal, $strContext);
+            $objContext = $this->GetContext($strOriginal, $strContext, trim($strComment));
             if (!$objContext)
                 $objContext = NarroContext::LoadByTextIdContextMd5FileId($objText->TextId, md5($strContext), $this->objFile->FileId);
-
 
             if (!$this->blnOnlySuggestions && !$objContext instanceof NarroContext) {
 
@@ -328,6 +309,7 @@
                 $objContext->Active = 1;
                 $objContext->Modified = QDateTime::Now();
                 $objContext->Created = QDateTime::Now();
+                $objContext->Comment = trim($strComment);
                 try {
                     $objContext->Save();
                 }
@@ -365,7 +347,6 @@
                 $objContextInfo->ContextId = $objContext->ContextId;
                 $objContextInfo->LanguageId = $this->objTargetLanguage->LanguageId;
                 $objContextInfo->HasSuggestions = 0;
-                $objContextInfo->HasComments = 0;
                 $objContextInfo->Created = QDateTime::Now();
                 $blnContextInfoChanged = true;
             }
@@ -507,12 +488,13 @@
          * @param string $strContext
          * @return NarroContext
          */
-        public function GetContext($strOriginal, $strContext) {
+        public function GetContext($strOriginal, $strContext, $strComment) {
             foreach($this->arrContextInfo as $objContextInfo) {
                 if (
                     $objContextInfo->Context->ProjectId == $this->objProject->ProjectId &&
                     $objContextInfo->Context->FileId == $this->objFile->FileId &&
                     $objContextInfo->Context->Context == $strContext &&
+                    $objContextInfo->Context->Comment == $strComment &&
                     $objContextInfo->Context->Text->TextValue == $strOriginal &&
                     $objContextInfo->LanguageId == $this->objTargetLanguage->LanguageId
                 )

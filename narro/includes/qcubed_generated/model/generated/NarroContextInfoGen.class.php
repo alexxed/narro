@@ -21,7 +21,6 @@
 	 * @property integer $ValidatorUserId the value for intValidatorUserId 
 	 * @property integer $ValidSuggestionId the value for intValidSuggestionId 
 	 * @property integer $PopularSuggestionId the value for intPopularSuggestionId 
-	 * @property boolean $HasComments the value for blnHasComments (Not Null)
 	 * @property boolean $HasSuggestions the value for blnHasSuggestions 
 	 * @property string $TextAccessKey the value for strTextAccessKey 
 	 * @property string $SuggestionAccessKey the value for strSuggestionAccessKey 
@@ -86,14 +85,6 @@
 		 */
 		protected $intPopularSuggestionId;
 		const PopularSuggestionIdDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column narro_context_info.has_comments
-		 * @var boolean blnHasComments
-		 */
-		protected $blnHasComments;
-		const HasCommentsDefault = null;
 
 
 		/**
@@ -223,7 +214,6 @@
 			$this->intValidatorUserId = NarroContextInfo::ValidatorUserIdDefault;
 			$this->intValidSuggestionId = NarroContextInfo::ValidSuggestionIdDefault;
 			$this->intPopularSuggestionId = NarroContextInfo::PopularSuggestionIdDefault;
-			$this->blnHasComments = NarroContextInfo::HasCommentsDefault;
 			$this->blnHasSuggestions = NarroContextInfo::HasSuggestionsDefault;
 			$this->strTextAccessKey = NarroContextInfo::TextAccessKeyDefault;
 			$this->strSuggestionAccessKey = NarroContextInfo::SuggestionAccessKeyDefault;
@@ -502,7 +492,6 @@
 			$objBuilder->AddSelectItem($strTableName, 'validator_user_id', $strAliasPrefix . 'validator_user_id');
 			$objBuilder->AddSelectItem($strTableName, 'valid_suggestion_id', $strAliasPrefix . 'valid_suggestion_id');
 			$objBuilder->AddSelectItem($strTableName, 'popular_suggestion_id', $strAliasPrefix . 'popular_suggestion_id');
-			$objBuilder->AddSelectItem($strTableName, 'has_comments', $strAliasPrefix . 'has_comments');
 			$objBuilder->AddSelectItem($strTableName, 'has_suggestions', $strAliasPrefix . 'has_suggestions');
 			$objBuilder->AddSelectItem($strTableName, 'text_access_key', $strAliasPrefix . 'text_access_key');
 			$objBuilder->AddSelectItem($strTableName, 'suggestion_access_key', $strAliasPrefix . 'suggestion_access_key');
@@ -550,8 +539,6 @@
 			$objToReturn->intValidSuggestionId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'popular_suggestion_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'popular_suggestion_id'] : $strAliasPrefix . 'popular_suggestion_id';
 			$objToReturn->intPopularSuggestionId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'has_comments', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'has_comments'] : $strAliasPrefix . 'has_comments';
-			$objToReturn->blnHasComments = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'has_suggestions', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'has_suggestions'] : $strAliasPrefix . 'has_suggestions';
 			$objToReturn->blnHasSuggestions = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'text_access_key', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_access_key'] : $strAliasPrefix . 'text_access_key';
@@ -955,7 +942,6 @@
 							`validator_user_id`,
 							`valid_suggestion_id`,
 							`popular_suggestion_id`,
-							`has_comments`,
 							`has_suggestions`,
 							`text_access_key`,
 							`suggestion_access_key`,
@@ -967,7 +953,6 @@
 							' . $objDatabase->SqlVariable($this->intValidatorUserId) . ',
 							' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
-							' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
 							' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
 							' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . ',
@@ -993,7 +978,6 @@
 							`validator_user_id` = ' . $objDatabase->SqlVariable($this->intValidatorUserId) . ',
 							`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
 							`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
-							`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments) . ',
 							`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
 							`text_access_key` = ' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
 							`suggestion_access_key` = ' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . ',
@@ -1082,7 +1066,6 @@
 			$this->ValidatorUserId = $objReloaded->ValidatorUserId;
 			$this->ValidSuggestionId = $objReloaded->ValidSuggestionId;
 			$this->PopularSuggestionId = $objReloaded->PopularSuggestionId;
-			$this->blnHasComments = $objReloaded->blnHasComments;
 			$this->blnHasSuggestions = $objReloaded->blnHasSuggestions;
 			$this->strTextAccessKey = $objReloaded->strTextAccessKey;
 			$this->strSuggestionAccessKey = $objReloaded->strSuggestionAccessKey;
@@ -1149,13 +1132,6 @@
 					 * @return integer
 					 */
 					return $this->intPopularSuggestionId;
-
-				case 'HasComments':
-					/**
-					 * Gets the value for blnHasComments (Not Null)
-					 * @return boolean
-					 */
-					return $this->blnHasComments;
 
 				case 'HasSuggestions':
 					/**
@@ -1364,19 +1340,6 @@
 					try {
 						$this->objPopularSuggestion = null;
 						return ($this->intPopularSuggestionId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'HasComments':
-					/**
-					 * Sets the value for blnHasComments (Not Null)
-					 * @param boolean $mixValue
-					 * @return boolean
-					 */
-					try {
-						return ($this->blnHasComments = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1654,7 +1617,6 @@
 			$strToReturn .= '<element name="ValidatorUser" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="ValidSuggestion" type="xsd1:NarroSuggestion"/>';
 			$strToReturn .= '<element name="PopularSuggestion" type="xsd1:NarroSuggestion"/>';
-			$strToReturn .= '<element name="HasComments" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="HasSuggestions" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="TextAccessKey" type="xsd:string"/>';
 			$strToReturn .= '<element name="SuggestionAccessKey" type="xsd:string"/>';
@@ -1704,8 +1666,6 @@
 			if ((property_exists($objSoapObject, 'PopularSuggestion')) &&
 				($objSoapObject->PopularSuggestion))
 				$objToReturn->PopularSuggestion = NarroSuggestion::GetObjectFromSoapObject($objSoapObject->PopularSuggestion);
-			if (property_exists($objSoapObject, 'HasComments'))
-				$objToReturn->blnHasComments = $objSoapObject->HasComments;
 			if (property_exists($objSoapObject, 'HasSuggestions'))
 				$objToReturn->blnHasSuggestions = $objSoapObject->HasSuggestions;
 			if (property_exists($objSoapObject, 'TextAccessKey'))
@@ -1778,7 +1738,6 @@
 			$iArray['ValidatorUserId'] = $this->intValidatorUserId;
 			$iArray['ValidSuggestionId'] = $this->intValidSuggestionId;
 			$iArray['PopularSuggestionId'] = $this->intPopularSuggestionId;
-			$iArray['HasComments'] = $this->blnHasComments;
 			$iArray['HasSuggestions'] = $this->blnHasSuggestions;
 			$iArray['TextAccessKey'] = $this->strTextAccessKey;
 			$iArray['SuggestionAccessKey'] = $this->strSuggestionAccessKey;
@@ -1816,7 +1775,6 @@
      * @property-read QQNodeNarroSuggestion $ValidSuggestion
      * @property-read QQNode $PopularSuggestionId
      * @property-read QQNodeNarroSuggestion $PopularSuggestion
-     * @property-read QQNode $HasComments
      * @property-read QQNode $HasSuggestions
      * @property-read QQNode $TextAccessKey
      * @property-read QQNode $SuggestionAccessKey
@@ -1855,8 +1813,6 @@
 					return new QQNode('popular_suggestion_id', 'PopularSuggestionId', 'Integer', $this);
 				case 'PopularSuggestion':
 					return new QQNodeNarroSuggestion('popular_suggestion_id', 'PopularSuggestion', 'Integer', $this);
-				case 'HasComments':
-					return new QQNode('has_comments', 'HasComments', 'Bit', $this);
 				case 'HasSuggestions':
 					return new QQNode('has_suggestions', 'HasSuggestions', 'Bit', $this);
 				case 'TextAccessKey':
@@ -1893,7 +1849,6 @@
      * @property-read QQNodeNarroSuggestion $ValidSuggestion
      * @property-read QQNode $PopularSuggestionId
      * @property-read QQNodeNarroSuggestion $PopularSuggestion
-     * @property-read QQNode $HasComments
      * @property-read QQNode $HasSuggestions
      * @property-read QQNode $TextAccessKey
      * @property-read QQNode $SuggestionAccessKey
@@ -1932,8 +1887,6 @@
 					return new QQNode('popular_suggestion_id', 'PopularSuggestionId', 'integer', $this);
 				case 'PopularSuggestion':
 					return new QQNodeNarroSuggestion('popular_suggestion_id', 'PopularSuggestion', 'integer', $this);
-				case 'HasComments':
-					return new QQNode('has_comments', 'HasComments', 'boolean', $this);
 				case 'HasSuggestions':
 					return new QQNode('has_suggestions', 'HasSuggestions', 'boolean', $this);
 				case 'TextAccessKey':
