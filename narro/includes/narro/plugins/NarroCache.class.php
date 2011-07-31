@@ -24,9 +24,6 @@
         }
 
         public function ImportProject(NarroProject $objProject) {
-            $objProject->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
-            $objProject->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
-            $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
 
             foreach(QApplication::$Cache->getIdsMatchingTags(array('Project' . $objProject->ProjectId, 'total_texts_file')) as $strCacheId) {
                 QApplication::$Cache->remove($strCacheId);
@@ -58,20 +55,10 @@
         }
 
         public function DisapproveSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            $objFile->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
-            $objProject->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
-            $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
-            $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
-
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
         public function ApproveSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            $objFile->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
-            $objProject->DeleteApprovedTextsByLanguage(QApplication::GetLanguageId());
-            $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
-            $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
-
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 

@@ -20,18 +20,18 @@
 
     class NarroProjectFileListForm extends NarroGenericProjectForm {
         protected $objParentFile;
-        
+
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             $this->pnlSelectedTab = new NarroProjectFileListPanel($this->objProject, $this->objParentFile, $this->pnlMainTab);
             $this->pnlSelectedTab->ChangeDirectory(QApplication::QueryString('pf'));
-            
+
             $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Files'));
             $this->pnlMainTab->SelectedTab = t('Files');
         }
     }
-    
+
     NarroProjectFileListForm::Run('NarroProjectFileListForm');
 
 ?>

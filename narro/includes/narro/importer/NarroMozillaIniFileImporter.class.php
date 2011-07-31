@@ -54,8 +54,6 @@
 
             $arrSourceKey = $this->FileAsArray($strTemplateFile);
 
-            QFirebug::error(array($arrSourceKey, $arrTransKey));
-
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
                 QApplication::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));

@@ -394,7 +394,7 @@
 
                 foreach($this->Form->GetAllControls() as $ctl) {
                     if ($ctl instanceof NarroContextInfoEditor) {
-                        if ($ctl->TranslationList && $ctl->Text->Text == $this->lblText->Text) {
+                        if ($ctl->Text->Text == $this->lblText->Text) {
                             $ctl->btnHelp_Click($this->Form->FormId, $ctl->btnHelp->ControlId, '');
                         }
                     }

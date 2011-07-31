@@ -30,7 +30,6 @@
         public $chkApproveImportedTranslations;
         public $chkApproveOnlyNotApproved;
         public $chkImportOnlyTranslations;
-        public $chkImportUnchangedFiles;
 
         public $btnImport;
 
@@ -84,10 +83,6 @@
             }
             $this->chkApproveOnlyNotApproved->Checked = true;
 
-            $this->chkImportUnchangedFiles = new QCheckBox($this);
-            $this->chkImportUnchangedFiles->Name = t('Import the files that are marked as not changed');
-            $this->chkImportUnchangedFiles->Checked = true;
-
             $this->chkImportOnlyTranslations = new QCheckBox($this);
             $this->chkImportOnlyTranslations->Name = t('Do not add texts, just add found translations for existing texts');
             if (QApplication::HasPermission('Can import project', $this->objProject->ProjectId)) {
@@ -114,7 +109,7 @@
             $this->btnImport->Text = t('Import');
             $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('if (document.getElementById(\'%s\')) document.getElementById(\'%s\').innerHTML=\'\'', $this->lblImport->ControlId, $this->lblImport->ControlId)));
             $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\';this.value=\'%s\'', t('Please wait...'))));
-            if (QApplication::$UseAjax)
+            if (QApplication::$UseAjax && QApplication::$User->getPreferenceValueByName('Launch imports and exports in background') == 'Yes')
                 $this->btnImport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnImport_Click'));
             else {
                 $this->btnImport->ActionParameter = 2;
@@ -179,7 +174,9 @@
                     $this->pnlLogViewer->MarkAsModified();
                 }
             }
-            elseif ($strParameter == 2 || !function_exists('proc_open')) {
+            elseif ($strParameter == 2) {
+                QApplication::ClearLog();
+                NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'import');
                 set_time_limit(0);
 
                 if (file_exists($strProcLogFile))
@@ -196,9 +193,6 @@
                 /**
                  * Get boolean options
                  */
-                $objNarroImporter->DeactivateFiles = !$this->chkImportOnlyTranslations->Checked;
-                $objNarroImporter->DeactivateContexts = !$this->chkImportOnlyTranslations->Checked;
-                $objNarroImporter->ImportUnchangedFiles = $this->chkImportUnchangedFiles->Checked;
                 $objNarroImporter->CheckEqual = true;
                 $objNarroImporter->Approve = $this->chkApproveImportedTranslations->Checked;
                 $objNarroImporter->ApproveAlreadyApproved = !$this->chkApproveOnlyNotApproved->Checked;
@@ -249,7 +243,7 @@
                             ' --import --minloglevel 3 --project %d --user %d --check-equal ' .
                             (($this->chkApproveImportedTranslations->Checked)?'--approve ':'') .
                             (($this->chkApproveOnlyNotApproved->Checked)?'':'--approve-already-approved ') .
-                            (($this->chkImportUnchangedFiles->Checked)?'--import-unchanged-files ':'') .
+                            '--import-unchanged-files ' .
                             (($this->chkImportOnlyTranslations->Checked || !QApplication::HasPermission('Can import project', $this->objProject->ProjectId))?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                             ' --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s"',
                         $this->objProject->ProjectId,

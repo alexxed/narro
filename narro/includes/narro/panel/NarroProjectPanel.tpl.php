@@ -31,10 +31,10 @@ $_CONTROL->pnlProjectReport->Render();
 <table width="1024">
 <tr>
 <td width="50%" valign="top" align="center" style="padding:1%">
-<?php $_CONTROL->btnShowTranslators->Render(); $_CONTROL->dtgTranslators->Render()?>
+<?php $_CONTROL->dtgTranslators->Render()?>
 </td>
 <td width="50%" valign="top" align="center" style="padding:1%">
-<?php $_CONTROL->btnShowReviewers->Render(); $_CONTROL->dtgReviewers->Render()?>
+<?php $_CONTROL->dtgReviewers->Render()?>
 </td>
 </tr>
 </table>

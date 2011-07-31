@@ -38,6 +38,7 @@ if (!defined('__PREPEND_INCLUDED__')) {
     QApplication::RegisterPreference('Other languages', 'text', t('Other languages that you want to check for suggestions, separated by spaces'), 'ro');
     QApplication::RegisterPreference('Force ascii letters as access keys', 'option', t('Access keys are the letters that are underlined in menus and on buttons that you can use to quickly get to that button or menu item'), 'No', array('Yes', 'No'));
     QApplication::RegisterPreference('Use AJAX', 'option', t('AJAX (transfers in background) will make Narro very fast. If you have problems because of this, choose No'), 'Yes', array('Yes', 'No'));
+    QApplication::RegisterPreference('Launch imports and exports in background', 'option', t('Launch imports and exports in background'), 'Yes', array('Yes', 'No'));
 
     QApplication::InitializeLogging();
     QApplication::InitializeTranslationEngine();

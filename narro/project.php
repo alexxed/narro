@@ -21,7 +21,7 @@
     class NarroProjectForm extends NarroGenericProjectForm {
         protected function Form_Create() {
             parent::Form_Create();
-            
+
             $this->pnlMainTab->replaceTab(new NarroProjectPanel($this->objProject, $this->pnlMainTab), t('Overview'));
         }
     }

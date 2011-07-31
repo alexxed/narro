@@ -58,10 +58,13 @@
 
         protected function SetupNarroProject() {
 
+
             // Lookup Object PK information from Query String (if applicable)
             $intProjectId = QApplication::QueryString('p');
+
             if ($intProjectId) {
-                $this->objProject = NarroProject::Load(($intProjectId));
+                $this->objProject = NarroProject::Load($intProjectId);
+
 
                 if (!$this->objProject) {
                     QApplication::Redirect(NarroLink::ProjectList());

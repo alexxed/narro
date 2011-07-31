@@ -25,5 +25,5 @@
     &nbsp;&nbsp;&nbsp;
     <?php $_CONTROL->chkShowFolders->Render();?>  <label for="<?php echo $_CONTROL->chkShowFolders->ControlId; ?>"><?php echo t('Show folders') ?></label>
 </div>
-<?php $_CONTROL->dtgNarroFile->Render() ?>
+<?php $_CONTROL->dtgFile->Render() ?>
 

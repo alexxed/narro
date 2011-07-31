@@ -251,12 +251,13 @@
             global $argv;
 
             if (strstr($_SERVER['REQUEST_URI'], '_devtools')) return false;
+            if (strstr($_SERVER['REQUEST_URI'], 'image.php')) return false;
 
             QApplication::$SourceLanguage = NarroLanguage::LoadByLanguageCode(__SOURCE_LANGUAGE_CODE__);
 
             // language passed through the l parameter
-            if (QApplication::QueryString('l'))
-                QApplication::$TargetLanguage = NarroLanguage::LoadByLanguageCode(QApplication::QueryString('l'));
+            if ($_REQUEST['l'])
+                QApplication::$TargetLanguage = NarroLanguage::LoadByLanguageCode($_REQUEST['l']);
             // language passed through cli parameter
             elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
                 QApplication::$TargetLanguage = NarroLanguage::LoadByLanguageCode($strLanguage);
@@ -298,8 +299,8 @@
             require_once('Zend/Log/Writer/Firebug.php');
             require_once('Zend/Log/Writer/Syslog.php');
             // project log via browser
-            if (is_numeric(QApplication::QueryString('p')))
-                QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, QApplication::QueryString('p'), QApplication::$TargetLanguage->LanguageCode);
+            if (is_numeric($_REQUEST['p']))
+                QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $_REQUEST['p'], QApplication::$TargetLanguage->LanguageCode);
             // project log via cli
             elseif (isset($argv) && $intProjectId = $argv[array_search('--project', $argv)+1])
                 QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $intProjectId, $argv[array_search('--translation-lang', $argv)+1]);
@@ -314,8 +315,10 @@
             if (isset($argv[0]))
                 QApplication::$Logger->addWriter(new Zend_Log_Writer_Syslog());
 
-            if (SERVER_INSTANCE == 'dev')
+            if (SERVER_INSTANCE == 'dev') {
                 QApplication::$Logger->addWriter(new Zend_Log_Writer_QFirebug());
+                QApplication::$Logger->addWriter(new Zend_Log_Writer_Syslog());
+            }
         }
 
         public static function InitializeTranslationEngine() {

@@ -18,9 +18,10 @@
 
     class NarroProjectFileListPanel extends QPanel {
         protected $objProject;
+        protected $objFile;
         public $pnlBreadcrumb;
 
-        public $dtgNarroFile;
+        public $dtgFile;
         protected $objParentFile;
 
         // DataGrid Columns
@@ -48,44 +49,13 @@
 
             $this->objProject = $objNarroProject;
 
-            // Setup DataGrid Columns
-            $this->colFileName = new QDataGridColumn(t('File name'), '<?= $_CONTROL->ParentControl->dtgNarroFile_FileNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->FileName, false)));
-            $this->colFileName->HtmlEntities = false;
-
-            $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_CONTROL->ParentControl->dtgNarroFile_PercentTranslated_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->ProgressPercent), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->ProgressPercent, false)));
-            $this->colPercentTranslated->HtmlEntities = false;
-            $this->colPercentTranslated->Width = 160;
-
-            $this->colExport = new QDataGridColumn(t('Export'), '<?= $_CONTROL->ParentControl->dtgNarroFile_ExportColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export, false)));
-            $this->colExport->HtmlEntities = false;
-
-            // Setup DataGrid
-            $this->dtgNarroFile = new NarroDataGrid($this);
-
-            // Datagrid Paginator
-            $this->dtgNarroFile->Paginator = new QPaginator($this->dtgNarroFile);
-            $this->dtgNarroFile->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
-            $this->dtgNarroFile->PaginatorAlternate = new QPaginator($this->dtgNarroFile);
-            $this->dtgNarroFile->SortColumnIndex = 0;
-
-            // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroFile->UseAjax = false;
-
-            // Specify the local databind method this datagrid will use
-            $this->dtgNarroFile->SetDataBinder('dtgNarroFile_Bind', $this);
-
-            $this->dtgNarroFile->AddColumn($this->colFileName);
-            $this->dtgNarroFile->AddColumn($this->colPercentTranslated);
-            if (QApplication::HasPermission('Can manage project', $this->objProject->ProjectId, QApplication::GetLanguageId()))
-                $this->dtgNarroFile->AddColumn($this->colExport);
-
             $this->chkShowHierarchy = new QCheckBox($this);
             $this->chkShowHierarchy->Checked = (QApplication::QueryString('s') == '');
-            $this->chkShowHierarchy->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgNarroFile_Bind'));
+            $this->chkShowHierarchy->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgFile_SetConditions'));
 
             $this->chkShowFolders = new QCheckBox($this);
             $this->chkShowFolders->Checked = true;
-            $this->chkShowFolders->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgNarroFile_Bind'));
+            $this->chkShowFolders->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'dtgFile_SetConditions'));
 
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroProjectFileListPanel.tpl.php';
 
@@ -99,8 +69,10 @@
             $this->txtSearch = new QTextBox($this);
             $this->txtSearch->Text = QApplication::QueryString('s');
 
-            if ($this->txtSearch->Text != '')
-                $this->ChangeDirectory('');
+            $this->ChangeDirectory(QApplication::QueryString('pf'));
+
+            $this->dtgFile_Create();
+            $this->dtgFile_SetConditions();
 
         }
 
@@ -150,40 +122,59 @@
             }
         }
 
-        public function dtgNarroFile_PercentTranslated_Render(NarroFile $objFile) {
-            $objProgressBar = new NarroTranslationProgressBar($this->dtgNarroFile);
+        public function dtgFile_PercentTranslated_Render(NarroFileProgress $objProgress) {
 
-            $objProgressBar->Total = $objFile->CountAllTextsByLanguage();
-            $objProgressBar->Translated = $objFile->CountApprovedTextsByLanguage();
-            $objProgressBar->Fuzzy = $objFile->CountTranslatedTextsByLanguage();
+            $strOutput = '';
 
-            $sOutput = $objProgressBar->Render(false);
+            if (!$objProgressBar = $this->dtgFile->GetChildControl('prg' . $objProgress->FileId)) {
+                $objWaitIcon = new QWaitIcon($this->dtgFile, 'wait' . $objProgress->FileId);
+                $objWaitIcon->Text = t('Counting texts and translations...');
 
-            if ($objFile->TypeId == NarroFileType::Folder)
-                return $sOutput;
+                $objProgressBar = new NarroTranslationProgressBar($this->dtgFile, 'prg' . $objProgress->FileId);
+                $objProgressBar->ActionParameter = $objProgress->FileId;
+                $objProgressBar->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click', $objWaitIcon));
+            }
 
-            if ($objProgressBar->Translated + $objProgressBar->Fuzzy < $objProgressBar->Total)
-                return NarroLink::FileTextList($objFile->ProjectId, $objFile->FileId, NarroTextListForm::SHOW_UNTRANSLATED_TEXTS, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
-            elseif ($objProgressBar->Translated < $objProgressBar->Total)
-                return NarroLink::FileTextList($objFile->ProjectId, $objFile->FileId, NarroTextListForm::SHOW_TEXTS_THAT_REQUIRE_APPROVAL, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
-            else
-                return NarroLink::FileTextList($objFile->ProjectId, $objFile->FileId, NarroTextListForm::SHOW_ALL_TEXTS, NarroTextListForm::SEARCH_TEXTS, '', $sOutput);
+            $objWaitIcon = $this->dtgFile->GetChildControl('wait' . $objProgress->FileId);
+
+            $objProgressBar->Total = $objProgress->TotalTextCount;
+            $objProgressBar->Translated = $objProgress->ApprovedTextCount;
+            $objProgressBar->Fuzzy = $objProgress->FuzzyTextCount;
+
+            $strOutput .= $objProgressBar->Render(false);
+            $strOutput .= $objWaitIcon->Render(false);
+
+            QApplication::$PluginHandler->DisplayInFileListInProgressColumn($objProgress->File);
+
+            if (is_array(QApplication::$PluginHandler->PluginReturnValues)) {
+                $strOutput .= '';
+                foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
+                    if (count($mixReturnValue) == 2 && $mixReturnValue[0] instanceof NarroProject && is_string($mixReturnValue[1]) && $mixReturnValue[1] != '') {
+                        $strOutput .= sprintf('<span style="font-size:small" title="%s">%s</span><br />', $strPluginName, $mixReturnValue[1]);
+                    }
+                }
+                $strOutput .= '';
+            }
+
+            $this->btnRefresh_Click('', '', $objProgress->FileId);
+
+            return $strOutput;
 
         }
 
-        public function dtgNarroFile_FileNameColumn_Render(NarroFile $objFile) {
-            if ($objFile->TypeId == NarroFileType::Folder)
+        public function dtgFile_FileNameColumn_Render(NarroFileProgress $objProgress) {
+            if ($objProgress->File->TypeId == NarroFileType::Folder)
                 return sprintf('<img src="%s" style="vertical-align:middle" /> %s',
-                    'assets/images/folder.png',
+                    __NARRO_IMAGE_ASSETS__ . '/folder.png',
                     NarroLink::ProjectFileList(
                         $this->objProject->ProjectId,
-                        $objFile->FilePath,
+                        $objProgress->File->FilePath,
                         null,
-                        $objFile->FileName
+                        $objProgress->File->FileName
                     )
                 );
             else {
-                switch($objFile->TypeId) {
+                switch($objProgress->File->TypeId) {
                     case NarroFileType::MozillaDtd:
                             $strIcon = 'dtd_file.gif';
                             break;
@@ -198,10 +189,10 @@
                 }
 
                 return sprintf('<img src="%s" style="vertical-align:middle" /> %s',
-                    __IMAGE_ASSETS__ . '/../../images/' . $strIcon,
+                    __NARRO_IMAGE_ASSETS__ . '/' . $strIcon,
                     NarroLink::Translate(
-                        $objFile->ProjectId,
-                        $objFile->FilePath,
+                        $objProgress->File->ProjectId,
+                        $objProgress->File->FilePath,
                         NarroTranslatePanel::SHOW_ALL,
                         null,
                         null,
@@ -209,30 +200,30 @@
                         null,
                         null,
                         null,
-                        $objFile->FileName
+                        $objProgress->File->FileName
                     )
                 );
             }
         }
 
-        public function dtgNarroFile_ExportColumn_Render(NarroFile $objFile) {
-            if ($objFile->TypeId == NarroFileType::Folder)
+        public function dtgFile_ExportColumn_Render(NarroFileProgress $objProgress) {
+            if ($objProgress->File->TypeId == NarroFileType::Folder)
                 return '';
 
-            $strControlId = 'chkExport' . $this->dtgNarroFile->CurrentRowIndex;
-            $chkExport = $this->dtgNarroFile->GetChildControl($strControlId);
+            $strControlId = 'chkExport' . $objProgress->FileId;
+            $chkExport = $this->dtgFile->GetChildControl($strControlId);
             if (!$chkExport) {
-                $chkExport = new QCheckBox($this, $strControlId);
+                $chkExport = new QCheckBox($this->dtgFile, $strControlId);
                 $chkExport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkExport_Click'));
             }
-            $chkExport->ActionParameter = $objFile->FileId;
-            $chkExport->Checked = NarroFileProgress::CountByFileIdLanguageIdExport($objFile->FileId, QApplication::GetLanguageId(), 1);
+            $chkExport->ActionParameter = $objProgress->File->FileId;
+            $chkExport->Checked = NarroFileProgress::CountByFileIdLanguageIdExport($objProgress->File->FileId, QApplication::GetLanguageId(), 1);
 
             return $chkExport->Render(false);
         }
 
         public function chkExport_Click($strFormId, $strControlId, $intFileId) {
-            $chkExport = $this->dtgNarroFile->GetChildControl($strControlId);
+            $chkExport = $this->dtgFile->GetChildControl($strControlId);
             $objFileProgress = NarroFileProgress::LoadByFileIdLanguageId($intFileId, QApplication::GetLanguageId());
             if ($objFileProgress) {
                 $objFileProgress->Export = !$objFileProgress->Export;
@@ -240,80 +231,94 @@
             }
         }
 
-        public function dtgNarroFile_Bind() {
-            // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
+        protected function dtgFile_Create() {
+            $this->colExport = new QDataGridColumn(t('Export'), '<?= $_CONTROL->ParentControl->dtgFile_ExportColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export, false)));
+            $this->colExport->HtmlEntities = false;
+
+            // Setup DataGrid
+            $this->dtgFile = new NarroFileProgressDataGrid($this);
+
+            // Datagrid Paginator
+            $this->dtgFile->Paginator = new QPaginator($this->dtgFile);
+            $this->dtgFile->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
+            $this->dtgFile->PaginatorAlternate = new QPaginator($this->dtgFile);
+            $this->dtgFile->SortColumnIndex = 0;
+            $this->dtgFile->ShowFilter = false;
+
+            $this->colFileName = $this->dtgFile->MetaAddColumn(QQN::NarroFileProgress()->File->FileName);
+            $this->colFileName->HtmlEntities = false;
+            $this->colFileName->Html = '<?= $_CONTROL->ParentControl->dtgFile_FileNameColumn_Render($_ITEM) ?>';
+            $this->colFileName->Name = t('File name');
+
+            $this->colFileName = $this->dtgFile->MetaAddColumn(QQN::NarroFileProgress()->ProgressPercent);
+            $this->colFileName->HtmlEntities = false;
+            $this->colFileName->Html = '<?= $_CONTROL->ParentControl->dtgFile_PercentTranslated_Render($_ITEM) ?>';
+            $this->colFileName->Name = t('Translation Progress');
+
+            if (QApplication::HasPermission('Can manage project', $this->objProject->ProjectId, QApplication::GetLanguageId()))
+                $this->dtgFile->AddColumn($this->colExport);
+        }
+
+        public function dtgFile_SetConditions() {
 
             if ($this->txtSearch->Text == '')
                 $objCommonCondition = QQ::AndCondition(
-                    QQ::Equal(QQN::NarroFile()->Active, 1),
-                    QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId)
+                    QQ::Equal(QQN::NarroFileProgress()->File->Active, 1),
+                    QQ::Equal(QQN::NarroFileProgress()->LanguageId, QApplication::GetLanguageId()),
+                    QQ::Equal(QQN::NarroFileProgress()->File->ProjectId, $this->objProject->ProjectId)
                 );
             else {
                 $objCommonCondition = QQ::AndCondition(
-                    QQ::Equal(QQN::NarroFile()->Active, 1),
-                    QQ::Equal(QQN::NarroFile()->ProjectId, $this->objProject->ProjectId),
-                    QQ::Like(QQN::NarroFile()->FileName, sprintf('%%%s%%', $this->txtSearch->Text))
+                    QQ::Equal(QQN::NarroFileProgress()->File->Active, 1),
+                    QQ::Equal(QQN::NarroFileProgress()->LanguageId, QApplication::GetLanguageId()),
+                    QQ::Equal(QQN::NarroFileProgress()->File->ProjectId, $this->objProject->ProjectId),
+                    QQ::Like(QQN::NarroFileProgress()->File->FileName, sprintf('%%%s%%', $this->txtSearch->Text))
                 );
-                $this->chkShowHierarchy->Checked = false;
             }
 
             // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
             if (!$this->chkShowHierarchy->Checked) {
                 if ($this->chkShowFolders->Checked)
-                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount($objCommonCondition);
+                    $this->dtgFile->AdditionalConditions = $objCommonCondition;
                 else
-                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder) ));
+                    $this->dtgFile->AdditionalConditions = QQ::AndCondition($objCommonCondition, QQ::NotEqual(QQN::NarroFileProgress()->File->TypeId, NarroFileType::Folder));
             }
             elseif ($this->objParentFile) {
-                $objParentCondition = QQ::Equal(QQN::NarroFile()->ParentId, $this->objParentFile->FileId);
+                $objParentCondition = QQ::Equal(QQN::NarroFileProgress()->File->ParentId, $this->objParentFile->FileId);
                 if ($this->chkShowFolders->Checked)
-                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, $objParentCondition));
+                    $this->dtgFile->AdditionalConditions = QQ::AndCondition($objCommonCondition, $objParentCondition);
                 else
-                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, $objParentCondition, QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder)));
+                    $this->dtgFile->AdditionalConditions = QQ::AndCondition($objCommonCondition, $objParentCondition, QQ::NotEqual(QQN::NarroFileProgress()->File->TypeId, NarroFileType::Folder));
             }
             else {
-                $objParentCondition = QQ::IsNull(QQN::NarroFile()->ParentId);
+                $objParentCondition = QQ::IsNull(QQN::NarroFileProgress()->File->ParentId);
                 if ($this->chkShowFolders->Checked)
-                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, $objParentCondition));
+                    $this->dtgFile->AdditionalConditions = QQ::AndCondition($objCommonCondition, $objParentCondition);
                 else
-                    $this->dtgNarroFile->TotalItemCount = NarroFile::QueryCount(QQ::AndCondition($objCommonCondition, $objParentCondition, QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder)));
+                    $this->dtgFile->AdditionalConditions = QQ::AndCondition($objCommonCondition, $objParentCondition, QQ::NotEqual(QQN::NarroFileProgress()->File->TypeId, NarroFileType::Folder));
             }
 
-            // Setup the $objClauses Array
-            $objClauses = array();
-
-            // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
-            // the OrderByClause to the $objClauses array
-            if ($objClause = $this->dtgNarroFile->OrderByClause)
-                array_push($objClauses, $objClause);
-
-            // Add the LimitClause information, as well
-            if ($objClause = $this->dtgNarroFile->LimitClause)
-                array_push($objClauses, $objClause);
-
-            // Set the DataSource to be the array of all NarroFile objects, given the clauses above
-            if (!$this->chkShowHierarchy->Checked) {
-                if ($this->chkShowFolders->Checked)
-                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray($objCommonCondition, $objClauses);
-                else
-                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder) ), $objClauses);
-            }
-            elseif ($this->objParentFile) {
-                if ($this->chkShowFolders->Checked)
-                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::Equal(QQN::NarroFile()->ParentId, $this->objParentFile->FileId)), $objClauses);
-                else
-                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::Equal(QQN::NarroFile()->ParentId, $this->objParentFile->FileId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder)), $objClauses);
-            }
-            else {
-                if ($this->chkShowFolders->Checked)
-                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::IsNull(QQN::NarroFile()->ParentId)), $objClauses);
-                else
-                    $this->dtgNarroFile->DataSource = NarroFile::QueryArray(QQ::AndCondition($objCommonCondition, QQ::IsNull(QQN::NarroFile()->ParentId), QQ::NotEqual(QQN::NarroFile()->TypeId, NarroFileType::Folder)), $objClauses);
-            }
+            $this->MarkAsModified();
         }
 
         public function btnSearch_Click() {
             QApplication::Redirect(NarroLink::ProjectFileList($this->objProject->ProjectId, ($this->objParentFile instanceof NarroFile)?$this->objParentFile->FilePath:'', $this->txtSearch->Text));
+        }
+
+        public function btnRefresh_Click($strFormId, $strControlId, $intFileId) {
+            $objFile = NarroFile::Load($intFileId);
+            if ($objFile) {
+                $intTotalTexts = $objFile->CountAllTextsByLanguage();
+                $intApprovedTexts = $objFile->CountApprovedTextsByLanguage();
+                $intTranslatedTexts = $objFile->CountTranslatedTextsByLanguage();
+                $objProgressBar = $this->dtgFile->GetChildControl('prg' . $intFileId);
+                if ($objProgressBar) {
+                    $objProgressBar->Total = $intTotalTexts;
+                    $objProgressBar->Translated = $intApprovedTexts;
+                    $objProgressBar->Fuzzy = $intTranslatedTexts;
+                    $objProgressBar->MarkAsModified();
+                }
+            }
         }
     }
 ?>

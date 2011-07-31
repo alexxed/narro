@@ -92,4 +92,6 @@
 
     define ('SERVER_INSTANCE', 'dev');
     define ('NARRO_VERSION', '1.0beta');
+
+    define ('__ZEND_CACHE_ENABLED__', true);
 ?>

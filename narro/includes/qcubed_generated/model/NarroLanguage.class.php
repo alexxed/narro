@@ -145,9 +145,6 @@
             foreach(NarroProject::LoadAll() as $objProject) {
                 $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($objProject->ProjectId, $this->LanguageId);
                 if (!$objProjectProgress) {
-                    $objProject->DeleteTranslatedTextsByLanguage($this->LanguageId);
-                    $objProject->DeleteAllTextsCacheByLanguage($this->LanguageId);
-                    $objProject->DeleteApprovedTextsByLanguage($this->LanguageId);
                     $objProject->CountAllTextsByLanguage($this->LanguageId);
                 }
             }

@@ -180,13 +180,15 @@
             $strOutput = '';
 
             if (!$objProgressBar = $this->dtgProjectList->GetChildControl('prg' . $objProjectProgress->ProjectId)) {
-                $objWaitIcon = new QWaitIcon($this->dtgProjectList);
+                $objWaitIcon = new QWaitIcon($this->dtgProjectList, 'wait' . $objProjectProgress->ProjectId);
                 $objWaitIcon->Text = t('Counting texts and translations...');
 
                 $objProgressBar = new NarroTranslationProgressBar($this->dtgProjectList, 'prg' . $objProjectProgress->ProjectId);
                 $objProgressBar->ActionParameter = $objProjectProgress->ProjectId;
                 $objProgressBar->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click', $objWaitIcon));
             }
+
+            $objWaitIcon = $this->dtgProjectList->GetChildControl('wait' . $objProjectProgress->ProjectId);
 
             $objProgressBar->Total = $objProjectProgress->TotalTextCount;
             $objProgressBar->Translated = $objProjectProgress->FuzzyTextCount;

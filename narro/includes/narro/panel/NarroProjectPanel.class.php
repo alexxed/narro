@@ -27,9 +27,6 @@
         public $dtgTranslators;
         public $dtgReviewers;
 
-        public $btnShowTranslators;
-        public $btnShowReviewers;
-
         protected function SetupNarroProject(NarroProject $objNarroProject) {
             $this->objProject = $objNarroProject;
         }
@@ -48,69 +45,69 @@
 
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroProjectPanel.tpl.php';
 
-            // Setup DataGrid Columns
-            $colUsername = new QDataGridColumn(t('Username'), '<?= NarroLink::UserProfile($_ITEM->UserId, $_ITEM->Username) ?>');
-            $colUsername->HtmlEntities = false;
-
-            $colWordsTranslated = new QDataGridColumn(t('Words Translated'), '<?= $_CONTROL->ParentControl->colWorldsTranslated_Render($_ITEM) ?>');
-            $colWordsTranslated->HtmlEntities = false;
-
             // Setup DataGrid
-            $this->dtgTranslators = new NarroDataGrid($this);
+            $this->dtgTranslators = new NarroUserDataGrid($this);
             $this->dtgTranslators->SetCustomStyle('width', '100%');
-            $this->dtgTranslators->AlwaysShowPaginator = true;
-            $this->dtgTranslators->Display = false;
+            $this->dtgTranslators->ShowFilter = false;
 
-            // Datagrid Paginator
-            $this->dtgTranslators->Paginator = new QPaginator($this->dtgTranslators);
-            $this->dtgTranslators->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
-            $this->dtgTranslators->SortColumnIndex = 0;
+            $this->dtgTranslators->SortColumnIndex = 1;
+            $this->dtgTranslators->SortDirection = 1;
 
             $this->dtgTranslators->Title = t('Translators');
 
-            // Specify the local databind method this datagrid will use
-            $this->dtgTranslators->SetDataBinder('dtgTranslators_Bind', $this);
-
-            $this->dtgTranslators->AddColumn($colUsername);
-            $this->dtgTranslators->AddColumn($colWordsTranslated);
-
-            // Setup DataGrid Columns
-            $colUsername = new QDataGridColumn(t('Username'), '<?= NarroLink::UserProfile($_ITEM->ValidatorUserId, $_ITEM->ValidatorUser->Username) ?>');
+            $colUsername = $this->dtgTranslators->MetaAddColumn('Username');
+            $colUsername->Name = t('Username');
             $colUsername->HtmlEntities = false;
+            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM->UserId, $_ITEM->Username) ?>';
+            $this->dtgTranslators->AdditionalConditions = QQ::AndCondition(
+                QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->Text->NarroContextAsText->ProjectId, $this->objProject->ProjectId),
+                QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->LanguageId, QApplication::GetLanguageId()),
+                QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
+            );
 
-            $colTextsApproved = new QDataGridColumn(t('Texts Approved'), '<?= $_ITEM->GetVirtualAttribute("TotalTextsApproved") ?>');
+            $this->dtgTranslators->AdditionalClauses = array(
+                QQ::Sum(QQN::NarroUser()->NarroSuggestionAsUser->SuggestionWordCount, 'translation_word_count'),
+                QQ::GroupBy(QQN::NarroUser()->UserId)
+            );
 
-            //NarroLink::ProjectTextList($this->objProject->ProjectId, NarroTextListForm::SHOW_APPROVED_TEXTS)
+            $colWordCount = new QDataGridColumn(t('Words'));
+            $colWordCount->Html = '<?=$_ITEM->GetVirtualAttribute("translation_word_count");?>';
+            $colWordCount->OrderByClause =  QQ::OrderBy('__translation_word_count', true);
+            $colWordCount->ReverseOrderByClause =  QQ::OrderBy('__translation_word_count', false);
+            $this->dtgTranslators->AddColumn($colWordCount);
 
             // Setup DataGrid
-            $this->dtgReviewers = new NarroDataGrid($this);
+            $this->dtgReviewers = new NarroUserDataGrid($this);
             $this->dtgReviewers->SetCustomStyle('width', '100%');
-            $this->dtgReviewers->AlwaysShowPaginator = true;
-            $this->dtgReviewers->Display = false;
+            $this->dtgReviewers->ShowFilter = false;
 
-            // Datagrid Paginator
-            $this->dtgReviewers->Paginator = new QPaginator($this->dtgReviewers);
-            $this->dtgReviewers->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
-            $this->dtgReviewers->SortColumnIndex = 0;
+            $this->dtgReviewers->SortColumnIndex = 1;
+            $this->dtgReviewers->SortDirection = 1;
 
             $this->dtgReviewers->Title = t('Reviewers');
 
-            // Specify the local databind method this datagrid will use
-            $this->dtgReviewers->SetDataBinder('dtgReviewers_Bind', $this);
-            $this->dtgReviewers->AddColumn($colUsername);
-            $this->dtgReviewers->AddColumn($colTextsApproved);
+            $colUsername = $this->dtgReviewers->MetaAddColumn('Username');
+            $colUsername->Name = t('Username');
+            $colUsername->HtmlEntities = false;
+            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM->UserId, $_ITEM->Username) ?>';
+            $this->dtgReviewers->AdditionalConditions = QQ::AndCondition(
+                QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->Context->ProjectId, $this->objProject->ProjectId),
+                QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->LanguageId, QApplication::GetLanguageId()),
+                QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
+            );
+
+            $this->dtgReviewers->AdditionalClauses = array(
+                QQ::Count(QQN::NarroUser()->NarroContextInfoAsValidatorUser->ContextInfoId, 'translations_reviewed'),
+                QQ::GroupBy(QQN::NarroUser()->NarroContextInfoAsValidatorUser->ValidatorUserId)
+            );
+
+            $colWordCount = new QDataGridColumn(t('Reviews'));
+            $colWordCount->Html = '<?=$_ITEM->GetVirtualAttribute("translations_reviewed");?>';
+            $colWordCount->OrderByClause =  QQ::OrderBy('__translations_reviewed', true);
+            $colWordCount->ReverseOrderByClause =  QQ::OrderBy('__translations_reviewed', false);
+            $this->dtgReviewers->AddColumn($colWordCount);
 
             $this->pnlProjectReport = new NarroProjectReportPanel($this->objProject, $this);
-
-            $this->btnShowTranslators = new QButton($this);
-            $this->btnShowTranslators->Text = t('Show Translators');
-            $this->btnShowTranslators->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
-            $this->btnShowTranslators->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnShowTranslators_Click'));
-
-            $this->btnShowReviewers = new QButton($this);
-            $this->btnShowReviewers->Text = t('Show Reviewers');
-            $this->btnShowReviewers->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
-            $this->btnShowReviewers->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnShowReviewers_Click'));
         }
 
         public function dtgTranslators_Bind() {

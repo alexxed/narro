@@ -54,10 +54,7 @@
 <br />
 <?php
     }
-    $_CONTROL->chkImportUnchangedFiles->Render();
 ?>
-<label for="<?php echo $_CONTROL->chkImportUnchangedFiles->ControlId?>"><?php echo $_CONTROL->chkImportUnchangedFiles->Name?></label>
-<br />
 </div>
 <?php
 $_CONTROL->pnlLogViewer->Render();

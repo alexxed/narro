@@ -53,7 +53,7 @@
          */
         protected $blnOnlySuggestions = false;
 
-        protected $blnImportUnchangedFiles = false;
+        protected $blnImportUnchangedFiles = true;
 
         /**
          * whether to export the source text if no translation is found
@@ -106,25 +106,20 @@
 
             if ($objDbResult->CountRows()) {
                 $objRow = $objDbResult->GetNextRow();
-                $this->arrFileId = array_keys(explode(',', $objRow->GetColumn('file_id_list')));
+                $this->arrFileId = explode(',', $objRow->GetColumn('file_id_list'));
             }
+
+            $this->arrFileId = array_flip($this->arrFileId);
 
             return $this->arrFileId;
         }
 
         public function MarkUnusedFilesAsInactive() {
-            NarroFile::GetDatabase()->NonQuery(
-                sprintf(
-                    'UPDATE narro_file SET active=1 WHERE project_id=%d',
-                    $this->objProject->ProjectId
-                )
-            );
-
             if (count($this->arrFileId)) {
                 NarroFile::GetDatabase()->NonQuery(
                     sprintf(
                         'UPDATE narro_file SET active=0 WHERE file_id IN (%s)',
-                        join(',', $this->arrFileId)
+                        join(',', array_keys($this->arrFileId))
                     )
                 );
             }
@@ -332,6 +327,9 @@
                         }
                         $arrDirectories[$strPath] = $objFile->FileId;
                         unset($this->arrFileId[$objFile->FileId]);
+                        $objFile->CountAllTextsByLanguage();
+                        $objFile->CountApprovedTextsByLanguage();
+                        $objFile->CountTranslatedTextsByLanguage();
                     }
                     $intParentId = $arrDirectories[$strPath];
                 }
@@ -382,6 +380,9 @@
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
                 unset($this->arrFileId[$objFile->FileId]);
+                $objFile->CountAllTextsByLanguage();
+                $objFile->CountApprovedTextsByLanguage();
+                $objFile->CountTranslatedTextsByLanguage();
 
                 $strTranslatedFileToImport = str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToImport);
 
@@ -401,7 +402,7 @@
                 }
 
                 $intElapsedTime = time() - $intTime;
-                QApplication::LogInfo(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
+                QApplication::LogDebug(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
 
                 NarroProgress::SetProgress(intval((($intFileNo+1)*100)/$intTotalFilesToProcess), $this->objProject->ProjectId, 'import', $intTotalFilesToProcess, 1);
 
@@ -429,7 +430,7 @@
             }
 
             if ($strTranslatedFile)
-                QApplication::LogInfo(
+                QApplication::LogDebug(
                     sprintf(
                         t('Starting to import from "%s" and translations from "%s"'),
                         str_replace($this->objProject->DefaultTemplatePath, '', $strTemplateFile),
@@ -437,7 +438,7 @@
                     )
                 );
             else
-                QApplication::LogInfo(
+                QApplication::LogDebug(
                     sprintf(
                         t('Starting to import from "%s", no translations file'),
                         str_replace($this->objProject->DefaultTemplatePath, '', $strTemplateFile)
@@ -483,6 +484,7 @@
             $objFileImporter->File = $objFile;
 
             $blnFileImportResult = $objFileImporter->ImportFile($strTemplateFile, $strTranslatedFile);
+
             $objFileImporter->MarkUnusedContextsAsInactive();
 
             QApplication::$PluginHandler->AfterImportFile($objFile);
