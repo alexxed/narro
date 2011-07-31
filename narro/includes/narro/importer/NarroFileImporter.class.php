@@ -814,7 +814,7 @@
                         $this->GetSugestionArray();
                         QApplication::LogDebug(
                             sprintf(
-                                'Importing "%s" with blnCheckEqual=%s, blnApprove=%s, blnApproveAlreadyApproved=%s, blnOnlySuggestions=%s, intExportedSuggestion=%s',
+                                'Processing "%s" with blnCheckEqual=%s, blnApprove=%s, blnApproveAlreadyApproved=%s, blnOnlySuggestions=%s, intExportedSuggestion=%s',
                                 $mixValue->FileName,
                                 (int) $this->blnCheckEqual,
                                 (int) $this->blnApprove,

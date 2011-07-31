@@ -78,10 +78,12 @@
 
             $this->btnExport = new QButton($this);
             $this->btnExport->Text = t('Export');
-            if (QApplication::$UseAjax)
+            if (QApplication::$UseAjax && QApplication::$User->getPreferenceValueByName('Launch imports and exports in background') == 'Yes')
                 $this->btnExport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnExport_Click'));
-            else
+            else {
+                $this->btnExport->ActionParameter = 2;
                 $this->btnExport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnExport_Click'));
+            }
 
             if (NarroUtils::IsProcessRunning('export', $this->objProject->ProjectId)) {
                 $this->btnExport->Visible = false;
@@ -134,7 +136,10 @@
                     $this->pnlLogViewer->MarkAsModified();
                 }
             }
-            elseif ($strParameter == 2 || !function_exists('proc_open')) {
+            elseif ($strParameter == 2) {
+                QApplication::ClearLog();
+                NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'import');
+
                 set_time_limit(0);
 
                 if ($this->chkCleanDirectory->Checked)

@@ -662,8 +662,10 @@
                 }
 
                 QApplication::LogDebug(sprintf('Exporting file "%s" using template "%s"', $objFile->FileName, $strTranslatedFileToExport));
-
+                $intTime = time();
                 $this->ExportFile($objFile, $strFileToExport, $strTranslatedFileToExport);
+                $intElapsedTime = time() - $intTime;
+                QApplication::LogDebug(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToExport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
                 NarroImportStatistics::$arrStatistics['Exported files']++;
 
                 NarroProgress::SetProgress((int) ceil(($intFileNo*100)/$intTotalFilesToProcess), $this->objProject->ProjectId, 'export');
@@ -718,17 +720,18 @@
                         break;
             }
 
-            QApplication::LogInfo(
+            QApplication::LogDebug(
                 sprintf(
                     t('Starting to export "%s"'),
                     str_replace($this->objProject->DefaultTranslationPath, '', $strTranslatedFile)
                 )
             );
             $objFileImporter->File = $objFile;
+            QApplication::$PluginHandler->BeforeExportFile($objFile);
             $blnMixResult = $objFileImporter->ExportFile($strTemplateFile, $strTranslatedFile);
+            QApplication::$PluginHandler->AfterExportFile($objFile);
             unset($this->arrFileId[$objFile->FileId]);
 
-            QApplication::$PluginHandler->ImportFile($objFile);
             return $blnMixResult;
         }
 

@@ -174,6 +174,7 @@
                     )
                 );
             else {
+
                 switch($objProgress->File->TypeId) {
                     case NarroFileType::MozillaDtd:
                             $strIcon = 'dtd_file.gif';

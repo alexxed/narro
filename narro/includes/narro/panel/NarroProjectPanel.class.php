@@ -32,6 +32,7 @@
         }
 
         public function __construct(NarroProject $objNarroProject, $objParentObject, $strControlId = null) {
+
             // Call the Parent
             try {
                 parent::__construct($objParentObject, $strControlId);

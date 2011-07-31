@@ -130,6 +130,8 @@
         }
 
         public function ExportFile($strTemplateFile, $strTranslatedFile) {
+            $intTime = time();
+
             $arrSourceKey = $this->FileAsArray($strTemplateFile);
 
             $intElapsedTime = time() - $intTime;
@@ -146,6 +148,14 @@
 
                 if ($this->objFile->Header)
                     fwrite($hndTranslationFile, $this->objFile->Header . "\n");
+
+                $arrUsers = array();
+                foreach($this->objFile->LoadArrayOfAuthors($this->objTargetLanguage->LanguageId) as $objUser) {
+                    $arrUsers[] = sprintf("# %s <%s>", $objUser->Username, $objUser->Email);
+                }
+
+                if (count($arrUsers))
+                    fwrite($hndTranslationFile, sprintf("<!--\n# Translator(s):\n#\n%s\n-->\n", join("\n", $arrUsers)));
 
                 foreach($arrSourceKey as $strContext=>$arrData) {
                     $arrLine = array();

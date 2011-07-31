@@ -87,108 +87,63 @@
         }
 
         public function ExportFile($strTemplateFile, $strTranslatedFile) {
-            // get the modified date of the file and don't query for texts that were not modified after that unless there's no translation
-            if (file_exists($strTranslatedFile)) {
-                $intModifiedTime = filemtime($strTranslatedFile);
-                $arrTransKeys = $this->FileAsArray($strTranslatedFile);
-            }
+            $intTime = time();
 
             $arrSourceKey = $this->FileAsArray($strTemplateFile);
 
-            if (!count($arrSourceKey)) {
-                QApplication::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
-                copy($strTemplateFile, $strTranslatedFile);
-                chmod($strTranslatedFile, 0666);
-                return false;
-            }
+            $intElapsedTime = time() - $intTime;
+            if ($intElapsedTime > 0)
+                QApplication::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));
 
-            foreach($arrSourceKey as $intPos=>$strLine) {
-                if (preg_match('/^\s*([\@0-9a-zA-Z\-\_\.\?\{\}]+)\s*=\s*(.*)\s*$/s', trim($strLine), $arrMatches)) {
-                    $arrTemplate[trim($arrMatches[1])] = trim($arrMatches[2]);
-                    $arrTemplateLines[trim($arrMatches[1])] = $arrMatches[0];
-                    $arrTemplateComment[trim($arrMatches[1])] = $strComment;
-                    $strComment = '';
+            QApplication::LogDebug(sprintf('Found %d contexts in file %s.', count($arrSourceKey), $this->objFile->FileName));
+
+            if (is_array($arrSourceKey)) {
+                $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
+                $arrTranslation = $this->GetTranslations($arrSourceKey);
+
+                $hndTranslationFile = fopen($strTranslatedFile, 'w');
+
+                if ($this->objFile->Header)
+                    fwrite($hndTranslationFile, $this->objFile->Header . "\n");
+
+                $arrUsers = array();
+                foreach($this->objFile->LoadArrayOfAuthors($this->objTargetLanguage->LanguageId) as $objUser) {
+                    $arrUsers[] = sprintf("# %s <%s>", $objUser->Username, $objUser->Email);
                 }
-                elseif (trim($strLine) != '' && $strLine[0] != '#')
-                    QApplication::LogDebug(sprintf('Skipped line "%s" from the template "%s".', $strLine, $this->objFile->FileName));
-                elseif ($strLine[0] == '#') {
-                    $strComment .= "\n" . $strLine;
+
+                if (count($arrUsers))
+                    fwrite($hndTranslationFile, sprintf("# Translator(s):\n#\n%s\n#\n", join("\n", $arrUsers)));
+
+                foreach($arrSourceKey as $strContext=>$arrData) {
+                    $arrLine = array();
+
+                    if (strlen($arrData['before_line']) > 0)
+                        $arrLine[] = $arrData['before_line'];
+
+                    if (!is_null($arrData['comment']))
+                        $arrLine[] = $arrData['comment'] . "\n";
+
+                    if (isset($arrTranslation[$strContext]))
+                        $arrLine[] = str_replace($arrData['text'], $arrTranslation[$strContext], $arrData['full_line']) . "\n";
+                    else
+                        if ($this->blnSkipUntranslated == false)
+                            $arrLine[] = $arrData['full_line'] . "\n";
+                        else
+                            continue;
+
+                    fwrite($hndTranslationFile, join('', $arrLine));
                 }
+
+                fclose($hndTranslationFile);
+                NarroUtils::Chmod($strTranslatedFile, 0666);
+                return true;
             }
-
-            $strTranslateContents = '';
-
-            if (!isset($arrTemplate) || count($arrTemplate) < 1) {
+            else {
                 QApplication::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 NarroUtils::Chmod($strTranslatedFile, 0666);
                 return false;
             }
-
-            $arrTranslation = $this->GetTranslations($this->objFile, $arrTemplate);
-
-            $strTranslateContents = $strTemplateContents;
-
-            foreach($arrTemplate as $strKey=>$strOriginalText) {
-
-                if (isset($arrTranslation[$strKey])) {
-
-                    $arrResult = QApplication::$PluginHandler->ExportSuggestion($strOriginalText, $arrTranslation[$strKey], $strKey, $this->objFile, $this->objProject);
-
-                    if
-                    (
-                        $arrResult[1] != '' &&
-                        $arrResult[0] == $strOriginalText &&
-                        $arrResult[2] == $strKey &&
-                        $arrResult[3] == $this->objFile &&
-                        $arrResult[4] == $this->objProject
-                    ) {
-
-                        $arrTranslation[$strKey] = $arrResult[1];
-                    }
-                    else
-                        QApplication::LogWarn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $arrTranslation[$strKey], var_export($arrResult, true)));
-
-                    if (preg_match('/[\@A-Z0-9a-z\.\_\-\?\{\}]+(\s*=\s*)/', $arrTemplateLines[$strKey], $arrMiddleMatches)) {
-                        $strGlue = $arrMiddleMatches[1];
-                    }
-                    else {
-                        QApplication::LogWarn(sprintf('Glue faield: "%s"', $arrTemplateLines[$strKey]));
-                        $strGlue = '=';
-                    }
-
-                    if (strstr($arrTranslation[$strKey], "\n")) {
-                        QApplication::LogWarn(sprintf('Skpping translation "%s" because it has a newline in it', $arrTranslation[$strKey]));
-                        continue;
-                    }
-
-                    if (strstr($strTranslateContents, $strKey . $strGlue . $strOriginalText))
-                        $strTranslateContents = str_replace($strKey . $strGlue . $strOriginalText, $strKey . $strGlue . $arrTranslation[$strKey], $strTranslateContents);
-                    else
-                        QApplication::LogWarn(sprintf('Can\'t find "%s" in the file "%s"', $strKey . $strGlue . $strOriginalText, $this->objFile->FileName));
-
-                }
-                else {
-                    QApplication::LogDebug(sprintf('Couldn\'t find the key "%s" in the translations, using the original text.', $strKey, $this->objFile->FileName));
-                    NarroImportStatistics::$arrStatistics['Texts kept as original']++;
-                    if ($this->blnSkipUntranslated == true) {
-                        if (isset($arrTemplateComment[$strKey]) && $arrTemplateComment[$strKey] != '') {
-                            $strTranslateContents = str_replace($arrTemplateComment[$strKey] . "\n", "\n", $strTranslateContents);
-                            $strTranslateContents = str_replace("\n" . $strKey . $strGlue . $strOriginalText . "\n", "\n", $strTranslateContents);
-                        }
-                    }
-                }
-            }
-
-            if (file_exists($strTranslatedFile) && !is_writable($strTranslatedFile) && !unlink($strTranslatedFile)) {
-                QApplication::LogError(sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
-            }
-
-            if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
-                QApplication::LogError(sprintf('Can\'t write to file "%s"', $strTranslatedFile));
-            }
-
-            @chmod($strTranslatedFile, 0666);
         }
     }
 ?>
