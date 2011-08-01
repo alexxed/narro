@@ -189,31 +189,48 @@
             return true;
         }
 
-        public function LoadArrayOfAuthors($intLanguageId = null) {
+        public function GetTranslatorArray($intLanguageId = null) {
             if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
 
-            return NarroUser::QueryArray(
+            $arrUser = NarroUser::QueryArray(
                 QQ::AndCondition(
-                    QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID),
-                    QQ::OrCondition(
-                        QQ::AndCondition(
-                            QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->LanguageId, $intLanguageId),
-                            QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->FileId, $this->FileId)
-                        ),
-                        QQ::AndCondition(
-                            QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->LanguageId, $intLanguageId),
-                            QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->Context->FileId, $this->FileId)
-                        )
-                    )
+                    QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->LanguageId, $intLanguageId),
+                    QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->FileId, $this->FileId)
                 ),
                 array(
-                    QQ::Distinct(),
-                    QQ::OrderBy(QQN::NarroUser()->Username)
+                    QQ::Distinct()
                 )
             );
+
+            foreach($arrUser as $intKey=>$objUser) {
+                if ($objUser->UserId == NarroUser::ANONYMOUS_USER_ID)
+                    unset($arrUser[$intKey]);
+            }
+
+            return $arrUser;
         }
 
+        public function GetReviewerArray($intLanguageId = null) {
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
 
+            $arrUser = NarroUser::QueryArray(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->LanguageId, $intLanguageId),
+                    QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->Context->FileId, $this->FileId)
+                ),
+                array(
+                    QQ::Distinct()
+                )
+            );
+
+            foreach($arrUser as $intKey=>$objUser) {
+                if ($objUser->UserId == NarroUser::ANONYMOUS_USER_ID)
+                    unset($arrUser[$intKey]);
+            }
+
+            return $arrUser;
+
+        }
 
     }
 ?>

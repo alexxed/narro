@@ -291,7 +291,7 @@
             define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$User->getPreferenceValueByName('Application language') . '/LC_MESSAGES');
         }
 
-        public static function InitializeLogging() {
+        public static function InitializeLogging($intProjectId = null) {
             global $argv;
 
             require_once('Zend/Log.php');
@@ -299,14 +299,20 @@
             require_once('Zend/Log/Writer/Firebug.php');
             require_once('Zend/Log/Writer/Syslog.php');
             // project log via browser
-            if (is_numeric($_REQUEST['p']))
-                QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $_REQUEST['p'], QApplication::$TargetLanguage->LanguageCode);
+            if (is_numeric($_REQUEST['p'])) {
+                $intProjectId = $_REQUEST['p'];
+                $strLanguageCode = $_REQUEST['l'];
+            }
             // project log via cli
             elseif (isset($argv) && $intProjectId = $argv[array_search('--project', $argv)+1])
-                QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $intProjectId, $argv[array_search('--translation-lang', $argv)+1]);
-            // application log
+                $strLanguageCode = $argv[array_search('--translation-lang', $argv)+1];
+
+            if (!is_null($intProjectId) && !is_null($strLanguageCode))
+                QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $intProjectId, $strLanguageCode);
+            elseif (!is_null($intProjectId))
+                QApplication::$LogFile = sprintf('%s/app-%s.log', __TMP_PATH__, $strLanguageCode);
             else
-                QApplication::$LogFile = sprintf('%s/app-%s.log', __TMP_PATH__, QApplication::$TargetLanguage->LanguageCode);
+                QApplication::$LogFile = sprintf('%s/app.log', __TMP_PATH__, $intProjectId);
 
             @chmod(QApplication::$LogFile, 0666);
 

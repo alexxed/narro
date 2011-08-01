@@ -90,7 +90,7 @@
     ini_set('mbstring.internal_encoding', 'UTF-8');
 
     define ('SERVER_INSTANCE', 'dev');
-    define ('NARRO_VERSION', '1.0beta');
+    define ('NARRO_VERSION', '2.0');
 
     define ('__ZEND_CACHE_ENABLED__', true);
 ?>

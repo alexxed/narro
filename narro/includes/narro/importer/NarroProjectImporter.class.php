@@ -115,11 +115,12 @@
         }
 
         public function MarkUnusedFilesAsInactive() {
-            if (count($this->arrFileId)) {
+            $strFileId = trim(join(',', array_keys($this->arrFileId)));
+            if ($strFileId != '') {
                 NarroFile::GetDatabase()->NonQuery(
                     sprintf(
                         'UPDATE narro_file SET active=0 WHERE file_id IN (%s)',
-                        join(',', array_keys($this->arrFileId))
+                        $strFileId
                     )
                 );
             }
@@ -271,7 +272,7 @@
 
             if (is_array($arrFiles))
             foreach($arrFiles as $intFileNo=>$strFileToImport) {
-                if (preg_match('/\/CVS|\/\.svn|\/\.hg|\/\.git/', $strFileToImport)) continue;
+                if (preg_match('/\/CVS|\/\.svn|\/\.hg.*|\/\.git/', $strFileToImport)) continue;
 
                 $strFilePath = str_replace($this->strTemplatePath, '', $strFileToImport);
                 $arrFileParts = explode('/', $strFilePath);
@@ -685,7 +686,6 @@
                 QApplication::LogWarn(sprintf('Not exporting %s based on the file settings.', $strTemplateFile));
                 return false;
             }
-
 
             switch($objFile->TypeId) {
                 case NarroFileType::MozillaDtd:

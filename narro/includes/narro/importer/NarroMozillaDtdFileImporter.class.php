@@ -150,12 +150,20 @@
                     fwrite($hndTranslationFile, $this->objFile->Header . "\n");
 
                 $arrUsers = array();
-                foreach($this->objFile->LoadArrayOfAuthors($this->objTargetLanguage->LanguageId) as $objUser) {
+                foreach($this->objFile->GetTranslatorArray($this->objTargetLanguage->LanguageId) as $objUser) {
                     $arrUsers[] = sprintf("# %s <%s>", $objUser->Username, $objUser->Email);
                 }
 
                 if (count($arrUsers))
-                    fwrite($hndTranslationFile, sprintf("<!--\n# Translator(s):\n#\n%s\n-->\n", join("\n", $arrUsers)));
+                    fwrite($hndTranslationFile, sprintf("<!--\n# Translator(s):\n#\n%s\n#\n-->\n", join("\n", $arrUsers)));
+
+                $arrUsers = array();
+                foreach($this->objFile->GetReviewerArray($this->objTargetLanguage->LanguageId) as $objUser) {
+                    $arrUsers[] = sprintf("# %s <%s>", $objUser->Username, $objUser->Email);
+                }
+
+                if (count($arrUsers))
+                    fwrite($hndTranslationFile, sprintf("<!--\n# Reviewer(s):\n#\n%s\n#\n-->\n", join("\n", $arrUsers)));
 
                 foreach($arrSourceKey as $strContext=>$arrData) {
                     $arrLine = array();

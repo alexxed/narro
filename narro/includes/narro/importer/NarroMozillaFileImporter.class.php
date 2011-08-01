@@ -17,6 +17,8 @@
      */
     abstract class NarroMozillaFileImporter extends NarroFileImporter {
         protected function FileAsArray($strFile) {
+            $intTime = time();
+
             if (!file_exists($strFile)) {
                 QApplication::LogInfo(sprintf(t('%s does not exist'), $strFile));
                 return false;
@@ -93,6 +95,8 @@
                     $arrLinesBefore[] = $strLine . "\n";
                 }
             }
+
+            QApplication::LogDebug(sprintf('Converted file to array in %s second(s)', (time() - $intTime)));
 
             return $arrKeys;
         }
