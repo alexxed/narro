@@ -28,6 +28,8 @@
 	 * @property-read QLabel $ContextMd5Label
 	 * @property QTextBox $CommentControl
 	 * @property-read QLabel $CommentLabel
+	 * @property QTextBox $CommentMd5Control
+	 * @property-read QLabel $CommentMd5Label
 	 * @property QListBox $FileIdControl
 	 * @property-read QLabel $FileIdLabel
 	 * @property QDateTimePicker $CreatedControl
@@ -95,6 +97,11 @@
 		 */
 		protected $txtComment;
 		/**
+		 * @var QTextBox txtCommentMd5
+		 * @access protected
+		 */
+		protected $txtCommentMd5;
+		/**
 		 * @var QListBox lstFile
 		 * @access protected
 		 */
@@ -141,6 +148,11 @@
 		 * @access protected
 		 */
 		protected $lblComment;
+		/**
+		 * @var QLabel lblCommentMd5
+		 * @access protected
+		 */
+		protected $lblCommentMd5;
 		/**
 		 * @var QLabel lblFileId
 		 * @access protected
@@ -422,6 +434,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtCommentMd5
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtCommentMd5_Create($strControlId = null) {
+			$this->txtCommentMd5 = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtCommentMd5->Name = QApplication::Translate('Comment Md 5');
+			$this->txtCommentMd5->Text = $this->objNarroContext->CommentMd5;
+			$this->txtCommentMd5->MaxLength = NarroContext::CommentMd5MaxLength;
+			return $this->txtCommentMd5;
+		}
+
+		/**
+		 * Create and setup QLabel lblCommentMd5
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblCommentMd5_Create($strControlId = null) {
+			$this->lblCommentMd5 = new QLabel($this->objParentObject, $strControlId);
+			$this->lblCommentMd5->Name = QApplication::Translate('Comment Md 5');
+			$this->lblCommentMd5->Text = $this->objNarroContext->CommentMd5;
+			return $this->lblCommentMd5;
+		}
+
+		/**
 		 * Create and setup QListBox lstFile
 		 * @param string $strControlId optional ControlId to use
 		 * @return QListBox
@@ -591,6 +628,9 @@
 			if ($this->txtComment) $this->txtComment->Text = $this->objNarroContext->Comment;
 			if ($this->lblComment) $this->lblComment->Text = $this->objNarroContext->Comment;
 
+			if ($this->txtCommentMd5) $this->txtCommentMd5->Text = $this->objNarroContext->CommentMd5;
+			if ($this->lblCommentMd5) $this->lblCommentMd5->Text = $this->objNarroContext->CommentMd5;
+
 			if ($this->lstFile) {
 					$this->lstFile->RemoveAllItems();
 				if (!$this->blnEditMode)
@@ -642,6 +682,7 @@
 				if ($this->txtContext) $this->objNarroContext->Context = $this->txtContext->Text;
 				if ($this->txtContextMd5) $this->objNarroContext->ContextMd5 = $this->txtContextMd5->Text;
 				if ($this->txtComment) $this->objNarroContext->Comment = $this->txtComment->Text;
+				if ($this->txtCommentMd5) $this->objNarroContext->CommentMd5 = $this->txtCommentMd5->Text;
 				if ($this->lstFile) $this->objNarroContext->FileId = $this->lstFile->SelectedValue;
 				if ($this->calCreated) $this->objNarroContext->Created = $this->calCreated->DateTime;
 				if ($this->calModified) $this->objNarroContext->Modified = $this->calModified->DateTime;
@@ -724,6 +765,12 @@
 				case 'CommentLabel':
 					if (!$this->lblComment) return $this->lblComment_Create();
 					return $this->lblComment;
+				case 'CommentMd5Control':
+					if (!$this->txtCommentMd5) return $this->txtCommentMd5_Create();
+					return $this->txtCommentMd5;
+				case 'CommentMd5Label':
+					if (!$this->lblCommentMd5) return $this->lblCommentMd5_Create();
+					return $this->lblCommentMd5;
 				case 'FileIdControl':
 					if (!$this->lstFile) return $this->lstFile_Create();
 					return $this->lstFile;
@@ -782,6 +829,8 @@
 						return ($this->txtContextMd5 = QType::Cast($mixValue, 'QControl'));
 					case 'CommentControl':
 						return ($this->txtComment = QType::Cast($mixValue, 'QControl'));
+					case 'CommentMd5Control':
+						return ($this->txtCommentMd5 = QType::Cast($mixValue, 'QControl'));
 					case 'FileIdControl':
 						return ($this->lstFile = QType::Cast($mixValue, 'QControl'));
 					case 'CreatedControl':

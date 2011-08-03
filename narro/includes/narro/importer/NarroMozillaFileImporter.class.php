@@ -34,65 +34,35 @@
 
             $arrFile = explode("\n", $strFileContent);
 
+            unset($strFileContent);
+
             $arrKeys = array();
-            $arrComment = array();
-            $arrLinesBefore = array();
-            $strComment = null;
-            $strLineOnMultipleRows = '';
+            $strPreviousLines = '';
+            $strFileHeader = '';
+            $blnFirstEntityFound = false;
+            $blnHeaderFound = false;
+
             foreach($arrFile as $intPos=>$strLine) {
-                // If the line is a comment
-                if ($this->IsComment($strLine)) {
-                    // build the comment until one valid key/value is found
-                    $arrComment[] = $strLine;
-                    continue;
+                if ($blnHeaderFound == false && $blnFirstEntityFound == false && $strLine == '' && $strPreviousLines != '') {
+                    $this->objFile->Header = $strPreviousLines;
+                    $this->objFile->Save();
+                    $blnHeaderFound = true;
+
+                    $strPreviousLines = '';
                 }
 
-                // if the line is empty, add it to the lines before
-                if (trim($strLine) == '') {
-                    if (count($arrKeys) == 0 && count($arrComment) > 0) {
-                        // Found the file header
-                        $this->objFile->Header = join("\n", $arrComment);
-                        $this->objFile->Save();
-                    }
-                    $arrComment = array();
-                    $arrLinesBefore[] = "\n";
-                    continue;
-                }
+                $strPreProcessedLine = $this->PreProcessLine($strLine);
+                $strLineToProcess = $strPreviousLines . $strPreProcessedLine;
 
-                if ($strLineOnMultipleRows !== '') {
-                    $strLine = $strLineOnMultipleRows . $strLine;
-                }
+                $mixResult = $this->ProcessLine($strLineToProcess);
 
-                // prepare the line, comments and lines before if necessary
-                $arrProcessedLine = $this->PreProcessLine($strLine, $arrComment, $arrLinesBefore);
-                if ($arrProcessedLine === false) {
-                    // read lines until the line is preprocessed successfully
-                    $strLineOnMultipleRows .= $strLine;
-                    continue;
+                if ($mixResult instanceof NarroFileEntity) {
+                    $arrKeys[$mixResult->Key] = $mixResult;
+                    $strPreviousLines = '';
+                    $blnFirstEntityFound = true;
                 }
                 else {
-                    list($strLine, $arrComment, $arrLinesBefore) = $arrProcessedLine;
-                    $strLineOnMultipleRows = '';
-                }
-
-
-                // process the line
-                list($arrData, $arrComment, $arrLinesBefore) = $this->ProcessLine($strLine, $arrComment, $arrLinesBefore);
-                if ($arrData) {
-                    if (count($arrComment))
-                        $strComment = join("\n", $arrComment);
-
-                    // The key is the context and usually unique in ini/properties files
-                    $arrKeys[$arrData['key']] = array('text' => $arrData['value'], 'comment' => $strComment, 'full_line' => $strLine, 'before_line' => join('', $arrLinesBefore));
-
-                    // we got all we need, reset the arrays
-                    $arrComment = array();
-                    $arrLinesBefore = array();
-                    $strComment = null;
-                }
-                else {
-                    QFirebug::warn(sprintf('Processing the line "%s" from %s failed, skipping it', $strLine, $this->objFile->FileName));
-                    $arrLinesBefore[] = $strLine . "\n";
+                    $strPreviousLines = $strPreviousLines . $strLine . "\n";
                 }
             }
 
@@ -108,8 +78,8 @@
          */
         public function GetAccessKeys($arrTexts) {
             if (is_array($arrTexts)) {
-                foreach($arrTexts as $strContext=>$arrData) {
-                    $strAccKey = $arrData['text'];
+                foreach($arrTexts as $strContext=>$objEntity) {
+                    $strAccKey = $objEntity->Value;
                     if (stristr($strContext, 'accesskey')) {
                         /**
                          * if this is an accesskey, look for the label
@@ -149,7 +119,7 @@
                                 /**
                                  * strip mozilla entities when looking for an acceptable access key
                                  */
-                                $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]['text']);
+                                $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]->Value);
                                 /**
                                  * search for the accesskey in the label
                                  * the case of the access keys doesn't matter in Mozilla, so it's a insensitive search
@@ -163,19 +133,19 @@
                                     if ($intKeySensitivePos !== false)
                                         $intPos = $intKeySensitivePos;
 
-                                    $arrTexts[$strLabelCtx]['access_key'] = mb_substr($strOriginalText, $intPos, 1);
-                                    QApplication::LogDebug(sprintf('Found access key %s, using it', $arrTexts[$strLabelCtx]['access_key']));
+                                    $arrTexts[$strLabelCtx]->AccessKey = mb_substr($strOriginalText, $intPos, 1);
+                                    QApplication::LogDebug(sprintf('Found access key %s, using it', $arrTexts[$strLabelCtx]->AccessKey));
                                 }
                                 elseif (preg_match('/[a-z]/i', $strOriginalText, $arrMatches)) {
-                                    $arrTexts[$strLabelCtx]['access_key'] = $arrMatches[0];
+                                    $arrTexts[$strLabelCtx]->AccessKey = $arrMatches[0];
                                     QApplication::LogDebug(sprintf('Using as access key the first ascii letter from the translation, %s', $arrMatches[0]));
                                 } else {
-                                    $arrTexts[$strLabelCtx]['access_key'] = $strAccKey;
+                                    $arrTexts[$strLabelCtx]->AccessKey = $strAccKey;
                                     QApplication::LogWarn(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
                                 }
 
-                                $arrTexts[$strContext]['label_ctx'] = $strLabelCtx;
-                                $arrTexts[$strLabelCtx]['access_key_ctx'] = $strContext;
+                                $arrTexts[$strContext]->LabelCtx = $strLabelCtx;
+                                $arrTexts[$strLabelCtx]->AccessKeyCtx = $strContext;
 
                             }
                             else {
@@ -222,15 +192,62 @@
                 }
 
                 if ($objNarroContextInfo->TextAccessKey) {
-                    if ($objNarroContextInfo->SuggestionAccessKey && isset($arrTemplate[$objNarroContextInfo->Context->Context]['access_key_ctx'])) {
-                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]['access_key_ctx']] = $objNarroContextInfo->SuggestionAccessKey;
+                    if ($objNarroContextInfo->SuggestionAccessKey && isset($arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx)) {
+                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx] = $objNarroContextInfo->SuggestionAccessKey;
                     }
                     else
-                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]['access_key_ctx']] = $objNarroContextInfo->TextAccessKey;
+                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx] = $objNarroContextInfo->TextAccessKey;
                 }
             }
 
             return $arrTranslation;
+        }
+
+        public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
+            $intTime = time();
+
+            if ($strTranslatedFile)
+                $arrTransKey = $this->FileAsArray($strTranslatedFile);
+
+            $arrSourceKey = $this->FileAsArray($strTemplateFile);
+
+            $intElapsedTime = time() - $intTime;
+            if ($intElapsedTime > 0)
+                QApplication::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));
+
+            QApplication::LogDebug(sprintf('Found %d contexts in file %s.', count($arrSourceKey), $this->objFile->FileName));
+
+            if (is_array($arrSourceKey)) {
+                $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
+                if (isset($arrTransKey))
+                    $arrTransKey = $this->GetAccessKeys($arrTransKey);
+
+                foreach($arrSourceKey as $strKey=>$objEntity) {
+                    // if it's a matched access key, keep going
+                    if (isset($objEntity->LabelCtx))
+                        continue;
+
+                    if (strstr($objEntity->Comment, 'DONT_TRANSLATE') !== false)
+                        continue;
+
+                    $this->AddTranslation(
+                                $objEntity->Value,
+                                $objEntity->AccessKey,
+                                isset($arrTransKey[$strKey])?$arrTransKey[$strKey]->Value:null,
+                                isset($arrTransKey[$strKey])?(isset($arrTransKey[$strKey]->AccessKey)?$arrTransKey[$strKey]->AccessKey:null):null,
+                                trim($strKey),
+                                (isset($objEntity->AccessKeyCtx))?
+                                    trim($objEntity->Comment) . "\n" .
+                                    trim($arrSourceKey[$objEntity->AccessKeyCtx]->Comment):
+                                    trim($objEntity->Comment)
+                    );
+                }
+            }
+            else {
+                QApplication::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                copy($strTemplateFile, $strTranslatedFile);
+                chmod($strTranslatedFile, 0666);
+            }
         }
     }
 ?>

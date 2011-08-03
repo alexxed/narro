@@ -113,7 +113,7 @@
         }
 
         public static function LogDebug($strError) {
-            if (QApplication::$Logger)
+            if (QApplication::$Logger && SERVER_INSTANCE == 'dev')
                 QApplication::$Logger->log($strError, Zend_Log::DEBUG);
         }
 

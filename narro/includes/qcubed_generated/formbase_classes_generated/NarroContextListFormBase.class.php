@@ -61,6 +61,7 @@
 			$this->dtgNarroContexts->MetaAddColumn('Context');
 			$this->dtgNarroContexts->MetaAddColumn('ContextMd5');
 			$this->dtgNarroContexts->MetaAddColumn('Comment');
+			$this->dtgNarroContexts->MetaAddColumn('CommentMd5');
 			$this->dtgNarroContexts->MetaAddColumn(QQN::NarroContext()->File);
 			$this->dtgNarroContexts->MetaAddColumn('Created');
 			$this->dtgNarroContexts->MetaAddColumn('Modified');

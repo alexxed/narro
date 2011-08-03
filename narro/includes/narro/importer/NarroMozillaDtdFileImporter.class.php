@@ -17,8 +17,8 @@
      */
 
     class NarroMozillaDtdFileImporter extends NarroMozillaFileImporter {
-        protected $blnCommentStarted = false;
-        const ENTITY_REGEX = '/<!ENTITY\s+([^\s]+)\s+"([^"]*)"\s?>\s*|<!ENTITY\s+([^\s]+)\s+\'([^\']*)\'\s?>\s*/m';
+        const ENTITY_REGEX = '/(.*)(<!ENTITY\s+)([^\s]+)(\s+")([^"]*)("\s?>\s*)/m';
+        const COMMENT_REGEX = '/<!--([^>]+)-->/m';
         /**
          * Preprocesses the whole file, e.g. removing trailing spaces
          * @param string $strFile file content
@@ -29,47 +29,17 @@
         }
 
         /**
-         * Tells whether the file is a comment
-         * This function helps with comments that spread over multiple lines
-         * @param string $strLine
-         * @return boolean
-         */
-        protected function IsComment($strLine) {
-            if ($this->blnCommentStarted == false) {
-                if (strstr($strLine, '<!--') !== false) {
-                    // Started comment, set the flag to true if the comment spreads over multiple lines and return true for this line
-                    if (strstr($strLine, '-->') === false) {
-                        $this->blnCommentStarted = true;
-                    }
-                    return true;
-                }
-                else
-                    return false;
-            } else {
-                // Closing comment, set the flag to false and return true for this line
-                if (strstr($strLine, '-->') !== false) {
-                    $this->blnCommentStarted = false;
-                }
-                return true;
-            }
-        }
-
-        /**
          * Preprocesses the line if needed
          * e.g. in the source file there's a comment like '# #define MOZ_LANGPACK_CONTRIBUTORS that should be uncommented
          * @param string $strLine
-         * @param array $arrComment
-         * @param array $arrLinesBefore
-         * @return array an array with the arguments received; processed if needed
+         * @return string
          */
-        protected function PreProcessLine($strLine, $arrComment, $arrLinesBefore) {
-            if (!preg_match(self::ENTITY_REGEX, $strLine))
-                return false;
+        protected function PreProcessLine($strLine) {
 
             if (strstr($strLine, 'credit.translation'))
                 $strLine = preg_replace('/<!ENTITY\s+credit.translation\s+"">/', '<!ENTITY credit.translation "<h3>Translators</h3><ul><li>Name Here</li></ul>">', $strLine);
 
-            return array($strLine, $arrComment, $arrLinesBefore);
+            return $strLine;
         }
 
         /**
@@ -78,54 +48,29 @@
          * or
          * array(false, $arrComment, $arrLinesBefore)
          * @param string $strLine
-         * @param array $arrComment
-         * @param array $arrLinesBefore
-         * @return array
+         * @return NarroFileEntity
          */
-        protected function ProcessLine($strLine, $arrComment, $arrLinesBefore) {
+        protected function ProcessLine($strLine) {
             if (preg_match(self::ENTITY_REGEX, $strLine, $arrMatches)) {
-                return array(array('key'=>isset($arrMatches[1])?$arrMatches[1]:$arrMatches[3], 'value'=>isset($arrMatches[2])?$arrMatches[2]:$arrMatches[4]), $arrComment, $arrLinesBefore);
+                $objEntity = new NarroFileEntity();
+
+                $objEntity->Key = $arrMatches[3];
+                $objEntity->Value = $arrMatches[5];
+
+                $strLineWithoutEntity = str_replace($arrMatches[0], '', $strLine);
+
+                if (preg_match_all(self::COMMENT_REGEX, $strLineWithoutEntity, $arrCommentMatches))
+                    $objEntity->Comment = join("\n", $arrCommentMatches[0]);
+                else
+                    $objEntity->Comment = '';
+
+                $objEntity->BeforeValue = $strLineWithoutEntity . $arrMatches[1] . $arrMatches[2] . $arrMatches[3] . $arrMatches[4];
+                $objEntity->AfterValue = $arrMatches[6];
+
+                return $objEntity;
             }
             else {
-                return array(false, $arrComment, $arrLinesBefore);
-            }
-        }
-
-        public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
-            $intTime = time();
-
-            if ($strTranslatedFile)
-                $arrTransKey = $this->FileAsArray($strTranslatedFile);
-
-            $arrSourceKey = $this->FileAsArray($strTemplateFile);
-
-            $intElapsedTime = time() - $intTime;
-            if ($intElapsedTime > 0)
-                QApplication::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));
-
-            QApplication::LogDebug(sprintf('Found %d contexts in file %s.', count($arrSourceKey), $this->objFile->FileName));
-
-            if (is_array($arrSourceKey)) {
-                $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
-                $arrTransKey = $this->GetAccessKeys($arrTransKey);
-
-                foreach($arrSourceKey as $strKey=>$arrData) {
-                    // skip found access keys
-                    if (!isset($arrData['label_ctx']))
-                        $this->AddTranslation(
-                                    $arrData['text'],
-                                    @$arrData['access_key'],
-                                    isset($arrTransKey[$strKey])?trim($arrTransKey[$strKey]['text']):null,
-                                    @$arrTransKey[$strKey]['access_key'],
-                                    trim($strKey),
-                                    trim($arrData['comment'])
-                        );
-                }
-            }
-            elseif ($strTranslatedFile) {
-                QApplication::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
-                copy($strTemplateFile, $strTranslatedFile);
-                chmod($strTranslatedFile, 0666);
+                return false;
             }
         }
 
@@ -144,10 +89,13 @@
                 $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
                 $arrTranslation = $this->GetTranslations($arrSourceKey);
 
+                if (basename($strTemplateFile) == 'aboutDialog.dtd')
+                QApplication::LogDebug(var_export($arrTranslation, true));
+
                 $hndTranslationFile = fopen($strTranslatedFile, 'w');
 
                 if ($this->objFile->Header)
-                    fwrite($hndTranslationFile, $this->objFile->Header . "\n");
+                    fwrite($hndTranslationFile, $this->objFile->Header);
 
                 $arrUsers = array();
                 foreach($this->objFile->GetTranslatorArray($this->objTargetLanguage->LanguageId) as $objUser) {
@@ -165,24 +113,11 @@
                 if (count($arrUsers))
                     fwrite($hndTranslationFile, sprintf("<!--\n# Reviewer(s):\n#\n%s\n#\n-->\n", join("\n", $arrUsers)));
 
-                foreach($arrSourceKey as $strContext=>$arrData) {
-                    $arrLine = array();
-
-                    if (strlen($arrData['before_line']) > 0)
-                        $arrLine[] = $arrData['before_line'];
-
-                    if (!is_null($arrData['comment']))
-                        $arrLine[] = $arrData['comment'] . "\n";
-
+                foreach($arrSourceKey as $strContext=>$objEntity) {
                     if (isset($arrTranslation[$strContext]))
-                        $arrLine[] = str_replace($arrData['text'], $arrTranslation[$strContext], $arrData['full_line']) . "\n";
+                        fwrite($hndTranslationFile, $objEntity->BeforeValue . $arrTranslation[$strContext] . $objEntity->AfterValue . "\n");
                     else
-                        if ($this->blnSkipUntranslated == false)
-                            $arrLine[] = $arrData['full_line'] . "\n";
-                        else
-                            continue;
-
-                    fwrite($hndTranslationFile, join('', $arrLine));
+                        fwrite($hndTranslationFile, $objEntity->BeforeValue . $objEntity->Value . $objEntity->AfterValue . "\n");
                 }
 
                 fclose($hndTranslationFile);

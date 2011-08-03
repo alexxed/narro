@@ -29,6 +29,7 @@
 		protected $txtContext;
 		protected $txtContextMd5;
 		protected $txtComment;
+		protected $txtCommentMd5;
 		protected $lstFile;
 		protected $calCreated;
 		protected $calModified;
@@ -74,6 +75,7 @@
 			$this->txtContext = $this->mctNarroContext->txtContext_Create();
 			$this->txtContextMd5 = $this->mctNarroContext->txtContextMd5_Create();
 			$this->txtComment = $this->mctNarroContext->txtComment_Create();
+			$this->txtCommentMd5 = $this->mctNarroContext->txtCommentMd5_Create();
 			$this->lstFile = $this->mctNarroContext->lstFile_Create();
 			$this->calCreated = $this->mctNarroContext->calCreated_Create();
 			$this->calModified = $this->mctNarroContext->calModified_Create();
@@ -107,11 +109,12 @@
 			// Custom Validation Rules
 			// TODO: Be sure to set $blnToReturn to false if any custom validation fails!
 			// Check for records that may violate Unique Clauses
-			if (($objNarroContext = NarroContext::LoadByTextIdContextMd5FileId($this->lstText->SelectedValue,$this->txtContextMd5->Text,$this->lstFile->SelectedValue)) && ($objNarroContext->ContextId != $this->mctNarroContext->NarroContext->ContextId )){
+			if (($objNarroContext = NarroContext::LoadByTextIdContextMd5FileIdCommentMd5($this->lstText->SelectedValue,$this->txtContextMd5->Text,$this->lstFile->SelectedValue,$this->txtCommentMd5->Text)) && ($objNarroContext->ContextId != $this->mctNarroContext->NarroContext->ContextId )){
 				$blnToReturn = false;
 				$this->lstText->Warning = QApplication::Translate("Already in Use");
 				$this->txtContextMd5->Warning = QApplication::Translate("Already in Use");
 				$this->lstFile->Warning = QApplication::Translate("Already in Use");
+				$this->txtCommentMd5->Warning = QApplication::Translate("Already in Use");
 			}
 
 

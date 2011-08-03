@@ -95,32 +95,21 @@
                 unlink($this->strTranslationPath  . '/export.progress');
         }
 
-        public function GetFileIdArray() {
-            $this->arrFileId = array();
-            $objDbResult = NarroFile::GetDatabase()->Query(
-                sprintf(
-                    'SELECT GROUP_CONCAT(file_id) AS file_id_list FROM narro_file WHERE project_id=%d GROUP BY project_id',
-                    $this->objProject->ProjectId
-                )
-            );
-
-            if ($objDbResult->CountRows()) {
-                $objRow = $objDbResult->GetNextRow();
-                $this->arrFileId = explode(',', $objRow->GetColumn('file_id_list'));
-            }
-
-            $this->arrFileId = array_flip($this->arrFileId);
-
-            return $this->arrFileId;
-        }
-
         public function MarkUnusedFilesAsInactive() {
-            $strFileId = trim(join(',', array_keys($this->arrFileId)));
-            if ($strFileId != '') {
+            if (count($this->arrFileId)) {
                 NarroFile::GetDatabase()->NonQuery(
                     sprintf(
-                        'UPDATE narro_file SET active=0 WHERE file_id IN (%s)',
-                        $strFileId
+                        'UPDATE narro_file SET active=0 WHERE project_id=%d AND file_id NOT IN (%s)',
+                        $this->objProject->ProjectId,
+                        join(',', array_keys($this->arrFileId))
+                    )
+                );
+
+                NarroFile::GetDatabase()->NonQuery(
+                    sprintf(
+                        'UPDATE narro_file SET active=1 WHERE project_id=%d AND file_id IN (%s)',
+                        $this->objProject->ProjectId,
+                        join(',', array_keys($this->arrFileId))
                     )
                 );
             }
@@ -130,13 +119,6 @@
         public function ImportProject() {
 
             $this->startTimer();
-
-            /**
-             * Get the ids of the files used in this project.
-             * After each file is imported, it will be removed from this array.
-             * After the import finishes, whatever's left will be marked as inactive.
-             */
-            $this->GetFileIdArray();
 
             if (
                 function_exists('popen') &&
@@ -261,7 +243,7 @@
             $intTotalFilesToProcess = count($arrFiles);
 
             if ($intTotalFilesToProcess > __MAXIMUM_FILE_COUNT_TO_IMPORT__) {
-                QApplication::LogError('Too many files to process: %d. The maximum number of files to import is set in the configuration file at %d', $intTotalFilesToProcess, __MAXIMUM_FILE_COUNT_TO_IMPORT__);
+                QApplication::LogError(sprintf('Too many files to process: %d. The maximum number of files to import is set in the configuration file at %d', $intTotalFilesToProcess, __MAXIMUM_FILE_COUNT_TO_IMPORT__));
                 return false;
             }
 
@@ -327,10 +309,7 @@
                             NarroImportStatistics::$arrStatistics['Imported folders']++;
                         }
                         $arrDirectories[$strPath] = $objFile->FileId;
-                        unset($this->arrFileId[$objFile->FileId]);
-                        $objFile->CountAllTextsByLanguage();
-                        $objFile->CountApprovedTextsByLanguage();
-                        $objFile->CountTranslatedTextsByLanguage();
+                        $this->arrFileId[$objFile->FileId] = 1;
                     }
                     $intParentId = $arrDirectories[$strPath];
                 }
@@ -380,7 +359,7 @@
                     QApplication::LogDebug(sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
-                unset($this->arrFileId[$objFile->FileId]);
+                $this->arrFileId[$objFile->FileId] = 1;
                 $objFile->CountAllTextsByLanguage();
                 $objFile->CountApprovedTextsByLanguage();
                 $objFile->CountTranslatedTextsByLanguage();
@@ -499,13 +478,6 @@
 
             $this->startTimer();
 
-            /**
-             * Get the ids of the files used in this project.
-             * After each file is imported, it will be removed from this array.
-             * After the import finishes, whatever's left will be marked as inactive.
-             */
-            $this->GetFileIdArray();
-
             if ($this->objProject->ProjectName == 'Narro')
                 $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . NarroLanguage::SOURCE_LANGUAGE_CODE . '/LC_MESSAGES/';
 
@@ -586,7 +558,7 @@
             $intTotalFilesToProcess = count($arrFiles);
 
             if ($intTotalFilesToProcess > __MAXIMUM_FILE_COUNT_TO_EXPORT__) {
-                QApplication::LogError('Too many files to process: %d. The maximum number of files to export is set in the configuration file at %d', $intTotalFilesToProcess, __MAXIMUM_FILE_COUNT_TO_EXPORT__);
+                QApplication::LogError(sprintf('Too many files to process: %d. The maximum number of files to export is set in the configuration file at %d', $intTotalFilesToProcess, __MAXIMUM_FILE_COUNT_TO_EXPORT__));
                 return false;
             }
 
@@ -730,7 +702,7 @@
             QApplication::$PluginHandler->BeforeExportFile($objFile);
             $blnMixResult = $objFileImporter->ExportFile($strTemplateFile, $strTranslatedFile);
             QApplication::$PluginHandler->AfterExportFile($objFile);
-            unset($this->arrFileId[$objFile->FileId]);
+            $this->arrFileId[$objFile->FileId] = 1;
 
             return $blnMixResult;
         }

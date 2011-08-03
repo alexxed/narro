@@ -126,10 +126,6 @@
                     QQ::Expand(QQN::NarroContextInfo()->Context->Text)
                 )
             );
-
-            foreach($this->arrContextInfo as $objContextInfo) {
-                $this->arrContextId[$objContextInfo->ContextId] = $objContextInfo->ContextId;
-            }
         }
 
         protected function GetSugestionArray() {
@@ -194,7 +190,6 @@
          * @param string $strComment a comment from the imported file
          */
         protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
-
             $blnContextInfoChanged = false;
             $blnContextChanged = false;
 
@@ -295,8 +290,10 @@
             }
 
             $objContext = $this->GetContext($strOriginal, $strContext, trim($strComment));
-            if (!$objContext)
-                $objContext = NarroContext::LoadByTextIdContextMd5FileId($objText->TextId, md5($strContext), $this->objFile->FileId);
+            if (!$objContext) {
+                $objContext = NarroContext::LoadByTextIdContextMd5FileIdCommentMd5($objText->TextId, md5($strContext), $this->objFile->FileId, md5($strComment));
+            }
+
 
             if (!$this->blnOnlySuggestions && !$objContext instanceof NarroContext) {
 
@@ -310,6 +307,7 @@
                 $objContext->Modified = QDateTime::Now();
                 $objContext->Created = QDateTime::Now();
                 $objContext->Comment = trim($strComment);
+                $objContext->CommentMd5 = md5(trim($strComment));
                 try {
                     $objContext->Save();
                 }
@@ -320,9 +318,10 @@
 
                 QApplication::LogDebug(sprintf('Added the context "%s" from the file "%s"', nl2br($strContext), $this->objFile->FileName));
                 NarroImportStatistics::$arrStatistics['Imported contexts']++;
+                $this->arrContextId[$objContext->ContextId] = $objContext->ContextId;
             }
             elseif($objContext instanceof NarroContext) {
-                unset($this->arrContextId[$objContext->ContextId]);
+                $this->arrContextId[$objContext->ContextId] = $objContext->ContextId;
                 NarroImportStatistics::$arrStatistics['Reused contexts']++;
             }
             else {
@@ -334,7 +333,7 @@
             /**
              * load the context info
              */
-            $objContextInfo = $this->GetContextInfo($strOriginal, $strContext);
+            $objContextInfo = $this->GetContextInfo($strOriginal, $strContext, $strComment);
             if (!$objContextInfo)
                 $objContextInfo = NarroContextInfo::LoadByContextIdLanguageId($objContext->ContextId, $this->objTargetLanguage->LanguageId);
 
@@ -361,6 +360,11 @@
                 if ($objContext->FileId != $this->objFile->FileId) {
                     $blnContextChanged = true;
                     $objContext->FileId = $this->objFile->FileId;
+                }
+
+                if ($objContext->Active == false) {
+                    $blnContextChanged = true;
+                    $objContext->Active = true;
                 }
 
                 if ($objContextInfo->TextAccessKey != $strOriginalAccKey) {
@@ -456,6 +460,16 @@
                 }
             }
 
+            if ($blnContextChanged && $objContext instanceof NarroContext) {
+                $objContext->Modified = QDateTime::Now();
+                try {
+                    $objContext->Save();
+                } catch(Exception $objExc) {
+                    QApplication::LogError(sprintf('Error while saving context %s: %s', $strContext, $objExc->getMessage()));
+                    NarroImportStatistics::$arrStatistics['Skipped contexts']++;
+                }
+            }
+
             return true;
         }
 
@@ -466,16 +480,16 @@
          * @param string $strContext
          * @return NarroContextInfo
          */
-        public function GetContextInfo($strOriginal, $strContext) {
+        public function GetContextInfo($strOriginal, $strContext, $strComment) {
             foreach($this->arrContextInfo as $objContextInfo) {
                 if (
-                    $objContextInfo->Context->ProjectId == $this->objProject->ProjectId &&
-                    $objContextInfo->Context->FileId == $this->objFile->FileId &&
+                    $objContextInfo->Context->Context &&
                     $objContextInfo->Context->Context == $strContext &&
-                    $objContextInfo->Context->Text->TextValue == $strOriginal &&
-                    $objContextInfo->LanguageId == $this->objTargetLanguage->LanguageId
-                )
+                    $objContextInfo->Context->Comment == $strComment &&
+                    $objContextInfo->Context->Text->TextValue == $strOriginal
+                ) {
                     return $objContextInfo;
+                }
             }
 
             return false;
@@ -491,12 +505,10 @@
         public function GetContext($strOriginal, $strContext, $strComment) {
             foreach($this->arrContextInfo as $objContextInfo) {
                 if (
-                    $objContextInfo->Context->ProjectId == $this->objProject->ProjectId &&
-                    $objContextInfo->Context->FileId == $this->objFile->FileId &&
+                    $objContextInfo->Context->Context &&
                     $objContextInfo->Context->Context == $strContext &&
                     $objContextInfo->Context->Comment == $strComment &&
-                    $objContextInfo->Context->Text->TextValue == $strOriginal &&
-                    $objContextInfo->LanguageId == $this->objTargetLanguage->LanguageId
+                    $objContextInfo->Context->Text->TextValue == $strOriginal
                 )
                     return $objContextInfo->Context;
             }
@@ -673,72 +685,28 @@
             }
         }
 
-        /**
-         * Preprocesses the whole file, e.g. removing trailing spaces
-         * @param string $strFile file content
-         * @return string
-         */
-        abstract protected function PreProcessFile($strFile);
-
-        /**
-         * Converts the file to an associative array
-         * array(
-         *     'key' => ''
-         *     array(
-         *         'text' => '',
-         *         'comment' => '',
-         *         'full_line' => '',
-         *         'before_line' => ''
-         *     )
-         * );
-         *
-         * The key is something that must be unique to each text from that file; in most cases it can be the actual text
-         * @param string $strFile file path
-         * @return array
-         */
-        abstract protected function FileAsArray($strFilePath);
-
-        /**
-         * Tells whether the file is a comment
-         * This function helps with comments that spread over multiple lines
-         * @param string $strLine
-         * @return boolean
-         */
-        abstract protected function IsComment($strLine);
-
-        /**
-         * Preprocesses the line if needed
-         * e.g. in the source file there's a comment like '# #define MOZ_LANGPACK_CONTRIBUTORS that should be uncommented
-         * @param string $strLine
-         * @param array $arrComment
-         * @param array $arrLinesBefore
-         * @return array an array with the arguments received; processed if needed
-         */
-        abstract protected function PreProcessLine($strLine, $arrComment, $arrLinesBefore);
-
-        /**
-         * Process the line by splitting the $strLine in key=>value
-         * array(array('key' => $strKey, 'value' => $strValue), $arrComment, $arrLinesBefore)
-         * or
-         * array(false, $arrComment, $arrLinesBefore)
-         * @param string $strLine
-         * @param array $arrComment
-         * @param array $arrLinesBefore
-         * @return array
-         */
-        abstract protected function ProcessLine($strLine, $arrComment, $arrLinesBefore);
-
         abstract public function ImportFile($strTemplateFile, $strTranslatedFile = null);
         abstract public function ExportFile($strTemplateFile, $strTranslatedFile);
 
         public function MarkUnusedContextsAsInactive() {
-            if (count($this->arrContextId))
+            if (count($this->arrContextId)) {
                 NarroFile::GetDatabase()->NonQuery(
                     sprintf(
-                        'UPDATE narro_context SET active=0 WHERE context_id IN (%s)',
+                        'UPDATE narro_context SET active=1 WHERE project_id=%d AND file_id=%d AND context_id IN (%s)',
+                        $this->objProject->ProjectId,
+                        $this->objFile->FileId,
                         join(',', $this->arrContextId)
                     )
                 );
+                NarroFile::GetDatabase()->NonQuery(
+                    sprintf(
+                        'UPDATE narro_context SET active=0 WHERE project_id=%d AND file_id=%d AND context_id NOT IN (%s)',
+                        $this->objProject->ProjectId,
+                        $this->objFile->FileId,
+                        join(',', $this->arrContextId)
+                    )
+                );
+            }
         }
 
 

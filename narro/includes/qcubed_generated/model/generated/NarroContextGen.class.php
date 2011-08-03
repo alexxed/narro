@@ -21,6 +21,7 @@
 	 * @property string $Context the value for strContext (Not Null)
 	 * @property string $ContextMd5 the value for strContextMd5 (Not Null)
 	 * @property string $Comment the value for strComment 
+	 * @property string $CommentMd5 the value for strCommentMd5 
 	 * @property integer $FileId the value for intFileId (Not Null)
 	 * @property QDateTime $Created the value for dttCreated (Not Null)
 	 * @property QDateTime $Modified the value for dttModified 
@@ -87,6 +88,15 @@
 		 */
 		protected $strComment;
 		const CommentDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_context.comment_md5
+		 * @var string strCommentMd5
+		 */
+		protected $strCommentMd5;
+		const CommentMd5MaxLength = 255;
+		const CommentMd5Default = null;
 
 
 		/**
@@ -218,6 +228,7 @@
 			$this->strContext = NarroContext::ContextDefault;
 			$this->strContextMd5 = NarroContext::ContextMd5Default;
 			$this->strComment = NarroContext::CommentDefault;
+			$this->strCommentMd5 = NarroContext::CommentMd5Default;
 			$this->intFileId = NarroContext::FileIdDefault;
 			$this->dttCreated = (NarroContext::CreatedDefault === null)?null:new QDateTime(NarroContext::CreatedDefault);
 			$this->dttModified = (NarroContext::ModifiedDefault === null)?null:new QDateTime(NarroContext::ModifiedDefault);
@@ -495,6 +506,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'context', $strAliasPrefix . 'context');
 			$objBuilder->AddSelectItem($strTableName, 'context_md5', $strAliasPrefix . 'context_md5');
 			$objBuilder->AddSelectItem($strTableName, 'comment', $strAliasPrefix . 'comment');
+			$objBuilder->AddSelectItem($strTableName, 'comment_md5', $strAliasPrefix . 'comment_md5');
 			$objBuilder->AddSelectItem($strTableName, 'file_id', $strAliasPrefix . 'file_id');
 			$objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
 			$objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
@@ -600,6 +612,8 @@
 			$objToReturn->strContextMd5 = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'comment', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'comment'] : $strAliasPrefix . 'comment';
 			$objToReturn->strComment = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'comment_md5', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'comment_md5'] : $strAliasPrefix . 'comment_md5';
+			$objToReturn->strCommentMd5 = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'file_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'file_id'] : $strAliasPrefix . 'file_id';
 			$objToReturn->intFileId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created'] : $strAliasPrefix . 'created';
@@ -746,19 +760,21 @@
 			
 		/**
 		 * Load a single NarroContext object,
-		 * by TextId, ContextMd5, FileId Index(es)
+		 * by TextId, ContextMd5, FileId, CommentMd5 Index(es)
 		 * @param integer $intTextId
 		 * @param string $strContextMd5
 		 * @param integer $intFileId
+		 * @param string $strCommentMd5
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroContext
 		*/
-		public static function LoadByTextIdContextMd5FileId($intTextId, $strContextMd5, $intFileId, $objOptionalClauses = null) {
+		public static function LoadByTextIdContextMd5FileIdCommentMd5($intTextId, $strContextMd5, $intFileId, $strCommentMd5, $objOptionalClauses = null) {
 			return NarroContext::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroContext()->TextId, $intTextId),
 					QQ::Equal(QQN::NarroContext()->ContextMd5, $strContextMd5),
-					QQ::Equal(QQN::NarroContext()->FileId, $intFileId)
+					QQ::Equal(QQN::NarroContext()->FileId, $intFileId),
+					QQ::Equal(QQN::NarroContext()->CommentMd5, $strCommentMd5)
 				),
 				$objOptionalClauses
 			);
@@ -967,6 +983,7 @@
 							`context`,
 							`context_md5`,
 							`comment`,
+							`comment_md5`,
 							`file_id`,
 							`created`,
 							`modified`,
@@ -977,6 +994,7 @@
 							' . $objDatabase->SqlVariable($this->strContext) . ',
 							' . $objDatabase->SqlVariable($this->strContextMd5) . ',
 							' . $objDatabase->SqlVariable($this->strComment) . ',
+							' . $objDatabase->SqlVariable($this->strCommentMd5) . ',
 							' . $objDatabase->SqlVariable($this->intFileId) . ',
 							' . $objDatabase->SqlVariable($this->dttCreated) . ',
 							' . $objDatabase->SqlVariable($this->dttModified) . ',
@@ -1001,6 +1019,7 @@
 							`context` = ' . $objDatabase->SqlVariable($this->strContext) . ',
 							`context_md5` = ' . $objDatabase->SqlVariable($this->strContextMd5) . ',
 							`comment` = ' . $objDatabase->SqlVariable($this->strComment) . ',
+							`comment_md5` = ' . $objDatabase->SqlVariable($this->strCommentMd5) . ',
 							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
 							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . ',
@@ -1088,6 +1107,7 @@
 			$this->strContext = $objReloaded->strContext;
 			$this->strContextMd5 = $objReloaded->strContextMd5;
 			$this->strComment = $objReloaded->strComment;
+			$this->strCommentMd5 = $objReloaded->strCommentMd5;
 			$this->FileId = $objReloaded->FileId;
 			$this->dttCreated = $objReloaded->dttCreated;
 			$this->dttModified = $objReloaded->dttModified;
@@ -1153,6 +1173,13 @@
 					 * @return string
 					 */
 					return $this->strComment;
+
+				case 'CommentMd5':
+					/**
+					 * Gets the value for strCommentMd5 
+					 * @return string
+					 */
+					return $this->strCommentMd5;
 
 				case 'FileId':
 					/**
@@ -1355,6 +1382,19 @@
 					 */
 					try {
 						return ($this->strComment = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CommentMd5':
+					/**
+					 * Sets the value for strCommentMd5 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCommentMd5 = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1862,6 +1902,7 @@
 			$strToReturn .= '<element name="Context" type="xsd:string"/>';
 			$strToReturn .= '<element name="ContextMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="Comment" type="xsd:string"/>';
+			$strToReturn .= '<element name="CommentMd5" type="xsd:string"/>';
 			$strToReturn .= '<element name="File" type="xsd1:NarroFile"/>';
 			$strToReturn .= '<element name="Created" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="Modified" type="xsd:dateTime"/>';
@@ -1905,6 +1946,8 @@
 				$objToReturn->strContextMd5 = $objSoapObject->ContextMd5;
 			if (property_exists($objSoapObject, 'Comment'))
 				$objToReturn->strComment = $objSoapObject->Comment;
+			if (property_exists($objSoapObject, 'CommentMd5'))
+				$objToReturn->strCommentMd5 = $objSoapObject->CommentMd5;
 			if ((property_exists($objSoapObject, 'File')) &&
 				($objSoapObject->File))
 				$objToReturn->File = NarroFile::GetObjectFromSoapObject($objSoapObject->File);
@@ -1968,6 +2011,7 @@
 			$iArray['Context'] = $this->strContext;
 			$iArray['ContextMd5'] = $this->strContextMd5;
 			$iArray['Comment'] = $this->strComment;
+			$iArray['CommentMd5'] = $this->strCommentMd5;
 			$iArray['FileId'] = $this->intFileId;
 			$iArray['Created'] = $this->dttCreated;
 			$iArray['Modified'] = $this->dttModified;
@@ -2001,6 +2045,7 @@
      * @property-read QQNode $Context
      * @property-read QQNode $ContextMd5
      * @property-read QQNode $Comment
+     * @property-read QQNode $CommentMd5
      * @property-read QQNode $FileId
      * @property-read QQNodeNarroFile $File
      * @property-read QQNode $Created
@@ -2035,6 +2080,8 @@
 					return new QQNode('context_md5', 'ContextMd5', 'VarChar', $this);
 				case 'Comment':
 					return new QQNode('comment', 'Comment', 'Blob', $this);
+				case 'CommentMd5':
+					return new QQNode('comment_md5', 'CommentMd5', 'VarChar', $this);
 				case 'FileId':
 					return new QQNode('file_id', 'FileId', 'Integer', $this);
 				case 'File':
@@ -2072,6 +2119,7 @@
      * @property-read QQNode $Context
      * @property-read QQNode $ContextMd5
      * @property-read QQNode $Comment
+     * @property-read QQNode $CommentMd5
      * @property-read QQNode $FileId
      * @property-read QQNodeNarroFile $File
      * @property-read QQNode $Created
@@ -2106,6 +2154,8 @@
 					return new QQNode('context_md5', 'ContextMd5', 'string', $this);
 				case 'Comment':
 					return new QQNode('comment', 'Comment', 'string', $this);
+				case 'CommentMd5':
+					return new QQNode('comment_md5', 'CommentMd5', 'string', $this);
 				case 'FileId':
 					return new QQNode('file_id', 'FileId', 'integer', $this);
 				case 'File':

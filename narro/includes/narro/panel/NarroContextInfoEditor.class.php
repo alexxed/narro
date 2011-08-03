@@ -145,7 +145,7 @@
                 $this->lblContextInfo->HtmlEntities = false;
 
                 if ($this->objContextInfo->Context->Comment)
-                $this->lblContextInfo->Text .= '<br />' . nl2br($this->objContextInfo->Context->Comment);
+                    $this->lblContextInfo->Text .= '<br />' . nl2br(str_replace(array('<!--', '-->'), array('', ''), $this->objContextInfo->Context->Comment));
             }
         }
 

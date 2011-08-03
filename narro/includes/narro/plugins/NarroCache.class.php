@@ -41,8 +41,6 @@
         }
 
         public function AddText($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            $objFile->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
-            $objProject->DeleteAllTextsCacheByLanguage(QApplication::GetLanguageId());
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
@@ -63,16 +61,10 @@
         }
 
         public function AddSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
-            $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
-
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
 
         public function DeleteSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
-            $objFile->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
-            $objProject->DeleteTranslatedTextsByLanguage(QApplication::GetLanguageId());
-
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
         }
     }

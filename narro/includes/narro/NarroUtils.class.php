@@ -74,7 +74,8 @@
                     else
                         return true;
                 }
-                if (file_exists($strFilePath) && !@unlink($strFilePath)) {
+
+                if ((file_exists($strFilePath) || is_link($strFilePath)) && !@unlink($strFilePath)) {
                     if (!is_writable($strFilePath))
                         $strError = sprintf('"%s" is only writable by "%s".', realpath($strFilePath . '/..'), get_current_user());
                     else

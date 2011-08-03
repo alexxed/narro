@@ -17,74 +17,59 @@
      */
 
     class NarroMozillaIncFileImporter extends NarroMozillaFileImporter {
-        protected function IsComment($strLine) {
-            return strpos($strLine, '#define') !== 0;
-        }
-
+        const ENTITY_REGEX = '/^(#define)([\s]+)([^\s]+)([\s]+)(.*)$/m';
+        const COMMENT_REGEX = '/^#.*$/m';
+        /**
+         * Preprocesses the whole file, e.g. removing trailing spaces
+         * @param string $strFile file content
+         * @return string
+         */
         protected function PreProcessFile($strFile) {
             // some files spread across more lines with an ending backslash, this fixed that so that the key and value are on one line.
             return str_replace(array("\\\n"), array(''), $strFile);
         }
 
+        /**
+         * Preprocesses the line if needed
+         * e.g. in the source file there's a comment like '# #define MOZ_LANGPACK_CONTRIBUTORS that should be uncommented
+         * @param string $strLine
+         * @return string
+         */
+        protected function PreProcessLine($strLine) {
 
-        protected function PreProcessLine($strLine, $arrComment, $arrLinesBefore) {
-            // special case, this is usually commented
-            if (strstr($strLine, '# #define MOZ_LANGPACK_CONTRIBUTORS'))
-                $strLine = substr($strLine, 2);
-            else
-                $strLine = $strLine;
+            if (strstr($strLine, 'MOZ_LANGPACK_CONTRIBUTORS'))
+                $strLine = str_replace('# #define MOZ_LANGPACK_CONTRIBUTORS', '#define MOZ_LANGPACK_CONTRIBUTORS', $strLine);
 
-            return array($strLine, $arrComment, $arrLinesBefore);
+            return $strLine;
         }
 
-        protected function ProcessLine($strLine, $arrComment, $arrLinesBefore) {
-            if (count($arrComment) && strstr($arrComment[count($arrComment) - 1], 'END LICENSE BLOCK')) {
-                $arrLinesBefore = array_merge($arrLinesBefore, $arrComment);
-                $arrComment = array();
+        /**
+         * Process the line by splitting the $strLine in key=>value
+         * array(array('key' => $strKey, 'value' => $strValue), $arrComment, $arrLinesBefore)
+         * or
+         * array(false, $arrComment, $arrLinesBefore)
+         * @param string $strLine
+         * @return NarroFileEntity
+         */
+        protected function ProcessLine($strLine) {
+            if (preg_match(self::ENTITY_REGEX, $strLine, $arrMatches)) {
+                $objEntity = new NarroFileEntity();
+
+                $objEntity->Key = $arrMatches[3];
+                $objEntity->Value = $arrMatches[5];
+
+                if (preg_match_all(self::COMMENT_REGEX, str_replace($arrMatches[0], '', $strLine), $arrCommentMatches))
+                    $objEntity->Comment = join("\n", $arrCommentMatches[0]);
+                else
+                    $objEntity->Comment = '';
+
+                $objEntity->BeforeValue = $arrMatches[1] . $arrMatches[2] . $arrMatches[3] . $arrMatches[4];
+                $objEntity->AfterValue = '';
+
+                return $objEntity;
             }
-
-            $arrData = explode(' ', $strLine, 3);
-            if (count($arrData) == 3) {
-                list($strDefineStatement, $strKey, $strValue) = $arrData;
-                return array(array('key' => $strKey, 'value' => $strValue), $arrComment, $arrLinesBefore);
-            }
-            else
-                return array(false, $arrComment, $arrLinesBefore);
-        }
-
-        public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
-            $intTime = time();
-
-            if ($strTranslatedFile)
-                $arrTransKey = $this->FileAsArray($strTranslatedFile);
-
-            $arrSourceKey = $this->FileAsArray($strTemplateFile);
-
-            $intElapsedTime = time() - $intTime;
-            if ($intElapsedTime > 0)
-                QApplication::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));
-
-            QApplication::LogDebug(sprintf('Found %d contexts in file %s.', count($arrSourceKey), $this->objFile->FileName));
-
-            if (is_array($arrSourceKey)) {
-                $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
-                $arrTransKey = $this->GetAccessKeys($arrTransKey);
-
-                foreach($arrSourceKey as $strKey=>$arrData) {
-                    $this->AddTranslation(
-                                trim($arrData['text']),
-                                @$arrData['access_key'],
-                                isset($arrTransKey[$strKey])?trim($arrTransKey[$strKey]['text']):null,
-                                @$arrTransKey[$strKey]['access_key'],
-                                trim($strKey),
-                                trim($arrData['comment'])
-                    );
-                }
-            }
-            elseif ($strTranslatedFile) {
-                QApplication::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
-                copy($strTemplateFile, $strTranslatedFile);
-                chmod($strTranslatedFile, 0666);
+            else {
+                return false;
             }
         }
 

@@ -177,7 +177,8 @@
             $this->arrConditions = array(
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->Active, true)
+                    QQ::Equal(QQN::NarroContextInfo()->Context->Active, true),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->File->Active, true)
                 )
             );
             if ($blnReset)
