@@ -120,7 +120,7 @@
 
             $this->btnSearch = new QButton($this);
             $this->btnSearch->PrimaryButton = true;
-            $this->btnSearch->Text = 'Search';
+            $this->btnSearch->Text = t('Search');
             $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
 
             if (QApplication::QueryString('a'))
@@ -190,7 +190,8 @@
                 QQ::Expand(QQN::NarroContextInfo()->Context->Text),
                 QQ::Expand(QQN::NarroContextInfo()->Context->File),
                 QQ::Expand(QQN::NarroContextInfo()->Context->Project),
-                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion)
+                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion),
+                QQ::Distinct()
             );
 
             if ($this->lstProject->SelectedValue > 0)
@@ -225,12 +226,14 @@
                 if (preg_match("/^'.*'$/", $this->txtSearch->Text))
                     $this->arrConditions[] = QQ::OrCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValue, substr($this->txtSearch->Text, 1, -1)),
-                        QQ::Equal(QQN::NarroContextInfo()->Context->Context, substr($this->txtSearch->Text, 1, -1))
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Context, substr($this->txtSearch->Text, 1, -1)),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, substr($this->txtSearch->Text, 1, -1))
                     );
                 else
                     $this->arrConditions[] = QQ::OrCondition(
                         QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, '%' . $this->txtSearch->Text . '%'),
-                        QQ::Like(QQN::NarroContextInfo()->Context->Context, '%' . $this->txtSearch->Text . '%')
+                        QQ::Like(QQN::NarroContextInfo()->Context->Context, '%' . $this->txtSearch->Text . '%'),
+                        QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, '%' . $this->txtSearch->Text . '%')
                     );
 
             }
