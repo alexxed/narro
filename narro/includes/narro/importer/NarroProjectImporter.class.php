@@ -53,7 +53,7 @@
          */
         protected $blnOnlySuggestions = false;
 
-        protected $blnImportUnchangedFiles = true;
+        protected $blnImportUnchangedFiles = false;
 
         /**
          * whether to export the source text if no translation is found
@@ -368,7 +368,7 @@
 
                 $intTime = time();
                 if (file_exists($strTranslatedFileToImport)) {
-                    if ($blnSourceFileChanged || $this->blnImportUnchangedFiles) {
+                    if ($blnSourceFileChanged || $this->blnImportUnchangedFiles || $this->blnOnlySuggestions) {
                         $this->ImportFile($objFile, $strFileToImport, $strTranslatedFileToImport);
                     }
                     else {

@@ -243,7 +243,6 @@
                             ' --import --minloglevel 3 --project %d --user %d --check-equal ' .
                             (($this->chkApproveImportedTranslations->Checked)?'--approve ':'') .
                             (($this->chkApproveOnlyNotApproved->Checked)?'':'--approve-already-approved ') .
-                            '--import-unchanged-files ' .
                             (($this->chkImportOnlyTranslations->Checked || !QApplication::HasPermission('Can import project', $this->objProject->ProjectId))?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                             ' --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s"',
                         $this->objProject->ProjectId,
