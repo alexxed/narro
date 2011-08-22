@@ -333,7 +333,7 @@
                 require_once('Zend/Translate/Adapter/Gettext.php');
                 try {
                     QApplication::$TranslationEngine = new Zend_Translate(
-                        'gettext', __LOCALE_DIRECTORY__ . '/narro.mo',
+                        'gettext', __IMPORT_PATH__ . '/1/' . QApplication::$TargetLanguage->LanguageCode . '/narro.mo',
                         QApplication::$User->getPreferenceValueByName('Application language'),
                         array(
                             'disableNotices'=>true
