@@ -40,7 +40,7 @@
         'adapter' => 'MySqli5',
         'server' => 'localhost',
         'port' => null,
-        'database' => 'narro_lmo',
+        'database' => 'narro',
         'username' => 'narro',
         'password' => '',
         'profiling' => false)));
