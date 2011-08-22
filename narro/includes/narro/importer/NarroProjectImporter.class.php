@@ -155,7 +155,6 @@
              * Make an exception for the naro project. The template path will be changed to the locale directory.
              */
             if ($this->objProject->ProjectName == 'Narro') {
-                $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . NarroLanguage::SOURCE_LANGUAGE_CODE . '/LC_MESSAGES/';
                 $this->CleanImportDirectory();
                 $this->CreateNarroTemplate($this->objProject->ProjectId);
             }
@@ -328,11 +327,13 @@
 
                 if ($objFile instanceof NarroFile) {
                     $strMd5File = md5_file($strFileToImport);
+
                     if ($strMd5File == $objFile->FileMd5) {
                         $blnSourceFileChanged = false;
                         NarroImportStatistics::$arrStatistics['Unchanged files']++;
                     } else {
                         $objFile->FileMd5 = $strMd5File;
+                        $objFile->Save();
                         $blnSourceFileChanged = true;
                         NarroImportStatistics::$arrStatistics['Changed files']++;
                     }
@@ -478,9 +479,6 @@
 
             $this->startTimer();
 
-            if ($this->objProject->ProjectName == 'Narro')
-                $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . NarroLanguage::SOURCE_LANGUAGE_CODE . '/LC_MESSAGES/';
-
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
                 if ($this->ExportFromDirectory()) {
                     $this->stopTimer();
@@ -524,7 +522,7 @@
                     sprintf(
                         'msgfmt -cv %s -o %s 2>&1',
                         $this->strTranslationPath . '/narro.po',
-                        __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/narro.mo'
+                        $this->strTranslationPath . '/narro.mo'
                     ),
                     'r'
                 );
@@ -962,7 +960,7 @@
 
         private function CreateNarroTemplate($intProjectId) {
 
-            $strPoFile = __IMPORT_PATH__ . '/' . $intProjectId . '/narro.po';
+            $strPoFile = __IMPORT_PATH__ . '/' . $intProjectId . '/' . $this->objSourceLanguage->LanguageCode . '/narro.po';
             $arrPermissions = NarroPermission::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroPermission()->PermissionName)));
             $arrRoles = NarroRole::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroRole()->RoleName)));
             $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'));
@@ -970,7 +968,7 @@
                 if (pathinfo($strFileName, PATHINFO_EXTENSION) != 'php') continue;
 
                 $strFile = file_get_contents($strFileName);
-                $strShortPath = str_ireplace(__DOCROOT__ . __SUBDIRECTORY__ . '/', '', $strFileName);
+                $strShortPath = str_ireplace(realpath(__DOCROOT__ . __SUBDIRECTORY__) . '/', '', $strFileName);
 
                 if (strpos($strShortPath, 'data') === 0) continue;
                 if (strpos($strShortPath, 'includes/Zend') === 0) continue;
@@ -1263,7 +1261,7 @@
             '"X-Generator: Narro\n"' . "\n";
             $hndFile = fopen($strPoFile, 'w');
             if (!$hndFile) {
-                QApplication::LogErroror('Error while opening the po file "%s" for writing.', $strPoFile);
+                QApplication::LogError('Error while opening the po file "%s" for writing.', $strPoFile);
             }
             fputs($hndFile, $strPoHeader);
 
@@ -1286,6 +1284,7 @@
             }
 
             fclose($hndFile);
+            NarroUtils::Chmod($strPoFile, 0666);
 
             QApplication::LogInfo('Wrote a new Narro template file in ' . $strPoFile);
 

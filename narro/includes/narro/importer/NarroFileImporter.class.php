@@ -161,9 +161,9 @@
          * @param string $strText
          * @return NarroText
          */
-        protected function GetText($strText, $strContext) {
+        protected function GetText($strText) {
             foreach($this->arrContextInfo as $objContextInfo) {
-                if ($objContextInfo->Context->Text->TextValue == $strText && $objContextInfo->Context->Context == $strContext)
+                if ($objContextInfo->Context->Text->TextValue == $strText)
                     return $objContextInfo->Context->Text;
             }
 
@@ -237,7 +237,7 @@
                     QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the translation "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strTranslation, print_r($arrResult, true)));
             }
 
-            $strContext = trim($strContext);
+            $strContext = $strContext;
             $arrResult = QApplication::$PluginHandler->SaveContext($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
             if
             (
@@ -253,9 +253,9 @@
             else
                 QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the context "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strContext, print_r($arrResult, true)));
 
-            $objText = $this->GetText($strOriginal, $strContext);
+            $objText = $this->GetText($strOriginal);
 
-            if (!$objText)
+            if (!$objText instanceof NarroText)
                 $objText = NarroText::LoadByTextValueMd5(md5($strOriginal));
 
             if (!$this->blnOnlySuggestions && !$objText instanceof NarroText) {
@@ -289,7 +289,7 @@
                 return false;
             }
 
-            $objContext = $this->GetContext($strOriginal, $strContext, trim($strComment));
+            $objContext = $this->GetContext($strOriginal, $strContext, $strComment);
             if (!$objContext) {
                 $objContext = NarroContext::LoadByTextIdContextMd5FileIdCommentMd5($objText->TextId, md5($strContext), $this->objFile->FileId, md5($strComment));
             }
@@ -306,8 +306,8 @@
                 $objContext->Active = 1;
                 $objContext->Modified = QDateTime::Now();
                 $objContext->Created = QDateTime::Now();
-                $objContext->Comment = trim($strComment);
-                $objContext->CommentMd5 = md5(trim($strComment));
+                $objContext->Comment = $strComment;
+                $objContext->CommentMd5 = md5($strComment);
                 try {
                     $objContext->Save();
                 }
@@ -483,7 +483,6 @@
         public function GetContextInfo($strOriginal, $strContext, $strComment) {
             foreach($this->arrContextInfo as $objContextInfo) {
                 if (
-                    $objContextInfo->Context->Context &&
                     $objContextInfo->Context->Context == $strContext &&
                     $objContextInfo->Context->Comment == $strComment &&
                     $objContextInfo->Context->Text->TextValue == $strOriginal
@@ -498,14 +497,14 @@
         /**
          * Get the context for a certain text
          *
-         * @param string $strText
+         * @param string $strOriginal
          * @param string $strContext
+         * @param string $strComment
          * @return NarroContext
          */
         public function GetContext($strOriginal, $strContext, $strComment) {
             foreach($this->arrContextInfo as $objContextInfo) {
                 if (
-                    $objContextInfo->Context->Context &&
                     $objContextInfo->Context->Context == $strContext &&
                     $objContextInfo->Context->Comment == $strComment &&
                     $objContextInfo->Context->Text->TextValue == $strOriginal

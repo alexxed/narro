@@ -69,11 +69,11 @@
 
 
             $this->btnMore = new QButton($this);
-            $this->btnMore->Text = 'More';
+            $this->btnMore->Text = t('More');
             $this->btnMore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMore_Click', $this->objWaitIcon));
 
             $this->lstProject = new QListBox($this);
-            $this->lstProject->AddItem('All');
+            $this->lstProject->AddItem(t('All'));
             foreach(NarroProject::LoadArrayByActive(1, array(QQ::OrderBy(QQN::NarroProject()->ProjectName))) as $objProject)
                 $this->lstProject->AddItem($objProject->ProjectName, $objProject->ProjectId);
             $this->lstProject->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
@@ -86,11 +86,11 @@
                 $this->txtFile->Text = QApplication::QueryString('f');
 
             $this->lstFilter = new QListBox($this);
-            $this->lstFilter->AddItem('All', self::SHOW_ALL);
-            $this->lstFilter->AddItem('Not translated yet', self::SHOW_NOT_TRANSLATED, true);
-            $this->lstFilter->AddItem('Translated, but not approved', self::SHOW_NOT_APPROVED);
-            $this->lstFilter->AddItem('Translated or approved', self::SHOW_APPROVED_AND_NOT_APPROVED);
-            $this->lstFilter->AddItem('Approved', self::SHOW_APPROVED);
+            $this->lstFilter->AddItem(t('All'), self::SHOW_ALL);
+            $this->lstFilter->AddItem(t('Not translated yet'), self::SHOW_NOT_TRANSLATED, true);
+            $this->lstFilter->AddItem(t('Translated, but not approved'), self::SHOW_NOT_APPROVED);
+            $this->lstFilter->AddItem(t('Translated or approved'), self::SHOW_APPROVED_AND_NOT_APPROVED);
+            $this->lstFilter->AddItem(t('Approved'), self::SHOW_APPROVED);
             $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
 
             if (QApplication::QueryString('t'))
@@ -101,18 +101,18 @@
                 $this->txtSearch->Text = QApplication::QueryString('s');
 
             $this->lstSort = new QListBox($this);
-            $this->lstSort->AddItem('-- unsorted --');
-            $this->lstSort->AddItem('Original text', self::SORT_TEXT);
-            $this->lstSort->AddItem('Translation', self::SORT_TRANSLATION);
-            $this->lstSort->AddItem('Words in the original text', self::SORT_TEXT_LENGTH);
+            $this->lstSort->AddItem(t('-- unsorted --'));
+            $this->lstSort->AddItem(t('Original text'), self::SORT_TEXT);
+            $this->lstSort->AddItem(t('Translation'), self::SORT_TRANSLATION);
+            $this->lstSort->AddItem(t('Words in the original text'), self::SORT_TEXT_LENGTH);
             $this->lstSort->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
 
             if (QApplication::QueryString('o'))
                 $this->lstSort->SelectedValue = QApplication::QueryString('o');
 
             $this->lstSortDir = new QListBox($this);
-            $this->lstSortDir->AddItem('Ascending', 1, true);
-            $this->lstSortDir->AddItem('Descending', 0);
+            $this->lstSortDir->AddItem(t('Ascending'), 1, true);
+            $this->lstSortDir->AddItem(t('Descending'), 0);
             $this->lstSortDir->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
 
             if (QApplication::QueryString('h'))
@@ -138,7 +138,7 @@
 
         public function btnLess_Create() {
             $this->btnLess = new QButton($this);
-            $this->btnLess->Text = 'Less';
+            $this->btnLess->Text = t('Less');
             $this->btnLess->Display = ($this->intStart > 0);
             $this->btnLess->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnLess_Click', $this->objWaitIcon));
         }

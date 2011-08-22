@@ -87,7 +87,7 @@
                     $strOutput .= $objTabSection->Render(false);
                 }
                 catch (Exception $objEx) {
-                    $strOutput .= sprintf('Error rendering this tab: %s', $objEx->getMessage());
+                    throw $objEx;
                 }
             }
 
