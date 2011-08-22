@@ -66,34 +66,20 @@
 
             if (!$objProjectProgress || $objProjectProgress->Active) {
                 $objNarroImporter = new NarroProjectImporter();
+                $objNarroImporter->SkipUntranslated = (bool) array_search('--skip-untranslated', $argv);
+                NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
 
-                /**
-                 * Get boolean options
-                 */
-                $objNarroImporter->DeactivateFiles = !((bool) array_search('--do-not-deactivate-files', $argv));
-                $objNarroImporter->DeactivateContexts = !((bool) array_search('--do-not-deactivate-contexts', $argv));
-                $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
-                $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
-                $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
-                $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
-                $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
-                NarroPluginHandler::$blnEnablePlugins = (bool) array_search('--disable-plugins', $argv);
+                if (array_search('--exported-suggestion', $argv))
+                    $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];
 
                 if (array_search('--template-lang', $argv) !== false)
                     $strSourceLanguage = $argv[array_search('--template-lang', $argv)+1];
                 else
                     $strSourceLanguage = NarroLanguage::SOURCE_LANGUAGE_CODE;
 
-                if (array_search('--translation-lang', $argv) !== false)
-                    $strTargetLanguage = $argv[array_search('--translation-lang', $argv)+1];
-
                 if (array_search('--user', $argv) !== false)
                     $intUserId = $argv[array_search('--user', $argv)+1];
 
-
-                /**
-                 * Load the specified user or the anonymous user if unspecified
-                 */
                 $objUser = NarroUser::LoadByUserId($intUserId);
                 if (!$objUser instanceof NarroUser) {
                     QApplication::LogInfo(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
@@ -110,9 +96,6 @@
 
                 QApplication::LogInfo(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
 
-                /**
-                 * Load the specified source language
-                 */
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
                 if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
                     QApplication::LogInfo(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
@@ -123,7 +106,6 @@
 
                 $objNarroImporter->Project = $objProject;
                 $objNarroImporter->User = $objUser;
-
                 if (array_search('--template-directory', $argv) !== false)
                     $objNarroImporter->TemplatePath = $argv[array_search('--template-directory', $argv)+1];
                 else
@@ -134,45 +116,36 @@
                 else
                     $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
 
+
                 if (in_array('--force', $argv)) {
-                    $objNarroImporter->CleanImportDirectory();
+                    $objNarroImporter->CleanExportDirectory();
                 }
 
-
-
                 try {
-                    $intPid = NarroUtils::IsProcessRunning('import', $objNarroImporter->Project->ProjectId);
+                    $intPid = NarroUtils::IsProcessRunning('export', $objNarroImporter->Project->ProjectId);
 
                     if ($intPid && $intPid <> getmypid())
-                        throw new Exception(sprintf('An import process is already running for this project with pid %d', $intPid));
+                        QApplication::LogInfo(sprintf('An export process is already running for this project with pid %d', $intPid));
 
-                    $strProcPidFile = __TMP_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '-' . $objNarroImporter->TargetLanguage->LanguageCode . '-import-process.pid';
+                    $strProcPidFile = __TMP_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '-' . $objNarroImporter->TargetLanguage->LanguageCode . '-export-process.pid';
                     if (file_exists($strProcPidFile))
                         unlink($strProcPidFile);
 
                     file_put_contents($strProcPidFile, getmypid());
 
-                    $blnResult = $objNarroImporter->ImportProject();
+                    $objNarroImporter->ExportProject();
                 }
                 catch (Exception $objEx) {
-                    QApplication::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
-                    $objNarroImporter->CleanImportDirectory();
+                    QApplication::LogError(sprintf('An error occurred during export: %s', $objEx->getMessage()));
+                    $objNarroImporter->CleanExportDirectory();
                     exit();
                 }
 
-                $objNarroImporter->CleanImportDirectory();
-                if ($blnResult)
+                $objNarroImporter->CleanExportDirectory();
                 foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
-                    if ($strName == 'Start time')
-                        $strValue = date('Y-m-d H:i:s', $strValue);
-
-                    if ($strName == 'End time')
-                        $strValue = date('Y-m-d H:i:s', $strValue);
-
                     if ($strValue != 0)
                         QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);
                 }
-
             }
         }
     }
