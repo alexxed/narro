@@ -256,15 +256,15 @@
             QApplication::$SourceLanguage = NarroLanguage::LoadByLanguageCode(__SOURCE_LANGUAGE_CODE__);
 
             // language passed through the l parameter
-            if ($_REQUEST['l'])
-                QApplication::$TargetLanguage = NarroLanguage::LoadByLanguageCode($_REQUEST['l']);
+            if (@$_REQUEST['l'])
+                QApplication::$TargetLanguage = NarroLanguage::LoadByLanguageCode(@$_REQUEST['l']);
             // language passed through cli parameter
             elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
                 QApplication::$TargetLanguage = NarroLanguage::LoadByLanguageCode($strLanguage);
             // language guessed from the browser settings
             else {
                 $objGuessedLanguage = QApplication::GetBrowserLanguage();
-                if ($objGuessedLanguage instanceof NarroLanguage && !isset($_REQUEST['openid_mode'])) {
+                if ($objGuessedLanguage instanceof NarroLanguage && !isset(@$_REQUEST['openid_mode'])) {
                     QApplication::Redirect(sprintf('projects.php?l=%s', $objGuessedLanguage->LanguageCode));
                     exit;
                 }
@@ -299,9 +299,9 @@
             require_once('Zend/Log/Writer/Firebug.php');
             require_once('Zend/Log/Writer/Syslog.php');
             // project log via browser
-            if (is_numeric($_REQUEST['p'])) {
-                $intProjectId = $_REQUEST['p'];
-                $strLanguageCode = $_REQUEST['l'];
+            if (is_numeric(@$_REQUEST['p'])) {
+                $intProjectId = @$_REQUEST['p'];
+                $strLanguageCode = @$_REQUEST['l'];
             }
             // project log via cli
             elseif (isset($argv) && $intProjectId = $argv[array_search('--project', $argv)+1])
