@@ -284,6 +284,12 @@
 
         public function __get($strName) {
             switch ($strName) {
+                case 'Username':
+                    /**
+                    * Gets the value for strUsername (Unique)
+                    * @return string
+                    */
+                    return htmlspecialchars($this->strUsername, ENT_NOQUOTES, 'UTF-8');
                 case 'Language': return $this->objLanguage;
                 case 'Preferences': return $this->arrPreferences;
                 case 'Permissions': return $this->arrPermissions;
