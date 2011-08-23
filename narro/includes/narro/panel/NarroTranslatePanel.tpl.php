@@ -139,6 +139,9 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
 }
 
 </script>
+<p>
+<?php _t("To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text.");?>
+</p>
 
     Project: <?php $_CONTROL->lstProject->Render(); ?>
     File: <?php  $_CONTROL->txtFile->Render();  ?>
