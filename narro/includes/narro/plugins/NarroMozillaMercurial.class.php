@@ -19,7 +19,7 @@
 
         public function __construct() {
             parent::__construct();
-            $this->blnEnable = (in_array(QApplication::$TargetLanguage->LanguageCode, array('ro')));
+            $this->blnEnable = false;
 
             $this->strName = t('Commit to mercurial');
         }
