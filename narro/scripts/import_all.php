@@ -17,6 +17,7 @@
      */
 
     require_once(dirname(__FILE__) . '/../configuration/prepend.inc.php');
+    QApplication::$LogFile = sprintf('%s/import_all.log', __TMP_PATH__);
 
     if (!isset($argv)) exit;
     QFirebug::setEnabled(false);
@@ -32,11 +33,6 @@
                     "--user                       user id that will be used for the added\n" .
                     "--disable-plugins            disable plugins during import/export\n" .
                     "                             suggestions, optional, defaults to anonymous\n" .
-                    "--exported-suggestion        1 for approved,\n" .
-                    "                             2 - approved, then most voted,\n" .
-                    "                             3 - approved, then most recent,\n" .
-                    "                             4 approved, most voted, most recent,\n" .
-                    "                             5 approved, my suggestion\n" .
                     "--do-not-deactivate-files    do not deactivate project files before importing\n" .
                     "--do-not-deactivate-contexts do not deactivate project contexts before\n" .
                     "                             importing\n" .

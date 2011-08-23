@@ -17,6 +17,7 @@
      */
 
     require_once(dirname(__FILE__) . '/../configuration/prepend.inc.php');
+    QApplication::$LogFile = sprintf('%s/export_all.log', __TMP_PATH__);
 
     if (!isset($argv)) exit;
     QFirebug::setEnabled(false);
@@ -37,17 +38,7 @@
                     "                             3 - approved, then most recent,\n" .
                     "                             4 approved, most voted, most recent,\n" .
                     "                             5 approved, my suggestion\n" .
-                    "--do-not-deactivate-files    do not deactivate project files before importing\n" .
-                    "--do-not-deactivate-contexts do not deactivate project contexts before\n" .
-                    "                             importing\n" .
-                    "--check-equal                check if the translation is equal to the original\n" .
-                    "                             text and don't import it\n" .
-                    "--skip-untranslated          skip likes that don't have translated texts\n" .
-                    "--approve                    approve the imported suggestions\n" .
-                    "--approve-already-approved   overwrite translations approved in Narro\n" .
-                    "--import-unchanged-files     import files marked unchanged after the last import\n" .
-                    "--only-suggestions           import only suggestions, don't add files, texts\n" .
-                    "                             or contexts\n",
+                    "--skip-untranslated          skip likes that don't have translated texts\n",
                 basename(__FILE__),
                 NarroLanguage::SOURCE_LANGUAGE_CODE
             )
