@@ -266,8 +266,8 @@
                 $arrConditions[] = QQ::All();
             else
                 $arrConditions[] = QQ::AndCondition(
-                    QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->Active, 0),
-                    QQ::Equal(QQN::NarroProject()->Active, 0)
+                    QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->Active, 1),
+                    QQ::Equal(QQN::NarroProject()->Active, 1)
                 );
 
             // Setup the $objClauses Array

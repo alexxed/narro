@@ -48,7 +48,6 @@ CREATE TABLE IF NOT EXISTS `zend_cache_version` (
   PRIMARY KEY (`num`)
 ) ENGINE=InnoDB;
 
-
-
+UPDATE narro_project_progress SET narro_project_progress.active=(SELECT narro_project.active FROM narro_project WHERE narro_project.project_id=narro_project_progress.project_id);
 
 
