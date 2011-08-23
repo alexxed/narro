@@ -270,11 +270,6 @@
                     QQ::Equal(QQN::NarroProject()->Active, 0)
                 );
 
-            // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
-
-            // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
-            $this->dtgProjectList->TotalItemCount = NarroProject::QueryCount(QQ::AndCondition($arrConditions));
-
             // Setup the $objClauses Array
             $objClauses = array(
                 QQ::Expand(
@@ -282,6 +277,9 @@
                     QQ::Equal(QQN::NarroProject()->NarroProjectProgressAsProject->LanguageId, QApplication::GetLanguageId())
                 )
             );
+
+            // Remember!  We need to first set the TotalItemCount, which will affect the calcuation of LimitClause below
+            $this->dtgProjectList->TotalItemCount = NarroProject::QueryCount(QQ::AndCondition($arrConditions), $objClauses);
 
             // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
             // the OrderByClause to the $objClauses array
