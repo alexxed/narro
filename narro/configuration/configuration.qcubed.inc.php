@@ -36,5 +36,13 @@ if (!defined('SERVER_INSTANCE')) {
     define('__FILE_FORM_STATE_HANDLER_PATH__', __NARRO_DATA__ . '/formstate');
     define('ERROR_PAGE_PATH', __PHP_ASSETS__ . '/error_page.php');
     define('ERROR_LOG_PATH', __NARRO_DATA__ . '/error_log');
+
+    if (SERVER_INSTANCE == 'prod') {
+        define('ERROR_LOG_FLAG', true);
+
+        // To enable the display of "Friendly" error pages and messages, define them here (path MUST be relative from the DOCROOT)
+        define('ERROR_FRIENDLY_PAGE_PATH', __PHP_ASSETS__ . '/friendly_error_page.php');
+        define('ERROR_FRIENDLY_AJAX_MESSAGE', 'Oops!  An error has occurred.\r\n\r\nThe error was logged, and we will take a look into this right away.');
+    }
 }
 ?>
