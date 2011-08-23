@@ -972,6 +972,7 @@
 
                 if (strpos($strShortPath, 'data') === 0) continue;
                 if (strpos($strShortPath, 'includes/Zend') === 0) continue;
+                if (strpos($strShortPath, 'includes/qcubed_generated') === 0) continue;
 
                 $strFile = str_replace("\'", "&&&escapedsimplequote&&&", $strFile);
                 $strFile = str_replace('\"', "&&&escapeddoublequote&&&", $strFile);
