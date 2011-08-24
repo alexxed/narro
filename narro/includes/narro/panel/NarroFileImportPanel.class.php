@@ -102,8 +102,6 @@
             $objFileImporter->CheckEqual = true;
             $objFileImporter->File = $this->objNarroFile;
             $objFileImporter->OnlySuggestions = !QApplication::HasPermissionForThisLang('Can approve', $this->objNarroFile->ProjectId);
-            $objFileImporter->DeactivateFiles = false;
-            $objFileImporter->DeactivateContexts = false;
 
             $objFileImporter->Approve = QApplication::HasPermissionForThisLang('Can approve', $this->objNarroFile->ProjectId);
 

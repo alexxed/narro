@@ -52,7 +52,7 @@
     }
 
     foreach(NarroProject::LoadArrayByActive(1) as $objProject) {
-        foreach(NarroLanguage::LoadAllActive() as $objLanguage) {
+        foreach(NarroLanguage::LoadAllActive() as $intIdx=>$objLanguage) {
             if (array_search('--verbose', $argv)) {
                 echo $objLanguage->LanguageName . "\n";
                 ob_flush();
@@ -66,12 +66,10 @@
                 /**
                  * Get boolean options
                  */
-                $objNarroImporter->DeactivateFiles = !((bool) array_search('--do-not-deactivate-files', $argv));
-                $objNarroImporter->DeactivateContexts = !((bool) array_search('--do-not-deactivate-contexts', $argv));
                 $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
                 $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
                 $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
-                $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
+                $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv) || $intIdx > 1;
                 $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
                 NarroPluginHandler::$blnEnablePlugins = (bool) array_search('--disable-plugins', $argv);
 

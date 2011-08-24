@@ -64,8 +64,6 @@
         /**
          * Get boolean options
          */
-        $objNarroImporter->DeactivateFiles = !((bool) array_search('--do-not-deactivate-files', $argv));
-        $objNarroImporter->DeactivateContexts = !((bool) array_search('--do-not-deactivate-contexts', $argv));
         $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
         $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
         $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);

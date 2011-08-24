@@ -69,14 +69,6 @@
          * 5 = approved and current user's suggestion
          */
         protected $intExportedSuggestion = 1;
-        /**
-         * whether to make files inactive before import
-         */
-        protected $blnDeactivateFiles = true;
-        /**
-         * whether to make contexts inactive before import
-         */
-        protected $blnDeactivateContexts = true;
 
         protected $strTranslationPath;
         protected $strTemplatePath;
@@ -753,8 +745,6 @@
                 case "CheckEqual": return $this->blnCheckEqual;
                 case "ImportUnchangedFiles": return $this->blnImportUnchangedFiles;
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
-                case "DeactivateFiles": return $this->blnDeactivateFiles;
-                case "DeactivateContexts": return $this->blnDeactivateContexts;
                 case "ExportedSuggestion": return $this->intExportedSuggestion;
                 case "CopyUnhandledFiles": return $this->blnCopyUnhandledFiles;
                 case "SkipUntranslated": return $this->blnSkipUntranslated;
@@ -888,24 +878,6 @@
                 case "OnlySuggestions":
                     try {
                         $this->blnOnlySuggestions = QType::Cast($mixValue, QType::Boolean);
-                        break;
-                    } catch (QInvalidCastException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
-
-                case "DeactivateContexts":
-                    try {
-                        $this->blnDeactivateContexts = QType::Cast($mixValue, QType::Boolean);
-                        break;
-                    } catch (QInvalidCastException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
-
-                case "DeactivateFiles":
-                    try {
-                        $this->blnDeactivateFiles = QType::Cast($mixValue, QType::Boolean);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
