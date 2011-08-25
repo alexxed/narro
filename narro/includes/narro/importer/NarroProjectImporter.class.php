@@ -212,6 +212,8 @@
                 NarroUtils::RecursiveDelete($strUploadPath);
 
             $this->MarkUnusedFilesAsInactive();
+
+            NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'import');
         }
 
         public function ImportFromDirectory() {
@@ -522,6 +524,8 @@
             }
 
             $this->MarkUnusedFilesAsInactive();
+
+            NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'export');
         }
 
 
