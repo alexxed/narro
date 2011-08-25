@@ -69,7 +69,7 @@
                 $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
                 $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
                 $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
-                $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv) || $intIdx > 1;
+                $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv) || $intIdx > 0;
                 $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
                 NarroPluginHandler::$blnEnablePlugins = (bool) array_search('--disable-plugins', $argv);
 
@@ -128,12 +128,6 @@
                 else
                     $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
 
-                if (in_array('--force', $argv)) {
-                    $objNarroImporter->CleanImportDirectory();
-                }
-
-
-
                 try {
                     $intPid = NarroUtils::IsProcessRunning('import', $objNarroImporter->Project->ProjectId);
 
@@ -150,11 +144,9 @@
                 }
                 catch (Exception $objEx) {
                     QApplication::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
-                    $objNarroImporter->CleanImportDirectory();
                     exit();
                 }
 
-                $objNarroImporter->CleanImportDirectory();
                 if ($blnResult)
                 foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
                     if ($strName == 'Start time')

@@ -152,12 +152,6 @@
         else
             $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
 
-        if (in_array('--force', $argv)) {
-            $objNarroImporter->CleanImportDirectory();
-        }
-
-
-
         try {
             $intPid = NarroUtils::IsProcessRunning('import', $objNarroImporter->Project->ProjectId);
 
@@ -174,11 +168,9 @@
         }
         catch (Exception $objEx) {
             QApplication::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
-            $objNarroImporter->CleanImportDirectory();
             exit();
         }
 
-        $objNarroImporter->CleanImportDirectory();
         if ($blnResult)
         foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
             if ($strName == 'Start time')
@@ -264,11 +256,6 @@
         else
             $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
 
-
-        if (in_array('--force', $argv)) {
-            $objNarroImporter->CleanExportDirectory();
-        }
-
         try {
             $intPid = NarroUtils::IsProcessRunning('export', $objNarroImporter->Project->ProjectId);
 
@@ -285,11 +272,9 @@
         }
         catch (Exception $objEx) {
             QApplication::LogError(sprintf('An error occurred during export: %s', $objEx->getMessage()));
-            $objNarroImporter->CleanExportDirectory();
             exit();
         }
 
-        $objNarroImporter->CleanExportDirectory();
         foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
             if ($strValue != 0)
                 QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);

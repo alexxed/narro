@@ -77,16 +77,6 @@
 
         protected $arrFileId;
 
-        public function CleanImportDirectory() {
-            if (file_exists($this->strTranslationPath  . '/import.progress'))
-                unlink($this->strTranslationPath  . '/import.progress');
-        }
-
-        public function CleanExportDirectory() {
-            if (file_exists($this->strTranslationPath  . '/export.progress'))
-                unlink($this->strTranslationPath  . '/export.progress');
-        }
-
         public function MarkUnusedFilesAsInactive() {
             if (count($this->arrFileId)) {
                 NarroFile::GetDatabase()->NonQuery(
@@ -147,7 +137,6 @@
              * Make an exception for the naro project. The template path will be changed to the locale directory.
              */
             if ($this->objProject->ProjectName == 'Narro') {
-                $this->CleanImportDirectory();
                 $this->CreateNarroTemplate($this->objProject->ProjectId);
             }
 
