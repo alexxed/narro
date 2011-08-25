@@ -136,7 +136,7 @@
             /**
              * Make an exception for the naro project. The template path will be changed to the locale directory.
              */
-            if ($this->objProject->ProjectName == 'Narro') {
+            if ($this->objProject->ProjectName == 'Narro' && SERVER_INSTANCE == 'dev') {
                 $this->CreateNarroTemplate($this->objProject->ProjectId);
             }
 
@@ -692,10 +692,10 @@
 
         public function GetFileType($strFile) {
             if (!preg_match('/^.+\.(.+)$/', $strFile, $arrMatches))
-                return false;
+                return NarroFileType::Unsupported;
 
             if (!isset($arrMatches[1]))
-                return false;
+                return NarroFileType::Unsupported;
 
             switch($arrMatches[1]) {
                 case 'dtd':

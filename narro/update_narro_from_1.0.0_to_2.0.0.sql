@@ -13,7 +13,7 @@ DROP TABLE `narro_context_plural`;
 ALTER TABLE `narro_file` ADD `header` TEXT NULL ;
 
 ALTER TABLE `narro_file_progress` ADD `header` TEXT NULL AFTER `language_id` ;
-ALTER TABLE `narro_file_progress` ADD `export` tinyint(1) NULL AFTER `progress_percent` ;
+ALTER TABLE `narro_file_progress` ADD `export` tinyint(1) NULL DEFAULT 1 AFTER `progress_percent` ;
 ALTER TABLE `narro_file_progress` ADD INDEX `file_id_3` ( `file_id` , `language_id` , `export` ) ;
 
 DROP TABLE `narro_glossary_term`;
@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS `zend_cache_version` (
   PRIMARY KEY (`num`)
 ) ENGINE=InnoDB;
 
-UPDATE narro_project_progress SET narro_project_progress.active=(SELECT narro_project.active FROM narro_project WHERE narro_project.project_id=narro_project_progress.project_id);
+UPDATE `narro_project_progress` SET narro_project_progress.active=(SELECT narro_project.active FROM narro_project WHERE narro_project.project_id=narro_project_progress.project_id);
+UPDATE `narro_file_progress` SET export=1;
 
 
