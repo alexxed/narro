@@ -929,6 +929,8 @@
             $arrPermissions = NarroPermission::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroPermission()->PermissionName)));
             $arrRoles = NarroRole::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroRole()->RoleName)));
             $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'));
+
+            QApplication::LogInfo(sprintf('Found %d php files to search for localizable messages.', count($allFiles)));
             foreach($allFiles as $strFileName) {
                 if (pathinfo($strFileName, PATHINFO_EXTENSION) != 'php') continue;
 
