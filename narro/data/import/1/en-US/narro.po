@@ -1,0 +1,3436 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Narro 2.0
+"Report-Msgid-Bugs-To: alexxed@gmail.com\n"
+"POT-Creation-Date: 2011-23-08 20:58+0300\n"
+"PO-Revision-Date: 2011-23-08 20:58+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Narro\n"
+#. $this->btnChangePassword->Text = t('Change password');
+#: change_password.tpl.php change_password.php
+msgid "Change password"
+msgstr ""
+
+#. <p><?php echo t('Here you can change your password. Just type the new password and hit the button.'); ?></p>
+#: change_password.tpl.php
+msgid "Here you can change your password. Just type the new password and hit the button."
+msgstr ""
+
+#. <td><?php echo t('Password')?>:</td>
+#: change_password.tpl.php includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroUserLoginPanel.tpl.php
+msgid "Password"
+msgstr ""
+
+#. $this->pnlLanguageList->addTab(new NarroLanguageListPanel($this->pnlLanguageList), t('List'));
+#: roles.php role.php language_edit.php languages.php
+msgid "List"
+msgstr ""
+
+#. $strTabTitle = t('Add');
+#: roles.php includes/narro/NarroGenericProjectForm.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroProjectListPanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php role.php language_edit.php project_edit.tpl.php languages.php project_edit.php
+msgid "Add"
+msgstr ""
+
+#. NarroLink::ProjectList(t('Projects')),
+#. NarroLink::ProjectList(t('Projects')),
+#: roles.php projects.php includes/narro/NarroGenericProjectForm.class.php includes/narro/panel/NarroProjectListPanel.class.php includes/narro/panel/NarroUserSuggestionsPanel.class.php projects.tpl.php user_role.php role.php language_edit.php user.php preferences.php translate.php login.php users.php password.php languages.php join.php account.php project_edit.php
+msgid "Projects"
+msgstr ""
+
+#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Translate'), NarroLink::Translate());
+#: roles.php projects.php translate.tpl.php includes/narro/NarroGenericProjectForm.class.php role.php language_edit.php translate.php users.php languages.php
+msgid "Translate"
+msgstr ""
+
+#. $this->pnlTab->addTab($this->pnlLanguageList, t('Languages'));
+#: roles.php projects.php includes/narro/panel/NarroLanguageListPanel.class.php role.php language_edit.php project_languages.php translate.php users.php languages.php
+msgid "Languages"
+msgstr ""
+
+#. $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), $this->objUser->Username);
+#: roles.php users.tpl.php projects.php includes/narro/panel/NarroUserListPanel.class.php user_role.php role.php language_edit.php user.php preferences.php translate.php login.php users.php password.php languages.php join.php account.php
+msgid "Users"
+msgstr ""
+
+#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::UserRole($this->objUser->UserId));
+#: roles.php projects.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroUserListPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php user_role.php role.php language_edit.php user.php preferences.php translate.php users.php languages.php roles.tpl.php account.php
+msgid "Roles"
+msgstr ""
+
+#. $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), t('Register'));
+#. $this->pnlTab->addTab($this->pnlUserRegister, t('Register'));
+#. $this->pnlTab->SelectedTab = t('Register');
+#: join.tpl.php includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroUserRegisterPanel.class.php login.php password.php join.php
+msgid "Register"
+msgstr ""
+
+#. $this->pnlBreadcrumb->addElement(NarroLink::ProjectImport($this->objProject->ProjectId, t('Import')));
+#: import.tpl.php import.php includes/narro/NarroGenericProjectForm.class.php includes/narro/panel/NarroProjectImportPanel.class.php includes/narro/panel/NarroFileImportPanel.class.php project_languages.php
+msgid "Import"
+msgstr ""
+
+#. $strPageTitle = $this->objProject->ProjectName . ' :: ' . t('Export');
+#: export.php includes/narro/NarroGenericProjectForm.class.php includes/narro/panel/NarroProjectFileListPanel.class.php includes/narro/panel/NarroProjectExportPanel.class.php includes/narro/panel/NarroFileExportPanel.class.php project_languages.php export.tpl.php
+msgid "Export"
+msgstr ""
+
+#. NarroLink::ProjectFileList($this->objProject->ProjectId, null, null, t('Files'))
+#: files.php includes/narro/NarroGenericProjectForm.class.php project_languages.php
+msgid "Files"
+msgstr ""
+
+#. $this->strName = t('Commit to mercurial');
+#: includes/narro/plugins/NarroMozillaMercurial.class.php
+msgid "Commit to mercurial"
+msgstr ""
+
+#. $this->strName = t('Spell check');
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "Spell check"
+msgstr ""
+
+#. * Spellchecking: t('Yes, please')
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "Yes, please"
+msgstr ""
+
+#.
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "I don't need it"
+msgstr ""
+
+#. t('<span class="mispelled_word">%s</span> seems to be mispelled. Maybe you meant %s.'),
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "<span class=\"mispelled_word\">%s</span> seems to be mispelled. Maybe you meant %s."
+msgstr ""
+
+#. t('<span class="mispelled_word">%s</span> seems to be mispelled.'),
+#: includes/narro/plugins/NarroSpellCheck.class.php
+msgid "<span class=\"mispelled_word\">%s</span> seems to be mispelled."
+msgstr ""
+
+#. $this->strName = t('DTD check');
+#: includes/narro/plugins/NarroDtdCheck.class.php
+msgid "DTD check"
+msgstr ""
+
+#. t('Your translation for "%s", in "%s" includes double quote characters. Those need to be written as HTML entities, otherwise the export will not be valid. You can use &quot; instead of each double quote.'),
+#: includes/narro/plugins/NarroDtdCheck.class.php
+msgid "Your translation for \"%s\", in \"%s\" includes double quote characters. Those need to be written as HTML entities, otherwise the export will not be valid. You can use &quot; instead of each double quote."
+msgstr ""
+
+#. htmlentities(t('Your translation includes double quote characters. Those need to be written as HTML entities, otherwise the export will not be valid. You can use &quot; instead of each double quote.'))
+#: includes/narro/plugins/NarroDtdCheck.class.php
+msgid "Your translation includes double quote characters. Those need to be written as HTML entities, otherwise the export will not be valid. You can use &quot; instead of each double quote."
+msgstr ""
+
+#. $this->strName = t('Entity check');
+#: includes/narro/plugins/NarroEntityCheck.class.php
+msgid "Entity check"
+msgstr ""
+
+#. t(
+#.                                     'You translated or forgot some variables that should have been left as they were: <span style="color:red;font-size:large">%s</span>'),
+#: includes/narro/plugins/NarroEntityCheck.class.php
+msgid "You translated or forgot some variables that should have been left as they were: <span style=\"color:red;font-size:large\">%s</span>"
+msgstr ""
+
+#. $this->strName = t('Text length check');
+#: includes/narro/plugins/NarroTextLengthCheck.class.php
+msgid "Text length check"
+msgstr ""
+
+#. '<span style="color:red">' . t('Your translation seems really short compared to the original, or the other way around. Are you sure it is correct?') . '</span>';
+#: includes/narro/plugins/NarroTextLengthCheck.class.php
+msgid "Your translation seems really short compared to the original, or the other way around. Are you sure it is correct?"
+msgstr ""
+
+#. $this->strName = t('Punctuation check');
+#: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "Punctuation check"
+msgstr ""
+
+#. t('<span style="color:red">Did you forget the ending "<span style="color:red;font-size:large">%s</span>"?</span>'),
+#: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "<span style=\"color:red\">Did you forget the ending \"<span style=\"color:red;font-size:large\">%s</span>\"?</span>"
+msgstr ""
+
+#. t('The original text ends with %d space character(s), please correct your suggestion.'
+#.                             ),
+#: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text ends with %d space character(s), please correct your suggestion."
+msgstr ""
+
+#. t('The original text does not end with "<span style="color:red;font-size:large">%s</span>".'
+#.                             ),
+#: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text does not end with \"<span style=\"color:red;font-size:large\">%s</span>\"."
+msgstr ""
+
+#. t(
+#.                                 'The original text ends with "<span style="color:green;font-size:large">%s</span>", but your suggestion ends in "<span style="color:red;font-size:large">%s</span>".'
+#.                             ),
+#: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text ends with \"<span style=\"color:green;font-size:large\">%s</span>\", but your suggestion ends in \"<span style=\"color:red;font-size:large\">%s</span>\"."
+msgstr ""
+
+#. t(
+#.                                 'The original text has %d leading spaces and %d trailing spaces, your suggestion has %d leading spaces and %d trailing spaces.'
+#.                             ),
+#: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text has %d leading spaces and %d trailing spaces, your suggestion has %d leading spaces and %d trailing spaces."
+msgstr ""
+
+#. t(
+#.                                 'The original text has %d leading spaces, your suggestion has %d.'
+#.                             ),
+#: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text has %d leading spaces, your suggestion has %d."
+msgstr ""
+
+#. t(
+#.                                 'The original text has %d trailing spaces, your suggestion has %d.'
+#.                             ),
+#: includes/narro/plugins/NarroPunctuationCheck.class.php
+msgid "The original text has %d trailing spaces, your suggestion has %d."
+msgstr ""
+
+#. $this->strName = t('Narro cache');
+#: includes/narro/plugins/NarroCache.class.php
+msgid "Narro cache"
+msgstr ""
+
+#. $this->strName = t('Cedill/Comma issue solver');
+#: includes/narro/plugins/NarroCedillaComma.class.php
+msgid "Cedill/Comma issue solver"
+msgstr ""
+
+#. * Preference value: t('cedilla');
+#: includes/narro/plugins/NarroCedillaComma.class.php
+msgid "cedilla"
+msgstr ""
+
+#. * Preference value: t('comma');
+#: includes/narro/plugins/NarroCedillaComma.class.php
+msgid "comma"
+msgstr ""
+
+#. $this->strName = t('Archive Exporter');
+#: includes/narro/plugins/NarroExportArchive.class.php
+msgid "Archive Exporter"
+msgstr ""
+
+#. $strExportText = sprintf(sprintf(t('Download link: %s'), '<a href="%s">%s</a>'), $strDownloadUrl, $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip');
+#: includes/narro/plugins/NarroExportArchive.class.php
+msgid "Download link: %s"
+msgstr ""
+
+#. $strExportText = t('Failed to create an archive for download');
+#: includes/narro/plugins/NarroExportArchive.class.php
+msgid "Failed to create an archive for download"
+msgstr ""
+
+#. $this->txtRepository->Instructions = t('Please enter the path to the SVN repository');
+#: includes/narro/sources/NarroSvnSourcePanel.class.php
+msgid "Please enter the path to the SVN repository"
+msgstr ""
+
+#. $this->txtRepository->Instructions = t('Please enter the path to the Mercurial repository');
+#: includes/narro/sources/NarroMercurialSourcePanel.class.php
+msgid "Please enter the path to the Mercurial repository"
+msgstr ""
+
+#. $this->chkCopyFilesToDefaultDirectory->Name = t('Copy files to the default project directory for later use');
+#: includes/narro/sources/NarroVcsSourcePanel.class.php includes/narro/sources/NarroUploadSourcePanel.class.php includes/narro/sources/NarroWebSourcePanel.class.php
+msgid "Copy files to the default project directory for later use"
+msgstr ""
+
+#. $this->chkCopyFilesToDefaultDirectory->Instructions = sprintf(t('This will also delete the files from "%s/"'), __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode);
+#: includes/narro/sources/NarroVcsSourcePanel.class.php includes/narro/sources/NarroUploadSourcePanel.class.php includes/narro/sources/NarroWebSourcePanel.class.php
+msgid "This will also delete the files from \"%s/\""
+msgstr ""
+
+#. $this->lstProject->Instructions = t('Please choose the project from which you will import matching approved translations');
+#: includes/narro/sources/NarroProjectSourcePanel.class.php
+msgid "Please choose the project from which you will import matching approved translations"
+msgstr ""
+
+#. $this->fileSource->Instructions = t('Please upload an archive that contains the files');
+#: includes/narro/sources/NarroUploadSourcePanel.class.php
+msgid "Please upload an archive that contains the files"
+msgstr ""
+
+#. $this->txtDirectory->Instructions = t('Please enter the full path to the directory that contains the files');
+#: includes/narro/sources/NarroDirectorySourcePanel.class.php
+msgid "Please enter the full path to the directory that contains the files"
+msgstr ""
+
+#. $this->txtWebAddress->Name = t('Web Address');
+#: includes/narro/sources/NarroWebSourcePanel.class.php
+msgid "Web Address"
+msgstr ""
+
+#. $this->txtWebAddress->Instructions = t('Please enter a web address to a zip file or a single supported file');
+#: includes/narro/sources/NarroWebSourcePanel.class.php
+msgid "Please enter a web address to a zip file or a single supported file"
+msgstr ""
+
+#. $this->strText = t('Nothing to translate');
+#: includes/narro/NarroTranslationProgressBar.class.php
+msgid "Nothing to translate"
+msgstr ""
+
+#. $strText = sprintf(sprintf('<div class="graph" title="%s">', t('%d with suggestions, %d approved, %d untranslated, %d in total')), $this->intFuzzy, $this->intTranslated, $this->intTotal - $this->intFuzzy - $this->intTranslated, $this->intTotal);
+#: includes/narro/NarroTranslationProgressBar.class.php
+msgid "%d with suggestions, %d approved, %d untranslated, %d in total"
+msgstr ""
+
+#. $this->pnlMainTab->replaceTab(new NarroProjectPanel($this->objProject, $this->pnlMainTab), t('Overview'));
+#: includes/narro/NarroGenericProjectForm.class.php project.php
+msgid "Overview"
+msgstr ""
+
+#. $strTabTitle = t('Edit');
+#: includes/narro/NarroGenericProjectForm.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php user_role.php role.php language_edit.php user.php project_languages.php preferences.php account.php project_edit.php
+msgid "Edit"
+msgstr ""
+
+#. t('Starting to import from "%s" and translations from "%s"'),
+#: includes/narro/importer/NarroProjectImporter.class.php
+msgid "Starting to import from \"%s\" and translations from \"%s\""
+msgstr ""
+
+#. t('Starting to import from "%s", no translations file'),
+#: includes/narro/importer/NarroProjectImporter.class.php
+msgid "Starting to import from \"%s\", no translations file"
+msgstr ""
+
+#. QApplication::LogInfo(sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
+#: includes/narro/importer/NarroProjectImporter.class.php
+msgid "Starting export for the project %s using as template %s"
+msgstr ""
+
+#. t('Starting to export "%s"'),
+#: includes/narro/importer/NarroProjectImporter.class.php
+msgid "Starting to export \"%s\""
+msgstr ""
+
+#. throw new Exception(sprintf(t('TranslationPath "%s" does not exist.'), $mixValue));
+#. throw new Exception(sprintf(t('TranslationPath "%s" does not exist.'), $mixValue));
+#: includes/narro/importer/NarroProjectImporter.class.php
+msgid "TranslationPath \"%s\" does not exist."
+msgstr ""
+
+#. throw new Exception(t('User should be set with an instance of NarroUser'));
+#: includes/narro/importer/NarroProjectImporter.class.php includes/narro/importer/NarroFileImporter.class.php
+msgid "User should be set with an instance of NarroUser"
+msgstr ""
+
+#. throw new Exception(t('Project should be set with an instance of NarroProject'));
+#: includes/narro/importer/NarroProjectImporter.class.php includes/narro/importer/NarroFileImporter.class.php
+msgid "Project should be set with an instance of NarroProject"
+msgstr ""
+
+#. throw new Exception(t('TargetLanguage should be set with an instance of NarroLanguage'));
+#: includes/narro/importer/NarroProjectImporter.class.php includes/narro/importer/NarroFileImporter.class.php
+msgid "TargetLanguage should be set with an instance of NarroLanguage"
+msgstr ""
+
+#. throw new Exception(t('SourceLanguage should be set with an instance of NarroLanguage'));
+#: includes/narro/importer/NarroProjectImporter.class.php includes/narro/importer/NarroFileImporter.class.php
+msgid "SourceLanguage should be set with an instance of NarroLanguage"
+msgstr ""
+
+#. throw new Exception(t('File should be set with an instance of NarroFile'));
+#: includes/narro/importer/NarroFileImporter.class.php
+msgid "File should be set with an instance of NarroFile"
+msgstr ""
+
+#. QApplication::LogInfo(sprintf(t('%s does not exist'), $strFile));
+#: includes/narro/importer/NarroMozillaFileImporter.class.php
+msgid "%s does not exist"
+msgstr ""
+
+#. QApplication::LogInfo(sprintf(t('%s is empty'), $strFile));
+#: includes/narro/importer/NarroMozillaFileImporter.class.php
+msgid "%s is empty"
+msgstr ""
+
+#. <p><?php echo t('Here are a few benefits for a registered user'); ?>:</p>
+#: includes/narro/panel/NarroUserRegisterPanel.tpl.php
+msgid "Here are a few benefits for a registered user"
+msgstr ""
+
+#. <li><?php echo t('Be famous for your suggestions. Everyone will see that you added that cool suggestion.') ?></li>
+#: includes/narro/panel/NarroUserRegisterPanel.tpl.php
+msgid "Be famous for your suggestions. Everyone will see that you added that cool suggestion."
+msgstr ""
+
+#. <li><?php echo t('Vote for your favourite suggestion.') ?></li>
+#: includes/narro/panel/NarroUserRegisterPanel.tpl.php
+msgid "Vote for your favourite suggestion."
+msgstr ""
+
+#. <li><?php echo t('Set your preferences and maintain your user profile.') ?></li>
+#: includes/narro/panel/NarroUserRegisterPanel.tpl.php
+msgid "Set your preferences and maintain your user profile."
+msgstr ""
+
+#. $this->colUsername = new QDataGridColumn(QApplication::Translate('Username'), '<?= $_CONTROL->ParentControl->dtgUser_UsernameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUser()->Username), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUser()->Username, false)));
+#: includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroRoleUserListPanel.class.php includes/narro/panel/NarroProjectPanel.class.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroUserRecoverPasswordPanel.tpl.php includes/narro/panel/NarroUserListPanel.class.php
+msgid "Username"
+msgstr ""
+
+#. <td><?php echo t('This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name.') ?></td>
+#: includes/narro/panel/NarroUserRegisterPanel.tpl.php
+msgid "This is your identifier on the website. Feel free to use spaces or any character you like. We suggest entering your name."
+msgstr ""
+
+#.
+#: includes/narro/panel/NarroUserRegisterPanel.tpl.php
+msgid "Alright, you don't have to type it twice, but please type it carefully."
+msgstr ""
+
+#. $this->txtEmail->Name = QApplication::Translate('Email');
+#: includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroUserRecoverPasswordPanel.tpl.php includes/narro/panel/NarroUserListPanel.class.php assets/plugins/QEmailTextBox/example/emailtextbox.php
+msgid "Email"
+msgstr ""
+
+#. <td><?php echo t('This is used for password recovery and opt-in notifications.') ?></td>
+#: includes/narro/panel/NarroUserRegisterPanel.tpl.php
+msgid "This is used for password recovery and opt-in notifications."
+msgstr ""
+
+#. $this->btnSearch->Text = t('Search');
+#: includes/narro/panel/NarroProjectFileListPanel.class.php includes/narro/panel/NarroProjectListPanel.class.php includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroTranslatePanel.class.php includes/narro/panel/NarroUserListPanel.class.php
+msgid "Search"
+msgstr ""
+
+#. $objWaitIcon->Text = t('Counting texts and translations...');
+#: includes/narro/panel/NarroProjectFileListPanel.class.php includes/narro/panel/NarroProjectListPanel.class.php
+msgid "Counting texts and translations..."
+msgstr ""
+
+#. $this->colFileName->Name = t('File name');
+#: includes/narro/panel/NarroProjectFileListPanel.class.php
+msgid "File name"
+msgstr ""
+
+#. $this->colFileName->Name = t('Translation Progress');
+#: includes/narro/panel/NarroProjectFileListPanel.class.php
+msgid "Translation Progress"
+msgstr ""
+
+#. <?php _t("To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text.");?>
+#: includes/narro/panel/NarroTranslatePanel.tpl.php
+msgid "To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text."
+msgstr ""
+
+#. <?php echo t('Click on any user to see translations added, statistics and currently assigned roles.'); ?>
+#: includes/narro/panel/NarroUserListPanel.tpl.php
+msgid "Click on any user to see translations added, statistics and currently assigned roles."
+msgstr ""
+
+#. $this->chkApproveImportedTranslations->Name = t('Approve the imported translations');
+#: includes/narro/panel/NarroProjectImportPanel.class.php
+msgid "Approve the imported translations"
+msgstr ""
+
+#. $this->chkApproveOnlyNotApproved->Name = t('Approve only translations that are not approved yet in Narro');
+#: includes/narro/panel/NarroProjectImportPanel.class.php
+msgid "Approve only translations that are not approved yet in Narro"
+msgstr ""
+
+#. $this->chkImportOnlyTranslations->Name = t('Do not add texts, just add found translations for existing texts');
+#: includes/narro/panel/NarroProjectImportPanel.class.php
+msgid "Do not add texts, just add found translations for existing texts"
+msgstr ""
+
+#. $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=&&&escapedsimplequote&&&disabled&&&escapedsimplequote&&&;this.value=&&&escapedsimplequote&&&%s&&&escapedsimplequote&&&', t('Please wait...'))));
+#: includes/narro/panel/NarroProjectImportPanel.class.php
+msgid "Please wait..."
+msgstr ""
+
+#. $this->lblImport->Text = t('Import finished.');
+#: includes/narro/panel/NarroProjectImportPanel.class.php
+msgid "Import finished."
+msgstr ""
+
+#. $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
+#. $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
+#. $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
+#: includes/narro/panel/NarroProjectImportPanel.class.php
+msgid "Import failed: %s"
+msgstr ""
+
+#. sprintf('<p>' . t('Project') . ': <a href="%s">%s</a></p>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName) .
+#: includes/narro/panel/NarroRoleUserListPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroUserRolePanel.tpl.php rss.php
+msgid "Project"
+msgstr ""
+
+#. $this->colLanguageName = new QDataGridColumn(t('Language'), '<?= $_FORM->dtgNarroLanguage_LanguageNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->LanguageName, false)));
+#: includes/narro/panel/NarroRoleUserListPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroUserSuggestionsPanel.class.php includes/narro/panel/NarroUserRolePanel.tpl.php project_languages.php
+msgid "Language"
+msgstr ""
+
+#. $ctlFilterListbox->AddItem('-'.QApplication::Translate('Any').'-');
+#: includes/narro/panel/NarroRoleUserListPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/qcubed/includes/qcubed/_core/base_controls/QDataGridBase.class.php
+msgid "Any"
+msgstr ""
+
+#. $this->dtgRoleUserList->Title = sprintf(t('Users with "%s" role'), $this->objRole->RoleName);
+#: includes/narro/panel/NarroRoleUserListPanel.class.php
+msgid "Users with \"%s\" role"
+msgstr ""
+
+#. <div class="section_title"><?php _t('Options')?></div>
+#: includes/narro/panel/NarroProjectExportPanel.tpl.php includes/narro/panel/NarroProjectImportPanel.tpl.php
+msgid "Options"
+msgstr ""
+
+#. $this->dtgTranslators->Title = t('Translators');
+#: includes/narro/panel/NarroProjectPanel.class.php
+msgid "Translators"
+msgstr ""
+
+#. $colWordCount = new QDataGridColumn(t('Words'));
+#: includes/narro/panel/NarroProjectPanel.class.php
+msgid "Words"
+msgstr ""
+
+#. $this->dtgReviewers->Title = t('Reviewers');
+#: includes/narro/panel/NarroProjectPanel.class.php
+msgid "Reviewers"
+msgstr ""
+
+#. $colWordCount = new QDataGridColumn(t('Reviews'));
+#: includes/narro/panel/NarroProjectPanel.class.php
+msgid "Reviews"
+msgstr ""
+
+#. $this->pnlTranslationSource->addTab($objDirectoryPanel, t('On this server'));
+#: includes/narro/panel/NarroProjectTextSourcePanel.class.php includes/narro/panel/NarroProjectTranslationSourcePanel.class.php
+msgid "On this server"
+msgstr ""
+
+#. $this->pnlTranslationSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('On my computer'));
+#: includes/narro/panel/NarroProjectTextSourcePanel.class.php includes/narro/panel/NarroProjectTranslationSourcePanel.class.php
+msgid "On my computer"
+msgstr ""
+
+#. $this->pnlTranslationSource->addTab(new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('On the web'));
+#: includes/narro/panel/NarroProjectTextSourcePanel.class.php includes/narro/panel/NarroProjectTranslationSourcePanel.class.php
+msgid "On the web"
+msgstr ""
+
+#. $this->pnlTranslationSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Mercurial'));
+#: includes/narro/panel/NarroProjectTextSourcePanel.class.php includes/narro/panel/NarroProjectTranslationSourcePanel.class.php
+msgid "Mercurial"
+msgstr ""
+
+#. $this->pnlTranslationSource->addTab(new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('SVN'));
+#: includes/narro/panel/NarroProjectTextSourcePanel.class.php includes/narro/panel/NarroProjectTranslationSourcePanel.class.php
+msgid "SVN"
+msgstr ""
+
+#. t('Viewing translations in: %s'),
+#: includes/narro/panel/NarroHeaderPanel.tpl.php
+msgid "Viewing translations in: %s"
+msgstr ""
+
+#. ', <a href="%s">' . t('login or register to contribute') . '</a>',
+#: includes/narro/panel/NarroHeaderPanel.tpl.php
+msgid "login or register to contribute"
+msgstr ""
+
+#. t('Logged in as <b>%s</b>, translating in %s'),
+#: includes/narro/panel/NarroHeaderPanel.tpl.php
+msgid "Logged in as <b>%s</b>, translating in %s"
+msgstr ""
+
+#. '&nbsp;<a href="logout.php?l=' . QApplication::$TargetLanguage->LanguageCode . '" style="vertical-align:middle"><img src="assets/images/logout.png" alt="' . t('Logout') . '" border="0" title="' . t('Logout') . '" /></a>';
+#: includes/narro/panel/NarroHeaderPanel.tpl.php
+msgid "Logout"
+msgstr ""
+
+#. <?php _t('Click on any file to view or on the progress bar to translate it.') ?><br />
+#: includes/narro/panel/NarroProjectFileListPanel.tpl.php
+msgid "Click on any file to view or on the progress bar to translate it."
+msgstr ""
+
+#. <?php $_CONTROL->chkShowHierarchy->Render();?> <label for="<?php echo $_CONTROL->chkShowHierarchy->ControlId; ?>"><?php echo t('Show hierarchy') ?></label>
+#: includes/narro/panel/NarroProjectFileListPanel.tpl.php
+msgid "Show hierarchy"
+msgstr ""
+
+#. <?php $_CONTROL->chkShowFolders->Render();?>  <label for="<?php echo $_CONTROL->chkShowFolders->ControlId; ?>"><?php echo t('Show folders') ?></label>
+#: includes/narro/panel/NarroProjectFileListPanel.tpl.php
+msgid "Show folders"
+msgstr ""
+
+#. $this->btnSave->Text = t('Save');
+#: includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroRoleEditPanel.class.php includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php drafts/panels/NarroContextCommentEditPanel.class.php drafts/panels/NarroContextPluralEditPanel.class.php drafts/panels/NarroProjectEditPanel.class.php drafts/panels/NarroContextPluralInfoEditPanel.class.php drafts/panels/NarroUserEditPanel.class.php drafts/panels/NarroSuggestionVoteEditPanel.class.php drafts/panels/NarroProjectProgressEditPanel.class.php drafts/panels/NarroSuggestionEditPanel.class.php drafts/panels/NarroProjectCategoryEditPanel.class.php drafts/panels/NarroFileEditPanel.class.php drafts/panels/NarroContextInfoEditPanel.class.php drafts/panels/NarroRolePermissionEditPanel.class.php drafts/panels/NarroTextCommentEditPanel.class.php drafts/panels/NarroGlossaryTermEditPanel.class.php drafts/panels/NarroLanguageEditPanel.class.php drafts/panels/ZendCacheEditPanel.class.php drafts/panels/NarroUserPermissionEditPanel.class.php drafts/panels/NarroSuggestionCommentEditPanel.class.php drafts/panels/ZendCacheVersionEditPanel.class.php drafts/panels/NarroPermissionEditPanel.class.php drafts/panels/NarroTextEditPanel.class.php drafts/panels/NarroFileProgressEditPanel.class.php drafts/panels/NarroContextEditPanel.class.php drafts/panels/NarroUserRoleEditPanel.class.php drafts/panels/NarroRoleEditPanel.class.php preferences.php
+msgid "Save"
+msgstr ""
+
+#. $this->btnCancel->Text = t('Cancel');
+#: includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php includes/qcubed/includes/qcubed/controls/QFileAsset.class.php includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php drafts/panels/NarroContextCommentEditPanel.class.php drafts/panels/NarroContextPluralEditPanel.class.php drafts/panels/NarroProjectEditPanel.class.php drafts/panels/NarroContextPluralInfoEditPanel.class.php drafts/panels/NarroUserEditPanel.class.php drafts/panels/NarroSuggestionVoteEditPanel.class.php drafts/panels/NarroProjectProgressEditPanel.class.php drafts/panels/NarroSuggestionEditPanel.class.php drafts/panels/NarroProjectCategoryEditPanel.class.php drafts/panels/NarroFileEditPanel.class.php drafts/panels/NarroContextInfoEditPanel.class.php drafts/panels/NarroRolePermissionEditPanel.class.php drafts/panels/NarroTextCommentEditPanel.class.php drafts/panels/NarroGlossaryTermEditPanel.class.php drafts/panels/NarroLanguageEditPanel.class.php drafts/panels/ZendCacheEditPanel.class.php drafts/panels/NarroUserPermissionEditPanel.class.php drafts/panels/NarroSuggestionCommentEditPanel.class.php drafts/panels/ZendCacheVersionEditPanel.class.php drafts/panels/NarroPermissionEditPanel.class.php drafts/panels/NarroTextEditPanel.class.php drafts/panels/NarroFileProgressEditPanel.class.php drafts/panels/NarroContextEditPanel.class.php drafts/panels/NarroUserRoleEditPanel.class.php drafts/panels/NarroRoleEditPanel.class.php preferences.php
+msgid "Cancel"
+msgstr ""
+
+#. $this->btnDelete->Text = QApplication::Translate('Delete');
+#: includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroRoleEditPanel.class.php includes/qcubed/includes/qcubed/controls/QFileAsset.class.php drafts/panels/NarroContextCommentEditPanel.class.php drafts/panels/NarroContextPluralEditPanel.class.php drafts/panels/NarroProjectEditPanel.class.php drafts/panels/NarroContextPluralInfoEditPanel.class.php drafts/panels/NarroUserEditPanel.class.php drafts/panels/NarroSuggestionVoteEditPanel.class.php drafts/panels/NarroProjectProgressEditPanel.class.php drafts/panels/NarroSuggestionEditPanel.class.php drafts/panels/NarroProjectCategoryEditPanel.class.php drafts/panels/NarroFileEditPanel.class.php drafts/panels/NarroContextInfoEditPanel.class.php drafts/panels/NarroRolePermissionEditPanel.class.php drafts/panels/NarroTextCommentEditPanel.class.php drafts/panels/NarroGlossaryTermEditPanel.class.php drafts/panels/NarroLanguageEditPanel.class.php drafts/panels/ZendCacheEditPanel.class.php drafts/panels/NarroUserPermissionEditPanel.class.php drafts/panels/NarroSuggestionCommentEditPanel.class.php drafts/panels/ZendCacheVersionEditPanel.class.php drafts/panels/NarroPermissionEditPanel.class.php drafts/panels/NarroTextEditPanel.class.php drafts/panels/NarroFileProgressEditPanel.class.php drafts/panels/NarroContextEditPanel.class.php drafts/panels/NarroUserRoleEditPanel.class.php drafts/panels/NarroRoleEditPanel.class.php
+msgid "Delete"
+msgstr ""
+
+#. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(t('Are you SURE you want to DELETE %s?\nThe texts and associated suggestions will NOT be deleted.\nThey will be preserved for use in other projects.'), addslashes($this->objProject->ProjectName))));
+#: includes/narro/panel/NarroProjectEditPanel.class.php
+msgid "Are you SURE you want to DELETE %s?\nThe texts and associated suggestions will NOT be deleted.\nThey will be preserved for use in other projects."
+msgstr ""
+
+#. $this->lblMessage->Text = t('Project saved sucessfully.');
+#: includes/narro/panel/NarroProjectEditPanel.class.php
+msgid "Project saved sucessfully."
+msgstr ""
+
+#. $this->lblExport->Text = sprintf(t('Link to last export: <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
+#: includes/narro/panel/NarroProjectExportPanel.class.php
+msgid "Link to last export: <a href=\"%s\">%s</a>, exported %s ago"
+msgstr ""
+
+#. $this->chkCleanDirectory->Name = t('Clean export directory before exporting');
+#: includes/narro/panel/NarroProjectExportPanel.class.php
+msgid "Clean export directory before exporting"
+msgstr ""
+
+#. $this->lstExportSuggestionType->Name = t('Export translations using') . ':';
+#: includes/narro/panel/NarroProjectExportPanel.class.php
+msgid "Export translations using"
+msgstr ""
+
+#. sprintf('<p>' . t('Approved suggestion') . ': %s</p>',
+#: includes/narro/panel/NarroProjectExportPanel.class.php rss.php
+msgid "Approved suggestion"
+msgstr ""
+
+#. $this->lstExportSuggestionType->AddItem(t('Approved, then most voted suggestion'), 2);
+#: includes/narro/panel/NarroProjectExportPanel.class.php
+msgid "Approved, then most voted suggestion"
+msgstr ""
+
+#. $this->lstExportSuggestionType->AddItem(t('Approved, then most recent suggestion'), 3);
+#: includes/narro/panel/NarroProjectExportPanel.class.php
+msgid "Approved, then most recent suggestion"
+msgstr ""
+
+#. $this->lstExportSuggestionType->AddItem(t('Approved, then most voted and then most recent suggestion'), 4);
+#: includes/narro/panel/NarroProjectExportPanel.class.php
+msgid "Approved, then most voted and then most recent suggestion"
+msgstr ""
+
+#. $this->lstExportSuggestionType->AddItem(t('Approved, then my suggestion'), 5);
+#: includes/narro/panel/NarroProjectExportPanel.class.php
+msgid "Approved, then my suggestion"
+msgstr ""
+
+#. $this->lblExport->Text = t('Export finished.');
+#: includes/narro/panel/NarroProjectExportPanel.class.php
+msgid "Export finished."
+msgstr ""
+
+#. $this->lblExport->Text = t('Export failed.');
+#. $this->lblExport->Text = t('Export failed.');
+#. $this->lblExport->Text = t('Export failed.');
+#: includes/narro/panel/NarroProjectExportPanel.class.php
+msgid "Export failed."
+msgstr ""
+
+#. $this->colActions = new QDataGridColumn(t('Actions'), '<?= $_CONTROL->ParentControl->dtgRole_Actions_Render($_ITEM) ?>');
+#: includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroUserListPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php
+msgid "Actions"
+msgstr ""
+
+#.
+#: includes/narro/panel/NarroUserRolePanel.class.php
+msgid "<b>%s</b>'s roles"
+msgstr ""
+
+#. $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to revoke this role for this user?')));
+#: includes/narro/panel/NarroUserRolePanel.class.php
+msgid "Are you sure you want to revoke this role for this user?"
+msgstr ""
+
+#.
+#: includes/narro/panel/NarroUserRolePanel.class.php
+msgid "You don\\'t have permissions to give permissions on the project %s, language %s"
+msgstr ""
+
+#.
+#: includes/narro/panel/NarroUserRolePanel.class.php
+msgid "You don\\'t have the Administrator permission, so you cannot give it"
+msgstr ""
+
+#. if ($btnEdit->Text == t('Cancel edit')) {
+#. $btnEdit->Text = t('Cancel edit');
+#: includes/narro/panel/NarroUserRolePanel.class.php
+msgid "Cancel edit"
+msgstr ""
+
+#. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you SURE you want to DELETE this user?')));
+#: includes/narro/panel/NarroUserEditPanel.class.php
+msgid "Are you SURE you want to DELETE this user?"
+msgstr ""
+
+#. $this->lblMessage->Text = t('Error') . ':' . $objEx->getMessage();
+#: includes/narro/panel/NarroUserEditPanel.class.php
+msgid "Error"
+msgstr ""
+
+#. $this->dtgProjects->AddColumn(new QDataGridColumn(QApplication::Translate('Name'), '<?= $_ITEM->Name; ?>'));
+#: includes/narro/panel/NarroProjectListPanel.class.php includes/narro/panel/NarroProjectEditPanel.tpl.php includes/qcubed/assets/_core/php/examples/dynamic/qcheckboxcolumn.php
+msgid "Name"
+msgstr ""
+
+#. t('Last Activity'),
+#: includes/narro/panel/NarroProjectListPanel.class.php
+msgid "Last Activity"
+msgstr ""
+
+#. $this->colPercentTranslated = new QDataGridColumn(t('Progress'), '<?= $_FORM->dtgNarroLanguage_PercentTranslated_Render($_ITEM); ?>');
+#: includes/narro/panel/NarroProjectListPanel.class.php project_languages.php
+msgid "Progress"
+msgstr ""
+
+#. $strAuthorInfo = sprintf(t('%s ago'), $strModifiedWhen);
+#. $strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by <a href="%s" tabindex="-1">%s</a>'), NarroLink::UserProfile($this->objContextInfo->ValidatorUser->UserId), $this->objContextInfo->ValidatorUser->Username . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
+#: includes/narro/panel/NarroProjectListPanel.class.php includes/narro/panel/NarroUserSuggestionsPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "%s ago"
+msgstr ""
+
+#. return t('never');
+#: includes/narro/panel/NarroProjectListPanel.class.php
+msgid "never"
+msgstr ""
+
+#. $this->btnDownloadLog->Text = t('Download');
+#: includes/narro/panel/NarroLogViewerPanel.class.php
+msgid "Download"
+msgstr ""
+
+#. t('Operation log'),
+#: includes/narro/panel/NarroLogViewerPanel.class.php
+msgid "Operation log"
+msgstr ""
+
+#. $this->txtUsername->Warning = t("No <, please.");
+#. $this->txtEmail->Warning = t("No <, please.");
+#: includes/narro/panel/NarroUserRegisterPanel.class.php
+msgid "No <, please."
+msgstr ""
+
+#. $this->lblMessage->Text = t("It's just three fields, don't leave one empty please.");
+#: includes/narro/panel/NarroUserRegisterPanel.class.php
+msgid "It's just three fields, don't leave one empty please."
+msgstr ""
+
+#. $this->lblMessage->Text = t("Seems like the username or email is already in use.") . $objEx->getMessage();
+#: includes/narro/panel/NarroUserRegisterPanel.class.php
+msgid "Seems like the username or email is already in use."
+msgstr ""
+
+#. $strPageTitle = t('Recover password');
+#: includes/narro/panel/NarroUserRecoverPasswordPanel.tpl.php password.tpl.php
+msgid "Recover password"
+msgstr ""
+
+#. <p><?php echo t('If you remember your username or email address, we can send you a link at the email address you registered with to change your password.'); ?></p>
+#: includes/narro/panel/NarroUserRecoverPasswordPanel.tpl.php
+msgid "If you remember your username or email address, we can send you a link at the email address you registered with to change your password."
+msgstr ""
+
+#. $this->strText .=  t('File to import') . ': ' . $this->fileToUpload->Render(false);
+#: includes/narro/panel/NarroFileImportPanel.class.php
+msgid "File to import"
+msgstr ""
+
+#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Login'), NarroLink::UserLogin());
+#: includes/narro/panel/NarroUserLoginPanel.tpl.php includes/narro/panel/NarroUserLoginPanel.class.php includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php login.php login.tpl.php password.php join.php
+msgid "Login"
+msgstr ""
+
+#. <p><?php echo t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>
+#: includes/narro/panel/NarroUserLoginPanel.tpl.php
+msgid "Please login so everyone else knows who is adding those great suggestions that you will add."
+msgstr ""
+
+#. <td><?php echo t('Username or <a href="http://www.openid.net">OpenID</a>')?>:</td>
+#: includes/narro/panel/NarroUserLoginPanel.tpl.php
+msgid "Username or <a href=\"http://www.openid.net\">OpenID</a>"
+msgstr ""
+
+#. <div class="section_title"><?php _t('Texts')?></div>
+#: includes/narro/panel/NarroProjectImportPanel.tpl.php
+msgid "Texts"
+msgstr ""
+
+#. <?php _t('Where are the texts to translate?')?>
+#: includes/narro/panel/NarroProjectImportPanel.tpl.php
+msgid "Where are the texts to translate?"
+msgstr ""
+
+#. <div class="section_title"><?php _t('Translations')?></div>
+#: includes/narro/panel/NarroProjectImportPanel.tpl.php
+msgid "Translations"
+msgstr ""
+
+#. <?php _t('Where are the translated texts?')?>
+#: includes/narro/panel/NarroProjectImportPanel.tpl.php
+msgid "Where are the translated texts?"
+msgstr ""
+
+#. $this->colSuggestion = new QDataGridColumn(t('Translated text'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Translated text"
+msgstr ""
+
+#. '<p>' . t('Original text') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->Text->TextValue) . '</p>' .
+#. sprintf('<p>' . t('Original text') . ': %s</p>',
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php includes/narro/panel/NarroTranslatePanel.class.php rss.php
+msgid "Original text"
+msgstr ""
+
+#. $this->colCreated = new QDataGridColumn(t('Created'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colCreated_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Created), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Created, false)));
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Created"
+msgstr ""
+
+#. $this->dtgSuggestions->Title = sprintf(t('Translations made by <b>%s</b>'), $this->objUser->Username);
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Translations made by <b>%s</b>"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('Approved'), self::SHOW_APPROVED);
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Approved"
+msgstr ""
+
+#. $this->pnlApprovedPie->Data = array(t('Approved')=>$intValidSuggestionCount, t('Not approved') => ($intSuggestionCount - $intValidSuggestionCount));
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Not approved"
+msgstr ""
+
+#. echo t('This is a list of languages that projects can be translated in.');
+#: includes/narro/panel/NarroLanguageListPanel.tpl.php
+msgid "This is a list of languages that projects can be translated in."
+msgstr ""
+
+#. <label for="<?php echo $_CONTROL->lstFilter->ControlId?>"><?php _t('Show')?>:</label>
+#: includes/narro/panel/NarroLanguageListPanel.tpl.php
+msgid "Show"
+msgstr ""
+
+#. $this->txtLanguageName->Name = QApplication::Translate('Language Name');
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Language Name"
+msgstr ""
+
+#. $this->txtLanguageCode->Name = QApplication::Translate('Language Code');
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Language Code"
+msgstr ""
+
+#. $this->txtCountryCode->Name = QApplication::Translate('Country Code');
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Country Code"
+msgstr ""
+
+#. <label for="<?php echo $_CONTROL->txtEncoding->ControlId ?>"><?php _t('Encoding') ?></label>
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.tpl.php
+msgid "Encoding"
+msgstr ""
+
+#. $this->lstTextDirection->Name = QApplication::Translate('Text Direction');
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Text Direction"
+msgstr ""
+
+#. $this->txtSpecialCharacters->Name = QApplication::Translate('Special Characters');
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Special Characters"
+msgstr ""
+
+#. $this->colPluralForm = new QDataGridColumn(t('Plural Forms'), '<?= $_CONTROL->ParentControl->dtgLanguage_PluralFormColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroLanguage()->SpecialCharacters, false)));
+#: includes/narro/panel/NarroLanguageListPanel.class.php
+msgid "Plural Forms"
+msgstr ""
+
+#. <label for="<?php echo $_CONTROL->chkActive->ControlId ?>"><?php _t('Active') ?></label>
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroProjectEditPanel.tpl.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.tpl.php
+msgid "Active"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('all languages'), 0);
+#: includes/narro/panel/NarroLanguageListPanel.class.php
+msgid "all languages"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('active languages'), 1, true);
+#: includes/narro/panel/NarroLanguageListPanel.class.php
+msgid "active languages"
+msgstr ""
+
+#. <td><?php _t('Category') ?></td>
+#: includes/narro/panel/NarroProjectEditPanel.tpl.php
+msgid "Category"
+msgstr ""
+
+#. <td><?php _t('Type')?></td>
+#: includes/narro/panel/NarroProjectEditPanel.tpl.php
+msgid "Type"
+msgstr ""
+
+#. $this->lblDescription->Name = QApplication::Translate('Description');
+#: includes/narro/panel/NarroProjectEditPanel.tpl.php includes/qcubed/assets/_core/php/_devtools/plugin_edit.php
+msgid "Description"
+msgstr ""
+
+#. $this->strText .=  t('Model to use') . ': ' . $this->fileToUpload->Render(false) . $this->btnExport->Render(false);
+#: includes/narro/panel/NarroFileExportPanel.class.php
+msgid "Model to use"
+msgstr ""
+
+#. <label for="<?php echo $_CONTROL->txtRoleName->ControlId ?>"><?php _t('Role name') ?></label>
+#: includes/narro/panel/NarroRoleEditPanel.tpl.php
+msgid "Role name"
+msgstr ""
+
+#. $this->btnMore->Text = t('More');
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "More"
+msgstr ""
+
+#. $this->lstProject->AddItem(t('All'));
+#. $this->lstFilter->AddItem(t('All'), self::SHOW_ALL);
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "All"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('Not translated yet'), self::SHOW_NOT_TRANSLATED, true);
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Not translated yet"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('Translated, but not approved'), self::SHOW_NOT_APPROVED);
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Translated, but not approved"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('Translated or approved'), self::SHOW_APPROVED_AND_NOT_APPROVED);
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Translated or approved"
+msgstr ""
+
+#. $this->lstSort->AddItem(t('-- unsorted --'));
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "-- unsorted --"
+msgstr ""
+
+#. '<p>' . t('Translation') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->SuggestionValue) . '</p>' .
+#: includes/narro/panel/NarroTranslatePanel.class.php rss.php
+msgid "Translation"
+msgstr ""
+
+#. $this->lstSort->AddItem(t('Words in the original text'), self::SORT_TEXT_LENGTH);
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Words in the original text"
+msgstr ""
+
+#. $this->lstSortDir->AddItem(t('Ascending'), 1, true);
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Ascending"
+msgstr ""
+
+#. $this->lstSortDir->AddItem(t('Descending'), 0);
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Descending"
+msgstr ""
+
+#. $this->btnLess->Text = t('Less');
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Less"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Afrikaans"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Albanian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Amharic"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Arabic"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Aragonese"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Armenian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Assamese"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Asturian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Aymara, Bolivia"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Azerbaijani"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Basque"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Belarusian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Bengali-Bangladesh"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Bosnian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Breton"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Bulgarian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Burmese (my-MM)"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Catalan"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Chinese Simplified, China"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Chinese Traditional, Taiwan"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Croatian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Czech"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Danish"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Dari (Eastern Persian)"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Dutch"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Dzongkha"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "English (South African)"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "English US"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "English, UK"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Fijian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Finnish"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "French"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Frisian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Friulian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Galician"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Georgian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "German"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Greek"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Guaraní"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Guaraní, Bolivia"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Gujarati"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Haitian Creole"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Hebrew"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Hindi"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Hungarian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Iloko"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Indonesian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Irish"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Italian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Japanese"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Kabyle"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Kashubian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Kazakh"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Khmer"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Korean"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Kurdî, Soranî (Aramic)"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Kurdî, Soranî (Latin)"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Kurdish"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Latin"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Latvian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Ligurian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Lithuanian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Macedonian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Malayalam"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Mayan"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Meadow Mari"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Mongolian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Montenegrin"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Ndebele"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Nepali"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Northern Sotho"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Norwegian bokmaal"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Norwegian hognorsk"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Norwegian nynorsk"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Oromo"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Persian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Polish"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Portuguese, Brazil"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Portuguese, Portugal"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Punjabi"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Quechua, Bolivia"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Romance, Spain (Valencian)"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Romanian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Romansch"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Russian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Scottish Gaelic"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Serbian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Slovak"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Slovenian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Southern Sotho"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Spanish, Argentina"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Spanish, Bolivia"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Spanish, Chile"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Spanish, Colombia"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Spanish, Mexico"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Spanish, Peru"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Spanish, Spain"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Spanish, Venezuela"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Swati"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Swedish"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Tagalog"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Tajik"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Tarahumara (Y08703)"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Telugu"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Thai"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Tsonga"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Tswana"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Turkish"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Ukrainian"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Urdu"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Urdu (Pakistan)"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Uyghur"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Venda"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Vietnamese"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Welsh"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "X-testing"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Xhosa"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Yoruba"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Zapotec (OT19745)"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Zulu"
+msgstr ""
+
+#. $this->pnlTranslationSource->addTab(new NarroProjectSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('In another project'));
+#: includes/narro/panel/NarroProjectTranslationSourcePanel.class.php
+msgid "In another project"
+msgstr ""
+
+#. $this->strTitleVerb = QApplication::Translate('Create');
+#: includes/narro/panel/NarroLanguageEditPanel.class.php includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
+msgid "Create"
+msgstr ""
+
+#. $this->txtDialectCode->Name = QApplication::Translate('Dialect Code');
+#: includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Dialect Code"
+msgstr ""
+
+#. $this->lstTextDirection->AddItem(t('Left to right'), 'ltr');
+#: includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Left to right"
+msgstr ""
+
+#. $this->lstTextDirection->AddItem(t('Right to left'), 'rtl');
+#: includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Right to left"
+msgstr ""
+
+#. $this->txtPluralForm->Name = QApplication::Translate('Plural Form');
+#: includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Plural Form"
+msgstr ""
+
+#. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(QApplication::Translate('Are you SURE you want to DELETE this language?')));
+#: includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Are you SURE you want to DELETE this language?"
+msgstr ""
+
+#. _t('Note that you logged in using openid or an external database.');
+#: includes/narro/panel/NarroUserEditPanel.tpl.php
+msgid "Note that you logged in using openid or an external database."
+msgstr ""
+
+#. _t('If you change your <b>username</b> or <b>password</b> here, you will have to login in the future with the data you enter here.');
+#: includes/narro/panel/NarroUserEditPanel.tpl.php
+msgid "If you change your <b>username</b> or <b>password</b> here, you will have to login in the future with the data you enter here."
+msgstr ""
+
+#.
+#: includes/narro/panel/NarroUserEditPanel.tpl.php
+msgid "It's ok to change just your email address."
+msgstr ""
+
+#. <td><?php $_CONTROL->txtPassword->RenderWithError(); echo ' ' . t('Fill only if you want to change it'); ?></td>
+#: includes/narro/panel/NarroUserEditPanel.tpl.php
+msgid "Fill only if you want to change it"
+msgstr ""
+
+#. $lblRoleName->Text = t($objNarroRole->RoleName);
+#: includes/narro/panel/NarroUserListPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php
+msgid "Anonymous"
+msgstr ""
+
+#. $this->lblMessage->Text = t('Failed to create an associated user for this OpenId') . $objEx->getMessage() . var_export($auth->getIdentity(), true);
+#: includes/narro/panel/NarroUserLoginPanel.class.php
+msgid "Failed to create an associated user for this OpenId"
+msgstr ""
+
+#. $this->lblMessage->Text = t('This user has a password set, please login with that instead');
+#: includes/narro/panel/NarroUserLoginPanel.class.php
+msgid "This user has a password set, please login with that instead"
+msgstr ""
+
+#. $this->lblMessage->Text = sprintf(t('There was an error while trying to authenticate you against an external database: %s'), $objEx->getMessage());
+#. $this->lblMessage->Text = sprintf(t('There was an error while trying to authenticate you against an external database: %s'), $objEx->getMessage());
+#: includes/narro/panel/NarroUserLoginPanel.class.php
+msgid "There was an error while trying to authenticate you against an external database: %s"
+msgstr ""
+
+#. $this->lblMessage->Text = sprintf(t('The authentication against an external database suceeded, but the registration in Narro failed: %s'), $objEx->getMessage());
+#: includes/narro/panel/NarroUserLoginPanel.class.php
+msgid "The authentication against an external database suceeded, but the registration in Narro failed: %s"
+msgstr ""
+
+#. $this->lblMessage->Text = t('Bad username or password');
+#: includes/narro/panel/NarroUserLoginPanel.class.php
+msgid "Bad username or password"
+msgstr ""
+
+#. $this->colRoleName = new QDataGridColumn(t('Role'), '<?= $_CONTROL->ParentControl->dtgRole_RoleNameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroRole()->RoleName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroRole()->RoleName, false)));
+#: includes/narro/panel/NarroUserRolePanel.tpl.php includes/narro/panel/NarroRoleListPanel.class.php
+msgid "Role"
+msgstr ""
+
+#. $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this role?')));
+#: includes/narro/panel/NarroRoleListPanel.class.php
+msgid "Are you sure you want to delete this role?"
+msgstr ""
+
+#. $btnPermissions->Text = t('Permissions');
+#: includes/narro/panel/NarroRoleListPanel.class.php
+msgid "Permissions"
+msgstr ""
+
+#. $btnViewUsers->Text = t('View users');
+#: includes/narro/panel/NarroRoleListPanel.class.php
+msgid "View users"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Administrator"
+msgstr ""
+
+#. $lblRoleName->Text = t($objNarroRole->RoleName);
+#: includes/narro/panel/NarroRoleListPanel.class.php
+msgid "Approver"
+msgstr ""
+
+#. $lblRoleName->Text = t($objNarroRole->RoleName);
+#: includes/narro/panel/NarroRoleListPanel.class.php
+msgid "Project manager"
+msgstr ""
+
+#. $lblRoleName->Text = t($objNarroRole->RoleName);
+#: includes/narro/panel/NarroRoleListPanel.class.php
+msgid "User"
+msgstr ""
+
+#. <?php echo t('Click on any project name to start translating.'); ?>
+#: includes/narro/panel/NarroProjectListPanel.tpl.php
+msgid "Click on any project name to start translating."
+msgstr ""
+
+#. <label for="<?php echo $_CONTROL->txtLanguageName->ControlId ?>"><?php _t('Language name') ?></label>
+#: includes/narro/panel/NarroLanguageEditPanel.tpl.php
+msgid "Language name"
+msgstr ""
+
+#. <label for="<?php echo $_CONTROL->txtLanguageCode->ControlId ?>"><?php _t('Language code') ?></label>
+#: includes/narro/panel/NarroLanguageEditPanel.tpl.php
+msgid "Language code"
+msgstr ""
+
+#. <label for="<?php echo $_CONTROL->txtCountryCode->ControlId ?>"><?php _t('Country code') ?></label>
+#: includes/narro/panel/NarroLanguageEditPanel.tpl.php
+msgid "Country code"
+msgstr ""
+
+#. <label for="<?php echo $_CONTROL->lstTextDirection->ControlId ?>"><?php _t('Text direction') ?></label>
+#: includes/narro/panel/NarroLanguageEditPanel.tpl.php
+msgid "Text direction"
+msgstr ""
+
+#. <label for="<?php echo $_CONTROL->txtSpecialCharacters->ControlId ?>"><?php _t('Special characters') ?></label>
+#: includes/narro/panel/NarroLanguageEditPanel.tpl.php
+msgid "Special characters"
+msgstr ""
+
+#. <label for="<?php echo $_CONTROL->txtPluralForm->ControlId ?>"><?php _t('Plural formula') ?></label>
+#: includes/narro/panel/NarroLanguageEditPanel.tpl.php
+msgid "Plural formula"
+msgstr ""
+
+#. $this->btnCopy->AlternateText = t('Copy');
+#. t('Copy'),
+#. t('Copy')
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Copy"
+msgstr ""
+
+#. $this->btnHelp->AlternateText = t('Help');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Help"
+msgstr ""
+
+#. t('Clear'),
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Clear"
+msgstr ""
+
+#. (($objSuggestion->IsImported)?t('imported by <a href="%s" tabindex="-1">%s</a>, %s ago'):t('<a href="%s" tabindex="-1">%s</a>, %s ago')),
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "imported by <a href=\"%s\" tabindex=\"-1\">%s</a>, %s ago"
+msgstr ""
+
+#. (($objSuggestion->IsImported)?t('imported by <a href="%s" tabindex="-1">%s</a>, %s ago'):t('<a href="%s" tabindex="-1">%s</a>, %s ago')),
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "<a href=\"%s\" tabindex=\"-1\">%s</a>, %s ago"
+msgstr ""
+
+#. ($objSuggestion->IsImported)?t('imported by <a href="%s" tabindex="-1">%s</a>'):'<a href="%s" tabindex="-1">%s</a>',
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "imported by <a href=\"%s\" tabindex=\"-1\">%s</a>"
+msgstr ""
+
+#. $strAuthorInfo = t('Unknown');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Unknown"
+msgstr ""
+
+#. $strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by <a href="%s" tabindex="-1">%s</a>'), NarroLink::UserProfile($this->objContextInfo->ValidatorUser->UserId), $this->objContextInfo->ValidatorUser->Username . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "approved by <a href=\"%s\" tabindex=\"-1\">%s</a>"
+msgstr ""
+
+#. $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this suggestion?')));
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Are you sure you want to delete this suggestion?"
+msgstr ""
+
+#. $btnVote->AlternateText = t('Vote');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Vote"
+msgstr ""
+
+#. $btnApprove->AlternateText = t('Approve');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Approve"
+msgstr ""
+
+#. $this->lblMessage->Text = t('A plugin returned an empty value after processing your translation.');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "A plugin returned an empty value after processing your translation."
+msgstr ""
+
+#. $this->txtTranslation->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it.'), $strLink);
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "This translation was already approved somewhere.<br />If you still want to delete it, click <a href=\"%s\" target=\"_blank\">here</a> to edit all the texts that use it."
+msgstr ""
+
+#. $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it has %d vote(s).'), $intVoteCount);
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "You cannot alter this suggestion because it has %d vote(s)."
+msgstr ""
+
+#. $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it has %d comment(s).'), $intVoteCount);
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "You cannot alter this suggestion because it has %d comment(s)."
+msgstr ""
+
+#. $this->lblMessage->Text = t('Suggestion succesfully deleted.');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Suggestion succesfully deleted."
+msgstr ""
+
+#. $this->txtTranslation->Warning = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Thank you for your vote. You can change it anytime by voting another suggestion."
+msgstr ""
+
+#. $this->lblMessage->Text = t("You don't have the permission to add translations.");
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "You don't have the permission to add translations."
+msgstr ""
+
+#. echo t('These are the roles used on this website.');
+#: includes/narro/panel/NarroRoleListPanel.tpl.php
+msgid "These are the roles used on this website."
+msgstr ""
+
+#. $this->btnRecoverPassword->Text = t('Proceed');
+#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
+msgid "Proceed"
+msgstr ""
+
+#. $this->lblMessage->Text = t('Please enter a username or email to continue.');
+#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
+msgid "Please enter a username or email to continue."
+msgstr ""
+
+#.
+#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
+msgid "Hey, the anonymous user doesn't have a password. What are you trying to do?"
+msgstr ""
+
+#. t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this link: %s'),
+#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
+msgid "Somebody, probably you, requested a password recovery for \"%s\" on \"%s\". To change your password, please follow this link: %s"
+msgstr ""
+
+#. $objEmailMessage->setSubject(sprintf(t('Password recovery for "%s" on "%s"'), $objUser->Username, $_SERVER['HTTP_HOST']));
+#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
+msgid "Password recovery for \"%s\" on \"%s\""
+msgstr ""
+
+#. $this->lblMessage->Text = t('You should have a new email message with instructions. Check your spam/bulk directory too.');
+#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
+msgid "You should have a new email message with instructions. Check your spam/bulk directory too."
+msgstr ""
+
+#. $this->lblMessage->Text = t('Failed to send email. This may be a server issue. Please try again later.');
+#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
+msgid "Failed to send email. This may be a server issue. Please try again later."
+msgstr ""
+
+#. $this->lblMessage->Text = t('Bad username or/and email');
+#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
+msgid "Bad username or/and email"
+msgstr ""
+
+#. $this->colPermission = new QDataGridColumn(QApplication::Translate('Permission'), '<?= $_CONTROL->ParentControl->dtgNarroPermission_PermissionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName, false)));
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Permission"
+msgstr ""
+
+#.
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "%s's permissions"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can add context comments"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can add language"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can add project"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can approve"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can comment"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can delete any suggestion"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can delete language"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can delete project"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can edit any suggestion"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can edit language"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can edit project"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can export file"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can export project"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can import file"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can import project"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can manage project"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can manage roles"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can manage user roles"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can manage users"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can mass approve"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can suggest"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can upload project"
+msgstr ""
+
+#. $chkPermission->Text = t($objNarroPermission->PermissionName);
+#. return t($objNarroPermission->PermissionName);
+#: includes/narro/panel/NarroRolePermissionPanel.class.php
+msgid "Can vote"
+msgstr ""
+
+#. $this->txtRoleName->Name = QApplication::Translate('Role Name');
+#: includes/narro/panel/NarroRoleEditPanel.class.php
+msgid "Role Name"
+msgstr ""
+
+#. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'),  QApplication::Translate('NarroRole'))));
+#: includes/narro/panel/NarroRoleEditPanel.class.php drafts/panels/NarroContextCommentEditPanel.class.php drafts/panels/NarroContextPluralEditPanel.class.php drafts/panels/NarroProjectEditPanel.class.php drafts/panels/NarroContextPluralInfoEditPanel.class.php drafts/panels/NarroUserEditPanel.class.php drafts/panels/NarroSuggestionVoteEditPanel.class.php drafts/panels/NarroProjectProgressEditPanel.class.php drafts/panels/NarroSuggestionEditPanel.class.php drafts/panels/NarroProjectCategoryEditPanel.class.php drafts/panels/NarroFileEditPanel.class.php drafts/panels/NarroContextInfoEditPanel.class.php drafts/panels/NarroRolePermissionEditPanel.class.php drafts/panels/NarroTextCommentEditPanel.class.php drafts/panels/NarroGlossaryTermEditPanel.class.php drafts/panels/NarroLanguageEditPanel.class.php drafts/panels/ZendCacheEditPanel.class.php drafts/panels/NarroUserPermissionEditPanel.class.php drafts/panels/NarroSuggestionCommentEditPanel.class.php drafts/panels/ZendCacheVersionEditPanel.class.php drafts/panels/NarroPermissionEditPanel.class.php drafts/panels/NarroTextEditPanel.class.php drafts/panels/NarroFileProgressEditPanel.class.php drafts/panels/NarroContextEditPanel.class.php drafts/panels/NarroUserRoleEditPanel.class.php drafts/panels/NarroRoleEditPanel.class.php
+msgid "Are you SURE you want to DELETE this %s?"
+msgstr ""
+
+#. $this->SetCustomStyle('title', t('Special characters that might not be on your keyboard'));
+#: includes/narro/panel/NarroDiacriticsPanel.class.php
+msgid "Special characters that might not be on your keyboard"
+msgstr ""
+
+#. parent::log(QApplication::Translate('No queries were performed.'));
+#: includes/qcubed/includes/qcubed/plugins/QFirebug/includes/QFirebug.class.php
+msgid "No queries were performed."
+msgstr ""
+
+#. parent::log(QApplication::Translate('1 query was performed.'));
+#: includes/qcubed/includes/qcubed/plugins/QFirebug/includes/QFirebug.class.php
+msgid "1 query was performed."
+msgstr ""
+
+#. $log = sprintf(QApplication::Translate('%s queries were performed.'), $intCount);
+#: includes/qcubed/includes/qcubed/plugins/QFirebug/includes/QFirebug.class.php
+msgid "%s queries were performed."
+msgstr ""
+
+#. $called = QApplication::Translate('Called by') . ' ' . $strClass . $strType . $strFunction . '(' . implode(', ', $objArgs) . ')';
+#: includes/qcubed/includes/qcubed/plugins/QFirebug/includes/QFirebug.class.php
+msgid "Called by"
+msgstr ""
+
+#. $file = $strFile . ' ' . QApplication::Translate('Line') . ': ' . $strLine;
+#: includes/qcubed/includes/qcubed/plugins/QFirebug/includes/QFirebug.class.php
+msgid "Line"
+msgstr ""
+
+#. parent::log($file,QApplication::Translate('File'));
+#: includes/qcubed/includes/qcubed/plugins/QFirebug/includes/QFirebug.class.php
+msgid "File"
+msgstr ""
+
+#. parent::log($strQuery,QApplication::Translate('Query'));
+#: includes/qcubed/includes/qcubed/plugins/QFirebug/includes/QFirebug.class.php
+msgid "Query"
+msgstr ""
+
+#. parent::log($dblTimeInfo,QApplication::Translate('Time Info'));
+#: includes/qcubed/includes/qcubed/plugins/QFirebug/includes/QFirebug.class.php
+msgid "Time Info"
+msgstr ""
+
+#. parent::log(QApplication::Translate('Profiling was not enabled for this database connection. To enable, ensure that ENABLE_PROFILING is set to TRUE.'));
+#: includes/qcubed/includes/qcubed/plugins/QFirebug/includes/QFirebug.class.php
+msgid "Profiling was not enabled for this database connection. To enable, ensure that ENABLE_PROFILING is set to TRUE."
+msgstr ""
+
+#. $preset = new QDateRangePickerPreset('specificDate', QApplication::Translate('Sepcific Date'));
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPreset.class.php
+msgid "Sepcific Date"
+msgstr ""
+
+#. $preset = new QDateRangePickerPreset('allDatesBefore', QApplication::Translate('All Dates Before'));
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPreset.class.php
+msgid "All Dates Before"
+msgstr ""
+
+#. $preset = new QDateRangePickerPreset('allDatesAfter', QApplication::Translate('All Dates After'));
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPreset.class.php
+msgid "All Dates After"
+msgstr ""
+
+#. $preset = new QDateRangePickerPreset('dateRange', QApplication::Translate('Date Range'));
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPreset.class.php
+msgid "Date Range"
+msgstr ""
+
+#. QApplication::Translate('Today'),
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPresetRange.class.php
+msgid "Today"
+msgstr ""
+
+#. QApplication::Translate('Last 7 Days'),
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPresetRange.class.php
+msgid "Last 7 Days"
+msgstr ""
+
+#. QApplication::Translate('Last 30 Days'),
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPresetRange.class.php
+msgid "Last 30 Days"
+msgstr ""
+
+#. QApplication::Translate('Next 30 Days'),
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPresetRange.class.php
+msgid "Next 30 Days"
+msgstr ""
+
+#. QApplication::Translate('Month To Date'),
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPresetRange.class.php
+msgid "Month To Date"
+msgstr ""
+
+#. QApplication::Translate('Year To Date'),
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPresetRange.class.php
+msgid "Year To Date"
+msgstr ""
+
+#. QApplication::Translate('The previous Month'),
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPresetRange.class.php
+msgid "The previous Month"
+msgstr ""
+
+#. QApplication::Translate('Tomorrow'),
+#: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPresetRange.class.php
+msgid "Tomorrow"
+msgstr ""
+
+#. $this->UploadText = QApplication::Translate('Upload');
+#. $this->btnUpload->Text = '<img src="' . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/add.png" alt="' . QApplication::Translate('Upload') . '" border="0"/> ' . QApplication::Translate('Upload');
+#: includes/qcubed/includes/qcubed/controls/QFileAsset.class.php
+msgid "Upload"
+msgstr ""
+
+#. $this->DialogBoxHtml = '<p>' . QApplication::Translate('Please select a file to upload.') . '</p>';
+#: includes/qcubed/includes/qcubed/controls/QFileAsset.class.php
+msgid "Please select a file to upload."
+msgstr ""
+
+#. $this->strValidationError = $this->strName . QApplication::Translate(' is too short the min width is ') . $this->intMinWidth;
+#: includes/qcubed/includes/qcubed/controls/QImageFileAsset.class.php
+msgid " is too short the min width is "
+msgstr ""
+
+#. $this->strValidationError = $this->strName . QApplication::Translate(' is too big the max width is ') . $this->intMaxWidth;
+#: includes/qcubed/includes/qcubed/controls/QImageFileAsset.class.php
+msgid " is too big the max width is "
+msgstr ""
+
+#. $this->strValidationError = $this->strName . QApplication::Translate(' is too short the min height is ') . $this->intMinHeight;
+#: includes/qcubed/includes/qcubed/controls/QImageFileAsset.class.php
+msgid " is too short the min height is "
+msgstr ""
+
+#. $this->strValidationError = $this->strName . QApplication::Translate(' is too big the max height is ') . $this->intMaxHeight;
+#: includes/qcubed/includes/qcubed/controls/QImageFileAsset.class.php
+msgid " is too big the max height is "
+msgstr ""
+
+#. $this->strLabelForPrevious = QApplication::Translate('Previous');
+#: includes/qcubed/includes/qcubed/controls/QPaginator.class.php
+msgid "Previous"
+msgstr ""
+
+#. $this->strLabelForNext = QApplication::Translate('Next');
+#: includes/qcubed/includes/qcubed/controls/QPaginator.class.php
+msgid "Next"
+msgstr ""
+
+#. $btnFilterReset->Text = QApplication::Translate('Reset');;
+#: includes/qcubed/includes/qcubed/controls/QListBox.class.php includes/qcubed/includes/qcubed/_core/base_controls/QDataGridBase.class.php
+msgid "Reset"
+msgstr ""
+
+#. Required -> <?php _t('Required'); ?><br/>
+#: includes/qcubed/includes/qcubed/_core/tests/qcubed-unit/QI18nTests.php includes/qcubed/includes/qcubed/_core/base_controls/QTreeNav.class.php includes/qcubed/includes/qcubed/_core/base_controls/QListBoxBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QCheckBox.class.php includes/qcubed/includes/qcubed/_core/base_controls/QTextBoxBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QFileAssetBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QDateTimePicker.class.php includes/qcubed/assets/_core/php/examples/communication/advanced_intl.tpl.php
+msgid "Required"
+msgstr ""
+
+#. $this->verifyTranslation("Hello", QApplication::Translate("Hello"), "Bonjour");
+#: includes/qcubed/includes/qcubed/_core/tests/qcubed-unit/QI18nTests.php
+msgid "Hello"
+msgstr ""
+
+#. $this->verifyTranslation("Can't translate me!", QApplication::Translate("Can't translate me!"), "Can't translate me!");
+#: includes/qcubed/includes/qcubed/_core/tests/qcubed-unit/QI18nTests.php
+msgid "Can't translate me!"
+msgstr ""
+
+#. return sprintf('(null === %s)? "" : ((%s)? "%s" : "%s")', $strToReturn, $strToReturn, QApplication::Translate('True'), QApplication::Translate('False'));
+#: includes/qcubed/includes/qcubed/_core/framework/QQuery.class.php
+msgid "True"
+msgstr ""
+
+#. return sprintf('(null === %s)? "" : ((%s)? "%s" : "%s")', $strToReturn, $strToReturn, QApplication::Translate('True'), QApplication::Translate('False'));
+#: includes/qcubed/includes/qcubed/_core/framework/QQuery.class.php
+msgid "False"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Years'] != 1) ? QApplication::Translate('about %s years') :  QApplication::Translate('a year');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "about %s years"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Years'] != 1) ? QApplication::Translate('about %s years') :  QApplication::Translate('a year');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "a year"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Months'] != 1) ? QApplication::Translate('about %s months') : QApplication::Translate('a month');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "about %s months"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Months'] != 1) ? QApplication::Translate('about %s months') : QApplication::Translate('a month');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "a month"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Days'] != 1) ? QApplication::Translate('about %s days') : QApplication::Translate('a day');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "about %s days"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Days'] != 1) ? QApplication::Translate('about %s days') : QApplication::Translate('a day');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "a day"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Hours'] != 1) ? QApplication::Translate('about %s hours') : QApplication::Translate('an hour');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "about %s hours"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Hours'] != 1) ? QApplication::Translate('about %s hours') : QApplication::Translate('an hour');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "an hour"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Minutes'] != 1) ? QApplication::Translate('%s minutes') : QApplication::Translate('a minute');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "%s minutes"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Minutes'] != 1) ? QApplication::Translate('%s minutes') : QApplication::Translate('a minute');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "a minute"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Seconds'] != 1) ? QApplication::Translate('%s seconds') : QApplication::Translate('a second');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "%s seconds"
+msgstr ""
+
+#. $strFormat = ($arrTimearray['Seconds'] != 1) ? QApplication::Translate('%s seconds') : QApplication::Translate('a second');
+#: includes/qcubed/includes/qcubed/_core/framework/QDateTimeSpan.class.php
+msgid "a second"
+msgstr ""
+
+#. $this->txtRoleName->Warning = QApplication::Translate("Already in Use");
+#: includes/qcubed/includes/qcubed/_core/codegen/templates/db_orm/drafts/validate_unique.tpl.php drafts/panels/NarroProjectEditPanel.class.php drafts/panels/NarroContextPluralInfoEditPanel.class.php drafts/panels/NarroUserEditPanel.class.php drafts/panels/NarroSuggestionVoteEditPanel.class.php drafts/panels/NarroProjectProgressEditPanel.class.php drafts/panels/NarroSuggestionEditPanel.class.php drafts/panels/NarroProjectCategoryEditPanel.class.php drafts/panels/NarroFileEditPanel.class.php drafts/panels/NarroContextInfoEditPanel.class.php drafts/panels/NarroLanguageEditPanel.class.php drafts/panels/NarroUserPermissionEditPanel.class.php drafts/panels/NarroSuggestionCommentEditPanel.class.php drafts/panels/NarroPermissionEditPanel.class.php drafts/panels/NarroTextEditPanel.class.php drafts/panels/NarroFileProgressEditPanel.class.php drafts/panels/NarroContextEditPanel.class.php drafts/panels/NarroUserRoleEditPanel.class.php drafts/panels/NarroRoleEditPanel.class.php
+msgid "Already in Use"
+msgstr ""
+
+#. $this->strLabelForInvalid = QApplication::Translate('Invalid Integer');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QIntegerTextBox.class.php
+msgid "Invalid Integer"
+msgstr ""
+
+#. $this->strLabelForLess = QApplication::Translate('Value must be less than %s');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QIntegerTextBox.class.php includes/qcubed/includes/qcubed/_core/base_controls/QFloatTextBox.class.php
+msgid "Value must be less than %s"
+msgstr ""
+
+#. $this->strLabelForGreater = QApplication::Translate('Value must be greater than %s');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QIntegerTextBox.class.php includes/qcubed/includes/qcubed/_core/base_controls/QFloatTextBox.class.php
+msgid "Value must be greater than %s"
+msgstr ""
+
+#. $this->strValidationError = sprintf(QApplication::Translate('%s is required'), $this->strName);
+#: includes/qcubed/includes/qcubed/_core/base_controls/QTreeNav.class.php includes/qcubed/includes/qcubed/_core/base_controls/QListBoxBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QRadioButtonList.class.php includes/qcubed/includes/qcubed/_core/base_controls/QTextBoxBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QDateTimePicker.class.php includes/qcubed/includes/qcubed/_core/base_controls/QRadioButton.class.php
+msgid "%s is required"
+msgstr ""
+
+#. QApplication::Translate('Loading')
+#: includes/qcubed/includes/qcubed/_core/base_controls/QTreeNav.class.php
+msgid "Loading"
+msgstr ""
+
+#. $this->strLabelForNoneFound = QApplication::Translate('<b>Results:</b> No %s found.');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QDataGridBase.class.php
+msgid "<b>Results:</b> No %s found."
+msgstr ""
+
+#. $this->strLabelForOneFound = QApplication::Translate('<b>Results:</b> 1 %s found.');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QDataGridBase.class.php
+msgid "<b>Results:</b> 1 %s found."
+msgstr ""
+
+#. $this->strLabelForMultipleFound = QApplication::Translate('<b>Results:</b> %s %s found.');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QDataGridBase.class.php
+msgid "<b>Results:</b> %s %s found."
+msgstr ""
+
+#. $this->strLabelForPaginated = QApplication::Translate('<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s.');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QDataGridBase.class.php
+msgid "<b>Results:</b>&nbsp;Viewing&nbsp;%s&nbsp;%s-%s&nbsp;of&nbsp;%s."
+msgstr ""
+
+#. $btnFilter->Name = QApplication::Translate('Filter');
+#. $btnFilter->Text = QApplication::Translate('Filter');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QDataGridBase.class.php
+msgid "Filter"
+msgstr ""
+
+#. throw new exception(QApplication::Translate("Unknown Filter type"));
+#: includes/qcubed/includes/qcubed/_core/base_controls/QDataGridBase.class.php
+msgid "Unknown Filter type"
+msgstr ""
+
+#. $this->strValidationError = QApplication::Translate($this->strName) . ' ' . QApplication::Translate('is required');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QCheckBox.class.php includes/qcubed/includes/qcubed/_core/base_controls/QCheckBoxList.class.php includes/qcubed/includes/qcubed/_core/base_controls/QFileControl.class.php
+msgid "is required"
+msgstr ""
+
+#. $this->strNoun = QApplication::Translate('item');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QPaginatedControl.class.php
+msgid "item"
+msgstr ""
+
+#. $this->strNounPlural = QApplication::Translate('items');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QPaginatedControl.class.php
+msgid "items"
+msgstr ""
+
+#. $this->strInstructions = QApplication::Translate('Tags &lt;b&gt; &lt;u&gt; &lt;i&gt; &lt;br&gt; &lt;code&gt; and &lt;http://...&gt; are allowed.  Use ** at the beginning of any line for a bulleted list.');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QWriteBox.class.php
+msgid "Tags &lt;b&gt; &lt;u&gt; &lt;i&gt; &lt;br&gt; &lt;code&gt; and &lt;http://...&gt; are allowed.  Use ** at the beginning of any line for a bulleted list."
+msgstr ""
+
+#. $this->strLabelForTooShort = QApplication::Translate('%s must have at least %s characters');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QTextBoxBase.class.php
+msgid "%s must have at least %s characters"
+msgstr ""
+
+#. $this->strLabelForTooShortUnnamed = QApplication::Translate('Must have at least %s characters');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QTextBoxBase.class.php
+msgid "Must have at least %s characters"
+msgstr ""
+
+#. $this->strLabelForTooLong = QApplication::Translate('%s must have at most %s characters');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QTextBoxBase.class.php
+msgid "%s must have at most %s characters"
+msgstr ""
+
+#. $this->strLabelForTooLongUnnamed = QApplication::Translate('Must have at most %s characters');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QTextBoxBase.class.php
+msgid "Must have at most %s characters"
+msgstr ""
+
+#. $this->colSelect = new QCheckBoxColumn(QApplication::Translate('Select All'), $this->dtgPersons);
+#: includes/qcubed/includes/qcubed/_core/base_controls/QCheckBoxColumn.class.php includes/qcubed/assets/_core/php/examples/dynamic/qcheckboxcolumn.php
+msgid "Select All"
+msgstr ""
+
+#. $this->strValidationError = $this->strName . QApplication::Translate(' is required');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QFileAssetBase.class.php
+msgid " is required"
+msgstr ""
+
+#. $this->strUnacceptableMessage = QApplication::Translate('Must be a JPG, PNG or GIF');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QFileAssetBase.class.php
+msgid "Must be a JPG, PNG or GIF"
+msgstr ""
+
+#. $this->strUnacceptableMessage = QApplication::Translate('Must be a PDF');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QFileAssetBase.class.php
+msgid "Must be a PDF"
+msgstr ""
+
+#. $this->strUnacceptableMessage = QApplication::Translate('Must be a valid document (Image, PDF, etc.)');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QFileAssetBase.class.php
+msgid "Must be a valid document (Image, PDF, etc.)"
+msgstr ""
+
+#. $this->strLabelForInvalid = QApplication::Translate('Invalid Float');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QFloatTextBox.class.php
+msgid "Invalid Float"
+msgstr ""
+
+#. $this->strValidationError = QApplication::Translate('Invalid Date');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QDateTimePicker.class.php
+msgid "Invalid Date"
+msgstr ""
+
+#. $this->strTitle = QApplication::Translate("Upload a File");
+#: includes/qcubed/includes/qcubed/_core/base_controls/QFileAssetDialog.class.php
+msgid "Upload a File"
+msgstr ""
+
+#. <h1 class="instruction_title"><?php _t('Internationalization and Translation') ?></h1>
+#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
+msgid "Internationalization and Translation"
+msgstr ""
+
+#. <?php _t('
+#. 		QQubed offers internationalization support via <b>QApplication::Translate()</b> (which internally
+#. 		will use the <b>QI18n</b> class). Default language and country
+#. 		settings can be setup in <b>prepend.inc.php</b>.  Out of the box, QCubed will check the session to determine
+#. 		which language and country is currently being used, but it is really up to the developer to
+#. 		determine how you want the language and country codes get discovered (e.g., via the URL, via
+#. 		GET arguments, etc.)'); ?>
+#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
+msgid "\n		QQubed offers internationalization support via <b>QApplication::Translate()</b> (which internally\n		will use the <b>QI18n</b> class). Default language and country\n		settings can be setup in <b>prepend.inc.php</b>.  Out of the box, QCubed will check the session to determine\n		which language and country is currently being used, but it is really up to the developer to\n		determine how you want the language and country codes get discovered (e.g., via the URL, via\n		GET arguments, etc.)"
+msgstr ""
+
+#. <?php _t('If at any point, you wish to translate to a different language than the one set by the session,
+#. 		you can use the <b>QI18n::Load()</b> function to create a unique I18n object, and call <b>TranslateToken()</b>
+#. 		on it.'); ?>
+#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
+msgid "If at any point, you wish to translate to a different language than the one set by the session,\n		you can use the <b>QI18n::Load()</b> function to create a unique I18n object, and call <b>TranslateToken()</b>\n		on it."
+msgstr ""
+
+#. <?php _t('Language files are in the GNU PO format (see'); ?>
+#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
+msgid "Language files are in the GNU PO format (see"
+msgstr ""
+
+#. <?php _t('
+#. 		To translate any piece of text, simply use <b>QApplication::Translate(xxx)</b>. Or as a shortcut,
+#. 		if you want to do a PHP <b>print()</b> of any translated text in your template, you can use
+#. 		the QCubed printing shortcut <b>_t(xxx)</b> -- this does the equivalent of
+#. 		<b>print(QApplication::Translate(xxx))</b>.'); ?>
+#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
+msgid "\n		To translate any piece of text, simply use <b>QApplication::Translate(xxx)</b>. Or as a shortcut,\n		if you want to do a PHP <b>print()</b> of any translated text in your template, you can use\n		the QCubed printing shortcut <b>_t(xxx)</b> -- this does the equivalent of\n		<b>print(QApplication::Translate(xxx))</b>."
+msgstr ""
+
+#. <h2><?php _t('Internationalization Example'); ?></h2>
+#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
+msgid "Internationalization Example"
+msgstr ""
+
+#. <?php _t('Current Language'); ?>:
+#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
+msgid "Current Language"
+msgstr ""
+
+#. <?php $this->btnEn->Render('Text="' . QApplication::Translate('Switch to') . ' en"'); ?>
+#. <?php $this->btnEs->Render('Text="' . QApplication::Translate('Switch to') . ' es"'); ?>
+#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
+msgid "Switch to"
+msgstr ""
+
+#. <?php _t('To view the People form draft translated into the selected language, go to'); ?>
+#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
+msgid "To view the People form draft translated into the selected language, go to"
+msgstr ""
+
+#. <?php _t('We used the <b>QI18n::Load</b> approach to ensure the following is always Spanish:'); ?><br/>
+#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
+msgid "We used the <b>QI18n::Load</b> approach to ensure the following is always Spanish:"
+msgstr ""
+
+#. Optional -> <?php _t('Optional'); ?>
+#: includes/qcubed/assets/_core/php/examples/communication/advanced_intl.tpl.php
+msgid "Optional"
+msgstr ""
+
+#. <div class="title"><?php _t('Person')?></div>
+#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.tpl.php
+msgid "Person"
+msgstr ""
+
+#. $this->lblId->Name = QApplication::Translate('Id');
+#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
+msgid "Id"
+msgstr ""
+
+#. $this->txtFirstName->Name = QApplication::Translate('First Name');
+#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
+msgid "First Name"
+msgstr ""
+
+#. $this->txtLastName->Name = QApplication::Translate('Last Name');
+#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
+msgid "Last Name"
+msgstr ""
+
+#. $this->lstLogin->AddItem(QApplication::Translate('- Select One -'), null);
+#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
+msgid "- Select One -"
+msgstr ""
+
+#. $this->lstProjectsAsTeamMember->Name = QApplication::Translate('Projects As Team Member');
+#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
+msgid "Projects As Team Member"
+msgstr ""
+
+#. $this->colProjectSelected = new QCheckBoxColumn(QApplication::Translate('Select'), $this->dtgProjects);
+#: includes/qcubed/assets/_core/php/examples/dynamic/qcheckboxcolumn.php
+msgid "Select"
+msgstr ""
+
+#. <h1><?php _t('Plugin Manager'); ?></h1>
+#: includes/qcubed/assets/_core/php/_devtools/plugin_manager.tpl.php
+msgid "Plugin Manager"
+msgstr ""
+
+#. $strObject, __VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__, $strObject, QApplication::Translate('View List'),
+#: includes/qcubed/assets/_core/php/_devtools/form_drafts.php
+msgid "View List"
+msgstr ""
+
+#. __VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__, $strObject, QApplication::Translate('Create New'));
+#: includes/qcubed/assets/_core/php/_devtools/form_drafts.php
+msgid "Create New"
+msgstr ""
+
+#. <h2 id="right"><a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/index.php">&laquo; <?php _t('Go to "Form Drafts"'); ?></a></h2>
+#: includes/qcubed/assets/_core/php/_devtools/panel_drafts.tpl.php drafts/narro_context_comment_list.tpl.php drafts/narro_file_progress_list.tpl.php drafts/narro_suggestion_comment_list.tpl.php drafts/zend_cache_list.tpl.php drafts/narro_suggestion_vote_list.tpl.php drafts/narro_context_list.tpl.php drafts/narro_suggestion_list.tpl.php drafts/narro_permission_list.tpl.php drafts/narro_role_permission_list.tpl.php drafts/narro_text_list.tpl.php drafts/narro_project_category_list.tpl.php drafts/narro_context_plural_info_list.tpl.php drafts/narro_context_info_list.tpl.php drafts/zend_cache_version_list.tpl.php drafts/narro_project_list.tpl.php drafts/narro_glossary_term_list.tpl.php drafts/narro_language_list.tpl.php drafts/narro_project_progress_list.tpl.php drafts/narro_user_permission_list.tpl.php drafts/narro_text_comment_list.tpl.php drafts/narro_user_role_list.tpl.php drafts/narro_role_list.tpl.php drafts/narro_context_plural_list.tpl.php drafts/narro_file_list.tpl.php drafts/narro_user_list.tpl.php
+msgid "Go to \"Form Drafts\""
+msgstr ""
+
+#. $this->lblName->Name = QApplication::Translate('Title');
+#: includes/qcubed/assets/_core/php/_devtools/plugin_edit.php
+msgid "Title"
+msgstr ""
+
+#. $this->lblPluginVersion->Name = QApplication::Translate('Plugin Version');
+#: includes/qcubed/assets/_core/php/_devtools/plugin_edit.php
+msgid "Plugin Version"
+msgstr ""
+
+#. $this->lblPlatformVersion->Name = QApplication::Translate('Compatible QCubed Version');
+#: includes/qcubed/assets/_core/php/_devtools/plugin_edit.php
+msgid "Compatible QCubed Version"
+msgstr ""
+
+#. '<p>' . t('Author') . ': ' . sprintf('<a href="%s">%s</a>', $strUserLink, $objNarroSuggestion->User->Username) . '</p>' .
+#: includes/qcubed/assets/_core/php/_devtools/plugin_edit.php rss.php
+msgid "Author"
+msgstr ""
+
+#.
+#: includes/qcubed/assets/_core/php/_devtools/plugin_edit.php
+msgid "Author's email"
+msgstr ""
+
+#. $arrData[t('Others')] = 0;
+#. $arrData[t('Others')] += round(($intCount * 100) / $this->intTotal, 2);
+#. $arrToolTip[t('Others')] = sprintf('%s (%d), ', t('Others'), $arrData[t('Others')]);
+#. if (isset($arrData[t('Others')]) && $arrData[t('Others')] == 0) {
+#. unset($arrData[t('Others')]);
+#. unset($arrToolTip[t('Others')]);
+#: includes/qcubed_custom_controls/QPieChart.class.php
+msgid "Others"
+msgstr ""
+
+#. $this->strLabelForNoneFound = '&nbsp;' . sprintf('<b>%s</b>: %s', $mixValue, QApplication::Translate('%s found nothing.'));/**Translators: ignore %s */
+#: includes/qcubed_custom_controls/NarroDataGrid.class.php
+msgid "%s found nothing."
+msgstr ""
+
+#. $this->strLabelForOneFound = '&nbsp;' . sprintf('<b>%s</b>: %s', $mixValue, QApplication::Translate(' 1 %s found.'));/**Translators: ignore %s */
+#: includes/qcubed_custom_controls/NarroDataGrid.class.php
+msgid " 1 %s found."
+msgstr ""
+
+#. $this->strLabelForMultipleFound = '&nbsp;' . sprintf('<b>%s</b>: %s', $mixValue, QApplication::Translate(' %d %s found.'));/**Translators: ignore %s */
+#: includes/qcubed_custom_controls/NarroDataGrid.class.php
+msgid " %d %s found."
+msgstr ""
+
+#. $this->strLabelForPaginated = '&nbsp;' . sprintf('<b>%s</b>: %s', $mixValue, QApplication::Translate('%s %d-%d of %d.'));/**Translators: ignore %s */
+#: includes/qcubed_custom_controls/NarroDataGrid.class.php
+msgid "%s %d-%d of %d."
+msgstr ""
+
+#.
+#: user_role.tpl.php
+msgid "%s's roles"
+msgstr ""
+
+#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Profile'), NarroLink::UserProfile($this->objUser->UserId));
+#: user_role.php user.php preferences.php account.php
+msgid "Profile"
+msgstr ""
+
+#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Preferences'), NarroLink::UserPreferences($this->objUser->UserId));
+#: user_role.php user.php preferences.php account.php
+msgid "Preferences"
+msgstr ""
+
+#. $strPageTitle = t('Language list');
+#: languages.tpl.php
+msgid "Language list"
+msgstr ""
+
+#. <h1><?php _t('NarroContextComments'); ?></h1>
+#: drafts/narro_context_comment_list.tpl.php
+msgid "NarroContextComments"
+msgstr ""
+
+#. <h2><?php _t('List All'); ?></h2>
+#: drafts/narro_context_comment_list.tpl.php drafts/narro_file_progress_list.tpl.php drafts/narro_suggestion_comment_list.tpl.php drafts/zend_cache_list.tpl.php drafts/narro_suggestion_vote_list.tpl.php drafts/narro_context_list.tpl.php drafts/narro_suggestion_list.tpl.php drafts/narro_permission_list.tpl.php drafts/narro_role_permission_list.tpl.php drafts/narro_text_list.tpl.php drafts/narro_project_category_list.tpl.php drafts/narro_context_plural_info_list.tpl.php drafts/narro_context_info_list.tpl.php drafts/zend_cache_version_list.tpl.php drafts/narro_project_list.tpl.php drafts/narro_glossary_term_list.tpl.php drafts/narro_language_list.tpl.php drafts/narro_project_progress_list.tpl.php drafts/narro_user_permission_list.tpl.php drafts/narro_text_comment_list.tpl.php drafts/narro_user_role_list.tpl.php drafts/narro_role_list.tpl.php drafts/narro_context_plural_list.tpl.php drafts/narro_file_list.tpl.php drafts/narro_user_list.tpl.php
+msgid "List All"
+msgstr ""
+
+#. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/narro_user_edit.php"><?php _t('Create a New'); ?> <?php _t('NarroUser');?></a>
+#: drafts/narro_context_comment_list.tpl.php drafts/narro_file_progress_list.tpl.php drafts/narro_suggestion_comment_list.tpl.php drafts/zend_cache_list.tpl.php drafts/narro_suggestion_vote_list.tpl.php drafts/narro_context_list.tpl.php drafts/narro_suggestion_list.tpl.php drafts/narro_permission_list.tpl.php drafts/narro_role_permission_list.tpl.php drafts/narro_text_list.tpl.php drafts/narro_project_category_list.tpl.php drafts/narro_context_plural_info_list.tpl.php drafts/narro_context_info_list.tpl.php drafts/zend_cache_version_list.tpl.php drafts/panels/NarroContextInfoListPanel.class.php drafts/panels/NarroContextListPanel.class.php drafts/panels/ZendCacheListPanel.class.php drafts/panels/NarroProjectListPanel.class.php drafts/panels/NarroFileProgressListPanel.class.php drafts/panels/NarroSuggestionCommentListPanel.class.php drafts/panels/NarroSuggestionVoteListPanel.class.php drafts/panels/NarroUserPermissionListPanel.class.php drafts/panels/NarroUserRoleListPanel.class.php drafts/panels/NarroLanguageListPanel.class.php drafts/panels/NarroContextPluralListPanel.class.php drafts/panels/NarroContextPluralInfoListPanel.class.php drafts/panels/NarroRolePermissionListPanel.class.php drafts/panels/NarroPermissionListPanel.class.php drafts/panels/NarroProjectCategoryListPanel.class.php drafts/panels/NarroGlossaryTermListPanel.class.php drafts/panels/NarroContextCommentListPanel.class.php drafts/panels/NarroUserListPanel.class.php drafts/panels/ZendCacheVersionListPanel.class.php drafts/panels/NarroRoleListPanel.class.php drafts/panels/NarroProjectProgressListPanel.class.php drafts/panels/NarroTextListPanel.class.php drafts/panels/NarroTextCommentListPanel.class.php drafts/panels/NarroFileListPanel.class.php drafts/panels/NarroSuggestionListPanel.class.php drafts/narro_project_list.tpl.php drafts/narro_glossary_term_list.tpl.php drafts/narro_language_list.tpl.php drafts/narro_project_progress_list.tpl.php drafts/narro_user_permission_list.tpl.php drafts/narro_text_comment_list.tpl.php drafts/narro_user_role_list.tpl.php drafts/narro_role_list.tpl.php drafts/narro_context_plural_list.tpl.php drafts/narro_file_list.tpl.php drafts/narro_user_list.tpl.php
+msgid "Create a New"
+msgstr ""
+
+#. $this->btnCreateNew->Text = QApplication::Translate('Create a New') . ' ' . QApplication::Translate('NarroContextComment');
+#: drafts/narro_context_comment_list.tpl.php drafts/narro_context_comment_edit.tpl.php drafts/panels/NarroContextCommentEditPanel.class.php drafts/panels/NarroContextCommentListPanel.class.php
+msgid "NarroContextComment"
+msgstr ""
+
+#. <h1><?php _t('NarroFileProgresses'); ?></h1>
+#: drafts/narro_file_progress_list.tpl.php
+msgid "NarroFileProgresses"
+msgstr ""
+
+#. <h1><?php _t('NarroFileProgress')?></h1>
+#: drafts/narro_file_progress_list.tpl.php drafts/panels/NarroFileProgressListPanel.class.php drafts/panels/NarroFileProgressEditPanel.class.php drafts/narro_file_progress_edit.tpl.php
+msgid "NarroFileProgress"
+msgstr ""
+
+#. $this->btnCreateNew->Text = QApplication::Translate('Create a New') . ' ' . QApplication::Translate('NarroProjectCategory');
+#: drafts/narro_project_category_edit.tpl.php drafts/narro_project_category_list.tpl.php drafts/panels/NarroProjectCategoryEditPanel.class.php drafts/panels/NarroProjectCategoryListPanel.class.php
+msgid "NarroProjectCategory"
+msgstr ""
+
+#. <h1><?php _t('NarroSuggestionComments'); ?></h1>
+#: drafts/narro_suggestion_comment_list.tpl.php
+msgid "NarroSuggestionComments"
+msgstr ""
+
+#. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'),  QApplication::Translate('NarroSuggestionComment'))));
+#: drafts/narro_suggestion_comment_list.tpl.php drafts/narro_suggestion_comment_edit.tpl.php drafts/panels/NarroSuggestionCommentListPanel.class.php drafts/panels/NarroSuggestionCommentEditPanel.class.php
+msgid "NarroSuggestionComment"
+msgstr ""
+
+#. <h1><?php _t('ZendCaches'); ?></h1>
+#: drafts/zend_cache_list.tpl.php
+msgid "ZendCaches"
+msgstr ""
+
+#. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'),  QApplication::Translate('ZendCache'))));
+#: drafts/zend_cache_list.tpl.php drafts/zend_cache_edit.tpl.php drafts/panels/ZendCacheListPanel.class.php drafts/panels/ZendCacheEditPanel.class.php
+msgid "ZendCache"
+msgstr ""
+
+#. <h1><?php _t('NarroSuggestionVotes'); ?></h1>
+#: drafts/narro_suggestion_vote_list.tpl.php
+msgid "NarroSuggestionVotes"
+msgstr ""
+
+#. $this->btnCreateNew->Text = QApplication::Translate('Create a New') . ' ' . QApplication::Translate('NarroSuggestionVote');
+#: drafts/narro_suggestion_vote_list.tpl.php drafts/narro_suggestion_vote_edit.tpl.php drafts/panels/NarroSuggestionVoteEditPanel.class.php drafts/panels/NarroSuggestionVoteListPanel.class.php
+msgid "NarroSuggestionVote"
+msgstr ""
+
+#. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/narro_user_role_edit.php"><?php _t('Create a New'); ?> <?php _t('NarroUserRole');?></a>
+#: drafts/narro_user_role_edit.tpl.php drafts/panels/NarroUserRoleListPanel.class.php drafts/panels/NarroUserRoleEditPanel.class.php drafts/narro_user_role_list.tpl.php
+msgid "NarroUserRole"
+msgstr ""
+
+#. <h1><?php _t('NarroContexts'); ?></h1>
+#: drafts/narro_context_list.tpl.php
+msgid "NarroContexts"
+msgstr ""
+
+#. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'),  QApplication::Translate('NarroContext'))));
+#: drafts/narro_context_list.tpl.php drafts/narro_context_edit.tpl.php drafts/panels/NarroContextListPanel.class.php drafts/panels/NarroContextEditPanel.class.php
+msgid "NarroContext"
+msgstr ""
+
+#. <h1><?php _t('NarroSuggestions'); ?></h1>
+#: drafts/narro_suggestion_list.tpl.php
+msgid "NarroSuggestions"
+msgstr ""
+
+#. $this->btnCreateNew->Text = QApplication::Translate('Create a New') . ' ' . QApplication::Translate('NarroSuggestion');
+#: drafts/narro_suggestion_list.tpl.php drafts/narro_suggestion_edit.tpl.php drafts/panels/NarroSuggestionEditPanel.class.php drafts/panels/NarroSuggestionListPanel.class.php
+msgid "NarroSuggestion"
+msgstr ""
+
+#. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/narro_language_edit.php"><?php _t('Create a New'); ?> <?php _t('NarroLanguage');?></a>
+#: drafts/narro_language_edit.tpl.php drafts/panels/NarroLanguageListPanel.class.php drafts/panels/NarroLanguageEditPanel.class.php drafts/narro_language_list.tpl.php
+msgid "NarroLanguage"
+msgstr ""
+
+#. <h1><?php _t('NarroPermissions'); ?></h1>
+#: drafts/narro_permission_list.tpl.php
+msgid "NarroPermissions"
+msgstr ""
+
+#. <h1><?php _t('NarroPermission')?></h1>
+#: drafts/narro_permission_list.tpl.php drafts/panels/NarroPermissionListPanel.class.php drafts/panels/NarroPermissionEditPanel.class.php drafts/narro_permission_edit.tpl.php
+msgid "NarroPermission"
+msgstr ""
+
+#. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/narro_project_progress_edit.php"><?php _t('Create a New'); ?> <?php _t('NarroProjectProgress');?></a>
+#: drafts/narro_project_progress_edit.tpl.php drafts/panels/NarroProjectProgressEditPanel.class.php drafts/panels/NarroProjectProgressListPanel.class.php drafts/narro_project_progress_list.tpl.php
+msgid "NarroProjectProgress"
+msgstr ""
+
+#. <h1><?php _t('NarroRolePermissions'); ?></h1>
+#: drafts/narro_role_permission_list.tpl.php
+msgid "NarroRolePermissions"
+msgstr ""
+
+#. <h1><?php _t('NarroRolePermission')?></h1>
+#: drafts/narro_role_permission_list.tpl.php drafts/panels/NarroRolePermissionEditPanel.class.php drafts/panels/NarroRolePermissionListPanel.class.php drafts/narro_role_permission_edit.tpl.php
+msgid "NarroRolePermission"
+msgstr ""
+
+#. <h1><?php _t('NarroTexts'); ?></h1>
+#: drafts/narro_text_list.tpl.php
+msgid "NarroTexts"
+msgstr ""
+
+#. $this->btnCreateNew->Text = QApplication::Translate('Create a New') . ' ' . QApplication::Translate('NarroText');
+#: drafts/narro_text_list.tpl.php drafts/narro_text_edit.tpl.php drafts/panels/NarroTextEditPanel.class.php drafts/panels/NarroTextListPanel.class.php
+msgid "NarroText"
+msgstr ""
+
+#. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/narro_user_edit.php"><?php _t('Create a New'); ?> <?php _t('NarroUser');?></a>
+#: drafts/narro_user_edit.tpl.php drafts/panels/NarroUserEditPanel.class.php drafts/panels/NarroUserListPanel.class.php drafts/narro_user_list.tpl.php
+msgid "NarroUser"
+msgstr ""
+
+#. <h1><?php _t('NarroProjectCategories'); ?></h1>
+#: drafts/narro_project_category_list.tpl.php
+msgid "NarroProjectCategories"
+msgstr ""
+
+#. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'),  QApplication::Translate('NarroContextInfo'))));
+#: drafts/narro_context_info_edit.tpl.php drafts/narro_context_info_list.tpl.php drafts/panels/NarroContextInfoListPanel.class.php drafts/panels/NarroContextInfoEditPanel.class.php
+msgid "NarroContextInfo"
+msgstr ""
+
+#. <h1><?php _t('NarroContextPluralInfos'); ?></h1>
+#: drafts/narro_context_plural_info_list.tpl.php
+msgid "NarroContextPluralInfos"
+msgstr ""
+
+#. $this->btnCreateNew->Text = QApplication::Translate('Create a New') . ' ' . QApplication::Translate('NarroContextPluralInfo');
+#: drafts/narro_context_plural_info_list.tpl.php drafts/narro_context_plural_info_edit.tpl.php drafts/panels/NarroContextPluralInfoEditPanel.class.php drafts/panels/NarroContextPluralInfoListPanel.class.php
+msgid "NarroContextPluralInfo"
+msgstr ""
+
+#. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/narro_file_edit.php"><?php _t('Create a New'); ?> <?php _t('NarroFile');?></a>
+#: drafts/narro_file_edit.tpl.php drafts/panels/NarroFileEditPanel.class.php drafts/panels/NarroFileListPanel.class.php drafts/narro_file_list.tpl.php
+msgid "NarroFile"
+msgstr ""
+
+#. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/narro_text_comment_edit.php"><?php _t('Create a New'); ?> <?php _t('NarroTextComment');?></a>
+#: drafts/narro_text_comment_edit.tpl.php drafts/panels/NarroTextCommentEditPanel.class.php drafts/panels/NarroTextCommentListPanel.class.php drafts/narro_text_comment_list.tpl.php
+msgid "NarroTextComment"
+msgstr ""
+
+#. <h1><?php _t('NarroContextInfos'); ?></h1>
+#: drafts/narro_context_info_list.tpl.php
+msgid "NarroContextInfos"
+msgstr ""
+
+#. <h1><?php _t('ZendCacheVersions'); ?></h1>
+#: drafts/zend_cache_version_list.tpl.php
+msgid "ZendCacheVersions"
+msgstr ""
+
+#. <h1><?php _t('ZendCacheVersion')?></h1>
+#: drafts/zend_cache_version_list.tpl.php drafts/panels/ZendCacheVersionEditPanel.class.php drafts/panels/ZendCacheVersionListPanel.class.php drafts/zend_cache_version_edit.tpl.php
+msgid "ZendCacheVersion"
+msgstr ""
+
+#. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/narro_glossary_term_edit.php"><?php _t('Create a New'); ?> <?php _t('NarroGlossaryTerm');?></a>
+#: drafts/narro_glossary_term_edit.tpl.php drafts/panels/NarroGlossaryTermListPanel.class.php drafts/panels/NarroGlossaryTermEditPanel.class.php drafts/narro_glossary_term_list.tpl.php
+msgid "NarroGlossaryTerm"
+msgstr ""
+
+#. <h1><?php _t('NarroContextPlural')?></h1>
+#: drafts/panels/NarroContextPluralEditPanel.class.php drafts/panels/NarroContextPluralListPanel.class.php drafts/narro_context_plural_list.tpl.php drafts/narro_context_plural_edit.tpl.php
+msgid "NarroContextPlural"
+msgstr ""
+
+#. <h1><?php _t('NarroProject')?></h1>
+#: drafts/panels/NarroProjectEditPanel.class.php drafts/panels/NarroProjectListPanel.class.php drafts/narro_project_list.tpl.php drafts/narro_project_edit.tpl.php
+msgid "NarroProject"
+msgstr ""
+
+#. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/narro_user_permission_edit.php"><?php _t('Create a New'); ?> <?php _t('NarroUserPermission');?></a>
+#: drafts/panels/NarroUserPermissionListPanel.class.php drafts/panels/NarroUserPermissionEditPanel.class.php drafts/narro_user_permission_edit.tpl.php drafts/narro_user_permission_list.tpl.php
+msgid "NarroUserPermission"
+msgstr ""
+
+#. <a href="<?php _p(__VIRTUAL_DIRECTORY__ . __FORM_DRAFTS__) ?>/narro_role_edit.php"><?php _t('Create a New'); ?> <?php _t('NarroRole');?></a>
+#: drafts/panels/NarroRoleListPanel.class.php drafts/panels/NarroRoleEditPanel.class.php drafts/narro_role_edit.tpl.php drafts/narro_role_list.tpl.php
+msgid "NarroRole"
+msgstr ""
+
+#. <h1><?php _t('NarroProjects'); ?></h1>
+#: drafts/narro_project_list.tpl.php
+msgid "NarroProjects"
+msgstr ""
+
+#. <h1><?php _t('NarroGlossaryTerms'); ?></h1>
+#: drafts/narro_glossary_term_list.tpl.php
+msgid "NarroGlossaryTerms"
+msgstr ""
+
+#. <h1><?php _t('NarroLanguages'); ?></h1>
+#: drafts/narro_language_list.tpl.php
+msgid "NarroLanguages"
+msgstr ""
+
+#. <h1><?php _t('NarroProjectProgresses'); ?></h1>
+#: drafts/narro_project_progress_list.tpl.php
+msgid "NarroProjectProgresses"
+msgstr ""
+
+#. <h1><?php _t('NarroUserPermissions'); ?></h1>
+#: drafts/narro_user_permission_list.tpl.php
+msgid "NarroUserPermissions"
+msgstr ""
+
+#. <h1><?php _t('NarroTextComments'); ?></h1>
+#: drafts/narro_text_comment_list.tpl.php
+msgid "NarroTextComments"
+msgstr ""
+
+#. <h1><?php _t('NarroUserRoles'); ?></h1>
+#: drafts/narro_user_role_list.tpl.php
+msgid "NarroUserRoles"
+msgstr ""
+
+#. <h1><?php _t('NarroRoles'); ?></h1>
+#: drafts/narro_role_list.tpl.php
+msgid "NarroRoles"
+msgstr ""
+
+#. <h1><?php _t('NarroContextPlurals'); ?></h1>
+#: drafts/narro_context_plural_list.tpl.php
+msgid "NarroContextPlurals"
+msgstr ""
+
+#. <h1><?php _t('NarroFiles'); ?></h1>
+#: drafts/narro_file_list.tpl.php
+msgid "NarroFiles"
+msgstr ""
+
+#. <h1><?php _t('NarroUsers'); ?></h1>
+#: drafts/narro_user_list.tpl.php
+msgid "NarroUsers"
+msgstr ""
+
+#. $this->lblMessage->Text = t('Here you can set your preferences.');
+#: preferences.php
+msgid "Here you can set your preferences."
+msgstr ""
+
+#.
+#: preferences.php
+msgid "You don't have any preferences set. Please set your preferences and save them."
+msgstr ""
+
+#. $strOutput .= ' ' . sprintf(t('Click <a href="%s">here</a> to return to the page you were.'), $this->txtPreviousUrl);
+#: preferences.php
+msgid "Click <a href=\"%s\">here</a> to return to the page you were."
+msgstr ""
+
+#. $this->lblMessage->Text = t('Your preferences were saved successfuly.');
+#: preferences.php
+msgid "Your preferences were saved successfuly."
+msgstr ""
+
+#. $this->lblMessage->Text = t('An error occurred while trying to save your preferences.');
+#: preferences.php
+msgid "An error occurred while trying to save your preferences."
+msgstr ""
+
+#. $strPageTitle = (QApplication::QueryString('lid'))?t('Edit language'):t('Add language');
+#: language_edit.tpl.php
+msgid "Edit language"
+msgstr ""
+
+#. $strPageTitle = (QApplication::QueryString('lid'))?t('Edit language'):t('Add language');
+#: language_edit.tpl.php
+msgid "Add language"
+msgstr ""
+
+#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Lost and found'), NarroLink::UserRecoverPassword());
+#: login.php password.php join.php
+msgid "Lost and found"
+msgstr ""
+
+#. $strPageTitle = ($this->objProject instanceof NarroProject)?sprintf(t('Edit %s'), $this->objProject->ProjectName):t('Add');
+#: project_edit.tpl.php
+msgid "Edit %s"
+msgstr ""
+
+#. $this->lblMessage->Text = t('Failed to change the password.');
+#: change_password.php
+msgid "Failed to change the password."
+msgstr ""
+
+#. $this->lblMessage->Text = t('Password changed succesfully.');
+#: change_password.php
+msgid "Password changed succesfully."
+msgstr ""
+
+#. $strPageTitle = t('Project language list');
+#: project_languages.tpl.php
+msgid "Project language list"
+msgstr ""
+
+#. <h3><?php echo sprintf(t('Language list for %s'), $this->objProject->ProjectName); ?></h3>
+#: project_languages.tpl.php
+msgid "Language list for %s"
+msgstr ""
+
+#. <p><?php echo sprintf(t('This is a list of languages that %s is translated in.'), $this->objProject->ProjectName); ?></p>
+#: project_languages.tpl.php
+msgid "This is a list of languages that %s is translated in."
+msgstr ""
+
+#. <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Translations for %s'), $objProject->ProjectName) ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+#: rss.php configuration/header.inc.php
+msgid "Translations for %s"
+msgstr ""
+
+#. sprintf(t('Get the latest translation suggestions in %s for %s'), t(QApplication::$TargetLanguage->LanguageName), $objProject->ProjectName)
+#: rss.php
+msgid "Get the latest translation suggestions in %s for %s"
+msgstr ""
+
+#. <link rel="alternate" type="application/rss+xml" title="<?php echo t('Translations for all projects') ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::GetLanguageId() ?>" />
+#: rss.php configuration/header.inc.php
+msgid "Translations for all projects"
+msgstr ""
+
+#. sprintf(t('Get the latest translation suggestions in %s'), t(QApplication::$TargetLanguage->LanguageName))
+#: rss.php
+msgid "Get the latest translation suggestions in %s"
+msgstr ""
+
+#. $strDescription = sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>, project <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName, $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName);
+#: rss.php
+msgid "<a href=\"%s\">%s</a> from the file <a href=\"%s\">%s</a>, project <a href=\"%s\">%s</a>"
+msgstr ""
+
+#. '<p>' . t('Contexts where the suggestion can be used:') . '</p>' .
+#: rss.php
+msgid "Contexts where the suggestion can be used:"
+msgstr ""
+
+#. t('Click on the context to use the suggestion, on the file name or project name to search for the suggestion in them.')
+#: rss.php
+msgid "Click on the context to use the suggestion, on the file name or project name to search for the suggestion in them."
+msgstr ""
+
+#.
+#: rss.php
+msgid "Narro - Translate, we're open!"
+msgstr ""
+
+#. <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Texts to translate for %s'), $objProject->ProjectName) ?>" href="rss.php?t=text&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+#: rss.php configuration/header.inc.php
+msgid "Texts to translate for %s"
+msgstr ""
+
+#. sprintf(t('Get the latest texts to translate for the project %s'), $objProject->ProjectName)
+#: rss.php
+msgid "Get the latest texts to translate for the project %s"
+msgstr ""
+
+#. t('Texts to translate'),
+#: rss.php
+msgid "Texts to translate"
+msgstr ""
+
+#. t('Get the latest texts to translate')
+#: rss.php
+msgid "Get the latest texts to translate"
+msgstr ""
+
+#. $objItem->Description = $strDescription . '</ul><p>' . t('Click on any context to translate the text, on the file name or project name to see all the untranslated texts from that file or project.'). '</p>';
+#: rss.php
+msgid "Click on any context to translate the text, on the file name or project name to see all the untranslated texts from that file or project."
+msgstr ""
+
+#. $strDescription .= sprintf(t('Used in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));
+#: rss.php
+msgid "Used in the following contexts:"
+msgstr ""
+
+#. $strDescription .= sprintf(t('Used in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));
+#. $strDescription .= sprintf(t('Used in the project <a href="%s">%s</a>, in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));
+#: rss.php
+msgid "Contexts"
+msgstr ""
+
+#. $strDescription .= sprintf(t('Used in the project <a href="%s">%s</a>, in the following contexts:') . '<ul>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName, t('Contexts'));
+#: rss.php
+msgid "Used in the project <a href=\"%s\">%s</a>, in the following contexts:"
+msgstr ""
+
+#. $strDescription .= sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName);
+#: rss.php
+msgid "<a href=\"%s\">%s</a> from the file <a href=\"%s\">%s</a>"
+msgstr ""
+
+#. t('Context changes in %s'),
+#: rss.php
+msgid "Context changes in %s"
+msgstr ""
+
+#. t('Get the latest context information changes in %s'),
+#: rss.php
+msgid "Get the latest context information changes in %s"
+msgstr ""
+
+#. sprintf('<p>' . t('Context') . ': <a href="%s">%s</a></p>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context)) .
+#: rss.php
+msgid "Context"
+msgstr ""
+
+#. sprintf(t('The text has %s suggestions'), NarroSuggestion::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestion()->TextId, $objNarroContextInfo->Context->TextId), QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::GetLanguageId())))):
+#: rss.php
+msgid "The text has %s suggestions"
+msgstr ""
+
+#. t('The text has no suggestions')) .
+#: rss.php
+msgid "The text has no suggestions"
+msgstr ""
+
+#. sprintf('<p>' . t('Approved by') . ': <a href="%s">%s</a>', $strUserLink, ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:''):
+#: rss.php
+msgid "Approved by"
+msgstr ""
+
+#. <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Comments on texts from %s'), $objProject->ProjectName) ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+#: rss.php configuration/header.inc.php
+msgid "Comments on texts from %s"
+msgstr ""
+
+#. sprintf(t('Get the latest debates on texts from the project %s'), $objProject->ProjectName)
+#: rss.php
+msgid "Get the latest debates on texts from the project %s"
+msgstr ""
+
+#. t('Comments on texts'),
+#: rss.php
+msgid "Comments on texts"
+msgstr ""
+
+#. t('Get the latest debates on texts')
+#: rss.php
+msgid "Get the latest debates on texts"
+msgstr ""
+
+#. <span style="font-size:80%%;color:gray;">' . t('%s wrote on %s:') . '</span>
+#: rss.php
+msgid "%s wrote on %s:"
+msgstr ""
+
+#. ' . t('This is a debate on the text "%s", used in the following projects:') . '
+#: rss.php
+msgid "This is a debate on the text \"%s\", used in the following projects:"
+msgstr ""
+
+#. $arrProjectLinks[] = sprintf(t('<a href="%s">%s</a>'), $strProjectLink, $strProjectName);
+#: rss.php
+msgid "<a href=\"%s\">%s</a>"
+msgstr ""
+
+#. QApplication::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
+#: configuration/prepend.inc.php
+msgid "How many items are displayed per page"
+msgstr ""
+
+#. QApplication::RegisterPreference('Font size', 'option', t('The application font size'), 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
+#: configuration/prepend.inc.php
+msgid "The application font size"
+msgstr ""
+
+#. QApplication::RegisterPreference('Language', 'option', t('The language you are translating to'), QApplication::QueryString('l'), array(QApplication::QueryString('l')));
+#: configuration/prepend.inc.php
+msgid "The language you are translating to"
+msgstr ""
+
+#. QApplication::RegisterPreference('Application language', 'option', t('The language you want to see Narro in'), (isset(QApplication::$TargetLanguage))?QApplication::$TargetLanguage->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE, array((isset(QApplication::$TargetLanguage))?QApplication::$TargetLanguage->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE));
+#: configuration/prepend.inc.php
+msgid "The language you want to see Narro in"
+msgstr ""
+
+#. QApplication::RegisterPreference('Special characters', 'text', t('Characters that are not on your keyboard, separated by spaces'), '$€');
+#: configuration/prepend.inc.php
+msgid "Characters that are not on your keyboard, separated by spaces"
+msgstr ""
+
+#. QApplication::RegisterPreference('Other languages', 'text', t('Other languages that you want to check for suggestions, separated by spaces'), 'ro');
+#: configuration/prepend.inc.php
+msgid "Other languages that you want to check for suggestions, separated by spaces"
+msgstr ""
+
+#. QApplication::RegisterPreference('Force ascii letters as access keys', 'option', t('Access keys are the letters that are underlined in menus and on buttons that you can use to quickly get to that button or menu item'), 'No', array('Yes', 'No'));
+#: configuration/prepend.inc.php
+msgid "Access keys are the letters that are underlined in menus and on buttons that you can use to quickly get to that button or menu item"
+msgstr ""
+
+#. QApplication::RegisterPreference('Use AJAX', 'option', t('AJAX (transfers in background) will make Narro very fast. If you have problems because of this, choose No'), 'Yes', array('Yes', 'No'));
+#: configuration/prepend.inc.php
+msgid "AJAX (transfers in background) will make Narro very fast. If you have problems because of this, choose No"
+msgstr ""
+
+#. QApplication::RegisterPreference('Launch imports and exports in background', 'option', t('Launch imports and exports in background'), 'Yes', array('Yes', 'No'));
+#: configuration/prepend.inc.php
+msgid "Launch imports and exports in background"
+msgstr ""
+
+#. <p align="center" style="font-size:small"><a target="_blank" href="http://code.google.com/p/narro/wiki/About"><?php echo sprintf(t('%s, version %s'), 'Narro', NARRO_VERSION) ?></a></p>
+#: configuration/footer.inc.php
+msgid "%s, version %s"
+msgstr ""
+
+#. <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context changes for %s'), $objProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+#: configuration/header.inc.php
+msgid "Context changes for %s"
+msgstr ""
+
+#. <link rel="alternate" type="application/rss+xml" title="<?php echo t('Context changes for all projects') ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>" />
+#: configuration/header.inc.php
+msgid "Context changes for all projects"
+msgstr ""
+
+#. <link rel="alternate" type="application/rss+xml" title="<?php echo t('Texts to translate for all projects') ?>" href="rss.php?t=text&l=<?php echo QApplication::GetLanguageId() ?>" />
+#: configuration/header.inc.php
+msgid "Texts to translate for all projects"
+msgstr ""
+
+#. <link rel="alternate" type="application/rss+xml" title="<?php echo t('Comments on texts from all projects') ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::GetLanguageId() ?>" />
+#: configuration/header.inc.php
+msgid "Comments on texts from all projects"
+msgstr ""
+
+#. t('Add project')
+#: project_edit.php
+msgid "Add project"
+msgstr ""
+
+#. $strPageTitle = (QApplication::QueryString('rid'))?t('Edit role'):t('Add role');
+#: role.tpl.php
+msgid "Edit role"
+msgstr ""
+
+#. $strPageTitle = (QApplication::QueryString('rid'))?t('Edit role'):t('Add role');
+#: role.tpl.php
+msgid "Add role"
+msgstr ""
+
+#. $strPageTitle = sprintf(t('Preferences for %s'), $this->objUser->Username);
+#: preferences.tpl.php
+msgid "Preferences for %s"
+msgstr ""
+
+#. $strPageTitle = sprintf(t('%s :: File list'), $this->objProject->ProjectName);
+#: files.tpl.php
+msgid "%s :: File list"
+msgstr ""
+
+#. $strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objProject->ProjectName, $this->objParentFile->FileName);
+#: files.tpl.php
+msgid "%s :: %s :: File list"
+msgstr ""
+
+#. $this->btnSubmit->Text = QApplication::Translate('Verify');
+#: assets/plugins/QEmailTextBox/example/emailtextbox.php
+msgid "Verify"
+msgstr ""
+
+#. $this->txtServerSide->Name = QApplication::Translate('Keyword');
+#: assets/plugins/QAutoCompleteTextBox/example/autocomplete.php
+msgid "Keyword"
+msgstr ""
+
