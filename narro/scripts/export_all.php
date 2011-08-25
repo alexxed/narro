@@ -53,6 +53,7 @@
                 ob_flush();
             }
             QApplication::$TargetLanguage = $objLanguage;
+            QApplication::$LogFile = __TMP_PATH__ . '/' . $objProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-export-process.log';
             $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($objProject->ProjectId, $objLanguage->LanguageId);
 
             if (!$objProjectProgress || $objProjectProgress->Active) {

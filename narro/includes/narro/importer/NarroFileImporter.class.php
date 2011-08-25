@@ -136,7 +136,8 @@
                 ),
                 array(
                     QQ::Expand(QQN::NarroSuggestion()->User),
-                    QQ::Expand(QQN::NarroSuggestion()->Text)
+                    QQ::Expand(QQN::NarroSuggestion()->Text),
+                    QQ::LimitInfo(500, 0)
                 )
             );
         }
