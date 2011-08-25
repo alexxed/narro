@@ -196,8 +196,8 @@
             $objWaitIcon = $this->dtgProjectList->GetChildControl('wait' . $objProject->ProjectId);
 
             $objProgressBar->Total = $objProjectProgress->TotalTextCount;
-            $objProgressBar->Translated = $objProjectProgress->FuzzyTextCount;
-            $objProgressBar->Fuzzy = $objProjectProgress->ApprovedTextCount;
+            $objProgressBar->Translated = $objProjectProgress->ApprovedTextCount;
+            $objProgressBar->Fuzzy = $objProjectProgress->FuzzyTextCount;
 
             $strOutput .= $objProgressBar->Render(false);
             $strOutput .= $objWaitIcon->Render(false);
