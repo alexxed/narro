@@ -53,6 +53,11 @@
                 ob_flush();
             }
             QApplication::$TargetLanguage = $objLanguage;
+
+            QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $objProject->ProjectId, $objLanguage->LanguageCode);
+            QApplication::$Logger = new Zend_Log();
+            QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile));
+
             $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($objProject->ProjectId, $objLanguage->LanguageId);
 
             if (!$objProjectProgress || $objProjectProgress->Active) {
