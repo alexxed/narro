@@ -352,13 +352,7 @@
 
                 $intTime = time();
                 if (file_exists($strTranslatedFileToImport)) {
-                    if ($blnSourceFileChanged || $this->blnImportUnchangedFiles || $this->blnOnlySuggestions) {
-                        $this->ImportFile($objFile, $strFileToImport, $strTranslatedFileToImport);
-                    }
-                    else {
-                        QApplication::LogInfo(sprintf('Skipping "%s" because the source is unchanged from the last import', $strTranslatedFileToImport));
-                        NarroImportStatistics::$arrStatistics['Unchanged template files']++;
-                    }
+                    $this->ImportFile($objFile, $strFileToImport, $strTranslatedFileToImport);
                 }
                 else {
                     // it's ok, equal strings won't be imported
