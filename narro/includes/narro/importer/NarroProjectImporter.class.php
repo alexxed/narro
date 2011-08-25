@@ -924,10 +924,15 @@
         }
 
         private function CreateNarroTemplate($intProjectId) {
-
             $strPoFile = __IMPORT_PATH__ . '/' . $intProjectId . '/' . $this->objSourceLanguage->LanguageCode . '/narro.po';
+            QApplication::LogInfo(sprintf('Building a narro gettext template in %s.', $strPoFile));
+
             $arrPermissions = NarroPermission::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroPermission()->PermissionName)));
+            QApplication::LogInfo(sprintf('Found %d permission names to localize.', count($arrPermissions)));
+
             $arrRoles = NarroRole::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroRole()->RoleName)));
+            QApplication::LogInfo(sprintf('Found %d role names to localize.', count($arrRoles)));
+
             $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'));
 
             QApplication::LogInfo(sprintf('Found %d php files to search for localizable messages.', count($allFiles)));

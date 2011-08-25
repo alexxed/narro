@@ -118,15 +118,8 @@
                 $objNarroImporter->Project = $objProject;
                 $objNarroImporter->User = $objUser;
 
-                if (array_search('--template-directory', $argv) !== false)
-                    $objNarroImporter->TemplatePath = $argv[array_search('--template-directory', $argv)+1];
-                else
-                    $objNarroImporter->TemplatePath = $objNarroImporter->Project->DefaultTemplatePath;
-
-                if (array_search('--translation-directory', $argv) !== false)
-                    $objNarroImporter->TranslationPath = $argv[array_search('--translation-directory', $argv)+1];
-                else
-                    $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
+                $objNarroImporter->TemplatePath = $objNarroImporter->Project->DefaultTemplatePath;
+                $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
 
                 try {
                     $intPid = NarroUtils::IsProcessRunning('import', $objNarroImporter->Project->ProjectId);
