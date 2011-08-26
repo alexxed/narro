@@ -123,7 +123,8 @@
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
                 ),
                 array(
-                    QQ::Expand(QQN::NarroContextInfo()->Context->Text)
+                    QQ::Expand(QQN::NarroContextInfo()->Context->Text),
+                    QQ::LimitInfo(500)
                 )
             );
         }
