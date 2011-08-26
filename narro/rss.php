@@ -85,13 +85,16 @@
                                 __VIRTUAL_DIRECTORY__ .
                                 __SUBDIRECTORY__ .
                                 '/' .
-                                NarroLink::ContextSuggest(
+                                NarroLink::Translate(
                                     $objNarroContextInfo->Context->ProjectId,
-                                    0,
-                                    $objNarroContextInfo->ContextId,
-                                    1,
-                                    2,
-                                    $objNarroSuggestion->SuggestionValue
+                                    null,
+                                    NarroTranslatePanel::SHOW_ALL,
+                                    $objNarroSuggestion->SuggestionValue,
+                                    null,
+                                    null,
+                                    null,
+                                    null,
+                                    $objNarroContextInfo->ContextInfoId
                                 )
                         ;
 
@@ -116,8 +119,7 @@
                                 '/' .
                                 NarroLink::ProjectTextList(
                                     $objNarroContextInfo->Context->ProjectId,
-                                    1,
-                                    2,
+                                    NarroTranslatePanel::SHOW_ALL,
                                     $objNarroSuggestion->SuggestionValue
                                 )
                         ;
@@ -203,10 +205,16 @@
                             __VIRTUAL_DIRECTORY__ .
                             __SUBDIRECTORY__ .
                             '/' .
-                            NarroLink::ContextSuggest(
+                            NarroLink::Translate(
                                 $objNarroContextInfo->Context->ProjectId,
-                                0,
-                                $objNarroContextInfo->ContextId
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                $objNarroContextInfo->ContextInfoId
                             )
                     );
 
@@ -249,8 +257,7 @@
                                 '/' .
                                 NarroLink::ProjectTextList(
                                     $objNarroContextInfo->Context->ProjectId,
-                                    2,
-                                    1,
+                                    NarroTranslatePanel::SHOW_ALL,
                                     ''
                                 )
                         );
@@ -329,10 +336,16 @@
                             __VIRTUAL_DIRECTORY__ .
                             __SUBDIRECTORY__ .
                             '/' .
-                            NarroLink::ContextSuggest(
+                            NarroLink::Translate(
                                 $objNarroContextInfo->Context->ProjectId,
-                                0,
-                                $objNarroContextInfo->ContextId
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                $objNarroContextInfo->ContextInfoId
                             )
                     );
 
@@ -343,8 +356,7 @@
                             '/' .
                             NarroLink::ProjectTextList(
                                 $objNarroContextInfo->Context->ProjectId,
-                                1,
-                                1,
+                                NarroTranslatePanel::SHOW_ALL,
                                 ''
                             )
                     );
@@ -498,7 +510,7 @@
                                             __VIRTUAL_DIRECTORY__ .
                                             __SUBDIRECTORY__ .
                                             '/' .
-                                            NarroLink::ContextSuggest($objContext->ProjectId, $objContext->FileId, $objContext->ContextId, 1, 1, $objTextComment->Text->TextValue) .
+                                            //NarroLink::ContextSuggest($objContext->ProjectId, $objContext->FileId, $objContext->ContextId, 1, 1, $objTextComment->Text->TextValue) .
                                             '#textcomments';
                             }
 
@@ -521,8 +533,7 @@
                                             '/' .
                                             NarroLink::ProjectTextList(
                                                 $intProjectId,
-                                                1,
-                                                1,
+                                                NarroTranslatePanel::SHOW_ALL,
                                                 $objTextComment->Text->TextValue
                                             )
                                     ;

@@ -79,7 +79,7 @@
             $this->pnlBreadcrumb->strSeparator = ' | ';
 
             $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectTextList($this->objProject->ProjectId, 1, 1, '', $this->objProject->ProjectName),
+                NarroLink::ProjectTextList($this->objProject->ProjectId, NarroTranslatePanel::SHOW_ALL, '', $this->objProject->ProjectName),
                 NarroLink::ProjectFileList($this->objProject->ProjectId, null, null, t('Files'))
             );
 

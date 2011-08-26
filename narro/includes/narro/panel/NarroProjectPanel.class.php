@@ -185,7 +185,7 @@
         }
 
         public function colWorldsTranslated_Render(NarroUser $objUser) {
-            return NarroLink::ProjectTextList($this->objProject->ProjectId, NarroTextListForm::SHOW_ALL_TEXTS, NarroTextListForm::SEARCH_AUTHORS, '\'' . $objUser->Username . '\'', $objUser->GetVirtualAttribute("TotalWordsTranslated"));
+            return NarroLink::ProjectTextList($this->objProject->ProjectId, NarroTranslatePanel::SHOW_ALL, '\'' . $objUser->Username . '\'', $objUser->GetVirtualAttribute("TotalWordsTranslated"));
         }
 
         public function btnShowTranslators_Click() {

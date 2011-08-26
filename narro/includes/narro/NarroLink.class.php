@@ -105,7 +105,17 @@
          *
          * @return string if you provide the last parameter, a full <a> string is return, if not, just the href value
          */
-        public static function Translate($intProjectId = null, $strFilePath = null, $intFilter = NarroTranslatePanel::SHOW_NOT_TRANSLATED, $strSearch = '', $strSortBy = null, $intSortDir = 1, $intMaxRowCount = 10, $intStart = 0, $intContextInfoId = '', $strLinkText = '') {
+        public static function Translate(
+            $intProjectId = null,
+            $strFilePath = null,
+            $intFilter = NarroTranslatePanel::SHOW_NOT_TRANSLATED,
+            $strSearch = '',
+            $strSortBy = null,
+            $intSortDir = 1,
+            $intMaxRowCount = 10,
+            $intStart = 0,
+            $intContextInfoId = '',
+            $strLinkText = '') {
             $strLink = sprintf(
                 'translate.php?l=%s&p=%s&f=%s&t=%s&s=%s&o=%s&h=%s&m=%d&i=%d#i%s',
                 QApplication::$TargetLanguage->LanguageCode,
@@ -118,6 +128,36 @@
                 $intMaxRowCount,
                 $intStart,
                 $intContextInfoId
+            );
+            if ($strLinkText != '')
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
+
+        /**
+         * Creates a link to the translation page
+         *
+         * @param integer $intProjectId
+         * @param integer $intFilter
+         * @param string $strSearch
+         * @param string $strLinkText
+         *
+         * @return string if you provide the last parameter, a full <a> string is return, if not, just the href value
+         */
+        public static function ProjectTextList($intProjectId = null, $intFilter = NarroTranslatePanel::SHOW_NOT_TRANSLATED, $strSearch = '', $strLinkText = '') {
+            $strLink = sprintf(
+                'translate.php?l=%s&p=%s&f=%s&t=%s&s=%s&o=%s&h=%s&m=%d&i=%d#i%s',
+                QApplication::$TargetLanguage->LanguageCode,
+                $intProjectId,
+                null,
+                $intFilter,
+                $strSearch,
+                null,
+                null,
+                null,
+                null,
+                null
             );
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);

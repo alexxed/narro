@@ -100,7 +100,7 @@
             $arrProjects = NarroProject::InstantiateDbResult($objDatabase->Query($strQuery));
             $arrProjectLinks = array();
             foreach($arrProjects as $objProject) {
-                $arrProjectLinks[] = NarroLink::ProjectTextList($objProject->ProjectId, 1, 1, "'" . $objNarroSuggestion->Text->TextValue . "'", $objProject->ProjectName);
+                $arrProjectLinks[] = NarroLink::ProjectTextList($objProject->ProjectId, NarroTranslatePanel::SHOW_ALL, "'" . $objNarroSuggestion->Text->TextValue . "'", $objProject->ProjectName);
             }
 
             return join(', ', $arrProjectLinks);
