@@ -74,8 +74,12 @@
                 __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip'
             );
             if (file_exists(__IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip')) {
-                // @todo replace this with a download method that can serve files from a non web public directory
-                $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . str_replace(__DOCROOT__ . __SUBDIRECTORY__, '', __IMPORT_PATH__) . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip';
+                $strDownloadUrl = sprintf(
+                    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/includes/narro/plugins/' . __CLASS__ . '.class.php?p=%d&file=%s-%s.zip',
+                    $objProject->ProjectId,
+                    $objProject->ProjectName,
+                    QApplication::$TargetLanguage->LanguageCode
+                );
                 $strExportText = sprintf(sprintf(t('Download link: %s'), '<a href="%s">%s</a>'), $strDownloadUrl, $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip');
             }
             else {
@@ -84,6 +88,24 @@
 
 
             return array($objProject, $strExportText);
+        }
+    }
+
+    if (QApplication::QueryString('p') && QApplication::QueryString('file')) {
+        $strFullPath = __IMPORT_PATH__ . '/' . QApplication::QueryString('p') . '/' . QApplication::QueryString('file');
+        // File Exists?
+        if( file_exists($strFullPath)) {
+            header("Pragma: public"); // required
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            header("Cache-Control: private",false); // required for certain browsers
+            header("Content-Type: application/zip");
+            header("Content-Disposition: attachment; filename=\"" . QApplication::QueryString('file') . "\";" );
+            header("Content-Transfer-Encoding: binary");
+            header("Content-Length: " . filesize($strFullPath));
+            ob_clean();
+            flush();
+            readfile( $fullPath );
         }
     }
 ?>

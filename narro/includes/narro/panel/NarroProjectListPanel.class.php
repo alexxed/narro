@@ -248,7 +248,7 @@
                     '</span>';
 
             return
-                NarroLink::Project($objProject->ProjectId, $strProjectName) .
+                NarroLink::Translate($objProject->ProjectId, null, null, null, null, null, null, null, null, $strProjectName) .
                 '<div style="display:block">' .
                 $objProject->ProjectDescription .
                 '</div>';

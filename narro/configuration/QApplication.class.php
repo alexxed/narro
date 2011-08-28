@@ -314,7 +314,8 @@
             else
                 QApplication::$LogFile = sprintf('%s/app.log', __TMP_PATH__, $intProjectId);
 
-            @chmod(QApplication::$LogFile, 0666);
+            touch(QApplication::$LogFile);
+            chmod(QApplication::$LogFile, 0666);
 
             QApplication::$Logger = new Zend_Log();
             QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile));
