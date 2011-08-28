@@ -274,7 +274,7 @@
                     );
                 else {
                     $strLikeSearch = '%' . $this->txtSearch->Text . '%';
-                    switch($this->lstSearchIn) {
+                    switch($this->lstSearchIn->SelectedValue) {
                         case self::SEARCH_IN_TEXTS:
                             $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch);
                             break;
