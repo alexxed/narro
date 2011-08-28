@@ -288,7 +288,7 @@
                 // @todo add handling here
                 throw new Exception('Could not create an instance of NarroUser');
 
-            define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$User->getPreferenceValueByName('Application language') . '/LC_MESSAGES');
+            define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$User->getPreferenceValueByName('Application language'));
         }
 
         public static function InitializeLogging($intProjectId = null) {
@@ -334,7 +334,7 @@
                 require_once('Zend/Translate/Adapter/Gettext.php');
                 try {
                     QApplication::$TranslationEngine = new Zend_Translate(
-                        'gettext', __IMPORT_PATH__ . '/1/' . QApplication::$TargetLanguage->LanguageCode . '/narro.mo',
+                        'gettext', __LOCALE_DIRECTORY__ . '/narro.mo',
                         QApplication::$User->getPreferenceValueByName('Application language'),
                         array(
                             'disableNotices'=>true
@@ -342,6 +342,7 @@
                     );
                 }
                 catch (Exception $objEx) {
+                    QFirebug::error($objEx);
                     // gettext installed on the system does not support the language
                 }
             }

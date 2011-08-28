@@ -136,8 +136,18 @@
             /**
              * Make an exception for the naro project. The template path will be changed to the locale directory.
              */
-            if ($this->objProject->ProjectName == 'Narro' && SERVER_INSTANCE == 'dev') {
-                $this->CreateNarroTemplate($this->objProject->ProjectId);
+            if ($this->objProject->ProjectName == 'Narro') {
+                $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US';
+                if (!file_exists($this->strTemplatePath))
+                    mkdir($this->strTemplatePath, 0777);
+
+                $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode;
+                if (!file_exists($this->strTranslationPath))
+                    mkdir($this->strTranslationPath, 0777);
+
+                if (SERVER_INSTANCE == 'dev')
+                    $this->CreateNarroTemplate($this->objProject->ProjectId);
+
             }
 
             if (!file_exists($this->strTemplatePath))
@@ -451,6 +461,12 @@
         }
 
         public function ExportProject() {
+            if ($this->objProject->ProjectName == 'Narro') {
+                $this->strTemplatePath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/en-US';
+                $this->strTranslationPath = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode;
+                if (!file_exists($this->strTranslationPath))
+                    mkdir($this->strTranslationPath, 0777);
+            }
 
             QApplication::LogInfo(sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
 
@@ -495,6 +511,7 @@
             }
 
             if ($this->objProject->ProjectName == 'Narro') {
+
                 $fp = popen(
                     sprintf(
                         'msgfmt -cv %s -o %s 2>&1',
@@ -514,6 +531,9 @@
                 else
                     QApplication::LogInfo("Exported Narro's translation succesfully. Press Ctrl+F5 to reload and see it.");
             }
+
+            if (file_exists($this->strTranslationPath . '/narro.mo'))
+                chmod($this->strTranslationPath . '/narro.mo', 0666);
 
             $this->MarkUnusedFilesAsInactive();
 
@@ -916,7 +936,7 @@
         }
 
         private function CreateNarroTemplate($intProjectId) {
-            $strPoFile = __IMPORT_PATH__ . '/' . $intProjectId . '/' . $this->objSourceLanguage->LanguageCode . '/narro.po';
+            $strPoFile = __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objSourceLanguage->LanguageCode . '/narro.po';
             QApplication::LogInfo(sprintf('Building a narro gettext template in %s.', $strPoFile));
 
             $arrPermissions = NarroPermission::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroPermission()->PermissionName)));
@@ -925,7 +945,7 @@
             $arrRoles = NarroRole::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroRole()->RoleName)));
             QApplication::LogInfo(sprintf('Found %d role names to localize.', count($arrRoles)));
 
-            $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'));
+            $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'), null, '/.*\/data\/.*|.*\/qcubed\/.*|.*\/qcubed_generated\/.*|.*\/Zend\/.*/');
 
             QApplication::LogInfo(sprintf('Found %d php files to search for localizable messages.', count($allFiles)));
             foreach($allFiles as $strFileName) {
@@ -1226,7 +1246,7 @@
             '"X-Generator: Narro\n"' . "\n";
             $hndFile = fopen($strPoFile, 'w');
             if (!$hndFile) {
-                QApplication::LogError('Error while opening the po file "%s" for writing.', $strPoFile);
+                QApplication::LogError(sprintf('Error while opening the po file "%s" for writing.', $strPoFile));
             }
             fputs($hndFile, $strPoHeader);
 
