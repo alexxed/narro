@@ -36,12 +36,12 @@
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Roles'), NarroLink::RoleList());
 
-                $this->pnlMainTab->SelectedTab = 1;
+                $this->pnlMainTab->SelectedTab = t('Translate');
             }
             else {
                 $this->pnlTranslate = new NarroTranslatePanel($this->pnlMainTab);
                 $this->pnlMainTab->replaceTab($this->pnlTranslate, t('Translate'));
-                $this->pnlMainTab->SelectedTab = 3;
+                $this->pnlMainTab->SelectedTab = t('Translate');
             }
         }
     }
