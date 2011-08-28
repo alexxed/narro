@@ -513,8 +513,6 @@
                     QApplication::LogError("Exporting Narro's translation failed:\n" . $strOutput);
                 else
                     QApplication::LogInfo("Exported Narro's translation succesfully. Press Ctrl+F5 to reload and see it.");
-
-                chmod(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . $this->objTargetLanguage->LanguageCode . '/LC_MESSAGES/narro.mo', 0666);
             }
 
             $this->MarkUnusedFilesAsInactive();

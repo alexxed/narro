@@ -30,6 +30,7 @@
         public $txtFile;
         public $lstFilter;
         public $txtSearch;
+        public $lstSearchIn;
         public $lstSort;
         public $lstSortDir;
         public $btnSearch;
@@ -50,6 +51,12 @@
         const SORT_TRANSLATION = 2;
         const SORT_TEXT_LENGTH = 3;
 
+        const SEARCH_IN_TEXTS = 1;
+        const SEARCH_IN_TRANSLATIONS = 2;
+        const SEARCH_IN_CONTEXTS = 3;
+        const SEARCH_IN_AUTHORS = 4;
+        const SEARCH_IN_ALL = 5;
+
         public function __construct($objParentObject, $strControlId = null) {
             parent::__construct($objParentObject, $strControlId);
 
@@ -58,11 +65,7 @@
             $this->chkLast = new QCheckBox($this, 'endReached');
             $this->chkLast->DisplayStyle = QDisplayStyle::None;
 
-            $this->dtrText = new QDataRepeater($this);
-
-            $this->dtrText->Template = dirname(__FILE__) . '/NarroTranslatePanel_DataRepeater.tpl.php';
-
-            $this->dtrText->SetDataBinder('dtrText_Bind', $this);
+            $this->dtrText_Create();
 
             $this->objWaitIcon = new QWaitIcon($this);
             $this->objWaitIcon->Text = sprintf('<div align="center"><img align="center" src="%s/loading45.gif" width="100" height="100" alt="Loading..."/></div>', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images');
@@ -72,56 +75,19 @@
             $this->btnMore->Text = t('More');
             $this->btnMore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMore_Click', $this->objWaitIcon));
 
-            $this->lstProject = new QListBox($this);
-            $this->lstProject->AddItem(t('All'));
-            foreach(NarroProject::LoadArrayByActive(1, array(QQ::OrderBy(QQN::NarroProject()->ProjectName))) as $objProject)
-                $this->lstProject->AddItem($objProject->ProjectName, $objProject->ProjectId);
-            $this->lstProject->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
-
-            if (QApplication::QueryString('p') > 0)
-                $this->lstProject->SelectedValue = QApplication::QueryString('p');
+            $this->lstProject_Create();
 
             $this->txtFile = new QTextBox($this);
+            $this->txtFile->Name = t('File');
             if (QApplication::QueryString('f'))
                 $this->txtFile->Text = QApplication::QueryString('f');
 
-            $this->lstFilter = new QListBox($this);
-            $this->lstFilter->AddItem(t('All'), self::SHOW_ALL);
-            $this->lstFilter->AddItem(t('Not translated yet'), self::SHOW_NOT_TRANSLATED, true);
-            $this->lstFilter->AddItem(t('Translated, but not approved'), self::SHOW_NOT_APPROVED);
-            $this->lstFilter->AddItem(t('Translated or approved'), self::SHOW_APPROVED_AND_NOT_APPROVED);
-            $this->lstFilter->AddItem(t('Approved'), self::SHOW_APPROVED);
-            $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
-
-            if (QApplication::QueryString('t'))
-                $this->lstFilter->SelectedValue = QApplication::QueryString('t');
-
-            $this->txtSearch = new QTextBox($this);
-            if (QApplication::QueryString('s'))
-                $this->txtSearch->Text = QApplication::QueryString('s');
-
-            $this->lstSort = new QListBox($this);
-            $this->lstSort->AddItem(t('-- unsorted --'));
-            $this->lstSort->AddItem(t('Original text'), self::SORT_TEXT);
-            $this->lstSort->AddItem(t('Translation'), self::SORT_TRANSLATION);
-            $this->lstSort->AddItem(t('Words in the original text'), self::SORT_TEXT_LENGTH);
-            $this->lstSort->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
-
-            if (QApplication::QueryString('o'))
-                $this->lstSort->SelectedValue = QApplication::QueryString('o');
-
-            $this->lstSortDir = new QListBox($this);
-            $this->lstSortDir->AddItem(t('Ascending'), 1, true);
-            $this->lstSortDir->AddItem(t('Descending'), 0);
-            $this->lstSortDir->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
-
-            if (QApplication::QueryString('h'))
-                $this->lstSortDir->SelectedValue = QApplication::QueryString('h');
-
-            $this->btnSearch = new QButton($this);
-            $this->btnSearch->PrimaryButton = true;
-            $this->btnSearch->Text = t('Search');
-            $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            $this->lstFilter_Create();
+            $this->txtSearch_Create();
+            $this->lstSearchIn_Create();
+            $this->lstSort_Create();
+            $this->lstSortDir_Create();
+            $this->btnSearch_Create();
 
             if (QApplication::QueryString('a'))
                 $this->intMaxRowCount = QApplication::QueryString('a');
@@ -134,6 +100,83 @@
             $this->dtrText_Conditions(false);
             $this->intTotalItemCount = NarroContextInfo::QueryCount(QQ::AndCondition($this->arrConditions));
             $this->dtrText_Bind(null, null, null, false);
+        }
+
+        public function txtSearch_Create() {
+            $this->txtSearch = new QTextBox($this);
+            $this->txtSearch->Name = t('Search in');
+            if (QApplication::QueryString('s'))
+                $this->txtSearch->Text = QApplication::QueryString('s');
+        }
+
+        public function lstProject_Create() {
+            $this->lstProject = new QListBox($this);
+            $this->lstProject->AddItem(t('All'));
+            $this->lstProject->Name = t('Project');
+            foreach(NarroProject::LoadArrayByActive(1, array(QQ::OrderBy(QQN::NarroProject()->ProjectName))) as $objProject)
+                $this->lstProject->AddItem($objProject->ProjectName, $objProject->ProjectId);
+            $this->lstProject->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            if (QApplication::QueryString('p') > 0)
+                $this->lstProject->SelectedValue = QApplication::QueryString('p');
+        }
+
+        public function btnSearch_Create() {
+            $this->btnSearch = new QButton($this);
+            $this->btnSearch->PrimaryButton = true;
+            $this->btnSearch->Text = t('Search');
+            $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+        }
+
+        public function dtrText_Create() {
+            $this->dtrText = new QDataRepeater($this);
+            $this->dtrText->Template = dirname(__FILE__) . '/NarroTranslatePanel_DataRepeater.tpl.php';
+            $this->dtrText->SetDataBinder('dtrText_Bind', $this);
+        }
+
+        public function lstSortDir_Create() {
+            $this->lstSortDir = new QListBox($this);
+            $this->lstSortDir->AddItem(t('Ascending'), 1, true);
+            $this->lstSortDir->AddItem(t('Descending'), 0);
+            $this->lstSortDir->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            if (QApplication::QueryString('h'))
+                $this->lstSortDir->SelectedValue = QApplication::QueryString('h');
+        }
+
+        public function lstFilter_Create() {
+            $this->lstFilter = new QListBox($this);
+            $this->lstFilter->Name = t('Filter');
+            $this->lstFilter->AddItem(t('All'), self::SHOW_ALL);
+            $this->lstFilter->AddItem(t('Not translated yet'), self::SHOW_NOT_TRANSLATED, true);
+            $this->lstFilter->AddItem(t('Translated, but not approved'), self::SHOW_NOT_APPROVED);
+            $this->lstFilter->AddItem(t('Translated or approved'), self::SHOW_APPROVED_AND_NOT_APPROVED);
+            $this->lstFilter->AddItem(t('Approved'), self::SHOW_APPROVED);
+            $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            if (QApplication::QueryString('t'))
+                $this->lstFilter->SelectedValue = QApplication::QueryString('t');
+        }
+
+        public function lstSort_Create() {
+            $this->lstSort = new QListBox($this);
+            $this->lstSort->Name = t('Sort');
+            $this->lstSort->AddItem(t('-- unsorted --'));
+            $this->lstSort->AddItem(t('Original text'), self::SORT_TEXT);
+            $this->lstSort->AddItem(t('Translation'), self::SORT_TRANSLATION);
+            $this->lstSort->AddItem(t('Words in the original text'), self::SORT_TEXT_LENGTH);
+            $this->lstSort->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            if (QApplication::QueryString('o'))
+                $this->lstSort->SelectedValue = QApplication::QueryString('o');
+        }
+
+        public function lstSearchIn_Create() {
+            $this->lstSearchIn = new QListBox($this);
+            $this->lstSearchIn->AddItem(t('Texts'), self::SEARCH_IN_TEXTS);
+            $this->lstSearchIn->AddItem(t('Translations'), self::SEARCH_IN_TRANSLATIONS);
+            $this->lstSearchIn->AddItem(t('Contexts'), self::SEARCH_IN_CONTEXTS);
+            $this->lstSearchIn->AddItem(t('Authors'), self::SEARCH_IN_AUTHORS);
+            $this->lstSearchIn->AddItem(t('All'), self::SEARCH_IN_ALL);
+            $this->lstSearchIn->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            if (QApplication::QueryString('in'))
+                $this->lstSearchIn->SelectedValue = QApplication::QueryString('in');
         }
 
         public function btnLess_Create() {
@@ -229,13 +272,35 @@
                         QQ::Equal(QQN::NarroContextInfo()->Context->Context, substr($this->txtSearch->Text, 1, -1)),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, substr($this->txtSearch->Text, 1, -1))
                     );
-                else
-                    $this->arrConditions[] = QQ::OrCondition(
-                        QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, '%' . $this->txtSearch->Text . '%'),
-                        QQ::Like(QQN::NarroContextInfo()->Context->Context, '%' . $this->txtSearch->Text . '%'),
-                        QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, '%' . $this->txtSearch->Text . '%')
-                    );
-
+                else {
+                    $strLikeSearch = '%' . $this->txtSearch->Text . '%';
+                    switch($this->lstSearchIn) {
+                        case self::SEARCH_IN_TEXTS:
+                            $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch);
+                            break;
+                        case self::SEARCH_IN_TRANSLATIONS:
+                            $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch);
+                            break;
+                        case self::SEARCH_IN_AUTHORS:
+                            $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username, $strLikeSearch);
+                            break;
+                        case self::SEARCH_IN_CONTEXTS:
+                            $this->arrConditions[] = QQ::OrCondition(
+                                QQ::Like(QQN::NarroContextInfo()->Context->Context, $strLikeSearch),
+                                QQ::Like(QQN::NarroContextInfo()->Context->Comment, $strLikeSearch)
+                            );
+                            break;
+                        case self::SEARCH_IN_ALL:
+                        default:
+                            $this->arrConditions[] = QQ::OrCondition(
+                                QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch),
+                                QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch),
+                                QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username, $strLikeSearch),
+                                QQ::Like(QQN::NarroContextInfo()->Context->Context, $strLikeSearch),
+                                QQ::Like(QQN::NarroContextInfo()->Context->Comment, $strLikeSearch)
+                            );
+                    }
+                }
             }
 
             switch($this->lstSort->SelectedValue) {

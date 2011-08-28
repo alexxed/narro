@@ -143,11 +143,11 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
 <?php _t("To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text.");?>
 </p>
 
-    Project: <?php $_CONTROL->lstProject->Render(); ?>
-    File: <?php  $_CONTROL->txtFile->Render();  ?>
-    Filter: <?php $_CONTROL->lstFilter->Render();  ?>
-    Search: <?php $_CONTROL->txtSearch->Render();?>
-    Sort: <?php $_CONTROL->lstSort->Render(); $_CONTROL->lstSortDir->Render(); $_CONTROL->btnSearch->Render();?><br />
+    <?php echo $_CONTROL->lstProject->Name ?>: <?php $_CONTROL->lstProject->Render(); ?>
+    <?php echo $_CONTROL->txtFile->Name ?>: <?php  $_CONTROL->txtFile->Render();  ?>
+    <?php echo $_CONTROL->lstFilter->Name ?>: <?php $_CONTROL->lstFilter->Render();  ?>
+    <?php echo $_CONTROL->txtSearch->Name ?>: <?php $_CONTROL->lstSearchIn->Render(); $_CONTROL->txtSearch->Render();?>
+    <?php echo $_CONTROL->lstSort->Name ?>: <?php $_CONTROL->lstSort->Render(); $_CONTROL->lstSortDir->Render(); $_CONTROL->btnSearch->Render();?><br />
     <?php $_CONTROL->btnLess->Render();$_CONTROL->dtrText->Render(); $_CONTROL->objWaitIcon->Render(); $_CONTROL->btnMore->Render(); $_CONTROL->chkLast->Render(); ?>
     <?php QApplication::ExecuteJavaScript(sprintf("jQuery(window).scroll(function(){
         if  (jQuery(window).scrollTop() == jQuery(document).height() - jQuery(window).height() && jQuery('#endReached').attr('checked') == false) {
