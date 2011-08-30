@@ -224,6 +224,10 @@
             $this->MarkUnusedFilesAsInactive();
 
             NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'import');
+
+            $this->objProject->CountAllTextsByLanguage();
+            $this->objProject->CountApprovedTextsByLanguage();
+            $this->objProject->CountTranslatedTextsByLanguage();
         }
 
         public function ImportFromDirectory() {
@@ -316,7 +320,13 @@
                     return false;
                 }
 
-                $objFile = NarroFile::LoadByProjectIdFileNameParentId($this->objProject->ProjectId, $strFileName, $intParentId);
+                $objFile = NarroFile::LoadByProjectIdFileNameParentId(
+                    $this->objProject->ProjectId, $strFileName, $intParentId,
+                    QQ::Expand(
+                        QQN::NarroFile()->NarroFileProgressAsFile,
+                        QQ::Equal(QQN::NarroFile()->NarroFileProgressAsFile->LanguageId, $this->objTargetLanguage->LanguageId)
+                    )
+                );
 
                 if ($objFile instanceof NarroFile) {
                     $strMd5File = md5_file($strFileToImport);
@@ -327,6 +337,8 @@
                     } else {
                         $objFile->FileMd5 = $strMd5File;
                         $objFile->Save();
+                        // Set the md5 for all languages to null to force import
+                        NarroFile::GetDatabase()->NonQuery(sprintf('UPDATE narro_file_progress SET file_md5=NULL WHERE file_id=%d', $objFile->FileId));
                         $blnSourceFileChanged = true;
                         NarroImportStatistics::$arrStatistics['Changed files']++;
                     }
@@ -354,9 +366,6 @@
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
                 $this->arrFileId[$objFile->FileId] = 1;
-                $objFile->CountAllTextsByLanguage();
-                $objFile->CountApprovedTextsByLanguage();
-                $objFile->CountTranslatedTextsByLanguage();
 
                 $strTranslatedFileToImport = str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToImport);
 
@@ -383,7 +392,34 @@
             return true;
         }
 
-        public function ImportFile ($objFile, $strTemplateFile, $strTranslatedFile = false) {
+        public function ImportFile (NarroFile $objFile, $strTemplateFile, $strTranslatedFile = false) {
+            $objFileProgress = $objFile->_NarroFileProgressAsFile;
+            if (!$objFileProgress) {
+                $objFileProgress = new NarroFileProgress();
+                $objFileProgress->FileId = $objFile->FileId;
+                $objFileProgress->LanguageId = $this->objTargetLanguage->LanguageId;
+                $objFileProgress->Export = 1;
+                $objFileProgress->ApprovedTextCount = 0;
+                $objFileProgress->FuzzyTextCount = 0;
+                $objFileProgress->TotalTextCount = 0;
+                $objFileProgress->ProgressPercent = 0;
+            }
+
+            if ($this->blnImportUnchangedFiles == false) {
+                if ($objFileProgress && $strTranslatedFile) {
+                    if (
+                        $objFile->FileMd5 == md5_file($strTemplateFile) &&
+                        $objFileProgress->FileMd5 == md5_file($strTranslatedFile)
+                    ) {
+                        QApplication::LogDebug(sprintf('Both source and target file are unchanged, skipping import for %s', $strTemplateFile));
+                        return true;
+                    }
+                }
+            }
+
+            $objFileProgress->FileMd5 = md5_file($strTranslatedFile);
+            $objFileProgress->Save();
+
             if (!$objFile instanceof NarroFile)
                 return false;
 
@@ -456,6 +492,10 @@
             $objFileImporter->MarkUnusedContextsAsInactive();
 
             QApplication::$PluginHandler->AfterImportFile($objFile);
+
+            $objFile->CountAllTextsByLanguage();
+            $objFile->CountApprovedTextsByLanguage();
+            $objFile->CountTranslatedTextsByLanguage();
 
             return $blnFileImportResult;
         }

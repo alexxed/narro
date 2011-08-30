@@ -54,3 +54,9 @@ UPDATE `narro_file_progress` SET export=1;
 
 ALTER TABLE `narro_file_progress` ADD `file_md5` VARCHAR( 32 ) NULL AFTER `language_id` ;
 DROP TABLE IF EXISTS `narro_user_permission`;
+
+ALTER TABLE `narro_file_progress` CHANGE `total_text_count` `total_text_count` INT( 10 ) NOT NULL DEFAULT '0',
+CHANGE `approved_text_count` `approved_text_count` INT( 10 ) NOT NULL DEFAULT '0',
+CHANGE `fuzzy_text_count` `fuzzy_text_count` INT( 10 ) NOT NULL DEFAULT '0',
+CHANGE `progress_percent` `progress_percent` INT( 10 ) NOT NULL DEFAULT '0';
+ALTER TABLE `narro_file_progress` CHANGE `export` `export` TINYINT( 1 ) NOT NULL DEFAULT '1';
