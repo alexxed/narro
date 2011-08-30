@@ -17,7 +17,7 @@
      */
 
     class NarroMozillaIniFileImporter extends NarroMozillaFileImporter {
-        const ENTITY_REGEX = '/(^\s*)([^\s]+)(\s*)(=)(\s*)(.+)$/m';
+        const ENTITY_REGEX = '/(^\s*)([^\s]+)(\s*)(=)(\s*)(.*)$/m';
         const COMMENT_REGEX = '/^#.*$/m';
         /**
          * Preprocesses the whole file, e.g. removing trailing spaces

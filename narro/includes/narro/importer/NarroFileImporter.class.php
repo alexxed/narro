@@ -622,7 +622,7 @@
          * @return string or false
          */
         public function GetExportedSuggestion(NarroContextInfo $objContextInfo) {
-            switch($this->ExportedSuggestion) {
+            switch($this->intExportedSuggestion) {
                 case 1:
                     if ($objContextInfo->ValidSuggestionId)
                         return $objContextInfo->ValidSuggestion->SuggestionValue;

@@ -417,8 +417,10 @@
                 }
             }
 
-            $objFileProgress->FileMd5 = md5_file($strTranslatedFile);
-            $objFileProgress->Save();
+            if ($strTranslatedFile) {
+                $objFileProgress->FileMd5 = md5_file($strTranslatedFile);
+                $objFileProgress->Save();
+            }
 
             if (!$objFile instanceof NarroFile)
                 return false;

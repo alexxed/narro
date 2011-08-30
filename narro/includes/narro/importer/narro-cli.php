@@ -42,7 +42,7 @@
                     "--do-not-deactivate-files    do not deactivate project files before importing\n" .
                     "--do-not-deactivate-contexts do not deactivate project contexts before\n" .
                     "                             importing\n" .
-                    "--check-equal                check if the translation is equal to the original\n" .
+                    "--do-not-check-equal         don't check if the translation is equal to the original\n" .
                     "                             text and don't import it\n" .
                     "--skip-untranslated          skip likes that don't have translated texts\n" .
                     "--approve                    approve the imported suggestions\n" .
@@ -64,7 +64,7 @@
         /**
          * Get boolean options
          */
-        $objNarroImporter->CheckEqual = (bool) array_search('--check-equal', $argv);
+        $objNarroImporter->CheckEqual = !(bool) array_search('--do-not-check-equal', $argv);
         $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
         $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
         $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
