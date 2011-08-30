@@ -47,6 +47,8 @@
             'ExportFile',
             'BeforeImportProject',
             'AfterImportProject',
+            'BeforeExportProject',
+            'AfterExportProject',
             'ExportProject',
             'DisplayExportMessage',
             'DisplayInProjectListInProgressColumn',

@@ -47,12 +47,15 @@
 
             $this->lblExport = new QLabel($this);
             $this->lblExport->HtmlEntities = false;
-            $strArchiveName = $this->objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip';
-            $strExportFile = __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $strArchiveName;
-            if (file_exists($strExportFile)) {
-                $objDateSpan = new QDateTimeSpan(time() - filemtime($strExportFile));
-                $this->lblExport->Text = sprintf(t('Link to last export: <a href="%s">%s</a>, exported %s ago'), str_replace(__DOCROOT__, __HTTP_URL__, $strExportFile) , $strArchiveName, $objDateSpan->SimpleDisplay());
-            }
+
+            QApplication::$PluginHandler->DisplayExportMessage($this->objProject);
+
+            if (is_array(QApplication::$PluginHandler->PluginReturnValues))
+                foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
+                    if (count($mixReturnValue) == 2 && $mixReturnValue[0] instanceof NarroProject && is_string($mixReturnValue[1]) && $mixReturnValue[1] != '') {
+                        $this->lblExport->Text .= sprintf('<br /><span class="info"><b>%s</b>: %s</span>', $strPluginName, nl2br($mixReturnValue[1]));
+                    }
+                }
 
             $this->chkCleanDirectory = new QCheckBox($this);
             $this->chkCleanDirectory->Name = t('Clean export directory before exporting');

@@ -15,6 +15,27 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
+
+    if (isset($_REQUEST['p']) && isset($_REQUEST['file'])) {
+        require_once(dirname(__FILE__) . '/../../../configuration/configuration.narro.inc.php');
+        $strFullPath = __IMPORT_PATH__ . '/' . $_REQUEST['p'] . '/' . $_REQUEST['file'];
+        // File Exists?
+        if( file_exists($strFullPath)) {
+            header("Pragma: public"); // required
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            header("Cache-Control: private",false); // required for certain browsers
+            header("Content-Type: application/zip");
+            header("Content-Disposition: attachment; filename=\"" . $_REQUEST['file'] . "\";" );
+            header("Content-Transfer-Encoding: binary");
+            header("Content-Length: " . filesize($strFullPath));
+            ob_clean();
+            flush();
+            readfile($strFullPath);
+            exit;
+        }
+    }
+
     class NarroExportArchive extends NarroPlugin {
 
         public function __construct() {
@@ -68,19 +89,32 @@
             return array($objProject, $strExportText);
         }
 
-        public function DisplayExportMessage(NarroProject $objProject, $strText = '') {
+        public function AfterExportProject(NarroProject $objProject) {
+            $strArchiveName = __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip';
             $this->CreateExportArchive(
                 $objProject->DefaultTranslationPath,
-                __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip'
+                $strArchiveName
             );
-            if (file_exists(__IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip')) {
+
+            return array($objProject);
+        }
+
+        public function DisplayExportMessage(NarroProject $objProject, $strText = '') {
+            $strArchiveName = __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip';
+            if (file_exists($strArchiveName)) {
                 $strDownloadUrl = sprintf(
                     __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/includes/narro/plugins/' . __CLASS__ . '.class.php?p=%d&file=%s-%s.zip',
                     $objProject->ProjectId,
                     $objProject->ProjectName,
                     QApplication::$TargetLanguage->LanguageCode
                 );
-                $strExportText = sprintf(sprintf(t('Download link: %s'), '<a href="%s">%s</a>'), $strDownloadUrl, $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip');
+                $objDateSpan = new QDateTimeSpan(time() - filemtime($strArchiveName));
+                $strExportText = sprintf(
+                    '<a href="%s">%s</a>, ' . t('exported %s ago'),
+                    $strDownloadUrl ,
+                    basename($strArchiveName),
+                    $objDateSpan->SimpleDisplay()
+                );
             }
             else {
                 $strExportText = t('Failed to create an archive for download');
@@ -88,24 +122,6 @@
 
 
             return array($objProject, $strExportText);
-        }
-    }
-
-    if (QApplication::QueryString('p') && QApplication::QueryString('file')) {
-        $strFullPath = __IMPORT_PATH__ . '/' . QApplication::QueryString('p') . '/' . QApplication::QueryString('file');
-        // File Exists?
-        if( file_exists($strFullPath)) {
-            header("Pragma: public"); // required
-            header("Expires: 0");
-            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-            header("Cache-Control: private",false); // required for certain browsers
-            header("Content-Type: application/zip");
-            header("Content-Disposition: attachment; filename=\"" . QApplication::QueryString('file') . "\";" );
-            header("Content-Transfer-Encoding: binary");
-            header("Content-Length: " . filesize($strFullPath));
-            ob_clean();
-            flush();
-            readfile( $fullPath );
         }
     }
 ?>

@@ -512,6 +512,8 @@
 
             $this->startTimer();
 
+            QApplication::$PluginHandler->BeforeExportProject($this->objProject);
+
             if (file_exists($this->strTemplatePath) && is_dir($this->strTemplatePath))
                 if ($this->ExportFromDirectory()) {
                     $this->stopTimer();
@@ -578,6 +580,8 @@
             $this->MarkUnusedFilesAsInactive();
 
             NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'export');
+
+            QApplication::$PluginHandler->AfterExportProject($this->objProject);
         }
 
 
