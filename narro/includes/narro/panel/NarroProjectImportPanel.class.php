@@ -30,6 +30,7 @@
         public $chkApproveImportedTranslations;
         public $chkApproveOnlyNotApproved;
         public $chkImportOnlyTranslations;
+        public $chkImportUnchangedFiles;
 
         public $btnImport;
 
@@ -83,15 +84,21 @@
             }
             $this->chkApproveOnlyNotApproved->Checked = true;
 
+            $this->chkImportUnchangedFiles = new QCheckBox($this);
+            $this->chkImportUnchangedFiles->Name = t('Import files even if they are unchanged from the last import');
+            $this->chkImportUnchangedFiles->Checked = false;
+
             $this->chkImportOnlyTranslations = new QCheckBox($this);
             $this->chkImportOnlyTranslations->Name = t('Do not add texts, just add found translations for existing texts');
             if (QApplication::HasPermission('Can import project', $this->objProject->ProjectId)) {
                 $this->chkImportOnlyTranslations->Display = true;
+                $this->chkImportUnchangedFiles->Display = true;
                 $this->chkImportOnlyTranslations->Checked = false;
             }
             else {
                 $this->chkImportOnlyTranslations->Checked = true;
                 $this->chkImportOnlyTranslations->Display = false;
+                $this->chkImportUnchangedFiles->Display = false;
             }
 
             $this->objImportProgress = new NarroTranslationProgressBar($this);
@@ -198,6 +205,7 @@
                 $objNarroImporter->ApproveAlreadyApproved = !$this->chkApproveOnlyNotApproved->Checked;
                 $objNarroImporter->OnlySuggestions = $this->chkImportOnlyTranslations->Checked;
                 $objNarroImporter->Project = $this->objProject;
+                $objNarroImporter->ImportUnchangedFiles = $this->chkImportUnchangedFiles->Checked;
                 $objNarroImporter->User = NarroUser::LoadAnonymousUser();
                 $objNarroImporter->TargetLanguage = QApplication::$TargetLanguage;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
@@ -242,6 +250,7 @@
                             escapeshellarg('includes/narro/importer/narro-cli.php').
                             ' --import --minloglevel 3 --project %d --user %d --check-equal ' .
                             (($this->chkApproveImportedTranslations->Checked)?'--approve ':'') .
+                            (($this->chkImportUnchangedFiles->Checked)?'--import-unchanged-files ':'') .
                             (($this->chkApproveOnlyNotApproved->Checked)?'':'--approve-already-approved ') .
                             (($this->chkImportOnlyTranslations->Checked || !QApplication::HasPermission('Can import project', $this->objProject->ProjectId))?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                             ' --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s"',

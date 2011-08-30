@@ -54,6 +54,14 @@
 <br />
 <?php
     }
+
+    $_CONTROL->chkImportUnchangedFiles->Render();
+    if ($_CONTROL->chkImportUnchangedFiles->Display) {
+?>
+<label for="<?php echo $_CONTROL->chkImportUnchangedFiles->ControlId?>"><?php echo $_CONTROL->chkImportUnchangedFiles->Name?></label>
+<br />
+<?php
+    }
 ?>
 </div>
 <?php
