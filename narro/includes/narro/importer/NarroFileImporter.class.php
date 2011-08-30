@@ -198,30 +198,23 @@
             /**
              * First, let the plug-ins process the data
              */
-            if ($strOriginal == '') {
-                QApplication::LogDebug(sprintf('In file "%s", the context "%s" was skipped because the original text "%s" was empty.', $this->objFile->FileName, $strContext, $strOriginal));
-                NarroImportStatistics::$arrStatistics['Skipped contexts']++;
-                NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
-                NarroImportStatistics::$arrStatistics['Skipped texts']++;
-                NarroImportStatistics::$arrStatistics['Empty original texts']++;
-                return false;
-            }
-            else {
-                $arrResult = QApplication::$PluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
-                if
-                (
-                    $arrResult[0] != '' &&
-                    $arrResult[1] == $strTranslation &&
-                    $arrResult[2] == $strContext &&
-                    $arrResult[3] == $this->objFile &&
-                    $arrResult[4] == $this->objProject
-                ) {
+            if ($strOriginal == '')
+                $strOriginal = sprintf('Message from Narro for "%s": the source text was empty for this context. This might be a setting, not something to translate. Leave not translated if unsure.', $strContext);
 
-                    $strOriginal = $arrResult[0];
-                }
-                else
-                    QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the text "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strOriginal, print_r($arrResult, true)));
+            $arrResult = QApplication::$PluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
+            if
+            (
+                $arrResult[0] != '' &&
+                $arrResult[1] == $strTranslation &&
+                $arrResult[2] == $strContext &&
+                $arrResult[3] == $this->objFile &&
+                $arrResult[4] == $this->objProject
+            ) {
+
+                $strOriginal = $arrResult[0];
             }
+            else
+                QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the text "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strOriginal, print_r($arrResult, true)));
 
             if ($strTranslation != '') {
                 $arrResult = QApplication::$PluginHandler->SaveSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
