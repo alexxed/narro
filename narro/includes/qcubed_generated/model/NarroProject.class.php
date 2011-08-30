@@ -71,7 +71,7 @@
             if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
 
             // Cache miss
-            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c WHERE c.project_id = %d AND c.active=1', $this->ProjectId);
+            $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM narro_context c WHERE f.active=1 AND c.project_id = %d AND c.active=1', $this->ProjectId);
 
             // Perform the Query
             $objDbResult = self::GetDatabase()->Query($strQuery);
