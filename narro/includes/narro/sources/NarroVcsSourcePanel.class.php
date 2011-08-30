@@ -61,8 +61,8 @@
 
             $this->CleanWorkingDirectory();
 
-            mkdir($this->strWorkingDirectory);
-            chmod($this->strWorkingDirectory, 0777);
+            if (!$this instanceof NarroMercurialSourcePanel)
+                mkdir($this->strWorkingDirectory);
 
             $strCommand = sprintf($strCheckoutCommand, escapeshellarg($this->txtRepository->Text), escapeshellarg($this->strWorkingDirectory));
             QApplication::LogInfo(sprintf('Running "%s"', $strCommand));
@@ -73,6 +73,8 @@
             }
 
             $mixProcess = proc_open("$strCommand", array(1 => array("file", $strProcLogFile, 'a'), 2 => array("file", $strProcLogFile, 'a')), $foo);
+
+            chmod($this->strWorkingDirectory, 0777);
 
             if ($mixProcess === false) {
                 if (file_exists($strProcLogFile)) {
