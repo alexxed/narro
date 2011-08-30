@@ -96,7 +96,7 @@
             if ($this->TypeId == NarroFileType::Folder)
                 $strQuery = sprintf('SELECT COUNT(DISTINCT c.context_id) AS cnt FROM `narro_context` c, `narro_file` f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.project_id=%d AND c.active=1 AND f.active=1 AND f.file_path LIKE \'%s%%\'', $this->ProjectId, $this->FilePath);
             else
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c WHERE c.project_id=%d AND f.active=1 AND c.active=1 AND c.file_id=%d', $this->ProjectId, $this->FileId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, `narro_file` f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.project_id=%d AND f.active=1 AND c.active=1 AND c.file_id=%d', $this->ProjectId, $this->FileId);
 
             // Perform the Query
             $objDbResult = self::GetDatabase()->Query($strQuery);
@@ -119,7 +119,7 @@
             if ($this->TypeId == NarroFileType::Folder)
                 $strQuery = sprintf('SELECT COUNT(DISTINCT c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND c.active=1 AND f.active=1 AND f.file_path LIKE \'%s%%\'', $this->ProjectId, $intLanguageId, $this->FilePath);
             else
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND f.active=1 AND c.active=1 AND c.file_id=%d', $this->ProjectId, $intLanguageId, $this->FileId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NULL AND ci.has_suggestions=1 AND f.active=1 AND c.active=1 AND c.file_id=%d', $this->ProjectId, $intLanguageId, $this->FileId);
 
             // Perform the Query
             $objDbResult = self::GetDatabase()->Query($strQuery);
@@ -141,7 +141,7 @@
             if ($this->TypeId == NarroFileType::Folder)
                 $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND c.active=1 AND f.active=1 AND f.file_path LIKE \'%s%%\'', $this->ProjectId, $intLanguageId, $this->FilePath);
             else
-                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci WHERE c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND f.active=1 AND c.active=1 AND c.file_id=%d', $this->ProjectId, $intLanguageId, $this->FileId);
+                $strQuery = sprintf('SELECT COUNT(c.context_id) AS cnt FROM `narro_context` c, narro_context_info ci, narro_file f WHERE f.project_id=c.project_id AND f.file_id=c.file_id AND c.context_id=ci.context_id AND c.project_id = %d AND ci.language_id=%d AND ci.valid_suggestion_id IS NOT NULL AND f.active=1 AND c.active=1 AND c.file_id=%d', $this->ProjectId, $intLanguageId, $this->FileId);
 
             // Perform the Query
             $objDbResult = self::GetDatabase()->Query($strQuery);
