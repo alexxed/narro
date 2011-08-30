@@ -22,6 +22,8 @@
 	 * @property-read QLabel $FileIdLabel
 	 * @property QListBox $LanguageIdControl
 	 * @property-read QLabel $LanguageIdLabel
+	 * @property QTextBox $FileMd5Control
+	 * @property-read QLabel $FileMd5Label
 	 * @property QTextBox $HeaderControl
 	 * @property-read QLabel $HeaderLabel
 	 * @property QIntegerTextBox $TotalTextCountControl
@@ -78,6 +80,11 @@
 		 */
 		protected $lstLanguage;
 		/**
+		 * @var QTextBox txtFileMd5
+		 * @access protected
+		 */
+		protected $txtFileMd5;
+		/**
 		 * @var QTextBox txtHeader
 		 * @access protected
 		 */
@@ -119,6 +126,11 @@
 		 * @access protected
 		 */
 		protected $lblLanguageId;
+		/**
+		 * @var QLabel lblFileMd5
+		 * @access protected
+		 */
+		protected $lblFileMd5;
 		/**
 		 * @var QLabel lblHeader
 		 * @access protected
@@ -331,6 +343,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtFileMd5
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtFileMd5_Create($strControlId = null) {
+			$this->txtFileMd5 = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtFileMd5->Name = QApplication::Translate('File Md 5');
+			$this->txtFileMd5->Text = $this->objNarroFileProgress->FileMd5;
+			$this->txtFileMd5->MaxLength = NarroFileProgress::FileMd5MaxLength;
+			return $this->txtFileMd5;
+		}
+
+		/**
+		 * Create and setup QLabel lblFileMd5
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblFileMd5_Create($strControlId = null) {
+			$this->lblFileMd5 = new QLabel($this->objParentObject, $strControlId);
+			$this->lblFileMd5->Name = QApplication::Translate('File Md 5');
+			$this->lblFileMd5->Text = $this->objNarroFileProgress->FileMd5;
+			return $this->lblFileMd5;
+		}
+
+		/**
 		 * Create and setup QTextBox txtHeader
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -532,6 +569,9 @@
 			}
 			if ($this->lblLanguageId) $this->lblLanguageId->Text = ($this->objNarroFileProgress->Language) ? $this->objNarroFileProgress->Language->__toString() : null;
 
+			if ($this->txtFileMd5) $this->txtFileMd5->Text = $this->objNarroFileProgress->FileMd5;
+			if ($this->lblFileMd5) $this->lblFileMd5->Text = $this->objNarroFileProgress->FileMd5;
+
 			if ($this->txtHeader) $this->txtHeader->Text = $this->objNarroFileProgress->Header;
 			if ($this->lblHeader) $this->lblHeader->Text = $this->objNarroFileProgress->Header;
 
@@ -575,6 +615,7 @@
 				// Update any fields for controls that have been created
 				if ($this->lstFile) $this->objNarroFileProgress->FileId = $this->lstFile->SelectedValue;
 				if ($this->lstLanguage) $this->objNarroFileProgress->LanguageId = $this->lstLanguage->SelectedValue;
+				if ($this->txtFileMd5) $this->objNarroFileProgress->FileMd5 = $this->txtFileMd5->Text;
 				if ($this->txtHeader) $this->objNarroFileProgress->Header = $this->txtHeader->Text;
 				if ($this->txtTotalTextCount) $this->objNarroFileProgress->TotalTextCount = $this->txtTotalTextCount->Text;
 				if ($this->txtApprovedTextCount) $this->objNarroFileProgress->ApprovedTextCount = $this->txtApprovedTextCount->Text;
@@ -641,6 +682,12 @@
 				case 'LanguageIdLabel':
 					if (!$this->lblLanguageId) return $this->lblLanguageId_Create();
 					return $this->lblLanguageId;
+				case 'FileMd5Control':
+					if (!$this->txtFileMd5) return $this->txtFileMd5_Create();
+					return $this->txtFileMd5;
+				case 'FileMd5Label':
+					if (!$this->lblFileMd5) return $this->lblFileMd5_Create();
+					return $this->lblFileMd5;
 				case 'HeaderControl':
 					if (!$this->txtHeader) return $this->txtHeader_Create();
 					return $this->txtHeader;
@@ -705,6 +752,8 @@
 						return ($this->lstFile = QType::Cast($mixValue, 'QControl'));
 					case 'LanguageIdControl':
 						return ($this->lstLanguage = QType::Cast($mixValue, 'QControl'));
+					case 'FileMd5Control':
+						return ($this->txtFileMd5 = QType::Cast($mixValue, 'QControl'));
 					case 'HeaderControl':
 						return ($this->txtHeader = QType::Cast($mixValue, 'QControl'));
 					case 'TotalTextCountControl':

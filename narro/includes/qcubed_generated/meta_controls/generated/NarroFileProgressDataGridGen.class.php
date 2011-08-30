@@ -294,6 +294,7 @@
 				case 'File': return QQN::NarroFileProgress()->File;
 				case 'LanguageId': return QQN::NarroFileProgress()->LanguageId;
 				case 'Language': return QQN::NarroFileProgress()->Language;
+				case 'FileMd5': return QQN::NarroFileProgress()->FileMd5;
 				case 'Header': return QQN::NarroFileProgress()->Header;
 				case 'TotalTextCount': return QQN::NarroFileProgress()->TotalTextCount;
 				case 'ApprovedTextCount': return QQN::NarroFileProgress()->ApprovedTextCount;

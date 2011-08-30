@@ -52,3 +52,5 @@ UPDATE `narro_project_progress` SET narro_project_progress.active=(SELECT narro_
 UPDATE `narro_file_progress` SET export=1;
 
 
+ALTER TABLE `narro_file_progress` ADD `file_md5` VARCHAR( 32 ) NULL AFTER `language_id` ;
+DROP TABLE IF EXISTS `narro_user_permission`;

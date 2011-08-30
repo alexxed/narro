@@ -14,7 +14,7 @@ if (!defined('SERVER_INSTANCE')) {
     define ('__MODEL_GEN__', __MODEL__ . '/generated' );
     define ('__META_CONTROLS__', __NARRO_INCLUDES__ . '/qcubed_generated/meta_controls' );
     define ('__META_CONTROLS_GEN__', __META_CONTROLS__ . '/generated' );
-    define ('__FORM_DRAFTS__', __NARRO_DATA__ . '/drafts');
+    define ('__FORM_DRAFTS__', __SUBDIRECTORY__ . '/drafts');
     define ('__PANEL_DRAFTS__', __SUBDIRECTORY__ . '/drafts/panels');
     define ('__FORMBASE_CLASSES__', __NARRO_INCLUDES__ . '/qcubed_generated/formbase_classes_generated');
     define ('__JS_ASSETS__', __SUBDIRECTORY__ . '/includes/qcubed/assets/_core/js');

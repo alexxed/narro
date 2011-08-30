@@ -58,6 +58,7 @@
 			$this->dtgNarroFileProgresses->MetaAddColumn('FileProgressId');
 			$this->dtgNarroFileProgresses->MetaAddColumn(QQN::NarroFileProgress()->File);
 			$this->dtgNarroFileProgresses->MetaAddColumn(QQN::NarroFileProgress()->Language);
+			$this->dtgNarroFileProgresses->MetaAddColumn('FileMd5');
 			$this->dtgNarroFileProgresses->MetaAddColumn('Header');
 			$this->dtgNarroFileProgresses->MetaAddColumn('TotalTextCount');
 			$this->dtgNarroFileProgresses->MetaAddColumn('ApprovedTextCount');
