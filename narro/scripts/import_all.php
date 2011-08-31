@@ -51,14 +51,35 @@
         exit();
     }
 
-    foreach(NarroProject::LoadArrayByActive(1) as $objProject) {
-        foreach(NarroLanguage::LoadAllActive() as $intIdx=>$objLanguage) {
-            if (array_search('--verbose', $argv)) {
-                echo $objLanguage->LanguageName . "\n";
-                ob_flush();
-            }
-            QApplication::$TargetLanguage = $objLanguage;
+    $intProjCnt = NarroProject::CountByActive(1);
+    $intLangCnt = NarroLanguage::CountAllActive();
 
+    $intStartTime = time();
+    foreach(NarroProject::LoadArrayByActive(1) as $intProjIdx=>$objProject) {
+        foreach(NarroLanguage::LoadAllActive() as $intLangIdx=>$objLanguage) {
+            if (in_array('--progress', $argv)) {
+                $strProjectProgress = '';
+                for($i=1;$i<11;$i++) {
+                  if (($intProjIdx * 10)/$intProjCnt <= $i)
+                      $strProjectProgress .= '-';
+                  else
+                      $strProjectProgress .= '+';
+                }
+
+                $strLanguageProgress = '';
+                for($i=1;$i<11;$i++) {
+                  if (($intLangIdx * 10)/$intLangCnt <= $i)
+                      $strLanguageProgress .= '-';
+                  else
+                      $strLanguageProgress .= '+';
+                }
+
+                $objDateSpan = new QDateTimeSpan(time() - $intStartTime);
+                printf("\rProject %s [%s], %d/%d, language %s, [%s], %d/%d, started %s ago               ", $objProject->ProjectName, $strProjectProgress, $intProjIdx, $intProjCnt, $objLanguage->LanguageName, $strLanguageProgress, $intLangIdx, $intLangCnt, $objDateSpan->SimpleDisplay());
+                @ob_flush();
+            }
+
+            QApplication::$TargetLanguage = $objLanguage;
             QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $objProject->ProjectId, $objLanguage->LanguageCode);
             QApplication::$Logger = new Zend_Log();
             QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile));
@@ -74,7 +95,7 @@
                 $objNarroImporter->CheckEqual = !(bool) array_search('--do-not-check-equal', $argv);
                 $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
                 $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
-                $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv) || $intIdx > 0;
+                $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv) || $intLangIdx > 0;
                 $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
                 NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
 
@@ -146,17 +167,16 @@
                 }
 
                 if ($blnResult)
-                foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
-                    if ($strName == 'Start time')
-                        $strValue = date('Y-m-d H:i:s', $strValue);
+                    foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
+                        if ($strName == 'Start time')
+                            $strValue = date('Y-m-d H:i:s', $strValue);
 
-                    if ($strName == 'End time')
-                        $strValue = date('Y-m-d H:i:s', $strValue);
+                        if ($strName == 'End time')
+                            $strValue = date('Y-m-d H:i:s', $strValue);
 
-                    if ($strValue != 0)
-                        QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);
-                }
-
+                        if ($strValue != 0)
+                            QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);
+                    }
             }
         }
     }
