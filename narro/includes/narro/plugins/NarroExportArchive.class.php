@@ -18,7 +18,7 @@
 
     if (isset($_REQUEST['p']) && isset($_REQUEST['file'])) {
         require_once(dirname(__FILE__) . '/../../../configuration/configuration.narro.inc.php');
-        $strFullPath = __IMPORT_PATH__ . '/' . $_REQUEST['p'] . '/' . $_REQUEST['file'];
+        $strFullPath = sprintf('%s/%d/%s', __IMPORT_PATH__, $_REQUEST['p'], $_REQUEST['file']);
         // File Exists?
         if( file_exists($strFullPath)) {
             header("Pragma: public"); // required

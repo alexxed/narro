@@ -16,7 +16,6 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    NarroPluginHandler::$blnEnablePlugins = false;
     class NarroProjectImporter {
         /**
          * the user object used for import
@@ -574,10 +573,11 @@
                     QApplication::LogError("Exporting Narro's translation failed:\n" . $strOutput);
                 else
                     QApplication::LogInfo("Exported Narro's translation succesfully. Press Ctrl+F5 to reload and see it.");
-            }
 
-            if (file_exists($this->strTranslationPath . '/narro.mo'))
-                chmod($this->strTranslationPath . '/narro.mo', 0666);
+                if (file_exists($this->strTranslationPath . '/narro.mo'))
+                    chmod($this->strTranslationPath . '/narro.mo', 0666);
+
+            }
 
             $this->MarkUnusedFilesAsInactive();
 
