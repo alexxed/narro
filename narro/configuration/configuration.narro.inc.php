@@ -88,7 +88,7 @@
 
     ini_set('mbstring.encoding_translation', true);
     ini_set('mbstring.internal_encoding', 'UTF-8');
-    ini_set('error_log', __TMP_PATH__ . '/app.log');
+    ini_set('error_log', __TMP_PATH__ . '/error.log');
     error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
     define ('SERVER_INSTANCE', 'dev');
