@@ -76,7 +76,7 @@
                 $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
                 $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv) || $intIdx > 0;
                 $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
-                NarroPluginHandler::$blnEnablePlugins = (bool) array_search('--disable-plugins', $argv);
+                NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
 
                 if (array_search('--template-lang', $argv) !== false)
                     $strSourceLanguage = $argv[array_search('--template-lang', $argv)+1];
