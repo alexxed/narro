@@ -36,6 +36,8 @@
         public $btnSearch;
         public $chkLast;
 
+        public $chkApprove;
+
         public $intTotalItemCount;
         public $strCurrentTranslationId;
         protected $arrConditions;
@@ -96,10 +98,18 @@
 
             $this->btnLess_Create();
 
+            $this->chkApprove_Create();
+
             $this->btnMore->DisplayStyle = QDisplayStyle::Block;
             $this->dtrText_Conditions(false);
             $this->intTotalItemCount = NarroContextInfo::QueryCount(QQ::AndCondition($this->arrConditions));
             $this->dtrText_Bind(null, null, null, false);
+        }
+
+        public function chkApprove_Create() {
+            $this->chkApprove = new QCheckBox($this);
+            $this->chkApprove->Name = t('Approve added translations');
+            $this->chkApprove->Display = QApplication::HasPermissionForThisLang('Can approve');
         }
 
         public function txtSearch_Create() {

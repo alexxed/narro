@@ -427,7 +427,7 @@
         }
 
         public function btnApprove_Click($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId))
+            if (!QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId) || $this->ParentControl->ParentControl->chkApprove->Checked == false)
                 return false;
 
             if ($strParameter != $this->objContextInfo->ValidSuggestionId) {
