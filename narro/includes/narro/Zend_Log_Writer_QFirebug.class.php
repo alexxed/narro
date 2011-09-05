@@ -28,7 +28,7 @@ class Zend_Log_Writer_QFirebug extends Zend_Log_Writer_Firebug {
             case Zend_Log::NOTICE:
                 return QFirebug::info($event['message']);
             case Zend_Log::DEBUG:
-                return;
+                return QFirebug::info($event['message']);
             default:
                 return QFirebug::log($event['message']);
         }

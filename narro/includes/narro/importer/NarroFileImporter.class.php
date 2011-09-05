@@ -191,69 +191,9 @@
          * @param string $strContext the context where the text/translation appears in the file
          * @param string $strComment a comment from the imported file
          */
-        protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
+        protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext = '', $strComment = null) {
             $blnContextInfoChanged = false;
             $blnContextChanged = false;
-
-            /**
-             * First, let the plug-ins process the data
-             */
-            if ($strOriginal == '') {
-                QApplication::LogDebug(sprintf('In file "%s", the context "%s" was skipped because the original text "%s" was empty.', $this->objFile->FileName, $strContext, $strOriginal));
-                NarroImportStatistics::$arrStatistics['Skipped contexts']++;
-                NarroImportStatistics::$arrStatistics['Skipped suggestions']++;
-                NarroImportStatistics::$arrStatistics['Skipped texts']++;
-                NarroImportStatistics::$arrStatistics['Empty original texts']++;
-                return false;
-            }
-            else {
-            $arrResult = QApplication::$PluginHandler->SaveText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
-            if
-            (
-                $arrResult[0] != '' &&
-                $arrResult[1] == $strTranslation &&
-                $arrResult[2] == $strContext &&
-                $arrResult[3] == $this->objFile &&
-                $arrResult[4] == $this->objProject
-            ) {
-
-                $strOriginal = $arrResult[0];
-            }
-            else
-                QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the text "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strOriginal, print_r($arrResult, true)));
-            }
-
-            if ($strTranslation != '') {
-                $arrResult = QApplication::$PluginHandler->SaveSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
-                if
-                (
-                    $arrResult[1] != '' &&
-                    $arrResult[0] == $strOriginal &&
-                    $arrResult[2] == $strContext &&
-                    $arrResult[3] == $this->objFile &&
-                    $arrResult[4] == $this->objProject
-                ) {
-                    $strTranslation = $arrResult[1];
-                }
-                else
-                    QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the translation "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strTranslation, print_r($arrResult, true)));
-            }
-
-            $strContext = $strContext;
-            $arrResult = QApplication::$PluginHandler->SaveContext($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
-            if
-            (
-                (trim($arrResult[2]) != '' || $strContext == '') &&
-                $arrResult[0] == $strOriginal &&
-                $arrResult[1] == $strTranslation &&
-                $arrResult[3] == $this->objFile &&
-                $arrResult[4] == $this->objProject
-            ) {
-
-                $strContext = $arrResult[2];
-            }
-            else
-                QApplication::LogWarn(sprintf('The plug-in %s returned an unexpected result while processing the context "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strContext, print_r($arrResult, true)));
 
             $objText = $this->GetText($strOriginal);
 
@@ -264,8 +204,6 @@
 
                 $objText = new NarroText();
                 $objText->TextValue = $strOriginal;
-
-                QApplication::$PluginHandler->AddText($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
 
                 try {
                     $objText->Save();
@@ -285,6 +223,7 @@
 
             }
             elseif (!$objText instanceof NarroText) {
+                QApplication::LogDebug('No text found');
                 /**
                  * If there's no text, there's no context and no suggestion
                  */
@@ -293,11 +232,13 @@
 
             $objContext = $this->GetContext($strOriginal, $strContext, $strComment);
             if (!$objContext) {
+                QApplication::LogDebug('No context found, trying database');
                 $objContext = NarroContext::LoadByTextIdContextMd5FileIdCommentMd5($objText->TextId, md5($strContext), $this->objFile->FileId, md5($strComment));
             }
 
 
             if (!$this->blnOnlySuggestions && !$objContext instanceof NarroContext) {
+                QApplication::LogDebug('Still no context, creating one');
 
                 $objContext = new NarroContext();
                 $objContext->TextId = $objText->TextId;
@@ -323,6 +264,7 @@
                 $this->arrContextId[$objContext->ContextId] = $objContext->ContextId;
             }
             elseif($objContext instanceof NarroContext) {
+                QApplication::LogDebug('Found context');
                 $this->arrContextId[$objContext->ContextId] = $objContext->ContextId;
                 NarroImportStatistics::$arrStatistics['Reused contexts']++;
             }
@@ -336,13 +278,16 @@
              * load the context info
              */
             $objContextInfo = $this->GetContextInfo($strOriginal, $strContext, $strComment);
-            if (!$objContextInfo)
+            if (!$objContextInfo) {
+                QApplication::LogDebug('No context info found, trying database');
                 $objContextInfo = NarroContextInfo::LoadByContextIdLanguageId($objContext->ContextId, $this->objTargetLanguage->LanguageId);
+            }
 
             /**
              * Add context infos even if only suggestion is selected to allow users that have permissions only on one language to approve suggestions
              */
             if (!$objContextInfo instanceof NarroContextInfo) {
+                QApplication::LogDebug('Still no context info, creating one');
 
                 $objContextInfo = new NarroContextInfo();
                 $objContextInfo->ContextId = $objContext->ContextId;
@@ -352,6 +297,7 @@
                 $blnContextInfoChanged = true;
             }
             elseif ($objContextInfo instanceof NarroContextInfo) {
+                QApplication::LogDebug('Found context info');
                 NarroImportStatistics::$arrStatistics['Reused context informations']++;
             }
 
@@ -360,22 +306,26 @@
                  * this lies outside the if/else if reusing contexts is activated, so if a context was moved in another file, we'll just update the file_id
                  */
                 if ($objContext->FileId != $this->objFile->FileId) {
+                    QApplication::LogDebug('Context changed file');
                     $blnContextChanged = true;
                     $objContext->FileId = $this->objFile->FileId;
                 }
 
                 if ($objContext->Active == false) {
+                    QApplication::LogDebug('Context is inactive');
                     $blnContextChanged = true;
                     $objContext->Active = true;
                 }
 
                 if ($objContextInfo->TextAccessKey != $strOriginalAccKey) {
+                    QApplication::LogDebug('Text access key changed for this context info');
                     $blnContextInfoChanged = true;
                     $objContextInfo->TextAccessKey = $strOriginalAccKey;
                 }
             }
 
             if  ( $strTranslation == '' ) {
+                QApplication::LogDebug('No translation');
                 /**
                  * just ignore, used for import without suggestions
                  */
@@ -398,10 +348,13 @@
                  * See if a suggestion already exists, fetch it
                  */
                 $objSuggestion = $this->GetSuggestion($strOriginal, $strTranslation);
-                if (!$objSuggestion)
+                if (!$objSuggestion) {
+                    QApplication::LogDebug('No translation, querying the database');
                     $objSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($objText->TextId, $this->objTargetLanguage->LanguageId, md5($strTranslation));
+                }
 
                 if (!$objSuggestion instanceof NarroSuggestion) {
+                    QApplication::LogDebug('Still no translation, creating one');
 
                     $objSuggestion = new NarroSuggestion();
                     $objSuggestion->IsImported = 1;
@@ -418,8 +371,6 @@
                     }
 
 
-                    QApplication::$PluginHandler->AddSuggestion($strOriginal, $strTranslation, $strContext, $this->objFile, $this->objProject);
-
                     /**
                      * update the HasSuggestions if it was 0 and we added a suggestion
                      */
@@ -431,6 +382,7 @@
                     NarroImportStatistics::$arrStatistics['Imported suggestions']++;
                 }
                 else {
+                    QApplication::LogDebug('Found translation in the database');
                     NarroImportStatistics::$arrStatistics['Reused suggestions']++;
                 }
 
@@ -438,7 +390,9 @@
                         $objContextInfo instanceof NarroContextInfo &&
                         $this->blnApprove &&
                         (is_null($objContextInfo->ValidSuggestionId) || $this->blnApproveAlreadyApproved) &&
-                        $objContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId) {
+                        $objContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId
+                ) {
+                    QApplication::LogDebug('Approving translation');
                     $objContextInfo->ValidSuggestionId = $objSuggestion->SuggestionId;
                     $objContextInfo->ValidatorUserId = QApplication::GetUserId();
                     $blnContextInfoChanged = true;
@@ -446,6 +400,7 @@
                 }
 
                 if ($objContextInfo instanceof NarroContextInfo && !is_null($strTranslationAccKey) && $objContextInfo->SuggestionAccessKey != $strTranslationAccKey) {
+                    QApplication::LogDebug('Translation access key changed');
                     $blnContextInfoChanged = true;
                     $objContextInfo->SuggestionAccessKey = $strTranslationAccKey;
                 }
@@ -453,6 +408,7 @@
             }
 
             if ($blnContextInfoChanged && $objContextInfo instanceof NarroContextInfo) {
+                QApplication::LogDebug('Context info modified, saving...');
                 $objContextInfo->Modified = QDateTime::Now();
                 try {
                     $objContextInfo->Save();
@@ -463,6 +419,7 @@
             }
 
             if ($blnContextChanged && $objContext instanceof NarroContext) {
+                QApplication::LogDebug('Context modified, saving...');
                 $objContext->Modified = QDateTime::Now();
                 try {
                     $objContext->Save();

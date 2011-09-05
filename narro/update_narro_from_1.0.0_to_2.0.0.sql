@@ -7,8 +7,8 @@ DROP TABLE `narro_context_comment`;
 
 ALTER TABLE `narro_context_info` DROP `has_comments`;
 
-DROP TABLE `narro_context_plural_info`;
-DROP TABLE `narro_context_plural`;
+DROP TABLE IF EXISTS `narro_context_plural_info`;
+DROP TABLE IF EXISTS `narro_context_plural`;
 
 ALTER TABLE `narro_file` ADD `header` TEXT NULL ;
 
@@ -16,7 +16,7 @@ ALTER TABLE `narro_file_progress` ADD `header` TEXT NULL AFTER `language_id` ;
 ALTER TABLE `narro_file_progress` ADD `export` tinyint(1) NULL DEFAULT 1 AFTER `progress_percent` ;
 ALTER TABLE `narro_file_progress` ADD INDEX `file_id_3` ( `file_id` , `language_id` , `export` ) ;
 
-DROP TABLE `narro_glossary_term`;
+DROP TABLE IF EXISTS `narro_glossary_term`;
 
 ALTER TABLE `narro_language` CHANGE `plural_form` `plural_form` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '"Plural-Forms: nplurals=2; plural=n != 1;\\n"' ;
 

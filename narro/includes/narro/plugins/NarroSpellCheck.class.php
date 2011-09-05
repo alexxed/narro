@@ -77,7 +77,7 @@
                 if (!pspell_config_dict_dir($pspell_config, __DICTIONARY_PATH__))
                     return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
 
-                if (!$pspell_link = pspell_new_config($pspell_config)) {
+                if (!$pspell_link = @pspell_new_config($pspell_config)) {
                     return self::GetSpellSuggestionsWithHunspell($strText, $strSpellLang);
                 }
             }
