@@ -85,14 +85,6 @@
                         join(',', array_keys($this->arrFileId))
                     )
                 );
-
-                NarroFile::GetDatabase()->NonQuery(
-                    sprintf(
-                        'UPDATE narro_file SET active=1 WHERE project_id=%d AND file_id IN (%s)',
-                        $this->objProject->ProjectId,
-                        join(',', array_keys($this->arrFileId))
-                    )
-                );
             }
         }
 
@@ -304,6 +296,12 @@
                             NarroImportStatistics::$arrStatistics['Imported folders']++;
                         }
                         $arrDirectories[$strPath] = $objFile->FileId;
+                        
+                        if ($objFile->Active == 0) {
+                            $objFile->Active = 1;
+                            $objFile->Save();
+                        }
+                                                
                         $this->arrFileId[$objFile->FileId] = 1;
                     }
                     $intParentId = $arrDirectories[$strPath];
@@ -364,6 +362,12 @@
                     QApplication::LogDebug(sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
+                
+                if ($objFile->Active == 0) {
+                    $objFile->Active = 1;
+                    $objFile->Save();
+                }
+                
                 $this->arrFileId[$objFile->FileId] = 1;
 
                 $strTranslatedFileToImport = str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToImport);

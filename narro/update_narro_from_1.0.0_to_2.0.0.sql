@@ -60,3 +60,28 @@ CHANGE `approved_text_count` `approved_text_count` INT( 10 ) NOT NULL DEFAULT '0
 CHANGE `fuzzy_text_count` `fuzzy_text_count` INT( 10 ) NOT NULL DEFAULT '0',
 CHANGE `progress_percent` `progress_percent` INT( 10 ) NOT NULL DEFAULT '0';
 ALTER TABLE `narro_file_progress` CHANGE `export` `export` TINYINT( 1 ) NOT NULL DEFAULT '1';
+
+ALTER TABLE `narro_context_info` DROP FOREIGN KEY `narro_context_info_ibfk_10` ;
+ALTER TABLE `narro_context_info` DROP COLUMN `text_access_key` , DROP COLUMN `popular_suggestion_id` 
+, DROP INDEX `popular_suggestion_id` ;
+
+ALTER TABLE `narro_context` ADD COLUMN `text_access_key` CHAR(1)  NULL DEFAULT NULL  AFTER `text_id`;
+ALTER TABLE `narro_context_info` CHANGE COLUMN `suggestion_access_key` `suggestion_access_key` CHAR(1)  NULL DEFAULT NULL  ;
+
+INSERT INTO `narro_file_type` (
+`file_type_id` ,
+`file_type`
+)
+VALUES (
+NULL , 'Html'
+);
+
+INSERT INTO `narro_project_type` (
+`project_type_id` ,
+`project_type`
+)
+VALUES (
+NULL , 'Html'
+);
+
+ALTER TABLE `narro_language` CHANGE `plural_form` `plural_form` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '"Plural-Forms: nplurals=2; plural=n != 1;\\n"';

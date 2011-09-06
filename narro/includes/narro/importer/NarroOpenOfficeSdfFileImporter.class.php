@@ -72,7 +72,7 @@
                 if (!isset($strSuggestionValue) || !$strSuggestionValue)
                     continue;
 
-                if ( $objNarroContextInfo->TextAccessKey != '') {
+                if ( $objNarroContextInfo->Context->TextAccessKey != '') {
                     if ($objNarroContextInfo->ValidSuggestionId && $objNarroContextInfo->SuggestionAccessKey != '')
                         $strSuggestionValue = NarroString::Replace(
                             $objNarroContextInfo->SuggestionAccessKey,

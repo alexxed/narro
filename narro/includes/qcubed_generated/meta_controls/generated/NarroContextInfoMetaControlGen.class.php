@@ -26,12 +26,8 @@
 	 * @property-read QLabel $ValidatorUserIdLabel
 	 * @property QListBox $ValidSuggestionIdControl
 	 * @property-read QLabel $ValidSuggestionIdLabel
-	 * @property QListBox $PopularSuggestionIdControl
-	 * @property-read QLabel $PopularSuggestionIdLabel
 	 * @property QCheckBox $HasSuggestionsControl
 	 * @property-read QLabel $HasSuggestionsLabel
-	 * @property QTextBox $TextAccessKeyControl
-	 * @property-read QLabel $TextAccessKeyLabel
 	 * @property QTextBox $SuggestionAccessKeyControl
 	 * @property-read QLabel $SuggestionAccessKeyLabel
 	 * @property QDateTimePicker $CreatedControl
@@ -92,20 +88,10 @@
 		 */
 		protected $lstValidSuggestion;
 		/**
-		 * @var QListBox lstPopularSuggestion
-		 * @access protected
-		 */
-		protected $lstPopularSuggestion;
-		/**
 		 * @var QCheckBox chkHasSuggestions
 		 * @access protected
 		 */
 		protected $chkHasSuggestions;
-		/**
-		 * @var QTextBox txtTextAccessKey
-		 * @access protected
-		 */
-		protected $txtTextAccessKey;
 		/**
 		 * @var QTextBox txtSuggestionAccessKey
 		 * @access protected
@@ -144,20 +130,10 @@
 		 */
 		protected $lblValidSuggestionId;
 		/**
-		 * @var QLabel lblPopularSuggestionId
-		 * @access protected
-		 */
-		protected $lblPopularSuggestionId;
-		/**
 		 * @var QLabel lblHasSuggestions
 		 * @access protected
 		 */
 		protected $lblHasSuggestions;
-		/**
-		 * @var QLabel lblTextAccessKey
-		 * @access protected
-		 */
-		protected $lblTextAccessKey;
 		/**
 		 * @var QLabel lblSuggestionAccessKey
 		 * @access protected
@@ -417,37 +393,6 @@
 		}
 
 		/**
-		 * Create and setup QListBox lstPopularSuggestion
-		 * @param string $strControlId optional ControlId to use
-		 * @return QListBox
-		 */
-		public function lstPopularSuggestion_Create($strControlId = null) {
-			$this->lstPopularSuggestion = new QListBox($this->objParentObject, $strControlId);
-			$this->lstPopularSuggestion->Name = QApplication::Translate('Popular Suggestion');
-			$this->lstPopularSuggestion->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPopularSuggestionArray = NarroSuggestion::LoadAll();
-			if ($objPopularSuggestionArray) foreach ($objPopularSuggestionArray as $objPopularSuggestion) {
-				$objListItem = new QListItem($objPopularSuggestion->__toString(), $objPopularSuggestion->SuggestionId);
-				if (($this->objNarroContextInfo->PopularSuggestion) && ($this->objNarroContextInfo->PopularSuggestion->SuggestionId == $objPopularSuggestion->SuggestionId))
-					$objListItem->Selected = true;
-				$this->lstPopularSuggestion->AddItem($objListItem);
-			}
-			return $this->lstPopularSuggestion;
-		}
-
-		/**
-		 * Create and setup QLabel lblPopularSuggestionId
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblPopularSuggestionId_Create($strControlId = null) {
-			$this->lblPopularSuggestionId = new QLabel($this->objParentObject, $strControlId);
-			$this->lblPopularSuggestionId->Name = QApplication::Translate('Popular Suggestion');
-			$this->lblPopularSuggestionId->Text = ($this->objNarroContextInfo->PopularSuggestion) ? $this->objNarroContextInfo->PopularSuggestion->__toString() : null;
-			return $this->lblPopularSuggestionId;
-		}
-
-		/**
 		 * Create and setup QCheckBox chkHasSuggestions
 		 * @param string $strControlId optional ControlId to use
 		 * @return QCheckBox
@@ -469,31 +414,6 @@
 			$this->lblHasSuggestions->Name = QApplication::Translate('Has Suggestions');
 			$this->lblHasSuggestions->Text = ($this->objNarroContextInfo->HasSuggestions) ? QApplication::Translate('Yes') : QApplication::Translate('No');
 			return $this->lblHasSuggestions;
-		}
-
-		/**
-		 * Create and setup QTextBox txtTextAccessKey
-		 * @param string $strControlId optional ControlId to use
-		 * @return QTextBox
-		 */
-		public function txtTextAccessKey_Create($strControlId = null) {
-			$this->txtTextAccessKey = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtTextAccessKey->Name = QApplication::Translate('Text Access Key');
-			$this->txtTextAccessKey->Text = $this->objNarroContextInfo->TextAccessKey;
-			$this->txtTextAccessKey->MaxLength = NarroContextInfo::TextAccessKeyMaxLength;
-			return $this->txtTextAccessKey;
-		}
-
-		/**
-		 * Create and setup QLabel lblTextAccessKey
-		 * @param string $strControlId optional ControlId to use
-		 * @return QLabel
-		 */
-		public function lblTextAccessKey_Create($strControlId = null) {
-			$this->lblTextAccessKey = new QLabel($this->objParentObject, $strControlId);
-			$this->lblTextAccessKey->Name = QApplication::Translate('Text Access Key');
-			$this->lblTextAccessKey->Text = $this->objNarroContextInfo->TextAccessKey;
-			return $this->lblTextAccessKey;
 		}
 
 		/**
@@ -650,24 +570,8 @@
 			}
 			if ($this->lblValidSuggestionId) $this->lblValidSuggestionId->Text = ($this->objNarroContextInfo->ValidSuggestion) ? $this->objNarroContextInfo->ValidSuggestion->__toString() : null;
 
-			if ($this->lstPopularSuggestion) {
-					$this->lstPopularSuggestion->RemoveAllItems();
-				$this->lstPopularSuggestion->AddItem(QApplication::Translate('- Select One -'), null);
-				$objPopularSuggestionArray = NarroSuggestion::LoadAll();
-				if ($objPopularSuggestionArray) foreach ($objPopularSuggestionArray as $objPopularSuggestion) {
-					$objListItem = new QListItem($objPopularSuggestion->__toString(), $objPopularSuggestion->SuggestionId);
-					if (($this->objNarroContextInfo->PopularSuggestion) && ($this->objNarroContextInfo->PopularSuggestion->SuggestionId == $objPopularSuggestion->SuggestionId))
-						$objListItem->Selected = true;
-					$this->lstPopularSuggestion->AddItem($objListItem);
-				}
-			}
-			if ($this->lblPopularSuggestionId) $this->lblPopularSuggestionId->Text = ($this->objNarroContextInfo->PopularSuggestion) ? $this->objNarroContextInfo->PopularSuggestion->__toString() : null;
-
 			if ($this->chkHasSuggestions) $this->chkHasSuggestions->Checked = $this->objNarroContextInfo->HasSuggestions;
 			if ($this->lblHasSuggestions) $this->lblHasSuggestions->Text = ($this->objNarroContextInfo->HasSuggestions) ? QApplication::Translate('Yes') : QApplication::Translate('No');
-
-			if ($this->txtTextAccessKey) $this->txtTextAccessKey->Text = $this->objNarroContextInfo->TextAccessKey;
-			if ($this->lblTextAccessKey) $this->lblTextAccessKey->Text = $this->objNarroContextInfo->TextAccessKey;
 
 			if ($this->txtSuggestionAccessKey) $this->txtSuggestionAccessKey->Text = $this->objNarroContextInfo->SuggestionAccessKey;
 			if ($this->lblSuggestionAccessKey) $this->lblSuggestionAccessKey->Text = $this->objNarroContextInfo->SuggestionAccessKey;
@@ -705,9 +609,7 @@
 				if ($this->lstLanguage) $this->objNarroContextInfo->LanguageId = $this->lstLanguage->SelectedValue;
 				if ($this->lstValidatorUser) $this->objNarroContextInfo->ValidatorUserId = $this->lstValidatorUser->SelectedValue;
 				if ($this->lstValidSuggestion) $this->objNarroContextInfo->ValidSuggestionId = $this->lstValidSuggestion->SelectedValue;
-				if ($this->lstPopularSuggestion) $this->objNarroContextInfo->PopularSuggestionId = $this->lstPopularSuggestion->SelectedValue;
 				if ($this->chkHasSuggestions) $this->objNarroContextInfo->HasSuggestions = $this->chkHasSuggestions->Checked;
-				if ($this->txtTextAccessKey) $this->objNarroContextInfo->TextAccessKey = $this->txtTextAccessKey->Text;
 				if ($this->txtSuggestionAccessKey) $this->objNarroContextInfo->SuggestionAccessKey = $this->txtSuggestionAccessKey->Text;
 				if ($this->calCreated) $this->objNarroContextInfo->Created = $this->calCreated->DateTime;
 				if ($this->calModified) $this->objNarroContextInfo->Modified = $this->calModified->DateTime;
@@ -783,24 +685,12 @@
 				case 'ValidSuggestionIdLabel':
 					if (!$this->lblValidSuggestionId) return $this->lblValidSuggestionId_Create();
 					return $this->lblValidSuggestionId;
-				case 'PopularSuggestionIdControl':
-					if (!$this->lstPopularSuggestion) return $this->lstPopularSuggestion_Create();
-					return $this->lstPopularSuggestion;
-				case 'PopularSuggestionIdLabel':
-					if (!$this->lblPopularSuggestionId) return $this->lblPopularSuggestionId_Create();
-					return $this->lblPopularSuggestionId;
 				case 'HasSuggestionsControl':
 					if (!$this->chkHasSuggestions) return $this->chkHasSuggestions_Create();
 					return $this->chkHasSuggestions;
 				case 'HasSuggestionsLabel':
 					if (!$this->lblHasSuggestions) return $this->lblHasSuggestions_Create();
 					return $this->lblHasSuggestions;
-				case 'TextAccessKeyControl':
-					if (!$this->txtTextAccessKey) return $this->txtTextAccessKey_Create();
-					return $this->txtTextAccessKey;
-				case 'TextAccessKeyLabel':
-					if (!$this->lblTextAccessKey) return $this->lblTextAccessKey_Create();
-					return $this->lblTextAccessKey;
 				case 'SuggestionAccessKeyControl':
 					if (!$this->txtSuggestionAccessKey) return $this->txtSuggestionAccessKey_Create();
 					return $this->txtSuggestionAccessKey;
@@ -851,12 +741,8 @@
 						return ($this->lstValidatorUser = QType::Cast($mixValue, 'QControl'));
 					case 'ValidSuggestionIdControl':
 						return ($this->lstValidSuggestion = QType::Cast($mixValue, 'QControl'));
-					case 'PopularSuggestionIdControl':
-						return ($this->lstPopularSuggestion = QType::Cast($mixValue, 'QControl'));
 					case 'HasSuggestionsControl':
 						return ($this->chkHasSuggestions = QType::Cast($mixValue, 'QControl'));
-					case 'TextAccessKeyControl':
-						return ($this->txtTextAccessKey = QType::Cast($mixValue, 'QControl'));
 					case 'SuggestionAccessKeyControl':
 						return ($this->txtSuggestionAccessKey = QType::Cast($mixValue, 'QControl'));
 					case 'CreatedControl':

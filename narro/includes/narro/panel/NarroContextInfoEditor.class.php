@@ -56,9 +56,9 @@
             $this->txtTranslation->Width = '100%';
             $this->txtTranslation->DisplayStyle = QDisplayStyle::Block;
 
-            if ($this->objContextInfo->TextAccessKey) {
+            if ($this->objContextInfo->Context->TextAccessKey) {
                 $this->txtAccessKey = new QTextBox($this);
-                $this->txtAccessKey->ToolTip = sprintf('Access key (original access key: %s)', $this->objContextInfo->TextAccessKey);
+                $this->txtAccessKey->ToolTip = sprintf('Access key (original access key: %s)', $this->objContextInfo->Context->TextAccessKey);
                 $this->txtAccessKey->TextMode = QTextMode::SingleLine;
                 $this->txtAccessKey->Columns = 1;
                 $this->txtAccessKey->MaxLength = 1;
@@ -439,13 +439,13 @@
                 $objSuggestion = NarroSuggestion::Load($strParameter);
                 $strSuggestionValue = $objSuggestion->SuggestionValue;
 
-                if ($this->objContextInfo->TextAccessKey) {
-                    if (mb_stripos($strSuggestionValue, $this->objContextInfo->TextAccessKey) === false)
+                if ($this->objContextInfo->Context->TextAccessKey) {
+                    if (mb_stripos($strSuggestionValue, $this->objContextInfo->Context->TextAccessKey) === false)
                         $this->objContextInfo->SuggestionAccessKey = mb_substr($strSuggestionValue, 0, 1);
-                    elseif (mb_strpos($strSuggestionValue, mb_strtoupper($this->objContextInfo->TextAccessKey)) === false)
-                        $this->objContextInfo->SuggestionAccessKey = mb_strtolower($this->objContextInfo->TextAccessKey);
+                    elseif (mb_strpos($strSuggestionValue, mb_strtoupper($this->objContextInfo->Context->TextAccessKey)) === false)
+                        $this->objContextInfo->SuggestionAccessKey = mb_strtolower($this->objContextInfo->Context->TextAccessKey);
                     else
-                        $this->objContextInfo->SuggestionAccessKey = mb_strtoupper($this->objContextInfo->TextAccessKey);
+                        $this->objContextInfo->SuggestionAccessKey = mb_strtoupper($this->objContextInfo->Context->TextAccessKey);
                 }
 
                 $this->objContextInfo->Modified = QDateTime::Now();

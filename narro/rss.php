@@ -390,8 +390,8 @@
                         sprintf('<p>' . t('Context') . ': <a href="%s">%s</a></p>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context)) .
                         sprintf('<p>' . t('Original text') . ': %s</p>',
                             (
-                                ($objNarroContextInfo->TextAccessKey)?
-                                    NarroString::Replace($objNarroContextInfo->TextAccessKey, '<u>' . $objNarroContextInfo->TextAccessKey . '</u>', NarroString::HtmlEntities($objNarroContextInfo->Context->Text->TextValue), 1)
+                                ($objNarroContextInfo->Context->TextAccessKey)?
+                                    NarroString::Replace($objNarroContextInfo->Context->TextAccessKey, '<u>' . $objNarroContextInfo->Context->TextAccessKey . '</u>', NarroString::HtmlEntities($objNarroContextInfo->Context->Text->TextValue), 1)
                                     :
                                     NarroString::HtmlEntities($objNarroContextInfo->Context->Text->TextValue)
                             )
@@ -400,7 +400,7 @@
                             ($objNarroContextInfo->ValidSuggestionId)?
                                 sprintf('<p>' . t('Approved suggestion') . ': %s</p>',
                                     (
-                                        ($objNarroContextInfo->TextAccessKey)?
+                                        ($objNarroContextInfo->Context->TextAccessKey)?
                                             NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '<u>' . $objNarroContextInfo->SuggestionAccessKey . '</u>', NarroString::HtmlEntities($objNarroContextInfo->ValidSuggestion->SuggestionValue), 1)
                                             :
                                             NarroString::HtmlEntities($objNarroContextInfo->ValidSuggestion->SuggestionValue)

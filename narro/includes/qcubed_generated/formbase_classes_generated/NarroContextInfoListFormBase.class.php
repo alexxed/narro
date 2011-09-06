@@ -60,9 +60,7 @@
 			$this->dtgNarroContextInfos->MetaAddColumn(QQN::NarroContextInfo()->Language);
 			$this->dtgNarroContextInfos->MetaAddColumn(QQN::NarroContextInfo()->ValidatorUser);
 			$this->dtgNarroContextInfos->MetaAddColumn(QQN::NarroContextInfo()->ValidSuggestion);
-			$this->dtgNarroContextInfos->MetaAddColumn(QQN::NarroContextInfo()->PopularSuggestion);
 			$this->dtgNarroContextInfos->MetaAddColumn('HasSuggestions');
-			$this->dtgNarroContextInfos->MetaAddColumn('TextAccessKey');
 			$this->dtgNarroContextInfos->MetaAddColumn('SuggestionAccessKey');
 			$this->dtgNarroContextInfos->MetaAddColumn('Created');
 			$this->dtgNarroContextInfos->MetaAddColumn('Modified');

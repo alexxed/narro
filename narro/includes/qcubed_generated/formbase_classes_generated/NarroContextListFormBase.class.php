@@ -57,6 +57,7 @@
 			// can traverse down QQN::narro_context() to display fields that are down the hierarchy)
 			$this->dtgNarroContexts->MetaAddColumn('ContextId');
 			$this->dtgNarroContexts->MetaAddColumn(QQN::NarroContext()->Text);
+			$this->dtgNarroContexts->MetaAddColumn('TextAccessKey');
 			$this->dtgNarroContexts->MetaAddColumn(QQN::NarroContext()->Project);
 			$this->dtgNarroContexts->MetaAddColumn('Context');
 			$this->dtgNarroContexts->MetaAddColumn('ContextMd5');

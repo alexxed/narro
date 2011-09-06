@@ -20,9 +20,7 @@
 	 * @property integer $LanguageId the value for intLanguageId (Not Null)
 	 * @property integer $ValidatorUserId the value for intValidatorUserId 
 	 * @property integer $ValidSuggestionId the value for intValidSuggestionId 
-	 * @property integer $PopularSuggestionId the value for intPopularSuggestionId 
 	 * @property boolean $HasSuggestions the value for blnHasSuggestions 
-	 * @property string $TextAccessKey the value for strTextAccessKey 
 	 * @property string $SuggestionAccessKey the value for strSuggestionAccessKey 
 	 * @property QDateTime $Created the value for dttCreated (Not Null)
 	 * @property QDateTime $Modified the value for dttModified 
@@ -30,7 +28,6 @@
 	 * @property NarroLanguage $Language the value for the NarroLanguage object referenced by intLanguageId (Not Null)
 	 * @property NarroUser $ValidatorUser the value for the NarroUser object referenced by intValidatorUserId 
 	 * @property NarroSuggestion $ValidSuggestion the value for the NarroSuggestion object referenced by intValidSuggestionId 
-	 * @property NarroSuggestion $PopularSuggestion the value for the NarroSuggestion object referenced by intPopularSuggestionId 
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroContextInfoGen extends QBaseClass implements IteratorAggregate {
@@ -80,14 +77,6 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_context_info.popular_suggestion_id
-		 * @var integer intPopularSuggestionId
-		 */
-		protected $intPopularSuggestionId;
-		const PopularSuggestionIdDefault = null;
-
-
-		/**
 		 * Protected member variable that maps to the database column narro_context_info.has_suggestions
 		 * @var boolean blnHasSuggestions
 		 */
@@ -96,20 +85,11 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_context_info.text_access_key
-		 * @var string strTextAccessKey
-		 */
-		protected $strTextAccessKey;
-		const TextAccessKeyMaxLength = 2;
-		const TextAccessKeyDefault = null;
-
-
-		/**
 		 * Protected member variable that maps to the database column narro_context_info.suggestion_access_key
 		 * @var string strSuggestionAccessKey
 		 */
 		protected $strSuggestionAccessKey;
-		const SuggestionAccessKeyMaxLength = 2;
+		const SuggestionAccessKeyMaxLength = 1;
 		const SuggestionAccessKeyDefault = null;
 
 
@@ -191,16 +171,6 @@
 		 */
 		protected $objValidSuggestion;
 
-		/**
-		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column narro_context_info.popular_suggestion_id.
-		 *
-		 * NOTE: Always use the PopularSuggestion property getter to correctly retrieve this NarroSuggestion object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var NarroSuggestion objPopularSuggestion
-		 */
-		protected $objPopularSuggestion;
-
 
 
 		/**
@@ -213,9 +183,7 @@
 			$this->intLanguageId = NarroContextInfo::LanguageIdDefault;
 			$this->intValidatorUserId = NarroContextInfo::ValidatorUserIdDefault;
 			$this->intValidSuggestionId = NarroContextInfo::ValidSuggestionIdDefault;
-			$this->intPopularSuggestionId = NarroContextInfo::PopularSuggestionIdDefault;
 			$this->blnHasSuggestions = NarroContextInfo::HasSuggestionsDefault;
-			$this->strTextAccessKey = NarroContextInfo::TextAccessKeyDefault;
 			$this->strSuggestionAccessKey = NarroContextInfo::SuggestionAccessKeyDefault;
 			$this->dttCreated = (NarroContextInfo::CreatedDefault === null)?null:new QDateTime(NarroContextInfo::CreatedDefault);
 			$this->dttModified = (NarroContextInfo::ModifiedDefault === null)?null:new QDateTime(NarroContextInfo::ModifiedDefault);
@@ -491,9 +459,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
 			$objBuilder->AddSelectItem($strTableName, 'validator_user_id', $strAliasPrefix . 'validator_user_id');
 			$objBuilder->AddSelectItem($strTableName, 'valid_suggestion_id', $strAliasPrefix . 'valid_suggestion_id');
-			$objBuilder->AddSelectItem($strTableName, 'popular_suggestion_id', $strAliasPrefix . 'popular_suggestion_id');
 			$objBuilder->AddSelectItem($strTableName, 'has_suggestions', $strAliasPrefix . 'has_suggestions');
-			$objBuilder->AddSelectItem($strTableName, 'text_access_key', $strAliasPrefix . 'text_access_key');
 			$objBuilder->AddSelectItem($strTableName, 'suggestion_access_key', $strAliasPrefix . 'suggestion_access_key');
 			$objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
 			$objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
@@ -537,12 +503,8 @@
 			$objToReturn->intValidatorUserId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'valid_suggestion_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'valid_suggestion_id'] : $strAliasPrefix . 'valid_suggestion_id';
 			$objToReturn->intValidSuggestionId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'popular_suggestion_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'popular_suggestion_id'] : $strAliasPrefix . 'popular_suggestion_id';
-			$objToReturn->intPopularSuggestionId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'has_suggestions', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'has_suggestions'] : $strAliasPrefix . 'has_suggestions';
 			$objToReturn->blnHasSuggestions = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_access_key', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_access_key'] : $strAliasPrefix . 'text_access_key';
-			$objToReturn->strTextAccessKey = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_access_key', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_access_key'] : $strAliasPrefix . 'suggestion_access_key';
 			$objToReturn->strSuggestionAccessKey = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created'] : $strAliasPrefix . 'created';
@@ -596,12 +558,6 @@
 			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName)))
 				$objToReturn->objValidSuggestion = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'valid_suggestion_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-
-			// Check for PopularSuggestion Early Binding
-			$strAlias = $strAliasPrefix . 'popular_suggestion_id__suggestion_id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName)))
-				$objToReturn->objPopularSuggestion = NarroSuggestion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'popular_suggestion_id__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 
 
 
@@ -781,38 +737,6 @@
 			
 		/**
 		 * Load an array of NarroContextInfo objects,
-		 * by PopularSuggestionId Index(es)
-		 * @param integer $intPopularSuggestionId
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroContextInfo[]
-		*/
-		public static function LoadArrayByPopularSuggestionId($intPopularSuggestionId, $objOptionalClauses = null) {
-			// Call NarroContextInfo::QueryArray to perform the LoadArrayByPopularSuggestionId query
-			try {
-				return NarroContextInfo::QueryArray(
-					QQ::Equal(QQN::NarroContextInfo()->PopularSuggestionId, $intPopularSuggestionId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count NarroContextInfos
-		 * by PopularSuggestionId Index(es)
-		 * @param integer $intPopularSuggestionId
-		 * @return int
-		*/
-		public static function CountByPopularSuggestionId($intPopularSuggestionId) {
-			// Call NarroContextInfo::QueryCount to perform the CountByPopularSuggestionId query
-			return NarroContextInfo::QueryCount(
-				QQ::Equal(QQN::NarroContextInfo()->PopularSuggestionId, $intPopularSuggestionId)
-			);
-		}
-			
-		/**
-		 * Load an array of NarroContextInfo objects,
 		 * by ValidatorUserId Index(es)
 		 * @param integer $intValidatorUserId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -941,9 +865,7 @@
 							`language_id`,
 							`validator_user_id`,
 							`valid_suggestion_id`,
-							`popular_suggestion_id`,
 							`has_suggestions`,
-							`text_access_key`,
 							`suggestion_access_key`,
 							`created`,
 							`modified`
@@ -952,9 +874,7 @@
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							' . $objDatabase->SqlVariable($this->intValidatorUserId) . ',
 							' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
-							' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
-							' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
 							' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . ',
 							' . $objDatabase->SqlVariable($this->dttCreated) . ',
 							' . $objDatabase->SqlVariable($this->dttModified) . '
@@ -977,9 +897,7 @@
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
 							`validator_user_id` = ' . $objDatabase->SqlVariable($this->intValidatorUserId) . ',
 							`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
-							`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intPopularSuggestionId) . ',
 							`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
-							`text_access_key` = ' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
 							`suggestion_access_key` = ' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
 							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . '
@@ -1065,9 +983,7 @@
 			$this->LanguageId = $objReloaded->LanguageId;
 			$this->ValidatorUserId = $objReloaded->ValidatorUserId;
 			$this->ValidSuggestionId = $objReloaded->ValidSuggestionId;
-			$this->PopularSuggestionId = $objReloaded->PopularSuggestionId;
 			$this->blnHasSuggestions = $objReloaded->blnHasSuggestions;
-			$this->strTextAccessKey = $objReloaded->strTextAccessKey;
 			$this->strSuggestionAccessKey = $objReloaded->strSuggestionAccessKey;
 			$this->dttCreated = $objReloaded->dttCreated;
 			$this->dttModified = $objReloaded->dttModified;
@@ -1126,26 +1042,12 @@
 					 */
 					return $this->intValidSuggestionId;
 
-				case 'PopularSuggestionId':
-					/**
-					 * Gets the value for intPopularSuggestionId 
-					 * @return integer
-					 */
-					return $this->intPopularSuggestionId;
-
 				case 'HasSuggestions':
 					/**
 					 * Gets the value for blnHasSuggestions 
 					 * @return boolean
 					 */
 					return $this->blnHasSuggestions;
-
-				case 'TextAccessKey':
-					/**
-					 * Gets the value for strTextAccessKey 
-					 * @return string
-					 */
-					return $this->strTextAccessKey;
 
 				case 'SuggestionAccessKey':
 					/**
@@ -1223,20 +1125,6 @@
 						if ((!$this->objValidSuggestion) && (!is_null($this->intValidSuggestionId)))
 							$this->objValidSuggestion = NarroSuggestion::Load($this->intValidSuggestionId);
 						return $this->objValidSuggestion;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'PopularSuggestion':
-					/**
-					 * Gets the value for the NarroSuggestion object referenced by intPopularSuggestionId 
-					 * @return NarroSuggestion
-					 */
-					try {
-						if ((!$this->objPopularSuggestion) && (!is_null($this->intPopularSuggestionId)))
-							$this->objPopularSuggestion = NarroSuggestion::Load($this->intPopularSuggestionId);
-						return $this->objPopularSuggestion;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1331,20 +1219,6 @@
 						throw $objExc;
 					}
 
-				case 'PopularSuggestionId':
-					/**
-					 * Sets the value for intPopularSuggestionId 
-					 * @param integer $mixValue
-					 * @return integer
-					 */
-					try {
-						$this->objPopularSuggestion = null;
-						return ($this->intPopularSuggestionId = QType::Cast($mixValue, QType::Integer));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'HasSuggestions':
 					/**
 					 * Sets the value for blnHasSuggestions 
@@ -1353,19 +1227,6 @@
 					 */
 					try {
 						return ($this->blnHasSuggestions = QType::Cast($mixValue, QType::Boolean));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'TextAccessKey':
-					/**
-					 * Sets the value for strTextAccessKey 
-					 * @param string $mixValue
-					 * @return string
-					 */
-					try {
-						return ($this->strTextAccessKey = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1542,38 +1403,6 @@
 					}
 					break;
 
-				case 'PopularSuggestion':
-					/**
-					 * Sets the value for the NarroSuggestion object referenced by intPopularSuggestionId 
-					 * @param NarroSuggestion $mixValue
-					 * @return NarroSuggestion
-					 */
-					if (is_null($mixValue)) {
-						$this->intPopularSuggestionId = null;
-						$this->objPopularSuggestion = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a NarroSuggestion object
-						try {
-							$mixValue = QType::Cast($mixValue, 'NarroSuggestion');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						}
-
-						// Make sure $mixValue is a SAVED NarroSuggestion object
-						if (is_null($mixValue->SuggestionId))
-							throw new QCallerException('Unable to set an unsaved PopularSuggestion for this NarroContextInfo');
-
-						// Update Local Member Variables
-						$this->objPopularSuggestion = $mixValue;
-						$this->intPopularSuggestionId = $mixValue->SuggestionId;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
 				default:
 					try {
 						return parent::__set($strName, $mixValue);
@@ -1616,9 +1445,7 @@
 			$strToReturn .= '<element name="Language" type="xsd1:NarroLanguage"/>';
 			$strToReturn .= '<element name="ValidatorUser" type="xsd1:NarroUser"/>';
 			$strToReturn .= '<element name="ValidSuggestion" type="xsd1:NarroSuggestion"/>';
-			$strToReturn .= '<element name="PopularSuggestion" type="xsd1:NarroSuggestion"/>';
 			$strToReturn .= '<element name="HasSuggestions" type="xsd:boolean"/>';
-			$strToReturn .= '<element name="TextAccessKey" type="xsd:string"/>';
 			$strToReturn .= '<element name="SuggestionAccessKey" type="xsd:string"/>';
 			$strToReturn .= '<element name="Created" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="Modified" type="xsd:dateTime"/>';
@@ -1633,7 +1460,6 @@
 				NarroContext::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroLanguage::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroUser::AlterSoapComplexTypeArray($strComplexTypeArray);
-				NarroSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
 				NarroSuggestion::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
@@ -1663,13 +1489,8 @@
 			if ((property_exists($objSoapObject, 'ValidSuggestion')) &&
 				($objSoapObject->ValidSuggestion))
 				$objToReturn->ValidSuggestion = NarroSuggestion::GetObjectFromSoapObject($objSoapObject->ValidSuggestion);
-			if ((property_exists($objSoapObject, 'PopularSuggestion')) &&
-				($objSoapObject->PopularSuggestion))
-				$objToReturn->PopularSuggestion = NarroSuggestion::GetObjectFromSoapObject($objSoapObject->PopularSuggestion);
 			if (property_exists($objSoapObject, 'HasSuggestions'))
 				$objToReturn->blnHasSuggestions = $objSoapObject->HasSuggestions;
-			if (property_exists($objSoapObject, 'TextAccessKey'))
-				$objToReturn->strTextAccessKey = $objSoapObject->TextAccessKey;
 			if (property_exists($objSoapObject, 'SuggestionAccessKey'))
 				$objToReturn->strSuggestionAccessKey = $objSoapObject->SuggestionAccessKey;
 			if (property_exists($objSoapObject, 'Created'))
@@ -1710,10 +1531,6 @@
 				$objObject->objValidSuggestion = NarroSuggestion::GetSoapObjectFromObject($objObject->objValidSuggestion, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intValidSuggestionId = null;
-			if ($objObject->objPopularSuggestion)
-				$objObject->objPopularSuggestion = NarroSuggestion::GetSoapObjectFromObject($objObject->objPopularSuggestion, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intPopularSuggestionId = null;
 			if ($objObject->dttCreated)
 				$objObject->dttCreated = $objObject->dttCreated->qFormat(QDateTime::FormatSoap);
 			if ($objObject->dttModified)
@@ -1737,9 +1554,7 @@
 			$iArray['LanguageId'] = $this->intLanguageId;
 			$iArray['ValidatorUserId'] = $this->intValidatorUserId;
 			$iArray['ValidSuggestionId'] = $this->intValidSuggestionId;
-			$iArray['PopularSuggestionId'] = $this->intPopularSuggestionId;
 			$iArray['HasSuggestions'] = $this->blnHasSuggestions;
-			$iArray['TextAccessKey'] = $this->strTextAccessKey;
 			$iArray['SuggestionAccessKey'] = $this->strSuggestionAccessKey;
 			$iArray['Created'] = $this->dttCreated;
 			$iArray['Modified'] = $this->dttModified;
@@ -1773,10 +1588,7 @@
      * @property-read QQNodeNarroUser $ValidatorUser
      * @property-read QQNode $ValidSuggestionId
      * @property-read QQNodeNarroSuggestion $ValidSuggestion
-     * @property-read QQNode $PopularSuggestionId
-     * @property-read QQNodeNarroSuggestion $PopularSuggestion
      * @property-read QQNode $HasSuggestions
-     * @property-read QQNode $TextAccessKey
      * @property-read QQNode $SuggestionAccessKey
      * @property-read QQNode $Created
      * @property-read QQNode $Modified
@@ -1809,14 +1621,8 @@
 					return new QQNode('valid_suggestion_id', 'ValidSuggestionId', 'Integer', $this);
 				case 'ValidSuggestion':
 					return new QQNodeNarroSuggestion('valid_suggestion_id', 'ValidSuggestion', 'Integer', $this);
-				case 'PopularSuggestionId':
-					return new QQNode('popular_suggestion_id', 'PopularSuggestionId', 'Integer', $this);
-				case 'PopularSuggestion':
-					return new QQNodeNarroSuggestion('popular_suggestion_id', 'PopularSuggestion', 'Integer', $this);
 				case 'HasSuggestions':
 					return new QQNode('has_suggestions', 'HasSuggestions', 'Bit', $this);
-				case 'TextAccessKey':
-					return new QQNode('text_access_key', 'TextAccessKey', 'VarChar', $this);
 				case 'SuggestionAccessKey':
 					return new QQNode('suggestion_access_key', 'SuggestionAccessKey', 'VarChar', $this);
 				case 'Created':
@@ -1847,10 +1653,7 @@
      * @property-read QQNodeNarroUser $ValidatorUser
      * @property-read QQNode $ValidSuggestionId
      * @property-read QQNodeNarroSuggestion $ValidSuggestion
-     * @property-read QQNode $PopularSuggestionId
-     * @property-read QQNodeNarroSuggestion $PopularSuggestion
      * @property-read QQNode $HasSuggestions
-     * @property-read QQNode $TextAccessKey
      * @property-read QQNode $SuggestionAccessKey
      * @property-read QQNode $Created
      * @property-read QQNode $Modified
@@ -1883,14 +1686,8 @@
 					return new QQNode('valid_suggestion_id', 'ValidSuggestionId', 'integer', $this);
 				case 'ValidSuggestion':
 					return new QQNodeNarroSuggestion('valid_suggestion_id', 'ValidSuggestion', 'integer', $this);
-				case 'PopularSuggestionId':
-					return new QQNode('popular_suggestion_id', 'PopularSuggestionId', 'integer', $this);
-				case 'PopularSuggestion':
-					return new QQNodeNarroSuggestion('popular_suggestion_id', 'PopularSuggestion', 'integer', $this);
 				case 'HasSuggestions':
 					return new QQNode('has_suggestions', 'HasSuggestions', 'boolean', $this);
-				case 'TextAccessKey':
-					return new QQNode('text_access_key', 'TextAccessKey', 'string', $this);
 				case 'SuggestionAccessKey':
 					return new QQNode('suggestion_access_key', 'SuggestionAccessKey', 'string', $this);
 				case 'Created':

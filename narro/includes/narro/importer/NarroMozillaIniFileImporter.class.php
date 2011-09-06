@@ -159,7 +159,7 @@
                         unset($arrTranslation[$objNarroContextInfo->Context->Context]);
                 }
 
-                if ($objNarroContextInfo->TextAccessKey) {
+                if ($objNarroContextInfo->Context->TextAccessKey) {
                     if ($objNarroContextInfo->SuggestionAccessKey) {
                         $arrTranslation[$objNarroContextInfo->Context->Context] = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '&' . $objNarroContextInfo->SuggestionAccessKey, $arrTranslation[$objNarroContextInfo->Context->Context], 1);
                     }

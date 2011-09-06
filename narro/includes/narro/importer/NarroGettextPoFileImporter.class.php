@@ -494,6 +494,9 @@
         }
 
         public function ImportFile($strTemplate, $strTranslatedFile = null) {
+            // No need to check equals for gettext
+            $this->blnCheckEqual = false;
+            
             $arrTemplateFile = $this->getFieldGroups($strTemplate);
             $arrTranslatedFile = $this->getFieldGroups($strTranslatedFile);
 
@@ -700,7 +703,7 @@
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
                         QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
-                        QQ::Equal(QQN::NarroContextInfo()->TextAccessKey, $strOriginalAccKey),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->TextAccessKey, $strOriginalAccKey),
                         QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5($strContext)),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
                         QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
@@ -711,7 +714,7 @@
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
                         QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
-                        QQ::Equal(QQN::NarroContextInfo()->TextAccessKey, $strOriginalAccKey),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->TextAccessKey, $strOriginalAccKey),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
                         QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
                     )

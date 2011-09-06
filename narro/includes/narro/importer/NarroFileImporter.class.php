@@ -317,10 +317,10 @@
                     $objContext->Active = true;
                 }
 
-                if ($objContextInfo->TextAccessKey != $strOriginalAccKey) {
+                if ($objContext->TextAccessKey != $strOriginalAccKey) {
                     QApplication::LogDebug('Text access key changed for this context info');
-                    $blnContextInfoChanged = true;
-                    $objContextInfo->TextAccessKey = $strOriginalAccKey;
+                    $blnContextChanged = true;
+                    $objContext->TextAccessKey = $strOriginalAccKey;
                 }
             }
 

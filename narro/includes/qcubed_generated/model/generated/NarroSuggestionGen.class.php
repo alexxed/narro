@@ -30,8 +30,6 @@
 	 * @property NarroUser $User the value for the NarroUser object referenced by intUserId 
 	 * @property NarroText $Text the value for the NarroText object referenced by intTextId (Not Null)
 	 * @property NarroLanguage $Language the value for the NarroLanguage object referenced by intLanguageId (Not Null)
-	 * @property-read NarroContextInfo $_NarroContextInfoAsPopularSuggestion the value for the private _objNarroContextInfoAsPopularSuggestion (Read-Only) if set due to an expansion on the narro_context_info.popular_suggestion_id reverse relationship
-	 * @property-read NarroContextInfo[] $_NarroContextInfoAsPopularSuggestionArray the value for the private _objNarroContextInfoAsPopularSuggestionArray (Read-Only) if set due to an ExpandAsArray on the narro_context_info.popular_suggestion_id reverse relationship
 	 * @property-read NarroContextInfo $_NarroContextInfoAsValidSuggestion the value for the private _objNarroContextInfoAsValidSuggestion (Read-Only) if set due to an expansion on the narro_context_info.valid_suggestion_id reverse relationship
 	 * @property-read NarroContextInfo[] $_NarroContextInfoAsValidSuggestionArray the value for the private _objNarroContextInfoAsValidSuggestionArray (Read-Only) if set due to an ExpandAsArray on the narro_context_info.valid_suggestion_id reverse relationship
 	 * @property-read NarroSuggestionComment $_NarroSuggestionCommentAsSuggestion the value for the private _objNarroSuggestionCommentAsSuggestion (Read-Only) if set due to an expansion on the narro_suggestion_comment.suggestion_id reverse relationship
@@ -142,22 +140,6 @@
 		protected $dttModified;
 		const ModifiedDefault = null;
 
-
-		/**
-		 * Private member variable that stores a reference to a single NarroContextInfoAsPopularSuggestion object
-		 * (of type NarroContextInfo), if this NarroSuggestion object was restored with
-		 * an expansion on the narro_context_info association table.
-		 * @var NarroContextInfo _objNarroContextInfoAsPopularSuggestion;
-		 */
-		private $_objNarroContextInfoAsPopularSuggestion;
-
-		/**
-		 * Private member variable that stores a reference to an array of NarroContextInfoAsPopularSuggestion objects
-		 * (of type NarroContextInfo[]), if this NarroSuggestion object was restored with
-		 * an ExpandAsArray on the narro_context_info association table.
-		 * @var NarroContextInfo[] _objNarroContextInfoAsPopularSuggestionArray;
-		 */
-		private $_objNarroContextInfoAsPopularSuggestionArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroContextInfoAsValidSuggestion object
@@ -594,25 +576,6 @@
 							$strAliasPrefix = 'narro_suggestion__';
 
 
-						// Expanding reverse references: NarroContextInfoAsPopularSuggestion
-						$strAlias = $strAliasPrefix . 'narrocontextinfoaspopularsuggestion__context_info_id';
-						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
-							(!is_null($objDbRow->GetColumn($strAliasName)))) {
-							if(null === $objPreviousItem->_objNarroContextInfoAsPopularSuggestionArray)
-								$objPreviousItem->_objNarroContextInfoAsPopularSuggestionArray = array();
-							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroContextInfoAsPopularSuggestionArray)) {
-								$objPreviousChildItems = $objPreviousItem->_objNarroContextInfoAsPopularSuggestionArray;
-								$objChildItem = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaspopularsuggestion__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
-								if ($objChildItem) {
-									$objPreviousItem->_objNarroContextInfoAsPopularSuggestionArray[] = $objChildItem;
-								}
-							} else {
-								$objPreviousItem->_objNarroContextInfoAsPopularSuggestionArray[] = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaspopularsuggestion__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-							}
-							$blnExpandedViaArray = true;
-						}
-
 						// Expanding reverse references: NarroContextInfoAsValidSuggestion
 						$strAlias = $strAliasPrefix . 'narrocontextinfoasvalidsuggestion__context_info_id';
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -714,9 +677,6 @@
 					if ($objToReturn->SuggestionId != $objPreviousItem->SuggestionId) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroContextInfoAsPopularSuggestionArray, $objToReturn->_objNarroContextInfoAsPopularSuggestionArray) != null) {
-						continue;
-					}
 					if (array_diff($objPreviousItem->_objNarroContextInfoAsValidSuggestionArray, $objToReturn->_objNarroContextInfoAsValidSuggestionArray) != null) {
 						continue;
 					}
@@ -764,19 +724,6 @@
 
 
 
-
-			// Check for NarroContextInfoAsPopularSuggestion Virtual Binding
-			$strAlias = $strAliasPrefix . 'narrocontextinfoaspopularsuggestion__context_info_id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
-			if ($blnExpanded && null === $objToReturn->_objNarroContextInfoAsPopularSuggestionArray)
-				$objToReturn->_objNarroContextInfoAsPopularSuggestionArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded)
-					$objToReturn->_objNarroContextInfoAsPopularSuggestionArray[] = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaspopularsuggestion__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-				else
-					$objToReturn->_objNarroContextInfoAsPopularSuggestion = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoaspopularsuggestion__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-			}
 
 			// Check for NarroContextInfoAsValidSuggestion Virtual Binding
 			$strAlias = $strAliasPrefix . 'narrocontextinfoasvalidsuggestion__context_info_id';
@@ -1356,22 +1303,6 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_NarroContextInfoAsPopularSuggestion':
-					/**
-					 * Gets the value for the private _objNarroContextInfoAsPopularSuggestion (Read-Only)
-					 * if set due to an expansion on the narro_context_info.popular_suggestion_id reverse relationship
-					 * @return NarroContextInfo
-					 */
-					return $this->_objNarroContextInfoAsPopularSuggestion;
-
-				case '_NarroContextInfoAsPopularSuggestionArray':
-					/**
-					 * Gets the value for the private _objNarroContextInfoAsPopularSuggestionArray (Read-Only)
-					 * if set due to an ExpandAsArray on the narro_context_info.popular_suggestion_id reverse relationship
-					 * @return NarroContextInfo[]
-					 */
-					return $this->_objNarroContextInfoAsPopularSuggestionArray;
-
 				case '_NarroContextInfoAsValidSuggestion':
 					/**
 					 * Gets the value for the private _objNarroContextInfoAsValidSuggestion (Read-Only)
@@ -1719,156 +1650,6 @@
 		///////////////////////////////
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
-
-			
-		
-		// Related Objects' Methods for NarroContextInfoAsPopularSuggestion
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated NarroContextInfosAsPopularSuggestion as an array of NarroContextInfo objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroContextInfo[]
-		*/
-		public function GetNarroContextInfoAsPopularSuggestionArray($objOptionalClauses = null) {
-			if ((is_null($this->intSuggestionId)))
-				return array();
-
-			try {
-				return NarroContextInfo::LoadArrayByPopularSuggestionId($this->intSuggestionId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated NarroContextInfosAsPopularSuggestion
-		 * @return int
-		*/
-		public function CountNarroContextInfosAsPopularSuggestion() {
-			if ((is_null($this->intSuggestionId)))
-				return 0;
-
-			return NarroContextInfo::CountByPopularSuggestionId($this->intSuggestionId);
-		}
-
-		/**
-		 * Associates a NarroContextInfoAsPopularSuggestion
-		 * @param NarroContextInfo $objNarroContextInfo
-		 * @return void
-		*/
-		public function AssociateNarroContextInfoAsPopularSuggestion(NarroContextInfo $objNarroContextInfo) {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextInfoAsPopularSuggestion on this unsaved NarroSuggestion.');
-			if ((is_null($objNarroContextInfo->ContextInfoId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroContextInfoAsPopularSuggestion on this NarroSuggestion with an unsaved NarroContextInfo.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_context_info`
-				SET
-					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-				WHERE
-					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . '
-			');
-		}
-
-		/**
-		 * Unassociates a NarroContextInfoAsPopularSuggestion
-		 * @param NarroContextInfo $objNarroContextInfo
-		 * @return void
-		*/
-		public function UnassociateNarroContextInfoAsPopularSuggestion(NarroContextInfo $objNarroContextInfo) {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsPopularSuggestion on this unsaved NarroSuggestion.');
-			if ((is_null($objNarroContextInfo->ContextInfoId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsPopularSuggestion on this NarroSuggestion with an unsaved NarroContextInfo.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_context_info`
-				SET
-					`popular_suggestion_id` = null
-				WHERE
-					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . ' AND
-					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all NarroContextInfosAsPopularSuggestion
-		 * @return void
-		*/
-		public function UnassociateAllNarroContextInfosAsPopularSuggestion() {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsPopularSuggestion on this unsaved NarroSuggestion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_context_info`
-				SET
-					`popular_suggestion_id` = null
-				WHERE
-					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated NarroContextInfoAsPopularSuggestion
-		 * @param NarroContextInfo $objNarroContextInfo
-		 * @return void
-		*/
-		public function DeleteAssociatedNarroContextInfoAsPopularSuggestion(NarroContextInfo $objNarroContextInfo) {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsPopularSuggestion on this unsaved NarroSuggestion.');
-			if ((is_null($objNarroContextInfo->ContextInfoId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsPopularSuggestion on this NarroSuggestion with an unsaved NarroContextInfo.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_context_info`
-				WHERE
-					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . ' AND
-					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated NarroContextInfosAsPopularSuggestion
-		 * @return void
-		*/
-		public function DeleteAllNarroContextInfosAsPopularSuggestion() {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroContextInfoAsPopularSuggestion on this unsaved NarroSuggestion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_context_info`
-				WHERE
-					`popular_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
 
 			
 		
@@ -2498,7 +2279,6 @@
      * @property-read QQNode $Modified
      *
      *
-     * @property-read QQReverseReferenceNodeNarroContextInfo $NarroContextInfoAsPopularSuggestion
      * @property-read QQReverseReferenceNodeNarroContextInfo $NarroContextInfoAsValidSuggestion
      * @property-read QQReverseReferenceNodeNarroSuggestionComment $NarroSuggestionCommentAsSuggestion
      * @property-read QQReverseReferenceNodeNarroSuggestionVote $NarroSuggestionVoteAsSuggestion
@@ -2541,8 +2321,6 @@
 					return new QQNode('created', 'Created', 'DateTime', $this);
 				case 'Modified':
 					return new QQNode('modified', 'Modified', 'DateTime', $this);
-				case 'NarroContextInfoAsPopularSuggestion':
-					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoaspopularsuggestion', 'reverse_reference', 'popular_suggestion_id');
 				case 'NarroContextInfoAsValidSuggestion':
 					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoasvalidsuggestion', 'reverse_reference', 'valid_suggestion_id');
 				case 'NarroSuggestionCommentAsSuggestion':
@@ -2581,7 +2359,6 @@
      * @property-read QQNode $Modified
      *
      *
-     * @property-read QQReverseReferenceNodeNarroContextInfo $NarroContextInfoAsPopularSuggestion
      * @property-read QQReverseReferenceNodeNarroContextInfo $NarroContextInfoAsValidSuggestion
      * @property-read QQReverseReferenceNodeNarroSuggestionComment $NarroSuggestionCommentAsSuggestion
      * @property-read QQReverseReferenceNodeNarroSuggestionVote $NarroSuggestionVoteAsSuggestion
@@ -2624,8 +2401,6 @@
 					return new QQNode('created', 'Created', 'QDateTime', $this);
 				case 'Modified':
 					return new QQNode('modified', 'Modified', 'QDateTime', $this);
-				case 'NarroContextInfoAsPopularSuggestion':
-					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoaspopularsuggestion', 'reverse_reference', 'popular_suggestion_id');
 				case 'NarroContextInfoAsValidSuggestion':
 					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoasvalidsuggestion', 'reverse_reference', 'valid_suggestion_id');
 				case 'NarroSuggestionCommentAsSuggestion':

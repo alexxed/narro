@@ -298,10 +298,7 @@
 				case 'ValidatorUser': return QQN::NarroContextInfo()->ValidatorUser;
 				case 'ValidSuggestionId': return QQN::NarroContextInfo()->ValidSuggestionId;
 				case 'ValidSuggestion': return QQN::NarroContextInfo()->ValidSuggestion;
-				case 'PopularSuggestionId': return QQN::NarroContextInfo()->PopularSuggestionId;
-				case 'PopularSuggestion': return QQN::NarroContextInfo()->PopularSuggestion;
 				case 'HasSuggestions': return QQN::NarroContextInfo()->HasSuggestions;
-				case 'TextAccessKey': return QQN::NarroContextInfo()->TextAccessKey;
 				case 'SuggestionAccessKey': return QQN::NarroContextInfo()->SuggestionAccessKey;
 				case 'Created': return QQN::NarroContextInfo()->Created;
 				case 'Modified': return QQN::NarroContextInfo()->Modified;

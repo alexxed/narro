@@ -17,6 +17,7 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $ContextId the value for intContextId (Read-Only PK)
 	 * @property integer $TextId the value for intTextId (Not Null)
+	 * @property string $TextAccessKey the value for strTextAccessKey 
 	 * @property integer $ProjectId the value for intProjectId (Not Null)
 	 * @property string $Context the value for strContext (Not Null)
 	 * @property string $ContextMd5 the value for strContextMd5 (Not Null)
@@ -58,6 +59,15 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column narro_context.text_access_key
+		 * @var string strTextAccessKey
+		 */
+		protected $strTextAccessKey;
+		const TextAccessKeyMaxLength = 1;
+		const TextAccessKeyDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column narro_context.project_id
 		 * @var integer intProjectId
 		 */
@@ -95,7 +105,7 @@
 		 * @var string strCommentMd5
 		 */
 		protected $strCommentMd5;
-		const CommentMd5MaxLength = 255;
+		const CommentMd5MaxLength = 32;
 		const CommentMd5Default = null;
 
 
@@ -224,6 +234,7 @@
 		{
 			$this->intContextId = NarroContext::ContextIdDefault;
 			$this->intTextId = NarroContext::TextIdDefault;
+			$this->strTextAccessKey = NarroContext::TextAccessKeyDefault;
 			$this->intProjectId = NarroContext::ProjectIdDefault;
 			$this->strContext = NarroContext::ContextDefault;
 			$this->strContextMd5 = NarroContext::ContextMd5Default;
@@ -502,6 +513,7 @@
 
 			$objBuilder->AddSelectItem($strTableName, 'context_id', $strAliasPrefix . 'context_id');
 			$objBuilder->AddSelectItem($strTableName, 'text_id', $strAliasPrefix . 'text_id');
+			$objBuilder->AddSelectItem($strTableName, 'text_access_key', $strAliasPrefix . 'text_access_key');
 			$objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
 			$objBuilder->AddSelectItem($strTableName, 'context', $strAliasPrefix . 'context');
 			$objBuilder->AddSelectItem($strTableName, 'context_md5', $strAliasPrefix . 'context_md5');
@@ -604,6 +616,8 @@
 			$objToReturn->intContextId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'text_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_id'] : $strAliasPrefix . 'text_id';
 			$objToReturn->intTextId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAliasName = array_key_exists($strAliasPrefix . 'text_access_key', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_access_key'] : $strAliasPrefix . 'text_access_key';
+			$objToReturn->strTextAccessKey = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'project_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_id'] : $strAliasPrefix . 'project_id';
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'context', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'context'] : $strAliasPrefix . 'context';
@@ -910,19 +924,19 @@
 			
 		/**
 		 * Load an array of NarroContext objects,
-		 * by Active, ProjectId Index(es)
-		 * @param boolean $blnActive
+		 * by ProjectId, Active Index(es)
 		 * @param integer $intProjectId
+		 * @param boolean $blnActive
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroContext[]
 		*/
-		public static function LoadArrayByActiveProjectId($blnActive, $intProjectId, $objOptionalClauses = null) {
-			// Call NarroContext::QueryArray to perform the LoadArrayByActiveProjectId query
+		public static function LoadArrayByProjectIdActive($intProjectId, $blnActive, $objOptionalClauses = null) {
+			// Call NarroContext::QueryArray to perform the LoadArrayByProjectIdActive query
 			try {
 				return NarroContext::QueryArray(
 					QQ::AndCondition(
-					QQ::Equal(QQN::NarroContext()->Active, $blnActive),
-					QQ::Equal(QQN::NarroContext()->ProjectId, $intProjectId)
+					QQ::Equal(QQN::NarroContext()->ProjectId, $intProjectId),
+					QQ::Equal(QQN::NarroContext()->Active, $blnActive)
 					),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
@@ -933,17 +947,17 @@
 
 		/**
 		 * Count NarroContexts
-		 * by Active, ProjectId Index(es)
-		 * @param boolean $blnActive
+		 * by ProjectId, Active Index(es)
 		 * @param integer $intProjectId
+		 * @param boolean $blnActive
 		 * @return int
 		*/
-		public static function CountByActiveProjectId($blnActive, $intProjectId) {
-			// Call NarroContext::QueryCount to perform the CountByActiveProjectId query
+		public static function CountByProjectIdActive($intProjectId, $blnActive) {
+			// Call NarroContext::QueryCount to perform the CountByProjectIdActive query
 			return NarroContext::QueryCount(
 				QQ::AndCondition(
-				QQ::Equal(QQN::NarroContext()->Active, $blnActive),
-				QQ::Equal(QQN::NarroContext()->ProjectId, $intProjectId)
+				QQ::Equal(QQN::NarroContext()->ProjectId, $intProjectId),
+				QQ::Equal(QQN::NarroContext()->Active, $blnActive)
 				)
 			);
 		}
@@ -979,6 +993,7 @@
 					$objDatabase->NonQuery('
 						INSERT INTO `narro_context` (
 							`text_id`,
+							`text_access_key`,
 							`project_id`,
 							`context`,
 							`context_md5`,
@@ -990,6 +1005,7 @@
 							`active`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intTextId) . ',
+							' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							' . $objDatabase->SqlVariable($this->strContext) . ',
 							' . $objDatabase->SqlVariable($this->strContextMd5) . ',
@@ -1015,6 +1031,7 @@
 							`narro_context`
 						SET
 							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . ',
+							`text_access_key` = ' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							`context` = ' . $objDatabase->SqlVariable($this->strContext) . ',
 							`context_md5` = ' . $objDatabase->SqlVariable($this->strContextMd5) . ',
@@ -1103,6 +1120,7 @@
 
 			// Update $this's local variables to match
 			$this->TextId = $objReloaded->TextId;
+			$this->strTextAccessKey = $objReloaded->strTextAccessKey;
 			$this->ProjectId = $objReloaded->ProjectId;
 			$this->strContext = $objReloaded->strContext;
 			$this->strContextMd5 = $objReloaded->strContextMd5;
@@ -1145,6 +1163,13 @@
 					 * @return integer
 					 */
 					return $this->intTextId;
+
+				case 'TextAccessKey':
+					/**
+					 * Gets the value for strTextAccessKey 
+					 * @return string
+					 */
+					return $this->strTextAccessKey;
 
 				case 'ProjectId':
 					/**
@@ -1329,6 +1354,19 @@
 					try {
 						$this->objText = null;
 						return ($this->intTextId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'TextAccessKey':
+					/**
+					 * Sets the value for strTextAccessKey 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strTextAccessKey = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1898,6 +1936,7 @@
 			$strToReturn = '<complexType name="NarroContext"><sequence>';
 			$strToReturn .= '<element name="ContextId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Text" type="xsd1:NarroText"/>';
+			$strToReturn .= '<element name="TextAccessKey" type="xsd:string"/>';
 			$strToReturn .= '<element name="Project" type="xsd1:NarroProject"/>';
 			$strToReturn .= '<element name="Context" type="xsd:string"/>';
 			$strToReturn .= '<element name="ContextMd5" type="xsd:string"/>';
@@ -1937,6 +1976,8 @@
 			if ((property_exists($objSoapObject, 'Text')) &&
 				($objSoapObject->Text))
 				$objToReturn->Text = NarroText::GetObjectFromSoapObject($objSoapObject->Text);
+			if (property_exists($objSoapObject, 'TextAccessKey'))
+				$objToReturn->strTextAccessKey = $objSoapObject->TextAccessKey;
 			if ((property_exists($objSoapObject, 'Project')) &&
 				($objSoapObject->Project))
 				$objToReturn->Project = NarroProject::GetObjectFromSoapObject($objSoapObject->Project);
@@ -2007,6 +2048,7 @@
 			///////////////////
 			$iArray['ContextId'] = $this->intContextId;
 			$iArray['TextId'] = $this->intTextId;
+			$iArray['TextAccessKey'] = $this->strTextAccessKey;
 			$iArray['ProjectId'] = $this->intProjectId;
 			$iArray['Context'] = $this->strContext;
 			$iArray['ContextMd5'] = $this->strContextMd5;
@@ -2040,6 +2082,7 @@
      * @property-read QQNode $ContextId
      * @property-read QQNode $TextId
      * @property-read QQNodeNarroText $Text
+     * @property-read QQNode $TextAccessKey
      * @property-read QQNode $ProjectId
      * @property-read QQNodeNarroProject $Project
      * @property-read QQNode $Context
@@ -2070,6 +2113,8 @@
 					return new QQNode('text_id', 'TextId', 'Integer', $this);
 				case 'Text':
 					return new QQNodeNarroText('text_id', 'Text', 'Integer', $this);
+				case 'TextAccessKey':
+					return new QQNode('text_access_key', 'TextAccessKey', 'VarChar', $this);
 				case 'ProjectId':
 					return new QQNode('project_id', 'ProjectId', 'Integer', $this);
 				case 'Project':
@@ -2114,6 +2159,7 @@
      * @property-read QQNode $ContextId
      * @property-read QQNode $TextId
      * @property-read QQNodeNarroText $Text
+     * @property-read QQNode $TextAccessKey
      * @property-read QQNode $ProjectId
      * @property-read QQNodeNarroProject $Project
      * @property-read QQNode $Context
@@ -2144,6 +2190,8 @@
 					return new QQNode('text_id', 'TextId', 'integer', $this);
 				case 'Text':
 					return new QQNodeNarroText('text_id', 'Text', 'integer', $this);
+				case 'TextAccessKey':
+					return new QQNode('text_access_key', 'TextAccessKey', 'string', $this);
 				case 'ProjectId':
 					return new QQNode('project_id', 'ProjectId', 'integer', $this);
 				case 'Project':

@@ -25,6 +25,7 @@
 		// Controls for NarroContext's Data Fields
 		protected $lblContextId;
 		protected $lstText;
+		protected $txtTextAccessKey;
 		protected $lstProject;
 		protected $txtContext;
 		protected $txtContextMd5;
@@ -71,6 +72,7 @@
 			// Call MetaControl's methods to create qcontrols based on NarroContext's data fields
 			$this->lblContextId = $this->mctNarroContext->lblContextId_Create();
 			$this->lstText = $this->mctNarroContext->lstText_Create();
+			$this->txtTextAccessKey = $this->mctNarroContext->txtTextAccessKey_Create();
 			$this->lstProject = $this->mctNarroContext->lstProject_Create();
 			$this->txtContext = $this->mctNarroContext->txtContext_Create();
 			$this->txtContextMd5 = $this->mctNarroContext->txtContextMd5_Create();

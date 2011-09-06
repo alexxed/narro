@@ -123,11 +123,11 @@
                     if ($arrTranslation[$objNarroContextInfo->Context->Context] === false)
                         $arrTranslation[$objNarroContextInfo->Context->Context] = $objNarroContextInfo->Context->Text->TextValue;
 
-                    if ($objNarroContextInfo->TextAccessKey) {
+                    if ($objNarroContextInfo->Context->TextAccessKey) {
                         if ($objNarroContextInfo->SuggestionAccessKey)
                             $strAccessKey = $objNarroContextInfo->SuggestionAccessKey;
                         else
-                            $strAccessKey = $objNarroContextInfo->TextAccessKey;
+                            $strAccessKey = $objNarroContextInfo->Context->TextAccessKey;
 
                         $arrTranslation[$objNarroContextInfo->Context->Context] = preg_replace('/' . $strAccessKey . '/', '&' . $strAccessKey, $arrTranslation[$objNarroContextInfo->Context->Context] , 1);
 

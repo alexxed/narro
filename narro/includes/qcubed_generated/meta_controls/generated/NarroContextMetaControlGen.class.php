@@ -20,6 +20,8 @@
 	 * @property-read QLabel $ContextIdLabel
 	 * @property QListBox $TextIdControl
 	 * @property-read QLabel $TextIdLabel
+	 * @property QTextBox $TextAccessKeyControl
+	 * @property-read QLabel $TextAccessKeyLabel
 	 * @property QListBox $ProjectIdControl
 	 * @property-read QLabel $ProjectIdLabel
 	 * @property QTextBox $ContextControl
@@ -77,6 +79,11 @@
 		 */
 		protected $lstText;
 		/**
+		 * @var QTextBox txtTextAccessKey
+		 * @access protected
+		 */
+		protected $txtTextAccessKey;
+		/**
 		 * @var QListBox lstProject
 		 * @access protected
 		 */
@@ -128,6 +135,11 @@
 		 * @access protected
 		 */
 		protected $lblTextId;
+		/**
+		 * @var QLabel lblTextAccessKey
+		 * @access protected
+		 */
+		protected $lblTextAccessKey;
 		/**
 		 * @var QLabel lblProjectId
 		 * @access protected
@@ -318,6 +330,31 @@
 			$this->lblTextId->Text = ($this->objNarroContext->Text) ? $this->objNarroContext->Text->__toString() : null;
 			$this->lblTextId->Required = true;
 			return $this->lblTextId;
+		}
+
+		/**
+		 * Create and setup QTextBox txtTextAccessKey
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtTextAccessKey_Create($strControlId = null) {
+			$this->txtTextAccessKey = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtTextAccessKey->Name = QApplication::Translate('Text Access Key');
+			$this->txtTextAccessKey->Text = $this->objNarroContext->TextAccessKey;
+			$this->txtTextAccessKey->MaxLength = NarroContext::TextAccessKeyMaxLength;
+			return $this->txtTextAccessKey;
+		}
+
+		/**
+		 * Create and setup QLabel lblTextAccessKey
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblTextAccessKey_Create($strControlId = null) {
+			$this->lblTextAccessKey = new QLabel($this->objParentObject, $strControlId);
+			$this->lblTextAccessKey->Name = QApplication::Translate('Text Access Key');
+			$this->lblTextAccessKey->Text = $this->objNarroContext->TextAccessKey;
+			return $this->lblTextAccessKey;
 		}
 
 		/**
@@ -605,6 +642,9 @@
 			}
 			if ($this->lblTextId) $this->lblTextId->Text = ($this->objNarroContext->Text) ? $this->objNarroContext->Text->__toString() : null;
 
+			if ($this->txtTextAccessKey) $this->txtTextAccessKey->Text = $this->objNarroContext->TextAccessKey;
+			if ($this->lblTextAccessKey) $this->lblTextAccessKey->Text = $this->objNarroContext->TextAccessKey;
+
 			if ($this->lstProject) {
 					$this->lstProject->RemoveAllItems();
 				if (!$this->blnEditMode)
@@ -678,6 +718,7 @@
 			try {
 				// Update any fields for controls that have been created
 				if ($this->lstText) $this->objNarroContext->TextId = $this->lstText->SelectedValue;
+				if ($this->txtTextAccessKey) $this->objNarroContext->TextAccessKey = $this->txtTextAccessKey->Text;
 				if ($this->lstProject) $this->objNarroContext->ProjectId = $this->lstProject->SelectedValue;
 				if ($this->txtContext) $this->objNarroContext->Context = $this->txtContext->Text;
 				if ($this->txtContextMd5) $this->objNarroContext->ContextMd5 = $this->txtContextMd5->Text;
@@ -741,6 +782,12 @@
 				case 'TextIdLabel':
 					if (!$this->lblTextId) return $this->lblTextId_Create();
 					return $this->lblTextId;
+				case 'TextAccessKeyControl':
+					if (!$this->txtTextAccessKey) return $this->txtTextAccessKey_Create();
+					return $this->txtTextAccessKey;
+				case 'TextAccessKeyLabel':
+					if (!$this->lblTextAccessKey) return $this->lblTextAccessKey_Create();
+					return $this->lblTextAccessKey;
 				case 'ProjectIdControl':
 					if (!$this->lstProject) return $this->lstProject_Create();
 					return $this->lstProject;
@@ -821,6 +868,8 @@
 						return ($this->lblContextId = QType::Cast($mixValue, 'QControl'));
 					case 'TextIdControl':
 						return ($this->lstText = QType::Cast($mixValue, 'QControl'));
+					case 'TextAccessKeyControl':
+						return ($this->txtTextAccessKey = QType::Cast($mixValue, 'QControl'));
 					case 'ProjectIdControl':
 						return ($this->lstProject = QType::Cast($mixValue, 'QControl'));
 					case 'ContextControl':

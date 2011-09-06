@@ -191,12 +191,12 @@
                         unset($arrTranslation[$objNarroContextInfo->Context->Context]);
                 }
 
-                if ($objNarroContextInfo->TextAccessKey) {
+                if ($objNarroContextInfo->Context->TextAccessKey) {
                     if ($objNarroContextInfo->SuggestionAccessKey && isset($arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx)) {
                         $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx] = $objNarroContextInfo->SuggestionAccessKey;
                     }
                     else
-                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx] = $objNarroContextInfo->TextAccessKey;
+                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx] = $objNarroContextInfo->Context->TextAccessKey;
                 }
             }
 

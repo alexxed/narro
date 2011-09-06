@@ -28,9 +28,7 @@
 		protected $lstLanguage;
 		protected $lstValidatorUser;
 		protected $lstValidSuggestion;
-		protected $lstPopularSuggestion;
 		protected $chkHasSuggestions;
-		protected $txtTextAccessKey;
 		protected $txtSuggestionAccessKey;
 		protected $calCreated;
 		protected $calModified;
@@ -74,9 +72,7 @@
 			$this->lstLanguage = $this->mctNarroContextInfo->lstLanguage_Create();
 			$this->lstValidatorUser = $this->mctNarroContextInfo->lstValidatorUser_Create();
 			$this->lstValidSuggestion = $this->mctNarroContextInfo->lstValidSuggestion_Create();
-			$this->lstPopularSuggestion = $this->mctNarroContextInfo->lstPopularSuggestion_Create();
 			$this->chkHasSuggestions = $this->mctNarroContextInfo->chkHasSuggestions_Create();
-			$this->txtTextAccessKey = $this->mctNarroContextInfo->txtTextAccessKey_Create();
 			$this->txtSuggestionAccessKey = $this->mctNarroContextInfo->txtSuggestionAccessKey_Create();
 			$this->calCreated = $this->mctNarroContextInfo->calCreated_Create();
 			$this->calModified = $this->mctNarroContextInfo->calModified_Create();
