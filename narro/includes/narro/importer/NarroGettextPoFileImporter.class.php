@@ -330,7 +330,7 @@
                          */
                         unset($arrTemplateFields['Flag']);
                         /**
-                         * At import, we concatenate strings on more than one lines, so no we have to restore it
+                         * At import, we concatenate strings on more than one lines, so now we have to restore it
                          */
                         $arrTemplateFields['MsgStr'] = str_replace('\n', '\\n"' . "\n" . '"', $arrTemplateFields['MsgStr']);
                         /**
