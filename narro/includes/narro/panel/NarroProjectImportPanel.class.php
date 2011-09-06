@@ -106,7 +106,7 @@
             $this->objImportProgress->Visible = false;
 
             $this->btnKillProcess = new QButton($this);
-            $this->btnKillProcess->Text = 'Kill process';
+            $this->btnKillProcess->Text = t('Kill process');
             if (QApplication::$UseAjax)
                 $this->btnKillProcess->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKillProcess_Click'));
             else

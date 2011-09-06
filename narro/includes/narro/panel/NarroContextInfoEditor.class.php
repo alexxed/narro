@@ -393,7 +393,8 @@
                         $this->dtgTranslation->MarkAsModified();
                 }
 
-                $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
+                if ($this->ParentControl->ParentControl->chkApprove->Checked == true)
+                    $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
 
                 foreach($this->Form->GetAllControls() as $ctl) {
                     if ($ctl instanceof NarroContextInfoEditor) {
@@ -427,7 +428,7 @@
         }
 
         public function btnApprove_Click($strFormId, $strControlId, $strParameter) {
-            if (!QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId) || $this->ParentControl->ParentControl->chkApprove->Checked == false)
+            if (!QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId))
                 return false;
 
             if ($strParameter != $this->objContextInfo->ValidSuggestionId) {
