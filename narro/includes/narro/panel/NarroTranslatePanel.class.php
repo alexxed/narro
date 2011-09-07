@@ -70,7 +70,7 @@
             $this->dtrText_Create();
 
             $this->objWaitIcon = new QWaitIcon($this);
-            $this->objWaitIcon->Text = sprintf('<div align="center"><img align="center" src="%s/loading45.gif" width="100" height="100" alt="Loading..."/></div>', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images');
+            $this->objWaitIcon->Text = sprintf('<div align="center"><img align="center" src="%s/translations_loading.gif" width="110" height="64" alt="Loading..."/></div>', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images');
 
 
             $this->btnMore = new QButton($this);

@@ -72,10 +72,9 @@
             $this->pnlHeader = new NarroHeaderPanel($this);
             $this->pnlBreadcrumb = new NarroBreadcrumbPanel($this);
             // Define the Wait Icon -- we need to remember to "RENDER" this wait icon, too!
-            $this->objDefaultWaitIcon = new QWaitIcon($this);
-            $this->objDefaultWaitIcon->Text = sprintf('<img src="%s/progressbar.gif" width="220" height="19" alt="Please Wait..."/>', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images');
-            $this->objDefaultWaitIcon->TagName = 'span';
-            $this->objDefaultWaitIcon->VerticalAlign = QVerticalAlign::Middle;
+            $this->objDefaultWaitIcon = new QWaitIcon($this, 'QFormWaitIcon');
+            $this->objDefaultWaitIcon->Text = sprintf('<img src="%s/translations_loading.gif" width="110" height="64" alt="Please Wait..."/>', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images');
+            $this->objDefaultWaitIcon->TagName = 'div';
         }
 
         protected function Form_Exit() {

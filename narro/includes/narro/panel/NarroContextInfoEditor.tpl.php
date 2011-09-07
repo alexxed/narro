@@ -22,7 +22,7 @@ $_CONTROL->Text->Render();
 $_CONTROL->Translation->RenderWithError();
 $_CONTROL->Message->Render();
 if ($_CONTROL->SaveIgnoreButton)
-$_CONTROL->SaveIgnoreButton->RenderWithError();
+    $_CONTROL->SaveIgnoreButton->RenderWithError();
 if ($_CONTROL->ContextInfo)
     $_CONTROL->ContextInfo->Render();
 if ($_CONTROL->AccessKey)
