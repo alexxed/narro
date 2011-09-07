@@ -31,6 +31,7 @@
         protected $btnHelp;
         protected $btnSave;
         protected $chkChanged;
+        protected $btnSaveIgnore;
 
         public function __construct($objParentObject, $strControlId = null, NarroContextInfo $objContextInfo) {
             parent::__construct($objParentObject, $strControlId);
@@ -47,7 +48,7 @@
 
             $this->chkChanged = new QCheckBox($this);
             $this->chkChanged->DisplayStyle = QDisplayStyle::None;
-
+            
             $this->txtTranslation = new QTextBox($this);
             $this->txtTranslation->ActionParameter = $objContextInfo->ContextInfoId;
             $this->txtTranslation->TextMode = QTextMode::MultiLine;
@@ -131,6 +132,14 @@
 
             $this->strTemplate = dirname(__FILE__) . '/' . __CLASS__ . '.tpl.php';
         }
+        
+        public function btnSaveIgnore_Create() {
+            $this->btnSaveIgnore = new QLinkButton($this);
+            $this->btnSaveIgnore->Text = t('Ignore and save');
+            $this->btnSaveIgnore->Display = false;
+            $this->btnSaveIgnore->TabIndex = -1;
+            $this->btnSaveIgnore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+        }
 
         public function lblContextInfo_Create() {
             if (!$this->lblContextInfo) {
@@ -139,13 +148,13 @@
                 $this->lblContextInfo->TagName = 'div';
                 $this->lblContextInfo->DisplayStyle = QDisplayStyle::None;
                 if (QApplication::QueryString('p'))
-                    $this->lblContextInfo->Text = sprintf('%s<br /><span>%s</span>', $this->objContextInfo->Context->File->FilePath, $this->objContextInfo->Context->Context);
+                    $this->lblContextInfo->Text = sprintf('%s<br /><span>%s</span>', $this->objContextInfo->Context->File->FilePath, NarroString::HtmlEntities($this->objContextInfo->Context->Context));
                 else
-                    $this->lblContextInfo->Text = sprintf('<b>%s</b>%s<br /><span>%s</span>', $this->objContextInfo->Context->Project->ProjectName, $this->objContextInfo->Context->File->FilePath, $this->objContextInfo->Context->Context);
+                    $this->lblContextInfo->Text = sprintf('<b>%s</b>%s<br /><span>%s</span>', $this->objContextInfo->Context->Project->ProjectName, $this->objContextInfo->Context->File->FilePath, NarroString::HtmlEntities($this->objContextInfo->Context->Context));
                 $this->lblContextInfo->HtmlEntities = false;
 
                 if ($this->objContextInfo->Context->Comment)
-                    $this->lblContextInfo->Text .= '<br />' . nl2br(str_replace(array('<!--', '-->'), array('', ''), $this->objContextInfo->Context->Comment));
+                    $this->lblContextInfo->Text .= '<br />' . nl2br(str_replace(array('<!--', '-->'), array('', ''), NarroString::HtmlEntities($this->objContextInfo->Context->Comment)));
             }
         }
 
@@ -316,11 +325,15 @@
             $this->dtgTranslation->Display = true;
             $this->lblContextInfo->Display = true;
             $this->btnHelp->Display = false;
-            $this->txtTranslation->Focus();
+            
+            if ($strParameter != '1')
+                $this->txtTranslation->Focus();
         }
 
 
         public function Validate() {
+            if ($_POST['Qform__FormControl'] == $this->btnSaveIgnore->ControlId) return true;
+            
             $blnEmpty = ($this->txtTranslation->Text == '');
             $blnCanSuggest = QApplication::HasPermissionForThisLang('Can suggest', $this->objContextInfo->Context->ProjectId);
 
@@ -367,12 +380,15 @@
         }
 
         public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            if ($this->txtTranslation->Text != '' && $this->chkChanged->Checked) {
-                if (!$this->Validate()) {
+            if ($this->txtTranslation->Text != '' && ($this->chkChanged->Checked || $this->btnSaveIgnore->ControlId == $strControlId)) {
+                if ($strControlId != $this->btnSaveIgnore->ControlId && !$this->Validate()) {
+                    $this->lblMessage->Text .= t('Clear the textbox to skip this translation or ');
+                    $this->btnSaveIgnore->Display = true;
                     $this->chkChanged->Checked = false;
                     return false;
                 }
-
+                
+                $this->btnSaveIgnore->Display = false;
 
                 if (!$objSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($this->objContextInfo->Context->TextId, QApplication::GetLanguageId(), md5($this->txtTranslation->Text))) {
                     $objSuggestion = new NarroSuggestion();
@@ -395,11 +411,12 @@
 
                 if ($this->ParentControl->ParentControl->chkApprove->Checked == true)
                     $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
-
-                foreach($this->Form->GetAllControls() as $ctl) {
-                    if ($ctl instanceof NarroContextInfoEditor) {
-                        if ($ctl->Text->Text == $this->lblText->Text) {
-                            $ctl->btnHelp_Click($this->Form->FormId, $ctl->btnHelp->ControlId, '');
+                else {
+                    foreach($this->Form->GetAllControls() as $ctl) {
+                        if ($ctl instanceof NarroContextInfoEditor) {
+                            if ($ctl->Text->Text == $this->lblText->Text) {
+                                $ctl->btnHelp_Click($this->Form->FormId, $ctl->btnHelp->ControlId, '1');
+                            }
                         }
                     }
                 }
@@ -462,6 +479,7 @@
             if (
                 NarroContextInfo::QueryCount(
                     QQ::AndCondition(
+                        QQ::Equal(QQN::NarroContextInfo()->File->Active, true),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, true),
                         QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, $objSuggestion->SuggestionId)
                     )
@@ -593,6 +611,7 @@
                 case 'Changed': return $this->chkChanged->Checked;
                 case 'Index': return $this->lblIndex;
                 case 'ChangedCheckbox': return $this->chkChanged;
+                case 'SaveIgnoreButton': if (!$this->btnSaveIgnore) $this->btnSaveIgnore_Create(); return $this->btnSaveIgnore;
 
                 default:
                     try {
