@@ -19,8 +19,9 @@
 
         public function __construct() {
             parent::__construct();
-            $this->blnEnable = false;
+            $this->blnEnable = true;
             $this->strName = t('Text length check');
+            $this->Enable();
         }
 
         public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {

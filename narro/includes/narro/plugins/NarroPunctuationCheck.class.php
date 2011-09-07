@@ -20,6 +20,7 @@
         public function __construct() {
             parent::__construct();
             $this->strName = t('Punctuation check');
+            $this->Enable();
         }
 
         public function SaveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {

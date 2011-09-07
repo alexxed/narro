@@ -22,6 +22,7 @@
         public function __construct() {
             parent::__construct();
             $this->strName = t('Entity check');
+            $this->Enable();
         }
 
         public static function RegisterEntityFormat($strRegexForEntity) {
@@ -100,6 +101,7 @@
             if (strstr($strOriginal, '%') || strstr($strOriginal, '$') || strstr($strOriginal, '&')) {
                 $arrEntities = self::GetEntities($strOriginal);
                 if (count($arrEntities)) {
+                    if (is_array($arrEntities))
                     foreach($arrEntities as $strEntity) {
                         if (strpos($strTranslation, trim($strEntity)) === false)
                             $arrDiff[] = htmlspecialchars(trim($strEntity), null, 'utf-8');

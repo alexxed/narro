@@ -20,9 +20,8 @@
         public function __construct() {
             parent::__construct();
             $this->strName = t('DTD check');
+            $this->Enable();
         }
-
-
 
         public function ExportSuggestion($strOriginal, $strTranslation, $strContext, NarroFile $objFile, NarroProject $objProject) {
             $strStrippedTranslation = preg_replace('/<\/?[a-z][^>]+>/', '', $strTranslation);

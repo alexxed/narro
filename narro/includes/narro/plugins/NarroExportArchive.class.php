@@ -42,6 +42,7 @@
             parent::__construct();
             $this->blnEnable = true;
             $this->strName = t('Archive Exporter');
+            $this->Enable();
         }
 
         private function CreateExportArchive($strTranslationPath, $strArchive) {

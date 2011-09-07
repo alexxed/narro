@@ -23,6 +23,11 @@
         public function __construct() {
             $this->strName = __CLASS__;
         }
+        
+        protected function Enable() {
+            QApplication::RegisterPreference($this->strName, 'option', sprintf(t('Enables the %s plugin'), $this->strName), 'yes', array('yes', 'no'));
+            $this->blnEnable = (QApplication::$User->getPreferenceValueByName($this->strName) == 'yes');
+        } 
 
         /////////////////////////
         // Public Properties: GET
