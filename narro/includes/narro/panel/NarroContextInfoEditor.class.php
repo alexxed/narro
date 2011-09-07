@@ -481,7 +481,7 @@
             if (
                 NarroContextInfo::QueryCount(
                     QQ::AndCondition(
-                        QQ::Equal(QQN::NarroContextInfo()->File->Active, true),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->File->Active, true),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Active, true),
                         QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, $objSuggestion->SuggestionId)
                     )
