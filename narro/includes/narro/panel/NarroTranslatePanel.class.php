@@ -79,7 +79,7 @@
 
             $this->lstProject_Create();
 
-            $this->txtFile = new QTextBox($this, 'file_name');
+            $this->txtFile = new QTextBox($this, 'filename');
             $this->txtFile->Name = t('File');
             if (QApplication::QueryString('f'))
                 $this->txtFile->Text = QApplication::QueryString('f');
