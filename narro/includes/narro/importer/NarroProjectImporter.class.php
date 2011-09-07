@@ -14,6 +14,8 @@
      *
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+     * 
+     * @property array $ExportAuthorList comma separated list of usernames or array of user ids
      */
 
     class NarroProjectImporter {
@@ -66,8 +68,14 @@
          * 3 = approved and most recent suggestion
          * 4 = approved and most voted and most recent suggestion
          * 5 = approved and current user's suggestion
+         * 6 = approved then the most recent suggestion from selected users in the given order
          */
         protected $intExportedSuggestion = 1;
+        
+        /**
+         * Array of Narro user ids
+         */
+        protected $arrExportAuthorList;
 
         protected $strTranslationPath;
         protected $strTemplatePath;
@@ -803,6 +811,7 @@
                 case "ExportedSuggestion": return $this->intExportedSuggestion;
                 case "CopyUnhandledFiles": return $this->blnCopyUnhandledFiles;
                 case "SkipUntranslated": return $this->blnSkipUntranslated;
+                case "ExportAuthorList": return $this->arrExportAuthorList;
 
                 default: return false;
             }
@@ -947,6 +956,26 @@
                         $objExc->IncrementOffset();
                         throw $objExc;
                     }
+                    
+                case "ExportAuthorList":
+                    try {
+                        if (is_array($mixValue))
+                            $this->arrExportAuthorList = QType::Cast($mixValue, QType::ArrayType);
+                        else {
+                            $arrAuthor = explode(',', $mixValue);
+                            foreach($arrAuthor as $intIdx=>$strAuthor) {
+                                $arrAuthor[$intIdx] = trim($strAuthor);
+                            }
+                            
+                            foreach(NarroUser::QueryArray(QQ::In(QQN::NarroUser()->Username, $arrAuthor)) as $objUser) {
+                                $this->arrExportAuthorList[] = $objUser->UserId;
+                            }
+                        }
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }                
 
                 default:
                     return false;
@@ -995,7 +1024,7 @@
             $arrRoles = NarroRole::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroRole()->RoleName)));
             QApplication::LogInfo(sprintf('Found %d role names to localize.', count($arrRoles)));
 
-            $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'), null, '/.*\/data\/.*|.*\/qcubed\/.*|.*\/qcubed_generated\/.*|.*\/Zend\/.*/');
+            $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'), null, '/.*\/drafts\/.*|.*\/data\/.*|.*\/qcubed\/.*|.*\/qcubed_generated\/.*|.*\/Zend\/.*/');
 
             QApplication::LogInfo(sprintf('Found %d php files to search for localizable messages.', count($allFiles)));
             foreach($allFiles as $strFileName) {

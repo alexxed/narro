@@ -26,6 +26,7 @@
 
         public $chkCleanDirectory;
         public $lstExportSuggestionType;
+        public $txtAuthor;
 
         public $btnExport;
 
@@ -67,6 +68,13 @@
             $this->lstExportSuggestionType->AddItem(t('Approved, then most recent suggestion'), 3);
             $this->lstExportSuggestionType->AddItem(t('Approved, then most voted and then most recent suggestion'), 4);
             $this->lstExportSuggestionType->AddItem(t('Approved, then my suggestion'), 5);
+            $this->lstExportSuggestionType->AddItem(t('Approved, then the most recent suggestion from selected users'), 6);
+            $this->lstExportSuggestionType->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'lstExportSuggestionType_Change'));
+            
+            $this->txtAuthor = new QTextBox($this, 'username');
+            $this->txtAuthor->Name = 'Author(s)';
+            $this->txtAuthor->Instructions = 'Type author names, separated by comma';
+            $this->txtAuthor->Display = false;
 
             $this->objExportProgress = new NarroTranslationProgressBar($this);
             $this->objExportProgress->Total = 100;
@@ -96,6 +104,10 @@
             }
 
             $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objProject->ProjectId, QApplication::$TargetLanguage->LanguageCode) && !$this->btnExport->Visible;
+        }
+        
+        public function lstExportSuggestionType_Change() {
+            $this->txtAuthor->Display = ($this->lstExportSuggestionType->SelectedValue == 6);
         }
 
         public function btnExport_Click($strFormId, $strControlId, $strParameter) {
@@ -155,6 +167,7 @@
                  */
                 $objNarroImporter->ExportedSuggestion = $this->lstExportSuggestionType->SelectedValue;
                 $objNarroImporter->Project = $this->objProject;
+                $objNarroImporter->ExportAuthorList = $this->txtAuthor->Text;
                 $objNarroImporter->User = NarroUser::LoadAnonymousUser();
                 $objNarroImporter->TargetLanguage = QApplication::$TargetLanguage;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
@@ -195,7 +208,7 @@
                 $this->lblExport->Text = '';
                 try {
                     $strCommand = sprintf(
-                        '%s %s --export --project %d --user %d --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s" --exported-suggestion %d',
+                        '%s %s --export --project %d --user %d --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s" --exported-suggestion %d --export-author-list %s',
                         __PHP_CLI_PATH__,
                         escapeshellarg('includes/narro/importer/narro-cli.php'),
                         $this->objProject->ProjectId,
@@ -204,7 +217,8 @@
                         QApplication::$TargetLanguage->LanguageCode,
                         $this->objProject->DefaultTemplatePath,
                         $this->objProject->DefaultTranslationPath,
-                        $this->lstExportSuggestionType->SelectedValue
+                        $this->lstExportSuggestionType->SelectedValue,
+                        escapeshellarg($this->txtAuthor->Text)
                     );
                 }
                 catch (Exception $objEx) {

@@ -39,7 +39,8 @@
                     "                             3 - approved, then most recent,\n" .
                     "                             4 approved, most voted, most recent,\n" .
                     "                             5 approved, my suggestion\n" .
-                    "--do-not-deactivate-files    do not deactivate project files before importing\n" .
+                    "                             6 approved, then most recent from a list of authors\n" .
+                    "--export-author-list         comma separated list of author usernames for option 6\n" .
                     "--do-not-deactivate-contexts do not deactivate project contexts before\n" .
                     "                             importing\n" .
                     "--do-not-check-equal         don't check if the translation is equal to the original\n" .
@@ -190,7 +191,10 @@
         NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
 
         if (array_search('--exported-suggestion', $argv))
-            $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];
+            $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];        
+        
+        if (array_search('--export-author-list', $argv) !== false)
+            $objNarroImporter->ExportAuthorList = $argv[array_search('--export-author-list', $argv)+1];
 
         if (array_search('--project', $argv) !== false)
             $intProjectId = $argv[array_search('--project', $argv)+1];

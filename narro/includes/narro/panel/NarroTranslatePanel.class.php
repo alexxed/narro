@@ -79,7 +79,7 @@
 
             $this->lstProject_Create();
 
-            $this->txtFile = new QTextBox($this);
+            $this->txtFile = new QTextBox($this, 'file_name');
             $this->txtFile->Name = t('File');
             if (QApplication::QueryString('f'))
                 $this->txtFile->Text = QApplication::QueryString('f');
@@ -113,7 +113,7 @@
         }
 
         public function txtSearch_Create() {
-            $this->txtSearch = new QTextBox($this);
+            $this->txtSearch = new QTextBox($this, 'search');
             $this->txtSearch->Name = t('Search in');
             if (QApplication::QueryString('s'))
                 $this->txtSearch->Text = QApplication::QueryString('s');

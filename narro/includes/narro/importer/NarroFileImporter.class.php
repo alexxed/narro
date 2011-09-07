@@ -80,6 +80,11 @@
         protected $intExportedSuggestion = 1;
 
         /**
+         * Array of Narro user ids
+         */
+        protected $arrExportAuthorList;
+        
+        /**
          * An array with all the context info objects from this file
          * @var NarroContextInfo[]
          */
@@ -112,8 +117,8 @@
                 $this->blnApproveAlreadyApproved = $objImporter->ApproveAlreadyApproved;
                 $this->blnOnlySuggestions = $objImporter->OnlySuggestions;
                 $this->intExportedSuggestion = $objImporter->ExportedSuggestion;
+                $this->arrExportAuthorList = $objImporter->ExportAuthorList;
             }
-
         }
 
         protected function GetContextInfoArray() {
@@ -486,7 +491,8 @@
             $arrSuggestion = NarroSuggestion::QueryArray(
                         QQ::AndCondition(
                             QQ::Equal(QQN::NarroSuggestion()->UserId, $intUserId),
-                            QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId)
+                            QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId),
+                            QQ::Equal(QQN::NarroSuggestion()->LanguageId, $this->objTargetLanguage->LanguageId)
                         )
             );
 
@@ -524,9 +530,11 @@
          * Get the most voted suggestion for a context
          *
          * @param integer $intContextId
+         * @param integer $intTextId
+         * @param integer $intUserId
          * @return NarroSuggestion
          */
-        public function GetMostVotedSuggestion($intContextId) {
+        public function GetMostVotedSuggestion($intContextId, $intTextId, $intUserId) {
             $strQuery = sprintf(
                 'SELECT suggestion_id, SUM(vote_value) as votes ' .
                 'FROM narro_suggestion_vote, narro_context_info ' .
@@ -559,10 +567,12 @@
         /**
          * Get the most recent suggestion for a context
          *
+         * @param integer $intContextId
          * @param integer $intTextId
+         * @param integer $intUserId
          * @return NarroSuggestion
          */
-        public function GetMostRecentSuggestion($intTextId) {
+        public function GetMostRecentSuggestion($intContextId, $intTextId, $intUserId) {
             return
                 NarroSuggestion::QuerySingle(
                     QQ::AndCondition(
@@ -571,6 +581,24 @@
                     ),
                     array(QQ::OrderBy(QQN::NarroSuggestion()->Created, 0))
                 );
+        }
+
+        /**
+        * Get the most recent suggestion for a context made by a list of users
+        *
+        * @param integer $intContextId
+        * @param integer $intTextId
+        * @param integer $intUserId
+        * @return NarroSuggestion
+        */        
+        protected function GetUserListSuggestion($intContextId, $intTextId, $intUserId) {
+            return NarroSuggestion::QuerySingle(
+                QQ::AndCondition(
+                    QQ::In(QQN::NarroSuggestion()->UserId, $this->arrExportAuthorList),
+                    QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId),
+                    QQ::Equal(QQN::NarroSuggestion()->LanguageId, $this->objTargetLanguage->LanguageId)
+                )
+            );
         }
 
         /**
@@ -638,6 +666,15 @@
                     else {
                         return false;
                     }
+                case 6:
+                    $objSuggestion = $this->GetUserListSuggestion($objContextInfo->ContextId, $objContextInfo->Context->TextId, QApplication::GetUserId());
+                    if ($objSuggestion instanceof NarroSuggestion) {
+                        QApplication::LogDebug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$User->Username, $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
+                        return $objSuggestion->SuggestionValue;
+                    }
+                    else {
+                        return false;
+                    }                    
                 default:
                     return false;
             }

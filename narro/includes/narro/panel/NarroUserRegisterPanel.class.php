@@ -36,10 +36,10 @@
 
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->HtmlEntities = false;
-            $this->txtUsername = new QTextBox($this);
+            $this->txtUsername = new QTextBox($this, 'username');
             $this->txtUsername->Required = true;
-            $this->txtEmail = new QTextBox($this);
-            $this->txtPassword = new QTextBox($this);
+            $this->txtEmail = new QTextBox($this, 'email');
+            $this->txtPassword = new QTextBox($this, 'password');
             $this->txtPassword->TextMode = QTextMode::Password;
             $this->btnRegister = new QButton($this);
             $this->btnRegister->Text = t('Register');

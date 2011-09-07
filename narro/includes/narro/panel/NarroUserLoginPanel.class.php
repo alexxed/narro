@@ -22,7 +22,7 @@
             $this->lblMessage->HtmlEntities = false;
             $this->txtUsername = new QTextBox($this, 'username');
             $this->txtUsername->TabIndex = 1;
-            $this->txtPassword = new QTextBox($this);
+            $this->txtPassword = new QTextBox($this, 'password');
             $this->txtPassword->TabIndex = 2;
             $this->txtPassword->TextMode = QTextMode::Password;
             $this->btnLogin = new QButton($this);

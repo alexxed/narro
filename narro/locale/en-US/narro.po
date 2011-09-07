@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 2.0
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2011-31-08 22:56+0300\n"
-"PO-Revision-Date: 2011-31-08 22:56+0300\n"
+"POT-Creation-Date: 2011-07-09 09:11+0300\n"
+"PO-Revision-Date: 2011-07-09 09:11+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -397,8 +397,8 @@ msgstr ""
 msgid "Alright, you don't have to type it twice, but please type it carefully."
 msgstr ""
 
-#. $this->txtEmail->Name = QApplication::Translate('Email');
-#: includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroUserRecoverPasswordPanel.tpl.php includes/narro/panel/NarroUserListPanel.class.php assets/plugins/QEmailTextBox/example/emailtextbox.php
+#. $this->colEmail = new QDataGridColumn(QApplication::Translate('Email'), '<?= $_CONTROL->ParentControl->dtgUser_EmailColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUser()->Email), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUser()->Email, false)));
+#: includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroUserRecoverPasswordPanel.tpl.php includes/narro/panel/NarroUserListPanel.class.php
 msgid "Email"
 msgstr ""
 
@@ -455,6 +455,11 @@ msgstr ""
 #. $this->chkImportOnlyTranslations->Name = t('Do not add texts, just add found translations for existing texts');
 #: includes/narro/panel/NarroProjectImportPanel.class.php
 msgid "Do not add texts, just add found translations for existing texts"
+msgstr ""
+
+#. $this->btnKillProcess->Text = t('Kill process');
+#: includes/narro/panel/NarroProjectImportPanel.class.php
+msgid "Kill process"
 msgstr ""
 
 #. $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=&&&escapedsimplequote&&&disabled&&&escapedsimplequote&&&;this.value=&&&escapedsimplequote&&&%s&&&escapedsimplequote&&&', t('Please wait...'))));
@@ -638,6 +643,11 @@ msgstr ""
 #. $this->lstExportSuggestionType->AddItem(t('Approved, then my suggestion'), 5);
 #: includes/narro/panel/NarroProjectExportPanel.class.php
 msgid "Approved, then my suggestion"
+msgstr ""
+
+#. $this->lstExportSuggestionType->AddItem(t('Approved, then the most recent suggestion from selected users'), 6);
+#: includes/narro/panel/NarroProjectExportPanel.class.php
+msgid "Approved, then the most recent suggestion from selected users"
 msgstr ""
 
 #. $this->lblExport->Text = t('Export finished.');
@@ -919,6 +929,11 @@ msgstr ""
 #. $this->txtFile->Name = t('File');
 #: includes/narro/panel/NarroTranslatePanel.class.php
 msgid "File"
+msgstr ""
+
+#. $this->chkApprove->Name = t('Approve added translations');
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Approve added translations"
 msgstr ""
 
 #. $this->txtSearch->Name = t('Search in');
@@ -1668,6 +1683,13 @@ msgstr ""
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+msgid "Spanish"
+msgstr ""
+
+#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Spanish, Argentina"
 msgstr ""
 
@@ -1996,6 +2018,16 @@ msgstr ""
 #. $lblRoleName->Text = t($objNarroRole->RoleName);
 #: includes/narro/panel/NarroRoleListPanel.class.php
 msgid "Approver"
+msgstr ""
+
+#. $lblRoleName->Text = t($objNarroRole->RoleName);
+#: includes/narro/panel/NarroRoleListPanel.class.php
+msgid "Poate importa și exporta"
+msgstr ""
+
+#. $lblRoleName->Text = t($objNarroRole->RoleName);
+#: includes/narro/panel/NarroRoleListPanel.class.php
+msgid "Poate șterge sugestii"
 msgstr ""
 
 #. $lblRoleName->Text = t($objNarroRole->RoleName);
@@ -2711,15 +2743,5 @@ msgstr ""
 #. $strPageTitle = sprintf(t('%s :: %s :: File list'), $this->objProject->ProjectName, $this->objParentFile->FileName);
 #: files.tpl.php
 msgid "%s :: %s :: File list"
-msgstr ""
-
-#. $this->btnSubmit->Text = QApplication::Translate('Verify');
-#: assets/plugins/QEmailTextBox/example/emailtextbox.php
-msgid "Verify"
-msgstr ""
-
-#. $this->txtServerSide->Name = QApplication::Translate('Keyword');
-#: assets/plugins/QAutoCompleteTextBox/example/autocomplete.php
-msgid "Keyword"
 msgstr ""
 

@@ -19,12 +19,9 @@
 
 <div class="section_title"><?php _t('Options')?></div>
 <div class="section">
-<label for="<?php echo $_CONTROL->lstExportSuggestionType->ControlId?>"><?php echo $_CONTROL->lstExportSuggestionType->Name?></label>
-<?php $_CONTROL->lstExportSuggestionType->Render(); ?>
-<br />
-<?php $_CONTROL->chkCleanDirectory->Render(); ?>
-<label for="<?php echo $_CONTROL->chkCleanDirectory->ControlId?>"><?php echo $_CONTROL->chkCleanDirectory->Name?></label>
-<br />
+<?php $_CONTROL->lstExportSuggestionType->RenderWithName(); ?>
+<?php $_CONTROL->txtAuthor->RenderWithName(); ?>
+<?php $_CONTROL->chkCleanDirectory->RenderWithName(); ?>
 </div>
 <?php
     $_CONTROL->pnlLogViewer->Render();
