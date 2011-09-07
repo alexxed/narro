@@ -136,11 +136,12 @@
         }
         
         public function btnSaveIgnore_Create() {
+            if ($this->btnSaveIgnore instanceof QLinkButton) return true;
+            
             $this->btnSaveIgnore = new QLinkButton($this);
             $this->btnSaveIgnore->Text = t('Ignore and save');
             $this->btnSaveIgnore->Display = false;
             $this->btnSaveIgnore->TabIndex = -1;
-            $this->btnSaveIgnore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
         }
 
         public function lblContextInfo_Create() {
@@ -382,15 +383,20 @@
         }
 
         public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            if ($this->txtTranslation->Text != '' && ($this->chkChanged->Checked || $this->btnSaveIgnore->ControlId == $strControlId)) {
-                if ($strControlId != $this->btnSaveIgnore->ControlId && !$this->Validate()) {
+            if ($this->txtTranslation->Text != '' && ($this->chkChanged->Checked || ($this->btnSaveIgnore && $this->btnSaveIgnore->ControlId == $strControlId))) {
+                if (!$this->btnSaveIgnore && !$this->Validate()) {
+                    $this->btnSaveIgnore_Create();
+                    $this->btnSaveIgnore->RemoveAllActions('click');
+                    $this->btnSaveIgnore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+                    $this->btnSaveIgnore->Text = t('Ignore and save');
                     $this->lblMessage->Text .= t('Clear the textbox to skip this translation or ');
                     $this->btnSaveIgnore->Display = true;
                     $this->chkChanged->Checked = false;
                     return false;
                 }
                 
-                $this->btnSaveIgnore->Display = false;
+                if ($this->btnSaveIgnore)
+                    $this->btnSaveIgnore->Display = false;
 
                 if (!$objSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($this->objContextInfo->Context->TextId, QApplication::GetLanguageId(), md5($this->txtTranslation->Text))) {
                     $objSuggestion = new NarroSuggestion();
@@ -493,7 +499,7 @@
                     NarroTranslatePanel::SHOW_APPROVED,
                     "'" . $objSuggestion->Text->TextValue . "'"
                 );
-                $this->txtTranslation->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it.'), $strLink);
+                $this->txtTranslation->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it or %s'), $strLink, '');
                 return true;
             }
             /**
@@ -516,7 +522,7 @@
 
         public function btnDelete_Click($strFormId, $strControlId, $strParameter) {
             $objSuggestion = NarroSuggestion::Load($strParameter);
-            if (!$this->IsSuggestionUsed($objSuggestion)) {
+            if (($this->btnSaveIgnore && $this->btnSaveIgnore->ControlId == $strControlId) || !$this->IsSuggestionUsed($objSuggestion)) {
 
                 QApplication::$PluginHandler->DeleteSuggestion($this->objContextInfo->Context->Text->TextValue, $objSuggestion->SuggestionValue, $this->objContextInfo->Context->Context, $this->objContextInfo->Context->File, $this->objContextInfo->Context->Project);
 
@@ -553,6 +559,16 @@
 
                 $this->lblMessage->Text = t('Suggestion succesfully deleted.');
                 $this->blnModified = true;
+                if ($this->btnSaveIgnore)
+                    $this->btnSaveIgnore->Display = false;
+            }
+            else {
+                $this->btnSaveIgnore_Create();
+                $this->btnSaveIgnore->Display = true;
+                $this->btnSaveIgnore->Text = t('Ignore and delete');
+                $this->btnSaveIgnore->RemoveAllActions('click');
+                $this->btnSaveIgnore->ActionParameter = $strParameter;
+                $this->btnSaveIgnore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnDelete_Click'));
             }
 
         }
@@ -613,7 +629,7 @@
                 case 'Changed': return $this->chkChanged->Checked;
                 case 'Index': return $this->lblIndex;
                 case 'ChangedCheckbox': return $this->chkChanged;
-                case 'SaveIgnoreButton': if (!$this->btnSaveIgnore) $this->btnSaveIgnore_Create(); return $this->btnSaveIgnore;
+                case 'SaveIgnoreButton': return $this->btnSaveIgnore;
 
                 default:
                     try {
