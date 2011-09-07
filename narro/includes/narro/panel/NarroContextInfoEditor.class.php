@@ -113,16 +113,18 @@
                 new QClickEvent(),
                 new QJavaScriptAction(
                     sprintf(
-                        'if (jQuery("#%s").attr("alt") == "%s") {jQuery("#%s").val(jQuery("#%s").text());jQuery("#%s").attr("alt", "%s");} else {jQuery("#%s").val("");jQuery("#%s").attr("alt", "%s");}',
+                        'if (jQuery("#%s").attr("alt") == "%s") {jQuery("#%s").val(jQuery("#%s").text());jQuery("#%s").attr("alt", "%s");jQuery("#%s").attr("checked", "true");} else {jQuery("#%s").val("");jQuery("#%s").attr("alt", "%s");jQuery("#%s").attr("checked", "");}',
                         $this->btnCopy->ControlId,
                         t('Copy'),
                         $this->txtTranslation->ControlId,
                         $this->lblText->ControlId,
                         $this->btnCopy->ControlId,
                         t('Clear'),
+                        $this->chkChanged->ControlId,
                         $this->txtTranslation->ControlId,
                         $this->btnCopy->ControlId,
-                        t('Copy')
+                        t('Copy'),
+                        $this->chkChanged->ControlId
                     )
                 )
             );
