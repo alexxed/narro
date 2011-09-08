@@ -89,7 +89,7 @@
 		 * @var string strSuggestionValueMd5
 		 */
 		protected $strSuggestionValueMd5;
-		const SuggestionValueMd5MaxLength = 128;
+		const SuggestionValueMd5MaxLength = 32;
 		const SuggestionValueMd5Default = null;
 
 

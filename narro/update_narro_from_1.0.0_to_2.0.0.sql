@@ -89,6 +89,8 @@ ALTER TABLE `narro_language` CHANGE `plural_form` `plural_form` VARCHAR( 255 ) C
 ALTER TABLE `narro_context` CHANGE `context_md5` `context_md5` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 ALTER TABLE `narro_text` CHANGE `text_value_md5` `text_value_md5` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 ALTER TABLE `narro_suggestion` CHANGE `suggestion_value_md5` `suggestion_value_md5` VARCHAR( 32 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+ALTER TABLE `narro_project` CHANGE `source` `data` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `narro_project_progress` CHANGE `source` `data` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
 
 
@@ -96,28 +98,25 @@ ALTER TABLE `narro_suggestion` CHANGE `suggestion_value_md5` `suggestion_value_m
 
 
 
+-- ALTER TABLE `narro_context` DROP INDEX `context_md5`;
+-- ALTER TABLE `narro_context` DROP INDEX `project_id`;
 
-ALTER TABLE `narro_context` DROP INDEX `context_md5`;
-ALTER TABLE `narro_context` DROP INDEX `project_id`;
+-- INSERT INTO narro_context_data
+-- SELECT NULL , `context_id` , `text_access_key` , `context` , `comment` , `created` , `modified`
+-- FROM narro_context;
 
+-- INSERT INTO narro_context_info_data
+-- SELECT NULL , `context_info_id` , `validator_user_id` , `valid_suggestion_id` , `suggestion_access_key` , `created` , `modified`
+-- FROM narro_context_info ;
 
+-- ALTER TABLE `narro_context_info` DROP FOREIGN KEY `narro_context_info_ibfk_13` ;
+-- ALTER TABLE `narro_context_info` DROP FOREIGN KEY `narro_context_info_ibfk_9` ;
+-- ALTER TABLE `narro_context_info` DROP INDEX `validator_user_id`;
+-- ALTER TABLE `narro_context_info` DROP INDEX `suggestion_id`;
 
-INSERT INTO narro_context_data
-SELECT NULL , `context_id` , `text_access_key` , `context` , `comment` , `created` , `modified`
-FROM narro_context;
-
-INSERT INTO narro_context_info_data
-SELECT NULL , `context_info_id` , `validator_user_id` , `valid_suggestion_id` , `suggestion_access_key` , `created` , `modified`
-FROM narro_context_info ;
-
-ALTER TABLE `narro_context_info` DROP FOREIGN KEY `narro_context_info_ibfk_13` ;
-ALTER TABLE `narro_context_info` DROP FOREIGN KEY `narro_context_info_ibfk_9` ;
-ALTER TABLE `narro_context_info` DROP INDEX `validator_user_id`;
-ALTER TABLE `narro_context_info` DROP INDEX `suggestion_id`;
-
-ALTER TABLE `narro_context_info`
-  DROP `validator_user_id`,
-  DROP `valid_suggestion_id`,
-  DROP `suggestion_access_key`,
-  DROP `created`,
-  DROP `modified`;
+-- ALTER TABLE `narro_context_info`
+--  DROP `validator_user_id`,
+--  DROP `valid_suggestion_id`,
+--  DROP `suggestion_access_key`,
+--  DROP `created`,
+--  DROP `modified`;

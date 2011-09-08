@@ -23,7 +23,7 @@
 	 * @property string $Encoding the value for strEncoding (Not Null)
 	 * @property string $TextDirection the value for strTextDirection (Not Null)
 	 * @property string $SpecialCharacters the value for strSpecialCharacters 
-	 * @property string $PluralForm the value for strPluralForm (Not Null)
+	 * @property string $PluralForm the value for strPluralForm 
 	 * @property boolean $Active the value for blnActive 
 	 * @property-read NarroContextInfo $_NarroContextInfoAsLanguage the value for the private _objNarroContextInfoAsLanguage (Read-Only) if set due to an expansion on the narro_context_info.language_id reverse relationship
 	 * @property-read NarroContextInfo[] $_NarroContextInfoAsLanguageArray the value for the private _objNarroContextInfoAsLanguageArray (Read-Only) if set due to an ExpandAsArray on the narro_context_info.language_id reverse relationship
@@ -1182,7 +1182,7 @@
 
 				case 'PluralForm':
 					/**
-					 * Gets the value for strPluralForm (Not Null)
+					 * Gets the value for strPluralForm 
 					 * @return string
 					 */
 					return $this->strPluralForm;
@@ -1420,7 +1420,7 @@
 
 				case 'PluralForm':
 					/**
-					 * Sets the value for strPluralForm (Not Null)
+					 * Sets the value for strPluralForm 
 					 * @param string $mixValue
 					 * @return string
 					 */

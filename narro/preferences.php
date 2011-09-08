@@ -63,7 +63,7 @@
         protected function GetControlHtml() {
             $strOutput = $this->lblMessage->Render(false) . '<br /><table style="border: 1px solid #DDDDDD" cellpadding="4" cellspacing="0" width="100%">';
 
-            foreach(QApplication::$AvailablePreferences as $strName=>$arrPref) {
+            foreach(NarroUser::$AvailablePreferences as $strName=>$arrPref) {
                 switch($arrPref['type']) {
                     case 'number':
                             $txtNumber = new QIntegerTextBox($this);
@@ -72,14 +72,14 @@
                             $txtNumber->Maximum = 100;
                             $txtNumber->MaxLength = 3;
                             $txtNumber->Width = 50;
-                            $txtNumber->Text = $this->objUser->getPreferenceValueByName($strName);
+                            $txtNumber->Text = $this->objUser->GetPreferenceValueByName($strName);
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtNumber->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $txtNumber;
                             break;
                     case 'text':
                             $txtTextPref = new QTextBox($this);
                             $txtTextPref->Name = $strName;
-                            $txtTextPref->Text = $this->objUser->getPreferenceValueByName($strName);
+                            $txtTextPref->Text = $this->objUser->GetPreferenceValueByName($strName);
 
                             if ($strName == 'Special characters') {
                                 $strSelect = sprintf('<select onchange="document.getElementById(\'%s\').value+=this.options[this.selectedIndex].value;">', $txtTextPref->ControlId);
@@ -107,18 +107,18 @@
                             if ($strName == 'Language') {
                                 $arrLanguages = NarroLanguage::LoadAllActive(QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
                                 foreach($arrLanguages as $objLanguage) {
-                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
                                 }
                             }
                             elseif ($strName == 'Application language') {
                                 $arrLanguages = NarroLanguage::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)));
                                 foreach($arrLanguages as $objLanguage) {
-                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+                                    $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
                                 }
                             }
                             else
                                 foreach($arrPref['values'] as $strValue) {
-                                    $lstOption->AddItem(t($strValue), $strValue, ($strValue == $this->objUser->getPreferenceValueByName($strName)));
+                                    $lstOption->AddItem(t($strValue), $strValue, ($strValue == $this->objUser->GetPreferenceValueByName($strName)));
                                 }
                             $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $lstOption->RenderWithError(false), t($arrPref['description']));
                             $this->arrControls[$strName] = $lstOption;
@@ -139,15 +139,15 @@
 
         public function btnSave_Click($strFormId, $strControlId, $strParameter) {
             foreach($this->arrControls as $strName=>$objControl) {
-                switch(QApplication::$AvailablePreferences[$strName]['type']) {
+                switch(NarroUser::$AvailablePreferences[$strName]['type']) {
                     case 'number':
-                            $this->objUser->setPreferenceValueByName($strName, $objControl->Text);
+                            $this->objUser->SetPreferenceValueByName($strName, $objControl->Text);
                             break;
                     case 'text':
-                            $this->objUser->setPreferenceValueByName($strName,  $objControl->Text);
+                            $this->objUser->SetPreferenceValueByName($strName,  $objControl->Text);
                             break;
                     case 'option':
-                            $this->objUser->setPreferenceValueByName($strName, $objControl->SelectedValue);
+                            $this->objUser->SetPreferenceValueByName($strName, $objControl->SelectedValue);
                             break;
                 }
             }

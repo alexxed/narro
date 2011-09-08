@@ -24,7 +24,7 @@
 	 * @property integer $FuzzyTextCount the value for intFuzzyTextCount (Not Null)
 	 * @property integer $ApprovedTextCount the value for intApprovedTextCount (Not Null)
 	 * @property integer $ProgressPercent the value for intProgressPercent (Not Null)
-	 * @property string $Source list of sources of translations 
+	 * @property string $Data the value for strData 
 	 * @property NarroProject $Project the value for the NarroProject object referenced by intProjectId (Not Null)
 	 * @property NarroLanguage $Language the value for the NarroLanguage object referenced by intLanguageId (Not Null)
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -108,12 +108,11 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column narro_project_progress.source
-		 * list of sources of translations
-		 * @var string strSource
+		 * Protected member variable that maps to the database column narro_project_progress.data
+		 * @var string strData
 		 */
-		protected $strSource;
-		const SourceDefault = null;
+		protected $strData;
+		const DataDefault = null;
 
 
 		/**
@@ -174,7 +173,7 @@
 			$this->intFuzzyTextCount = NarroProjectProgress::FuzzyTextCountDefault;
 			$this->intApprovedTextCount = NarroProjectProgress::ApprovedTextCountDefault;
 			$this->intProgressPercent = NarroProjectProgress::ProgressPercentDefault;
-			$this->strSource = NarroProjectProgress::SourceDefault;
+			$this->strData = NarroProjectProgress::DataDefault;
 		}
 
 
@@ -451,7 +450,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'fuzzy_text_count', $strAliasPrefix . 'fuzzy_text_count');
 			$objBuilder->AddSelectItem($strTableName, 'approved_text_count', $strAliasPrefix . 'approved_text_count');
 			$objBuilder->AddSelectItem($strTableName, 'progress_percent', $strAliasPrefix . 'progress_percent');
-			$objBuilder->AddSelectItem($strTableName, 'source', $strAliasPrefix . 'source');
+			$objBuilder->AddSelectItem($strTableName, 'data', $strAliasPrefix . 'data');
 		}
 
 
@@ -500,8 +499,8 @@
 			$objToReturn->intApprovedTextCount = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$strAliasName = array_key_exists($strAliasPrefix . 'progress_percent', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'progress_percent'] : $strAliasPrefix . 'progress_percent';
 			$objToReturn->intProgressPercent = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'source', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'source'] : $strAliasPrefix . 'source';
-			$objToReturn->strSource = $objDbRow->GetColumn($strAliasName, 'Blob');
+			$strAliasName = array_key_exists($strAliasPrefix . 'data', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'data'] : $strAliasPrefix . 'data';
+			$objToReturn->strData = $objDbRow->GetColumn($strAliasName, 'Blob');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
 				foreach ($arrPreviousItems as $objPreviousItem) {
@@ -720,7 +719,7 @@
 							`fuzzy_text_count`,
 							`approved_text_count`,
 							`progress_percent`,
-							`source`
+							`data`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intProjectId) . ',
 							' . $objDatabase->SqlVariable($this->intLanguageId) . ',
@@ -730,7 +729,7 @@
 							' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
 							' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
 							' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
-							' . $objDatabase->SqlVariable($this->strSource) . '
+							' . $objDatabase->SqlVariable($this->strData) . '
 						)
 					');
 
@@ -754,7 +753,7 @@
 							`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
 							`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
 							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
-							`source` = ' . $objDatabase->SqlVariable($this->strSource) . '
+							`data` = ' . $objDatabase->SqlVariable($this->strData) . '
 						WHERE
 							`project_progress_id` = ' . $objDatabase->SqlVariable($this->intProjectProgressId) . '
 					');
@@ -841,7 +840,7 @@
 			$this->intFuzzyTextCount = $objReloaded->intFuzzyTextCount;
 			$this->intApprovedTextCount = $objReloaded->intApprovedTextCount;
 			$this->intProgressPercent = $objReloaded->intProgressPercent;
-			$this->strSource = $objReloaded->strSource;
+			$this->strData = $objReloaded->strData;
 		}
 
 
@@ -925,12 +924,12 @@
 					 */
 					return $this->intProgressPercent;
 
-				case 'Source':
+				case 'Data':
 					/**
-					 * Gets the value for strSource 
+					 * Gets the value for strData 
 					 * @return string
 					 */
-					return $this->strSource;
+					return $this->strData;
 
 
 				///////////////////
@@ -1103,14 +1102,14 @@
 						throw $objExc;
 					}
 
-				case 'Source':
+				case 'Data':
 					/**
-					 * Sets the value for strSource 
+					 * Sets the value for strData 
 					 * @param string $mixValue
 					 * @return string
 					 */
 					try {
-						return ($this->strSource = QType::Cast($mixValue, QType::String));
+						return ($this->strData = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1230,7 +1229,7 @@
 			$strToReturn .= '<element name="FuzzyTextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="ApprovedTextCount" type="xsd:int"/>';
 			$strToReturn .= '<element name="ProgressPercent" type="xsd:int"/>';
-			$strToReturn .= '<element name="Source" type="xsd:string"/>';
+			$strToReturn .= '<element name="Data" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1275,8 +1274,8 @@
 				$objToReturn->intApprovedTextCount = $objSoapObject->ApprovedTextCount;
 			if (property_exists($objSoapObject, 'ProgressPercent'))
 				$objToReturn->intProgressPercent = $objSoapObject->ProgressPercent;
-			if (property_exists($objSoapObject, 'Source'))
-				$objToReturn->strSource = $objSoapObject->Source;
+			if (property_exists($objSoapObject, 'Data'))
+				$objToReturn->strData = $objSoapObject->Data;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1328,7 +1327,7 @@
 			$iArray['FuzzyTextCount'] = $this->intFuzzyTextCount;
 			$iArray['ApprovedTextCount'] = $this->intApprovedTextCount;
 			$iArray['ProgressPercent'] = $this->intProgressPercent;
-			$iArray['Source'] = $this->strSource;
+			$iArray['Data'] = $this->strData;
 			return new ArrayIterator($iArray);
 		}
 
@@ -1361,7 +1360,7 @@
      * @property-read QQNode $FuzzyTextCount
      * @property-read QQNode $ApprovedTextCount
      * @property-read QQNode $ProgressPercent
-     * @property-read QQNode $Source
+     * @property-read QQNode $Data
      *
      *
 
@@ -1395,8 +1394,8 @@
 					return new QQNode('approved_text_count', 'ApprovedTextCount', 'Integer', $this);
 				case 'ProgressPercent':
 					return new QQNode('progress_percent', 'ProgressPercent', 'Integer', $this);
-				case 'Source':
-					return new QQNode('source', 'Source', 'Blob', $this);
+				case 'Data':
+					return new QQNode('data', 'Data', 'Blob', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('project_progress_id', 'ProjectProgressId', 'Integer', $this);
@@ -1423,7 +1422,7 @@
      * @property-read QQNode $FuzzyTextCount
      * @property-read QQNode $ApprovedTextCount
      * @property-read QQNode $ProgressPercent
-     * @property-read QQNode $Source
+     * @property-read QQNode $Data
      *
      *
 
@@ -1457,8 +1456,8 @@
 					return new QQNode('approved_text_count', 'ApprovedTextCount', 'integer', $this);
 				case 'ProgressPercent':
 					return new QQNode('progress_percent', 'ProgressPercent', 'integer', $this);
-				case 'Source':
-					return new QQNode('source', 'Source', 'string', $this);
+				case 'Data':
+					return new QQNode('data', 'Data', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('project_progress_id', 'ProjectProgressId', 'integer', $this);

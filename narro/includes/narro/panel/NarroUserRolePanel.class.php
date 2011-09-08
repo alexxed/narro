@@ -63,7 +63,7 @@
             $this->dtgUserRole->ShowHeader = true;
             $this->dtgUserRole->Paginator = new QPaginator($this->dtgUserRole);
             $this->dtgUserRole->PaginatorAlternate = new QPaginator($this->dtgUserRole);
-            $this->dtgUserRole->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
+            $this->dtgUserRole->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgUserRole->UseAjax = QApplication::$UseAjax;

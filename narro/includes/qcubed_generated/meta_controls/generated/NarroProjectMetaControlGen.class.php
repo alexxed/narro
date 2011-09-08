@@ -26,8 +26,8 @@
 	 * @property-read QLabel $ProjectTypeLabel
 	 * @property QTextBox $ProjectDescriptionControl
 	 * @property-read QLabel $ProjectDescriptionLabel
-	 * @property QTextBox $SourceControl
-	 * @property-read QLabel $SourceLabel
+	 * @property QTextBox $DataControl
+	 * @property-read QLabel $DataLabel
 	 * @property QIntegerTextBox $ActiveControl
 	 * @property-read QLabel $ActiveLabel
 	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -84,10 +84,10 @@
 		 */
 		protected $txtProjectDescription;
 		/**
-		 * @var QTextBox txtSource
+		 * @var QTextBox txtData
 		 * @access protected
 		 */
-		protected $txtSource;
+		protected $txtData;
 		/**
 		 * @var QIntegerTextBox txtActive
 		 * @access protected
@@ -116,10 +116,10 @@
 		 */
 		protected $lblProjectDescription;
 		/**
-		 * @var QLabel lblSource
+		 * @var QLabel lblData
 		 * @access protected
 		 */
-		protected $lblSource;
+		protected $lblData;
 		/**
 		 * @var QLabel lblActive
 		 * @access protected
@@ -349,28 +349,28 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtSource
+		 * Create and setup QTextBox txtData
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
 		 */
-		public function txtSource_Create($strControlId = null) {
-			$this->txtSource = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtSource->Name = QApplication::Translate('Source');
-			$this->txtSource->Text = $this->objNarroProject->Source;
-			$this->txtSource->TextMode = QTextMode::MultiLine;
-			return $this->txtSource;
+		public function txtData_Create($strControlId = null) {
+			$this->txtData = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtData->Name = QApplication::Translate('Data');
+			$this->txtData->Text = $this->objNarroProject->Data;
+			$this->txtData->TextMode = QTextMode::MultiLine;
+			return $this->txtData;
 		}
 
 		/**
-		 * Create and setup QLabel lblSource
+		 * Create and setup QLabel lblData
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblSource_Create($strControlId = null) {
-			$this->lblSource = new QLabel($this->objParentObject, $strControlId);
-			$this->lblSource->Name = QApplication::Translate('Source');
-			$this->lblSource->Text = $this->objNarroProject->Source;
-			return $this->lblSource;
+		public function lblData_Create($strControlId = null) {
+			$this->lblData = new QLabel($this->objParentObject, $strControlId);
+			$this->lblData->Name = QApplication::Translate('Data');
+			$this->lblData->Text = $this->objNarroProject->Data;
+			return $this->lblData;
 		}
 
 		/**
@@ -436,8 +436,8 @@
 			if ($this->txtProjectDescription) $this->txtProjectDescription->Text = $this->objNarroProject->ProjectDescription;
 			if ($this->lblProjectDescription) $this->lblProjectDescription->Text = $this->objNarroProject->ProjectDescription;
 
-			if ($this->txtSource) $this->txtSource->Text = $this->objNarroProject->Source;
-			if ($this->lblSource) $this->lblSource->Text = $this->objNarroProject->Source;
+			if ($this->txtData) $this->txtData->Text = $this->objNarroProject->Data;
+			if ($this->lblData) $this->lblData->Text = $this->objNarroProject->Data;
 
 			if ($this->txtActive) $this->txtActive->Text = $this->objNarroProject->Active;
 			if ($this->lblActive) $this->lblActive->Text = $this->objNarroProject->Active;
@@ -469,7 +469,7 @@
 				if ($this->txtProjectName) $this->objNarroProject->ProjectName = $this->txtProjectName->Text;
 				if ($this->lstProjectTypeObject) $this->objNarroProject->ProjectType = $this->lstProjectTypeObject->SelectedValue;
 				if ($this->txtProjectDescription) $this->objNarroProject->ProjectDescription = $this->txtProjectDescription->Text;
-				if ($this->txtSource) $this->objNarroProject->Source = $this->txtSource->Text;
+				if ($this->txtData) $this->objNarroProject->Data = $this->txtData->Text;
 				if ($this->txtActive) $this->objNarroProject->Active = $this->txtActive->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -543,12 +543,12 @@
 				case 'ProjectDescriptionLabel':
 					if (!$this->lblProjectDescription) return $this->lblProjectDescription_Create();
 					return $this->lblProjectDescription;
-				case 'SourceControl':
-					if (!$this->txtSource) return $this->txtSource_Create();
-					return $this->txtSource;
-				case 'SourceLabel':
-					if (!$this->lblSource) return $this->lblSource_Create();
-					return $this->lblSource;
+				case 'DataControl':
+					if (!$this->txtData) return $this->txtData_Create();
+					return $this->txtData;
+				case 'DataLabel':
+					if (!$this->lblData) return $this->lblData_Create();
+					return $this->lblData;
 				case 'ActiveControl':
 					if (!$this->txtActive) return $this->txtActive_Create();
 					return $this->txtActive;
@@ -587,8 +587,8 @@
 						return ($this->lstProjectTypeObject = QType::Cast($mixValue, 'QControl'));
 					case 'ProjectDescriptionControl':
 						return ($this->txtProjectDescription = QType::Cast($mixValue, 'QControl'));
-					case 'SourceControl':
-						return ($this->txtSource = QType::Cast($mixValue, 'QControl'));
+					case 'DataControl':
+						return ($this->txtData = QType::Cast($mixValue, 'QControl'));
 					case 'ActiveControl':
 						return ($this->txtActive = QType::Cast($mixValue, 'QControl'));
 					default:

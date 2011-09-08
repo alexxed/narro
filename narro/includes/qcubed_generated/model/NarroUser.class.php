@@ -31,6 +31,11 @@
     *
     */
     class NarroUser extends NarroUserGen {
+        /**
+        * @var array
+        */
+        public static $AvailablePreferences;
+                
         protected $arrPermissions;
         protected $arrPreferences;
         protected $objLanguage;
@@ -50,7 +55,7 @@
             return sprintf('NarroUser Object %s',  $this->intUserId);
         }
 
-        public function setPreferenceValueByName($strName, $strValue) {
+        public function SetPreferenceValueByName($strName, $strValue) {
             if ($strName == 'Language') {
                 $this->arrPreferences['Language'] = $strValue;
                 $objLanguage = NarroLanguage::LoadByLanguageCode($this->arrPreferences['Language']);
@@ -66,11 +71,15 @@
             $this->arrPreferences[$strName] = $strValue;
         }
 
-        public function getPreferenceValueByName($strName) {
+        public function GetPreferenceValueByName($strName) {
             if (isset($this->arrPreferences[$strName]))
                 return $this->arrPreferences[$strName];
             else
-                return QApplication::$AvailablePreferences[$strName]['default'];
+                return self::$AvailablePreferences[$strName]['default'];
+        }
+        
+        public static function RegisterPreference($strName, $strType = 'text', $strDescription = '', $strDefaultValue = '', $arrValues = array()) {
+            self::$AvailablePreferences[$strName] = array('type'=> $strType, 'description'=>$strDescription, 'default'=>$strDefaultValue, 'values'=>$arrValues);
         }
 
         public static function LoadByUsernameAndPassword($strUsername, $strPassword) {

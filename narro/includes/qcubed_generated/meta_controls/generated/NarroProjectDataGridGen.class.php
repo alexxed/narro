@@ -295,7 +295,7 @@
 				case 'ProjectName': return QQN::NarroProject()->ProjectName;
 				case 'ProjectType': return QQN::NarroProject()->ProjectType;
 				case 'ProjectDescription': return QQN::NarroProject()->ProjectDescription;
-				case 'Source': return QQN::NarroProject()->Source;
+				case 'Data': return QQN::NarroProject()->Data;
 				case 'Active': return QQN::NarroProject()->Active;
 				default: throw new QCallerException('Simple Property not found in NarroProjectDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)

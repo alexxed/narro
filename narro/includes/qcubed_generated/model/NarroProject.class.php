@@ -28,9 +28,17 @@
     *
     * @package My Application
     * @subpackage DataObjects
+    * 
+    * @property array $Preferences
     *
     */
     class NarroProject extends NarroProjectGen {
+        /**
+         * @var array
+         */
+        public static $AvailablePreferences = array();
+        
+        protected $arrPreferences;
         /**
         * Default "to string" handler
         * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -181,6 +189,44 @@
 
             return $mixResult;
         }
+        
+        public function SetPreferenceValueByName($strName, $strValue) {
+            if (is_null($this->arrPreferences) && $this->strData)
+                $this->arrPreferences = unserialize($this->strData);
+            
+            $this->arrPreferences[$strName] = $strValue;
+        }
+
+        public function GetPreferenceValueByName($strName) {
+            if (is_null($this->arrPreferences) && $this->strData)
+                $this->arrPreferences = unserialize($this->strData);
+            
+            if (!is_null($this->arrPreferences) && isset($this->arrPreferences[$strName]))
+                return $this->arrPreferences[$strName];
+            else
+                return self::$AvailablePreferences[$strName]['default'];
+        }
+        
+        /**
+         * Register a preference that can be set on the project edit tab
+         * @param string $strName the name that the user sees, it will be localizable
+         * @param boolean $blnGlobal if the preference valid for all languages or can it be set individually
+         * @param integer $intProjectType applies to what project type, 0 for all
+         * @param string $strType text, option, number
+         * @param string $strDescription a description shown to the user, it will be localizable
+         * @param string $strDefaultValue the default value if it's not set yet
+         * @param array $arrValues if the option is a list, an array of possible values
+         */
+        public static function RegisterPreference($strName, $blnGlobal, $intProjectType, $strType, $strDescription, $strDefaultValue, $arrValues = array()) {
+            self::$AvailablePreferences[$strName] = array(
+            	'type' => $strType, 
+                'global' => $blnGlobal, 
+                'project_type' => $intProjectType,
+                'description' => $strDescription, 
+                'default' => $strDefaultValue, 
+                'values' => $arrValues
+            );
+        }        
 
         /**
          * Override method to perform a property "Get"
@@ -194,6 +240,7 @@
                 ///////////////////
                 // Member Variables
                 ///////////////////
+                case 'Preferences': return $this->arrPreferences;
                 case 'DefaultTemplatePath':
                     return __IMPORT_PATH__ . '/' . $this->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
 

@@ -57,7 +57,7 @@
 
             // Datagrid Paginator
             $this->dtgSuggestions->Paginator = new QPaginator($this->dtgSuggestions);
-            $this->dtgSuggestions->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
+            $this->dtgSuggestions->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgSuggestions->UseAjax = true;

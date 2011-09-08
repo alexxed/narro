@@ -30,10 +30,6 @@
          */
         public static $PluginHandler;
         /**
-         * @var array
-         */
-        public static $AvailablePreferences;
-        /**
          * @var Zend_Cache_Core
          */
         public static $Cache;
@@ -119,10 +115,6 @@
 
         public static function GetLogger() {
             return QApplication::$Logger;
-        }
-
-        public static function RegisterPreference($strName, $strType = 'text', $strDescription = '', $strDefaultValue = '', $arrValues = array()) {
-            self::$AvailablePreferences[$strName] = array('type'=> $strType, 'description'=>$strDescription, 'default'=>$strDefaultValue, 'values'=>$arrValues);
         }
 
         public static function RegisterFormat($strName, $strPluginName) {
@@ -277,7 +269,7 @@
         public static function InitializeUser() {
             if (isset(QApplication::$Session->User) && QApplication::$Session->User instanceof NarroUser) {
                 QApplication::$User = QApplication::$Session->User;
-                QApplication::$UseAjax = (QApplication::$User->getPreferenceValueByName('Use AJAX') == 'Yes');
+                QApplication::$UseAjax = (QApplication::$User->GetPreferenceValueByName('Use AJAX') == 'Yes');
             }
             else {
                 QApplication::$User = NarroUser::LoadAnonymousUser();
@@ -288,7 +280,7 @@
                 // @todo add handling here
                 throw new Exception('Could not create an instance of NarroUser');
 
-            define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$User->getPreferenceValueByName('Application language'));
+            define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$User->GetPreferenceValueByName('Application language'));
         }
 
         public static function InitializeLogging($intProjectId = null) {
@@ -336,7 +328,7 @@
                 try {
                     QApplication::$TranslationEngine = new Zend_Translate(
                         'gettext', __LOCALE_DIRECTORY__ . '/narro.mo',
-                        QApplication::$User->getPreferenceValueByName('Application language'),
+                        QApplication::$User->GetPreferenceValueByName('Application language'),
                         array(
                             'disableNotices'=>true
                         )

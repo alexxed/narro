@@ -116,7 +116,7 @@
             $this->btnImport->Text = t('Import');
             $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('if (document.getElementById(\'%s\')) document.getElementById(\'%s\').innerHTML=\'\'', $this->lblImport->ControlId, $this->lblImport->ControlId)));
             $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\';this.value=\'%s\'', t('Please wait...'))));
-            if (QApplication::$UseAjax && QApplication::$User->getPreferenceValueByName('Launch imports and exports in background') == 'Yes')
+            if (QApplication::$UseAjax && QApplication::$User->GetPreferenceValueByName('Launch imports and exports in background') == 'Yes')
                 $this->btnImport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnImport_Click'));
             else {
                 $this->btnImport->ActionParameter = 2;

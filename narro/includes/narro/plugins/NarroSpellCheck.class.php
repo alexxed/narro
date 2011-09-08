@@ -24,7 +24,7 @@
         }
 
         public static function GetSpellSuggestions($strText) {
-            if (QApplication::$User->getPreferenceValueByName('Spellchecking') == 'I don\'t need it')
+            if (QApplication::$User->GetPreferenceValueByName('Spellchecking') == 'I don\'t need it')
                 return true;
 
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strText);
@@ -51,7 +51,7 @@
             $strCleanText = mb_ereg_replace('[„”]', ' ', $strCleanText);
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strCleanText);
 
-            $strSpellLang = QApplication::$User->getPreferenceValueByName('Language');
+            $strSpellLang = QApplication::$User->GetPreferenceValueByName('Language');
 
             return self::GetSpellSuggestionsWithPspell($strCleanText, $strSpellLang);
         }

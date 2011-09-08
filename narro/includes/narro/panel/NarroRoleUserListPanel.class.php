@@ -40,7 +40,7 @@
 
             // Datagrid Paginator
             $this->dtgRoleUserList->Paginator = new QPaginator($this->dtgRoleUserList);
-            $this->dtgRoleUserList->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
+            $this->dtgRoleUserList->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgRoleUserList->UseAjax = QApplication::$UseAjax;

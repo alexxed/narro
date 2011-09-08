@@ -468,7 +468,6 @@
 			$this->txtPluralForm = new QTextBox($this->objParentObject, $strControlId);
 			$this->txtPluralForm->Name = QApplication::Translate('Plural Form');
 			$this->txtPluralForm->Text = $this->objNarroLanguage->PluralForm;
-			$this->txtPluralForm->Required = true;
 			$this->txtPluralForm->MaxLength = NarroLanguage::PluralFormMaxLength;
 			return $this->txtPluralForm;
 		}
@@ -482,7 +481,6 @@
 			$this->lblPluralForm = new QLabel($this->objParentObject, $strControlId);
 			$this->lblPluralForm->Name = QApplication::Translate('Plural Form');
 			$this->lblPluralForm->Text = $this->objNarroLanguage->PluralForm;
-			$this->lblPluralForm->Required = true;
 			return $this->lblPluralForm;
 		}
 

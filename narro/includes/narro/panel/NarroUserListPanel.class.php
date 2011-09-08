@@ -57,7 +57,7 @@
             // Datagrid Paginator
             $this->dtgUser->Paginator = new QPaginator($this->dtgUser);
             $this->dtgUser->PaginatorAlternate = new QPaginator($this->dtgUser);
-            $this->dtgUser->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
+            $this->dtgUser->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
 
             // Specify the local databind method this datagrid will use
             $this->dtgUser->SetDataBinder('dtgUser_Bind', $this);

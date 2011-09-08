@@ -28,7 +28,7 @@
 		protected $txtProjectName;
 		protected $lstProjectTypeObject;
 		protected $txtProjectDescription;
-		protected $txtSource;
+		protected $txtData;
 		protected $txtActive;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
@@ -70,7 +70,7 @@
 			$this->txtProjectName = $this->mctNarroProject->txtProjectName_Create();
 			$this->lstProjectTypeObject = $this->mctNarroProject->lstProjectTypeObject_Create();
 			$this->txtProjectDescription = $this->mctNarroProject->txtProjectDescription_Create();
-			$this->txtSource = $this->mctNarroProject->txtSource_Create();
+			$this->txtData = $this->mctNarroProject->txtData_Create();
 			$this->txtActive = $this->mctNarroProject->txtActive_Create();
 
 			// Create Buttons and Actions on this Form

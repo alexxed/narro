@@ -22,7 +22,7 @@
             $this->blnEnable = false;
             $this->strName = t('Cedill/Comma issue solver');
             if ($this->blnEnable)
-                QApplication::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
+                NarroUser::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
             /**
              * Preference value: t('cedilla');
              * Preference value: t('comma');
@@ -42,7 +42,7 @@
         }
 
         protected function Convert($strText) {
-            $strPref = QApplication::$User->getPreferenceValueByName('Cedilla or comma');
+            $strPref = QApplication::$User->GetPreferenceValueByName('Cedilla or comma');
 
             if ( $strPref  && $strPref == 'comma' )
                 return $this->ConvertToComma($strText);
@@ -85,9 +85,9 @@
         }
 
         public function ExportSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
-            if (QApplication::$User->getPreferenceValueByName('Cedilla or comma') == 'cedilla')
+            if (QApplication::$User->GetPreferenceValueByName('Cedilla or comma') == 'cedilla')
                 return array($strOriginal, $this->ConvertToSedilla($strTranslation), $strContext, $objFile, $objProject);
-            elseif (QApplication::$User->getPreferenceValueByName('Cedilla or comma') == 'comma')
+            elseif (QApplication::$User->GetPreferenceValueByName('Cedilla or comma') == 'comma')
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
             else
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);

@@ -89,7 +89,7 @@
 
             $this->btnExport = new QButton($this);
             $this->btnExport->Text = t('Export');
-            if (QApplication::$UseAjax && QApplication::$User->getPreferenceValueByName('Launch imports and exports in background') == 'Yes')
+            if (QApplication::$UseAjax && QApplication::$User->GetPreferenceValueByName('Launch imports and exports in background') == 'Yes')
                 $this->btnExport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnExport_Click'));
             else {
                 $this->btnExport->ActionParameter = 2;

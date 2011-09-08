@@ -24,7 +24,7 @@
 	 * @property integer $ApprovedTextCount the value for intApprovedTextCount (Not Null)
 	 * @property integer $FuzzyTextCount the value for intFuzzyTextCount (Not Null)
 	 * @property integer $ProgressPercent the value for intProgressPercent (Not Null)
-	 * @property boolean $Export the value for blnExport (Not Null)
+	 * @property boolean $Export the value for blnExport 
 	 * @property NarroFile $File the value for the NarroFile object referenced by intFileId (Not Null)
 	 * @property NarroLanguage $Language the value for the NarroLanguage object referenced by intLanguageId (Not Null)
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -971,7 +971,7 @@
 
 				case 'Export':
 					/**
-					 * Gets the value for blnExport (Not Null)
+					 * Gets the value for blnExport 
 					 * @return boolean
 					 */
 					return $this->blnExport;
@@ -1149,7 +1149,7 @@
 
 				case 'Export':
 					/**
-					 * Sets the value for blnExport (Not Null)
+					 * Sets the value for blnExport 
 					 * @param boolean $mixValue
 					 * @return boolean
 					 */

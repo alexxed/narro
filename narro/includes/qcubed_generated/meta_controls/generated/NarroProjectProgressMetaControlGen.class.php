@@ -34,8 +34,8 @@
 	 * @property-read QLabel $ApprovedTextCountLabel
 	 * @property QIntegerTextBox $ProgressPercentControl
 	 * @property-read QLabel $ProgressPercentLabel
-	 * @property QTextBox $SourceControl
-	 * @property-read QLabel $SourceLabel
+	 * @property QTextBox $DataControl
+	 * @property-read QLabel $DataLabel
 	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
 	 * @property-read boolean $EditMode a boolean indicating whether or not this is being edited or created
 	 */
@@ -110,10 +110,10 @@
 		 */
 		protected $txtProgressPercent;
 		/**
-		 * @var QTextBox txtSource
+		 * @var QTextBox txtData
 		 * @access protected
 		 */
-		protected $txtSource;
+		protected $txtData;
 
 		// Controls that allow the viewing of NarroProjectProgress's individual data fields
 		/**
@@ -157,10 +157,10 @@
 		 */
 		protected $lblProgressPercent;
 		/**
-		 * @var QLabel lblSource
+		 * @var QLabel lblData
 		 * @access protected
 		 */
-		protected $lblSource;
+		protected $lblData;
 
 		// QListBox Controls (if applicable) to edit Unique ReverseReferences and ManyToMany References
 
@@ -511,28 +511,28 @@
 		}
 
 		/**
-		 * Create and setup QTextBox txtSource
+		 * Create and setup QTextBox txtData
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
 		 */
-		public function txtSource_Create($strControlId = null) {
-			$this->txtSource = new QTextBox($this->objParentObject, $strControlId);
-			$this->txtSource->Name = QApplication::Translate('Source');
-			$this->txtSource->Text = $this->objNarroProjectProgress->Source;
-			$this->txtSource->TextMode = QTextMode::MultiLine;
-			return $this->txtSource;
+		public function txtData_Create($strControlId = null) {
+			$this->txtData = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtData->Name = QApplication::Translate('Data');
+			$this->txtData->Text = $this->objNarroProjectProgress->Data;
+			$this->txtData->TextMode = QTextMode::MultiLine;
+			return $this->txtData;
 		}
 
 		/**
-		 * Create and setup QLabel lblSource
+		 * Create and setup QLabel lblData
 		 * @param string $strControlId optional ControlId to use
 		 * @return QLabel
 		 */
-		public function lblSource_Create($strControlId = null) {
-			$this->lblSource = new QLabel($this->objParentObject, $strControlId);
-			$this->lblSource->Name = QApplication::Translate('Source');
-			$this->lblSource->Text = $this->objNarroProjectProgress->Source;
-			return $this->lblSource;
+		public function lblData_Create($strControlId = null) {
+			$this->lblData = new QLabel($this->objParentObject, $strControlId);
+			$this->lblData->Name = QApplication::Translate('Data');
+			$this->lblData->Text = $this->objNarroProjectProgress->Data;
+			return $this->lblData;
 		}
 
 
@@ -594,8 +594,8 @@
 			if ($this->txtProgressPercent) $this->txtProgressPercent->Text = $this->objNarroProjectProgress->ProgressPercent;
 			if ($this->lblProgressPercent) $this->lblProgressPercent->Text = $this->objNarroProjectProgress->ProgressPercent;
 
-			if ($this->txtSource) $this->txtSource->Text = $this->objNarroProjectProgress->Source;
-			if ($this->lblSource) $this->lblSource->Text = $this->objNarroProjectProgress->Source;
+			if ($this->txtData) $this->txtData->Text = $this->objNarroProjectProgress->Data;
+			if ($this->lblData) $this->lblData->Text = $this->objNarroProjectProgress->Data;
 
 		}
 
@@ -628,7 +628,7 @@
 				if ($this->txtFuzzyTextCount) $this->objNarroProjectProgress->FuzzyTextCount = $this->txtFuzzyTextCount->Text;
 				if ($this->txtApprovedTextCount) $this->objNarroProjectProgress->ApprovedTextCount = $this->txtApprovedTextCount->Text;
 				if ($this->txtProgressPercent) $this->objNarroProjectProgress->ProgressPercent = $this->txtProgressPercent->Text;
-				if ($this->txtSource) $this->objNarroProjectProgress->Source = $this->txtSource->Text;
+				if ($this->txtData) $this->objNarroProjectProgress->Data = $this->txtData->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
 
@@ -725,12 +725,12 @@
 				case 'ProgressPercentLabel':
 					if (!$this->lblProgressPercent) return $this->lblProgressPercent_Create();
 					return $this->lblProgressPercent;
-				case 'SourceControl':
-					if (!$this->txtSource) return $this->txtSource_Create();
-					return $this->txtSource;
-				case 'SourceLabel':
-					if (!$this->lblSource) return $this->lblSource_Create();
-					return $this->lblSource;
+				case 'DataControl':
+					if (!$this->txtData) return $this->txtData_Create();
+					return $this->txtData;
+				case 'DataLabel':
+					if (!$this->lblData) return $this->lblData_Create();
+					return $this->lblData;
 				default:
 					try {
 						return parent::__get($strName);
@@ -771,8 +771,8 @@
 						return ($this->txtApprovedTextCount = QType::Cast($mixValue, 'QControl'));
 					case 'ProgressPercentControl':
 						return ($this->txtProgressPercent = QType::Cast($mixValue, 'QControl'));
-					case 'SourceControl':
-						return ($this->txtSource = QType::Cast($mixValue, 'QControl'));
+					case 'DataControl':
+						return ($this->txtData = QType::Cast($mixValue, 'QControl'));
 					default:
 						return parent::__set($strName, $mixValue);
 				}

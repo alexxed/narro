@@ -88,7 +88,7 @@
 		 * @var string strContextMd5
 		 */
 		protected $strContextMd5;
-		const ContextMd5MaxLength = 255;
+		const ContextMd5MaxLength = 32;
 		const ContextMd5Default = null;
 
 

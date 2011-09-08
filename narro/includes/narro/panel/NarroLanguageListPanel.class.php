@@ -66,7 +66,7 @@
 
             // Datagrid Paginator
             $this->dtgLanguage->Paginator = new QPaginator($this->dtgLanguage);
-            $this->dtgLanguage->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
+            $this->dtgLanguage->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax
             $this->dtgLanguage->UseAjax = false;

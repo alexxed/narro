@@ -244,7 +244,7 @@
 
             // Datagrid Paginator
             $this->dtgFile->Paginator = new QPaginator($this->dtgFile);
-            $this->dtgFile->ItemsPerPage = QApplication::$User->getPreferenceValueByName('Items per page');
+            $this->dtgFile->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
             $this->dtgFile->PaginatorAlternate = new QPaginator($this->dtgFile);
             $this->dtgFile->SortColumnIndex = 0;
             $this->dtgFile->ShowFilter = false;
