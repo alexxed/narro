@@ -98,8 +98,12 @@
             $this->btnSave->CssClass = 'imgbutton save';
             $this->btnSave->ToolTip = $this->btnSave->AlternateText;
             $this->btnSave->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/save.png';
-            $this->btnSave->TabIndex = -1;
-            $this->btnSave->DisplayStyle = QDisplayStyle::None;
+            
+            if (QApplication::$User->GetPreferenceValueByName('Automatically save translations') == 'Yes') {
+                $this->btnSave->DisplayStyle = QDisplayStyle::None;
+                $this->btnSave->TabIndex = -1;
+            }
+            
             $this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 
             $this->lblContextInfo_Create();
@@ -107,7 +111,9 @@
             $this->txtTranslation->AddAction(new QFocusEvent(), new QJavaScriptAction(sprintf('ctx_editor_focus("%s", "%s", "%s", "%s", "%s", "%s")', $this->ControlId, $this->txtTranslation->ControlId, $this->btnCopy->ControlId, $this->btnHelp->ControlId, $this->lblContextInfo->ControlId, $this->chkChanged->ControlId)));
 
             $this->txtTranslation->AddAction(new QChangeEvent(), new QJavaScriptAction(sprintf('jQuery("#%s").attr("checked", true);', $this->chkChanged->ControlId)));
-            $this->txtTranslation->AddAction(new QFocusEvent(), new QAjaxControlAction($this, 'txtTranslation_Focus'));
+            
+            if (QApplication::$User->GetPreferenceValueByName('Automatically save translations') == 'Yes')
+                $this->txtTranslation->AddAction(new QFocusEvent(), new QAjaxControlAction($this, 'txtTranslation_Focus'));
 
             $this->btnCopy->AddAction(
                 new QClickEvent(),
@@ -391,12 +397,15 @@
                     $this->btnSaveIgnore->Text = t('Ignore and save');
                     $this->lblMessage->Text .= t('Clear the textbox to skip this translation or ');
                     $this->btnSaveIgnore->Display = true;
+                    $this->btnSave->Display = false;
                     $this->chkChanged->Checked = false;
                     return false;
                 }
                 
-                if ($this->btnSaveIgnore)
+                if ($this->btnSaveIgnore) {
                     $this->btnSaveIgnore->Display = false;
+                    $this->btnSave->Display = true;
+                }
 
                 if (!$objSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($this->objContextInfo->Context->TextId, QApplication::GetLanguageId(), md5($this->txtTranslation->Text))) {
                     $objSuggestion = new NarroSuggestion();
@@ -559,8 +568,9 @@
 
                 $this->lblMessage->Text = t('Suggestion succesfully deleted.');
                 $this->blnModified = true;
-                if ($this->btnSaveIgnore)
-                    $this->btnSaveIgnore->Display = false;
+                if ($this->btnSaveIgnore) {
+                    $this->btnSave->Display = true;
+                }
             }
             else {
                 $this->btnSaveIgnore_Create();

@@ -25,8 +25,8 @@
         }
         
         protected function Enable() {
-            NarroUser::RegisterPreference($this->strName, 'option', sprintf(t('Enables the %s plugin'), $this->strName), 'yes', array('yes', 'no'));
-            $this->blnEnable = (QApplication::$User->GetPreferenceValueByName($this->strName) == 'yes');
+            NarroUser::RegisterPreference($this->strName, 'option', sprintf(t('Enables the %s plugin'), $this->strName), 'Yes', array('Yes', 'No'));
+            $this->blnEnable = (QApplication::$User->GetPreferenceValueByName($this->strName) == 'Yes');
         } 
 
         /////////////////////////
