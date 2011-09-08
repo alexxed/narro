@@ -197,6 +197,8 @@
          * @param string $strComment a comment from the imported file
          */
         protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext = '', $strComment = null) {
+            if ($strOriginal == '') return false;
+            
             $blnContextInfoChanged = false;
             $blnContextChanged = false;
 
