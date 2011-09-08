@@ -48,7 +48,7 @@
                 if ($objItem->id == sprintf('%s/%s', $objProject->GetPreferenceValueByName('Code name on mozilla l10n dashboard'), QApplication::$TargetLanguage->LanguageCode)) {
                     $strWarning = ($objItem->warnings)?sprintf('%d warnings', $objItem->warnings):'';
                     $strMissing = ($objItem->missing)?sprintf('%d missing', $objItem->missing):'';
-                    $strText = join(', ', array($objItem->result, $strMissing, $strWarning));
+                    $strText = sprintf('<a title="Visit the Mozilla l10n dashboard" target="_blank" href="https://l10n-stage-sj.mozilla.org/dashboard/compare?run=%d">%s</a>', $objItem->runid, join(', ', array($objItem->result, $strMissing, $strWarning)));
                     break;
                 }
             }
