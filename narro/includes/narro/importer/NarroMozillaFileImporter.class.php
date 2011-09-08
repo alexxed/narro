@@ -57,6 +57,7 @@
                 $mixResult = $this->ProcessLine($strLineToProcess);
 
                 if ($mixResult instanceof NarroFileEntity) {
+                    $strLastKey = $mixResult->Key;
                     $arrKeys[$mixResult->Key] = $mixResult;
                     $strPreviousLines = '';
                     $blnFirstEntityFound = true;
@@ -65,6 +66,9 @@
                     $strPreviousLines = $strPreviousLines . $strLine . "\n";
                 }
             }
+            
+            if (isset($strLastKey))
+                $arrKeys[$strLastKey]->AfterValue .= $strLineToProcess;
 
             QApplication::LogDebug(sprintf('Converted file to array in %s second(s)', (time() - $intTime)));
 
