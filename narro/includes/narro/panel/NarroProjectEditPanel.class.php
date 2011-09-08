@@ -31,6 +31,8 @@
         public $lstProjectType;
         public $txtProjectDescription;
         public $txtActive;
+        
+        public $pnlPreferences;
 
         // Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -77,6 +79,10 @@
             $this->btnSave_Create();
             $this->btnCancel_Create();
             $this->btnDelete_Create();
+            
+            if (count(NarroProject::$AvailablePreferences)) {
+                $this->pnlPreferences = new NarroProjectPreferencesPanel($this->objProject, $this);
+            }
 
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroProjectEditPanel.tpl.php';
         }
@@ -175,6 +181,8 @@
 
             try {
                 $this->objProject->Save();
+                if ($this->pnlPreferences)
+                    $this->pnlPreferences->btnSave_Click($strFormId, $strControlId, $strParameter);
             }
             catch (Exception $objEx) {
                 $this->lblMessage->Text = $objEx->getMessage();

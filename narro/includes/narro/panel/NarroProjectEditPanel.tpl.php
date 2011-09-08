@@ -40,6 +40,11 @@
     </tr>
     <tr>
         <td colspan="2">
+        <?php if ($_CONTROL->pnlPreferences) $_CONTROL->pnlPreferences->Render(); ?>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
             <?php $_CONTROL->btnSave->Render() ?>
             &nbsp;&nbsp;&nbsp;
             <?php $_CONTROL->btnCancel->Render() ?>
