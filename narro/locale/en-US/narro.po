@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 2.0
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2011-07-09 09:11+0300\n"
-"PO-Revision-Date: 2011-07-09 09:11+0300\n"
+"POT-Creation-Date: 2011-08-09 22:28+0300\n"
+"PO-Revision-Date: 2011-08-09 22:28+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -95,16 +95,6 @@ msgstr ""
 msgid "Spell check"
 msgstr ""
 
-#. * Spellchecking: t('Yes, please')
-#: includes/narro/plugins/NarroSpellCheck.class.php
-msgid "Yes, please"
-msgstr ""
-
-#.
-#: includes/narro/plugins/NarroSpellCheck.class.php
-msgid "I don't need it"
-msgstr ""
-
 #. t('<span class="mispelled_word">%s</span> seems to be mispelled. Maybe you meant %s.'),
 #: includes/narro/plugins/NarroSpellCheck.class.php
 msgid "<span class=\"mispelled_word\">%s</span> seems to be mispelled. Maybe you meant %s."
@@ -113,6 +103,11 @@ msgstr ""
 #. t('<span class="mispelled_word">%s</span> seems to be mispelled.'),
 #: includes/narro/plugins/NarroSpellCheck.class.php
 msgid "<span class=\"mispelled_word\">%s</span> seems to be mispelled."
+msgstr ""
+
+#. $this->strName = t('Mozilla l10n dashboard');
+#: includes/narro/plugins/NarroMozillaDashboard.class.php
+msgid "Mozilla l10n dashboard"
 msgstr ""
 
 #. $this->strName = t('DTD check');
@@ -279,6 +274,11 @@ msgstr ""
 #. $this->txtWebAddress->Instructions = t('Please enter a web address to a zip file or a single supported file');
 #: includes/narro/sources/NarroWebSourcePanel.class.php
 msgid "Please enter a web address to a zip file or a single supported file"
+msgstr ""
+
+#. NarroUser::RegisterPreference($this->strName, 'option', sprintf(t('Enables the %s plugin'), $this->strName), 'Yes', array('Yes', 'No'));
+#: includes/narro/NarroPlugin.class.php
+msgid "Enables the %s plugin"
 msgstr ""
 
 #. $this->strText = t('Nothing to translate');
@@ -896,6 +896,21 @@ msgstr ""
 msgid "active languages"
 msgstr ""
 
+#. $this->lblMessage->Text = t('Here you can set your project preferences.');
+#: includes/narro/panel/NarroProjectPreferencesPanel.class.php
+msgid "Here you can set your project preferences."
+msgstr ""
+
+#. $this->lblMessage->Text = t('Your preferences were saved successfuly.');
+#: includes/narro/panel/NarroProjectPreferencesPanel.class.php preferences.php
+msgid "Your preferences were saved successfuly."
+msgstr ""
+
+#. $this->lblMessage->Text = t('An error occurred while trying to save your preferences.');
+#: includes/narro/panel/NarroProjectPreferencesPanel.class.php preferences.php
+msgid "An error occurred while trying to save your preferences."
+msgstr ""
+
 #. <td><?php _t('Category') ?></td>
 #: includes/narro/panel/NarroProjectEditPanel.tpl.php
 msgid "Category"
@@ -1015,890 +1030,890 @@ msgid "Less"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Afrikaans"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Albanian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Amharic"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Arabic"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Aragonese"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Armenian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Assamese"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Asturian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Aymara, Bolivia"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Azerbaijani"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Balkanika"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Basque"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Belarusian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Bengali-Bangladesh"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Bosnian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Breton"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Bulgarian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Burmese (my-MM)"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Catalan"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Chinese Simplified, China"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Chinese Traditional, Taiwan"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Croatian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Czech"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Danish"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Dari (Eastern Persian)"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Dutch"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Dzongkha"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "English (South African)"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "English US"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "English, UK"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Esperanto"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Fijian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Finnish"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "French"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Frisian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Friulian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Galician"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Georgian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "German"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Greek"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Guaraní"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Guaraní, Bolivia"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Gujarati"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Haitian Creole"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Hebrew"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Hindi"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Hungarian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Iloko"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Indonesian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Irish"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Italian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Japanese"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Kabardian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Kabyle"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Kashubian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Kazakh"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Khmer"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Korean"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Kurdî, Soranî (Aramic)"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Kurdî, Soranî (Latin)"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Kurdish"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "lao"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Latin"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Latvian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Ligurian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Lithuanian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Macedonian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Malay"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Malayalam"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Mayan"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Meadow Mari"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Mongolian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Montenegrin"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Ndebele"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Nepali"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Northern Sotho"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Norwegian bokmaal"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Norwegian hognorsk"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Norwegian nynorsk"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Oromo"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Persian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Polish"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Portuguese, Brazil"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Portuguese, Portugal"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Punjabi"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Quechua, Bolivia"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Romance, Spain (Valencian)"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Romanian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Romansch"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Russian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Scottish Gaelic"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Serbian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Slovak"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Slovenian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Southern Sotho"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Spanish"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Spanish, Argentina"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Spanish, Bolivia"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Spanish, Chile"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Spanish, Colombia"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Spanish, Mexico"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Spanish, Peru"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Spanish, Spain"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Spanish, Venezuela"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Swati"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Swedish"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Tagalog"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Tajik"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Tarahumara (Y08703)"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Telugu"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Thai"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Tibetan"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Tsonga"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Tswana"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Turkish"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Ukrainian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Urdu"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Urdu (Pakistan)"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Uyghur"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Venda"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Vietnamese"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Welsh"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "X-testing"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Xhosa"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Yoruba"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Zapotec (OT19745)"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->getPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
+#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Zulu"
 msgstr ""
@@ -2077,7 +2092,7 @@ msgstr ""
 
 #. $this->btnCopy->AlternateText = t('Copy');
 #. t('Copy'),
-#. t('Copy')
+#. t('Copy'),
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "Copy"
 msgstr ""
@@ -2090,6 +2105,12 @@ msgstr ""
 #. t('Clear'),
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "Clear"
+msgstr ""
+
+#. $this->btnSaveIgnore->Text = t('Ignore and save');
+#. $this->btnSaveIgnore->Text = t('Ignore and save');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Ignore and save"
 msgstr ""
 
 #. (($objSuggestion->IsImported)?t('imported by <a href="%s" tabindex="-1">%s</a>, %s ago'):t('<a href="%s" tabindex="-1">%s</a>, %s ago')),
@@ -2137,9 +2158,14 @@ msgstr ""
 msgid "A plugin returned an empty value after processing your translation."
 msgstr ""
 
-#. $this->txtTranslation->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it.'), $strLink);
+#. $this->lblMessage->Text .= t('Clear the textbox to skip this translation or ');
 #: includes/narro/panel/NarroContextInfoEditor.class.php
-msgid "This translation was already approved somewhere.<br />If you still want to delete it, click <a href=\"%s\" target=\"_blank\">here</a> to edit all the texts that use it."
+msgid "Clear the textbox to skip this translation or "
+msgstr ""
+
+#. $this->txtTranslation->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it or %s'), $strLink, '');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "This translation was already approved somewhere.<br />If you still want to delete it, click <a href=\"%s\" target=\"_blank\">here</a> to edit all the texts that use it or %s"
 msgstr ""
 
 #. $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it has %d vote(s).'), $intVoteCount);
@@ -2155,6 +2181,11 @@ msgstr ""
 #. $this->lblMessage->Text = t('Suggestion succesfully deleted.');
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "Suggestion succesfully deleted."
+msgstr ""
+
+#. $this->btnSaveIgnore->Text = t('Ignore and delete');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Ignore and delete"
 msgstr ""
 
 #. $this->txtTranslation->Warning = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
@@ -2440,16 +2471,6 @@ msgstr ""
 msgid "Click <a href=\"%s\">here</a> to return to the page you were."
 msgstr ""
 
-#. $this->lblMessage->Text = t('Your preferences were saved successfuly.');
-#: preferences.php
-msgid "Your preferences were saved successfuly."
-msgstr ""
-
-#. $this->lblMessage->Text = t('An error occurred while trying to save your preferences.');
-#: preferences.php
-msgid "An error occurred while trying to save your preferences."
-msgstr ""
-
 #. $strPageTitle = (QApplication::QueryString('lid'))?t('Edit language'):t('Add language');
 #: language_edit.tpl.php
 msgid "Edit language"
@@ -2645,47 +2666,52 @@ msgstr ""
 msgid "<a href=\"%s\">%s</a>"
 msgstr ""
 
-#. QApplication::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
+#. NarroUser::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
 #: configuration/prepend.inc.php
 msgid "How many items are displayed per page"
 msgstr ""
 
-#. QApplication::RegisterPreference('Font size', 'option', t('The application font size'), 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
+#. NarroUser::RegisterPreference('Font size', 'option', t('The application font size'), 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
 #: configuration/prepend.inc.php
 msgid "The application font size"
 msgstr ""
 
-#. QApplication::RegisterPreference('Language', 'option', t('The language you are translating to'), QApplication::QueryString('l'), array(QApplication::QueryString('l')));
+#. NarroUser::RegisterPreference('Language', 'option', t('The language you are translating to'), QApplication::QueryString('l'), array(QApplication::QueryString('l')));
 #: configuration/prepend.inc.php
 msgid "The language you are translating to"
 msgstr ""
 
-#. QApplication::RegisterPreference('Application language', 'option', t('The language you want to see Narro in'), (isset(QApplication::$TargetLanguage))?QApplication::$TargetLanguage->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE, array((isset(QApplication::$TargetLanguage))?QApplication::$TargetLanguage->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE));
+#. NarroUser::RegisterPreference('Application language', 'option', t('The language you want to see Narro in'), (isset(QApplication::$TargetLanguage))?QApplication::$TargetLanguage->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE, array((isset(QApplication::$TargetLanguage))?QApplication::$TargetLanguage->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE));
 #: configuration/prepend.inc.php
 msgid "The language you want to see Narro in"
 msgstr ""
 
-#. QApplication::RegisterPreference('Special characters', 'text', t('Characters that are not on your keyboard, separated by spaces'), '$€');
+#. NarroUser::RegisterPreference('Special characters', 'text', t('Characters that are not on your keyboard, separated by spaces'), '$€');
 #: configuration/prepend.inc.php
 msgid "Characters that are not on your keyboard, separated by spaces"
 msgstr ""
 
-#. QApplication::RegisterPreference('Other languages', 'text', t('Other languages that you want to check for suggestions, separated by spaces'), 'ro');
+#. NarroUser::RegisterPreference('Other languages', 'text', t('Other languages that you want to check for suggestions, separated by spaces'), 'ro');
 #: configuration/prepend.inc.php
 msgid "Other languages that you want to check for suggestions, separated by spaces"
 msgstr ""
 
-#. QApplication::RegisterPreference('Force ascii letters as access keys', 'option', t('Access keys are the letters that are underlined in menus and on buttons that you can use to quickly get to that button or menu item'), 'No', array('Yes', 'No'));
+#. NarroUser::RegisterPreference('Force ascii letters as access keys', 'option', t('Access keys are the letters that are underlined in menus and on buttons that you can use to quickly get to that button or menu item'), 'No', array('Yes', 'No'));
 #: configuration/prepend.inc.php
 msgid "Access keys are the letters that are underlined in menus and on buttons that you can use to quickly get to that button or menu item"
 msgstr ""
 
-#. // QApplication::RegisterPreference('Use AJAX', 'option', t('AJAX (transfers in background) will make Narro very fast. If you have problems because of this, choose No'), 'Yes', array('Yes', 'No'));
+#. NarroUser::RegisterPreference('Automatically save translations', 'option', t('Save translations when moving to the next text to translate'), 'Yes', array('Yes', 'No'));
+#: configuration/prepend.inc.php
+msgid "Save translations when moving to the next text to translate"
+msgstr ""
+
+#. // NarroUser::RegisterPreference('Use AJAX', 'option', t('AJAX (transfers in background) will make Narro very fast. If you have problems because of this, choose No'), 'Yes', array('Yes', 'No'));
 #: configuration/prepend.inc.php
 msgid "AJAX (transfers in background) will make Narro very fast. If you have problems because of this, choose No"
 msgstr ""
 
-#. QApplication::RegisterPreference('Launch imports and exports in background', 'option', t('Launch imports and exports in background'), 'Yes', array('Yes', 'No'));
+#. NarroUser::RegisterPreference('Launch imports and exports in background', 'option', t('Launch imports and exports in background'), 'Yes', array('Yes', 'No'));
 #: configuration/prepend.inc.php
 msgid "Launch imports and exports in background"
 msgstr ""
