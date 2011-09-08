@@ -100,21 +100,23 @@
                 if ($this->objFile->Header)
                     fwrite($hndTranslationFile, $this->objFile->Header);
 
-                $arrUsers = array();
-                foreach($this->objFile->GetTranslatorArray($this->objTargetLanguage->LanguageId) as $objUser) {
-                    $arrUsers[] = sprintf("# %s <%s>", $objUser->Username, $objUser->Email);
+                if ($this->objProject->GetPreferenceValueByName('Export translators and reviewers in the file header as a comment') == 'Yes') {
+                    $arrUsers = array();
+                    foreach($this->objFile->GetTranslatorArray($this->objTargetLanguage->LanguageId) as $objUser) {
+                        $arrUsers[] = sprintf("# %s <%s>", $objUser->Username, $objUser->Email);
+                    }
+    
+                    if (count($arrUsers))
+                        fwrite($hndTranslationFile, sprintf("<!--\n# Translator(s):\n#\n%s\n#\n-->\n", join("\n", $arrUsers)));
+    
+                    $arrUsers = array();
+                    foreach($this->objFile->GetReviewerArray($this->objTargetLanguage->LanguageId) as $objUser) {
+                        $arrUsers[] = sprintf("# %s <%s>", $objUser->Username, $objUser->Email);
+                    }
+    
+                    if (count($arrUsers))
+                        fwrite($hndTranslationFile, sprintf("<!--\n# Reviewer(s):\n#\n%s\n#\n-->\n", join("\n", $arrUsers)));
                 }
-
-                if (count($arrUsers))
-                    fwrite($hndTranslationFile, sprintf("<!--\n# Translator(s):\n#\n%s\n#\n-->\n", join("\n", $arrUsers)));
-
-                $arrUsers = array();
-                foreach($this->objFile->GetReviewerArray($this->objTargetLanguage->LanguageId) as $objUser) {
-                    $arrUsers[] = sprintf("# %s <%s>", $objUser->Username, $objUser->Email);
-                }
-
-                if (count($arrUsers))
-                    fwrite($hndTranslationFile, sprintf("<!--\n# Reviewer(s):\n#\n%s\n#\n-->\n", join("\n", $arrUsers)));
 
                 foreach($arrSourceKey as $strContext=>$objEntity) {
                     if (isset($arrTranslation[$strContext]))

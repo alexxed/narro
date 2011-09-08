@@ -41,6 +41,8 @@ if (!defined('__PREPEND_INCLUDED__')) {
     // @todo needs testing
     // NarroUser::RegisterPreference('Use AJAX', 'option', t('AJAX (transfers in background) will make Narro very fast. If you have problems because of this, choose No'), 'Yes', array('Yes', 'No'));
     NarroUser::RegisterPreference('Launch imports and exports in background', 'option', t('Launch imports and exports in background'), 'Yes', array('Yes', 'No'));
+    
+    NarroProject::RegisterPreference('Export translators and reviewers in the file header as a comment', true, 0, 'option', '', 'Yes', array('Yes', 'No'));
 
     QApplication::InitializeLogging();
     QApplication::InitializeTranslationEngine();

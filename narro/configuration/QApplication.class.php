@@ -298,17 +298,18 @@
             // project log via cli
             elseif (isset($argv) && $intProjectId = $argv[array_search('--project', $argv)+1])
                 $strLanguageCode = $argv[array_search('--translation-lang', $argv)+1];
-
+            
             if (!is_null($intProjectId) && !is_null($strLanguageCode))
                 QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $intProjectId, $strLanguageCode);
             elseif (!is_null($intProjectId))
                 QApplication::$LogFile = sprintf('%s/app-%s.log', __TMP_PATH__, $strLanguageCode);
             else
-                QApplication::$LogFile = sprintf('%s/app.log', __TMP_PATH__, $intProjectId);
-
-            if (!file_exists(QApplication::$LogFile))
-                file_put_contents(QApplication::$LogFile, '');
-            chmod(QApplication::$LogFile, 0666);
+                QApplication::$LogFile = sprintf('%s/app.log', __TMP_PATH__);
+            
+            if (!file_exists(QApplication::$LogFile)) {
+                @file_put_contents(QApplication::$LogFile, '');
+                @chmod(QApplication::$LogFile, 0666);
+            }
 
             QApplication::$Logger = new Zend_Log();
             QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile));
