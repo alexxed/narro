@@ -18,6 +18,7 @@
 
     class NarroMozillaDtdFileImporter extends NarroMozillaFileImporter {
         const ENTITY_REGEX = '/(.*)(<!ENTITY\s+)([^\s]+)(\s+")([^"]*)("\s?>\s*)/m';
+        const ENTITY_REGEX_2 = "/(.*)(<!ENTITY\s+)([^\s]+)(\s+')([^']*)('\s?>\s*)/m";
         const COMMENT_REGEX = '/<!--([^>]+)-->/m';
         /**
          * Preprocesses the whole file, e.g. removing trailing spaces
@@ -51,7 +52,7 @@
          * @return NarroFileEntity
          */
         protected function ProcessLine($strLine) {
-            if (preg_match(self::ENTITY_REGEX, $strLine, $arrMatches)) {
+            if (preg_match(self::ENTITY_REGEX, $strLine, $arrMatches) || preg_match(self::ENTITY_REGEX_2, $strLine, $arrMatches) ) {
                 $objEntity = new NarroFileEntity();
 
                 $objEntity->Key = $arrMatches[3];
@@ -78,6 +79,8 @@
             $intTime = time();
 
             $arrSourceKey = $this->FileAsArray($strTemplateFile);
+            
+            QFirebug::error($arrSourceKey);
 
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
