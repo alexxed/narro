@@ -253,17 +253,41 @@
             // language passed through cli parameter
             elseif (isset($argv) && $strLanguage = $argv[array_search('--translation-lang', $argv)+1])
                 QApplication::$TargetLanguage = NarroLanguage::LoadByLanguageCode($strLanguage);
-            // language guessed from the browser settings
+            // language taken from user preferences
             else {
-                $objGuessedLanguage = QApplication::GetBrowserLanguage();
-                if ($objGuessedLanguage instanceof NarroLanguage && !isset($_REQUEST['openid_mode'])) {
-                    QApplication::Redirect(sprintf('projects.php?l=%s', $objGuessedLanguage->LanguageCode));
-                    exit;
+                if (QApplication::$User->UserId != NarroUser::ANONYMOUS_USER_ID) {
+                    $objGuessedLanguage = NarroLanguage::LoadByLanguageCode(QApplication::$User->GetPreferenceValueByName('Language'));
+                    if (!$objGuessedLanguage instanceof NarroLanguage || !$objGuessedLanguage->Active) {
+                        $objGuessedLanguage = null;
+                    }
                 }
-                else
-                    QApplication::$TargetLanguage = QApplication::$SourceLanguage;
-
+                
+                if (!$objGuessedLanguage) {
+                    $objGuessedLanguage = QApplication::GetBrowserLanguage();
+                    if (!$objGuessedLanguage instanceof NarroLanguage || !$objGuessedLanguage->Active) {
+                        $objGuessedLanguage = null;
+                    }
+                }
+                
+                if (!$objGuessedLanguage) {
+                    $objGuessedLanguage = NarroLanguage::QuerySingle(QQ::Equal(QQN::NarroLanguage()->Active, true));
+                }
+                
+                if (!$objGuessedLanguage) {
+                    die('There are no active languages in the database.');
+                }
+                else {
+                    if (!isset($_REQUEST['openid_mode'])) {
+                        QApplication::Redirect(sprintf('projects.php?l=%s', $objGuessedLanguage->LanguageCode));
+                        exit;
+                    }
+                    else
+                        QApplication::$TargetLanguage = $objGuessedLanguage;
+                }
             }
+            
+            if (!QApplication::$TargetLanguage->Active)
+                die(sprintf('There language %s is not active. Please ask the administrator to activate or check your URL if this is not the language you wanted.', QApplication::$TargetLanguage->LanguageName));
         }
 
         public static function InitializeUser() {

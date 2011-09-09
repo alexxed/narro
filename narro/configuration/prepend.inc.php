@@ -27,9 +27,9 @@ if (!defined('__PREPEND_INCLUDED__')) {
     QApplication::InitializeDatabaseConnections();
     QApplication::InitializeSession();
     QApplication::InitializeCache();
-    QApplication::InitializeLanguage();
     QApplication::InitializeUser();
-
+    QApplication::InitializeLanguage();
+    
     NarroUser::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
     NarroUser::RegisterPreference('Font size', 'option', t('The application font size'), 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
     NarroUser::RegisterPreference('Language', 'option', t('The language you are translating to'), QApplication::QueryString('l'), array(QApplication::QueryString('l')));
