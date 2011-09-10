@@ -77,17 +77,25 @@
         }
 
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
-            if (file_exists(__IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip')) {
-                // @todo replace this with a download method that can serve files from a non web public directory
-                $strDownloadUrl = __HTTP_URL__ . __SUBDIRECTORY__ . str_replace(__DOCROOT__ . __SUBDIRECTORY__, '', __IMPORT_PATH__) . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip';
-                $strExportText = sprintf('<a href="%s">%s</a>', $strDownloadUrl, $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip');
-            }
-            else {
-                $strExportText = '';
+            $strArchiveName = __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip';
+            if (file_exists($strArchiveName)) {
+                $strDownloadUrl = sprintf(
+                    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/includes/narro/plugins/' . __CLASS__ . '.class.php?p=%d&file=%s-%s.zip',
+                    $objProject->ProjectId,
+                    $objProject->ProjectName,
+                    QApplication::$TargetLanguage->LanguageCode
+                );
+                $objDateSpan = new QDateTimeSpan(time() - filemtime($strArchiveName));
+                $strText = sprintf(
+                    '<a href="%s">%s</a>, ' . t('exported %s ago'),
+                    $strDownloadUrl ,
+                    basename($strArchiveName),
+                    $objDateSpan->SimpleDisplay()
+                );
             }
 
 
-            return array($objProject, $strExportText);
+            return array($objProject, $strText);
         }
 
         public function AfterExportProject(NarroProject $objProject) {
