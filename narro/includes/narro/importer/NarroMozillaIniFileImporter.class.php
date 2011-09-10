@@ -94,9 +94,6 @@
 
                 $hndTranslationFile = fopen($strTranslatedFile, 'w');
 
-                if ($this->objFile->Header)
-                    fwrite($hndTranslationFile, $this->objFile->Header);
-
                 if ($this->objProject->GetPreferenceValueByName('Export translators and reviewers in the file header as a comment') == 'Yes') {
                     $arrUsers = array();
                     foreach($this->objFile->GetTranslatorArray($this->objTargetLanguage->LanguageId) as $objUser) {
@@ -114,6 +111,9 @@
                     if (count($arrUsers))
                         fwrite($hndTranslationFile, sprintf("# Reviewer(s):\n#\n%s\n#\n", join("\n", $arrUsers)));
                 }
+                
+                if ($this->objFile->Header)
+                fwrite($hndTranslationFile, $this->objFile->Header);
 
                 foreach($arrSourceKey as $strContext=>$objEntity) {
                     if (isset($arrTranslation[$strContext]))

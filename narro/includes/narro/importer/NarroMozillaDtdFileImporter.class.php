@@ -79,7 +79,7 @@
             $intTime = time();
 
             $arrSourceKey = $this->FileAsArray($strTemplateFile);
-
+            
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
                 QApplication::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));
@@ -91,9 +91,6 @@
                 $arrTranslation = $this->GetTranslations($arrSourceKey);
 
                 $hndTranslationFile = fopen($strTranslatedFile, 'w');
-
-                if ($this->objFile->Header)
-                    fwrite($hndTranslationFile, $this->objFile->Header);
 
                 if ($this->objProject->GetPreferenceValueByName('Export translators and reviewers in the file header as a comment') == 'Yes') {
                     $arrUsers = array();
@@ -113,6 +110,9 @@
                         fwrite($hndTranslationFile, sprintf("<!--\n# Reviewer(s):\n#\n%s\n#\n-->\n", join("\n", $arrUsers)));
                 }
 
+                if ($this->objFile->Header)
+                    fwrite($hndTranslationFile, $this->objFile->Header);
+                
                 foreach($arrSourceKey as $strContext=>$objEntity) {
                     if (isset($arrTranslation[$strContext]))
                         fwrite($hndTranslationFile, $objEntity->BeforeValue . $arrTranslation[$strContext] . $objEntity->AfterValue . "\n");
