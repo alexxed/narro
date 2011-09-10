@@ -72,8 +72,8 @@
                 $this->objFile->Save();
             }
             
-            if (isset($strLastKey))
-                $arrKeys[$strLastKey]->AfterValue .= $strPreviousLines;
+            if (isset($strLastKey) && $strPreviousLines)
+                $arrKeys[$strLastKey]->AfterValue .=  "\n" . $strPreviousLines;
 
             QApplication::LogDebug(sprintf('Converted file to array in %s second(s)', (time() - $intTime)));
 
