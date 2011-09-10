@@ -123,7 +123,7 @@
             
             $mixProcess = exec(
                 sprintf(
-                    'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_mercurial;cd %s_mercurial; cp -f -R %s/* .; hg commit -m "%s" %s; hg push %s', 
+                    'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_mercurial;cd %s_mercurial; cp -f -R %s/* .; hg addremove; hg commit -m "%s" %s; hg push %s', 
                     __TMP_PATH__,
                     $strSSHKey . '_hgrc',
                     $this->txtRepositoryUrl->Text,
@@ -175,7 +175,7 @@
             
             $mixProcess = exec(
                 sprintf(
-                	'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_mercurial;cd %s_mercurial; cp -f -R %s/* .; hg diff -w --nodates > %s_diff; hg commit -m "%s" %s; hg outgoing', 
+                	'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_mercurial;cd %s_mercurial; cp -f -R %s/* .; hg addremove; hg diff -w --nodates > %s_diff; hg commit -m "%s" %s; hg outgoing', 
                     __TMP_PATH__, 
                     $strSSHKey . '_hgrc', 
                     $this->txtRepositoryUrl->Text, 
