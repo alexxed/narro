@@ -26,7 +26,7 @@
          * @return string
          */
         protected function PreProcessFile($strFile) {
-            return preg_replace('/<!\-\-\n# Translator\(s\):\n#\n.*\n#\n-->\n/', '', $strFile);
+            return $strFile;
         }
 
         /**
@@ -89,9 +89,6 @@
             if (is_array($arrSourceKey)) {
                 $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
                 $arrTranslation = $this->GetTranslations($arrSourceKey);
-
-                if (basename($strTemplateFile) == 'aboutDialog.dtd')
-                QApplication::LogDebug(var_export($arrTranslation, true));
 
                 $hndTranslationFile = fopen($strTranslatedFile, 'w');
 
