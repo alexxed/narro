@@ -38,6 +38,7 @@
         }        
 
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
+            $strExportText = '';
             if ($objProject->ProjectType != NarroProjectType::Mozilla) return array($objProject, $strText);
             $strCacheId = __CLASS__ . QApplication::GetLanguageId();
             $objData = QApplication::$Cache->load($strCacheId);
@@ -55,12 +56,12 @@
                 if ($objItem->id == sprintf('%s/%s', $objProject->GetPreferenceValueByName('Code name on mozilla l10n dashboard'), QApplication::$TargetLanguage->LanguageCode)) {
                     $strWarning = ($objItem->warnings)?sprintf('%d warnings', $objItem->warnings):'';
                     $strMissing = ($objItem->missing)?sprintf('%d missing', $objItem->missing):'';
-                    $strText = sprintf('<a title="Visit the Mozilla l10n dashboard" target="_blank" href="https://l10n-stage-sj.mozilla.org/dashboard/compare?run=%d">%s</a>', $objItem->runid, join(', ', array($objItem->result, $strMissing, $strWarning)));
+                    $strExportText = sprintf('<a title="Visit the Mozilla l10n dashboard" target="_blank" href="https://l10n-stage-sj.mozilla.org/dashboard/compare?run=%d">%s</a>', $objItem->runid, join(', ', array($objItem->result, $strMissing, $strWarning)));
                     break;
                 }
             }
             
-            return array($objProject, $strText);
+            return array($objProject, $strExportText);
         }
     }
 ?>

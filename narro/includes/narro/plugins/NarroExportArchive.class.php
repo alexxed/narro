@@ -77,6 +77,7 @@
         }
 
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
+            $strExportText = '';
             $strArchiveName = __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip';
             if (file_exists($strArchiveName)) {
                 $strDownloadUrl = sprintf(
@@ -86,7 +87,7 @@
                     QApplication::$TargetLanguage->LanguageCode
                 );
                 $objDateSpan = new QDateTimeSpan(time() - filemtime($strArchiveName));
-                $strText = sprintf(
+                $strExportText = sprintf(
                     '<a href="%s">%s</a>, ' . t('exported %s ago'),
                     $strDownloadUrl ,
                     basename($strArchiveName),
@@ -95,7 +96,7 @@
             }
 
 
-            return array($objProject, $strText);
+            return array($objProject, $strExportText);
         }
 
         public function AfterExportProject(NarroProject $objProject) {
