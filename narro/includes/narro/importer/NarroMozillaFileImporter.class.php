@@ -67,6 +67,11 @@
                 }
             }
             
+            if (!$blnHeaderFound) {
+                $this->objFile->Header = null;
+                $this->objFile->Save();
+            }
+            
             if (isset($strLastKey))
                 $arrKeys[$strLastKey]->AfterValue .= $strLineToProcess;
 
@@ -145,7 +150,7 @@
                                     QApplication::LogDebug(sprintf('Using as access key the first ascii letter from the translation, %s', $arrMatches[0]));
                                 } else {
                                     $arrTexts[$strLabelCtx]->AccessKey = $strAccKey;
-                                    QApplication::LogWarn(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
+                                    QApplication::LogDebug(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
                                 }
 
                                 $arrTexts[$strContext]->LabelCtx = $strLabelCtx;
