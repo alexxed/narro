@@ -29,6 +29,13 @@
             
             NarroProject::RegisterPreference('Code name on mozilla l10n dashboard', true, NarroProjectType::Mozilla, 'text', 'e.g. fx_aurora, see <a href="https://l10n-stage-sj.mozilla.org/shipping/dashboard">https://l10n-stage-sj.mozilla.org/shipping/dashboard</a>', '');
         }
+        
+        public function AfterExportProject(NarroProject $objProject) {
+            $strCacheId = __CLASS__ . QApplication::GetLanguageId();
+            QApplication::$Cache->remove($strCacheId);
+        
+            return array($objProject);
+        }        
 
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
             if ($objProject->ProjectType != NarroProjectType::Mozilla) return array($objProject, $strText);
