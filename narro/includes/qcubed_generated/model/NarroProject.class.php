@@ -169,6 +169,7 @@
             $blnNew = (!$this->__blnRestored) || ($blnForceInsert);
             
             $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->intProjectId, QApplication::GetLanguageId());
+            if (is_array($this->arrPreferences))
             foreach($this->arrPreferences as $strName=>$strValue) {
                 if (self::$AvailablePreferences[$strName]['global'] == false) {
                     if ($objProjectProgress)
@@ -233,7 +234,10 @@
                 else
                     return self::$AvailablePreferences[$strName]['default'];
             else { 
-                return $this->ProjectProgressForCurrentLanguage->GetPreferenceValueByName($strName);
+                if ($this->ProjectProgressForCurrentLanguage)
+                    return $this->ProjectProgressForCurrentLanguage->GetPreferenceValueByName($strName);
+                else 
+                    return self::$AvailablePreferences[$strName]['default'];
             }
         }
         
@@ -272,6 +276,8 @@
                 ///////////////////
                 case 'Preferences': return $this->arrPreferences;
                 case 'ProjectProgressForCurrentLanguage':
+                    if (!$this->intProjectId) return false;
+                    
                     if (isset($this->objProjectProgressForCurrentLanguage))
                         return $this->objProjectProgressForCurrentLanguage;
                     else {

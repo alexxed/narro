@@ -80,7 +80,7 @@
             $this->btnCancel_Create();
             $this->btnDelete_Create();
             
-            if (count(NarroProject::$AvailablePreferences)) {
+            if (count(NarroProject::$AvailablePreferences) && $this->objProject->ProjectId) {
                 $this->pnlPreferences = new NarroProjectPreferencesPanel($this->objProject, $this);
             }
 
