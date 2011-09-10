@@ -25,7 +25,7 @@
          * @return string
          */
         protected function PreProcessFile($strFile) {
-            return $strFile;
+            return str_replace("\\\n", "", $strFile);
         }
 
         /**
