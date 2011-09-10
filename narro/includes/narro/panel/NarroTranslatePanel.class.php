@@ -256,7 +256,10 @@
                     break;
 
                 case self::SHOW_NOT_APPROVED:
-                    $this->arrConditions[] = QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId);
+                    $this->arrConditions[] = QQ::AndCondition(
+                        QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId),
+                        QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, true)
+                    );
                     break;
 
                 case self::SHOW_APPROVED:
