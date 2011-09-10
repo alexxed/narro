@@ -417,11 +417,6 @@
                     $objSuggestion->UserId = QApplication::GetUserId();
                     $objSuggestion->Save();
 
-                    if ($this->objContextInfo->HasSuggestions != 1) {
-                        $this->objContextInfo->HasSuggestions = 1;
-                        $this->objContextInfo->Save();
-                    }
-
                     if ($this->dtgTranslation)
                         $this->dtgTranslation->MarkAsModified();
                 }
@@ -547,7 +542,12 @@
                 $objSuggestion->Delete();
 
                 if (NarroSuggestion::QueryCount(QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objContextInfo->Context->TextId)) == 0) {
-                    $arrCtx = NarroContextInfo::QueryArray(QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $this->objContextInfo->Context->TextId));
+                    $arrCtx = NarroContextInfo::QueryArray(
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $this->objContextInfo->Context->TextId),
+                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId())
+                        )
+                    );
 
                     foreach($arrCtx as $objContextInfo) {
                         $objContextInfo->HasSuggestions = 0;
