@@ -39,7 +39,7 @@
 
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
             $strExportText = '';
-            if ($objProject->ProjectType != NarroProjectType::Mozilla) return array($objProject, $strText);
+            if ($objProject->ProjectType != NarroProjectType::Mozilla) return array($objProject, '');
             $strCacheId = __CLASS__ . QApplication::GetLanguageId();
             $objData = QApplication::$Cache->load($strCacheId);
             if (!$objData) {
