@@ -389,6 +389,11 @@
         }
 
         public function btnSave_Click($strFormId, $strControlId, $strParameter) {
+            if ($this->txtAccessKey && $this->txtAccessKey->Text && $this->txtAccessKey->Text != $this->objContextInfo->SuggestionAccessKey) {
+                $this->objContextInfo->SuggestionAccessKey = $this->txtAccessKey->Text;
+                $this->objContextInfo->Save();
+            }
+            
             if ($this->txtTranslation->Text != '' && ($this->chkChanged->Checked || ($this->btnSaveIgnore && $this->btnSaveIgnore->ControlId == $strControlId))) {
                 if (!$this->btnSaveIgnore && !$this->Validate()) {
                     $this->btnSaveIgnore_Create();
@@ -421,11 +426,6 @@
                         $this->dtgTranslation->MarkAsModified();
                 }
                 
-                if ($this->txtAccessKey && $this->txtAccessKey->Text && $this->txtAccessKey->Text != $this->objContextInfo->SuggestionAccessKey) {
-                    $this->objContextInfo->SuggestionAccessKey = $this->txtAccessKey->Text;
-                    $this->objContextInfo->Save();
-                }                
-
                 if ($this->ParentControl->ParentControl->chkApprove->Checked == true)
                     $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
                 else {                    
