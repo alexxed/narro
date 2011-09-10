@@ -303,9 +303,10 @@
                             QApplication::LogDebug(sprintf('Added folder "%s" from "%s"', $strDir, $strPath));
                             NarroImportStatistics::$arrStatistics['Imported folders']++;
                         }
+                        
                         $arrDirectories[$strPath] = $objFile->FileId;
                         
-                        if ($objFile->Active == 0) {
+                        if (!$objFile->Active) {
                             $objFile->Active = 1;
                             $objFile->Save();
                         }
