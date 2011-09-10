@@ -79,8 +79,6 @@
             $intTime = time();
 
             $arrSourceKey = $this->FileAsArray($strTemplateFile);
-            
-            QFirebug::error($arrSourceKey);
 
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
@@ -100,6 +98,7 @@
                 if ($this->objFile->Header)
                     fwrite($hndTranslationFile, $this->objFile->Header);
 
+                /**
                 if ($this->objProject->GetPreferenceValueByName('Export translators and reviewers in the file header as a comment') == 'Yes') {
                     $arrUsers = array();
                     foreach($this->objFile->GetTranslatorArray($this->objTargetLanguage->LanguageId) as $objUser) {
@@ -117,6 +116,7 @@
                     if (count($arrUsers))
                         fwrite($hndTranslationFile, sprintf("<!--\n# Reviewer(s):\n#\n%s\n#\n-->\n", join("\n", $arrUsers)));
                 }
+                */
 
                 foreach($arrSourceKey as $strContext=>$objEntity) {
                     if (isset($arrTranslation[$strContext]))
