@@ -243,8 +243,6 @@
             $objDatabase = QApplication::$Database[1];
 
             try {
-                $strQuery = sprintf("DELETE FROM narro_context_comment USING narro_context_comment LEFT JOIN narro_context ON narro_context_comment.context_id=narro_context.context_id WHERE narro_context_comment.language_id=%d AND narro_context.project_id=%d", QApplication::GetLanguageId(), $this->objProject->ProjectId);
-                $objDatabase->NonQuery($strQuery);
                 $strQuery = sprintf("DELETE FROM narro_context_info USING narro_context_info LEFT JOIN narro_context ON narro_context_info.context_id=narro_context.context_id WHERE narro_context_info.language_id=%d AND narro_context.project_id=%d", QApplication::GetLanguageId(), $this->objProject->ProjectId);
                 $objDatabase->NonQuery($strQuery);
                 $strQuery = sprintf("DELETE FROM `narro_context` WHERE project_id = %d", $this->objProject->ProjectId);
