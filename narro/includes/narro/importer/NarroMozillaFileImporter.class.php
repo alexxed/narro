@@ -73,7 +73,7 @@
             }
             
             if (isset($strLastKey))
-                $arrKeys[$strLastKey]->AfterValue .= $strLineToProcess;
+                $arrKeys[$strLastKey]->AfterValue .= $strPreviousLines;
 
             QApplication::LogDebug(sprintf('Converted file to array in %s second(s)', (time() - $intTime)));
 
