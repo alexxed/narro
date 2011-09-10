@@ -420,6 +420,11 @@
                     if ($this->dtgTranslation)
                         $this->dtgTranslation->MarkAsModified();
                 }
+                
+                if ($this->txtAccessKey && $this->txtAccessKey->Text && $this->txtAccessKey->Text != $this->objContextInfo->SuggestionAccessKey) {
+                    $this->objContextInfo->SuggestionAccessKey = $this->txtAccessKey->Text;
+                    $this->objContextInfo->Save();
+                }                
 
                 if ($this->ParentControl->ParentControl->chkApprove->Checked == true)
                     $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
