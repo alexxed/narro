@@ -28,6 +28,8 @@
     $_CONTROL->btnExport->Render();
     $_CONTROL->btnKillProcess->Render();
     $_CONTROL->objExportProgress->Render();
-    $_CONTROL->lblExport->Render()
+    $_CONTROL->lblExport->Render();
+    
+    $_CONTROL->pnlTranslationsTarget->Render();
 ?>
 

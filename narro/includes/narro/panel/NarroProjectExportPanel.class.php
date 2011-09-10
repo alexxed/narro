@@ -29,6 +29,8 @@
         public $txtAuthor;
 
         public $btnExport;
+        
+        public $pnlTranslationsTarget;
 
         public function __construct($objNarroProject, $objParentObject, $strControlId = null) {
             // Call the Parent
@@ -104,6 +106,8 @@
             }
 
             $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objProject->ProjectId, QApplication::$TargetLanguage->LanguageCode) && !$this->btnExport->Visible;
+            
+            $this->pnlTranslationsTarget = new NarroProjectTranslationTargetPanel($this->objProject, QApplication::$TargetLanguage, $this);
         }
         
         public function lstExportSuggestionType_Change() {
