@@ -423,7 +423,7 @@
 
                 if ($this->ParentControl->ParentControl->chkApprove->Checked == true)
                     $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
-                else {
+                else {                    
                     foreach($this->Form->GetAllControls() as $ctl) {
                         if ($ctl instanceof NarroContextInfoEditor) {
                             if ($ctl->Text->Text == $this->lblText->Text) {
@@ -467,14 +467,19 @@
 
                 $objSuggestion = NarroSuggestion::Load($strParameter);
                 $strSuggestionValue = $objSuggestion->SuggestionValue;
-
-                if ($this->objContextInfo->Context->TextAccessKey) {
-                    if (mb_stripos($strSuggestionValue, $this->objContextInfo->Context->TextAccessKey) === false)
-                        $this->objContextInfo->SuggestionAccessKey = mb_substr($strSuggestionValue, 0, 1);
-                    elseif (mb_strpos($strSuggestionValue, mb_strtoupper($this->objContextInfo->Context->TextAccessKey)) === false)
-                        $this->objContextInfo->SuggestionAccessKey = mb_strtolower($this->objContextInfo->Context->TextAccessKey);
-                    else
-                        $this->objContextInfo->SuggestionAccessKey = mb_strtoupper($this->objContextInfo->Context->TextAccessKey);
+                
+                if ($this->txtAccessKey && $this->txtAccessKey->Text) {
+                    $this->objContextInfo->SuggestionAccessKey = $this->txtAccessKey->Text;
+                }
+                else {
+                    if ($this->objContextInfo->Context->TextAccessKey) {
+                        if (mb_stripos($strSuggestionValue, $this->objContextInfo->Context->TextAccessKey) === false)
+                            $this->objContextInfo->SuggestionAccessKey = mb_substr($strSuggestionValue, 0, 1);
+                        elseif (mb_strpos($strSuggestionValue, mb_strtoupper($this->objContextInfo->Context->TextAccessKey)) === false)
+                            $this->objContextInfo->SuggestionAccessKey = mb_strtolower($this->objContextInfo->Context->TextAccessKey);
+                        else
+                            $this->objContextInfo->SuggestionAccessKey = mb_strtoupper($this->objContextInfo->Context->TextAccessKey);
+                    }
                 }
 
                 $this->objContextInfo->Modified = QDateTime::Now();
