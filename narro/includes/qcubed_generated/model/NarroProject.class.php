@@ -30,6 +30,7 @@
     * @subpackage DataObjects
     * 
     * @property array $Preferences
+    * @property NarroProjectProgress $ProjectProgressForCurrentLanguage
     *
     */
     class NarroProject extends NarroProjectGen {
@@ -39,6 +40,11 @@
         public static $AvailablePreferences = array();
         
         protected $arrPreferences;
+        /**
+         * @var NarroProjectProgress
+         */
+        protected $objProjectProgressForCurrentLanguage;
+        
         /**
         * Default "to string" handler
         * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -161,6 +167,25 @@
 
         public function Save($blnForceInsert = false, $blnForceUpdate = false) {
             $blnNew = (!$this->__blnRestored) || ($blnForceInsert);
+            
+            $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->intProjectId, QApplication::GetLanguageId());
+            foreach($this->arrPreferences as $strName=>$strValue) {
+                if (self::$AvailablePreferences[$strName]['global'] == false) {
+                    if ($objProjectProgress)
+                        $objProjectProgress->SetPreferenceValueByName($strName, $strValue);
+                }
+                else {
+                    $arrGlobalPreferences[$strName] = $strValue;
+                }
+                    
+            }
+            
+            if (isset($arrGlobalPreferences))
+                $this->strData = serialize($arrGlobalPreferences);
+            
+            if ($objProjectProgress)
+                $objProjectProgress->Save();
+            
             $mixResult = parent::Save($blnForceInsert, $blnForceUpdate);
 
             if ($blnNew) {
@@ -201,10 +226,15 @@
             if (is_null($this->arrPreferences) && $this->strData)
                 $this->arrPreferences = unserialize($this->strData);
             
-            if (!is_null($this->arrPreferences) && isset($this->arrPreferences[$strName]))
-                return $this->arrPreferences[$strName];
-            else
-                return self::$AvailablePreferences[$strName]['default'];
+            
+            if (self::$AvailablePreferences[$strName]['global'])
+                if (!is_null($this->arrPreferences) && isset($this->arrPreferences[$strName]))
+                    return $this->arrPreferences[$strName];
+                else
+                    return self::$AvailablePreferences[$strName]['default'];
+            else { 
+                return $this->ProjectProgressForCurrentLanguage->GetPreferenceValueByName($strName);
+            }
         }
         
         /**
@@ -241,6 +271,24 @@
                 // Member Variables
                 ///////////////////
                 case 'Preferences': return $this->arrPreferences;
+                case 'ProjectProgressForCurrentLanguage':
+                    if (isset($this->objProjectProgressForCurrentLanguage))
+                        return $this->objProjectProgressForCurrentLanguage;
+                    else {
+                        $this->objProjectProgressForCurrentLanguage = NarroProjectProgress::LoadByProjectIdLanguageId($this->intProjectId, QApplication::GetLanguageId());
+                        if (!$this->objProjectProgressForCurrentLanguage instanceof NarroProjectProgress) {
+                            $this->objProjectProgressForCurrentLanguage = new NarroProjectProgress();
+                            $this->objProjectProgressForCurrentLanguage->LanguageId = QApplication::GetLanguageId();
+                            $this->objProjectProgressForCurrentLanguage->ProjectId = $this->intProjectId;
+                            $this->objProjectProgressForCurrentLanguage->TotalTextCount = 0;
+                            $this->objProjectProgressForCurrentLanguage->ApprovedTextCount = 0;
+                            $this->objProjectProgressForCurrentLanguage->FuzzyTextCount = 0;
+                            $this->objProjectProgressForCurrentLanguage->ProgressPercent = 0;
+                            $this->objProjectProgressForCurrentLanguage->LastModified = QDateTime::Now();
+                            $this->objProjectProgressForCurrentLanguage->Save();
+                        }                            
+                        return $this->objProjectProgressForCurrentLanguage;
+                    }
                 case 'DefaultTemplatePath':
                     return __IMPORT_PATH__ . '/' . $this->ProjectId . '/' . NarroLanguage::SOURCE_LANGUAGE_CODE;
 
