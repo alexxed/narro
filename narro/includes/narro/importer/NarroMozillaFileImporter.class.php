@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     abstract class NarroMozillaFileImporter extends NarroFileImporter {
-        protected function FileAsArray($strFile) {
+        protected function FileAsArray($strFile, $blnNoHeader = false) {
             $intTime = time();
 
             if (!file_exists($strFile)) {
@@ -43,7 +43,7 @@
             $blnHeaderFound = false;
 
             foreach($arrFile as $intPos=>$strLine) {
-                if ($blnHeaderFound == false && $blnFirstEntityFound == false && $strLine == '' && $strPreviousLines != '') {
+                if ($blnNoHeader == false && $blnHeaderFound == false && $blnFirstEntityFound == false && $strLine == '' && $strPreviousLines != '') {
                     $this->objFile->Header = $strPreviousLines;
                     $this->objFile->Save();
                     $blnHeaderFound = true;
@@ -211,7 +211,7 @@
             $intTime = time();
 
             if ($strTranslatedFile)
-                $arrTransKey = $this->FileAsArray($strTranslatedFile);
+                $arrTransKey = $this->FileAsArray($strTranslatedFile, false);
 
             $arrSourceKey = $this->FileAsArray($strTemplateFile);
 
