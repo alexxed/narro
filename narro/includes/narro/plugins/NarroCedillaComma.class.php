@@ -92,6 +92,10 @@
             else
                 return array($strOriginal, $this->ConvertToComma($strTranslation), $strContext, $objFile, $objProject);
         }
+        
+        public function AfterExportFile($objFile, $strTemplateFile, $strTranslatedFile) {
+            file_put_contents($strTranslatedFile, $this->ConvertToComma(file_get_contents($strTranslatedFile)));
+        }
 
         public function SaveSuggestionComment($strSuggestionComment) {
             return $this->ConvertToComma($strSuggestionComment);
