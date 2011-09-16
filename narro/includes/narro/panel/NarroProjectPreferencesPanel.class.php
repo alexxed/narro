@@ -103,6 +103,7 @@
             }
     
             try {
+                $this->objProject->Save();
                 $this->objProject = NarroProject::Load($this->objProject->ProjectId);
                 $this->objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->objProject->ProjectId, QApplication::GetLanguageId());
             
