@@ -101,24 +101,10 @@
                         break;
                 }
             }
-            
-            foreach(NarroProject::$AvailablePreferences as $strPrefName=>$arrData) {
-                if ($arrData['global'] == true)
-                    $arrProjectPreference[$strName] = $this->objProject->GetPreferenceValueByName($strPrefName);
-                else
-                    $arrProjectLocalPreference[$strName] = $this->objProject->GetPreferenceValueByName($strPrefName);
-            }
     
             try {
-                if (!is_null($arrProjectPreference)) {
-                    $this->objProject->Data = serialize($arrProjectPreference);
-                    $this->objProject->Save();
-                }
-                
-                if (!is_null($arrProjectLocalPreference)) {
-                    $this->objProjectProgress->Data = serialize($arrProjectLocalPreference);
-                    $this->objProjectProgress->Save();
-                }
+                $this->objProject = NarroProject::Load($this->objProject->ProjectId);
+                $this->objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->objProject->ProjectId, QApplication::GetLanguageId());
             
                 $this->lblMessage->Text = t('Your preferences were saved successfuly.');
                 $this->lblMessage->ForeColor = 'green';
