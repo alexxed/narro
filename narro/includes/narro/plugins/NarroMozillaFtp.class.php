@@ -76,7 +76,7 @@
                     
                     $arrData = array($objProject, sprintf('nightly: %s, %s, %s, %s', @$strWindowsNightly, @$strLinuxNightly, @$strAndroidNightly, @$strMacNightly));
                     
-                    QApplication::$Cache->save($arrData, $strCacheId, array(), 3600);
+                    QApplication::$Cache->save($arrData, $strCacheId, array(), 43200);
     
                     return $arrData;
                     
@@ -123,7 +123,7 @@
                 
                     $arrData = array($objProject, sprintf('nightly: %s, %s, %s, %s', @$strWindowsNightly, @$strLinuxNightly, @$strLinux64Nightly, @$strMacNightly));
                 
-                    QApplication::$Cache->save($arrData, $strCacheId, array(), 3600);
+                    QApplication::$Cache->save($arrData, $strCacheId, array(), 43200);
                 
                     return $arrData;     
                 case 'Thunderbird Aurora':
@@ -169,7 +169,7 @@
                 
                     $arrData = array($objProject, sprintf('nightly: %s, %s, %s, %s', @$strWindowsNightly, @$strLinuxNightly, @$strLinux64Nightly, @$strMacNightly));
                 
-                    QApplication::$Cache->save($arrData, $strCacheId, array(), 3600);
+                    QApplication::$Cache->save($arrData, $strCacheId, array(), 43200);
                 
                     return $arrData;
                 default:
