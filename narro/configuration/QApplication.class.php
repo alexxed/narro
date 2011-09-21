@@ -277,7 +277,7 @@
                     die('There are no active languages in the database.');
                 }
                 else {
-                    if (!isset($_REQUEST['openid_mode'])) {
+                    if (!isset($_REQUEST['openid_mode']) && !isset($argv)) {
                         QApplication::Redirect(sprintf('projects.php?l=%s', $objGuessedLanguage->LanguageCode));
                         exit;
                     }
