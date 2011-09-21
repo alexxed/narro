@@ -286,8 +286,8 @@
                 }
             }
             
-            if (!QApplication::$TargetLanguage->Active)
-                die(sprintf('There language %s is not active. Please ask the administrator to activate or check your URL if this is not the language you wanted.', QApplication::$TargetLanguage->LanguageName));
+            if (QApplication::$TargetLanguage->Active == false)
+                die(sprintf('The language %s is not active. Please ask the administrator to activate or check your URL if this is not the language you wanted.', QApplication::$TargetLanguage->LanguageName));
         }
 
         public static function InitializeUser() {

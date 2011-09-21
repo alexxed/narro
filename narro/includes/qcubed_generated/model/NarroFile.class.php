@@ -28,9 +28,16 @@
     *
     * @package My Application
     * @subpackage DataObjects
+    * 
+    * @property NarroFileProgress $FileProgressForCurrentLanguage
     *
     */
     class NarroFile extends NarroFileGen {
+        /**
+         * @var NarroFileProgress
+         */
+        protected $objFileProgressForCurrentLanguage;
+        
         /**
         * Default "to string" handler
         * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -232,6 +239,47 @@
             return $arrUser;
 
         }
-
+        
+        /**
+        * Override method to perform a property "Get"
+        * This will get the value of $strName
+        *
+        * @param string $strName Name of the property to get
+        * @return mixed
+        */
+        public function __get($strName) {
+            switch ($strName) {
+                ///////////////////
+                // Member Variables
+                ///////////////////
+                case 'FileProgressForCurrentLanguage':
+                    if (!$this->intFileId) return false;
+        
+                    if (isset($this->objFileProgressForCurrentLanguage))
+                        return $this->objFileProgressForCurrentLanguage;
+                    else {
+                        $this->objFileProgressForCurrentLanguage = NarroFileProgress::LoadByFileIdLanguageId($this->intFileId, QApplication::GetLanguageId());
+                        if (!$this->objFileProgressForCurrentLanguage instanceof NarroFileProgress) {
+                            $this->objFileProgressForCurrentLanguage = new NarroFileProgress();
+                            $this->objFileProgressForCurrentLanguage->LanguageId = QApplication::GetLanguageId();
+                            $this->objFileProgressForCurrentLanguage->FileId = $this->intFileId;
+                            $this->objFileProgressForCurrentLanguage->TotalTextCount = 0;
+                            $this->objFileProgressForCurrentLanguage->ApprovedTextCount = 0;
+                            $this->objFileProgressForCurrentLanguage->FuzzyTextCount = 0;
+                            $this->objFileProgressForCurrentLanguage->ProgressPercent = 0;
+                            $this->objFileProgressForCurrentLanguage->Save();
+                        }
+                        return $this->objFileProgressForCurrentLanguage;
+                    }
+                
+                default:
+                    try {
+                    return parent::__get($strName);
+                } catch (QCallerException $objExc) {
+                    $objExc->IncrementOffset();
+                    throw $objExc;
+                }
+            }
+        }        
     }
 ?>

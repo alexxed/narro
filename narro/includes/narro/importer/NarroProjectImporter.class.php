@@ -310,6 +310,9 @@
                             $objFile->Active = 1;
                             $objFile->Save();
                         }
+                        
+                        // Create the file progress if needed
+                        $objFile->FileProgressForCurrentLanguage;
                                                 
                         $this->arrFileId[$objFile->FileId] = 1;
                     }
