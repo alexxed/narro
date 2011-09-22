@@ -91,11 +91,11 @@
                     $objProject->ProjectName,
                     QApplication::$TargetLanguage->LanguageCode
                 );
-                $objDateSpan = new QDateTimeSpan(time() - filemtime($strArchiveName));
+                $objDateSpan = new QDateTimeSpan(time() - filemtime($this->GetOutputFileName($objProject)));
                 $strExportText = sprintf(
                     '<a href="%s">%s</a>, ' . t('generated %s ago'),
                     $strDownloadUrl ,
-                    basename($strArchiveName),
+                    basename($this->GetOutputFileName($objProject)),
                     $objDateSpan->SimpleDisplay()
                 );
             }
