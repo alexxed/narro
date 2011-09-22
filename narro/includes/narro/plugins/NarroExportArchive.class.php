@@ -16,9 +16,9 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    if (isset($_REQUEST['p']) && isset($_REQUEST['file'])) {
+    if (isset($_REQUEST['p']) && isset($_REQUEST['pn']) && isset($_REQUEST['l'])) {
         require_once(dirname(__FILE__) . '/../../../configuration/configuration.narro.inc.php');
-        $strFullPath = sprintf('%s/%d/%s', __IMPORT_PATH__, $_REQUEST['p'], $_REQUEST['file']);
+        $strFullPath = sprintf('%s/%d/%s-%s.zip', __IMPORT_PATH__, $_REQUEST['p'], $_REQUEST['pn'], $_REQUEST['l']);
         // File Exists?
         if( file_exists($strFullPath)) {
             header("Pragma: public"); // required
@@ -26,7 +26,7 @@
             header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
             header("Cache-Control: private",false); // required for certain browsers
             header("Content-Type: application/zip");
-            header("Content-Disposition: attachment; filename=\"" . $_REQUEST['file'] . "\";" );
+            header("Content-Disposition: attachment; filename=\"" . basename($strFullPath) . "\";" );
             header("Content-Transfer-Encoding: binary");
             header("Content-Length: " . filesize($strFullPath));
             ob_clean();
@@ -81,7 +81,7 @@
             $strArchiveName = __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip';
             if (file_exists($strArchiveName)) {
                 $strDownloadUrl = sprintf(
-                    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/includes/narro/plugins/' . __CLASS__ . '.class.php?p=%d&file=%s-%s.zip',
+                    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/includes/narro/plugins/' . __CLASS__ . '.class.php?p=%d&pn=%s&l=%s',
                     $objProject->ProjectId,
                     $objProject->ProjectName,
                     QApplication::$TargetLanguage->LanguageCode
@@ -113,7 +113,7 @@
             $strArchiveName = __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.zip';
             if (file_exists($strArchiveName)) {
                 $strDownloadUrl = sprintf(
-                    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/includes/narro/plugins/' . __CLASS__ . '.class.php?p=%d&file=%s-%s.zip',
+                    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/includes/narro/plugins/' . __CLASS__ .  '.class.php?p=%d&pn=%s&l=%s',
                     $objProject->ProjectId,
                     $objProject->ProjectName,
                     QApplication::$TargetLanguage->LanguageCode

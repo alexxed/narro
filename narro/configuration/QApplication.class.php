@@ -286,7 +286,7 @@
                 }
             }
             
-            if (QApplication::$TargetLanguage->Active == false)
+            if (QApplication::$TargetLanguage->Active == false && !isset($argv))
                 die(sprintf('The language %s is not active. Please ask the administrator to activate or check your URL if this is not the language you wanted.', QApplication::$TargetLanguage->LanguageName));
         }
 
