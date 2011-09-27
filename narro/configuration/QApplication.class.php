@@ -330,13 +330,13 @@
             else
                 QApplication::$LogFile = sprintf('%s/app.log', __TMP_PATH__);
             
-            if (!file_exists(QApplication::$LogFile)) {
-                @file_put_contents(QApplication::$LogFile, '');
-                @chmod(QApplication::$LogFile, 0666);
-            }
-
+            if (!file_exists(QApplication::$LogFile))
+                file_put_contents(QApplication::$LogFile, '');
+            chmod(QApplication::$LogFile, 0666);
+            
             QApplication::$Logger = new Zend_Log();
             QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile));
+            
             if (isset($argv[0]))
                 QApplication::$Logger->addWriter(new Zend_Log_Writer_Syslog());
 
