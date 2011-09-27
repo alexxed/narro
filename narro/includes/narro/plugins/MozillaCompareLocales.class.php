@@ -18,16 +18,14 @@
 
     if (isset($_REQUEST['p']) && isset($_REQUEST['pn']) && isset($_REQUEST['l'])) {
         require_once(dirname(__FILE__) . '/../../../configuration/configuration.narro.inc.php');
-        $strFullPath = sprintf('%s/%d/%s-%s._compare-locales.html', __IMPORT_PATH__, $_REQUEST['p'], $_REQUEST['pn'], $_REQUEST['l']);
+        $strFullPath = sprintf('%s/%d/%s_%s_compare-locales.html', __IMPORT_PATH__, $_REQUEST['p'], $_REQUEST['pn'], $_REQUEST['l']);
         // File Exists?
         if( file_exists($strFullPath)) {
             header("Pragma: public"); // required
             header("Expires: 0");
             header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
             header("Cache-Control: private",false); // required for certain browsers
-            header("Content-Type: application/zip");
-            header("Content-Disposition: attachment; filename=\"" . basename($strFullPath) . "\";" );
-            header("Content-Transfer-Encoding: binary");
+            header("Content-Type: text/html");
             header("Content-Length: " . filesize($strFullPath));
             ob_clean();
             flush();

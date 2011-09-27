@@ -47,7 +47,7 @@
         }
         
         protected function GetOutputFileName($objProject) {
-            return __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '_' . QApplication::$TargetLanguage->LanguageCode . '.xpi';
+            return __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.xpi';
         }
         
         public function DisplayExportMessage(NarroProject $objProject, $strText = '') {
