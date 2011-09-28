@@ -220,8 +220,10 @@
                     else if (gettype($objBacktrace['args'][$intIndex]) == 'integer') {}
                     else if (gettype($intIndex['args'][$intIndex]) == 'object')
                         $objBacktrace['args'][$intIndex] = 'Object';
-                    else
+                    else if (gettype($objBacktrace['args'][$intIndex]) == 'string') 
                         $objBacktrace['args'][$intIndex] = sprintf("'%s'", $objBacktrace['args'][$intIndex]);
+                    else 
+                        $objBacktrace['args'][$intIndex] = gettype($intIndex['args'][$intIndex]);
 
                 // Push it onto the profiling information array
                 $arrProfile = array(

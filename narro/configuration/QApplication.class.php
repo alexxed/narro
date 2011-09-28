@@ -244,6 +244,7 @@
 
             if (strstr($_SERVER['REQUEST_URI'], '_devtools')) return false;
             if (strstr($_SERVER['REQUEST_URI'], 'image.php')) return false;
+            if (strstr($_SERVER['REQUEST_URI'], 'profile.php')) return false;
 
             QApplication::$SourceLanguage = NarroLanguage::LoadByLanguageCode(__SOURCE_LANGUAGE_CODE__);
 
