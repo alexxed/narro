@@ -214,7 +214,7 @@
                 $strOutput .= '';
             }
 
-            return $strOutput;
+            return NarroLink::Translate($objProject->ProjectId, null, null, null, null, null, null, null, null, $strOutput);
         }
 
         public function btnRefresh_Click($strFormId, $strControlId, $intProjectId) {
@@ -248,7 +248,7 @@
                     '</span>';
 
             return
-                NarroLink::Translate($objProject->ProjectId, null, null, null, null, null, null, null, null, $strProjectName) .
+                NarroLink::Project($objProject->ProjectId, $strProjectName) .
                 '<div style="display:block">' .
                 $objProject->ProjectDescription .
                 '</div>';
