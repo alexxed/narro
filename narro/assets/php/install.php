@@ -29,15 +29,13 @@
         die();
     }
 
-
-    if (!extension_loaded('mbstring'))
-    die('This version of Narro needs php-mbstring, please install it');
-
+    $arrExtension = array('mysql', 'mbstring', 'gd', 'zip', 'ftp', 'soap');
+    foreach($arrExtension as $strExtensionName) {
+        die(sprintf('This version of Narro needs the following extensions, please install them.', join("\n ", $arrExtension)));
+    }
+    
     if (!function_exists('mb_stripos'))
-    die('This version of Narro needs mb_stripos, that\'s available only in php versions bigger than 5.2.0');
-
-    if (!extension_loaded('gd'))
-    die('This version of Narro needs php-gd, please install it');
+        die('This version of Narro needs mb_stripos, that\'s available only in php versions bigger than 5.2.0');
 
 
     if (!is_writable(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/'))
