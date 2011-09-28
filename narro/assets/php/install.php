@@ -29,9 +29,9 @@
         die();
     }
 
-    $arrExtension = array('mysql', 'mbstring', 'gd', 'zip', 'ftp', 'soap');
+    $arrExtension = array('mysql', 'mbstring', 'gd', 'zip', 'ftp', 'soap', 'pspell', 'mysqli');
     foreach($arrExtension as $strExtensionName) {
-        die(sprintf('This version of Narro needs the following extensions, please install them.', join("\n ", $arrExtension)));
+        die(sprintf('This version of Narro needs the following extensions, please install them: %s', join("\n ", $arrExtension)));
     }
     
     if (!function_exists('mb_stripos'))
