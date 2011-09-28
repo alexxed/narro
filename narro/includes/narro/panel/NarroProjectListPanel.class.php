@@ -166,10 +166,9 @@
         }
 
         public function dtgProjectList_LastActivityColumn_Render(NarroProject $objProject) {
-            $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($objProject->ProjectId, QApplication::GetLanguageId());
 
-            if ($objProjectProgress && $objProjectProgress->LastModified->Timestamp > 0) {
-                $objDateSpan = new QDateTimeSpan(time() - $objProjectProgress->LastModified->Timestamp);
+            if ($objProject->_NarroProjectProgressAsProject && $objProject->_NarroProjectProgressAsProject->LastModified->Timestamp > 0) {
+                $objDateSpan = new QDateTimeSpan(time() - $objProject->_NarroProjectProgressAsProject->LastModified->Timestamp);
                 $strModifiedWhen = $objDateSpan->SimpleDisplay();
                 return sprintf(t('%s ago'), $strModifiedWhen);
             }
@@ -179,8 +178,7 @@
         }
 
         public function dtgProjectList_PercentTranslated_Render(NarroProject $objProject) {
-            $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($objProject->ProjectId, QApplication::GetLanguageId());
-            if (!$objProjectProgress) return '';
+            if (!$objProject->_NarroProjectProgressAsProject) return '';
 
             $strOutput = '';
 
@@ -195,9 +193,9 @@
 
             $objWaitIcon = $this->dtgProjectList->GetChildControl('wait' . $objProject->ProjectId);
 
-            $objProgressBar->Total = $objProjectProgress->TotalTextCount;
-            $objProgressBar->Translated = $objProjectProgress->ApprovedTextCount;
-            $objProgressBar->Fuzzy = $objProjectProgress->FuzzyTextCount;
+            $objProgressBar->Total = $objProject->_NarroProjectProgressAsProject->TotalTextCount;
+            $objProgressBar->Translated = $objProject->_NarroProjectProgressAsProject->ApprovedTextCount;
+            $objProgressBar->Fuzzy = $objProject->_NarroProjectProgressAsProject->FuzzyTextCount;
 
             $strOutput .= $objProgressBar->Render(false);
             $strOutput .= $objWaitIcon->Render(false);
@@ -234,9 +232,8 @@
         }
 
         public function dtgProjectList_ProjectNameColumn_Render(NarroProject $objProject) {
-            $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($objProject->ProjectId, QApplication::GetLanguageId());
 
-            if ((!$objProjectProgress || $objProjectProgress->Active) && $objProject->Active)
+            if ((!$objProject->_NarroProjectProgressAsProject || $objProject->_NarroProjectProgressAsProject->Active) && $objProject->Active)
                 $strProjectName =
                     '<span style="font-size:1.2em;font-weight:bold;">' .
                     $objProject->ProjectName .
