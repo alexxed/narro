@@ -43,6 +43,7 @@
                     
                     // get contents of the current directory
                     $contents = ftp_nlist($conn_id, "/pub/mobile/nightly/latest-mozilla-aurora-linux-l10n");
+                    if (is_array($contents))
                     foreach($contents as $strFile) {
                         if (preg_match('/\/fennec\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.linux\-i686\.tar\.bz2$/', $strFile, $arrMatches)) {
                             $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
@@ -51,6 +52,7 @@
                     }
                     
                     $contents = ftp_nlist($conn_id, "/pub/mobile/nightly/latest-mozilla-aurora-win32-l10n");
+                    if (is_array($contents))
                     foreach($contents as $strFile) {
                         if (preg_match('/\/fennec\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.win32\.zip$/', $strFile, $arrMatches)) {
                             $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
@@ -59,6 +61,7 @@
                     }   
                     
                     $contents = ftp_nlist($conn_id, "/pub/mobile/nightly/latest-mozilla-aurora-macosx-l10n");
+                    if (is_array($contents))
                     foreach($contents as $strFile) {
                         if (preg_match('/\/fennec\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.mac\.dmg$/', $strFile, $arrMatches)) {
                             $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
@@ -67,6 +70,7 @@
                     }                
                     
                     $contents = ftp_nlist($conn_id, "/pub/mobile/nightly/latest-mozilla-aurora-android");
+                    if (is_array($contents))
                     foreach($contents as $strFile) {
                         if (preg_match('/\/fennec\-(.*)\.multi\.android\-arm\.apk$/', $strFile, $arrMatches)) {
                             $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
@@ -93,31 +97,33 @@
                 
                     // get contents of the current directory
                     $contents = ftp_nlist($conn_id, "/pub/firefox/nightly/latest-mozilla-aurora-l10n/");
-                    foreach($contents as $strFile) {
-                        if (preg_match('/\/firefox\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.linux\-i686\.tar\.bz2$/', $strFile, $arrMatches)) {
-                            $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
-                            $strLinuxNightly = sprintf('<a title="Download a localized nightly build %s built %s ago" href="ftp://ftp.mozilla.org%s">linux i686</a>', $arrMatches[1], $objDateSpan->SimpleDisplay(), $strFile);
+                    if (is_array($contents)) {
+                        foreach($contents as $strFile) {
+                            if (preg_match('/\/firefox\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.linux\-i686\.tar\.bz2$/', $strFile, $arrMatches)) {
+                                $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
+                                $strLinuxNightly = sprintf('<a title="Download a localized nightly build %s built %s ago" href="ftp://ftp.mozilla.org%s">linux i686</a>', $arrMatches[1], $objDateSpan->SimpleDisplay(), $strFile);
+                            }
                         }
-                    }
-                
-                    foreach($contents as $strFile) {
-                        if (preg_match('/\/firefox\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.linux\-x86\_64\.tar\.bz2$/', $strFile, $arrMatches)) {
-                            $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
-                            $strLinux64Nightly = sprintf('<a title="Download a localized nightly build %s built %s ago" href="ftp://ftp.mozilla.org%s">linux x86_64</a>', $arrMatches[1], $objDateSpan->SimpleDisplay(), $strFile);
+                        
+                        foreach($contents as $strFile) {
+                            if (preg_match('/\/firefox\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.linux\-x86\_64\.tar\.bz2$/', $strFile, $arrMatches)) {
+                                $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
+                                $strLinux64Nightly = sprintf('<a title="Download a localized nightly build %s built %s ago" href="ftp://ftp.mozilla.org%s">linux x86_64</a>', $arrMatches[1], $objDateSpan->SimpleDisplay(), $strFile);
+                            }
                         }
-                    }
-                
-                    foreach($contents as $strFile) {
-                        if (preg_match('/\/firefox\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.win32\.zip$/', $strFile, $arrMatches)) {
-                            $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
-                            $strWindowsNightly = sprintf('<a title="Download a localized nightly build %s built %s ago" href="ftp://ftp.mozilla.org%s">win32</a>', $arrMatches[1], $objDateSpan->SimpleDisplay(), $strFile);
+                    
+                        foreach($contents as $strFile) {
+                            if (preg_match('/\/firefox\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.win32\.zip$/', $strFile, $arrMatches)) {
+                                $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
+                                $strWindowsNightly = sprintf('<a title="Download a localized nightly build %s built %s ago" href="ftp://ftp.mozilla.org%s">win32</a>', $arrMatches[1], $objDateSpan->SimpleDisplay(), $strFile);
+                            }
                         }
-                    }
-                
-                    foreach($contents as $strFile) {
-                    if (preg_match('/\/firefox\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.mac\.dmg$/', $strFile, $arrMatches)) {
-                            $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
-                            $strMacNightly = sprintf('<a title="Download a localized nightly build %s built %s ago" href="ftp://ftp.mozilla.org%s">mac</a>', $arrMatches[1], $objDateSpan->SimpleDisplay(), $strFile);
+                    
+                        foreach($contents as $strFile) {
+                        if (preg_match('/\/firefox\-(.*)\.' . preg_quote(QApplication::$TargetLanguage->LanguageCode). '\.mac\.dmg$/', $strFile, $arrMatches)) {
+                                $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
+                                $strMacNightly = sprintf('<a title="Download a localized nightly build %s built %s ago" href="ftp://ftp.mozilla.org%s">mac</a>', $arrMatches[1], $objDateSpan->SimpleDisplay(), $strFile);
+                            }
                         }
                     }
                 
