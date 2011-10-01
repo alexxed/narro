@@ -22,7 +22,6 @@
         protected $colSuggestion;
         protected $colCreated;
         protected $colLanguage;
-        protected $colProjects;
 
         protected $objUser;
         protected $pnlTranslatedPerProjectPie;
@@ -41,12 +40,11 @@
 
             $this->colSuggestion = new QDataGridColumn(t('Translated text'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
             $this->colText = new QDataGridColumn(t('Original text'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colText_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Text->TextValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Text->TextValue, false)));
+            $this->colText->HtmlEntities = false;
             $this->colLanguage = new QDataGridColumn(t('Language'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colLanguage_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->LanguageId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->LanguageId, false)));
             $this->colCreated = new QDataGridColumn(t('Created'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colCreated_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Created), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Created, false)));
             $this->colCreated->HtmlEntities = false;
             $this->colCreated->Wrap = false;
-            $this->colProjects = new QDataGridColumn(t('Projects'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colProjects_Render($_ITEM); ?>');
-            $this->colProjects->HtmlEntities = false;
 
             // Setup DataGrid
             $this->dtgSuggestions = new NarroDataGrid($this);
@@ -69,7 +67,6 @@
             $this->dtgSuggestions->AddColumn($this->colSuggestion);
             $this->dtgSuggestions->AddColumn($this->colCreated);
             $this->dtgSuggestions->AddColumn($this->colLanguage);
-            $this->dtgSuggestions->AddColumn($this->colProjects);
 
             $this->dtgSuggestions->SortColumnIndex = 2;
             $this->dtgSuggestions->SortDirection = true;
@@ -80,7 +77,7 @@
         }
 
         public function dtgSuggestions_colText_Render( NarroSuggestion $objNarroSuggestion ) {
-            return $objNarroSuggestion->Text->TextValue;
+            return NarroLink::Translate(null, null, NarroTranslatePanel::SHOW_ALL, '', null, 1, 10, 0, '', $objNarroSuggestion->Text->TextValue);
         }
 
         public function dtgSuggestions_colLanguage_Render( NarroSuggestion $objNarroSuggestion ) {
@@ -92,18 +89,6 @@
             $strModifiedWhen = $objDateSpan->SimpleDisplay();
 
             return sprintf(t('%s ago'), $strModifiedWhen);
-        }
-
-        public function dtgSuggestions_colProjects_Render( NarroSuggestion $objNarroSuggestion ) {
-            $objDatabase = QApplication::$Database[1];
-            $strQuery = sprintf('SELECT DISTINCT narro_project.* FROM narro_project, narro_context WHERE narro_context.project_id=narro_project.project_id AND narro_context.text_id=%d ORDER BY narro_project.project_name ASC', $objNarroSuggestion->TextId);
-            $arrProjects = NarroProject::InstantiateDbResult($objDatabase->Query($strQuery));
-            $arrProjectLinks = array();
-            foreach($arrProjects as $objProject) {
-                $arrProjectLinks[] = NarroLink::ProjectTextList($objProject->ProjectId, NarroTranslatePanel::SHOW_ALL, "'" . $objNarroSuggestion->Text->TextValue . "'", $objProject->ProjectName);
-            }
-
-            return join(', ', $arrProjectLinks);
         }
 
         public function dtgSuggestions_Bind() {
@@ -133,17 +118,12 @@
                 SELECT
                     narro_project.project_name AS label, COUNT(narro_suggestion.suggestion_id) AS cnt
                 FROM
-                    narro_suggestion,narro_context,narro_project,narro_text
+                    narro_suggestion, narro_context, narro_project
                 WHERE
-                    narro_text.text_id=narro_suggestion.text_id AND
-                    narro_context.text_id = narro_text.text_id AND
-                    narro_suggestion.language_id=%d AND
-                    narro_context.active=1 AND
-                    narro_project.active=1 AND
-                    narro_context.project_id=narro_project.project_id AND
+                    narro_context.text_id = narro_suggestion.text_id AND
+                    narro_project.project_id = narro_context.project_id AND
                     narro_suggestion.user_id=%d
-                GROUP BY narro_context.project_id
-                ORDER BY cnt DESC',
+                GROUP BY narro_context.project_id',
                 QApplication::GetLanguageId(),
                 $this->objUser->UserId
             );
