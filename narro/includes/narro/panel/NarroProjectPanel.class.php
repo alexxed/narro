@@ -45,7 +45,7 @@
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroProjectPanel.tpl.php';
 
             // Setup DataGrid
-            $this->dtgTranslators = new NarroUserDataGrid($this);
+            $this->dtgTranslators = new NarroDataGrid($this);
             $this->dtgTranslators->SetCustomStyle('width', '100%');
             $this->dtgTranslators->ShowFilter = false;
 
@@ -53,30 +53,25 @@
             $this->dtgTranslators->SortDirection = 1;
 
             $this->dtgTranslators->Title = t('Translators');
+            $this->dtgTranslators->SetDataBinder('dtgTranslators_Bind', $this);
 
-            $colUsername = $this->dtgTranslators->MetaAddColumn('Username');
+            $colUsername = new QDataGridColumn(t('Username'));
             $colUsername->Name = t('Username');
             $colUsername->HtmlEntities = false;
-            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM->UserId, $_ITEM->Username) ?>';
-            $this->dtgTranslators->AdditionalConditions = QQ::AndCondition(
-                QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->Text->NarroContextAsText->ProjectId, $this->objProject->ProjectId),
-                QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->LanguageId, QApplication::GetLanguageId()),
-                QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
-            );
-
-            $this->dtgTranslators->AdditionalClauses = array(
-                QQ::Sum(QQN::NarroUser()->NarroSuggestionAsUser->SuggestionWordCount, 'translation_word_count'),
-                QQ::GroupBy(QQN::NarroUser()->UserId)
-            );
+            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->Username) ?>';
+            $this->dtgTranslators->AddColumn($colUsername);
 
             $colWordCount = new QDataGridColumn(t('Words'));
-            $colWordCount->Html = '<?=$_ITEM->GetVirtualAttribute("translation_word_count");?>';
-            $colWordCount->OrderByClause =  QQ::OrderBy('__translation_word_count', true);
-            $colWordCount->ReverseOrderByClause =  QQ::OrderBy('__translation_word_count', false);
+            $colWordCount->Html = '<?=$_CONTROL->ParentControl->colWorldsTranslated_Render($_ITEM);?>';
+            $colWordCount->HtmlEntities = false;
             $this->dtgTranslators->AddColumn($colWordCount);
+            
+            $colLastTranslation = new QDataGridColumn(t('Last translation'));
+            $colLastTranslation->Html = '<?=$_ITEM["last_translation"];?>';
+            $this->dtgTranslators->AddColumn($colLastTranslation);            
 
             // Setup DataGrid
-            $this->dtgReviewers = new NarroUserDataGrid($this);
+            $this->dtgReviewers = new NarroDataGrid($this);
             $this->dtgReviewers->SetCustomStyle('width', '100%');
             $this->dtgReviewers->ShowFilter = false;
 
@@ -84,117 +79,92 @@
             $this->dtgReviewers->SortDirection = 1;
 
             $this->dtgReviewers->Title = t('Reviewers');
+            $this->dtgReviewers->SetDataBinder('dtgReviewers_Bind', $this);
 
-            $colUsername = $this->dtgReviewers->MetaAddColumn('Username');
+            $colUsername = new QDataGridColumn(t('Username'));
             $colUsername->Name = t('Username');
             $colUsername->HtmlEntities = false;
-            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM->UserId, $_ITEM->Username) ?>';
-            $this->dtgReviewers->AdditionalConditions = QQ::AndCondition(
-                QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->Context->ProjectId, $this->objProject->ProjectId),
-                QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->LanguageId, QApplication::GetLanguageId()),
-                QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
-            );
+            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->Username) ?>';
+            $this->dtgReviewers->AddColumn($colUsername);
 
-            $this->dtgReviewers->AdditionalClauses = array(
-                QQ::Count(QQN::NarroUser()->NarroContextInfoAsValidatorUser->ContextInfoId, 'translations_reviewed'),
-                QQ::GroupBy(QQN::NarroUser()->NarroContextInfoAsValidatorUser->ValidatorUserId)
-            );
-
-            $colWordCount = new QDataGridColumn(t('Reviews'));
-            $colWordCount->Html = '<?=$_ITEM->GetVirtualAttribute("translations_reviewed");?>';
-            $colWordCount->OrderByClause =  QQ::OrderBy('__translations_reviewed', true);
-            $colWordCount->ReverseOrderByClause =  QQ::OrderBy('__translations_reviewed', false);
-            $this->dtgReviewers->AddColumn($colWordCount);
-
+            $colReviews = new QDataGridColumn(t('Reviews'));
+            $colReviews->Html = '<?=$_ITEM["reviews"];?>';
+            $this->dtgReviewers->AddColumn($colReviews);
         }
 
         public function dtgTranslators_Bind() {
-            if ($this->dtgTranslators->Display == false) return false;
-            // Setup the $objClauses Array
-            $objClauses = array(
-                QQ::GroupBy(QQN::NarroUser()->UserId),
-                QQ::Sum(QQN::NarroUser()->NarroSuggestionAsUser->SuggestionWordCount, 'TotalWordsTranslated')
+            $objDbResult = NarroSuggestion::GetDatabase()->Query(
+                sprintf(
+            		'SELECT 
+            			narro_suggestion.user_id, 
+            			SUM(narro_text.text_word_count) AS words_translated, 
+            			MAX(narro_suggestion.created) AS last_translation 
+            		FROM 
+            			narro_text, narro_suggestion, narro_context 
+            		WHERE 
+            			narro_context.text_id=narro_text.text_id AND 
+            			narro_suggestion.text_id=narro_text.text_id AND 
+            			narro_suggestion.is_imported=0 AND 
+            			narro_context.project_id=%d 
+            		GROUP BY narro_suggestion.user_id',
+                    $this->objProject->ProjectId
+                )
             );
-
-            // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
-            // the OrderByClause to the $objClauses array
-            if ($objClause = $this->dtgTranslators->OrderByClause)
-                array_push($objClauses, $objClause);
-
-            // Add the LimitClause information, as well
-            if ($objClause = $this->dtgTranslators->LimitClause)
-                array_push($objClauses, $objClause);
-
-            $this->dtgTranslators->DataSource = NarroUser::QueryArray(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $this->objProject->ProjectId),
-                    QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->LanguageId, QApplication::GetLanguageId()),
-                    QQ::GreaterThan(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->ValidSuggestion->SuggestionWordCount, 0),
-                    QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
-                ),
-                $objClauses
-            );
-
-            $this->dtgTranslators->TotalItemCount = NarroUser::QueryCount(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->Context->ProjectId, $this->objProject->ProjectId),
-                    QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->LanguageId, QApplication::GetLanguageId()),
-                    QQ::GreaterThan(QQN::NarroUser()->NarroSuggestionAsUser->NarroContextInfoAsValidSuggestion->ValidSuggestion->SuggestionWordCount, 0),
-                    QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
-                ),
-                array(QQ::Distinct())
-            );
+            
+            if ($objDbResult)
+                while($arrRow = $objDbResult->FetchArray()) {
+                    if ($arrRow['user_id'] != NarroUser::ANONYMOUS_USER_ID && $arrRow['words_translated'] > 0) {
+                        $objUser = NarroUser::Load($arrRow['user_id']);
+                        $arrWordsTranslated[] = $arrRow['words_translated'];
+                        $objDateSpan = new QDateTimeSpan(time() - strtotime($arrRow['last_translation']));
+                        $strLastTranslation = $objDateSpan->SimpleDisplay();
+                        $arrData[] = array('user' => $objUser, 'words_translated' => $arrRow['words_translated'], 'last_translation' => sprintf(t('%s ago'), $strLastTranslation));
+                    }
+                }
+            
+            array_multisort($arrWordsTranslated, SORT_DESC, SORT_NUMERIC, $arrData);
+            
+            $this->dtgTranslators->DataSource = $arrData;
         }
 
+        
+
+        
         public function dtgReviewers_Bind() {
-            if ($this->dtgReviewers->Display == false) return false;
-            // Setup the $objClauses Array
-            $objClauses = array(
-                QQ::GroupBy(QQN::NarroContextInfo()->ValidatorUserId),
-                QQ::Count(QQN::NarroContextInfo()->ContextId, 'TotalTextsApproved')
+            $objDbResult = NarroSuggestion::GetDatabase()->Query(
+                sprintf(
+            		'SELECT
+                    	narro_context_info.validator_user_id,
+                    	COUNT(narro_context_info.context_info_id) AS reviews,
+                    	MAX(narro_context_info.modified) AS last_review
+                    FROM
+                    	narro_context_info, narro_context
+                    WHERE
+                    	narro_context_info.context_id=narro_context.context_id AND
+                    	narro_context_info.validator_user_id IS NOT NULL AND
+                    	narro_context.project_id=%d
+                    GROUP BY narro_context_info.validator_user_id',
+                    $this->objProject->ProjectId
+                )
             );
-
-            $objCommonClauses = $objClauses;
-
-            // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
-            // the OrderByClause to the $objClauses array
-            if ($objClause = $this->dtgReviewers->OrderByClause)
-                array_push($objClauses, $objClause);
-
-            // Add the LimitClause information, as well
-            if ($objClause = $this->dtgReviewers->LimitClause)
-                array_push($objClauses, $objClause);
-
-            $this->dtgReviewers->DataSource = NarroContextInfo::QueryArray(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
-                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
-                    QQ::NotEqual(QQN::NarroContextInfo()->ValidatorUserId, NarroUser::ANONYMOUS_USER_ID)
-                ),
-                $objClauses
-            );
-
-            $this->dtgReviewers->TotalItemCount = NarroContextInfo::QueryCount(
-                QQ::AndCondition(
-                    QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
-                    QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
-                    QQ::NotEqual(QQN::NarroContextInfo()->ValidatorUserId, NarroUser::ANONYMOUS_USER_ID)
-                ),
-                array(QQ::GroupBy(QQN::NarroContextInfo()->ValidatorUserId))
-            );
+            
+            if ($objDbResult)
+                while($arrRow = $objDbResult->FetchArray()) {
+                    if ($arrRow['validator_user_id'] != NarroUser::ANONYMOUS_USER_ID && $arrRow['reviews'] > 0) {
+                        $objUser = NarroUser::Load($arrRow['validator_user_id']);
+                        $arrReviews[] = $arrRow['reviews'];
+                        $objDateSpan = new QDateTimeSpan(time() - strtotime($arrRow['last_review']));
+                        $strLastReview = $objDateSpan->SimpleDisplay();
+                        $arrData[] = array('user' => $objUser, 'reviews' => $arrRow['reviews'], 'last_review' => sprintf(t('%s ago'), $strLastReview));
+                    }
+                }
+            
+            array_multisort($arrReviews, SORT_DESC, SORT_NUMERIC, $arrData);
+            
+            $this->dtgReviewers->DataSource = $arrData;
         }
 
-        public function colWorldsTranslated_Render(NarroUser $objUser) {
-            return NarroLink::ProjectTextList($this->objProject->ProjectId, NarroTranslatePanel::SHOW_ALL, '\'' . $objUser->Username . '\'', $objUser->GetVirtualAttribute("TotalWordsTranslated"));
-        }
-
-        public function btnShowTranslators_Click() {
-            $this->dtgTranslators->Display = true;
-            $this->btnShowTranslators->Display = false;
-        }
-
-        public function btnShowReviewers_Click() {
-            $this->dtgReviewers->Display = true;
-            $this->btnShowReviewers->Display = false;
+        public function colWorldsTranslated_Render($arrRow) {
+            return $arrRow['words_translated'];
         }
     }
