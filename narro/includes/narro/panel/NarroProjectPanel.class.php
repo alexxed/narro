@@ -119,8 +119,10 @@
             			narro_context.text_id=narro_text.text_id AND 
             			narro_suggestion.text_id=narro_text.text_id AND 
             			narro_suggestion.is_imported=0 AND 
+            			narro_suggestion.language_id AND
             			narro_context.project_id=%d 
             		GROUP BY narro_suggestion.user_id',
+            		QApplication::GetLanguageId(),
                     $this->objProject->ProjectId
                 )
             );
@@ -156,8 +158,10 @@
                     WHERE
                     	narro_context_info.context_id=narro_context.context_id AND
                     	narro_context_info.validator_user_id IS NOT NULL AND
+                    	narro_context_info.language_id=%d AND
                     	narro_context.project_id=%d
                     GROUP BY narro_context_info.validator_user_id',
+                    QApplication::GetLanguageId(),
                     $this->objProject->ProjectId
                 )
             );
