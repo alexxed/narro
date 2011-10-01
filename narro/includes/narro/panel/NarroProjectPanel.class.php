@@ -24,6 +24,8 @@
 
         public $dtgTranslators;
         public $dtgReviewers;
+        
+        public $pnlProgressBar;
 
         protected function SetupNarroProject(NarroProject $objNarroProject) {
             $this->objProject = $objNarroProject;
@@ -46,7 +48,7 @@
 
             // Setup DataGrid
             $this->dtgTranslators = new NarroDataGrid($this);
-            $this->dtgTranslators->SetCustomStyle('width', '100%');
+            $this->dtgTranslators->SetCustomStyle('width', 'auto');
             $this->dtgTranslators->ShowFilter = false;
 
             $this->dtgTranslators->SortColumnIndex = 1;
@@ -54,9 +56,10 @@
 
             $this->dtgTranslators->Title = t('Translators');
             $this->dtgTranslators->SetDataBinder('dtgTranslators_Bind', $this);
+            $this->dtgTranslators->DisplayStyle = QDisplayStyle::InlineBlock;
+            $this->dtgTranslators->SetCustomStyle('margin', '10px');
 
-            $colUsername = new QDataGridColumn(t('Username'));
-            $colUsername->Name = t('Username');
+            $colUsername = new QDataGridColumn(t('Translator'));
             $colUsername->HtmlEntities = false;
             $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->Username) ?>';
             $this->dtgTranslators->AddColumn($colUsername);
@@ -72,8 +75,11 @@
 
             // Setup DataGrid
             $this->dtgReviewers = new NarroDataGrid($this);
-            $this->dtgReviewers->SetCustomStyle('width', '100%');
+            $this->dtgReviewers->SetCustomStyle('width', 'auto');
             $this->dtgReviewers->ShowFilter = false;
+            $this->dtgReviewers->DisplayStyle = QDisplayStyle::InlineBlock;
+            $this->dtgReviewers->SetCustomStyle('vertical-align', 'top');
+            $this->dtgReviewers->SetCustomStyle('margin', '10px');
 
             $this->dtgReviewers->SortColumnIndex = 1;
             $this->dtgReviewers->SortDirection = 1;
@@ -81,8 +87,7 @@
             $this->dtgReviewers->Title = t('Reviewers');
             $this->dtgReviewers->SetDataBinder('dtgReviewers_Bind', $this);
 
-            $colUsername = new QDataGridColumn(t('Username'));
-            $colUsername->Name = t('Username');
+            $colUsername = new QDataGridColumn(t('Reviewer'));
             $colUsername->HtmlEntities = false;
             $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->Username) ?>';
             $this->dtgReviewers->AddColumn($colUsername);
@@ -90,6 +95,15 @@
             $colReviews = new QDataGridColumn(t('Reviews'));
             $colReviews->Html = '<?=$_ITEM["reviews"];?>';
             $this->dtgReviewers->AddColumn($colReviews);
+            
+            $this->pnlProgressBar = new NarroTranslationProgressBar($this);
+            $this->pnlProgressBar->Name = t('Translation progress');
+            $this->pnlProgressBar->Instructions = t('Hover over the bar to get some details, click on it to refresh it');
+            $this->pnlProgressBar->ActionParameter = $this->objProject->ProjectId;
+            $this->pnlProgressBar->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click', $objWaitIcon));
+            $this->pnlProgressBar->Total = $this->objProject->ProjectProgressForCurrentLanguage->TotalTextCount;
+            $this->pnlProgressBar->Translated = $this->objProject->ProjectProgressForCurrentLanguage->ApprovedTextCount;
+            $this->pnlProgressBar->Fuzzy = $this->objProject->ProjectProgressForCurrentLanguage->FuzzyTextCount;
         }
 
         public function dtgTranslators_Bind() {
@@ -167,4 +181,11 @@
         public function colWorldsTranslated_Render($arrRow) {
             return $arrRow['words_translated'];
         }
+        
+        public function btnRefresh_Click($strFormId, $strControlId, $strParameter) {
+            $this->pnlProgressBar->Total = $this->objProject->CountAllTextsByLanguage();
+            $this->pnlProgressBar->Translated = $this->objProject->CountApprovedTextsByLanguage();
+            $this->pnlProgressBar->Fuzzy = $this->objProject->CountTranslatedTextsByLanguage();
+            $this->pnlProgressBar->MarkAsModified();
+        }        
     }

@@ -22,16 +22,27 @@
 <?php if ($_CONTROL->objProject->ProjectDescription) {?>
 <div class="section">
     <?php echo $_CONTROL->objProject->ProjectDescription ?>
+    
 </div>
-<?php } ?>
+<?php } 
+$_CONTROL->pnlProgressBar->Render();
+?>
+<small class="instructions"><?php echo $_CONTROL->pnlProgressBar->Instructions ?></small>
+<br />
+<?php
+QApplication::$PluginHandler->DisplayInProjectListInProgressColumn($_CONTROL->objProject);
 
-<table width="1024">
-<tr>
-<td width="50%" valign="top" align="center" style="padding:1%">
-<?php $_CONTROL->dtgTranslators->Render()?>
-</td>
-<td width="50%" valign="top" align="center" style="padding:1%">
-<?php $_CONTROL->dtgReviewers->Render()?>
-</td>
-</tr>
-</table>
+if (is_array(QApplication::$PluginHandler->PluginReturnValues)) {
+    $strOutput .= '';
+    foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
+        if (count($mixReturnValue) == 2 && $mixReturnValue[0] instanceof NarroProject && is_string($mixReturnValue[1]) && $mixReturnValue[1] != '') {
+            $strOutput .= sprintf('<span style="font-size:small" title="%s">%s</span><br />', $strPluginName, $mixReturnValue[1]);
+        }
+    }
+    $strOutput .= '';
+
+    echo $strOutput;
+}
+
+$_CONTROL->dtgTranslators->Render();
+$_CONTROL->dtgReviewers->Render();
