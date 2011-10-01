@@ -64,7 +64,7 @@
             $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->Username) ?>';
             $this->dtgTranslators->AddColumn($colUsername);
 
-            $colWordCount = new QDataGridColumn(t('Words'));
+            $colWordCount = new QDataGridColumn(t('Texts translated'));
             $colWordCount->Html = '<?=$_CONTROL->ParentControl->colWorldsTranslated_Render($_ITEM);?>';
             $colWordCount->HtmlEntities = false;
             $this->dtgTranslators->AddColumn($colWordCount);
@@ -111,7 +111,7 @@
                 sprintf(
             		'SELECT 
             			narro_suggestion.user_id, 
-            			SUM(narro_text.text_word_count) AS words_translated, 
+            			COUNT(narro_suggestion.suggestion_id) AS words_translated, 
             			MAX(narro_suggestion.created) AS last_translation 
             		FROM 
             			narro_text, narro_suggestion, narro_context 
