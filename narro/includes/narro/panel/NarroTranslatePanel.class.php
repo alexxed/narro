@@ -248,7 +248,9 @@
                 QQ::Expand(QQN::NarroContextInfo()->Context->Text),
                 QQ::Expand(QQN::NarroContextInfo()->Context->File),
                 QQ::Expand(QQN::NarroContextInfo()->Context->Project),
-                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion)
+                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion),
+                // @todo remove this
+                QQ::Distinct()
             );
 
             if ($this->lstProject->SelectedValue > 0)
