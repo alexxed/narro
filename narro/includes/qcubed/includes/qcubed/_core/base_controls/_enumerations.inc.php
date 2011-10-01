@@ -19,6 +19,7 @@
 		const Block = 'block';
 		const Inline = 'inline';
 		const NotSet = 'NotSet';
+		const InlineBlock = 'inline-block';
 	}
 
 	abstract class QTextAlign {
