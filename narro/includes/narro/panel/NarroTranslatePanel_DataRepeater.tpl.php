@@ -5,7 +5,13 @@ if (!$pnlEditor) {
     $pnlEditor = new NarroContextInfoEditor($_CONTROL, 'i' . $_ITEM->ContextInfoId, $_ITEM);
     $pnlEditor->Translation->AddAction(new QFocusEvent(), new QJavaScriptAction(
             sprintf("if  (jQuery(window).scrollTop() + 200 > jQuery(document).height() - jQuery(window).height() && jQuery('#endReached').attr('checked') == false) qc.pA('%s', '%s', 'QClickEvent', '%s', '%s')", $_CONTROL->Form->FormId, $_CONTROL->ParentControl->btnMore->ControlId, $pnlEditor->Translation->ControlId, $_CONTROL->ParentControl->objWaitIcon->ControlId)));
+    
+    $_CONTROL->ParentControl->blnNewEditorCreated = true;
+} else {
+    $_CONTROL->ParentControl->blnNewEditorCreated = false;
 }
+
+
 
 $intCurrentItem = $_CONTROL->CurrentItemIndex + 1 + $_CONTROL->ParentControl->intStart;
 
@@ -23,7 +29,7 @@ $pnlEditor->Index = sprintf(
         $_ITEM->ContextInfoId
     ),
     $_ITEM->ContextInfoId,
-    ($intCurrentItem) . '/' . $_CONTROL->ParentControl->intTotalItemCount
+    ($_CONTROL->ParentControl->intTotalItemCount)?$intCurrentItem . '/' . $_CONTROL->ParentControl->intTotalItemCount:$intCurrentItem
 );
 
 if ($_CONTROL->ParentControl->intTotalItemCount == $_CONTROL->CurrentItemIndex + 1) {

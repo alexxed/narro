@@ -35,10 +35,12 @@
         public $lstSortDir;
         public $btnSearch;
         public $chkLast;
+        public $chkRequestMoreSent;
 
         public $chkApprove;
 
-        public $intTotalItemCount;
+        public $intTotalItemCount = 0;
+        public $blnNewEditorCreated = true;
         public $strCurrentTranslationId;
         protected $arrConditions;
         protected $arrClauses;
@@ -65,7 +67,12 @@
             $this->strTemplate = dirname(__FILE__) . '/' . __CLASS__ . '.tpl.php';
 
             $this->chkLast = new QCheckBox($this, 'endReached');
-            $this->chkLast->DisplayStyle = QDisplayStyle::None;
+            if (SERVER_INSTANCE != 'dev')
+                $this->chkLast->DisplayStyle = QDisplayStyle::None;
+            
+            $this->chkRequestMoreSent = new QCheckBox($this, 'requestMoreSent');
+            if (SERVER_INSTANCE != 'dev')
+                $this->chkRequestMoreSent->DisplayStyle = QDisplayStyle::None;
 
             $this->dtrText_Create();
 
@@ -102,7 +109,6 @@
 
             $this->btnMore->DisplayStyle = QDisplayStyle::Block;
             $this->dtrText_Conditions(false);
-            $this->intTotalItemCount = NarroContextInfo::QueryCount(QQ::AndCondition($this->arrConditions));
             $this->dtrText_Bind(null, null, null, false);
         }
 
@@ -210,7 +216,6 @@
         public function btnSearch_Click($strFormId = null, $strControlId = null, $strParameter = null) {
             $this->btnMore->DisplayStyle = QDisplayStyle::Block;
             $this->dtrText_Conditions(true);
-            $this->intTotalItemCount = NarroContextInfo::QueryCount(QQ::AndCondition($this->arrConditions));
             $this->dtrText_Bind(null, null, null, true);
         }
 
@@ -243,8 +248,7 @@
                 QQ::Expand(QQN::NarroContextInfo()->Context->Text),
                 QQ::Expand(QQN::NarroContextInfo()->Context->File),
                 QQ::Expand(QQN::NarroContextInfo()->Context->Project),
-                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion),
-                QQ::Distinct()
+                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion)
             );
 
             if ($this->lstProject->SelectedValue > 0)
@@ -332,11 +336,15 @@
 
         public function dtrText_Bind($strFormId = null, $strControlId = null, $strParameter = null, $blnReset = false) {
             if ($blnReset) $this->dtrText->RemoveChildControls(true);
+            
             $this->dtrText->DataSource = NarroContextInfo::QueryArray(
                 QQ::AndCondition($this->arrConditions),
                 $this->arrClauses
             );
-
+            
+            if ($this->blnNewEditorCreated == false)
+                $this->intTotalItemCount = $this->intStart + count($this->dtrText->DataSource);
+            
             if ($this->intStart == 0)
                 $this->btnLess->Display = false;
 
@@ -353,5 +361,7 @@
                 if ($txtTranslation instanceof QTextBox)
                     $txtTranslation->Focus();
             }
+            
+            $this->chkRequestMoreSent->Checked = false;
         }
     }

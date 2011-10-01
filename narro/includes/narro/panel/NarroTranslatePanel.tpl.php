@@ -154,9 +154,10 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
     }
     ?>
     <br />
-    <?php $_CONTROL->btnLess->Render();$_CONTROL->dtrText->Render(); $_CONTROL->objWaitIcon->Render(); $_CONTROL->btnMore->Render(); $_CONTROL->chkLast->Render(); ?>
+    <?php $_CONTROL->btnLess->Render();$_CONTROL->dtrText->Render(); $_CONTROL->objWaitIcon->Render(); $_CONTROL->btnMore->Render(); $_CONTROL->chkLast->Render(); $_CONTROL->chkRequestMoreSent->Render(); ?>
     <?php QApplication::ExecuteJavaScript(sprintf("jQuery(window).scroll(function(){
-        if  (jQuery(window).scrollTop() == jQuery(document).height() - jQuery(window).height() && jQuery('#endReached').attr('checked') == false) {
-           qc.pA('%s', '%s', 'QClickEvent', '', '%s');
+        if  (jQuery(window).scrollTop() == jQuery(document).height() - jQuery(window).height() && jQuery('#endReached').attr('checked') == false && jQuery('#requestMoreSent').attr('checked') == false) {
+        	jQuery('#requestMoreSent').attr('checked', true);
+            qc.pA('%s', '%s', 'QClickEvent', '', '%s');
         }
 }); ", $_CONTROL->Form->FormId, $_CONTROL->btnMore->ControlId, $_CONTROL->objWaitIcon->ControlId));?>
