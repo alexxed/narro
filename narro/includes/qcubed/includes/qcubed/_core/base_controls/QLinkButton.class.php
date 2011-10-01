@@ -34,7 +34,7 @@
 			if ($strStyle)
 				$strStyle = sprintf('style="%s"', $strStyle);
 
-			$strToReturn = sprintf('<a href="#" id="%s" %s%s>%s</a>',
+			$strToReturn = sprintf('<a id="%s" %s%s>%s</a>',
 				$this->strControlId,
 				$this->GetAttributes(),
 				$strStyle,
