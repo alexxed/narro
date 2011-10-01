@@ -96,14 +96,7 @@
             $colReviews->Html = '<?=$_ITEM["reviews"];?>';
             $this->dtgReviewers->AddColumn($colReviews);
             
-            $this->pnlProgressBar = new NarroTranslationProgressBar($this);
-            $this->pnlProgressBar->Name = t('Translation progress');
-            $this->pnlProgressBar->Instructions = t('Hover over the bar to get some details, click on it to refresh it');
-            $this->pnlProgressBar->ActionParameter = $this->objProject->ProjectId;
-            $this->pnlProgressBar->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click', $objWaitIcon));
-            $this->pnlProgressBar->Total = $this->objProject->ProjectProgressForCurrentLanguage->TotalTextCount;
-            $this->pnlProgressBar->Translated = $this->objProject->ProjectProgressForCurrentLanguage->ApprovedTextCount;
-            $this->pnlProgressBar->Fuzzy = $this->objProject->ProjectProgressForCurrentLanguage->FuzzyTextCount;
+            $this->pnlProgressBar = new NarroProjectTranslationProgressBar($this->objProject->ProjectProgressForCurrentLanguage, $this);
         }
 
         public function dtgTranslators_Bind() {

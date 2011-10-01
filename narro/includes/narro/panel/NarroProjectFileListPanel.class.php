@@ -125,23 +125,8 @@
 
             $strOutput = '';
 
-            if (!$objProgressBar = $this->dtgFile->GetChildControl('prg' . $objProgress->FileId)) {
-                $objWaitIcon = new QWaitIcon($this->dtgFile, 'wait' . $objProgress->FileId);
-                $objWaitIcon->Text = t('Counting texts and translations...');
-
-                $objProgressBar = new NarroTranslationProgressBar($this->dtgFile, 'prg' . $objProgress->FileId);
-                $objProgressBar->ActionParameter = $objProgress->FileId;
-                $objProgressBar->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click', $objWaitIcon));
-            }
-
-            $objWaitIcon = $this->dtgFile->GetChildControl('wait' . $objProgress->FileId);
-
-            $objProgressBar->Total = $objProgress->TotalTextCount;
-            $objProgressBar->Translated = $objProgress->ApprovedTextCount;
-            $objProgressBar->Fuzzy = $objProgress->FuzzyTextCount;
-
+            $objProgressBar = new NarroFileTranslationProgressBar($objProgress, $this);
             $strOutput .= $objProgressBar->Render(false);
-            $strOutput .= $objWaitIcon->Render(false);
 
             QApplication::$PluginHandler->DisplayInFileListInProgressColumn($objProgress->File);
 
@@ -155,10 +140,18 @@
                 $strOutput .= '';
             }
 
-            $this->btnRefresh_Click('', '', $objProgress->FileId);
-
-            return $strOutput;
-
+            return NarroLink::Translate(
+                $objProgress->File->ProjectId,
+                $objProgress->File->FilePath,
+                NarroTranslatePanel::SHOW_ALL,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                $strOutput
+            );
         }
 
         public function dtgFile_FileNameColumn_Render(NarroFileProgress $objProgress) {
@@ -306,22 +299,6 @@
 
         public function btnSearch_Click() {
             QApplication::Redirect(NarroLink::ProjectFileList($this->objProject->ProjectId, ($this->objParentFile instanceof NarroFile)?$this->objParentFile->FilePath:'', $this->txtSearch->Text));
-        }
-
-        public function btnRefresh_Click($strFormId, $strControlId, $intFileId) {
-            $objFile = NarroFile::Load($intFileId);
-            if ($objFile) {
-                $intTotalTexts = $objFile->CountAllTextsByLanguage();
-                $intApprovedTexts = $objFile->CountApprovedTextsByLanguage();
-                $intTranslatedTexts = $objFile->CountTranslatedTextsByLanguage();
-                $objProgressBar = $this->dtgFile->GetChildControl('prg' . $intFileId);
-                if ($objProgressBar) {
-                    $objProgressBar->Total = $intTotalTexts;
-                    $objProgressBar->Translated = $intApprovedTexts;
-                    $objProgressBar->Fuzzy = $intTranslatedTexts;
-                    $objProgressBar->MarkAsModified();
-                }
-            }
         }
     }
 ?>

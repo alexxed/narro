@@ -27,6 +27,7 @@
 <?php } 
 $_CONTROL->pnlProgressBar->Render();
 ?>
+<br />
 <small class="instructions"><?php echo $_CONTROL->pnlProgressBar->Instructions ?></small>
 <br />
 <?php

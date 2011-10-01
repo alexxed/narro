@@ -180,55 +180,9 @@
         public function dtgProjectList_PercentTranslated_Render(NarroProject $objProject) {
             if (!$objProject->_NarroProjectProgressAsProject) return '';
 
-            $strOutput = '';
+            $objProgressBar = new NarroProjectTranslationProgressBar($objProject->_NarroProjectProgressAsProject, $this);
 
-            if (!$objProgressBar = $this->dtgProjectList->GetChildControl('prg' . $objProject->ProjectId)) {
-                $objWaitIcon = new QWaitIcon($this->dtgProjectList, 'wait' . $objProject->ProjectId);
-                $objWaitIcon->Text = t('Counting texts and translations...');
-
-                $objProgressBar = new NarroTranslationProgressBar($this->dtgProjectList, 'prg' . $objProject->ProjectId);
-                $objProgressBar->ActionParameter = $objProject->ProjectId;
-                $objProgressBar->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click', $objWaitIcon));
-            }
-
-            $objWaitIcon = $this->dtgProjectList->GetChildControl('wait' . $objProject->ProjectId);
-
-            $objProgressBar->Total = $objProject->_NarroProjectProgressAsProject->TotalTextCount;
-            $objProgressBar->Translated = $objProject->_NarroProjectProgressAsProject->ApprovedTextCount;
-            $objProgressBar->Fuzzy = $objProject->_NarroProjectProgressAsProject->FuzzyTextCount;
-
-            $strOutput .= $objProgressBar->Render(false);
-            $strOutput .= $objWaitIcon->Render(false);
-
-            QApplication::$PluginHandler->DisplayInProjectListInProgressColumn($objProject);
-
-            if (is_array(QApplication::$PluginHandler->PluginReturnValues)) {
-                $strOutput .= '';
-                foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
-                    if (count($mixReturnValue) == 2 && $mixReturnValue[0] instanceof NarroProject && is_string($mixReturnValue[1]) && $mixReturnValue[1] != '') {
-                        $strOutput .= sprintf('<span style="font-size:small" title="%s">%s</span><br />', $strPluginName, $mixReturnValue[1]);
-                    }
-                }
-                $strOutput .= '';
-            }
-
-            return NarroLink::Translate($objProject->ProjectId, null, null, null, null, null, null, null, null, $strOutput);
-        }
-
-        public function btnRefresh_Click($strFormId, $strControlId, $intProjectId) {
-            $objProject = NarroProject::Load($intProjectId);
-            if ($objProject) {
-                $intTotalTexts = $objProject->CountAllTextsByLanguage();
-                $intApprovedTexts = $objProject->CountApprovedTextsByLanguage();
-                $intTranslatedTexts = $objProject->CountTranslatedTextsByLanguage();
-                $objProgressBar = $this->dtgProjectList->GetChildControl('prg' . $intProjectId);
-                if ($objProgressBar) {
-                    $objProgressBar->Total = $intTotalTexts;
-                    $objProgressBar->Translated = $intApprovedTexts;
-                    $objProgressBar->Fuzzy = $intTranslatedTexts;
-                    $objProgressBar->MarkAsModified();
-                }
-            }
+            return NarroLink::Translate($objProject->ProjectId, null, null, null, null, null, null, null, null, $objProgressBar->Render(false));
         }
 
         public function dtgProjectList_ProjectNameColumn_Render(NarroProject $objProject) {
