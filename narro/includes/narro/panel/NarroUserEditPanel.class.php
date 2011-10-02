@@ -119,7 +119,7 @@
         protected function UpdateNarroUserFields() {
             $this->objNarroUser->Username = $this->txtUsername->Text;
             if ($this->txtPassword->Text)
-                $this->objNarroUser->Password = $this->txtPassword->Text;
+                $this->objNarroUser->Password = md5($this->txtPassword->Text);
             $this->objNarroUser->Email = $this->txtEmail->Text;
         }
 
