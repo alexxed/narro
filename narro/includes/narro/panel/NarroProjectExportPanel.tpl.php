@@ -15,20 +15,6 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-?>
-
-<div class="section_title"><?php _t('Options')?></div>
-<div class="section">
-<?php $_CONTROL->lstExportSuggestionType->RenderWithName(); ?>
-<?php $_CONTROL->txtAuthor->RenderWithName(); ?>
-<?php $_CONTROL->chkCleanDirectory->RenderWithName(); ?>
-</div>
-<?php
-    $_CONTROL->pnlLogViewer->Render();
-    $_CONTROL->btnExport->Render();
-    $_CONTROL->btnKillProcess->Render();
-    $_CONTROL->objExportProgress->Render();
-    $_CONTROL->lblExport->Render();
     
     $_CONTROL->pnlTranslationsTarget->Render();
 ?>

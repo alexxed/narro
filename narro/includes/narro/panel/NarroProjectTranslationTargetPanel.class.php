@@ -36,6 +36,7 @@
 
             $this->pnlMainTab = new QTabPanel($this);
             $this->pnlMainTab->UseAjax = QApplication::$UseAjax;
+            $this->pnlMainTab->addTab(new NarroDirectoryTargetPanel($objProject, $objLanguage, $this->pnlMainTab), t('Save to disk'));
             $this->pnlMainTab->addTab(new NarroMercurialTargetPanel($objProject, $objLanguage, $this->pnlMainTab), t('Commit to Mercurial'));
             // @todo finish the implementation for SVN
             // $this->pnlMainTab->addTab(new NarroSvnTargetPanel($objProject, $objLanguage, $this->pnlMainTab), t('Commit to SVN'));
