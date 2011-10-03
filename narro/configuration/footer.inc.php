@@ -19,21 +19,25 @@
 ?>
     </div>
 <?php
-    if (QApplication::$Database[1]->EnableProfiling)
-        QApplication::$Database[1]->OutputProfiling();
-
-    if (SERVER_INSTANCE == 'dev') {
-        QFirebug::table('Queries', @$GLOBALS['arrQueries']);
-        QFirebug::info(sprintf('%d queries in total', count(@$GLOBALS['arrQueries'])));
-        QFirebug::table('Cache', @$GLOBALS['arrCacheQueries']);
-        QFirebug::info(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
+    if (class_exists('QApplication')) {
+        if (QApplication::$Database[1]->EnableProfiling)
+            QApplication::$Database[1]->OutputProfiling();
+    
+        if (SERVER_INSTANCE == 'dev') {
+            QFirebug::table('Queries', @$GLOBALS['arrQueries']);
+            QFirebug::info(sprintf('%d queries in total', count(@$GLOBALS['arrQueries'])));
+            QFirebug::table('Cache', @$GLOBALS['arrCacheQueries']);
+            QFirebug::info(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
+        }
     }
-?>
-<?php
     /**
      * Yes, you are free to remove this footer
      */
 ?>
-    <p align="center" style="font-size:small"><a target="_blank" href="http://code.google.com/p/narro/wiki/About"><?php echo sprintf(t('%s, version %s'), 'Narro', NARRO_VERSION) ?></a></p>
+    <p align="center" style="font-size:small">
+        <a target="_blank" href="http://code.google.com/p/narro/wiki/About">
+            <?php echo sprintf((function_exists('t'))?t('%s, version %s'):'%s, version %s', 'Narro', NARRO_VERSION) ?>
+        </a>
+    </p>
     </body>
 </html>

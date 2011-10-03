@@ -497,3 +497,19 @@ table.datagrid td a.nolink {text-decoration: none; color: black}
     top: 50%;
     right: 50%;
 }
+
+.install_setting {
+    display: inline-block;
+}
+
+.install_result {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.install_instructions {
+    display: block;
+    font-size: small;
+    color: gray;
+    margin-left: 30px;
+}

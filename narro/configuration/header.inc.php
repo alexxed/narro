@@ -16,32 +16,34 @@
  * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
- if (QApplication::QueryString('p')) {
+ if (class_exists('QApplication') && QApplication::QueryString('p')) {
      $objProject = NarroProject::Load(QApplication::QueryString('p'));
  }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=<?php _p(QApplication::$EncodingType); ?>" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <?php if (isset($strPageTitle)) { ?>
-            <title><?php _p($strPageTitle); ?></title>
+            <title><?php echo $strPageTitle; ?></title>
         <?php } ?>
-        <link rel="stylesheet" type="text/css" href="<?php _p(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/style.css" />
-        <link rel="stylesheet" type="text/css" href="<?php _p(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/tabs.css" />
-        <link rel="stylesheet" type="text/css" href="<?php _p(__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__); ?>/assets/css/font-<?php if (QApplication::$User instanceof NarroUser) echo QApplication::$User->GetPreferenceValueByName('Font size'); else echo 'medium' ?>.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__; ?>/assets/css/style.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__; ?>/assets/css/tabs.css" />
+        <?php if (class_exists('QApplication')) { ?>
+            <link rel="stylesheet" type="text/css" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__; ?>/assets/css/font-<?php if (QApplication::$User instanceof NarroUser) echo QApplication::$User->GetPreferenceValueByName('Font size'); else echo 'medium' ?>.css" />
 
-        <?php if (QApplication::QueryString('p') && isset($this) && $objProject instanceof NarroProject) { ?>
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context changes for %s'), $objProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Texts to translate for %s'), $objProject->ProjectName) ?>" href="rss.php?t=text&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Comments on texts from %s'), $objProject->ProjectName) ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
-            <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Translations for %s'), $objProject->ProjectName) ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
-        <?php } ?>
-        <?php if (QApplication::$User instanceof NarroUser) { ?>
-        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Context changes for all projects') ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>" />
-        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Texts to translate for all projects') ?>" href="rss.php?t=text&l=<?php echo QApplication::GetLanguageId() ?>" />
-        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Comments on texts from all projects') ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::GetLanguageId() ?>" />
-        <link rel="alternate" type="application/rss+xml" title="<?php echo t('Translations for all projects') ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::GetLanguageId() ?>" />
+            <?php if (QApplication::QueryString('p') && isset($this) && $objProject instanceof NarroProject) { ?>
+                <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context changes for %s'), $objProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+                <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Texts to translate for %s'), $objProject->ProjectName) ?>" href="rss.php?t=text&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+                <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Comments on texts from %s'), $objProject->ProjectName) ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+                <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Translations for %s'), $objProject->ProjectName) ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />
+            <?php } ?>
+            <?php if (QApplication::$User instanceof NarroUser) { ?>
+            <link rel="alternate" type="application/rss+xml" title="<?php echo t('Context changes for all projects') ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo t('Texts to translate for all projects') ?>" href="rss.php?t=text&l=<?php echo QApplication::GetLanguageId() ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo t('Comments on texts from all projects') ?>" href="rss.php?t=textcomment&l=<?php echo QApplication::GetLanguageId() ?>" />
+            <link rel="alternate" type="application/rss+xml" title="<?php echo t('Translations for all projects') ?>" href="rss.php?t=suggestion&l=<?php echo QApplication::GetLanguageId() ?>" />
+            <?php } ?>
         <?php } ?>
         <link type="image/x-icon" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ ?>/assets/images/narro.ico" rel="shortcut icon"/>
         <link type="image/x-icon" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ ?>/assets/images/narro.ico" rel="icon"/>
