@@ -112,7 +112,7 @@
             			narro_context.text_id=narro_text.text_id AND 
             			narro_suggestion.text_id=narro_text.text_id AND 
             			narro_suggestion.is_imported=0 AND 
-            			narro_suggestion.language_id AND
+            			narro_suggestion.language_id=%d AND
             			narro_context.project_id=%d 
             		GROUP BY narro_suggestion.user_id',
             		QApplication::GetLanguageId(),
@@ -120,6 +120,8 @@
                 )
             );
             
+            $arrWordsTranslated = array();
+            $arrData = array();
             if ($objDbResult)
                 while($arrRow = $objDbResult->FetchArray()) {
                     if ($arrRow['user_id'] != NarroUser::ANONYMOUS_USER_ID && $arrRow['words_translated'] > 0) {
@@ -159,6 +161,8 @@
                 )
             );
             
+            $arrReviews = array();
+            $arrData = array();
             if ($objDbResult)
                 while($arrRow = $objDbResult->FetchArray()) {
                     if ($arrRow['validator_user_id'] != NarroUser::ANONYMOUS_USER_ID && $arrRow['reviews'] > 0) {
