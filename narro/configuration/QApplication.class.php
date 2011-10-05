@@ -204,7 +204,6 @@
                     'name'              => 'NARRO_ID',
                     'cookie_lifetime'   => 31*24*3600,
                     'gc_maxlifetime'    => 31*24*3600,
-                    'save_path'         => __TMP_PATH__ . '/session',
                     'cookie_path'       => __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
                 )
             );
@@ -336,7 +335,7 @@
             chmod(QApplication::$LogFile, 0666);
             
             QApplication::$Logger = new Zend_Log();
-            QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile));
+            QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile, 'a'));
             
             if (isset($argv[0]))
                 QApplication::$Logger->addWriter(new Zend_Log_Writer_Syslog());
