@@ -35,7 +35,7 @@ if (!defined('SERVER_INSTANCE')) {
     define('__FORM_STATE_HANDLER__', 'QFileFormStateHandler');
     define('__FILE_FORM_STATE_HANDLER_PATH__', __NARRO_DATA__ . '/formstate');
     define('ERROR_PAGE_PATH', __PHP_ASSETS__ . '/error_page.php');
-    define('ERROR_LOG_PATH', __NARRO_DATA__ . '/error_log');
+    define('ERROR_LOG_PATH', __NARRO_DATA__ . '/error_logs');
 
     if (SERVER_INSTANCE == 'prod') {
         define('ERROR_LOG_FLAG', true);
