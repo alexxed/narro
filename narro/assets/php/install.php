@@ -23,9 +23,9 @@
     function check_boolean($strSetting, $strInstructions, $blnCondition) {
         
         if ($blnCondition)
-            printf('<div class="install_result"><img src="../images/approve.png" /></div>');
+            printf('<div class="install_result"><img src="%s/approve.png" /></div>', __NARRO_IMAGE_ASSETS__);
         else
-            printf('<div class="install_result"><img src="../images/delete.png" /></div>');
+            printf('<div class="install_result"><img src="%s/delete.png" /></div>', __NARRO_IMAGE_ASSETS__);
         
         printf('<div class="install_setting">%s</div>', $strSetting);
         
@@ -43,13 +43,13 @@
     	file_exists(__NARRO_DATA__)
 	);
 
-    foreach (array(__TMP_PATH__, __TMP_PATH__ . '/zend', __NARRO_DATA__ . '/dictionaries', __NARRO_DATA__ . '/import', __TMP_PATH__ . '/session', __TMP_PATH__ . '/qform_state') as $strDirName) {
+    foreach (array(__TMP_PATH__, __NARRO_DATA__, __DICTIONARY_PATH__, __IMPORT_PATH__, __RSS_PATH__, __SEARCH_INDEX_PATH__, __FILE_FORM_STATE_HANDLER_PATH__, ERROR_LOG_PATH) as $strDirName) {
         if (!file_exists($strDirName)) {
             if (
                 check_boolean(
             	    $strDirName . ' directory present and writable', 
                     sprintf('Please create the directory %s and give it write permissions for everyone (chmod 777)', $strDirName),
-                    mkdir($strDirName)
+                    @mkdir($strDirName)
                 )
             )
                 chmod($strDirName, 0777);
@@ -70,5 +70,5 @@
     check_boolean('mb_stripos present', 'This version of Narro needs mb_stripos, that\'s available only in php versions bigger than 5.2.0', function_exists('mb_stripos'));
     
     check_boolean('locale directory writable', sprintf('Please give write permissions for everyone (chmod 777) to the directory "%s"', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/'), is_writable(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/'));
-
+    
     require_once (dirname(__FILE__) . '/../../configuration/footer.inc.php');
