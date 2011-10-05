@@ -235,7 +235,7 @@
             $this->arrConditions = array(
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroContextInfo()->LanguageId, QApplication::GetLanguageId()),
-                    QQ::Equal(QQN::NarroContextInfo()->Context->Active, true),
+                    QQ::Equal(QQN::NarroContextInfo()->Context->Active, true),                    
                     QQ::Equal(QQN::NarroContextInfo()->Context->File->Active, true)
                 )
             );
@@ -248,9 +248,7 @@
                 QQ::Expand(QQN::NarroContextInfo()->Context->Text),
                 QQ::Expand(QQN::NarroContextInfo()->Context->File),
                 QQ::Expand(QQN::NarroContextInfo()->Context->Project),
-                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion),
-                // @todo remove this
-                QQ::Distinct()
+                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion)
             );
 
             if ($this->lstProject->SelectedValue > 0)
