@@ -15,22 +15,27 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
+
     define ('ADMIN_EMAIL_ADDRESS', 'user@host.com');
     define ('__PHP_CLI_PATH__', '/usr/bin/php');
-    define ('__HTTP_URL__', 'http://localhost');
-
-    define ('__DOCROOT__', '/home/alex/www/html');
+    
+    /**
+     * Common setup for setting up Narro in a subdirectory narro under a docroot
+     * e.g. docroot is /var/www/html, you put Narro in /var/www/html/narro and access it at http://localhost/narro
+     */
+    define ('__HTTP_URL__', 'http://' . $_SERVER['HTTP_HOST']);
+    define ('__DOCROOT__', realpath(dirname(__FILE__) . '/../../'));
     define ('__VIRTUAL_DIRECTORY__', '');
-    define ('__SUBDIRECTORY__', '/narro/narro');
+    define ('__SUBDIRECTORY__', '/narro');
 
     /**
      * this constant allows any user do export files or import up to this defined size
-     * default is almost 10MB
+     * default is ~ 16MB
      */
-    define ('__MAXIMUM_FILE_SIZE_TO_IMPORT__', 10048576);
-    define ('__MAXIMUM_FILE_SIZE_TO_EXPORT__', 10048576);
-    define ('__MAXIMUM_FILE_COUNT_TO_IMPORT__', 500);
-    define ('__MAXIMUM_FILE_COUNT_TO_EXPORT__', 500);
+    define ('__MAXIMUM_FILE_SIZE_TO_IMPORT__', 16000000);
+    define ('__MAXIMUM_FILE_SIZE_TO_EXPORT__', 16000000);
+    define ('__MAXIMUM_FILE_COUNT_TO_IMPORT__', 3000);
+    define ('__MAXIMUM_FILE_COUNT_TO_EXPORT__', 3000);
     define ('__SOURCE_LANGUAGE_CODE__', 'en-US');
 
     /**
@@ -91,7 +96,7 @@
     ini_set('error_log', __TMP_PATH__ . '/error.log');
     error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 
-    define ('SERVER_INSTANCE', 'dev');
+    define ('SERVER_INSTANCE', 'prod');
     define ('NARRO_VERSION', '2.0');
 
     define ('__ZEND_CACHE_ENABLED__', true);
