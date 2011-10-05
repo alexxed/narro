@@ -206,7 +206,7 @@
                 $objNarroImporter->OnlySuggestions = $this->chkImportOnlyTranslations->Checked;
                 $objNarroImporter->Project = $this->objProject;
                 $objNarroImporter->ImportUnchangedFiles = $this->chkImportUnchangedFiles->Checked;
-                $objNarroImporter->User = NarroUser::LoadAnonymousUser();
+                $objNarroImporter->User = QApplication::$User;
                 $objNarroImporter->TargetLanguage = QApplication::$TargetLanguage;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
                 try {
@@ -255,7 +255,7 @@
                             (($this->chkImportOnlyTranslations->Checked || !QApplication::HasPermission('Can import project', $this->objProject->ProjectId))?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
                             ' --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s"',
                         $this->objProject->ProjectId,
-                        0,
+                        QApplication::$User->UserId,
                         NarroLanguage::SOURCE_LANGUAGE_CODE,
                         QApplication::$TargetLanguage->LanguageCode,
                         $this->pnlTextsSource->Directory,
