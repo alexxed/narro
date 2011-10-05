@@ -73,6 +73,7 @@
     define ('__NARRO_INCLUDES__', __DOCROOT__ . __SUBDIRECTORY__ . '/includes');
     define ('__NARRO_DATA__', __DOCROOT__ . __SUBDIRECTORY__ . '/data');
     define ('__NARRO_IMAGE_ASSETS__', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images');
+    define ('__NARRO_PHP_ASSETS__', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/php');
     define ('__DICTIONARY_PATH__', __NARRO_DATA__ . '/dictionaries');
     define ('__TMP_PATH__', __NARRO_DATA__ . '/tmp');
     define ('__IMPORT_PATH__', __NARRO_DATA__ . '/import');
