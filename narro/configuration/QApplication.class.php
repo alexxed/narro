@@ -293,13 +293,12 @@
         public static function InitializeUser() {
             if (isset(QApplication::$Session->User) && QApplication::$Session->User instanceof NarroUser) {
                 QApplication::$User = QApplication::$Session->User;
-                QApplication::$UseAjax = (QApplication::$User->GetPreferenceValueByName('Use AJAX') == 'Yes');
             }
             else {
                 QApplication::$User = NarroUser::LoadAnonymousUser();
                 QApplication::$Session->User = QApplication::$User;
             }
-
+            
             if (!QApplication::$User instanceof NarroUser)
                 // @todo add handling here
                 throw new Exception('Could not create an instance of NarroUser');
