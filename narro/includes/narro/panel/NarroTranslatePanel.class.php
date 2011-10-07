@@ -185,7 +185,6 @@
         public function lstFilter_Create() {
             $this->lstFilter = new QListBox($this);
             $this->lstFilter->RenderWithNameCssClass = 'inline_block';
-            $this->lstFilter->Display = false;
             $this->lstFilter->Name = t('Show');
             $this->lstFilter->AddItem(t('All'), self::SHOW_ALL);
             $this->lstFilter->AddItem(t('Not translated yet'), self::SHOW_NOT_TRANSLATED, true);
@@ -225,7 +224,7 @@
             if (QApplication::QueryString('in'))
                 $this->lstSearchIn->SelectedValue = QApplication::QueryString('in');
             else
-                $this->lstSearchIn->SelectedValue = self::SEARCH_IN_ALL;
+                $this->lstSearchIn->SelectedValue = self::SEARCH_IN_TEXTS;
         }
 
         public function btnLess_Create() {
@@ -238,7 +237,6 @@
         public function btnAdvancedSearch_Click($strFormId = null, $strControlId = null, $strParameter = null) {
             $this->lstProject->Display = ($this->btnAdvancedSearch->Text == t('Advanced Search'));
             $this->txtFile->Display = $this->lstProject->Display;
-            $this->lstFilter->Display = $this->lstProject->Display;
             $this->lstSearchIn->Display = $this->lstProject->Display;
             $this->lstSort->Display = $this->lstProject->Display;
             $this->lstSortDir->Display = $this->lstProject->Display;

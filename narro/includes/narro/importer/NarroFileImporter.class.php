@@ -201,8 +201,6 @@
         protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext = '', $strComment = null, $strOriginalCmdKey = null, $strTranslationCmdKey = null) {
             if ($strOriginal == '') return false;
             
-            QApplication::LogDebug(sprintf('%s: "%s"', __FUNCTION__, join('", "', func_get_args())));
-            
             $blnContextInfoChanged = false;
             $blnContextChanged = false;
 
