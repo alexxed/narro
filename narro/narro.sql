@@ -23,8 +23,8 @@ DROP TABLE IF EXISTS `narro_context`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `narro_context` (
-  `context_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `text_id` bigint(20) unsigned NOT NULL,
+  `context_id` integer(10) unsigned NOT NULL AUTO_INCREMENT,
+  `text_id` integer(10) unsigned NOT NULL,
   `text_access_key` char(1) DEFAULT NULL,
   `project_id` int(10) unsigned NOT NULL,
   `context` text NOT NULL,
@@ -56,11 +56,11 @@ DROP TABLE IF EXISTS `narro_context_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `narro_context_info` (
-  `context_info_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `context_id` bigint(20) unsigned NOT NULL,
+  `context_info_id` integer(10) unsigned NOT NULL AUTO_INCREMENT,
+  `context_id` integer(10) unsigned NOT NULL,
   `language_id` int(10) unsigned NOT NULL,
   `validator_user_id` int(10) unsigned DEFAULT NULL,
-  `valid_suggestion_id` bigint(20) unsigned DEFAULT NULL,
+  `valid_suggestion_id` integer(10) unsigned DEFAULT NULL,
   `has_suggestions` tinyint(1) unsigned DEFAULT '0',
   `suggestion_access_key` char(1) DEFAULT NULL,
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -317,9 +317,9 @@ DROP TABLE IF EXISTS `narro_suggestion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `narro_suggestion` (
-  `suggestion_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `suggestion_id` integer(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned DEFAULT NULL,
-  `text_id` bigint(20) unsigned NOT NULL,
+  `text_id` integer(10) unsigned NOT NULL,
   `language_id` int(10) unsigned NOT NULL,
   `suggestion_value` text NOT NULL,
   `suggestion_value_md5` varchar(32) NOT NULL,
@@ -350,7 +350,7 @@ DROP TABLE IF EXISTS `narro_suggestion_comment`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `narro_suggestion_comment` (
   `comment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `suggestion_id` bigint(20) unsigned NOT NULL,
+  `suggestion_id` integer(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `comment_text` text NOT NULL,
   `comment_text_md5` varchar(128) NOT NULL,
@@ -373,8 +373,8 @@ DROP TABLE IF EXISTS `narro_suggestion_vote`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `narro_suggestion_vote` (
-  `suggestion_id` bigint(20) unsigned NOT NULL,
-  `context_id` bigint(20) unsigned NOT NULL,
+  `suggestion_id` integer(10) unsigned NOT NULL,
+  `context_id` integer(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `vote_value` tinyint(3) NOT NULL,
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -397,7 +397,7 @@ DROP TABLE IF EXISTS `narro_text`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `narro_text` (
-  `text_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `text_id` integer(10) unsigned NOT NULL AUTO_INCREMENT,
   `text_value` text NOT NULL,
   `text_value_md5` varchar(64) NOT NULL,
   `text_char_count` smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -418,8 +418,8 @@ DROP TABLE IF EXISTS `narro_text_comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `narro_text_comment` (
-  `text_comment_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `text_id` bigint(20) unsigned NOT NULL,
+  `text_comment_id` integer(10) unsigned NOT NULL AUTO_INCREMENT,
+  `text_id` integer(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `language_id` int(10) unsigned NOT NULL,
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -755,3 +755,6 @@ INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'User');
 --
 
 INSERT INTO `zend_cache_version` (`num`) VALUES(1);
+
+ALTER TABLE `narro_context` ADD `text_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `text_access_key`;
+ALTER TABLE `narro_context_info` ADD `suggestion_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `suggestion_access_key`; 

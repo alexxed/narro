@@ -23,7 +23,9 @@
         public $BeforeValue;
         public $AfterValue;
         public $AccessKey;
+        public $CommandKey;
         public $LabelCtx;
         public $AccessKeyCtx;
+        public $CommandKeyCtx;
         public $FullEntity;
     }

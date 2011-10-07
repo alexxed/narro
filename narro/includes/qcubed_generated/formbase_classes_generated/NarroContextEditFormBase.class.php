@@ -26,6 +26,7 @@
 		protected $lblContextId;
 		protected $lstText;
 		protected $txtTextAccessKey;
+		protected $txtTextCommandKey;
 		protected $lstProject;
 		protected $txtContext;
 		protected $txtContextMd5;
@@ -73,6 +74,7 @@
 			$this->lblContextId = $this->mctNarroContext->lblContextId_Create();
 			$this->lstText = $this->mctNarroContext->lstText_Create();
 			$this->txtTextAccessKey = $this->mctNarroContext->txtTextAccessKey_Create();
+			$this->txtTextCommandKey = $this->mctNarroContext->txtTextCommandKey_Create();
 			$this->lstProject = $this->mctNarroContext->lstProject_Create();
 			$this->txtContext = $this->mctNarroContext->txtContext_Create();
 			$this->txtContextMd5 = $this->mctNarroContext->txtContextMd5_Create();

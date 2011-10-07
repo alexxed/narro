@@ -58,6 +58,7 @@
 			$this->dtgNarroContexts->MetaAddColumn('ContextId');
 			$this->dtgNarroContexts->MetaAddColumn(QQN::NarroContext()->Text);
 			$this->dtgNarroContexts->MetaAddColumn('TextAccessKey');
+			$this->dtgNarroContexts->MetaAddColumn('TextCommandKey');
 			$this->dtgNarroContexts->MetaAddColumn(QQN::NarroContext()->Project);
 			$this->dtgNarroContexts->MetaAddColumn('Context');
 			$this->dtgNarroContexts->MetaAddColumn('ContextMd5');

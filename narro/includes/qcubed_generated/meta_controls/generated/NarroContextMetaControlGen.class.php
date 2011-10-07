@@ -22,6 +22,8 @@
 	 * @property-read QLabel $TextIdLabel
 	 * @property QTextBox $TextAccessKeyControl
 	 * @property-read QLabel $TextAccessKeyLabel
+	 * @property QTextBox $TextCommandKeyControl
+	 * @property-read QLabel $TextCommandKeyLabel
 	 * @property QListBox $ProjectIdControl
 	 * @property-read QLabel $ProjectIdLabel
 	 * @property QTextBox $ContextControl
@@ -84,6 +86,11 @@
 		 */
 		protected $txtTextAccessKey;
 		/**
+		 * @var QTextBox txtTextCommandKey
+		 * @access protected
+		 */
+		protected $txtTextCommandKey;
+		/**
 		 * @var QListBox lstProject
 		 * @access protected
 		 */
@@ -140,6 +147,11 @@
 		 * @access protected
 		 */
 		protected $lblTextAccessKey;
+		/**
+		 * @var QLabel lblTextCommandKey
+		 * @access protected
+		 */
+		protected $lblTextCommandKey;
 		/**
 		 * @var QLabel lblProjectId
 		 * @access protected
@@ -355,6 +367,31 @@
 			$this->lblTextAccessKey->Name = QApplication::Translate('Text Access Key');
 			$this->lblTextAccessKey->Text = $this->objNarroContext->TextAccessKey;
 			return $this->lblTextAccessKey;
+		}
+
+		/**
+		 * Create and setup QTextBox txtTextCommandKey
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtTextCommandKey_Create($strControlId = null) {
+			$this->txtTextCommandKey = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtTextCommandKey->Name = QApplication::Translate('Text Command Key');
+			$this->txtTextCommandKey->Text = $this->objNarroContext->TextCommandKey;
+			$this->txtTextCommandKey->MaxLength = NarroContext::TextCommandKeyMaxLength;
+			return $this->txtTextCommandKey;
+		}
+
+		/**
+		 * Create and setup QLabel lblTextCommandKey
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblTextCommandKey_Create($strControlId = null) {
+			$this->lblTextCommandKey = new QLabel($this->objParentObject, $strControlId);
+			$this->lblTextCommandKey->Name = QApplication::Translate('Text Command Key');
+			$this->lblTextCommandKey->Text = $this->objNarroContext->TextCommandKey;
+			return $this->lblTextCommandKey;
 		}
 
 		/**
@@ -645,6 +682,9 @@
 			if ($this->txtTextAccessKey) $this->txtTextAccessKey->Text = $this->objNarroContext->TextAccessKey;
 			if ($this->lblTextAccessKey) $this->lblTextAccessKey->Text = $this->objNarroContext->TextAccessKey;
 
+			if ($this->txtTextCommandKey) $this->txtTextCommandKey->Text = $this->objNarroContext->TextCommandKey;
+			if ($this->lblTextCommandKey) $this->lblTextCommandKey->Text = $this->objNarroContext->TextCommandKey;
+
 			if ($this->lstProject) {
 					$this->lstProject->RemoveAllItems();
 				if (!$this->blnEditMode)
@@ -719,6 +759,7 @@
 				// Update any fields for controls that have been created
 				if ($this->lstText) $this->objNarroContext->TextId = $this->lstText->SelectedValue;
 				if ($this->txtTextAccessKey) $this->objNarroContext->TextAccessKey = $this->txtTextAccessKey->Text;
+				if ($this->txtTextCommandKey) $this->objNarroContext->TextCommandKey = $this->txtTextCommandKey->Text;
 				if ($this->lstProject) $this->objNarroContext->ProjectId = $this->lstProject->SelectedValue;
 				if ($this->txtContext) $this->objNarroContext->Context = $this->txtContext->Text;
 				if ($this->txtContextMd5) $this->objNarroContext->ContextMd5 = $this->txtContextMd5->Text;
@@ -788,6 +829,12 @@
 				case 'TextAccessKeyLabel':
 					if (!$this->lblTextAccessKey) return $this->lblTextAccessKey_Create();
 					return $this->lblTextAccessKey;
+				case 'TextCommandKeyControl':
+					if (!$this->txtTextCommandKey) return $this->txtTextCommandKey_Create();
+					return $this->txtTextCommandKey;
+				case 'TextCommandKeyLabel':
+					if (!$this->lblTextCommandKey) return $this->lblTextCommandKey_Create();
+					return $this->lblTextCommandKey;
 				case 'ProjectIdControl':
 					if (!$this->lstProject) return $this->lstProject_Create();
 					return $this->lstProject;
@@ -870,6 +917,8 @@
 						return ($this->lstText = QType::Cast($mixValue, 'QControl'));
 					case 'TextAccessKeyControl':
 						return ($this->txtTextAccessKey = QType::Cast($mixValue, 'QControl'));
+					case 'TextCommandKeyControl':
+						return ($this->txtTextCommandKey = QType::Cast($mixValue, 'QControl'));
 					case 'ProjectIdControl':
 						return ($this->lstProject = QType::Cast($mixValue, 'QControl'));
 					case 'ContextControl':

@@ -300,6 +300,7 @@
 				case 'ValidSuggestion': return QQN::NarroContextInfo()->ValidSuggestion;
 				case 'HasSuggestions': return QQN::NarroContextInfo()->HasSuggestions;
 				case 'SuggestionAccessKey': return QQN::NarroContextInfo()->SuggestionAccessKey;
+				case 'SuggestionCommandKey': return QQN::NarroContextInfo()->SuggestionCommandKey;
 				case 'Created': return QQN::NarroContextInfo()->Created;
 				case 'Modified': return QQN::NarroContextInfo()->Modified;
 				default: throw new QCallerException('Simple Property not found in NarroContextInfoDataGrid content: ' . $mixContent);

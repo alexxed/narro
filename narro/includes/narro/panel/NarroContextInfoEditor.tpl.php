@@ -26,7 +26,9 @@ if ($_CONTROL->SaveIgnoreButton)
 if ($_CONTROL->ContextInfo)
     $_CONTROL->ContextInfo->Render();
 if ($_CONTROL->AccessKey)
-    $_CONTROL->AccessKey->Render();
+    $_CONTROL->AccessKey->RenderWithName();
+if ($_CONTROL->CommandKey)
+    $_CONTROL->CommandKey->RenderWithName();
 $_CONTROL->CopyButton->Render();
 $_CONTROL->SaveButton->Render();
 $_CONTROL->HelpButton->Render();

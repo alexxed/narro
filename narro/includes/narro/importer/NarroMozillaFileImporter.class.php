@@ -79,6 +79,61 @@
 
             return $arrKeys;
         }
+        
+        protected function GetLabelForAccessKey($strAccCtx, $arrTexts) {
+            $arrPattern = array(
+            	'/^(.*)\.accesskey$/' => array('.label', '.message', '.title', '.button', '.placeholder', ''),
+            	'/^(.*)Access[kK]ey$/' => array('Label', 'Text', ''),
+            	'/^(.*)\.accessKey$/' => array('.label', '.message', '.title', ''),
+            	'/^(.*)\_accesskey$/' => array(''),
+            	'/^(.*)Accesskey$/' => array(''),
+            	'/^(.*)\.access$/' => array('', 'Button'),
+            	'/^accesskey\-(.*)$/' => array('button-')
+        	);
+            
+            foreach($arrPattern as $strPattern=>$arrLabel) {
+                if (preg_match($strPattern, $strAccCtx, $arrMatches) === 1) {
+                    foreach($arrLabel as $strLabel) {
+                        if (isset($arrTexts[$arrMatches[1] . $strLabel]))
+                            return $arrMatches[1] . $strLabel;
+                        elseif (isset($arrTexts[$strLabel . $arrMatches[1]]))
+                            return $strLabel . $arrMatches[1];
+                    }
+                }
+            }
+            
+            $arrKeys = array_keys($arrTexts);
+            $arrKeysFlipped = array_flip($arrKeys);
+            $strPreviousLabel = $arrKeys[$arrKeysFlipped[$strAccCtx] - 1];
+            QApplication::LogDebug(sprintf('No matching context found for access key context %s, previous context is %s', $strAccCtx, $strPreviousLabel));
+                        
+            return false;
+        }
+        
+        protected function GetLabelForCommandKey($strAccCtx, $arrTexts) {
+            $arrPattern = array(
+            	'/^(.*)\.key$/' => array('.label', '.message', '.title', '.button', '.placeholder', ''),
+            	'/^(.*)\.command[kK]ey$/' => array('.label', '.message', '.title', '')
+            );
+        
+            foreach($arrPattern as $strPattern=>$arrLabel) {
+                if (preg_match($strPattern, $strAccCtx, $arrMatches) === 1) {
+                    foreach($arrLabel as $strLabel) {
+                        if (isset($arrTexts[$arrMatches[1] . $strLabel]))
+                        return $arrMatches[1] . $strLabel;
+                        elseif (isset($arrTexts[$strLabel . $arrMatches[1]]))
+                        return $strLabel . $arrMatches[1];
+                    }
+                }
+            }
+        
+            $arrKeys = array_keys($arrTexts);
+            $arrKeysFlipped = array_flip($arrKeys);
+            $strPreviousLabel = $arrKeys[$arrKeysFlipped[$strAccCtx] - 1];
+            QApplication::LogDebug(sprintf('No matching context found for command key context %s, previous context is %s', $strAccCtx, $strPreviousLabel));
+        
+            return false;
+        }
 
 
         /**
@@ -89,82 +144,81 @@
             if (is_array($arrTexts)) {
                 foreach($arrTexts as $strContext=>$objEntity) {
                     $strAccKey = $objEntity->Value;
-                    if (stristr($strContext, 'accesskey')) {
-                        /**
-                         * if this is an accesskey, look for the label
-                         * until now the following label and accesskeys are matched:
-                         *
-                         * ctx.label / ctx.acesskey
-                         * ctxLabel / ctxAccesskey
-                         * ctx / ctx.accesskey
-                         *
-                         * and so on
-                         */
-                        $arrMatches = array();
-                        $strLabelCtx = false;
-                        $strNewAcc = false;
-
-                        if (preg_match('/([A-Z0-9a-z\.\_\-]+)([\.\-\_]a|[\.\-\_]{0,1}A)ccesskey$/s', $strContext, $arrMatches)) {
-                            $arrMatches[2] = str_replace('a', '', $arrMatches[2]);
-
-                            if (isset($arrTexts[$arrMatches[1] . $arrMatches[2] . 'label']))
-                                $strLabelCtx = $arrMatches[1] . $arrMatches[2] . 'label';
-                            elseif (isset($arrTexts[$arrMatches[1] . $arrMatches[2] . 'message']))
-                                $strLabelCtx = $arrMatches[1] . $arrMatches[2] . 'message';
-                            elseif (isset($arrTexts[$arrMatches[1] . $arrMatches[2] . 'title']))
-                                $strLabelCtx = $arrMatches[1] . $arrMatches[2] . 'title';
-                            elseif (isset($arrTexts[$arrMatches[1] . 'Label']))
-                                $strLabelCtx = $arrMatches[1] . 'Label';
-                            elseif (isset($arrTexts[$arrMatches[1]]))
-                                $strLabelCtx = $arrMatches[1];
-                            else {
-                                $strLabelCtx = '';
-                                QApplication::LogDebug(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc).', $strAccKey, $strContext, $arrMatches[1]));
-                                continue;
-                            }
-
-                            if ($strLabelCtx) {
-                                QApplication::LogDebug(sprintf('Found label context "%s", looking for an acceptable access key', $strLabelCtx));
+                    if (stristr($strContext, 'access')) {
+                        $strLabelCtx = $this->GetLabelForAccessKey($strContext, $arrTexts);
+                        if ($strLabelCtx !== false) {
+                            QApplication::LogDebug(sprintf('Found label context "%s", looking for an acceptable access key', $strLabelCtx));
+                            /**
+                             * strip mozilla entities when looking for an acceptable access key
+                             */
+                            $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]->Value);
+                            /**
+                             * search for the accesskey in the label
+                             * the case of the access keys doesn't matter in Mozilla, so it's a insensitive search
+                             */
+                            $intPos = @mb_stripos( $strOriginalText, $strAccKey);
+                            if ($intPos !== false) {
                                 /**
-                                 * strip mozilla entities when looking for an acceptable access key
+                                 * Try to keep the case at import if possible
                                  */
-                                $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]->Value);
-                                /**
-                                 * search for the accesskey in the label
-                                 * the case of the access keys doesn't matter in Mozilla, so it's a insensitive search
-                                 */
-                                $intPos = @mb_stripos( $strOriginalText, $strAccKey);
-                                if ($intPos !== false) {
-                                    /**
-                                     * Try to keep the case at import if possible
-                                     */
-                                    $intKeySensitivePos = mb_strpos($strOriginalText, $strAccKey);
-                                    if ($intKeySensitivePos !== false)
-                                        $intPos = $intKeySensitivePos;
+                                $intKeySensitivePos = mb_strpos($strOriginalText, $strAccKey);
+                                if ($intKeySensitivePos !== false)
+                                    $intPos = $intKeySensitivePos;
 
-                                    $arrTexts[$strLabelCtx]->AccessKey = mb_substr($strOriginalText, $intPos, 1);
-                                    QApplication::LogDebug(sprintf('Found access key %s, using it', $arrTexts[$strLabelCtx]->AccessKey));
-                                }
-                                elseif (preg_match('/[a-z]/i', $strOriginalText, $arrMatches)) {
-                                    $arrTexts[$strLabelCtx]->AccessKey = $arrMatches[0];
-                                    QApplication::LogDebug(sprintf('Using as access key the first ascii letter from the translation, %s', $arrMatches[0]));
-                                } else {
-                                    $arrTexts[$strLabelCtx]->AccessKey = $strAccKey;
-                                    QApplication::LogDebug(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
-                                }
-
-                                $arrTexts[$strContext]->LabelCtx = $strLabelCtx;
-                                $arrTexts[$strLabelCtx]->AccessKeyCtx = $strContext;
-
+                                $arrTexts[$strLabelCtx]->AccessKey = mb_substr($strOriginalText, $intPos, 1);
+                                QApplication::LogDebug(sprintf('Found access key %s, using it', $arrTexts[$strLabelCtx]->AccessKey));
                             }
-                            else {
-                                QApplication::LogWarn(sprintf('Found acesskey %s in context %s but didn\'t find any label to match "%s" (.label, Label, etc). Importing it as a text.', $strAccKey, $strContext, $arrMatches[1]));
-                                continue;
+                            elseif (preg_match('/[a-z]/i', $strOriginalText, $arrMatches)) {
+                                $arrTexts[$strLabelCtx]->AccessKey = $arrMatches[0];
+                                QApplication::LogDebug(sprintf('Using as access key the first ascii letter from the translation, %s', $arrMatches[0]));
+                            } else {
+                                $arrTexts[$strLabelCtx]->AccessKey = $strAccKey;
+                                QApplication::LogDebug(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
                             }
+
+                            $arrTexts[$strContext]->LabelCtx = $strLabelCtx;
+                            $arrTexts[$strLabelCtx]->AccessKeyCtx = $strContext;
+
                         }
                     }
-                    else
-                        continue;
+                    
+                    if (stristr($strContext, '.key') || stristr($strContext, '.commandkey')) {
+                        $strLabelCtx = $this->GetLabelForCommandKey($strContext, $arrTexts);
+                        if ($strLabelCtx !== false) {
+                            QApplication::LogDebug(sprintf('Found label context "%s", looking for an acceptable command key', $strLabelCtx));
+                            /**
+                             * strip mozilla entities when looking for an acceptable Command key
+                             */
+                            $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]->Value);
+                            /**
+                             * search for the Commandkey in the label
+                             * the case of the Command keys doesn't matter in Mozilla, so it's a insensitive search
+                             */
+                            $intPos = @mb_stripos( $strOriginalText, $strAccKey);
+                            if ($intPos !== false) {
+                                /**
+                                 * Try to keep the case at import if possible
+                                 */
+                                $intKeySensitivePos = mb_strpos($strOriginalText, $strAccKey);
+                                if ($intKeySensitivePos !== false)
+                                $intPos = $intKeySensitivePos;
+                    
+                                $arrTexts[$strLabelCtx]->CommandKey = mb_substr($strOriginalText, $intPos, 1);
+                                QApplication::LogDebug(sprintf('Found Command key %s, using it', $arrTexts[$strLabelCtx]->CommandKey));
+                            }
+                            elseif (preg_match('/[a-z]/i', $strOriginalText, $arrMatches)) {
+                                $arrTexts[$strLabelCtx]->CommandKey = $arrMatches[0];
+                                QApplication::LogDebug(sprintf('Using as command key the first ascii letter from the translation, %s', $arrMatches[0]));
+                            } else {
+                                $arrTexts[$strLabelCtx]->CommandKey = $strAccKey;
+                                QApplication::LogDebug(sprintf('No acceptable command key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
+                            }
+                    
+                            $arrTexts[$strContext]->LabelCtx = $strLabelCtx;
+                            $arrTexts[$strLabelCtx]->CommandKeyCtx = $strContext;
+                    
+                        }
+                    }
                 }
             }
 
@@ -201,11 +255,17 @@
                 }
 
                 if ($objNarroContextInfo->Context->TextAccessKey) {
-                    if ($objNarroContextInfo->SuggestionAccessKey && isset($arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx)) {
+                    if ($objNarroContextInfo->SuggestionAccessKey && isset($arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx))
                         $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx] = $objNarroContextInfo->SuggestionAccessKey;
-                    }
                     else
                         $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx] = $objNarroContextInfo->Context->TextAccessKey;
+                }
+                
+                if ($objNarroContextInfo->Context->TextCommandKey) {
+                    if ($objNarroContextInfo->SuggestionCommandKey && isset($arrTemplate[$objNarroContextInfo->Context->Context]->CommandKeyCtx))
+                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->CommandKeyCtx] = $objNarroContextInfo->SuggestionCommandKey;
+                    else
+                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->CommandKeyCtx] = $objNarroContextInfo->Context->TextCommandKey;
                 }
             }
 
@@ -230,9 +290,10 @@
                 $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
                 if (isset($arrTransKey))
                     $arrTransKey = $this->GetAccessKeys($arrTransKey);
-
+                
                 foreach($arrSourceKey as $strKey=>$objEntity) {
-                    // if it's a matched access key, keep going
+                    /* @var $objEntity NarroFileEntity */
+                    // if it's a matched access key or command key, keep going
                     if (isset($objEntity->LabelCtx))
                         continue;
 
@@ -246,9 +307,10 @@
                                 isset($arrTransKey[$strKey])?(isset($arrTransKey[$strKey]->AccessKey)?$arrTransKey[$strKey]->AccessKey:null):null,
                                 trim($strKey),
                                 (isset($objEntity->AccessKeyCtx))?
-                                    trim($objEntity->Comment) . "\n" .
-                                    trim($arrSourceKey[$objEntity->AccessKeyCtx]->Comment):
-                                    trim($objEntity->Comment)
+                                    trim($objEntity->Comment) . "\n" . trim($arrSourceKey[$objEntity->AccessKeyCtx]->Comment):
+                                    trim($objEntity->Comment),
+                                $objEntity->CommandKey,
+                                isset($arrTransKey[$strKey])?(isset($arrTransKey[$strKey]->CommandKey)?$arrTransKey[$strKey]->CommandKey:null):null
                     );
                 }
             }

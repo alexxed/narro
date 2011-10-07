@@ -62,6 +62,7 @@
 			$this->dtgNarroContextInfos->MetaAddColumn(QQN::NarroContextInfo()->ValidSuggestion);
 			$this->dtgNarroContextInfos->MetaAddColumn('HasSuggestions');
 			$this->dtgNarroContextInfos->MetaAddColumn('SuggestionAccessKey');
+			$this->dtgNarroContextInfos->MetaAddColumn('SuggestionCommandKey');
 			$this->dtgNarroContextInfos->MetaAddColumn('Created');
 			$this->dtgNarroContextInfos->MetaAddColumn('Modified');
 		}

@@ -293,6 +293,7 @@
 				case 'TextId': return QQN::NarroContext()->TextId;
 				case 'Text': return QQN::NarroContext()->Text;
 				case 'TextAccessKey': return QQN::NarroContext()->TextAccessKey;
+				case 'TextCommandKey': return QQN::NarroContext()->TextCommandKey;
 				case 'ProjectId': return QQN::NarroContext()->ProjectId;
 				case 'Project': return QQN::NarroContext()->Project;
 				case 'Context': return QQN::NarroContext()->Context;

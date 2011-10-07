@@ -195,8 +195,10 @@
          * @param string $strOriginalAccKey access key for the translated text
          * @param string $strContext the context where the text/translation appears in the file
          * @param string $strComment a comment from the imported file
+         * @param string $strOriginalCmdKey command key for the original text
+         * @param string $strTranslationCmdKey command key for the translated text
          */
-        protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext = '', $strComment = null) {
+        protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext = '', $strComment = null, $strOriginalCmdKey = null, $strTranslationCmdKey = null) {
             if ($strOriginal == '') return false;
             
             $blnContextInfoChanged = false;
@@ -325,9 +327,15 @@
                 }
 
                 if ($objContext->TextAccessKey != $strOriginalAccKey) {
-                    QApplication::LogDebug('Text access key changed for this context info');
+                    QApplication::LogDebug('Text access key changed for this context');
                     $blnContextChanged = true;
                     $objContext->TextAccessKey = $strOriginalAccKey;
+                }
+                
+                if ($objContext->TextCommandKey != $strOriginalCmdKey) {
+                    QApplication::LogDebug('Text command key changed for this context');
+                    $blnContextChanged = true;
+                    $objContext->TextCommandKey = $strOriginalCmdKey;
                 }
             }
 
@@ -410,6 +418,12 @@
                     QApplication::LogDebug('Translation access key changed');
                     $blnContextInfoChanged = true;
                     $objContextInfo->SuggestionAccessKey = $strTranslationAccKey;
+                }
+                
+                if ($objContextInfo instanceof NarroContextInfo && !is_null($strTranslationCmdKey) && $objContextInfo->SuggestionCommandKey != $strTranslationCmdKey) {
+                    QApplication::LogDebug('Translation command key changed');
+                    $blnContextInfoChanged = true;
+                    $objContextInfo->SuggestionCommandKey = $strTranslationCmdKey;
                 }
 
             }
@@ -592,7 +606,7 @@
         * @param integer $intTextId
         * @param integer $intUserId
         * @return NarroSuggestion
-        */        
+        */
         protected function GetUserListSuggestion($intContextId, $intTextId, $intUserId) {
             return NarroSuggestion::QuerySingle(
                 QQ::AndCondition(
@@ -676,7 +690,7 @@
                     }
                     else {
                         return false;
-                    }                    
+                    }
                 default:
                     return false;
             }

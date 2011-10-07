@@ -30,6 +30,7 @@
 		protected $lstValidSuggestion;
 		protected $chkHasSuggestions;
 		protected $txtSuggestionAccessKey;
+		protected $txtSuggestionCommandKey;
 		protected $calCreated;
 		protected $calModified;
 
@@ -74,6 +75,7 @@
 			$this->lstValidSuggestion = $this->mctNarroContextInfo->lstValidSuggestion_Create();
 			$this->chkHasSuggestions = $this->mctNarroContextInfo->chkHasSuggestions_Create();
 			$this->txtSuggestionAccessKey = $this->mctNarroContextInfo->txtSuggestionAccessKey_Create();
+			$this->txtSuggestionCommandKey = $this->mctNarroContextInfo->txtSuggestionCommandKey_Create();
 			$this->calCreated = $this->mctNarroContextInfo->calCreated_Create();
 			$this->calModified = $this->mctNarroContextInfo->calModified_Create();
 

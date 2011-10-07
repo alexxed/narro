@@ -30,6 +30,8 @@
 	 * @property-read QLabel $HasSuggestionsLabel
 	 * @property QTextBox $SuggestionAccessKeyControl
 	 * @property-read QLabel $SuggestionAccessKeyLabel
+	 * @property QTextBox $SuggestionCommandKeyControl
+	 * @property-read QLabel $SuggestionCommandKeyLabel
 	 * @property QDateTimePicker $CreatedControl
 	 * @property-read QLabel $CreatedLabel
 	 * @property QDateTimePicker $ModifiedControl
@@ -98,6 +100,11 @@
 		 */
 		protected $txtSuggestionAccessKey;
 		/**
+		 * @var QTextBox txtSuggestionCommandKey
+		 * @access protected
+		 */
+		protected $txtSuggestionCommandKey;
+		/**
 		 * @var QDateTimePicker calCreated
 		 * @access protected
 		 */
@@ -139,6 +146,11 @@
 		 * @access protected
 		 */
 		protected $lblSuggestionAccessKey;
+		/**
+		 * @var QLabel lblSuggestionCommandKey
+		 * @access protected
+		 */
+		protected $lblSuggestionCommandKey;
 		/**
 		 * @var QLabel lblCreated
 		 * @access protected
@@ -442,6 +454,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtSuggestionCommandKey
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtSuggestionCommandKey_Create($strControlId = null) {
+			$this->txtSuggestionCommandKey = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtSuggestionCommandKey->Name = QApplication::Translate('Suggestion Command Key');
+			$this->txtSuggestionCommandKey->Text = $this->objNarroContextInfo->SuggestionCommandKey;
+			$this->txtSuggestionCommandKey->MaxLength = NarroContextInfo::SuggestionCommandKeyMaxLength;
+			return $this->txtSuggestionCommandKey;
+		}
+
+		/**
+		 * Create and setup QLabel lblSuggestionCommandKey
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblSuggestionCommandKey_Create($strControlId = null) {
+			$this->lblSuggestionCommandKey = new QLabel($this->objParentObject, $strControlId);
+			$this->lblSuggestionCommandKey->Name = QApplication::Translate('Suggestion Command Key');
+			$this->lblSuggestionCommandKey->Text = $this->objNarroContextInfo->SuggestionCommandKey;
+			return $this->lblSuggestionCommandKey;
+		}
+
+		/**
 		 * Create and setup QDateTimePicker calCreated
 		 * @param string $strControlId optional ControlId to use
 		 * @return QDateTimePicker
@@ -576,6 +613,9 @@
 			if ($this->txtSuggestionAccessKey) $this->txtSuggestionAccessKey->Text = $this->objNarroContextInfo->SuggestionAccessKey;
 			if ($this->lblSuggestionAccessKey) $this->lblSuggestionAccessKey->Text = $this->objNarroContextInfo->SuggestionAccessKey;
 
+			if ($this->txtSuggestionCommandKey) $this->txtSuggestionCommandKey->Text = $this->objNarroContextInfo->SuggestionCommandKey;
+			if ($this->lblSuggestionCommandKey) $this->lblSuggestionCommandKey->Text = $this->objNarroContextInfo->SuggestionCommandKey;
+
 			if ($this->calCreated) $this->calCreated->DateTime = $this->objNarroContextInfo->Created;
 			if ($this->lblCreated) $this->lblCreated->Text = sprintf($this->objNarroContextInfo->Created) ? $this->objNarroContextInfo->Created->qFormat($this->strCreatedDateTimeFormat) : null;
 
@@ -611,6 +651,7 @@
 				if ($this->lstValidSuggestion) $this->objNarroContextInfo->ValidSuggestionId = $this->lstValidSuggestion->SelectedValue;
 				if ($this->chkHasSuggestions) $this->objNarroContextInfo->HasSuggestions = $this->chkHasSuggestions->Checked;
 				if ($this->txtSuggestionAccessKey) $this->objNarroContextInfo->SuggestionAccessKey = $this->txtSuggestionAccessKey->Text;
+				if ($this->txtSuggestionCommandKey) $this->objNarroContextInfo->SuggestionCommandKey = $this->txtSuggestionCommandKey->Text;
 				if ($this->calCreated) $this->objNarroContextInfo->Created = $this->calCreated->DateTime;
 				if ($this->calModified) $this->objNarroContextInfo->Modified = $this->calModified->DateTime;
 
@@ -697,6 +738,12 @@
 				case 'SuggestionAccessKeyLabel':
 					if (!$this->lblSuggestionAccessKey) return $this->lblSuggestionAccessKey_Create();
 					return $this->lblSuggestionAccessKey;
+				case 'SuggestionCommandKeyControl':
+					if (!$this->txtSuggestionCommandKey) return $this->txtSuggestionCommandKey_Create();
+					return $this->txtSuggestionCommandKey;
+				case 'SuggestionCommandKeyLabel':
+					if (!$this->lblSuggestionCommandKey) return $this->lblSuggestionCommandKey_Create();
+					return $this->lblSuggestionCommandKey;
 				case 'CreatedControl':
 					if (!$this->calCreated) return $this->calCreated_Create();
 					return $this->calCreated;
@@ -745,6 +792,8 @@
 						return ($this->chkHasSuggestions = QType::Cast($mixValue, 'QControl'));
 					case 'SuggestionAccessKeyControl':
 						return ($this->txtSuggestionAccessKey = QType::Cast($mixValue, 'QControl'));
+					case 'SuggestionCommandKeyControl':
+						return ($this->txtSuggestionCommandKey = QType::Cast($mixValue, 'QControl'));
 					case 'CreatedControl':
 						return ($this->calCreated = QType::Cast($mixValue, 'QControl'));
 					case 'ModifiedControl':

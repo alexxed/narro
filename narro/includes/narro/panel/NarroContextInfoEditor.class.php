@@ -25,6 +25,7 @@
         protected $txtTranslation;
         protected $lblContextInfo;
         protected $txtAccessKey;
+        protected $txtCommandKey;
         protected $dtgTranslation;
         protected $lblMessage;
         protected $btnCopy;
@@ -59,11 +60,24 @@
 
             if ($this->objContextInfo->Context->TextAccessKey) {
                 $this->txtAccessKey = new QTextBox($this);
-                $this->txtAccessKey->ToolTip = sprintf('Access key (original access key: %s)', $this->objContextInfo->Context->TextAccessKey);
+                $this->txtAccessKey->ToolTip = sprintf(t('Access key (original access key: %s)'), $this->objContextInfo->Context->TextAccessKey);
                 $this->txtAccessKey->TextMode = QTextMode::SingleLine;
+                $this->txtAccessKey->Name = t('Access key');
+                $this->txtAccessKey->Instructions = t('This is the letter that appears underlined in menus and buttons and you can use Alt + this letter to select, e.g. <b><u>F</u>ile</b>');
                 $this->txtAccessKey->Columns = 1;
                 $this->txtAccessKey->MaxLength = 1;
                 $this->txtAccessKey->Text = $this->objContextInfo->SuggestionAccessKey;
+            }
+            
+            if ($this->objContextInfo->Context->TextCommandKey) {
+                $this->txtCommandKey = new QTextBox($this);
+                $this->txtCommandKey->ToolTip = sprintf(t('Command key (original command key: %s)'), $this->objContextInfo->Context->TextCommandKey);
+                $this->txtCommandKey->TextMode = QTextMode::SingleLine;
+                $this->txtCommandKey->Name = t('Command key');
+                $this->txtCommandKey->Instructions = t('This is the letter that appears in menus and buttons after the text and you can use Ctrl + this letter to select, e.g. <b>Copy Ctrl+C</b>');
+                $this->txtCommandKey->Columns = 1;
+                $this->txtCommandKey->MaxLength = 1;
+                $this->txtCommandKey->Text = $this->objContextInfo->SuggestionCommandKey;
             }
 
             if ($objContextInfo->ValidSuggestionId)
@@ -394,6 +408,11 @@
                 $this->objContextInfo->Save();
             }
             
+            if ($this->txtCommandKey && $this->txtCommandKey->Text && $this->txtCommandKey->Text != $this->objContextInfo->SuggestionCommandKey) {
+                $this->objContextInfo->SuggestionCommandKey = $this->txtCommandKey->Text;
+                $this->objContextInfo->Save();
+            }
+            
             if ($this->txtTranslation->Text != '' && ($this->chkChanged->Checked || ($this->btnSaveIgnore && $this->btnSaveIgnore->ControlId == $strControlId))) {
                 if (!$this->btnSaveIgnore && !$this->Validate()) {
                     $this->btnSaveIgnore_Create();
@@ -428,7 +447,7 @@
                 
                 if ($this->ParentControl->ParentControl->chkApprove->Checked == true)
                     $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
-                else {                    
+                else {
                     foreach($this->Form->GetAllControls() as $ctl) {
                         if ($ctl instanceof NarroContextInfoEditor) {
                             if ($ctl->Text->Text == $this->lblText->Text) {
@@ -484,6 +503,20 @@
                             $this->objContextInfo->SuggestionAccessKey = mb_strtolower($this->objContextInfo->Context->TextAccessKey);
                         else
                             $this->objContextInfo->SuggestionAccessKey = mb_strtoupper($this->objContextInfo->Context->TextAccessKey);
+                    }
+                }
+                
+                if ($this->txtCommandKey && $this->txtCommandKey->Text) {
+                    $this->objContextInfo->SuggestionCommandKey = $this->txtCommandKey->Text;
+                }
+                else {
+                    if ($this->objContextInfo->Context->TextCommandKey) {
+                        if (mb_stripos($strSuggestionValue, $this->objContextInfo->Context->TextCommandKey) === false)
+                        $this->objContextInfo->SuggestionCommandKey = mb_substr($strSuggestionValue, 0, 1);
+                        elseif (mb_strpos($strSuggestionValue, mb_strtoupper($this->objContextInfo->Context->TextCommandKey)) === false)
+                        $this->objContextInfo->SuggestionCommandKey = mb_strtolower($this->objContextInfo->Context->TextCommandKey);
+                        else
+                        $this->objContextInfo->SuggestionCommandKey = mb_strtoupper($this->objContextInfo->Context->TextCommandKey);
                     }
                 }
 
@@ -551,7 +584,7 @@
 
                 $objSuggestion->Delete();
 
-                if (NarroSuggestion::QueryCount(QQ::Equal(QQN::NarroSuggestion()->TextId, $this->objContextInfo->Context->TextId)) == 0) {
+                if (NarroSuggestion::CountByTextId($this->objContextInfo->Context->TextId) == 0) {
                     $arrCtx = NarroContextInfo::QueryArray(
                         QQ::AndCondition(
                             QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $this->objContextInfo->Context->TextId),
@@ -642,6 +675,7 @@
                 case 'SaveButton': return $this->btnSave;
                 case 'Text': return $this->lblText;
                 case 'AccessKey': return $this->txtAccessKey;
+                case 'CommandKey': return $this->txtCommandKey;
                 case 'Translation': return $this->txtTranslation;
                 case 'ContextInfo': return $this->lblContextInfo;
                 case 'TranslationList': return $this->dtgTranslation;

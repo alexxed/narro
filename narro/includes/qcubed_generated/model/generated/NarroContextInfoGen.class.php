@@ -22,6 +22,7 @@
 	 * @property integer $ValidSuggestionId the value for intValidSuggestionId 
 	 * @property boolean $HasSuggestions the value for blnHasSuggestions 
 	 * @property string $SuggestionAccessKey the value for strSuggestionAccessKey 
+	 * @property string $SuggestionCommandKey the value for strSuggestionCommandKey 
 	 * @property QDateTime $Created the value for dttCreated (Not Null)
 	 * @property QDateTime $Modified the value for dttModified 
 	 * @property NarroContext $Context the value for the NarroContext object referenced by intContextId (Not Null)
@@ -91,6 +92,15 @@
 		protected $strSuggestionAccessKey;
 		const SuggestionAccessKeyMaxLength = 1;
 		const SuggestionAccessKeyDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_context_info.suggestion_command_key
+		 * @var string strSuggestionCommandKey
+		 */
+		protected $strSuggestionCommandKey;
+		const SuggestionCommandKeyMaxLength = 1;
+		const SuggestionCommandKeyDefault = null;
 
 
 		/**
@@ -185,6 +195,7 @@
 			$this->intValidSuggestionId = NarroContextInfo::ValidSuggestionIdDefault;
 			$this->blnHasSuggestions = NarroContextInfo::HasSuggestionsDefault;
 			$this->strSuggestionAccessKey = NarroContextInfo::SuggestionAccessKeyDefault;
+			$this->strSuggestionCommandKey = NarroContextInfo::SuggestionCommandKeyDefault;
 			$this->dttCreated = (NarroContextInfo::CreatedDefault === null)?null:new QDateTime(NarroContextInfo::CreatedDefault);
 			$this->dttModified = (NarroContextInfo::ModifiedDefault === null)?null:new QDateTime(NarroContextInfo::ModifiedDefault);
 		}
@@ -461,6 +472,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'valid_suggestion_id', $strAliasPrefix . 'valid_suggestion_id');
 			$objBuilder->AddSelectItem($strTableName, 'has_suggestions', $strAliasPrefix . 'has_suggestions');
 			$objBuilder->AddSelectItem($strTableName, 'suggestion_access_key', $strAliasPrefix . 'suggestion_access_key');
+			$objBuilder->AddSelectItem($strTableName, 'suggestion_command_key', $strAliasPrefix . 'suggestion_command_key');
 			$objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
 			$objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
 		}
@@ -507,6 +519,8 @@
 			$objToReturn->blnHasSuggestions = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_access_key', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_access_key'] : $strAliasPrefix . 'suggestion_access_key';
 			$objToReturn->strSuggestionAccessKey = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_command_key', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_command_key'] : $strAliasPrefix . 'suggestion_command_key';
+			$objToReturn->strSuggestionCommandKey = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created'] : $strAliasPrefix . 'created';
 			$objToReturn->dttCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
 			$strAliasName = array_key_exists($strAliasPrefix . 'modified', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'modified'] : $strAliasPrefix . 'modified';
@@ -769,16 +783,16 @@
 			
 		/**
 		 * Load an array of NarroContextInfo objects,
-		 * by Created Index(es)
-		 * @param QDateTime $dttCreated
+		 * by HasSuggestions Index(es)
+		 * @param boolean $blnHasSuggestions
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroContextInfo[]
 		*/
-		public static function LoadArrayByCreated($dttCreated, $objOptionalClauses = null) {
-			// Call NarroContextInfo::QueryArray to perform the LoadArrayByCreated query
+		public static function LoadArrayByHasSuggestions($blnHasSuggestions, $objOptionalClauses = null) {
+			// Call NarroContextInfo::QueryArray to perform the LoadArrayByHasSuggestions query
 			try {
 				return NarroContextInfo::QueryArray(
-					QQ::Equal(QQN::NarroContextInfo()->Created, $dttCreated),
+					QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, $blnHasSuggestions),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -788,46 +802,14 @@
 
 		/**
 		 * Count NarroContextInfos
-		 * by Created Index(es)
-		 * @param QDateTime $dttCreated
+		 * by HasSuggestions Index(es)
+		 * @param boolean $blnHasSuggestions
 		 * @return int
 		*/
-		public static function CountByCreated($dttCreated) {
-			// Call NarroContextInfo::QueryCount to perform the CountByCreated query
+		public static function CountByHasSuggestions($blnHasSuggestions) {
+			// Call NarroContextInfo::QueryCount to perform the CountByHasSuggestions query
 			return NarroContextInfo::QueryCount(
-				QQ::Equal(QQN::NarroContextInfo()->Created, $dttCreated)
-			);
-		}
-			
-		/**
-		 * Load an array of NarroContextInfo objects,
-		 * by Modified Index(es)
-		 * @param QDateTime $dttModified
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroContextInfo[]
-		*/
-		public static function LoadArrayByModified($dttModified, $objOptionalClauses = null) {
-			// Call NarroContextInfo::QueryArray to perform the LoadArrayByModified query
-			try {
-				return NarroContextInfo::QueryArray(
-					QQ::Equal(QQN::NarroContextInfo()->Modified, $dttModified),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count NarroContextInfos
-		 * by Modified Index(es)
-		 * @param QDateTime $dttModified
-		 * @return int
-		*/
-		public static function CountByModified($dttModified) {
-			// Call NarroContextInfo::QueryCount to perform the CountByModified query
-			return NarroContextInfo::QueryCount(
-				QQ::Equal(QQN::NarroContextInfo()->Modified, $dttModified)
+				QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, $blnHasSuggestions)
 			);
 		}
 
@@ -867,6 +849,7 @@
 							`valid_suggestion_id`,
 							`has_suggestions`,
 							`suggestion_access_key`,
+							`suggestion_command_key`,
 							`created`,
 							`modified`
 						) VALUES (
@@ -876,6 +859,7 @@
 							' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
 							' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
 							' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . ',
+							' . $objDatabase->SqlVariable($this->strSuggestionCommandKey) . ',
 							' . $objDatabase->SqlVariable($this->dttCreated) . ',
 							' . $objDatabase->SqlVariable($this->dttModified) . '
 						)
@@ -899,6 +883,7 @@
 							`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
 							`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
 							`suggestion_access_key` = ' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . ',
+							`suggestion_command_key` = ' . $objDatabase->SqlVariable($this->strSuggestionCommandKey) . ',
 							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
 							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . '
 						WHERE
@@ -985,6 +970,7 @@
 			$this->ValidSuggestionId = $objReloaded->ValidSuggestionId;
 			$this->blnHasSuggestions = $objReloaded->blnHasSuggestions;
 			$this->strSuggestionAccessKey = $objReloaded->strSuggestionAccessKey;
+			$this->strSuggestionCommandKey = $objReloaded->strSuggestionCommandKey;
 			$this->dttCreated = $objReloaded->dttCreated;
 			$this->dttModified = $objReloaded->dttModified;
 		}
@@ -1055,6 +1041,13 @@
 					 * @return string
 					 */
 					return $this->strSuggestionAccessKey;
+
+				case 'SuggestionCommandKey':
+					/**
+					 * Gets the value for strSuggestionCommandKey 
+					 * @return string
+					 */
+					return $this->strSuggestionCommandKey;
 
 				case 'Created':
 					/**
@@ -1240,6 +1233,19 @@
 					 */
 					try {
 						return ($this->strSuggestionAccessKey = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'SuggestionCommandKey':
+					/**
+					 * Sets the value for strSuggestionCommandKey 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strSuggestionCommandKey = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1447,6 +1453,7 @@
 			$strToReturn .= '<element name="ValidSuggestion" type="xsd1:NarroSuggestion"/>';
 			$strToReturn .= '<element name="HasSuggestions" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="SuggestionAccessKey" type="xsd:string"/>';
+			$strToReturn .= '<element name="SuggestionCommandKey" type="xsd:string"/>';
 			$strToReturn .= '<element name="Created" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="Modified" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
@@ -1493,6 +1500,8 @@
 				$objToReturn->blnHasSuggestions = $objSoapObject->HasSuggestions;
 			if (property_exists($objSoapObject, 'SuggestionAccessKey'))
 				$objToReturn->strSuggestionAccessKey = $objSoapObject->SuggestionAccessKey;
+			if (property_exists($objSoapObject, 'SuggestionCommandKey'))
+				$objToReturn->strSuggestionCommandKey = $objSoapObject->SuggestionCommandKey;
 			if (property_exists($objSoapObject, 'Created'))
 				$objToReturn->dttCreated = new QDateTime($objSoapObject->Created);
 			if (property_exists($objSoapObject, 'Modified'))
@@ -1556,6 +1565,7 @@
 			$iArray['ValidSuggestionId'] = $this->intValidSuggestionId;
 			$iArray['HasSuggestions'] = $this->blnHasSuggestions;
 			$iArray['SuggestionAccessKey'] = $this->strSuggestionAccessKey;
+			$iArray['SuggestionCommandKey'] = $this->strSuggestionCommandKey;
 			$iArray['Created'] = $this->dttCreated;
 			$iArray['Modified'] = $this->dttModified;
 			return new ArrayIterator($iArray);
@@ -1590,6 +1600,7 @@
      * @property-read QQNodeNarroSuggestion $ValidSuggestion
      * @property-read QQNode $HasSuggestions
      * @property-read QQNode $SuggestionAccessKey
+     * @property-read QQNode $SuggestionCommandKey
      * @property-read QQNode $Created
      * @property-read QQNode $Modified
      *
@@ -1625,6 +1636,8 @@
 					return new QQNode('has_suggestions', 'HasSuggestions', 'Bit', $this);
 				case 'SuggestionAccessKey':
 					return new QQNode('suggestion_access_key', 'SuggestionAccessKey', 'VarChar', $this);
+				case 'SuggestionCommandKey':
+					return new QQNode('suggestion_command_key', 'SuggestionCommandKey', 'VarChar', $this);
 				case 'Created':
 					return new QQNode('created', 'Created', 'DateTime', $this);
 				case 'Modified':
@@ -1655,6 +1668,7 @@
      * @property-read QQNodeNarroSuggestion $ValidSuggestion
      * @property-read QQNode $HasSuggestions
      * @property-read QQNode $SuggestionAccessKey
+     * @property-read QQNode $SuggestionCommandKey
      * @property-read QQNode $Created
      * @property-read QQNode $Modified
      *
@@ -1690,6 +1704,8 @@
 					return new QQNode('has_suggestions', 'HasSuggestions', 'boolean', $this);
 				case 'SuggestionAccessKey':
 					return new QQNode('suggestion_access_key', 'SuggestionAccessKey', 'string', $this);
+				case 'SuggestionCommandKey':
+					return new QQNode('suggestion_command_key', 'SuggestionCommandKey', 'string', $this);
 				case 'Created':
 					return new QQNode('created', 'Created', 'QDateTime', $this);
 				case 'Modified':
