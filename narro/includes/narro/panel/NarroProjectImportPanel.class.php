@@ -31,6 +31,7 @@
         public $chkApproveOnlyNotApproved;
         public $chkImportOnlyTranslations;
         public $chkImportUnchangedFiles;
+        public $chkDontCheckEqual;
 
         public $btnImport;
 
@@ -131,6 +132,15 @@
             }
 
             $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objProject->ProjectId, QApplication::$TargetLanguage->LanguageCode) && !$this->btnImport->Visible;
+            
+            $this->chkDontCheckEqual_Create();
+        }
+        
+        public function chkDontCheckEqual_Create() {
+            $this->chkDontCheckEqual = new QCheckBox($this);
+            $this->chkDontCheckEqual->Name = t("Don't check if the translation is equal to the source text");
+            $this->chkDontCheckEqual->Instructions = t("Usually untranslated texts are exported as original. When importing them back, it's usually safe to asume that you don't want to import those as translations. However, if you know that you want to do this, check this box.");
+            $this->chkDontCheckEqual->AddAction(new QClickEvent(), new QConfirmAction(t("If you proceed, all the translations that are untranslated or kept as original will be imported and approved if you chose so. Are you sure you want to do this ?")));
         }
 
         public function chkApproveImportedTranslations_Click($strFormId, $strControlId, $strParameter) {
@@ -247,7 +257,7 @@
                 try {
                     $strCommand = sprintf(
                         __PHP_CLI_PATH__ . ' ' .
-                            escapeshellarg('includes/narro/importer/narro-cli.php').
+                            escapeshellarg(sprintf('%s/includes/narro/importer/narro-cli.php', __DOCROOT__ . __SUBDIRECTORY__)).
                             ' --import --minloglevel 3 --project %d --user %d --check-equal ' .
                             (($this->chkApproveImportedTranslations->Checked)?'--approve ':'') .
                             (($this->chkImportUnchangedFiles->Checked)?'--import-unchanged-files ':'') .

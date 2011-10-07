@@ -32,36 +32,11 @@
 <div class="section_title"><?php _t('Options')?></div>
 <div class="section">
 <?php
-    $_CONTROL->chkApproveImportedTranslations->Render();
-    if ($_CONTROL->chkApproveImportedTranslations->Display) {
-?>
-<label for="<?php echo $_CONTROL->chkApproveImportedTranslations->ControlId?>"><?php echo $_CONTROL->chkApproveImportedTranslations->Name?></label>
-<br />
-<?php
-    }
-    $_CONTROL->chkApproveOnlyNotApproved->Render();
-    if ($_CONTROL->chkApproveOnlyNotApproved->Display) {
-?>
-<label for="<?php echo $_CONTROL->chkApproveOnlyNotApproved->ControlId?>"><?php echo $_CONTROL->chkApproveOnlyNotApproved->Name?></label>
-<br />
-<?php
-    }
-
-    $_CONTROL->chkImportOnlyTranslations->Render();
-    if ($_CONTROL->chkImportOnlyTranslations->Display) {
-?>
-<label for="<?php echo $_CONTROL->chkImportOnlyTranslations->ControlId?>"><?php echo $_CONTROL->chkImportOnlyTranslations->Name?></label>
-<br />
-<?php
-    }
-
-    $_CONTROL->chkImportUnchangedFiles->Render();
-    if ($_CONTROL->chkImportUnchangedFiles->Display) {
-?>
-<label for="<?php echo $_CONTROL->chkImportUnchangedFiles->ControlId?>"><?php echo $_CONTROL->chkImportUnchangedFiles->Name?></label>
-<br />
-<?php
-    }
+$_CONTROL->chkApproveImportedTranslations->RenderWithName();
+$_CONTROL->chkApproveOnlyNotApproved->RenderWithName();
+$_CONTROL->chkImportOnlyTranslations->RenderWithName();
+$_CONTROL->chkImportUnchangedFiles->RenderWithName();
+$_CONTROL->chkDontCheckEqual->RenderWithName();
 ?>
 </div>
 <?php
