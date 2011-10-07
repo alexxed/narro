@@ -14,7 +14,7 @@
      *
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-     * 
+     *
      * @property NarroFileProgress $FileProgress
      */
 
@@ -45,9 +45,9 @@
             $this->strDisplayStyle = QDisplayStyle::InlineBlock;
             $this->strInstructions = t('Hover over the bar to get some details, click on the refresh button to refresh it');
             
-            $this->Total = $this->objFileProgress->File->CountAllTextsByLanguage();
-            $this->Translated = $this->objFileProgress->File->CountApprovedTextsByLanguage();
-            $this->Fuzzy = $this->objFileProgress->File->CountTranslatedTextsByLanguage();
+            $this->Total = $this->objFileProgress->TotalTextCount;
+            $this->Translated = $this->objFileProgress->ApprovedTextCount;
+            $this->Fuzzy = $this->objFileProgress->FuzzyTextCount;
         }
 
         //////////
@@ -65,7 +65,7 @@
             $this->Translated = $this->objFileProgress->File->CountApprovedTextsByLanguage();
             $this->Fuzzy = $this->objFileProgress->File->CountTranslatedTextsByLanguage();
             $this->blnModified = true;
-        }        
+        }
 
         /////////////////////////
         // Public Properties: SET
