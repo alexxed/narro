@@ -168,7 +168,7 @@
                 $objNarroImporter->ExportedSuggestion = $this->lstExportSuggestionType->SelectedValue;
                 $objNarroImporter->Project = $this->objProject;
                 $objNarroImporter->ExportAuthorList = $this->txtAuthor->Text;
-                $objNarroImporter->User = NarroUser::LoadAnonymousUser();
+                $objNarroImporter->User = QApplication::$User;
                 $objNarroImporter->TargetLanguage = QApplication::$TargetLanguage;
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
                 try {
@@ -210,7 +210,7 @@
                     $strCommand = sprintf(
                         '%s %s --export --project %d --user %d --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s" --exported-suggestion %d --export-author-list %s',
                         __PHP_CLI_PATH__,
-                        escapeshellarg('includes/narro/importer/narro-cli.php'),
+                        escapeshellarg(sprintf('%s/includes/narro/importer/narro-cli.php', __DOCROOT__ . __SUBDIRECTORY__)),
                         $this->objProject->ProjectId,
                         QApplication::$User->UserId,
                         NarroLanguage::SOURCE_LANGUAGE_CODE,
