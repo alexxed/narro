@@ -142,22 +142,27 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
 <p>
 <?php _t("To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text.");?>
 </p>
-    <?php echo $_CONTROL->lstProject->Name ?>: <?php $_CONTROL->lstProject->Render(); ?>
-    <?php echo $_CONTROL->txtFile->Name ?>: <?php  $_CONTROL->txtFile->Render();  ?>
-    <?php echo $_CONTROL->lstFilter->Name ?>: <?php $_CONTROL->lstFilter->Render();  ?>
-    <?php echo $_CONTROL->txtSearch->Name ?>: <?php $_CONTROL->lstSearchIn->Render(); $_CONTROL->txtSearch->Render();?>
-    <?php echo $_CONTROL->lstSort->Name ?>: <?php $_CONTROL->lstSort->Render(); $_CONTROL->lstSortDir->Render(); $_CONTROL->btnSearch->Render();?>
-    <br />
-    <?php 
-    if ($_CONTROL->chkApprove->Display) { 
-        $_CONTROL->chkApprove->RenderWithName();
-    }
-    ?>
-    <br />
-    <?php $_CONTROL->btnLess->Render();$_CONTROL->dtrText->Render(); $_CONTROL->objWaitIcon->Render(); $_CONTROL->btnMore->Render(); $_CONTROL->chkLast->Render(); $_CONTROL->chkRequestMoreSent->Render(); ?>
-    <?php QApplication::ExecuteJavaScript(sprintf("jQuery(window).scroll(function(){
+<?php
+    $_CONTROL->lstProject->RenderWithName();
+    $_CONTROL->txtFile->RenderWithName();
+    $_CONTROL->lstFilter->RenderWithName();
+    $_CONTROL->lstSearchIn->RenderWithName();
+    $_CONTROL->txtSearch->RenderWithName();
+    $_CONTROL->lstSort->RenderWithName();
+    $_CONTROL->lstSortDir->RenderWithName();
+    $_CONTROL->btnSearch->Render();
+    $_CONTROL->btnAdvancedSearch->Render();
+    $_CONTROL->chkApprove->RenderWithName();
+    $_CONTROL->btnLess->Render();
+    $_CONTROL->dtrText->Render();
+    $_CONTROL->objWaitIcon->Render();
+    $_CONTROL->btnMore->Render();
+    $_CONTROL->chkLast->Render();
+    $_CONTROL->chkRequestMoreSent->Render();
+     QApplication::ExecuteJavaScript(sprintf("jQuery(window).scroll(function(){
         if  (jQuery(window).scrollTop() == jQuery(document).height() - jQuery(window).height() && jQuery('#endReached').attr('checked') == false && jQuery('#requestMoreSent').attr('checked') == false) {
         	jQuery('#requestMoreSent').attr('checked', true);
             qc.pA('%s', '%s', 'QClickEvent', '', '%s');
         }
-}); ", $_CONTROL->Form->FormId, $_CONTROL->btnMore->ControlId, $_CONTROL->objWaitIcon->ControlId));?>
+}); ", $_CONTROL->Form->FormId, $_CONTROL->btnMore->ControlId, $_CONTROL->objWaitIcon->ControlId));
+?>
