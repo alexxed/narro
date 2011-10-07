@@ -140,7 +140,7 @@
          * @return array $arrTranslation an array with context as keys and translations as values
          */
         public function GetTranslations($arrTemplate) {
-            $arrTranslation = array();
+$arrTranslation = array();
 
             $arrTranslationObjects =
                 NarroContextInfo::QueryArray(
@@ -162,11 +162,26 @@
                 }
 
                 if ($objNarroContextInfo->Context->TextAccessKey) {
-                    if ($objNarroContextInfo->SuggestionAccessKey) {
-                        $arrTranslation[$objNarroContextInfo->Context->Context] = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '&' . $objNarroContextInfo->SuggestionAccessKey, $arrTranslation[$objNarroContextInfo->Context->Context], 1);
+                    $blnIsIniAccessKey = preg_match('/&([^\s])/', $objNarroContextInfo->Context->Text->TextValue);
+                    if ($objNarroContextInfo->SuggestionAccessKey && isset($arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx)) {
+                        if ($blnIsIniAccessKey)
+                            $arrTranslation[$objNarroContextInfo->Context->Context] = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '&' . $objNarroContextInfo->SuggestionAccessKey, $arrTranslation[$objNarroContextInfo->Context->Context], 1);
+                        else
+                            $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx] = $objNarroContextInfo->SuggestionAccessKey;
                     }
+                    else {
+                        if ($blnIsIniAccessKey)
+                            $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx] = $objNarroContextInfo->Context->TextAccessKey;
+                        else
+                            $arrTranslation[$objNarroContextInfo->Context->Context] = NarroString::Replace(mb_substr($arrTranslation[$objNarroContextInfo->Context->Context], 0, 1), '&' . mb_substr($arrTranslation[$objNarroContextInfo->Context->Context], 0, 1), $arrTranslation[$objNarroContextInfo->Context->Context], 1);
+                    }
+                }
+                
+                if ($objNarroContextInfo->Context->TextCommandKey) {
+                    if ($objNarroContextInfo->SuggestionCommandKey && isset($arrTemplate[$objNarroContextInfo->Context->Context]->CommandKeyCtx))
+                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->CommandKeyCtx] = $objNarroContextInfo->SuggestionCommandKey;
                     else
-                        $arrTranslation[$objNarroContextInfo->Context->Context] = NarroString::Replace(mb_substr($arrTranslation[$objNarroContextInfo->Context->Context], 0, 1), '&' . mb_substr($arrTranslation[$objNarroContextInfo->Context->Context], 0, 1), $arrTranslation[$objNarroContextInfo->Context->Context], 1);
+                        $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->CommandKeyCtx] = $objNarroContextInfo->Context->TextCommandKey;
                 }
             }
 
@@ -178,6 +193,7 @@
          * @param array $arrTexts an array with context as keys and texts as values
          */
         public function GetAccessKeys($arrTexts) {
+            $arrTexts = parent::GetAccessKeys($arrTexts);
             foreach($arrTexts as $strContext=>$objEntity) {
                 if (preg_match('/&([^\s])/', $objEntity->Value, $arrMatches)) {
                     $objEntity->AccessKey = $arrMatches[1];
