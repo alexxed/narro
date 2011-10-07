@@ -304,13 +304,13 @@ div.calendar { width: 200px; border: 1px solid #111; background-color: #ccf; }
   * Styles for Custom Render Functions as defined in QControl.class.php
   */
 
-div.renderWithName { padding: 4px 0 4px 0; overflow: auto; height: 100%; }
-    div.renderWithName div.left { float: left; width: 200px; margin-right: 25px; }
+div.renderWithName { margin-left: 5px; padding: 2px 0 2px 0; overflow: auto; height: 100%; width: auto; vertical-align: middle }
+    div.renderWithName div.left { display: inline-block; margin-right: 5px; }
     div.renderWithName div.required { font-weight: bold; }
     div.renderWithName div.left span.instructions { color: #999; font-style: italic; text-transform: none;}
 
-    div.renderWithName div.right { }
-    div.renderWithName div.right span.error { margin-left: 15px; color: #600;}
+    div.renderWithName div.right { display: inline-block; }
+    div.renderWithName div.right span.error { margin-left: 5px; color: #600;}
 
 /**
   *   Layout Specific IDs
@@ -512,4 +512,8 @@ table.datagrid td a.nolink {text-decoration: none; color: black}
     font-size: small;
     color: gray;
     margin-left: 30px;
+}
+
+.inline_block {
+    display: inline-block;
 }

@@ -4,23 +4,24 @@
 	 * @package Controls
 	 */
 	/**
-	 * QControl is the user overridable Base-Class for all Controls. 
-	 * 
-	 * This class is intended to be modified.  Please place any custom modifications to QControl in the file.  
+	 * QControl is the user overridable Base-Class for all Controls.
+	 *
+	 * This class is intended to be modified.  Please place any custom modifications to QControl in the file.
 	 * The RenderWithName function provided here is a basic rendering.  Feel free to make your own modifcations.
 	 * Please note: All custom render methods should start with a RenderHelper call and end with a RenderOutput call.
-	 * 
+	 *
 	 * @package Controls
 	 */
 	abstract class QControl extends QControlBase {
+	    protected $strRenderWithNameCssClass;
 		/**
 		 * Renders the control with an attached name
-		 * 
+		 *
 		 * This will call {@link QControlBase::GetControlHtml()} for the bulk of the work, but will add layout html as well.  It will include
 		 * the rendering of the Controls' name label, any errors or warnings, instructions, and html before/after (if specified).
 		 * As this is the parent class of all controls, this method defines how ALL controls will render.  If you need certain
-		 * controls to display differently, override this function in that control's class. 
-		 * 
+		 * controls to display differently, override this function in that control's class.
+		 *
 		 * @param boolean $blnDisplayOutput true to send to display buffer, false to just return then html
 		 * @return string HTML of rendered Control
 		 */
@@ -37,7 +38,7 @@
 			$this->blnIsBlockElement = true;
 
 			// Render the Control's Dressing
-			$strToReturn = '<div class="renderWithName">';
+			$strToReturn = sprintf('<div class="renderWithName%s">', ($this->strRenderWithNameCssClass)?' ' . $this->strRenderWithNameCssClass:'');
 
 			// Render the Left side
 			$strLeftClass = "left";
@@ -51,7 +52,7 @@
 			else
 				$strInstructions = '';
 
-			$strToReturn .= sprintf('<div class="%s"><label for="%s">%s</label>%s</div>' , $strLeftClass, $this->strControlId, $this->strName, $strInstructions);
+			$strToReturn .= sprintf('<div class="%s"><label for="%s">%s</label></div>' , $strLeftClass, $this->strControlId, $this->strName);
 
 			// Render the Right side
 			if ($this->strValidationError)
@@ -62,8 +63,8 @@
 				$strMessage = '';
 
 			try {
-				$strToReturn .= sprintf('<div class="right">%s%s%s%s</div>',
-					$this->strHtmlBefore, $this->GetControlHtml(), $this->strHtmlAfter, $strMessage);
+				$strToReturn .= sprintf('<div class="right">%s%s%s%s</div>%s',
+					$this->strHtmlBefore, $this->GetControlHtml(), $this->strHtmlAfter, $strMessage, $strInstructions);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -75,6 +76,31 @@
 			// Call RenderOutput, Returning its Contents
 			return $this->RenderOutput($strToReturn, $blnDisplayOutput);
 			////////////////////////////////////////////
+		}
+		
+		public function __set($strName, $mixValue) {
+		    $this->blnModified = true;
+		
+		    switch ($strName) {
+		        case 'RenderWithNameCssClass':
+		            try {
+		                $this->strRenderWithNameCssClass = QType::Cast($mixValue, QType::String);
+		                break;
+		            } catch (QInvalidCastException $objExc) {
+		                $objExc->IncrementOffset();
+		                throw $objExc;
+		            }
+		            return;
+
+		        default:
+		            try {
+		            parent::__set($strName, $mixValue);
+		        } catch (QCallerException $objExc) {
+		            $objExc->IncrementOffset();
+		            throw $objExc;
+		        }
+		        break;
+		    }
 		}
 	}
 ?>
