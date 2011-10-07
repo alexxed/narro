@@ -93,7 +93,8 @@ ALTER TABLE `narro_project` CHANGE `source` `data` TEXT CHARACTER SET utf8 COLLA
 ALTER TABLE `narro_project_progress` CHANGE `source` `data` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
 
-
+ALTER TABLE `narro_context` ADD `text_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `text_access_key`;
+ALTER TABLE `narro_context_info` ADD `suggestion_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `suggestion_access_key`; 
 
 
 

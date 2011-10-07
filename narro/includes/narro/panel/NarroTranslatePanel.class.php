@@ -388,10 +388,12 @@
                 $this->arrClauses
             );
             
+            $arrClausesNoLimit = array_slice($this->arrClauses, 1);
+            
             if ($this->lstProject->SelectedValue)
                 $this->intTotalItemCount = NarroContextInfo::QueryCount(
                     QQ::AndCondition($this->arrConditions),
-                    $this->arrClauses
+                    $arrClausesNoLimit
                 );
             else
                 $this->intTotalItemCount = 0;
