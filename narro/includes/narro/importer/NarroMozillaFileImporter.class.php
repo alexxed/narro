@@ -72,8 +72,14 @@
                 $this->objFile->Save();
             }
             
+            foreach ($arrKeys as $strKey=>$objEntity) {
+                /* @var $objEntity NarroFileEntity */
+                if (isset($strLastKey) && $strKey != $strLastKey)
+                    $arrKeys[$strKey]->AfterValue .= "\n";
+            }
+            
             if (isset($strLastKey) && $strPreviousLines)
-                $arrKeys[$strLastKey]->AfterValue .=  "\n" . $strPreviousLines;
+                $arrKeys[$strLastKey]->AfterValue .=  $strPreviousLines;
 
             QApplication::LogDebug(sprintf('Converted file to array in %s second(s)', (time() - $intTime)));
 
@@ -147,76 +153,20 @@
                     if (stristr($strContext, 'access')) {
                         $strLabelCtx = $this->GetLabelForAccessKey($strContext, $arrTexts);
                         if ($strLabelCtx !== false) {
-                            QApplication::LogDebug(sprintf('Found label context "%s", looking for an acceptable access key', $strLabelCtx));
-                            /**
-                             * strip mozilla entities when looking for an acceptable access key
-                             */
-                            $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]->Value);
-                            /**
-                             * search for the accesskey in the label
-                             * the case of the access keys doesn't matter in Mozilla, so it's a insensitive search
-                             */
-                            $intPos = @mb_stripos( $strOriginalText, $strAccKey);
-                            if ($intPos !== false) {
-                                /**
-                                 * Try to keep the case at import if possible
-                                 */
-                                $intKeySensitivePos = mb_strpos($strOriginalText, $strAccKey);
-                                if ($intKeySensitivePos !== false)
-                                    $intPos = $intKeySensitivePos;
-
-                                $arrTexts[$strLabelCtx]->AccessKey = mb_substr($strOriginalText, $intPos, 1);
-                                QApplication::LogDebug(sprintf('Found access key %s, using it', $arrTexts[$strLabelCtx]->AccessKey));
-                            }
-                            elseif (preg_match('/[a-z]/i', $strOriginalText, $arrMatches)) {
-                                $arrTexts[$strLabelCtx]->AccessKey = $arrMatches[0];
-                                QApplication::LogDebug(sprintf('Using as access key the first ascii letter from the translation, %s', $arrMatches[0]));
-                            } else {
-                                $arrTexts[$strLabelCtx]->AccessKey = $strAccKey;
-                                QApplication::LogDebug(sprintf('No acceptable access key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
-                            }
-
+                            QApplication::LogDebug(sprintf('Found access key %s for %s, contexts %s, %s', $strAccKey, $arrTexts[$strLabelCtx]->Value, $strLabelCtx, $strContext));
                             $arrTexts[$strContext]->LabelCtx = $strLabelCtx;
+                            $arrTexts[$strLabelCtx]->AccessKey = $objEntity->Value;
                             $arrTexts[$strLabelCtx]->AccessKeyCtx = $strContext;
-
                         }
                     }
                     
                     if (stristr($strContext, '.key') || stristr($strContext, '.commandkey')) {
                         $strLabelCtx = $this->GetLabelForCommandKey($strContext, $arrTexts);
                         if ($strLabelCtx !== false) {
-                            QApplication::LogDebug(sprintf('Found label context "%s", looking for an acceptable command key', $strLabelCtx));
-                            /**
-                             * strip mozilla entities when looking for an acceptable Command key
-                             */
-                            $strOriginalText = preg_replace('/&[^;]+;/', '', $arrTexts[$strLabelCtx]->Value);
-                            /**
-                             * search for the Commandkey in the label
-                             * the case of the Command keys doesn't matter in Mozilla, so it's a insensitive search
-                             */
-                            $intPos = @mb_stripos( $strOriginalText, $strAccKey);
-                            if ($intPos !== false) {
-                                /**
-                                 * Try to keep the case at import if possible
-                                 */
-                                $intKeySensitivePos = mb_strpos($strOriginalText, $strAccKey);
-                                if ($intKeySensitivePos !== false)
-                                $intPos = $intKeySensitivePos;
-                    
-                                $arrTexts[$strLabelCtx]->CommandKey = mb_substr($strOriginalText, $intPos, 1);
-                                QApplication::LogDebug(sprintf('Found Command key %s, using it', $arrTexts[$strLabelCtx]->CommandKey));
-                            }
-                            elseif (preg_match('/[a-z]/i', $strOriginalText, $arrMatches)) {
-                                $arrTexts[$strLabelCtx]->CommandKey = $arrMatches[0];
-                                QApplication::LogDebug(sprintf('Using as command key the first ascii letter from the translation, %s', $arrMatches[0]));
-                            } else {
-                                $arrTexts[$strLabelCtx]->CommandKey = $strAccKey;
-                                QApplication::LogDebug(sprintf('No acceptable command key found for context "%s", text "%s", leaving the original.', $strLabelCtx, $strOriginalText));
-                            }
-                    
+                            QApplication::LogDebug(sprintf('Found command key %s for %s, contexts %s, %s', $strAccKey, $arrTexts[$strLabelCtx]->Value, $strLabelCtx, $strContext));
                             $arrTexts[$strContext]->LabelCtx = $strLabelCtx;
                             $arrTexts[$strLabelCtx]->CommandKeyCtx = $strContext;
-                    
+                            $arrTexts[$strLabelCtx]->CommandKey = $objEntity->Value;
                         }
                     }
                 }
