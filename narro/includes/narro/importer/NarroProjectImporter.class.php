@@ -14,7 +14,7 @@
      *
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-     * 
+     *
      * @property array $ExportAuthorList comma separated list of usernames or array of user ids
      */
 
@@ -193,7 +193,10 @@
                      * The same for translation files
                      */
                     if ($this->strTranslationPath != $this->objProject->DefaultTranslationPath)
-                        NarroUtils::RecursiveCopy($this->strTranslationPath, $this->objProject->DefaultTranslationPath);
+                        if (file_exists($this->strTranslationPath))
+                            NarroUtils::RecursiveCopy($this->strTranslationPath, $this->objProject->DefaultTranslationPath);
+                        else
+                            QApplication::LogWarn(sprintf('"%s" is not a directory, not copying to default translation path: "%s"', $this->strTranslationPath, $this->objProject->DefaultTranslationPath));
 
                     $this->stopTimer();
                     QApplication::LogInfo(sprintf('Import finished successfully in %d seconds.', NarroImportStatistics::$arrStatistics['End time'] - NarroImportStatistics::$arrStatistics['Start time']));
@@ -979,7 +982,7 @@
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
                         throw $objExc;
-                    }                
+                    }
 
                 default:
                     return false;
