@@ -28,7 +28,7 @@
     *
     * @package My Application
     * @subpackage DataObjects
-    * 
+    *
     * @property array $Preferences
     * @property NarroProjectProgress $ProjectProgressForCurrentLanguage
     *
@@ -113,6 +113,7 @@
                 $objProjectProgress->ApprovedTextCount = 0;
                 $objProjectProgress->FuzzyTextCount = 0;
                 $objProjectProgress->ProgressPercent = 0;
+                $objProjectProgress->Active = $this->Active;
                 $objProjectProgress->LastModified = QDateTime::Now();
 
                 $blnChanged = true;
@@ -203,7 +204,7 @@
                     $objProjectProgress->ApprovedTextCount = 0;
                     $objProjectProgress->FuzzyTextCount = 0;
                     $objProjectProgress->ProgressPercent = 0;
-                    $objProjectProgress->Active = 1;
+                    $objProjectProgress->Active = $this->Active;
                     $objProjectProgress->LastModified = QDateTime::Now();
                     $objProjectProgress->Save();
 
@@ -233,10 +234,10 @@
                     return $this->arrPreferences[$strName];
                 else
                     return self::$AvailablePreferences[$strName]['default'];
-            else { 
+            else {
                 if ($this->ProjectProgressForCurrentLanguage)
                     return $this->ProjectProgressForCurrentLanguage->GetPreferenceValueByName($strName);
-                else 
+                else
                     return self::$AvailablePreferences[$strName]['default'];
             }
         }
@@ -253,14 +254,14 @@
          */
         public static function RegisterPreference($strName, $blnGlobal, $intProjectType, $strType, $strDescription, $strDefaultValue, $arrValues = array()) {
             self::$AvailablePreferences[$strName] = array(
-            	'type' => $strType, 
-                'global' => $blnGlobal, 
+            	'type' => $strType,
+                'global' => $blnGlobal,
                 'project_type' => $intProjectType,
-                'description' => $strDescription, 
-                'default' => $strDefaultValue, 
+                'description' => $strDescription,
+                'default' => $strDefaultValue,
                 'values' => $arrValues
             );
-        }        
+        }
 
         /**
          * Override method to perform a property "Get"
@@ -291,8 +292,9 @@
                             $this->objProjectProgressForCurrentLanguage->FuzzyTextCount = 0;
                             $this->objProjectProgressForCurrentLanguage->ProgressPercent = 0;
                             $this->objProjectProgressForCurrentLanguage->LastModified = QDateTime::Now();
+                            $this->objProjectProgressForCurrentLanguage->Active = $this->Active;
                             $this->objProjectProgressForCurrentLanguage->Save();
-                        }                            
+                        }
                         return $this->objProjectProgressForCurrentLanguage;
                     }
                 case 'DefaultTemplatePath':
