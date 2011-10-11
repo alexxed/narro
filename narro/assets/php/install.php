@@ -38,8 +38,8 @@
     }
     
     check_boolean(
-    	'Data directory present and writable', 
-    	sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __NARRO_DATA__), 
+    	'Data directory present and writable',
+    	sprintf('Please create a directory "data" in %s and give it write permissions for everyone (chmod 777)', __NARRO_DATA__),
     	file_exists(__NARRO_DATA__)
 	);
 
@@ -47,7 +47,7 @@
         if (!file_exists($strDirName)) {
             if (
                 check_boolean(
-            	    $strDirName . ' directory present and writable', 
+            	    $strDirName . ' directory present and writable',
                     sprintf('Please create the directory %s and give it write permissions for everyone (chmod 777)', $strDirName),
                     @mkdir($strDirName)
                 )
@@ -59,8 +59,8 @@
     $arrConData = unserialize(DB_CONNECTION_1);
 
     $link = mysql_connect($arrConData['server'].(($arrConData['port'])?':' . $arrConData['port']:''), $arrConData['username'], $arrConData['password']);
-    check_boolean('Database server connection', sprintf('Unable to connect to the database. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php'), $link);
-    check_boolean('Database selection', sprintf('Unable to select the database. Please check database settings in file "%s"', dirname(__FILE__) . '/configuration.inc.php'), mysql_select_db($arrConData['database'], $link));
+    check_boolean('Database server connection', sprintf('Unable to connect to the database. Please check database settings in file "%s"', __CONFIGURATION__. '/configuration.narro.inc.php'), $link);
+    check_boolean('Database selection', sprintf('Unable to select the database. Please check database settings in file "%s"', __CONFIGURATION__ . '/configuration.narro.inc.php'), mysql_select_db($arrConData['database'], $link));
 
     $arrExtension = array('mysql', 'mbstring', 'gd', 'zip', 'ftp', 'soap', 'pspell', 'mysqli');
     foreach($arrExtension as $strExtensionName) {
