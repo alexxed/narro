@@ -26,9 +26,6 @@
         echo
             sprintf(
                     "php %s [options]\n" .
-                    "--template-lang              language code for the original texts, optional, defaults to %s\n" .
-                    "--template-directory         the directory that holds the original texts" .
-                    "--translation-directory      the directory that holds the translations" .
                     "--user                       user id that will be used for the added translations\n" .
                     "--project                    project id instead of importing all projects\n" .
                     "--disable-plugins            disable plugins during import/export\n" .
@@ -101,10 +98,7 @@
                 $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
                 NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
 
-                if (array_search('--template-lang', $argv) !== false)
-                    $strSourceLanguage = $argv[array_search('--template-lang', $argv)+1];
-                else
-                    $strSourceLanguage = NarroLanguage::SOURCE_LANGUAGE_CODE;
+                $strSourceLanguage = NarroLanguage::SOURCE_LANGUAGE_CODE;
 
                 if (array_search('--user', $argv) !== false)
                     $intUserId = $argv[array_search('--user', $argv)+1];

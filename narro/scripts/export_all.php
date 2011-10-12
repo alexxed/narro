@@ -26,18 +26,15 @@
         echo
             sprintf(
                     "php %s [options]\n" .
-                    "--template-lang              language code for the original texts, optional, defaults to %s\n" .
-                    "--template-directory         the directory that holds the original texts" .
-                    "--translation-directory      the directory that holds the translations" .
         			"--project                    project id instead of exporting all projects\n" .
                     "--disable-plugins            disable plugins during import/export\n" .
                     "                             suggestions, optional, defaults to anonymous\n" .
                     "--exported-suggestion        1 for approved,\n" .
                     "                             2 - approved, then most voted,\n" .
                     "                             3 - approved, then most recent,\n" .
-                    "                             4 approved, most voted, most recent,\n" .
-                    "                             5 approved, my suggestion\n" .
-                    "--skip-untranslated          skip likes that don't have translated texts\n",
+                    "                             4 - approved, most voted, most recent,\n" .
+                    "                             5 - approved, my suggestion\n" .
+                    "--skip-untranslated          skip lines that don't have translated texts\n",
                 basename(__FILE__),
                 NarroLanguage::SOURCE_LANGUAGE_CODE
             )
@@ -49,10 +46,6 @@
         if (in_array('--project', $argv) && $objProject->ProjectId != $argv[array_search('--project', $argv)+1]) continue;
         
         foreach(NarroLanguage::LoadAllActive() as $objLanguage) {
-            if (array_search('--verbose', $argv)) {
-                echo $objLanguage->LanguageName . "\n";
-                ob_flush();
-            }
             QApplication::$TargetLanguage = $objLanguage;
 
             QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $objProject->ProjectId, $objLanguage->LanguageCode);
@@ -69,10 +62,7 @@
                 if (array_search('--exported-suggestion', $argv))
                     $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];
 
-                if (array_search('--template-lang', $argv) !== false)
-                    $strSourceLanguage = $argv[array_search('--template-lang', $argv)+1];
-                else
-                    $strSourceLanguage = NarroLanguage::SOURCE_LANGUAGE_CODE;
+                $strSourceLanguage = NarroLanguage::SOURCE_LANGUAGE_CODE;
 
                 if (array_search('--user', $argv) !== false)
                     $intUserId = $argv[array_search('--user', $argv)+1];
@@ -103,15 +93,8 @@
 
                 $objNarroImporter->Project = $objProject;
                 $objNarroImporter->User = $objUser;
-                if (array_search('--template-directory', $argv) !== false)
-                    $objNarroImporter->TemplatePath = $argv[array_search('--template-directory', $argv)+1];
-                else
-                    $objNarroImporter->TemplatePath = $objNarroImporter->Project->DefaultTemplatePath;
-
-                if (array_search('--translation-directory', $argv) !== false)
-                    $objNarroImporter->TranslationPath = $argv[array_search('--translation-directory', $argv)+1];
-                else
-                    $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
+                $objNarroImporter->TemplatePath = $objNarroImporter->Project->DefaultTemplatePath;
+                $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
 
                 try {
                     $intPid = NarroUtils::IsProcessRunning('export', $objNarroImporter->Project->ProjectId);
