@@ -80,6 +80,9 @@
 
             QApplication::$TargetLanguage = $objLanguage;
             QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $objProject->ProjectId, $objLanguage->LanguageCode);
+            if (!file_exists(QApplication::$LogFile))
+                file_put_contents(QApplication::$LogFile, '');
+            chmod(QApplication::$LogFile, 0666);
             QApplication::$Logger = new Zend_Log();
             QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile));
 
