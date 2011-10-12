@@ -705,7 +705,9 @@
                 $this->txtTranslation->Text = $this->objContextInfo->Context->Text->TextValue;
                 $this->chkChanged->Checked = true;
                 $objSuggestion = $this->btnSave_Click($strFormId, $strControlId, $strParameter);
-            } elseif ($objSuggestion instanceof NarroSuggestion) {
+            }
+            
+            if (!QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId) && $objSuggestion instanceof NarroSuggestion) {
                 $this->btnVote_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
             }
             
