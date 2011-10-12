@@ -27,10 +27,10 @@
             sprintf(
                     "php %s [options]\n" .
                     "--template-lang              language code for the original texts, optional, defaults to %s\n" .
-                    "--translation-lang           language code for the translations\n" .
                     "--template-directory         the directory that holds the original texts" .
                     "--translation-directory      the directory that holds the translations" .
-                    "--user                       user id that will be used for the added\n" .
+                    "--user                       user id that will be used for the added translations\n" .
+                    "--project                    project id instead of importing all projects\n" .
                     "--disable-plugins            disable plugins during import/export\n" .
                     "                             suggestions, optional, defaults to anonymous\n" .
                     "--do-not-deactivate-files    do not deactivate project files before importing\n" .
@@ -56,6 +56,8 @@
 
     $intStartTime = time();
     foreach(NarroProject::LoadArrayByActive(1) as $intProjIdx=>$objProject) {
+        if (in_array('--project', $argv) && $objProject->ProjectId != $argv[array_search('--project', $argv)+1]) continue;
+        
         foreach(NarroLanguage::LoadAllActive() as $intLangIdx=>$objLanguage) {
             if (in_array('--progress', $argv)) {
                 $strProjectProgress = '';
@@ -103,9 +105,6 @@
                     $strSourceLanguage = $argv[array_search('--template-lang', $argv)+1];
                 else
                     $strSourceLanguage = NarroLanguage::SOURCE_LANGUAGE_CODE;
-
-                if (array_search('--translation-lang', $argv) !== false)
-                    $strTargetLanguage = $argv[array_search('--translation-lang', $argv)+1];
 
                 if (array_search('--user', $argv) !== false)
                     $intUserId = $argv[array_search('--user', $argv)+1];

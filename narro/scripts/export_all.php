@@ -27,10 +27,9 @@
             sprintf(
                     "php %s [options]\n" .
                     "--template-lang              language code for the original texts, optional, defaults to %s\n" .
-                    "--translation-lang           language code for the translations\n" .
                     "--template-directory         the directory that holds the original texts" .
                     "--translation-directory      the directory that holds the translations" .
-                    "--user                       user id that will be used for the added\n" .
+        			"--project                    project id instead of exporting all projects\n" .
                     "--disable-plugins            disable plugins during import/export\n" .
                     "                             suggestions, optional, defaults to anonymous\n" .
                     "--exported-suggestion        1 for approved,\n" .
@@ -47,6 +46,8 @@
     }
 
     foreach(NarroProject::LoadArrayByActive(1) as $objProject) {
+        if (in_array('--project', $argv) && $objProject->ProjectId != $argv[array_search('--project', $argv)+1]) continue;
+        
         foreach(NarroLanguage::LoadAllActive() as $objLanguage) {
             if (array_search('--verbose', $argv)) {
                 echo $objLanguage->LanguageName . "\n";
