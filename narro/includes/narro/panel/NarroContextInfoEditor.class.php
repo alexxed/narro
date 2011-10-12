@@ -705,9 +705,7 @@
                 $this->txtTranslation->Text = $this->objContextInfo->Context->Text->TextValue;
                 $this->chkChanged->Checked = true;
                 $objSuggestion = $this->btnSave_Click($strFormId, $strControlId, $strParameter);
-            }
-            
-            if ($objSuggestion instanceof NarroSuggestion) {
+            } elseif ($objSuggestion instanceof NarroSuggestion) {
                 $this->btnVote_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
             }
             
