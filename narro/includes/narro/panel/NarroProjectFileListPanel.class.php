@@ -125,7 +125,7 @@
 
             $strOutput = '';
 
-            $objProgressBar = new NarroFileTranslationProgressBar($objProgress, $this);
+            $objProgressBar = new NarroFileTranslationProgressBar($objProgress, $this->dtgFile);
             $strOutput .= $objProgressBar->Render(false);
 
             QApplication::$PluginHandler->DisplayInFileListInProgressColumn($objProgress->File);

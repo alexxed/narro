@@ -180,7 +180,7 @@
         public function dtgProjectList_PercentTranslated_Render(NarroProject $objProject) {
             if (!$objProject->_NarroProjectProgressAsProject) return '';
 
-            $objProgressBar = new NarroProjectTranslationProgressBar($objProject->_NarroProjectProgressAsProject, $this);
+            $objProgressBar = new NarroProjectTranslationProgressBar($objProject->_NarroProjectProgressAsProject, $this->dtgProjectList);
 
             return NarroLink::Translate($objProject->ProjectId, null, null, null, null, null, null, null, null, $objProgressBar->Render(false));
         }
