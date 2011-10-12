@@ -77,7 +77,12 @@
         }
 
         public function dtgSuggestions_colText_Render( NarroSuggestion $objNarroSuggestion ) {
-            return NarroLink::Translate(null, null, NarroTranslatePanel::SHOW_ALL, $objNarroSuggestion->Text->TextValue, null, 1, 10, 0, '', $objNarroSuggestion->Text->TextValue);
+            return
+                str_replace(
+            		'?l=' . QApplication::$TargetLanguage->LanguageCode,
+                	'?l=' . $objNarroSuggestion->Language->LanguageCode,
+                    NarroLink::Translate(null, null, NarroTranslatePanel::SHOW_ALL, "'" . $objNarroSuggestion->Text->TextValue . "'", null, 1, 10, 0, '', $objNarroSuggestion->Text->TextValue)
+                );
         }
 
         public function dtgSuggestions_colLanguage_Render( NarroSuggestion $objNarroSuggestion ) {
