@@ -77,7 +77,7 @@
         }
 
         public function dtgSuggestions_colText_Render( NarroSuggestion $objNarroSuggestion ) {
-            return NarroLink::Translate(null, null, NarroTranslatePanel::SHOW_ALL, '', null, 1, 10, 0, '', $objNarroSuggestion->Text->TextValue);
+            return NarroLink::Translate(null, null, NarroTranslatePanel::SHOW_ALL, $objNarroSuggestion->Text->TextValue, null, 1, 10, 0, '', $objNarroSuggestion->Text->TextValue);
         }
 
         public function dtgSuggestions_colLanguage_Render( NarroSuggestion $objNarroSuggestion ) {
