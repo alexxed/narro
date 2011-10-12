@@ -18,6 +18,8 @@
 
 $_CONTROL->ChangedCheckbox->Render();
 $_CONTROL->Index->Render();
+if ($_CONTROL->KeepUntranslatedButton)
+    $_CONTROL->KeepUntranslatedButton->Render();
 $_CONTROL->Text->Render();
 $_CONTROL->Translation->RenderWithError();
 $_CONTROL->Message->Render();

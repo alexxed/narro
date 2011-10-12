@@ -104,6 +104,7 @@ CREATE TABLE `narro_file` (
   KEY `type_id` (`type_id`),
   KEY `project_id` (`project_id`),
   KEY `parent_id` (`parent_id`),
+  
   CONSTRAINT `narro_file_ibfk_10` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`),
   CONSTRAINT `narro_file_ibfk_4` FOREIGN KEY (`parent_id`) REFERENCES `narro_file` (`file_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `narro_file_ibfk_9` FOREIGN KEY (`type_id`) REFERENCES `narro_file_type` (`file_type_id`)
@@ -757,4 +758,8 @@ INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'User');
 INSERT INTO `zend_cache_version` (`num`) VALUES(1);
 
 ALTER TABLE `narro_context` ADD `text_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `text_access_key`;
-ALTER TABLE `narro_context_info` ADD `suggestion_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `suggestion_access_key`; 
+ALTER TABLE `narro_context_info` ADD `suggestion_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `suggestion_access_key`;
+
+ALTER TABLE `narro_file`
+ADD UNIQUE `file_path` ( `file_path` , `project_id` )  ;
+ALTER TABLE `narro_file` ADD INDEX ( `active` ) ;

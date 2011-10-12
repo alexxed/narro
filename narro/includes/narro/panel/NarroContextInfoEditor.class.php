@@ -33,6 +33,7 @@
         protected $btnSave;
         protected $chkChanged;
         protected $btnSaveIgnore;
+        protected $btnKeepUntranslated;
 
         public function __construct($objParentObject, $strControlId = null, NarroContextInfo $objContextInfo) {
             parent::__construct($objParentObject, $strControlId);
@@ -63,7 +64,7 @@
                 $this->txtAccessKey->ToolTip = sprintf(t('Access key (original access key: %s)'), $this->objContextInfo->Context->TextAccessKey);
                 $this->txtAccessKey->TextMode = QTextMode::SingleLine;
                 $this->txtAccessKey->Name = t('Access key');
-                $this->txtAccessKey->Instructions = t('This is the letter that appears underlined in menus and buttons and you can use Alt + this letter to select, e.g. <b><u>F</u>ile</b>');
+                $this->txtAccessKey->Instructions = sprintf(t('This is the letter that appears underlined in menus and buttons and you can use Alt + this letter to select, e.g. <b>%s</b>'), NarroString::Replace($this->objContextInfo->Context->TextAccessKey, sprintf('<u>%s</u>', $this->objContextInfo->Context->TextAccessKey), $this->objContextInfo->Context->Text->TextValue, 1));
                 $this->txtAccessKey->Columns = 1;
                 $this->txtAccessKey->MaxLength = 1;
                 $this->txtAccessKey->Text = $this->objContextInfo->SuggestionAccessKey;
@@ -74,7 +75,7 @@
                 $this->txtCommandKey->ToolTip = sprintf(t('Command key (original command key: %s)'), $this->objContextInfo->Context->TextCommandKey);
                 $this->txtCommandKey->TextMode = QTextMode::SingleLine;
                 $this->txtCommandKey->Name = t('Command key');
-                $this->txtCommandKey->Instructions = t('This is the letter that appears in menus and buttons after the text and you can use Ctrl + this letter to select, e.g. <b>Copy Ctrl+C</b>');
+                $this->txtCommandKey->Instructions = sprintf(t('This is the letter that appears in menus and buttons after the text and you can use Ctrl + this letter to select, e.g. <b>%s Ctrl+%s</b>'), NarroString::Replace($this->objContextInfo->Context->TextAccessKey, sprintf('<u>%s</u>', $this->objContextInfo->Context->TextAccessKey), $this->objContextInfo->Context->Text->TextValue, 1), $this->objContextInfo->Context->TextCommandKey);
                 $this->txtCommandKey->Columns = 1;
                 $this->txtCommandKey->MaxLength = 1;
                 $this->txtCommandKey->Text = $this->objContextInfo->SuggestionCommandKey;
@@ -118,7 +119,10 @@
                 $this->btnSave->TabIndex = -1;
             }
             
+            
             $this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+
+            $this->btnKeepUntranslated_Create();
 
             $this->lblContextInfo_Create();
 
@@ -153,6 +157,28 @@
                 $this->dtgTranslation_Create();
 
             $this->strTemplate = dirname(__FILE__) . '/' . __CLASS__ . '.tpl.php';
+        }
+        
+        public function btnKeepUntranslated_Create() {
+            if (QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId)) {
+                $this->btnKeepUntranslated = new QImageButton($this, $strControlId);
+                $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/approve.png';
+                $this->btnKeepUntranslated->AlternateText = t('Keep untranslated');
+                $this->btnKeepUntranslated->CssClass = 'keep_untranslated';
+                $this->btnKeepUntranslated->ToolTip = $this->btnKeepUntranslated->AlternateText;
+                $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
+                $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKeepUntranslated_Click'));
+            }
+            elseif (QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId)) {
+                $this->btnKeepUntranslated = new QImageButton($this, $strControlId);
+                $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/vote.png';
+                $this->btnKeepUntranslated->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
+                $this->btnKeepUntranslated->AlternateText = t('Keep untranslated');
+                $this->btnKeepUntranslated->CssClass = 'keep_untranslated';
+                $this->btnKeepUntranslated->ToolTip = $this->btnKeepUntranslated->AlternateText;
+                $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
+                $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKeepUntranslated_Click'));
+            }
         }
         
         public function btnSaveIgnore_Create() {
@@ -339,6 +365,9 @@
         }
 
         public function btnHelp_Click($strFormId, $strControlId, $strParameter) {
+            if ($this->btnHelp->Display == false)
+                return false;
+            
             if (!$this->dtgTranslation)
                 $this->dtgTranslation_Create();
 
@@ -440,6 +469,8 @@
                     $objSuggestion->SuggestionValue = $this->txtTranslation->Text;
                     $objSuggestion->UserId = QApplication::GetUserId();
                     $objSuggestion->Save();
+                    
+                    $this->objContextInfo->HasSuggestions = 1;
 
                     if ($this->dtgTranslation)
                         $this->dtgTranslation->MarkAsModified();
@@ -470,7 +501,10 @@
                     $this->dtgTranslation->MarkAsModified();
             }
 
-            return true;
+            if (isset($objSuggestion))
+                return $objSuggestion;
+            else
+                return true;
         }
 
         public function txtTranslation_Focus($strFormId, $strControlId, $strParameter) {
@@ -665,14 +699,27 @@
             $this->txtTranslation->Warning = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
 
         }
-
-
+        
+        public function btnKeepUntranslated_Click($strFormId, $strControlId, $strParameter) {
+            if (QApplication::HasPermissionForThisLang('Can suggest', $this->objContextInfo->Context->ProjectId)) {
+                $this->txtTranslation->Text = $this->objContextInfo->Context->Text->TextValue;
+                $this->chkChanged->Checked = true;
+                $objSuggestion = $this->btnSave_Click($strFormId, $strControlId, $strParameter);
+            }
+            
+            if ($objSuggestion instanceof NarroSuggestion) {
+                $this->btnVote_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
+            }
+            
+            $this->btnHelp_Click($strFormId, $strControlId, $strParameter);
+        }
 
         public function __get($strName) {
             switch ($strName) {
                 case 'CopyButton': return $this->btnCopy;
                 case 'HelpButton': return $this->btnHelp;
                 case 'SaveButton': return $this->btnSave;
+                case 'KeepUntranslatedButton': return $this->btnKeepUntranslated;
                 case 'Text': return $this->lblText;
                 case 'AccessKey': return $this->txtAccessKey;
                 case 'CommandKey': return $this->txtCommandKey;

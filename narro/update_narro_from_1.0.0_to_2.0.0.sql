@@ -97,6 +97,11 @@ ALTER TABLE `narro_context` ADD `text_command_key` CHAR( 1 ) CHARACTER SET utf8 
 ALTER TABLE `narro_context_info` ADD `suggestion_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `suggestion_access_key`; 
 
 
+UPDATE `narro_file` SET parent_id=null where active=0;
+DELETE FROM narro_file WHERE active=0;
+ALTER TABLE `narro_file`
+ADD UNIQUE `file_path` ( `file_path` , `project_id` ); 
+ALTER TABLE `narro_file` ADD INDEX ( `active` );
 
 
 -- ALTER TABLE `narro_context` DROP INDEX `context_md5`;

@@ -517,3 +517,8 @@ table.datagrid td a.nolink {text-decoration: none; color: black}
 .inline_block {
     display: inline-block;
 }
+
+.keep_untranslated {
+    float: right;
+    margin-right: 5px;
+}

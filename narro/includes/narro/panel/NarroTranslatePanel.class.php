@@ -124,6 +124,7 @@
         public function chkApprove_Create() {
             $this->chkApprove = new QCheckBox($this);
             $this->chkApprove->Name = t('Approve added translations');
+            $this->chkApprove->Checked = true;
             $this->chkApprove->Display = QApplication::HasPermissionForThisLang('Can approve');
         }
 
