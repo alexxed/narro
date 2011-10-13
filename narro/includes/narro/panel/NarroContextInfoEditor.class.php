@@ -618,7 +618,7 @@
 
                 $objSuggestion->Delete();
 
-                if (NarroSuggestion::CountByTextId($this->objContextInfo->Context->TextId) == 0) {
+                if (NarroSuggestion::CountByTextIdLanguageId($this->objContextInfo->Context->TextId, QApplication::GetLanguageId()) == 0) {
                     $arrCtx = NarroContextInfo::QueryArray(
                         QQ::AndCondition(
                             QQ::Equal(QQN::NarroContextInfo()->Context->TextId, $this->objContextInfo->Context->TextId),
@@ -633,6 +633,7 @@
                     }
 
                     $this->objContextInfo->HasSuggestions = 0;
+                    $this->objContextInfo->Save();
                 }
 
                 foreach($this->Form->GetAllControls() as $ctl) {
