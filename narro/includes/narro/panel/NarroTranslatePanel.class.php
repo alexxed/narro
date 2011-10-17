@@ -49,8 +49,9 @@
         const SHOW_NOT_TRANSLATED = 1;
         const SHOW_NOT_APPROVED = 2;
         const SHOW_APPROVED_AND_NOT_APPROVED = 3;
-        const SHOW_APPROVED = 4;
-        const SHOW_ALL = 5;
+        const SHOW_NOT_APPROVED_AND_NOT_TRANSLATED = 4;
+        const SHOW_APPROVED = 5;
+        const SHOW_ALL = 6;
 
         const SORT_TEXT = 1;
         const SORT_TRANSLATION = 2;
@@ -191,6 +192,7 @@
             $this->lstFilter->AddItem(t('Not translated yet'), self::SHOW_NOT_TRANSLATED, true);
             $this->lstFilter->AddItem(t('Translated, but not approved'), self::SHOW_NOT_APPROVED);
             $this->lstFilter->AddItem(t('Translated or approved'), self::SHOW_APPROVED_AND_NOT_APPROVED);
+            $this->lstFilter->AddItem(t('Not translated or not approved'), self::SHOW_NOT_APPROVED_AND_NOT_TRANSLATED);
             $this->lstFilter->AddItem(t('Approved'), self::SHOW_APPROVED);
             $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
             if (QApplication::QueryString('t'))
@@ -320,6 +322,14 @@
                 case self::SHOW_APPROVED_AND_NOT_APPROVED:
                     $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, true);
                     break;
+                    
+                case self::SHOW_NOT_APPROVED_AND_NOT_TRANSLATED:
+                    $this->arrConditions[] = QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId);
+                    break;
+                    
+                case self::SHOW_ALL:
+                default:
+                    
 
             }
 
