@@ -92,42 +92,42 @@
         /**
          * Creates a link to the translation page
          *
-         * @param integer $intProjectId
-         * @param string $strFilePath
-         * @param integer $intFilter
-         * @param string $strSearch
-         * @param string $strSortBy
-         * @param integer $intSortDir
-         * @param integer $intMaxRowCount
-         * @param integer $intStart
-         * @param integer $intContextInfoId
-         * @param string $strLinkText
+         * @param integer $intProjectId 0
+         * @param string $strFilePath ''
+         * @param integer $intFilter NarroTranslatePanel::SHOW_NOT_TRANSLATED
+         * @param string $strSearch ''
+         * @param integer $intSortBy 0
+         * @param integer $intSortDir 1
+         * @param integer $intMaxRowCount 10
+         * @param integer $intStart 0
+         * @param integer $intContextInfoId ''
+         * @param string $strLinkText ''
          *
          * @return string if you provide the last parameter, a full <a> string is return, if not, just the href value
          */
         public static function Translate(
-            $intProjectId = null,
-            $strFilePath = null,
-            $intFilter = NarroTranslatePanel::SHOW_NOT_TRANSLATED,
-            $strSearch = '',
-            $strSortBy = null,
-            $intSortDir = 1,
-            $intMaxRowCount = 10,
-            $intStart = 0,
-            $intContextInfoId = '',
+            $intProjectId,
+            $strFilePath,
+            $intFilter,
+            $strSearch,
+            $intSortBy,
+            $intSortDir,
+            $intMaxRowCount,
+            $intStart,
+            $intContextInfoId,
             $strLinkText = '') {
             $strLink = sprintf(
-                'translate.php?l=%s&p=%s&f=%s&t=%s&s=%s&o=%s&h=%s&m=%d&i=%d#i%s',
+                'translate.php?l=%s&p=%s&f=%s&t=%s&s=%s&o=%s&h=%s&m=%d&i=%d%s',
                 QApplication::$TargetLanguage->LanguageCode,
                 $intProjectId,
                 $strFilePath,
                 $intFilter,
                 $strSearch,
-                $strSortBy,
+                $intSortBy,
                 $intSortDir,
                 $intMaxRowCount,
                 $intStart,
-                $intContextInfoId
+                (($intContextInfoId>0)?'#i' . $intContextInfoId:'')
             );
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);

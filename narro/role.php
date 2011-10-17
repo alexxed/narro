@@ -36,7 +36,7 @@
             $this->pnlRoleTab->addTab($this->pnlRoleEdit, (QApplication::QueryString('lid')?t('Edit'):t('Add')));
 
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Translate'), NarroLink::Translate());
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Translate'), NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, '', 0, 0, 10, 0, 0));
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
             $this->pnlTab->addTab($this->pnlRoleTab, t('Roles'));

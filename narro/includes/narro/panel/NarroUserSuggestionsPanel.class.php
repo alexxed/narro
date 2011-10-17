@@ -81,7 +81,7 @@
                 str_replace(
             		'?l=' . QApplication::$TargetLanguage->LanguageCode,
                 	'?l=' . $objNarroSuggestion->Language->LanguageCode,
-                    NarroLink::Translate(null, null, NarroTranslatePanel::SHOW_ALL, "'" . $objNarroSuggestion->Text->TextValue . "'", null, 1, 10, 0, '', $objNarroSuggestion->Text->TextValue)
+                    NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, "'" . $objNarroSuggestion->Text->TextValue . "'", 0, 0, 10, 0, 0, $objNarroSuggestion->Text->TextValue)
                 );
         }
 

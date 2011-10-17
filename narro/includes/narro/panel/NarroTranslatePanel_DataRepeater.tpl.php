@@ -17,17 +17,7 @@ $intCurrentItem = $_CONTROL->CurrentItemIndex + 1 + $_CONTROL->ParentControl->in
 
 $pnlEditor->Index = sprintf(
     '<a href="%s" id="#i%d" tabindex="-1">%s</a>',
-    NarroLink::Translate(
-        $_CONTROL->ParentControl->lstProject->SelectedValue,
-        $_CONTROL->ParentControl->txtFile->Text,
-        $_CONTROL->ParentControl->lstFilter->SelectedValue,
-        $_CONTROL->ParentControl->txtSearch->Text,
-        $_CONTROL->ParentControl->lstSort->SelectedValue,
-        $_CONTROL->ParentControl->lstSortDir->SelectedValue,
-        10,
-        $intCurrentItem - 1,
-        $_ITEM->ContextInfoId
-    ),
+    NarroLink::Translate($_CONTROL->ParentControl->lstProject->SelectedValue, $_CONTROL->ParentControl->txtFile->Text, $_CONTROL->ParentControl->lstFilter->SelectedValue, $_CONTROL->ParentControl->txtSearch->Text, $_CONTROL->ParentControl->lstSort->SelectedValue, $_CONTROL->ParentControl->lstSortDir->SelectedValue, 10, $intCurrentItem - 1, $_ITEM->ContextInfoId),
     $_ITEM->ContextInfoId,
     ($_CONTROL->ParentControl->intTotalItemCount)?$intCurrentItem . '/' . $_CONTROL->ParentControl->intTotalItemCount:$intCurrentItem
 );

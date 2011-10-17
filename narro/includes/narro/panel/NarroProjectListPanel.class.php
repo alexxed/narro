@@ -182,7 +182,7 @@
 
             $objProgressBar = new NarroProjectTranslationProgressBar($objProject->_NarroProjectProgressAsProject, $this->dtgProjectList);
 
-            return NarroLink::Translate($objProject->ProjectId, null, null, null, null, null, null, null, null, $objProgressBar->Render(false));
+            return NarroLink::Translate($objProject->ProjectId, '', 0, '', 0, 0, 10, 0, 0, $objProgressBar->Render(false));
         }
 
         public function dtgProjectList_ProjectNameColumn_Render(NarroProject $objProject) {

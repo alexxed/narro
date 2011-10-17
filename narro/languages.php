@@ -34,7 +34,7 @@
                 $this->pnlLanguageList->addTab(new QPanel($this->pnlLanguageList), t('Add'), NarroLink::LanguageEdit());
 
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Translate'), NarroLink::Translate());
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Translate'), NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, '', 0, 0, 10, 0, 0));
             $this->pnlTab->addTab($this->pnlLanguageList, t('Languages'));
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::RoleList());

@@ -87,13 +87,13 @@
                                 '/' .
                                 NarroLink::Translate(
                                     $objNarroContextInfo->Context->ProjectId,
-                                    null,
+                                    '',
                                     NarroTranslatePanel::SHOW_ALL,
                                     $objNarroSuggestion->SuggestionValue,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
+                                    0,
+                                    0,
+                                    10,
+                                    0,
                                     $objNarroContextInfo->ContextInfoId
                                 )
                         ;
@@ -207,13 +207,13 @@
                             '/' .
                             NarroLink::Translate(
                                 $objNarroContextInfo->Context->ProjectId,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
+                                '',
+                                0,
+                                '',
+                                0,
+                                0,
+                                10,
+                                0,
                                 $objNarroContextInfo->ContextInfoId
                             )
                     );
@@ -338,13 +338,13 @@
                             '/' .
                             NarroLink::Translate(
                                 $objNarroContextInfo->Context->ProjectId,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
-                                null,
+                                '',
+                                0,
+                                '',
+                                0,
+                                0,
+                                10,
+                                0,
                                 $objNarroContextInfo->ContextInfoId
                             )
                     );

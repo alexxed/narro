@@ -140,18 +140,7 @@
                 $strOutput .= '';
             }
 
-            return NarroLink::Translate(
-                $objProgress->File->ProjectId,
-                $objProgress->File->FilePath,
-                NarroTranslatePanel::SHOW_ALL,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                $strOutput
-            );
+            return NarroLink::Translate($objProgress->File->ProjectId, $objProgress->File->FilePath, NarroTranslatePanel::SHOW_ALL, '', 0, 1, 10, 0, 0, $strOutput);
         }
 
         public function dtgFile_FileNameColumn_Render(NarroFileProgress $objProgress) {
@@ -183,18 +172,7 @@
 
                 return sprintf('<img src="%s" style="vertical-align:middle" /> %s',
                     __NARRO_IMAGE_ASSETS__ . '/' . $strIcon,
-                    NarroLink::Translate(
-                        $objProgress->File->ProjectId,
-                        $objProgress->File->FilePath,
-                        NarroTranslatePanel::SHOW_ALL,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        $objProgress->File->FileName
-                    )
+                    NarroLink::Translate($objProgress->File->ProjectId, $objProgress->File->FilePath, NarroTranslatePanel::SHOW_ALL, '', 0, 1, 10, 0, 0, $objProgress->File->FileName)
                 );
             }
         }

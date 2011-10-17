@@ -574,12 +574,7 @@
                     )
                 )
             ) {
-                $strLink = NarroLink::Translate(
-                    null,
-                    null,
-                    NarroTranslatePanel::SHOW_APPROVED,
-                    "'" . $objSuggestion->Text->TextValue . "'"
-                );
+                $strLink = NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_APPROVED, "'" . $objSuggestion->Text->TextValue . "'", 0, 1, 30, 0, 0, '');
                 $this->txtTranslation->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it or %s'), $strLink, '');
                 return true;
             }
