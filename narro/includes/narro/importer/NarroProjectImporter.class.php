@@ -230,6 +230,11 @@
             $this->objProject->CountAllTextsByLanguage();
             $this->objProject->CountApprovedTextsByLanguage();
             $this->objProject->CountTranslatedTextsByLanguage();
+            
+            foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
+                if ($strValue != 0)
+                QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);
+            }
         }
 
         public function ImportFromDirectory() {
@@ -603,6 +608,11 @@
             NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'export');
 
             QApplication::$PluginHandler->AfterExportProject($this->objProject);
+            
+            foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
+                if ($strValue != 0)
+                QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);
+            }
         }
 
 

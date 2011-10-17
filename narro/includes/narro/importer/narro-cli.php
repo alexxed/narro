@@ -191,7 +191,7 @@
         NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
 
         if (array_search('--exported-suggestion', $argv))
-            $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];        
+            $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];
         
         if (array_search('--export-author-list', $argv) !== false)
             $objNarroImporter->ExportAuthorList = $argv[array_search('--export-author-list', $argv)+1];
@@ -277,11 +277,6 @@
         catch (Exception $objEx) {
             QApplication::LogError(sprintf('An error occurred during export: %s', $objEx->getMessage()));
             exit();
-        }
-
-        foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
-            if ($strValue != 0)
-                QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);
         }
 
      }

@@ -117,11 +117,6 @@
                     QApplication::LogError(sprintf('An error occurred during export: %s', $objEx->getMessage()));
                     exit();
                 }
-
-                foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
-                    if ($strValue != 0)
-                        QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);
-                }
             }
         }
     }
