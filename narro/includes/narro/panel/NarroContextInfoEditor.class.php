@@ -159,7 +159,7 @@
             $this->strTemplate = dirname(__FILE__) . '/' . __CLASS__ . '.tpl.php';
         }
         
-        public function btnKeepUntranslated_Create() {
+        public function btnKeepUntranslated_Create($strControlId = null) {
             if (QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId)) {
                 $this->btnKeepUntranslated = new QImageButton($this, $strControlId);
                 $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/approve.png';
