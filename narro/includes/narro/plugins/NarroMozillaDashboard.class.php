@@ -35,7 +35,7 @@
             QApplication::$Cache->remove($strCacheId);
         
             return array($objProject);
-        }        
+        }
 
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
             $strExportText = '';
@@ -52,14 +52,15 @@
                     
                 }
             }
-            foreach($objData->items as $objItem) {
-                if ($objItem->id == sprintf('%s/%s', $objProject->GetPreferenceValueByName('Code name on mozilla l10n dashboard'), QApplication::$TargetLanguage->LanguageCode)) {
-                    $strWarning = ($objItem->warnings)?sprintf('%d warnings', $objItem->warnings):'';
-                    $strMissing = ($objItem->missing)?sprintf('%d missing', $objItem->missing):'';
-                    $strExportText = sprintf('<a title="Visit the Mozilla l10n dashboard" target="_blank" href="https://l10n-stage-sj.mozilla.org/dashboard/compare?run=%d">%s</a>', $objItem->runid, join(', ', array($objItem->result, $strMissing, $strWarning)));
-                    break;
+            if (is_array($objData->items))
+                foreach($objData->items as $objItem) {
+                    if ($objItem->id == sprintf('%s/%s', $objProject->GetPreferenceValueByName('Code name on mozilla l10n dashboard'), QApplication::$TargetLanguage->LanguageCode)) {
+                        $strWarning = ($objItem->warnings)?sprintf('%d warnings', $objItem->warnings):'';
+                        $strMissing = ($objItem->missing)?sprintf('%d missing', $objItem->missing):'';
+                        $strExportText = sprintf('<a title="Visit the Mozilla l10n dashboard" target="_blank" href="https://l10n-stage-sj.mozilla.org/dashboard/compare?run=%d">%s</a>', $objItem->runid, join(', ', array($objItem->result, $strMissing, $strWarning)));
+                        break;
+                    }
                 }
-            }
             
             return array($objProject, $strExportText);
         }
