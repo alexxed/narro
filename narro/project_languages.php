@@ -25,17 +25,6 @@
             $this->pnlMainTab->replaceTab(new NarroProjectLanguageListPanel($this->objProject, $this->pnlMainTab), t('Languages'));
             $this->pnlMainTab->SelectedTab = t('Languages');
         }
-        
-        protected function SetupNarroProject() {
-            // Lookup Object PK information from Query String (if applicable)
-            $intProjectId = QApplication::QueryString('p');
-            $this->objProject = NarroProject::Load(($intProjectId));
-
-            $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectList(t('Projects')),
-                $this->objProject->ProjectName
-            );
-        }
     }
 
     NarroProjectLanguageListForm::Run('NarroProjectLanguageListForm');
