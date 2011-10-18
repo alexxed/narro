@@ -44,7 +44,6 @@
             $this->objProject = $objProject;
 
             $this->pnlLogViewer = new NarroLogViewerPanel($this);
-            $this->pnlLogViewer->DisplayStyle = QDisplayStyle::None;
 
             $this->lblExport = new QLabel($this);
             $this->lblExport->HtmlEntities = false;
@@ -116,7 +115,9 @@
 
             $strProcLogFile = __TMP_PATH__ . '/' . $this->objProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-export-process.log';
 
-            $this->pnlLogViewer->LogFile = QApplication::$LogFile;
+            $this->pnlLogViewer->DateStart = QDateTime::Now();
+            $this->pnlLogViewer->ProjectId = $this->objProject->ProjectId;
+            $this->pnlLogViewer->LanguageId = QApplication::GetLanguageId();
 
             if ($strParameter == 1) {
                 if (NarroUtils::IsProcessRunning('export', $this->objProject->ProjectId)) {

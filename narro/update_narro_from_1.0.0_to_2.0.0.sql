@@ -122,6 +122,22 @@ ALTER TABLE `narro_log`
   ADD CONSTRAINT `narro_log_ibfk_1` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `narro_log_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
+  ALTER TABLE `narro_suggestion` DROP FOREIGN KEY `narro_suggestion_ibfk_9` ;
+ALTER TABLE `narro_suggestion` 
+  ADD CONSTRAINT `narro_suggestion_ibfk_9`
+  FOREIGN KEY (`language_id` )
+  REFERENCES `narro_language` (`language_id` )
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+  
+ALTER TABLE `narro_context_info` DROP FOREIGN KEY `narro_context_info_ibfk_18` ;
+ALTER TABLE `narro_context_info` 
+  ADD CONSTRAINT `narro_context_info_ibfk_18`
+  FOREIGN KEY (`language_id` )
+  REFERENCES `narro_language` (`language_id` )
+  ON DELETE CASCADE
+  ON UPDATE CASCADE;
+  
 -- ALTER TABLE `narro_context` DROP INDEX `context_md5`;
 -- ALTER TABLE `narro_context` DROP INDEX `project_id`;
 

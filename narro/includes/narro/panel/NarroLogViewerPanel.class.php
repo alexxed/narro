@@ -17,6 +17,7 @@
      *
      * @property integer $LanguageId
      * @property integer $ProjectId
+     * @property QDateTime $DateStart
      */
 
     class NarroLogViewerPanel extends QPanel {
