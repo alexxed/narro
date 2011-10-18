@@ -167,11 +167,6 @@
             return false;
         }
 
-        public static function ClearLog() {
-            if (file_exists(self::$LogFile))
-                return @unlink(self::$LogFile);
-        }
-
         public static function InitializeSession() {
             /////////////////////////////
             // Start Session Handler (if required)

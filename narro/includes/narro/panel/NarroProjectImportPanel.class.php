@@ -193,7 +193,6 @@
                 $this->pnlLogViewer->LanguageId = QApplication::GetLanguageId();
                 $this->pnlLogViewer->DateStart = QDateTime::Now();
                 
-                QApplication::ClearLog();
                 NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'import');
                 set_time_limit(0);
 
@@ -251,7 +250,6 @@
                 $this->pnlLogViewer->LanguageId = QApplication::GetLanguageId();
                 $this->pnlLogViewer->DateStart = QDateTime::Now();
                 
-                QApplication::ClearLog();
                 NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'import');
                 $this->pnlLogViewer->MarkAsModified();
                 $this->btnImport->Visible = false;

@@ -115,10 +115,6 @@
 
             $strProcLogFile = __TMP_PATH__ . '/' . $this->objProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-export-process.log';
 
-            $this->pnlLogViewer->DateStart = QDateTime::Now();
-            $this->pnlLogViewer->ProjectId = $this->objProject->ProjectId;
-            $this->pnlLogViewer->LanguageId = QApplication::GetLanguageId();
-
             if ($strParameter == 1) {
                 if (NarroUtils::IsProcessRunning('export', $this->objProject->ProjectId)) {
                     $this->objExportProgress->Translated = NarroProgress::GetProgress($this->objProject->ProjectId, 'export');
@@ -149,11 +145,14 @@
                             }
                         }
 
-                    $this->pnlLogViewer->MarkAsModified();
                 }
+                $this->pnlLogViewer->MarkAsModified();
             }
             elseif ($strParameter == 2) {
-                QApplication::ClearLog();
+                $this->pnlLogViewer->DateStart = QDateTime::Now();
+                $this->pnlLogViewer->ProjectId = $this->objProject->ProjectId;
+                $this->pnlLogViewer->LanguageId = QApplication::GetLanguageId();
+                
                 NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'import');
 
                 set_time_limit(0);
@@ -198,7 +197,11 @@
 
             }
             else {
-                QApplication::ClearLog();
+                $this->pnlLogViewer->DateStart = QDateTime::Now();
+                $this->pnlLogViewer->ProjectId = $this->objProject->ProjectId;
+                $this->pnlLogViewer->LanguageId = QApplication::GetLanguageId();
+    
+                    
                 if ($this->chkCleanDirectory->Checked)
                     NarroUtils::RecursiveDelete($this->objProject->DefaultTranslationPath .'/*');
 
