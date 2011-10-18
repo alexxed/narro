@@ -15,10 +15,8 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-
-    class NarroProjectTranslationSourcePanel extends QPanel {
-
-        protected $pnlTranslationSource;
+    class NarroLanguageSourcePanel extends QPanel {
+        protected $lstLanguage;
         protected $objProject;
         protected $objLanguage;
 
@@ -34,28 +32,22 @@
             $this->objProject = $objProject;
             $this->objLanguage = $objLanguage;
 
-            $this->pnlTranslationSource = new QTabPanel($this);
-            $this->pnlTranslationSource->UseAjax = QApplication::$UseAjax;
-            $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
-            $objDirectoryPanel->Directory = $this->objProject->DefaultTranslationPath;
-            $this->pnlTranslationSource->addTab($objDirectoryPanel, t('On this server'));
-            $this->pnlTranslationSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('On my computer'));
-            $this->pnlTranslationSource->addTab(new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('On the web'));
-            $this->pnlTranslationSource->addTab(new NarroProjectSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Another project'));
-            $this->pnlTranslationSource->addTab(new NarroLanguageSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Another language'));
-            $this->pnlTranslationSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Mercurial'));
-            $this->pnlTranslationSource->addTab(new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('SVN'));
-        }
+            $this->lstLanguage = new QListBox($this);
+            $this->lstLanguage->DisplayStyle = QDisplayStyle::Block;
+            $this->lstLanguage->Instructions = t('Please choose the language from which you will import matching approved translations');
+            $this->lstLanguage->PreferedRenderMethod = 'RenderWithName';
 
-        public function GetControlHtml() {
-            $this->strText = $this->pnlTranslationSource->Render(false);
-            return parent::GetControlHtml();
+            $this->blnAutoRenderChildren = true;
+
+            foreach(NarroLanguage::LoadAllActive() as $objLanguage) {
+                $this->lstLanguage->AddItem($objLanguage->LanguageName, $objLanguage->LanguageCode);
+            }
         }
 
         public function __get($strName) {
             switch ($strName) {
                 case "Directory":
-                    return $this->pnlTranslationSource->SelectedTab->Directory;
+                    return sprintf('%s/%s/%s', __IMPORT_PATH__, $this->objProject->ProjectId, $this->lstLanguage->SelectedValue);
 
                 default:
                     try {
@@ -68,4 +60,3 @@
             }
         }
     }
-?>
