@@ -1,7 +1,7 @@
 <?php
 	/*
 	 * error_page include file
-	 * 
+	 *
 	 * expects the following variables to be set:
 	 *	$__exc_strType
 	 *	$__exc_strMessage
@@ -37,11 +37,11 @@
 			.title { font-family: 'Verdana' 'Arial' 'Helvetica' 'sans-serif'; font-size: 19px; font-style: italic; color: #330055; }
 			.code { background-color: #f4eeff; padding: 1px 10px 1px 10px; }
 		</style>
-		<script type="text/javascript">			
+		<script type="text/javascript">
 			function ToggleHidden(strDiv) { var obj = document.getElementById(strDiv); var stlSection = obj.style; var isCollapsed = obj.style.display.length; if (isCollapsed) stlSection.display = ''; else stlSection.display = 'none'; }
 		</script>
 	</head>
-	<body bgcolor="white" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0"> 
+	<body bgcolor="white" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0">
 
 	<table border="0" cellspacing="0" width="100%">
 		<tr>
@@ -167,3 +167,9 @@
 	</div>
 	</body>
 </html>
+<?php
+            QFirebug::table('Queries', @$GLOBALS['arrQueries']);
+            QFirebug::info(sprintf('%d queries in total', count(@$GLOBALS['arrQueries'])));
+            QFirebug::table('Cache', @$GLOBALS['arrCacheQueries']);
+            QFirebug::info(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
+?>
