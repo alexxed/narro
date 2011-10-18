@@ -235,6 +235,25 @@
                 if ($strValue != 0)
                 QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);
             }
+            
+            if (SERVER_INSTANCE == 'dev') {
+                $strQueryData = '';
+                $intTimeSpentOnQueries = 0;
+                foreach(@$GLOBALS['arrQueries'] as $arrQueryData) {
+                    $strQueryData .= sprintf('"%s";"%d"', str_replace("\n", " ", $arrQueryData[0]), $arrQueryData[1]) . "\n";
+                    $intTimeSpentOnQueries += $arrQueryData[1];
+                }
+                file_put_contents(QApplication::$LogFile . '.queries.csv', $strQueryData);
+            
+                $strCacheData = '';
+                foreach(@$GLOBALS['arrCacheQueries'] as $arrCacheData) {
+                    $strCacheData .= sprintf('"%s";"%d"', str_replace("\n", " ", $arrCacheData[0]), $arrCacheData[1]) . "\n";
+                }
+                file_put_contents(QApplication::$LogFile . '.cache.csv', $strCacheData);
+            
+                QApplication::LogInfo(sprintf('%d queries in total, %d seconds spent on them', count(@$GLOBALS['arrQueries']), $intTimeSpentOnQueries));
+                QApplication::LogInfo(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
+            }
         }
 
         public function ImportFromDirectory() {
@@ -612,6 +631,25 @@
             foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
                 if ($strValue != 0)
                 QApplication::LogInfo(stripslashes($strName) . ': ' . $strValue);
+            }
+            
+            if (SERVER_INSTANCE == 'dev') {
+                $strQueryData = '';
+                $intTimeSpentOnQueries = 0;
+                foreach(@$GLOBALS['arrQueries'] as $arrQueryData) {
+                    $strQueryData .= '"' . join('";"', $arrQueryData) . '"';
+                    $intTimeSpentOnQueries += $arrQueryData[1];
+                }
+                file_put_contents(QApplication::$LogFile . '.queries.csv', $strQueryData);
+                
+                $strCacheData = '';
+                foreach(@$GLOBALS['arrCacheQueries'] as $arrCacheData) {
+                    $strCacheData .= '"' . join('";"', $arrCacheData) . '"';
+                }
+                file_put_contents(QApplication::$LogFile . '.cache.csv', $strCacheData);
+                
+                QApplication::LogInfo(sprintf('%d queries in total, %d seconds spent on them', count(@$GLOBALS['arrQueries']), $intTimeSpentOnQueries));
+                QApplication::LogInfo(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
             }
         }
 
