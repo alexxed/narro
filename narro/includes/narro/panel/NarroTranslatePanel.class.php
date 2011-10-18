@@ -296,8 +296,7 @@
                 QQ::Expand(QQN::NarroContextInfo()->Context->Text),
                 QQ::Expand(QQN::NarroContextInfo()->Context->File),
                 QQ::Expand(QQN::NarroContextInfo()->Context->Project),
-                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion),
-                QQ::Distinct()
+                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion)
             );
             
             if ($this->lstProject->SelectedValue > 0)
@@ -340,12 +339,14 @@
                     $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->File->FilePath, '%' . $this->txtFile->Text . '%');
 
             if ($this->txtSearch->Text) {
-                if (preg_match("/^'.*'$/", $this->txtSearch->Text))
+                if (preg_match("/^'.*'$/", $this->txtSearch->Text)) {
+                    $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
                     $this->arrConditions[] = QQ::OrCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValue, substr($this->txtSearch->Text, 1, -1)),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Context, substr($this->txtSearch->Text, 1, -1)),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, substr($this->txtSearch->Text, 1, -1))
                     );
+                }
                 else {
                     $strLikeSearch = '%' . $this->txtSearch->Text . '%';
                     switch($this->lstSearchIn->SelectedValue) {
@@ -353,9 +354,11 @@
                             $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch);
                             break;
                         case self::SEARCH_IN_TRANSLATIONS:
+                            $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
                             $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch);
                             break;
                         case self::SEARCH_IN_AUTHORS:
+                            $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
                             $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username, $strLikeSearch);
                             break;
                         case self::SEARCH_IN_CONTEXTS:
@@ -366,6 +369,7 @@
                             break;
                         case self::SEARCH_IN_ALL:
                         default:
+                            $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
                             $this->arrConditions[] = QQ::OrCondition(
                                 QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch),
                                 QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch),
