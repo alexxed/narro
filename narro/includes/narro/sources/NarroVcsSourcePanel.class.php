@@ -56,7 +56,6 @@
         }
 
         protected function GetWorkingDirectory($strCheckoutCommand = null) {
-
             $this->strWorkingDirectory = sprintf('%s/upload-u_%d-l_%s-p_%d', __TMP_PATH__, QApplication::GetUserId(), $this->objLanguage->LanguageCode, $this->objProject->ProjectId);
 
             $this->CleanWorkingDirectory();
@@ -72,25 +71,22 @@
                 unlink($strProcLogFile);
             }
 
+            chdir(__TMP_PATH__);
             $mixProcess = proc_open("$strCommand", array(1 => array("file", $strProcLogFile, 'a'), 2 => array("file", $strProcLogFile, 'a')), $foo);
+            
+            $status = proc_get_status($mixProcess);
+            while ($status['running']) {
+                $status = proc_get_status($mixProcess);
+            }
+            proc_close($mixProcess);
+            
+            if (!file_exists($this->strWorkingDirectory))
+                throw new Exception(sprintf('The working directory "%s" does not exist, probably the checkout command failed', $this->strWorkingDirectory));
 
             chmod($this->strWorkingDirectory, 0777);
 
-            if ($mixProcess === false) {
-                if (file_exists($strProcLogFile)) {
-                    $strProcOutput = file_get_contents($strProcLogFile);
-                    QApplication::LogError($strProcOutput);
-                }
-                throw new Exception('Checkout command failed, check the command output for errors');
-            }
-            else {
-                $intStatus = proc_close($mixProcess);
-                if (file_exists($strProcLogFile))
-                    QApplication::LogInfo(file_get_contents($strProcLogFile));
-
-                if ($intStatus != 0)
-                    throw new Exception(sprintf('Checkout command failed: %s', file_get_contents($strProcLogFile)));
-            }
+            if (file_exists($strProcLogFile))
+                QApplication::LogInfo(file_get_contents($strProcLogFile));
 
             NarroUtils::RecursiveDelete($this->strWorkingDirectory . '/.hg');
             NarroUtils::RecursiveDelete($this->strWorkingDirectory . '/.svn');
