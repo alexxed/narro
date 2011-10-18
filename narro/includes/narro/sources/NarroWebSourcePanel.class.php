@@ -47,6 +47,9 @@
             $this->chkCopyFilesToDefaultDirectory->PreferedRenderMethod = 'RenderWithName';
 
             $this->blnAutoRenderChildren = true;
+            
+            NarroProject::RegisterPreference('Web URL for source texts', false, 0, 'text', 'A URL to a zip archive with the texts', '');
+            $this->txtWebAddress->Text = $this->objProject->GetPreferenceValueByName('Web URL for source texts');
 
         }
 

@@ -24,7 +24,11 @@
 
         public function __construct(NarroProject $objProject, NarroLanguage $objLanguage, $objParentObject, $strControlId = null) {
             parent::__construct($objProject, $objLanguage, $objParentObject, $strControlId);
+            
             $this->txtRepository->Instructions = t('Please enter the path to the Mercurial repository');
+            
+            NarroProject::RegisterPreference('Mercurial repository for source texts', false, 0, 'text', 'A URL to run hg clone it', '');
+            $this->txtRepository->Text = $this->objProject->GetPreferenceValueByName('Mercurial repository for source texts');
         }
 
         protected function GetWorkingDirectory($strCheckoutCommand = null) {
@@ -39,6 +43,9 @@
             if (!$data)
                 throw new Exception('This does not look like a valid Mercurial repository');
 
+            $this->objProject->SetPreferenceValueByName('Mercurial repository for source texts', $this->txtRepository->Text);
+            $this->objProject->Save();
+            
             return parent::GetWorkingDirectory(self::CHECKOUT_COMMAND);
         }
 

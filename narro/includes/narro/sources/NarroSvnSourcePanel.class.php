@@ -25,14 +25,18 @@
         public function __construct(NarroProject $objProject, NarroLanguage $objLanguage, $objParentObject, $strControlId = null) {
             parent::__construct($objProject, $objLanguage, $objParentObject, $strControlId);
             $this->txtRepository->Instructions = t('Please enter the path to the SVN repository');
+            
+            NarroProject::RegisterPreference('SVN repository for source texts', false, 0, 'text', 'A URL to run svn co it', '');
+            $this->txtRepository->Text = $this->objProject->GetPreferenceValueByName('Mercurial repository for source texts');
         }
 
         protected function GetWorkingDirectory($strCheckoutCommand = null) {
             if ($this->txtRepository->Text == '')
                 throw new Exception('You have to enter a path to a svn repository');
+            
+            $this->objProject->SetPreferenceValueByName('SVN repository for source texts', $this->txtRepository->Text);
+            $this->objProject->Save();
 
             return parent::GetWorkingDirectory(self::CHECKOUT_COMMAND);
         }
-
-
     }
