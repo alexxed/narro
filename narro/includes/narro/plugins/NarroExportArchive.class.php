@@ -63,14 +63,14 @@
                     }
                 }
             } else {
-                QApplication::LogError(sprintf('Failed to create a new archive %s', $strArchive));
+                NarroLogger::LogError(sprintf('Failed to create a new archive %s', $strArchive));
                 return false;
             }
             $objZipFile->close();
             if (file_exists($strArchive))
                 chmod($strArchive, 0666);
             else {
-                QApplication::LogError(sprintf('Failed to create an archive %s', $strArchive));
+                NarroLogger::LogError(sprintf('Failed to create an archive %s', $strArchive));
                 return false;
             }
             return true;

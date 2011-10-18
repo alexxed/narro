@@ -109,6 +109,11 @@
 			// Custom Validation Rules
 			// TODO: Be sure to set $blnToReturn to false if any custom validation fails!
 			// Check for records that may violate Unique Clauses
+			if (($objNarroFile = NarroFile::LoadByFilePathProjectId($this->txtFilePath->Text,$this->lstProject->SelectedValue)) && ($objNarroFile->FileId != $this->mctNarroFile->NarroFile->FileId )){
+				$blnToReturn = false;
+				$this->txtFilePath->Warning = QApplication::Translate("Already in Use");
+				$this->lstProject->Warning = QApplication::Translate("Already in Use");
+			}
 			if (($objNarroFile = NarroFile::LoadByFileNameParentId($this->txtFileName->Text,$this->lstParent->SelectedValue)) && ($objNarroFile->FileId != $this->mctNarroFile->NarroFile->FileId )){
 				$blnToReturn = false;
 				$this->txtFileName->Warning = QApplication::Translate("Already in Use");

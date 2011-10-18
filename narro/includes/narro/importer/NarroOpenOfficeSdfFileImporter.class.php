@@ -32,7 +32,7 @@
              */
             $arrTexts = $this->FileToArray($strTemplateFile, $this->objSourceLanguage->LanguageCode, true);
 
-            QApplication::LogDebug(sprintf('Starting to process file "%s" (%d texts), the result is written to "%s".', $strTemplateFile, $intTotalToProcess, $strTranslatedFile));
+            // NarroLogger::LogDebug(sprintf('Starting to process file "%s" (%d texts), the result is written to "%s".', $strTemplateFile, $intTotalToProcess, $strTranslatedFile));
 
             $intFileLineNr=0;
 
@@ -98,7 +98,7 @@
                     $strSuggestionValue = $arrResult[1];
                 }
                 else
-                    QApplication::LogWarn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strSuggestionValue, print_r($arrResult, true)));
+                    NarroLogger::LogWarn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strSuggestionValue, print_r($arrResult, true)));
 
                 $arrTranslatedColumn[10] = str_replace(array("\n", "\r"), array("",""), $strSuggestionValue);
 
@@ -107,7 +107,7 @@
                 preg_match_all('/\\\\"/', $strSuggestionValue, $arrEscTransMatches);
 
                 if (isset($arrEscOrigMatches[0]) && count($arrEscTransMatches[0]) % 2 != 0) {
-                    QApplication::LogWarn(sprintf('Warning! The translated text "%s" has unclosed double quotes.', $strSuggestionValue));
+                    NarroLogger::LogWarn(sprintf('Warning! The translated text "%s" has unclosed double quotes.', $strSuggestionValue));
                     continue;
                 }
 
@@ -125,13 +125,13 @@
             if (file_exists($strTemplateFile))
                 $arrTexts = $this->FileToArray($strTemplateFile, $this->objSourceLanguage->LanguageCode);
             else
-                QApplication::LogError(sprintf('The template file "%s" does not exist.', $strTemplateFile));
+                NarroLogger::LogError(sprintf('The template file "%s" does not exist.', $strTemplateFile));
 
             if (trim($strTranslatedFile) != '')
                 if (file_exists($strTranslatedFile))
                     $arrTranslations = $this->FileToArray($strTranslatedFile, $this->objTargetLanguage->LanguageCode);
                 else
-                    QApplication::LogError(sprintf('The translation file "%s" does not exist.', $strTranslatedFile));
+                    NarroLogger::LogError(sprintf('The translation file "%s" does not exist.', $strTranslatedFile));
 
             foreach($arrTexts as $strContext=>$arrTextInfo) {
                 if (isset($arrTranslations[$strContext]))
@@ -147,7 +147,7 @@
             $hndFile = fopen($strFile, 'r');
 
             if (!$hndFile) {
-                QApplication::LogError(sprintf('Cannot open input file "%s" for reading.', $strFile));
+                NarroLogger::LogError(sprintf('Cannot open input file "%s" for reading.', $strFile));
                 return false;
             }
 
@@ -161,7 +161,7 @@
                 $strFileLine = fgets($hndFile);
                 $intProcessedSoFar++;
                 if ($strFileLine == '') {
-                    QApplication::LogDebug(sprintf('Skipping empty line from "%s"', $strFileLine));
+                    // NarroLogger::LogDebug(sprintf('Skipping empty line from "%s"', $strFileLine));
                     continue;
                 }
 
@@ -170,7 +170,7 @@
                  */
                 $arrColumn = explode("\t", $strFileLine);
                 if (count($arrColumn) != 15) {
-                    QApplication::LogError(sprintf('Skipping line "%s" from "%s" because it does not split into 15 fields by tab', $strFileLine, $strFile));
+                    NarroLogger::LogError(sprintf('Skipping line "%s" from "%s" because it does not split into 15 fields by tab', $strFileLine, $strFile));
                     continue;
                 }
 
@@ -220,7 +220,7 @@
                     $arrTexts[$strContext] = array($strText, $strTextAccKey, $strTextAccKeyPrefix, ($blnIncludeFileLine)?$strFileLine:'');
                 }
                 else {
-                    QApplication::LogDebug(sprintf('Skipping line "%s" from "%s" because detected language code "%s" does not match the expected one "%s"', $strFileLine, $strFile, $strLangCode, $strLocale));
+                    // NarroLogger::LogDebug(sprintf('Skipping line "%s" from "%s" because detected language code "%s" does not match the expected one "%s"', $strFileLine, $strFile, $strLangCode, $strLocale));
                 }
             }
             fclose($hndFile);
@@ -232,7 +232,7 @@
             $hndFile = fopen($strFile, 'r');
 
             if (!$hndFile) {
-                QApplication::LogError(sprintf('Cannot open input file "%s" for reading.', $strFile));
+                NarroLogger::LogError(sprintf('Cannot open input file "%s" for reading.', $strFile));
                 return false;
             }
 

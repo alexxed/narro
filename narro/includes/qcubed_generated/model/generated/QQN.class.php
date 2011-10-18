@@ -31,6 +31,12 @@
 			return new QQNodeNarroLanguage('narro_language', null, null);
 		}
 		/**
+		 * @return QQNodeNarroLog
+		 */
+		static public function NarroLog() {
+			return new QQNodeNarroLog('narro_log', null, null);
+		}
+		/**
 		 * @return QQNodeNarroPermission
 		 */
 		static public function NarroPermission() {

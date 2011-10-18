@@ -29,6 +29,8 @@
 	 * @property-read NarroContextInfo[] $_NarroContextInfoAsLanguageArray the value for the private _objNarroContextInfoAsLanguageArray (Read-Only) if set due to an ExpandAsArray on the narro_context_info.language_id reverse relationship
 	 * @property-read NarroFileProgress $_NarroFileProgressAsLanguage the value for the private _objNarroFileProgressAsLanguage (Read-Only) if set due to an expansion on the narro_file_progress.language_id reverse relationship
 	 * @property-read NarroFileProgress[] $_NarroFileProgressAsLanguageArray the value for the private _objNarroFileProgressAsLanguageArray (Read-Only) if set due to an ExpandAsArray on the narro_file_progress.language_id reverse relationship
+	 * @property-read NarroLog $_NarroLogAsLanguage the value for the private _objNarroLogAsLanguage (Read-Only) if set due to an expansion on the narro_log.language_id reverse relationship
+	 * @property-read NarroLog[] $_NarroLogAsLanguageArray the value for the private _objNarroLogAsLanguageArray (Read-Only) if set due to an ExpandAsArray on the narro_log.language_id reverse relationship
 	 * @property-read NarroProjectProgress $_NarroProjectProgressAsLanguage the value for the private _objNarroProjectProgressAsLanguage (Read-Only) if set due to an expansion on the narro_project_progress.language_id reverse relationship
 	 * @property-read NarroProjectProgress[] $_NarroProjectProgressAsLanguageArray the value for the private _objNarroProjectProgressAsLanguageArray (Read-Only) if set due to an ExpandAsArray on the narro_project_progress.language_id reverse relationship
 	 * @property-read NarroSuggestion $_NarroSuggestionAsLanguage the value for the private _objNarroSuggestionAsLanguage (Read-Only) if set due to an expansion on the narro_suggestion.language_id reverse relationship
@@ -164,6 +166,22 @@
 		 * @var NarroFileProgress[] _objNarroFileProgressAsLanguageArray;
 		 */
 		private $_objNarroFileProgressAsLanguageArray = null;
+
+		/**
+		 * Private member variable that stores a reference to a single NarroLogAsLanguage object
+		 * (of type NarroLog), if this NarroLanguage object was restored with
+		 * an expansion on the narro_log association table.
+		 * @var NarroLog _objNarroLogAsLanguage;
+		 */
+		private $_objNarroLogAsLanguage;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroLogAsLanguage objects
+		 * (of type NarroLog[]), if this NarroLanguage object was restored with
+		 * an ExpandAsArray on the narro_log association table.
+		 * @var NarroLog[] _objNarroLogAsLanguageArray;
+		 */
+		private $_objNarroLogAsLanguageArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroProjectProgressAsLanguage object
@@ -620,6 +638,25 @@
 							$blnExpandedViaArray = true;
 						}
 
+						// Expanding reverse references: NarroLogAsLanguage
+						$strAlias = $strAliasPrefix . 'narrologaslanguage__log_id';
+						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroLogAsLanguageArray)
+								$objPreviousItem->_objNarroLogAsLanguageArray = array();
+							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroLogAsLanguageArray)) {
+								$objPreviousChildItems = $objPreviousItem->_objNarroLogAsLanguageArray;
+								$objChildItem = NarroLog::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrologaslanguage__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
+								if ($objChildItem) {
+									$objPreviousItem->_objNarroLogAsLanguageArray[] = $objChildItem;
+								}
+							} else {
+								$objPreviousItem->_objNarroLogAsLanguageArray[] = NarroLog::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrologaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+							}
+							$blnExpandedViaArray = true;
+						}
+
 						// Expanding reverse references: NarroProjectProgressAsLanguage
 						$strAlias = $strAliasPrefix . 'narroprojectprogressaslanguage__project_progress_id';
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -742,6 +779,9 @@
 					if (array_diff($objPreviousItem->_objNarroFileProgressAsLanguageArray, $objToReturn->_objNarroFileProgressAsLanguageArray) != null) {
 						continue;
 					}
+					if (array_diff($objPreviousItem->_objNarroLogAsLanguageArray, $objToReturn->_objNarroLogAsLanguageArray) != null) {
+						continue;
+					}
 					if (array_diff($objPreviousItem->_objNarroProjectProgressAsLanguageArray, $objToReturn->_objNarroProjectProgressAsLanguageArray) != null) {
 						continue;
 					}
@@ -799,6 +839,19 @@
 					$objToReturn->_objNarroFileProgressAsLanguageArray[] = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroFileProgressAsLanguage = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for NarroLogAsLanguage Virtual Binding
+			$strAlias = $strAliasPrefix . 'narrologaslanguage__log_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroLogAsLanguageArray)
+				$objToReturn->_objNarroLogAsLanguageArray = array();
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if ($blnExpanded)
+					$objToReturn->_objNarroLogAsLanguageArray[] = NarroLog::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrologaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objNarroLogAsLanguage = NarroLog::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrologaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for NarroProjectProgressAsLanguage Virtual Binding
@@ -1235,6 +1288,22 @@
 					 * @return NarroFileProgress[]
 					 */
 					return $this->_objNarroFileProgressAsLanguageArray;
+
+				case '_NarroLogAsLanguage':
+					/**
+					 * Gets the value for the private _objNarroLogAsLanguage (Read-Only)
+					 * if set due to an expansion on the narro_log.language_id reverse relationship
+					 * @return NarroLog
+					 */
+					return $this->_objNarroLogAsLanguage;
+
+				case '_NarroLogAsLanguageArray':
+					/**
+					 * Gets the value for the private _objNarroLogAsLanguageArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_log.language_id reverse relationship
+					 * @return NarroLog[]
+					 */
+					return $this->_objNarroLogAsLanguageArray;
 
 				case '_NarroProjectProgressAsLanguage':
 					/**
@@ -1770,6 +1839,156 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_file_progress`
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+			
+		
+		// Related Objects' Methods for NarroLogAsLanguage
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroLogsAsLanguage as an array of NarroLog objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroLog[]
+		*/
+		public function GetNarroLogAsLanguageArray($objOptionalClauses = null) {
+			if ((is_null($this->intLanguageId)))
+				return array();
+
+			try {
+				return NarroLog::LoadArrayByLanguageId($this->intLanguageId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroLogsAsLanguage
+		 * @return int
+		*/
+		public function CountNarroLogsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				return 0;
+
+			return NarroLog::CountByLanguageId($this->intLanguageId);
+		}
+
+		/**
+		 * Associates a NarroLogAsLanguage
+		 * @param NarroLog $objNarroLog
+		 * @return void
+		*/
+		public function AssociateNarroLogAsLanguage(NarroLog $objNarroLog) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroLogAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroLog->LogId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroLogAsLanguage on this NarroLanguage with an unsaved NarroLog.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_log`
+				SET
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+				WHERE
+					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroLogAsLanguage
+		 * @param NarroLog $objNarroLog
+		 * @return void
+		*/
+		public function UnassociateNarroLogAsLanguage(NarroLog $objNarroLog) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroLog->LogId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsLanguage on this NarroLanguage with an unsaved NarroLog.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_log`
+				SET
+					`language_id` = null
+				WHERE
+					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroLogsAsLanguage
+		 * @return void
+		*/
+		public function UnassociateAllNarroLogsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_log`
+				SET
+					`language_id` = null
+				WHERE
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroLogAsLanguage
+		 * @param NarroLog $objNarroLog
+		 * @return void
+		*/
+		public function DeleteAssociatedNarroLogAsLanguage(NarroLog $objNarroLog) {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsLanguage on this unsaved NarroLanguage.');
+			if ((is_null($objNarroLog->LogId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsLanguage on this NarroLanguage with an unsaved NarroLog.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_log`
+				WHERE
+					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . ' AND
+					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroLogsAsLanguage
+		 * @return void
+		*/
+		public function DeleteAllNarroLogsAsLanguage() {
+			if ((is_null($this->intLanguageId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsLanguage on this unsaved NarroLanguage.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroLanguage::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_log`
 				WHERE
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 			');
@@ -2514,6 +2733,7 @@
      *
      * @property-read QQReverseReferenceNodeNarroContextInfo $NarroContextInfoAsLanguage
      * @property-read QQReverseReferenceNodeNarroFileProgress $NarroFileProgressAsLanguage
+     * @property-read QQReverseReferenceNodeNarroLog $NarroLogAsLanguage
      * @property-read QQReverseReferenceNodeNarroProjectProgress $NarroProjectProgressAsLanguage
      * @property-read QQReverseReferenceNodeNarroSuggestion $NarroSuggestionAsLanguage
      * @property-read QQReverseReferenceNodeNarroTextComment $NarroTextCommentAsLanguage
@@ -2551,6 +2771,8 @@
 					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroFileProgressAsLanguage':
 					return new QQReverseReferenceNodeNarroFileProgress($this, 'narrofileprogressaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroLogAsLanguage':
+					return new QQReverseReferenceNodeNarroLog($this, 'narrologaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroProjectProgressAsLanguage':
 					return new QQReverseReferenceNodeNarroProjectProgress($this, 'narroprojectprogressaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroSuggestionAsLanguage':
@@ -2588,6 +2810,7 @@
      *
      * @property-read QQReverseReferenceNodeNarroContextInfo $NarroContextInfoAsLanguage
      * @property-read QQReverseReferenceNodeNarroFileProgress $NarroFileProgressAsLanguage
+     * @property-read QQReverseReferenceNodeNarroLog $NarroLogAsLanguage
      * @property-read QQReverseReferenceNodeNarroProjectProgress $NarroProjectProgressAsLanguage
      * @property-read QQReverseReferenceNodeNarroSuggestion $NarroSuggestionAsLanguage
      * @property-read QQReverseReferenceNodeNarroTextComment $NarroTextCommentAsLanguage
@@ -2625,6 +2848,8 @@
 					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroFileProgressAsLanguage':
 					return new QQReverseReferenceNodeNarroFileProgress($this, 'narrofileprogressaslanguage', 'reverse_reference', 'language_id');
+				case 'NarroLogAsLanguage':
+					return new QQReverseReferenceNodeNarroLog($this, 'narrologaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroProjectProgressAsLanguage':
 					return new QQReverseReferenceNodeNarroProjectProgress($this, 'narroprojectprogressaslanguage', 'reverse_reference', 'language_id');
 				case 'NarroSuggestionAsLanguage':

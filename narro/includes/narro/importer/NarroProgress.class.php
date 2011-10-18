@@ -92,7 +92,7 @@
                 $intValue = self::GetProgressPerProject($intProjectId, $strOperation);
 
             if (!@file_put_contents(self::GetProgressFileName($intProjectId, $strOperation), $intFilesToProcess . ',' . $intValue . ',' . $intProgressPerFile)) {
-                QApplication::LogWarn(sprintf('Can\'t write progress file %s', self::GetProgressFileName($intProjectId, $strOperation)));
+                NarroLogger::LogWarn(sprintf('Can\'t write progress file %s', self::GetProgressFileName($intProjectId, $strOperation)));
             }
             @chmod(self::GetProgressFileName($intProjectId, $strOperation), 0666);
         }

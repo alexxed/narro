@@ -49,7 +49,6 @@
             $this->objProject = $objNarroProject;
 
             $this->pnlLogViewer = new NarroLogViewerPanel($this);
-            $this->pnlLogViewer->DisplayStyle = QDisplayStyle::None;
 
             $this->lblImport = new QLabel($this);
             $this->lblImport->Visible = false;
@@ -156,8 +155,6 @@
             $strProcPidFile = __TMP_PATH__ . '/' . $this->objProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-import-process.pid';
             $strProgressFile = __TMP_PATH__ . '/import-' . $this->objProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode;
 
-            $this->pnlLogViewer->LogFile = QApplication::$LogFile;
-
             if ($strParameter == 1) {
                 if (NarroUtils::IsProcessRunning('import', $this->objProject->ProjectId)) {
                     $this->objImportProgress->Translated = NarroProgress::GetProgress($this->objProject->ProjectId, 'import');
@@ -171,7 +168,7 @@
                         QApplication::ExecuteJavaScript('if (typeof lastImportId != \'undefined\') clearInterval(lastImportId)');
 
                     if (file_exists($strProcLogFile) && filesize($strProcLogFile))
-                        QApplication::LogInfo(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+                        NarroLogger::LogInfo(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
 
                     if (file_exists($strProcLogFile))
                         unlink($strProcLogFile);
@@ -187,11 +184,15 @@
                     $this->btnKillProcess->Visible = false;
                     $this->objImportProgress->Translated = 0;
                     $this->objImportProgress->Visible = false;
-
-                    $this->pnlLogViewer->MarkAsModified();
                 }
+                
+                $this->pnlLogViewer->MarkAsModified();
             }
             elseif ($strParameter == 2) {
+                $this->pnlLogViewer->ProjectId = $this->objProject->ProjectId;
+                $this->pnlLogViewer->LanguageId = QApplication::GetLanguageId();
+                $this->pnlLogViewer->DateStart = QDateTime::Now();
+                
                 QApplication::ClearLog();
                 NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'import');
                 set_time_limit(0);
@@ -224,7 +225,7 @@
                     $objNarroImporter->TemplatePath = $this->pnlTextsSource->Directory;
                 }
                 catch (Exception $objEx) {
-                    QApplication::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
+                    NarroLogger::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
                     return false;
                 }
@@ -233,7 +234,7 @@
                     $objNarroImporter->ImportProject();
                 }
                 catch (Exception $objEx) {
-                    QApplication::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
+                    NarroLogger::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
                 }
 
@@ -246,6 +247,10 @@
 
             }
             else {
+                $this->pnlLogViewer->ProjectId = $this->objProject->ProjectId;
+                $this->pnlLogViewer->LanguageId = QApplication::GetLanguageId();
+                $this->pnlLogViewer->DateStart = QDateTime::Now();
+                
                 QApplication::ClearLog();
                 NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'import');
                 $this->pnlLogViewer->MarkAsModified();
@@ -273,7 +278,7 @@
                     );
                 }
                 catch (Exception $objEx) {
-                    QApplication::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
+                    NarroLogger::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
                     $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
 
                     $this->lblImport->Visible = true;
@@ -301,7 +306,7 @@
                 }
                 else {
                     $this->objImportProgress->Visible = false;
-                    QApplication::LogError('Failed to launch a background process, there will be no progress displayed, and it might take a while, please wait for more messages');
+                    NarroLogger::LogError('Failed to launch a background process, there will be no progress displayed, and it might take a while, please wait for more messages');
                     $this->pnlLogViewer->MarkAsModified();
                     /**
                      * try importing without launching a background process
@@ -319,7 +324,7 @@
             $strProcPidFile = __TMP_PATH__ . '/' . $this->objProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-import-process.pid';
 
             if (!file_exists($strProcPidFile)) {
-                QApplication::LogError('Could not find a pid file for the background process.');
+                NarroLogger::LogError('Could not find a pid file for the background process.');
                 $this->pnlLogViewer->MarkAsModified();
                 return false;
             }
@@ -332,14 +337,14 @@
 
                 if ($mixProcess) {
                     proc_close($mixProcess);
-                    QApplication::LogError('Process killed');
+                    NarroLogger::LogError('Process killed');
                 }
                 else {
-                    QApplication::LogError('Failed to kill process');
+                    NarroLogger::LogError('Failed to kill process');
                 }
 
                 if (file_exists($strProcLogFile) && filesize($strProcLogFile))
-                    QApplication::LogWarn(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
+                    NarroLogger::LogWarn(sprintf('There are messages from the background process: %s', file_get_contents($strProcLogFile)));
 
                 $this->pnlLogViewer->MarkAsModified();
             }

@@ -105,7 +105,7 @@
                     $objOneContextInfo->Save();
                 }
                 catch (Exception $objEx) {
-                    QApplication::LogWarn($objEx->getMessage());
+                    NarroLogger::LogWarn($objEx->getMessage());
                 }
             }
 

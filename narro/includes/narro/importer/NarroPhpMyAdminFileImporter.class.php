@@ -44,7 +44,7 @@
                 }
             }
             else {
-                QApplication::LogError(sprintf('Cannot open file "%s".', $strFileToImport));
+                NarroLogger::LogError(sprintf('Cannot open file "%s".', $strFileToImport));
             }
         }
 
@@ -82,7 +82,7 @@
                 }
             }
             else {
-                QApplication::LogError(sprintf('Cannot open file "%s".', $strFileToImport));
+                NarroLogger::LogError(sprintf('Cannot open file "%s".', $strFileToImport));
             }
 
         }

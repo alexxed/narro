@@ -72,10 +72,10 @@
 
                 $objUser = NarroUser::LoadByUserId($intUserId);
                 if (!$objUser instanceof NarroUser) {
-                    QApplication::LogInfo(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
+                    NarroLogger::LogInfo(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
                     $objUser = NarroUser::LoadAnonymousUser();
                     if (!$objUser instanceof NarroUser) {
-                        QApplication::LogInfo(sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
+                        NarroLogger::LogInfo(sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
                         return false;
                     }
                 }
@@ -84,15 +84,15 @@
 
                 $objNarroImporter->TargetLanguage = $objLanguage;
 
-                QApplication::LogInfo(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
+                NarroLogger::LogInfo(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
 
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
                 if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-                    QApplication::LogInfo(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
+                    NarroLogger::LogInfo(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
                     return false;
                 }
 
-                QApplication::LogInfo(sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
+                NarroLogger::LogInfo(sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
 
                 $objNarroImporter->Project = $objProject;
                 $objNarroImporter->User = $objUser;
@@ -103,7 +103,7 @@
                     $intPid = NarroUtils::IsProcessRunning('export', $objNarroImporter->Project->ProjectId);
 
                     if ($intPid && $intPid <> getmypid())
-                        QApplication::LogInfo(sprintf('An export process is already running for this project with pid %d', $intPid));
+                        NarroLogger::LogInfo(sprintf('An export process is already running for this project with pid %d', $intPid));
 
                     $strProcPidFile = __TMP_PATH__ . '/' . $objNarroImporter->Project->ProjectId . '-' . $objNarroImporter->TargetLanguage->LanguageCode . '-export-process.pid';
                     if (file_exists($strProcPidFile))
@@ -114,7 +114,7 @@
                     $objNarroImporter->ExportProject();
                 }
                 catch (Exception $objEx) {
-                    QApplication::LogError(sprintf('An error occurred during export: %s', $objEx->getMessage()));
+                    NarroLogger::LogError(sprintf('An error occurred during export: %s', $objEx->getMessage()));
                     exit();
                 }
             }

@@ -80,13 +80,13 @@
             $arrSourceKey = $this->FileAsArray($strTemplateFile);
 
             if (basename($strTemplateFile) == 'brand.properties')
-            QApplication::LogDebug(var_export($arrSourceKey, true));
+            // NarroLogger::LogDebug(var_export($arrSourceKey, true));
 
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
-                QApplication::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));
+                // NarroLogger::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));
 
-            QApplication::LogDebug(sprintf('Found %d contexts in file %s.', count($arrSourceKey), $this->objFile->FileName));
+            // NarroLogger::LogDebug(sprintf('Found %d contexts in file %s.', count($arrSourceKey), $this->objFile->FileName));
 
             if (is_array($arrSourceKey)) {
                 $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
@@ -127,7 +127,7 @@
                 return true;
             }
             else {
-                QApplication::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                NarroLogger::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 NarroUtils::Chmod($strTranslatedFile, 0666);
                 return false;

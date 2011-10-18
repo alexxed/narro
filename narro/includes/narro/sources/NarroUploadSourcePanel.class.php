@@ -70,13 +70,13 @@
             switch(strtolower(pathinfo($this->fileSource->File, PATHINFO_EXTENSION))) {
                 case 'zip':
                 case 'xpi':
-                    QApplication::LogInfo(sprintf('Trying to uncompress %s', $this->fileSource->FileName));
+                    NarroLogger::LogInfo(sprintf('Trying to uncompress %s', $this->fileSource->FileName));
                     $objZipFile = new ZipArchive();
                     $intErrCode = $objZipFile->open($this->fileSource->File);
                     if ($intErrCode === TRUE) {
                         $objZipFile->extractTo($this->strWorkingDirectory);
                         $objZipFile->close();
-                        QApplication::LogInfo(sprintf('Sucessfully uncompressed %s.', $this->fileSource->FileName));
+                        NarroLogger::LogInfo(sprintf('Sucessfully uncompressed %s.', $this->fileSource->FileName));
                     } else {
                         switch($intErrCode) {
                             case ZIPARCHIVE::ER_NOZIP:
@@ -101,7 +101,7 @@
                 case 'php':
                     copy($this->fileSource->File, $this->strWorkingDirectory . '/' . $this->fileSource->FileName);
                     chmod($this->strWorkingDirectory . '/' . $this->fileSource->FileName, 0666);
-                    QApplication::LogInfo(sprintf('Single file uploaded, copied %s to %s', $this->fileSource->FileName, $this->strWorkingDirectory));
+                    NarroLogger::LogInfo(sprintf('Single file uploaded, copied %s to %s', $this->fileSource->FileName, $this->strWorkingDirectory));
                     break;
                 default:
                     throw new Exception(sprintf('Unsupported file type uploaded'));
@@ -123,7 +123,7 @@
             NarroUtils::RecursiveChmod($this->strWorkingDirectory);
 
             if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
-                QApplication::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $this->strWorkingDirectory, $arrSearchResult[0], $this->objLanguage->LanguageCode));
+                NarroLogger::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $this->strWorkingDirectory, $arrSearchResult[0], $this->objLanguage->LanguageCode));
                 $this->strWorkingDirectory = $arrSearchResult[0];
             }
 

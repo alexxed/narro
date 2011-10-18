@@ -20,13 +20,13 @@
             $intTime = time();
 
             if (!file_exists($strFile)) {
-                QApplication::LogInfo(sprintf(t('%s does not exist'), $strFile));
+                NarroLogger::LogInfo(sprintf(t('%s does not exist'), $strFile));
                 return false;
             }
 
             $strFileContent = file_get_contents($strFile);
             if (!$strFileContent) {
-                QApplication::LogInfo(sprintf(t('%s is empty'), $strFile));
+                NarroLogger::LogInfo(sprintf(t('%s is empty'), $strFile));
                 return false;
             }
 
@@ -81,7 +81,7 @@
             if (isset($strLastKey) && $strPreviousLines)
                 $arrKeys[$strLastKey]->AfterValue .=  $strPreviousLines;
 
-            QApplication::LogDebug(sprintf('Converted file to array in %s second(s)', (time() - $intTime)));
+            // NarroLogger::LogDebug(sprintf('Converted file to array in %s second(s)', (time() - $intTime)));
 
             return $arrKeys;
         }
@@ -111,7 +111,7 @@
             $arrKeys = array_keys($arrTexts);
             $arrKeysFlipped = array_flip($arrKeys);
             $strPreviousLabel = $arrKeys[$arrKeysFlipped[$strAccCtx] - 1];
-            QApplication::LogDebug(sprintf('No matching context found for access key context %s, previous context is %s', $strAccCtx, $strPreviousLabel));
+            // NarroLogger::LogDebug(sprintf('No matching context found for access key context %s, previous context is %s', $strAccCtx, $strPreviousLabel));
                         
             return false;
         }
@@ -136,7 +136,7 @@
             $arrKeys = array_keys($arrTexts);
             $arrKeysFlipped = array_flip($arrKeys);
             $strPreviousLabel = $arrKeys[$arrKeysFlipped[$strAccCtx] - 1];
-            QApplication::LogDebug(sprintf('No matching context found for command key context %s, previous context is %s', $strAccCtx, $strPreviousLabel));
+            // NarroLogger::LogDebug(sprintf('No matching context found for command key context %s, previous context is %s', $strAccCtx, $strPreviousLabel));
         
             return false;
         }
@@ -153,7 +153,7 @@
                     if (stristr($strContext, 'access')) {
                         $strLabelCtx = $this->GetLabelForAccessKey($strContext, $arrTexts);
                         if ($strLabelCtx !== false) {
-                            QApplication::LogDebug(sprintf('Found access key %s for %s, contexts %s, %s', $strAccKey, $arrTexts[$strLabelCtx]->Value, $strLabelCtx, $strContext));
+                            // NarroLogger::LogDebug(sprintf('Found access key %s for %s, contexts %s, %s', $strAccKey, $arrTexts[$strLabelCtx]->Value, $strLabelCtx, $strContext));
                             $arrTexts[$strContext]->LabelCtx = $strLabelCtx;
                             $arrTexts[$strLabelCtx]->AccessKey = $objEntity->Value;
                             $arrTexts[$strLabelCtx]->AccessKeyCtx = $strContext;
@@ -163,7 +163,7 @@
                     if (stristr($strContext, '.key') || stristr($strContext, '.commandkey')) {
                         $strLabelCtx = $this->GetLabelForCommandKey($strContext, $arrTexts);
                         if ($strLabelCtx !== false) {
-                            QApplication::LogDebug(sprintf('Found command key %s for %s, contexts %s, %s', $strAccKey, $arrTexts[$strLabelCtx]->Value, $strLabelCtx, $strContext));
+                            // NarroLogger::LogDebug(sprintf('Found command key %s for %s, contexts %s, %s', $strAccKey, $arrTexts[$strLabelCtx]->Value, $strLabelCtx, $strContext));
                             $arrTexts[$strContext]->LabelCtx = $strLabelCtx;
                             $arrTexts[$strLabelCtx]->CommandKeyCtx = $strContext;
                             $arrTexts[$strLabelCtx]->CommandKey = $objEntity->Value;
@@ -232,9 +232,9 @@
 
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0)
-                QApplication::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));
+                // NarroLogger::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));
 
-            QApplication::LogDebug(sprintf('Found %d contexts in file %s.', count($arrSourceKey), $this->objFile->FileName));
+            // NarroLogger::LogDebug(sprintf('Found %d contexts in file %s.', count($arrSourceKey), $this->objFile->FileName));
 
             if (is_array($arrSourceKey)) {
                 $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
@@ -265,7 +265,7 @@
                 }
             }
             else {
-                QApplication::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                NarroLogger::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 chmod($strTranslatedFile, 0666);
             }

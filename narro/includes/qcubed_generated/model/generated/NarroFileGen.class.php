@@ -797,6 +797,24 @@
 			
 		/**
 		 * Load a single NarroFile object,
+		 * by FilePath, ProjectId Index(es)
+		 * @param string $strFilePath
+		 * @param integer $intProjectId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroFile
+		*/
+		public static function LoadByFilePathProjectId($strFilePath, $intProjectId, $objOptionalClauses = null) {
+			return NarroFile::QuerySingle(
+				QQ::AndCondition(
+					QQ::Equal(QQN::NarroFile()->FilePath, $strFilePath),
+					QQ::Equal(QQN::NarroFile()->ProjectId, $intProjectId)
+				),
+				$objOptionalClauses
+			);
+		}
+			
+		/**
+		 * Load a single NarroFile object,
 		 * by FileName, ParentId Index(es)
 		 * @param string $strFileName
 		 * @param integer $intParentId
@@ -906,6 +924,38 @@
 			// Call NarroFile::QueryCount to perform the CountByParentId query
 			return NarroFile::QueryCount(
 				QQ::Equal(QQN::NarroFile()->ParentId, $intParentId)
+			);
+		}
+			
+		/**
+		 * Load an array of NarroFile objects,
+		 * by Active Index(es)
+		 * @param boolean $blnActive
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroFile[]
+		*/
+		public static function LoadArrayByActive($blnActive, $objOptionalClauses = null) {
+			// Call NarroFile::QueryArray to perform the LoadArrayByActive query
+			try {
+				return NarroFile::QueryArray(
+					QQ::Equal(QQN::NarroFile()->Active, $blnActive),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count NarroFiles
+		 * by Active Index(es)
+		 * @param boolean $blnActive
+		 * @return int
+		*/
+		public static function CountByActive($blnActive) {
+			// Call NarroFile::QueryCount to perform the CountByActive query
+			return NarroFile::QueryCount(
+				QQ::Equal(QQN::NarroFile()->Active, $blnActive)
 			);
 		}
 

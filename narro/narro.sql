@@ -763,3 +763,22 @@ ALTER TABLE `narro_context_info` ADD `suggestion_command_key` CHAR( 1 ) CHARACTE
 ALTER TABLE `narro_file`
 ADD UNIQUE `file_path` ( `file_path` , `project_id` )  ;
 ALTER TABLE `narro_file` ADD INDEX ( `active` ) ;
+
+CREATE TABLE IF NOT EXISTS `narro_log` (
+  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `language_id` int(10) unsigned DEFAULT NULL,
+  `project_id` int(10) unsigned DEFAULT NULL,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `message` text NOT NULL,
+  `priority` smallint(6) NOT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY (`log_id`),
+  KEY `language_id` (`language_id`,`project_id`),
+  KEY `project_id` (`project_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ALTER TABLE `narro_log`
+  ADD CONSTRAINT `narro_log_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `narro_log_ibfk_1` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `narro_log_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -27,6 +27,8 @@
 	 * @property-read NarroContext[] $_NarroContextAsProjectArray the value for the private _objNarroContextAsProjectArray (Read-Only) if set due to an ExpandAsArray on the narro_context.project_id reverse relationship
 	 * @property-read NarroFile $_NarroFileAsProject the value for the private _objNarroFileAsProject (Read-Only) if set due to an expansion on the narro_file.project_id reverse relationship
 	 * @property-read NarroFile[] $_NarroFileAsProjectArray the value for the private _objNarroFileAsProjectArray (Read-Only) if set due to an ExpandAsArray on the narro_file.project_id reverse relationship
+	 * @property-read NarroLog $_NarroLogAsProject the value for the private _objNarroLogAsProject (Read-Only) if set due to an expansion on the narro_log.project_id reverse relationship
+	 * @property-read NarroLog[] $_NarroLogAsProjectArray the value for the private _objNarroLogAsProjectArray (Read-Only) if set due to an ExpandAsArray on the narro_log.project_id reverse relationship
 	 * @property-read NarroProjectProgress $_NarroProjectProgressAsProject the value for the private _objNarroProjectProgressAsProject (Read-Only) if set due to an expansion on the narro_project_progress.project_id reverse relationship
 	 * @property-read NarroProjectProgress[] $_NarroProjectProgressAsProjectArray the value for the private _objNarroProjectProgressAsProjectArray (Read-Only) if set due to an ExpandAsArray on the narro_project_progress.project_id reverse relationship
 	 * @property-read NarroUserRole $_NarroUserRoleAsProject the value for the private _objNarroUserRoleAsProject (Read-Only) if set due to an expansion on the narro_user_role.project_id reverse relationship
@@ -128,6 +130,22 @@
 		 * @var NarroFile[] _objNarroFileAsProjectArray;
 		 */
 		private $_objNarroFileAsProjectArray = null;
+
+		/**
+		 * Private member variable that stores a reference to a single NarroLogAsProject object
+		 * (of type NarroLog), if this NarroProject object was restored with
+		 * an expansion on the narro_log association table.
+		 * @var NarroLog _objNarroLogAsProject;
+		 */
+		private $_objNarroLogAsProject;
+
+		/**
+		 * Private member variable that stores a reference to an array of NarroLogAsProject objects
+		 * (of type NarroLog[]), if this NarroProject object was restored with
+		 * an ExpandAsArray on the narro_log association table.
+		 * @var NarroLog[] _objNarroLogAsProjectArray;
+		 */
+		private $_objNarroLogAsProjectArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroProjectProgressAsProject object
@@ -556,6 +574,25 @@
 							$blnExpandedViaArray = true;
 						}
 
+						// Expanding reverse references: NarroLogAsProject
+						$strAlias = $strAliasPrefix . 'narrologasproject__log_id';
+						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
+							(!is_null($objDbRow->GetColumn($strAliasName)))) {
+							if(null === $objPreviousItem->_objNarroLogAsProjectArray)
+								$objPreviousItem->_objNarroLogAsProjectArray = array();
+							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroLogAsProjectArray)) {
+								$objPreviousChildItems = $objPreviousItem->_objNarroLogAsProjectArray;
+								$objChildItem = NarroLog::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrologasproject__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
+								if ($objChildItem) {
+									$objPreviousItem->_objNarroLogAsProjectArray[] = $objChildItem;
+								}
+							} else {
+								$objPreviousItem->_objNarroLogAsProjectArray[] = NarroLog::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrologasproject__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+							}
+							$blnExpandedViaArray = true;
+						}
+
 						// Expanding reverse references: NarroProjectProgressAsProject
 						$strAlias = $strAliasPrefix . 'narroprojectprogressasproject__project_progress_id';
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -634,6 +671,9 @@
 					if (array_diff($objPreviousItem->_objNarroFileAsProjectArray, $objToReturn->_objNarroFileAsProjectArray) != null) {
 						continue;
 					}
+					if (array_diff($objPreviousItem->_objNarroLogAsProjectArray, $objToReturn->_objNarroLogAsProjectArray) != null) {
+						continue;
+					}
 					if (array_diff($objPreviousItem->_objNarroProjectProgressAsProjectArray, $objToReturn->_objNarroProjectProgressAsProjectArray) != null) {
 						continue;
 					}
@@ -691,6 +731,19 @@
 					$objToReturn->_objNarroFileAsProjectArray[] = NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileasproject__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroFileAsProject = NarroFile::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileasproject__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+			}
+
+			// Check for NarroLogAsProject Virtual Binding
+			$strAlias = $strAliasPrefix . 'narrologasproject__log_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
+			if ($blnExpanded && null === $objToReturn->_objNarroLogAsProjectArray)
+				$objToReturn->_objNarroLogAsProjectArray = array();
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if ($blnExpanded)
+					$objToReturn->_objNarroLogAsProjectArray[] = NarroLog::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrologasproject__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
+				else
+					$objToReturn->_objNarroLogAsProject = NarroLog::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrologasproject__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for NarroProjectProgressAsProject Virtual Binding
@@ -1162,6 +1215,22 @@
 					 * @return NarroFile[]
 					 */
 					return $this->_objNarroFileAsProjectArray;
+
+				case '_NarroLogAsProject':
+					/**
+					 * Gets the value for the private _objNarroLogAsProject (Read-Only)
+					 * if set due to an expansion on the narro_log.project_id reverse relationship
+					 * @return NarroLog
+					 */
+					return $this->_objNarroLogAsProject;
+
+				case '_NarroLogAsProjectArray':
+					/**
+					 * Gets the value for the private _objNarroLogAsProjectArray (Read-Only)
+					 * if set due to an ExpandAsArray on the narro_log.project_id reverse relationship
+					 * @return NarroLog[]
+					 */
+					return $this->_objNarroLogAsProjectArray;
 
 				case '_NarroProjectProgressAsProject':
 					/**
@@ -1666,6 +1735,156 @@
 
 			
 		
+		// Related Objects' Methods for NarroLogAsProject
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated NarroLogsAsProject as an array of NarroLog objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroLog[]
+		*/
+		public function GetNarroLogAsProjectArray($objOptionalClauses = null) {
+			if ((is_null($this->intProjectId)))
+				return array();
+
+			try {
+				return NarroLog::LoadArrayByProjectId($this->intProjectId, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated NarroLogsAsProject
+		 * @return int
+		*/
+		public function CountNarroLogsAsProject() {
+			if ((is_null($this->intProjectId)))
+				return 0;
+
+			return NarroLog::CountByProjectId($this->intProjectId);
+		}
+
+		/**
+		 * Associates a NarroLogAsProject
+		 * @param NarroLog $objNarroLog
+		 * @return void
+		*/
+		public function AssociateNarroLogAsProject(NarroLog $objNarroLog) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroLogAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroLog->LogId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroLogAsProject on this NarroProject with an unsaved NarroLog.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_log`
+				SET
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+				WHERE
+					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . '
+			');
+		}
+
+		/**
+		 * Unassociates a NarroLogAsProject
+		 * @param NarroLog $objNarroLog
+		 * @return void
+		*/
+		public function UnassociateNarroLogAsProject(NarroLog $objNarroLog) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroLog->LogId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsProject on this NarroProject with an unsaved NarroLog.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_log`
+				SET
+					`project_id` = null
+				WHERE
+					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . ' AND
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Unassociates all NarroLogsAsProject
+		 * @return void
+		*/
+		public function UnassociateAllNarroLogsAsProject() {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsProject on this unsaved NarroProject.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`narro_log`
+				SET
+					`project_id` = null
+				WHERE
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated NarroLogAsProject
+		 * @param NarroLog $objNarroLog
+		 * @return void
+		*/
+		public function DeleteAssociatedNarroLogAsProject(NarroLog $objNarroLog) {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsProject on this unsaved NarroProject.');
+			if ((is_null($objNarroLog->LogId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsProject on this NarroProject with an unsaved NarroLog.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_log`
+				WHERE
+					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . ' AND
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated NarroLogsAsProject
+		 * @return void
+		*/
+		public function DeleteAllNarroLogsAsProject() {
+			if ((is_null($this->intProjectId)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroLogAsProject on this unsaved NarroProject.');
+
+			// Get the Database Object for this Class
+			$objDatabase = NarroProject::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`narro_log`
+				WHERE
+					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
+			');
+		}
+
+			
+		
 		// Related Objects' Methods for NarroProjectProgressAsProject
 		//-------------------------------------------------------------------
 
@@ -2095,6 +2314,7 @@
      *
      * @property-read QQReverseReferenceNodeNarroContext $NarroContextAsProject
      * @property-read QQReverseReferenceNodeNarroFile $NarroFileAsProject
+     * @property-read QQReverseReferenceNodeNarroLog $NarroLogAsProject
      * @property-read QQReverseReferenceNodeNarroProjectProgress $NarroProjectProgressAsProject
      * @property-read QQReverseReferenceNodeNarroUserRole $NarroUserRoleAsProject
 
@@ -2126,6 +2346,8 @@
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasproject', 'reverse_reference', 'project_id');
 				case 'NarroFileAsProject':
 					return new QQReverseReferenceNodeNarroFile($this, 'narrofileasproject', 'reverse_reference', 'project_id');
+				case 'NarroLogAsProject':
+					return new QQReverseReferenceNodeNarroLog($this, 'narrologasproject', 'reverse_reference', 'project_id');
 				case 'NarroProjectProgressAsProject':
 					return new QQReverseReferenceNodeNarroProjectProgress($this, 'narroprojectprogressasproject', 'reverse_reference', 'project_id');
 				case 'NarroUserRoleAsProject':
@@ -2157,6 +2379,7 @@
      *
      * @property-read QQReverseReferenceNodeNarroContext $NarroContextAsProject
      * @property-read QQReverseReferenceNodeNarroFile $NarroFileAsProject
+     * @property-read QQReverseReferenceNodeNarroLog $NarroLogAsProject
      * @property-read QQReverseReferenceNodeNarroProjectProgress $NarroProjectProgressAsProject
      * @property-read QQReverseReferenceNodeNarroUserRole $NarroUserRoleAsProject
 
@@ -2188,6 +2411,8 @@
 					return new QQReverseReferenceNodeNarroContext($this, 'narrocontextasproject', 'reverse_reference', 'project_id');
 				case 'NarroFileAsProject':
 					return new QQReverseReferenceNodeNarroFile($this, 'narrofileasproject', 'reverse_reference', 'project_id');
+				case 'NarroLogAsProject':
+					return new QQReverseReferenceNodeNarroLog($this, 'narrologasproject', 'reverse_reference', 'project_id');
 				case 'NarroProjectProgressAsProject':
 					return new QQReverseReferenceNodeNarroProjectProgress($this, 'narroprojectprogressasproject', 'reverse_reference', 'project_id');
 				case 'NarroUserRoleAsProject':

@@ -77,7 +77,7 @@
             $strTemplateContents = file_get_contents($strTemplateFile);
 
             if (!$strTemplateContents) {
-                QApplication::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
+                NarroLogger::LogWarn(sprintf('Found a empty template (%s), copying the original', $strTemplateFile));
                 copy($strTemplateFile, $strTranslatedFile);
                 chmod($strTranslatedFile, 0666);
                 return false;
@@ -96,8 +96,9 @@
                     $arrTemplateComment[trim($arrMatches[1])] = $strComment;
                     $strComment = '';
                 }
-                elseif (trim($strLine) != '' && $strLine[0] != '#')
-                    QApplication::LogDebug(sprintf('Skipped line "%s" from the template "%s".', $strLine, $this->objFile->FileName));
+                elseif (trim($strLine) != '' && $strLine[0] != '#') {
+                    // NarroLogger::LogDebug(sprintf('Skipped line "%s" from the template "%s".', $strLine, $this->objFile->FileName));
+                }
                 elseif ($strLine[0] == '#') {
                     $strComment .= "\n" . $strLine;
                 }
@@ -137,7 +138,7 @@
                         NarroImportStatistics::$arrStatistics["Texts that don't have access keys"]++;
                 }
                 else {
-                    QApplication::LogDebug(sprintf('In file "%s", the context "%s" does not have a valid suggestion.', $this->objFile->FileName, $objNarroContextInfo->Context->Context));
+                    // NarroLogger::LogDebug(sprintf('In file "%s", the context "%s" does not have a valid suggestion.', $this->objFile->FileName, $objNarroContextInfo->Context->Context));
                     NarroImportStatistics::$arrStatistics['Texts without valid suggestions']++;
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                 }
@@ -164,21 +165,21 @@
                         $arrTranslation[$strKey] = $arrResult[1];
                     }
                     else
-                        QApplication::LogWarn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $arrTranslation[$strKey], var_export($arrResult, true)));
+                        NarroLogger::LogWarn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $arrTranslation[$strKey], var_export($arrResult, true)));
 
                     if (strstr($strTranslateContents, sprintf('#define %s %s', $strKey, $strOriginalText)))
                         $strTranslateContents = str_replace(sprintf('#define %s %s', $strKey, $strOriginalText), sprintf('#define %s %s', $strKey, $arrTranslation[$strKey]), $strTranslateContents);
                     else
-                        QApplication::LogWarn(sprintf('Can\'t find "%s" in the file "%s"'), $strKey . $strGlue . $strOriginalText, $this->objFile->FileName);
+                        NarroLogger::LogWarn(sprintf('Can\'t find "%s" in the file "%s"'), $strKey . $strGlue . $strOriginalText, $this->objFile->FileName);
 
                     if (strstr($arrTranslation[$strKey], "\n")) {
-                        QApplication::LogWarn(sprintf('Skpping translation "%s" because it has a newline in it'), $arrTranslation[$strKey]);
+                        NarroLogger::LogWarn(sprintf('Skpping translation "%s" because it has a newline in it'), $arrTranslation[$strKey]);
                         continue;
                     }
 
                 }
                 else {
-                    QApplication::LogDebug(sprintf('Couldn\'t find the key "%s" in the translations, using the original text.', $strKey, $this->objFile->FileName));
+                    // NarroLogger::LogDebug(sprintf('Couldn\'t find the key "%s" in the translations, using the original text.', $strKey, $this->objFile->FileName));
                     NarroImportStatistics::$arrStatistics['Texts kept as original']++;
                     if ($this->blnSkipUntranslated == true) {
 
@@ -194,10 +195,10 @@
             }
 
             if (file_exists($strTranslatedFile) && !is_writable($strTranslatedFile) && !unlink($strTranslatedFile)) {
-                QApplication::LogError(sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
+                NarroLogger::LogError(sprintf('Can\'t delete the file "%s"', $strTranslatedFile));
             }
             if (!file_put_contents($strTranslatedFile, $strTranslateContents)) {
-                QApplication::LogError(sprintf('Can\'t write to file "%s"', $strTranslatedFile));
+                NarroLogger::LogError(sprintf('Can\'t write to file "%s"', $strTranslatedFile));
             }
 
             @chmod($strTranslatedFile, 0666);

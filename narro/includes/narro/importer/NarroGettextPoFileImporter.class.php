@@ -20,7 +20,7 @@
         private $objCurrentContext;
 
         protected function getFieldGroups($strFile) {
-            QApplication::LogDebug(sprintf('Starting to read contexts from %s', $this->objFile->FileName));
+            // NarroLogger::LogDebug(sprintf('Starting to read contexts from %s', $this->objFile->FileName));
 
             $arrGroupFields = array();
             if (trim($strFile) == '') return $arrGroupFields;
@@ -50,9 +50,9 @@
                     $arrFields['MsgPluralId'] = null;
 
                     $strLine = fgets($hndFile, 8192);
-                    QApplication::LogDebug('Processing ' . trim($strLine));
+                    // NarroLogger::LogDebug('Processing ' . trim($strLine));
                     if (strpos($strLine, '# ') === 0) {
-                        QApplication::LogDebug('Found translator comment');
+                        // NarroLogger::LogDebug('Found translator comment');
                         $arrFields['TranslatorComment'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -65,7 +65,7 @@
                     }
 
                     if (strpos($strLine, '#.') === 0) {
-                        QApplication::LogDebug('Found extracted comment');
+                        // NarroLogger::LogDebug('Found extracted comment');
                         $arrFields['ExtractedComment'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -78,7 +78,7 @@
                     }
 
                     if (strpos($strLine, '#:') === 0) {
-                        QApplication::LogDebug('Found reference');
+                        // NarroLogger::LogDebug('Found reference');
                         /**
                          * Remove the line number from the source file
                          */
@@ -96,7 +96,7 @@
                     }
 
                     if (strpos($strLine, '#,') === 0) {
-                        QApplication::LogDebug('Found flag');
+                        // NarroLogger::LogDebug('Found flag');
                         $arrFields['Flag'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -108,7 +108,7 @@
                     }
 
                     if (strpos($strLine, '#| msgctxt') === 0) {
-                        QApplication::LogDebug('Found previous context');
+                        // NarroLogger::LogDebug('Found previous context');
                         $arrFields['PreviousContext'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -120,7 +120,7 @@
                     }
 
                     if (strpos($strLine, '#| msgid') === 0) {
-                        QApplication::LogDebug('Found previous translated string');
+                        // NarroLogger::LogDebug('Found previous translated string');
                         $arrFields['PreviousUntranslated'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -132,7 +132,7 @@
                     }
 
                     if (strpos($strLine, '#| msgid_plural') === 0) {
-                        QApplication::LogDebug('Found previous translated plural string');
+                        // NarroLogger::LogDebug('Found previous translated plural string');
                         $arrFields['PreviousUntranslatedPlural'] = $strLine;
                         while (!feof($hndFile)) {
                             $strLine = fgets($hndFile, 8192);
@@ -144,7 +144,7 @@
                     }
 
                     if (strpos($strLine, 'msgctxt ') === 0) {
-                        QApplication::LogDebug('Found string');
+                        // NarroLogger::LogDebug('Found string');
                         preg_match('/msgctxt\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgContext'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -158,7 +158,7 @@
                     }
 
                     if (strpos($strLine, 'msgid ') === 0) {
-                        QApplication::LogDebug('Found msgid');
+                        // NarroLogger::LogDebug('Found msgid');
                         preg_match('/msgid\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgId'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -172,7 +172,7 @@
                     }
 
                     if (strpos($strLine, 'msgid_plural') === 0) {
-                        QApplication::LogDebug('Found plural string');
+                        // NarroLogger::LogDebug('Found plural string');
                         preg_match('/msgid_plural\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgPluralId'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -186,7 +186,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr ') === 0) {
-                        QApplication::LogDebug('Found translation');
+                        // NarroLogger::LogDebug('Found translation');
                         preg_match('/msgstr\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -200,7 +200,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[0]') === 0) {
-                        QApplication::LogDebug('Found translation plural 1');
+                        // NarroLogger::LogDebug('Found translation plural 1');
                         preg_match('/msgstr\[0\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr0'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -214,7 +214,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[1]') === 0) {
-                        QApplication::LogDebug('Found translation plural 2');
+                        // NarroLogger::LogDebug('Found translation plural 2');
                         preg_match('/msgstr\[1\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr1'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -228,7 +228,7 @@
                     }
 
                     if (strpos($strLine, 'msgstr[2]') === 0) {
-                        QApplication::LogDebug('Found translation plural 3');
+                        // NarroLogger::LogDebug('Found translation plural 3');
                         preg_match('/msgstr\[2\]\s+\"(.*)\"/', $strLine, $arrMatches);
                         $arrFields['MsgStr2'] = str_replace('\"', '"', $arrMatches[1]);
                         while (!feof($hndFile)) {
@@ -267,7 +267,7 @@
 
                     $i = 1;
                     while(isset($arrGroupFields[$arrFields['MsgId'] . $arrFields['Context']])) {
-                        QApplication::LogDebug(sprintf('Found duplicate key for "%s", "%s", trying %s%s%d', $arrFields['MsgId'], $arrFields['Context'], $arrFields['MsgId'], $arrFields['Context'], $i));
+                        // NarroLogger::LogDebug(sprintf('Found duplicate key for "%s", "%s", trying %s%s%d', $arrFields['MsgId'], $arrFields['Context'], $arrFields['MsgId'], $arrFields['Context'], $i));
                         $arrFields['Context'] = $arrFields['Context'] . $i;
                         $i++;
                     }
@@ -278,10 +278,10 @@
                 }
             }
             else {
-                QApplication::LogError(sprintf('Cannot read "%s".', $strFile));
+                NarroLogger::LogError(sprintf('Cannot read "%s".', $strFile));
             }
 
-            QApplication::LogDebug(sprintf('Done reading contexts from %s', $this->objFile->FileName));
+            // NarroLogger::LogDebug(sprintf('Done reading contexts from %s', $this->objFile->FileName));
 
             return $arrGroupFields;
         }
@@ -289,7 +289,7 @@
         public function ExportFile($strTemplate, $strTranslatedFile) {
             $hndExportFile = fopen($strTranslatedFile, 'w');
             if (!$hndExportFile) {
-                QApplication::LogError(sprintf('Cannot create or write to "%s".', $strTranslatedFile));
+                NarroLogger::LogError(sprintf('Cannot create or write to "%s".', $strTranslatedFile));
                 return false;
             }
 
@@ -738,7 +738,7 @@
                         $strSuggestionValue = $arrResult[1];
                     }
                     else
-                        QApplication::LogWarn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strSuggestionValue, join(';', $arrResult)));
+                        NarroLogger::LogWarn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strSuggestionValue, join(';', $arrResult)));
 
                     if (!is_null($strOriginalAccKey) && !is_null($strOriginalAccKeyPrefix)) {
                         /**
@@ -751,12 +751,12 @@
                         return $strSuggestionValue;
                 }
                 else {
-                    QApplication::LogDebug(sprintf('No translation found for the text "%s", while searching for context "%s"', $strOriginal, $strContext));
+                    // NarroLogger::LogDebug(sprintf('No translation found for the text "%s", while searching for context "%s"', $strOriginal, $strContext));
                     return '';
                 }
             }
             else {
-                QApplication::LogError(sprintf('No context found for the text "%s", while searching for context "%s"', $strOriginal, $strContext));
+                NarroLogger::LogError(sprintf('No context found for the text "%s", while searching for context "%s"', $strOriginal, $strContext));
                 return '';
             }
         }

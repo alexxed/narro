@@ -125,8 +125,9 @@
                         }
                     }
                     $intElapsedPluginTime = time() - $intStartPluginTime;
-                    if ($intElapsedPluginTime)
-                        QApplication::LogDebug(sprintf('Processed method "%s" for the "%s" plugin in %d seconds', $objPlugin->Name, $strMethod, $intElapsedPluginTime));
+                    if ($intElapsedPluginTime) {
+                        // NarroLogger::LogDebug(sprintf('Processed method "%s" for the "%s" plugin in %d seconds', $objPlugin->Name, $strMethod, $intElapsedPluginTime));
+                    }
                 }
 
             switch((count($arrParameters))) {
@@ -137,7 +138,7 @@
 
             $intElapsedTime = time() - $intStartTime;
             if ($intElapsedTime)
-                QApplication::LogDebug(sprintf('Processed method "%s" for all plugins in %d seconds', $strMethod, $intElapsedTime));
+                // NarroLogger::LogDebug(sprintf('Processed method "%s" for all plugins in %d seconds', $strMethod, $intElapsedTime));
 
             return $mixReturn;
         }

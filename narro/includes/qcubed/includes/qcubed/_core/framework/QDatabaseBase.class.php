@@ -187,7 +187,7 @@
         */
         private function LogQuery($strQuery, $dblQueryTime) {
             if ($dblQueryTime > 2000)
-                QApplication::LogDebug(sprintf('Query took %d seconds: %s', $dblQueryTime, $strQuery));
+                // NarroLogger::LogDebug(sprintf('Query took %d seconds: %s', $dblQueryTime, $strQuery));
             if ($this->blnEnableProfiling) {
                 // Dereference-ize Backtrace Information
                 $objDebugBacktrace = debug_backtrace();

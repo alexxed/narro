@@ -93,40 +93,18 @@
 
         }
 
-        public static function LogError($strError) {
-            if (QApplication::$Logger)
-                QApplication::$Logger->log($strError, Zend_Log::ERR);
-        }
-
-        public static function LogInfo($strError) {
-            if (QApplication::$Logger)
-                QApplication::$Logger->log($strError, Zend_Log::INFO);
-        }
-
-        public static function LogWarn($strError) {
-            if (QApplication::$Logger)
-                QApplication::$Logger->log($strError, Zend_Log::WARN);
-        }
-
-        public static function LogDebug($strError) {
-            if (QApplication::$Logger && SERVER_INSTANCE == 'dev')
-                QApplication::$Logger->log($strError, Zend_Log::DEBUG);
-        }
-
-        public static function GetLogger() {
-            return QApplication::$Logger;
-        }
-
         public static function RegisterFormat($strName, $strPluginName) {
             self::$arrFileFormats[$strName] = $strPluginName;
         }
 
         public static function GetUserId() {
-            return self::$User->UserId;
+            if (self::$User instanceof NarroUser)
+                return self::$User->UserId;
         }
 
         public static function GetLanguageId() {
-            return self::$TargetLanguage->LanguageId;
+            if (self::$TargetLanguage instanceof NarroLanguage)
+                return self::$TargetLanguage->LanguageId;
         }
 
         public static function HasPermissionForThisLang($strPermissionName, $intProjectId = null) {
@@ -309,40 +287,18 @@
         public static function InitializeLogging($intProjectId = null) {
             global $argv;
 
-            require_once('Zend/Log.php');
-            require_once('Zend/Log/Writer/Stream.php');
-            require_once('Zend/Log/Writer/Firebug.php');
-            require_once('Zend/Log/Writer/Syslog.php');
             // project log via browser
-            if (is_numeric(@$_REQUEST['p'])) {
+            if (is_numeric(@$_REQUEST['p']))
                 $intProjectId = @$_REQUEST['p'];
-                $strLanguageCode = @$_REQUEST['l'];
-            }
             // project log via cli
-            elseif (isset($argv) && $intProjectId = $argv[array_search('--project', $argv)+1])
-                $strLanguageCode = $argv[array_search('--translation-lang', $argv)+1];
-            
-            if (!is_null($intProjectId) && !is_null($strLanguageCode))
-                QApplication::$LogFile = sprintf('%s/project-%d-%s.log', __TMP_PATH__, $intProjectId, $strLanguageCode);
-            elseif (!is_null($intProjectId))
-                QApplication::$LogFile = sprintf('%s/app-%s.log', __TMP_PATH__, $strLanguageCode);
-            else
-                QApplication::$LogFile = sprintf('%s/app.log', __TMP_PATH__);
-            
-            if (!file_exists(QApplication::$LogFile))
-                file_put_contents(QApplication::$LogFile, '');
-            chmod(QApplication::$LogFile, 0666);
-            
-            QApplication::$Logger = new Zend_Log();
-            QApplication::$Logger->addWriter(new Zend_Log_Writer_Stream(QApplication::$LogFile, 'a'));
-            
-            if (isset($argv[0]))
-                QApplication::$Logger->addWriter(new Zend_Log_Writer_Syslog());
+            elseif (isset($argv))
+                $intProjectId = $argv[array_search('--project', $argv)+1];
 
-            if (SERVER_INSTANCE == 'dev') {
-                QApplication::$Logger->addWriter(new Zend_Log_Writer_QFirebug());
-                QApplication::$Logger->addWriter(new Zend_Log_Writer_Syslog());
-            }
+            if (isset($intProjectId))
+                NarroLogger::$intProjectId = $intProjectId;
+            
+            NarroLogger::$intLanguageId = QApplication::GetLanguageId();
+            NarroLogger::$intUserId = QApplication::GetUserId();
         }
 
         public static function InitializeTranslationEngine() {

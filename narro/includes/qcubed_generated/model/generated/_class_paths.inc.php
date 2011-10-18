@@ -34,6 +34,13 @@
 		QApplicationBase::$ClassFile['narrolanguagemetacontrol'] = __META_CONTROLS__ . '/NarroLanguageMetaControl.class.php';
 		QApplicationBase::$ClassFile['narrolanguagedatagrid'] = __META_CONTROLS__ . '/NarroLanguageDataGrid.class.php';
 
+	// ClassPaths for the NarroLog class
+		QApplicationBase::$ClassFile['narrolog'] = __MODEL__ . '/NarroLog.class.php';
+		QApplicationBase::$ClassFile['qqnodenarrolog'] = __MODEL__ . '/NarroLog.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodenarrolog'] = __MODEL__ . '/NarroLog.class.php';
+		QApplicationBase::$ClassFile['narrologmetacontrol'] = __META_CONTROLS__ . '/NarroLogMetaControl.class.php';
+		QApplicationBase::$ClassFile['narrologdatagrid'] = __META_CONTROLS__ . '/NarroLogDataGrid.class.php';
+
 	// ClassPaths for the NarroPermission class
 		QApplicationBase::$ClassFile['narropermission'] = __MODEL__ . '/NarroPermission.class.php';
 		QApplicationBase::$ClassFile['qqnodenarropermission'] = __MODEL__ . '/NarroPermission.class.php';

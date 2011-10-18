@@ -14,12 +14,15 @@
      *
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+     *
+     * @property integer $LanguageId
+     * @property integer $ProjectId
      */
 
     class NarroLogViewerPanel extends QPanel {
-        protected $strLogFile;
-        protected $strLogContents;
-        protected $btnDownloadLog;
+        protected $intProjectId;
+        protected $intLanguageId;
+        protected $dttStart;
 
         public function __construct($objParentObject, $strControlId = null) {
             // Call the Parent
@@ -29,47 +32,45 @@
                 $objExc->IncrementOffset();
                 throw $objExc;
             }
-
-            $this->btnDownloadLog = new QButton($this);
-            $this->btnDownloadLog->Text = t('Download');
-
-            $this->btnDownloadLog->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnDownloadLog_Click'));
         }
 
         public function GetControlHtml() {
             $strLogContents = '';
 
-            if (file_exists($this->strLogFile)) {
-                $this->blnVisible = true;
-                $arrLogLine = preg_match_all('/([0-9]{4,4}\-[0-9]{2,2}-[0-9]{2,2}T[0-9]{2,2}:[0-9]{2,2}:[0-9]{2,2}[\+\-][0-9]{2,2}:[0-9]{2,2})\s([^\s]+)[^:]+:\s(.*)/', file_get_contents($this->strLogFile), $arrMatches);
-                foreach($arrMatches[0] as $intIndex=>$strMatch) {
-                    if (in_array($arrMatches[2][$intIndex], array('ERR', 'WARN', 'INFO')))
-                        $strLogContents .= sprintf('<div class="%s" title="%s">%s</div>', strtolower($arrMatches[2][$intIndex]), $arrMatches[1][$intIndex], nl2br(NarroString::HtmlEntities($arrMatches[3][$intIndex])));
+            foreach(NarroLog::QueryArray(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::NarroLog()->ProjectId, $this->intProjectId),
+                    QQ::Equal(QQN::NarroLog()->LanguageId, $this->intLanguageId),
+                    QQ::GreaterThan(QQN::NarroLog()->Date, $this->dttStart)
+                )
+            ) as $objLogEntry) {
+                switch($objLogEntry->Priority) {
+                    case NarroLog::PRIORITY_INFO:
+                        $strLogContents .= '<div class="info"';
+                        break;
+                    case NarroLog::PRIORITY_WARN:
+                        $strLogContents .= '<div class="warn"';
+                        break;
+                    case NarroLog::PRIORITY_ERROR:
+                        $strLogContents .= '<div class="error"';
+                        break;
+                    default:
+                        $strLogContents .= '<div';
                 }
-            }
-            else {
-                $this->blnVisible = false;
+                
+                $strLogContents .= sprintf('title="%s">%s</div>', $objLogEntry->Date, nl2br(NarroString::HtmlEntities($objLogEntry->Message)));
             }
 
             $this->strText = sprintf(
                 '<div class="section_title">%s</div>
                 <div class="section">
                     <div style="max-height:300px;overflow:auto">%s</div>
-                    <div align="right">%s</div>
                 </div>',
                 t('Operation log'),
-                $strLogContents,
-                $this->btnDownloadLog->Render(false)
+                $strLogContents
             );
 
             return parent::GetControlHtml();
-        }
-
-        public function btnDownloadLog_Click($strFormId, $strControlId, $strParameter) {
-            header('Content-type: text/plain');
-            header(sprintf('Content-Disposition: attachment; filename="%s.txt"', basename($this->strLogFile)));
-            readfile($this->strLogFile);
-            exit;
         }
 
         /////////////////////////
@@ -77,7 +78,6 @@
         /////////////////////////
         public function __get($strName) {
             switch ($strName) {
-                case "LogFile": return $this->strLogFile;
 
                 default:
                     try {
@@ -96,16 +96,33 @@
             $this->blnModified = true;
 
             switch ($strName) {
-                case "LogFile":
+                case "ProjectId":
                     try {
-                        $this->strLogFile = QType::Cast($mixValue, QType::String);
-                        $this->strDisplayStyle = QDisplayStyle::Block;
+                        $this->intProjectId = QType::Cast($mixValue, QType::Integer);
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
                         throw $objExc;
                     }
-
+                    
+                case "LanguageId":
+                    try {
+                        $this->intLanguageId = QType::Cast($mixValue, QType::Integer);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+                    
+                case "DateStart":
+                    try {
+                        $this->dttStart = QType::Cast($mixValue, 'QDateTime');
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+                    
                 default:
                     try {
                         parent::__set($strName, $mixValue);
