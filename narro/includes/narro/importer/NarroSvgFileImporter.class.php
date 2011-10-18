@@ -19,8 +19,7 @@
     class NarroSvgFileImporter extends NarroFileImporter {
         protected $objFile;
 
-        public function ExportFile($objFile, $strTemplate, $strTranslatedFile = null) {
-            $this->objFile = $objFile;
+        public function ExportFile($strTemplate, $strTranslatedFile = null) {
 
             if ($strFileContents = file_get_contents($strTemplate)) {
                 if (preg_match_all('/<flowPara[^>]+>([^<]+)<\/flowPara>/', $strFileContents, $arrMatches)) {
@@ -44,14 +43,13 @@
             }
         }
 
-        public function ImportFile($objFile, $strFileToImport, $strTranslatedFile = null) {
-            $this->objFile = $objFile;
+        public function ImportFile($strFileToImport, $strTranslatedFile = null) {
 
             if ($strFileContents = file_get_contents($strFileToImport)) {
                 if (preg_match_all('/<flowPara[^>]+>([^<]+)<\/flowPara>/', $strFileContents, $arrMatches)) {
                     foreach($arrMatches[0] as $intKey=>$strContext) {
                         if (trim($arrMatches[1][$intKey]) != '')
-                            $this->AddTranslation($objFile, $arrMatches[1][$intKey], null, null, null, $strContext);
+                            $this->AddTranslation($this->objFile, $arrMatches[1][$intKey], null, null, null, $strContext);
                     }
                 }
             }
