@@ -16,6 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      *
      * @property NarroProjectProgress $ProjectProgress
+     * @property NarroProject $Project
      */
 
     class NarroProjectTranslationProgressBar extends NarroTranslationProgressBar {
@@ -77,6 +78,15 @@
                 case "Project":
                     try {
                         $this->objProject = QType::Cast($mixValue, 'NarroProject');
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+                    
+                case "ProjectProgress":
+                    try {
+                        $this->objProjectProgress = QType::Cast($mixValue, 'NarroProjectProgress');
                         break;
                     } catch (QInvalidCastException $objExc) {
                         $objExc->IncrementOffset();
