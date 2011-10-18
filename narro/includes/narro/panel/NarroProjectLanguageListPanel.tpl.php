@@ -16,27 +16,5 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
+$_CONTROL->dtgLanguage->Render();
 
-    class NarroProjectLanguageListForm extends NarroGenericProjectForm {
-        protected function Form_Create() {
-            parent::Form_Create();
-            
-            $this->pnlMainTab->replaceTab(new NarroProjectLanguageListPanel($this->objProject, $this->pnlMainTab), t('Languages'));
-            $this->pnlMainTab->SelectedTab = t('Languages');
-        }
-        
-        protected function SetupNarroProject() {
-            // Lookup Object PK information from Query String (if applicable)
-            $intProjectId = QApplication::QueryString('p');
-            $this->objProject = NarroProject::Load(($intProjectId));
-
-            $this->pnlBreadcrumb->setElements(
-                NarroLink::ProjectList(t('Projects')),
-                $this->objProject->ProjectName
-            );
-        }
-    }
-
-    NarroProjectLanguageListForm::Run('NarroProjectLanguageListForm');
-?>
