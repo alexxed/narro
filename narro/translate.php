@@ -24,17 +24,23 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-
-            $this->pnlMainTab = new QTabPanel($this);
-            $this->pnlMainTab->UseAjax = false;
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Projects'), NarroLink::ProjectList());
-            $this->pnlTranslate = new NarroTranslatePanel($this->pnlMainTab);
-            $this->pnlMainTab->addTab($this->pnlTranslate, t('Translate'));
-            if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator'))
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Languages'), NarroLink::LanguageList());
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
-            $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Roles'), NarroLink::RoleList());
-
+            
+            if (QApplication::QueryString('p') < 1) {
+    
+                $this->pnlMainTab = new QTabPanel($this);
+                $this->pnlMainTab->UseAjax = false;
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Projects'), NarroLink::ProjectList());
+                $this->pnlTranslate = new NarroTranslatePanel($this->pnlMainTab);
+                $this->pnlMainTab->addTab($this->pnlTranslate, t('Translate'));
+                if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator'))
+                    $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Languages'), NarroLink::LanguageList());
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Roles'), NarroLink::RoleList());
+            }
+            else {
+                $this->pnlMainTab->replaceTab(new NarroTranslatePanel($this->pnlMainTab), t('Translate'));
+            }
+            
             $this->pnlMainTab->SelectedTab = t('Translate');
         }
     }
