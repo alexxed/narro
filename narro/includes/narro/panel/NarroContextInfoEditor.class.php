@@ -55,6 +55,7 @@
             $this->txtTranslation->ActionParameter = $objContextInfo->ContextInfoId;
             $this->txtTranslation->TextMode = QTextMode::MultiLine;
             $this->txtTranslation->CssClass = 'translation_box';
+            $this->txtTranslation->CrossScripting = QCrossScripting::Allow;
             $this->txtTranslation->Rows = 1;
             $this->txtTranslation->Width = '100%';
             $this->txtTranslation->DisplayStyle = QDisplayStyle::Block;
