@@ -38,20 +38,36 @@
 
             $this->objUser = $objUser;
 
-            $this->colSuggestion = new QDataGridColumn(t('Translated text'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->SuggestionValue, false)));
-            $this->colText = new QDataGridColumn(t('Original text'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colText_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Text->TextValue), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Text->TextValue, false)));
-            $this->colText->HtmlEntities = false;
-            $this->colLanguage = new QDataGridColumn(t('Language'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colLanguage_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->LanguageId), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->LanguageId, false)));
-            $this->colCreated = new QDataGridColumn(t('Created'), '<?= $_CONTROL->ParentControl->dtgSuggestions_colCreated_Render($_ITEM); ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Created), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroSuggestion()->Created, false)));
-            $this->colCreated->HtmlEntities = false;
-            $this->colCreated->Wrap = false;
-
             // Setup DataGrid
-            $this->dtgSuggestions = new NarroDataGrid($this);
+            $this->dtgSuggestions = new NarroSuggestionDataGrid($this);
             $this->dtgSuggestions->SetCustomStyle('padding', '5px');
             $this->dtgSuggestions->Title = sprintf(t('Translations made by <b>%s</b>'), $this->objUser->Username);
             //$this->dtgSuggestions->SetCustomStyle('margin-left', '15px');
 
+            $this->colSuggestion = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->SuggestionValue);
+            $this->colSuggestion->Name = t('Translated text');
+            $this->colSuggestion->Html = '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>';
+            
+            $this->colText = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->Text->TextValue);
+            $this->colText->Name = t('Original text');
+            $this->colText->Html = '<?= $_CONTROL->ParentControl->dtgSuggestions_colText_Render($_ITEM); ?>';
+            $this->colText->HtmlEntities = false;
+            
+            $this->colLanguage = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->Language->LanguageName);
+            $this->colLanguage->Name = t('Language');
+            $this->colLanguage->Filter = null;
+            foreach(NarroLanguage::LoadAllActive() as $objLanguage) {
+                $this->colLanguage->FilterAddListItem($objLanguage->LanguageName, QQ::Equal(QQN::NarroSuggestion()->LanguageId, $objLanguage->LanguageId));
+            }
+            $this->colLanguage->FilterActivate(QApplication::$TargetLanguage->LanguageName);
+            $this->colLanguage->Html = '<?= $_CONTROL->ParentControl->dtgSuggestions_colLanguage_Render($_ITEM); ?>';
+            
+            $this->colCreated = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->Language->LanguageName);
+            $this->colCreated->Name = t('Created');
+            $this->colCreated->FilterType = QFilterType::None;
+            $this->colCreated->Html = '<?= $_CONTROL->ParentControl->dtgSuggestions_colCreated_Render($_ITEM); ?>';
+            $this->colCreated->HtmlEntities = false;
+            $this->colCreated->Wrap = false;
 
             // Datagrid Paginator
             $this->dtgSuggestions->Paginator = new QPaginator($this->dtgSuggestions);
@@ -63,13 +79,15 @@
             // Specify the local databind method this datagrid will use
             $this->dtgSuggestions->SetDataBinder('dtgSuggestions_Bind', $this);
 
-            $this->dtgSuggestions->AddColumn($this->colText);
-            $this->dtgSuggestions->AddColumn($this->colSuggestion);
-            $this->dtgSuggestions->AddColumn($this->colCreated);
-            $this->dtgSuggestions->AddColumn($this->colLanguage);
-
             $this->dtgSuggestions->SortColumnIndex = 2;
             $this->dtgSuggestions->SortDirection = true;
+            
+            $this->dtgSuggestions->AdditionalClauses = array(
+                QQ::Expand(QQN::NarroSuggestion()->Text),
+                QQ::Expand(QQN::NarroSuggestion()->Language)
+            );
+            
+            $this->dtgSuggestions->btnFilter_Click($this->Form->FormId, $this->dtgSuggestions->FilterButton->ControlId, '');
         }
 
         public function dtgSuggestions_colSuggestion_Render( NarroSuggestion $objNarroSuggestion ) {
@@ -81,7 +99,7 @@
                 str_replace(
             		'?l=' . QApplication::$TargetLanguage->LanguageCode,
                 	'?l=' . $objNarroSuggestion->Language->LanguageCode,
-                    NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, "'" . $objNarroSuggestion->Text->TextValue . "'", 0, 0, 10, 0, 0, $objNarroSuggestion->Text->TextValue)
+                    NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, "'" . $objNarroSuggestion->Text->TextValue . "'", 0, 0, 10, 0, 0, NarroString::HtmlEntities($objNarroSuggestion->Text->TextValue))
                 );
         }
 
@@ -97,22 +115,7 @@
         }
 
         public function dtgSuggestions_Bind() {
-            // Get Total Count b/c of Pagination
-            //$this->dtgSuggestions->TotalItemCount = NarroSuggestion::CountByTextId($this->objNarroContext->TextId);
-
-            $objClauses = array();
-            if ($objClause = $this->dtgSuggestions->OrderByClause)
-                array_push($objClauses, $objClause);
-
-            // Add the LimitClause information, as well
-            if ($objClause = $this->dtgSuggestions->LimitClause)
-                array_push($objClauses, $objClause);
-            else
-                array_push($objClauses, QQ::LimitInfo($this->dtgSuggestions->ItemsPerPage));
-
-            $this->dtgSuggestions->TotalItemCount = NarroSuggestion::CountByUserId($this->objUser->UserId);
-            $this->dtgSuggestions->DataSource = NarroSuggestion::LoadArrayByUserId($this->objUser->UserId, $objClauses);
-
+            $this->dtgSuggestions->MetaDataBinder();
             QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
 

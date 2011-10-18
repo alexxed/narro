@@ -33,6 +33,10 @@
             }
             return $strText;
         }
+        
+        public static function EscapeQuote($strText, $strEncoding = 'utf-8') {
+            return str_replace('"', '\\"', $strText);
+        }
 
         public static function Replace($strNeedle, $strReplacement, $strText, $intCount = null) {
             if ($strText == '' || $strNeedle == '')

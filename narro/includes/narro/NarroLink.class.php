@@ -122,7 +122,7 @@
                 $intProjectId,
                 $strFilePath,
                 $intFilter,
-                $strSearch,
+                urlencode($strSearch),
                 $intSortBy,
                 $intSortDir,
                 $intMaxRowCount,
