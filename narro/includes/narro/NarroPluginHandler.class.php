@@ -137,8 +137,9 @@
             }
 
             $intElapsedTime = time() - $intStartTime;
-            if ($intElapsedTime)
+            if ($intElapsedTime) {
                 // NarroLogger::LogDebug(sprintf('Processed method "%s" for all plugins in %d seconds', $strMethod, $intElapsedTime));
+            }
 
             return $mixReturn;
         }

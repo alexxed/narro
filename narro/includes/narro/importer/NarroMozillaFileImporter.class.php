@@ -231,8 +231,9 @@
             $arrSourceKey = $this->FileAsArray($strTemplateFile);
 
             $intElapsedTime = time() - $intTime;
-            if ($intElapsedTime > 0)
+            if ($intElapsedTime > 0) {
                 // NarroLogger::LogDebug(sprintf('Preprocessing %s took %d seconds.', $this->objFile->FileName, $intElapsedTime));
+            }
 
             // NarroLogger::LogDebug(sprintf('Found %d contexts in file %s.', count($arrSourceKey), $this->objFile->FileName));
 
