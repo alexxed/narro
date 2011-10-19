@@ -17,7 +17,7 @@
      */
     require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
 
-    QApplication::$Cache->getBackend()->resetCache();
+    NarroCache::Reset();
 
     if ($_SERVER['HTTP_REFERER'])
         header('Location: ' . $_SERVER['HTTP_REFERER']);

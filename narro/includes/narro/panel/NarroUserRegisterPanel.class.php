@@ -87,10 +87,7 @@
             if (!$objUser instanceof NarroUser)
                 QApplication::Redirect(sprintf('login.php?l=%s', QApplication::$TargetLanguage->LanguageCode));
 
-            require_once 'Zend/Session/Namespace.php';
-            $objNarroSession = new Zend_Session_Namespace('Narro');
-            $objNarroSession->User = $objUser;
-            QApplication::$User = $objUser;
+            QApplication::$Session->User = $objUser;
             QApplication::Redirect(NarroLink::UserPreferences($objUser->UserId));
         }
 

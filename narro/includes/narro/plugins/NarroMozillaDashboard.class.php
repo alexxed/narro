@@ -31,8 +31,8 @@
         }
         
         public function AfterExportProject(NarroProject $objProject) {
-            $strCacheId = __CLASS__ . QApplication::GetLanguageId();
-            QApplication::$Cache->remove($strCacheId);
+            $objCache = new NarroCache(__CLASS__, QApplication::GetLanguageId());
+            $objCache->DeleteData();
         
             return array($objProject);
         }
@@ -40,14 +40,14 @@
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
             $strExportText = '';
             if ($objProject->ProjectType != NarroProjectType::Mozilla) return array($objProject, '');
-            $strCacheId = __CLASS__ . QApplication::GetLanguageId();
-            $objData = QApplication::$Cache->load($strCacheId);
+            $objCache = new NarroCache(__CLASS__, QApplication::GetLanguageId());
+            $objData = $objCache->GetData();
             if (!$objData) {
                 $strJson = @file_get_contents($this->strUrl);
                 if ($strJson) {
                     $objData = json_decode($strJson);
                     if ($objData) {
-                        QApplication::$Cache->save($objData, $strCacheId, array(), 3600);
+                        $objCache->SaveData($objData);
                     }
                     
                 }

@@ -27,7 +27,6 @@ if (!defined('__PREPEND_INCLUDED__')) {
     QApplication::InitializeDatabaseConnections();
     if (!isset($argv))
         QApplication::InitializeSession();
-    QApplication::InitializeCache();
     if (isset($argv))
         QApplication::$User = NarroUser::LoadAnonymousUser();
     else

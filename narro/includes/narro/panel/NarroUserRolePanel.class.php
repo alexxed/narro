@@ -211,7 +211,6 @@
 
             try {
                 $objUserRole->Save();
-                QApplication::ResetUser($objUserRole->UserId);
             } catch (QMySqliDatabaseException $objExc) {
                 if (strpos($objExc->getMessage(), 'Duplicate entry') === false) {
                     throw $objExc;
@@ -220,8 +219,6 @@
                     //
                 }
             }
-
-            QApplication::ResetUser($objUserRole->UserId);
 
             $this->dtgUserRole_Bind();
         }
@@ -257,7 +254,6 @@
                 return false;
 
             $objUserRole->Delete();
-            QApplication::ResetUser($objUserRole->UserId);
 
             $this->dtgUserRole_Bind();
         }

@@ -118,7 +118,8 @@
         public static function LoadAnonymousUser() {
 
 
-            $objUser = QApplication::$Cache->load('anonymous_user_' . self::ANONYMOUS_USER_ID);
+            $objCache = new NarroCache('user', self::ANONYMOUS_USER_ID);
+            $objUser = $objCache->GetData();
 
             if (!$objUser instanceof NarroUser) {
                 $objUser = NarroUser::LoadByUserId(self::ANONYMOUS_USER_ID);
@@ -130,7 +131,7 @@
                         $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
                 }
 
-                QApplication::$Cache->save($objUser, 'anonymous_user_' . self::ANONYMOUS_USER_ID, array(), 3600 * 24);
+                $objCache->SaveData($objUser);
             }
 
             if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {

@@ -62,7 +62,7 @@
     check_boolean('Database server connection', sprintf('Unable to connect to the database. Please check database settings in file "%s"', __CONFIGURATION__. '/configuration.narro.inc.php'), $link);
     check_boolean('Database selection', sprintf('Unable to select the database. Please check database settings in file "%s"', __CONFIGURATION__ . '/configuration.narro.inc.php'), mysql_select_db($arrConData['database'], $link));
 
-    $arrExtension = array('mysql', 'mbstring', 'gd', 'zip', 'ftp', 'soap', 'pspell', 'mysqli');
+    $arrExtension = array('mysql', 'mbstring', 'gd', 'zip', 'zlib', 'ftp', 'soap', 'pspell', 'mysqli');
     foreach($arrExtension as $strExtensionName) {
         check_boolean($strExtensionName . ' php extension loaded', sprintf('This version of Narro needs the %s php extension, please install php-%s or php5-%s', $strExtensionName, $strExtensionName, $strExtensionName), extension_loaded($strExtensionName));
     }
@@ -70,5 +70,7 @@
     check_boolean('mb_stripos present', 'This version of Narro needs mb_stripos, that\'s available only in php versions bigger than 5.2.0', function_exists('mb_stripos'));
     
     check_boolean('locale directory writable', sprintf('Please give write permissions for everyone (chmod 777) to the directory "%s"', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/'), is_writable(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/'));
+    
+    check_boolean('form states are properly restored', sprintf('This version of Narro needs the %s php extension, please install php-%s or php5-%s', $strExtensionName, $strExtensionName, $strExtensionName), extension_loaded($strExtensionName));
     
     require_once (dirname(__FILE__) . '/../../configuration/footer.inc.php');

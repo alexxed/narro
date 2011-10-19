@@ -15,29 +15,24 @@
      * You should have received a copy of the GNU General Public License along with this program; if not, write to the
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
-    $strPageTitle = t('Login');
+    class NarroSession {
+        public function __construct() {
+            session_name('narro');
+            session_set_cookie_params(31*24*3600, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
+            session_id('narro');
+            session_start();
+            global $_SESSION;
+            QFirebug::error($_SESSION);
+        }
+        public function __get($strName) {
+            global $_SESSION;
+            if (isset($_SESSION[$strName]))
+                return unserialize($_SESSION[$strName]);
+        }
+
+        public function __set($strName, $mixValue) {
+            global $_SESSION;
+            $_SESSION[$strName] = serialize($mixValue);
+        }
+    }
 ?>
-    <p><?php echo t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>
-    <br />
-    <?php $_CONTROL->lblMessage->Render() ?>
-    <table>
-        <tr>
-            <td><?php echo t('Username')?>:</td>
-            <td><?php $_CONTROL->txtUsername->Render() ?></td>
-        </tr>
-        <tr>
-            <td><?php echo t('Password')?>:</td>
-            <td><?php $_CONTROL->txtPassword->Render() ?></td>
-        </tr>
-        <tr>
-            <td><?php echo t('<a href="http://www.openid.net">OpenID</a>')?>:</td>
-            <td><?php $_CONTROL->txtOpenId->Render() ?></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><?php $_CONTROL->btnGoogleLogin->Render() ?></td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align:right"><?php $_CONTROL->btnLogin->Render() ?></td>
-        </tr>
-    </table>

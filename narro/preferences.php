@@ -155,9 +155,7 @@
             $this->objUser->Data = serialize($this->objUser->Preferences);
 
             if ($this->objUser->UserId == QApplication::GetUserId()) {
-                require_once 'Zend/Session/Namespace.php';
-                $objNarroSession = new Zend_Session_Namespace('Narro');
-                $objNarroSession->User = $this->objUser;
+                QApplication::$Session->User = $this->objUser;
             }
 
             /**

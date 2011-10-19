@@ -29,13 +29,6 @@
          * @var NarroPluginHandler
          */
         public static $PluginHandler;
-        /**
-         * @var Zend_Cache_Core
-         */
-        public static $Cache;
-        /**
-         * @var Zend_Session_Namespace
-         */
         public static $Session;
         /**
          * @var NarroLanguage
@@ -45,16 +38,6 @@
          * @var NarroLanguage
          */
         public static $SourceLanguage;
-        /**
-         * @var Zend_Translate
-         */
-        public static $TranslationEngine;
-        /**
-         * @var Zend_Log
-         */
-        public static $Logger;
-
-        public static $LogFile;
 
         /**
          * An array of Database objects, as initialized by QApplication::InitializeDatabaseConnections()
@@ -121,25 +104,6 @@
                 return false;
         }
 
-        /**
-         * Translation function, no plural suport yet in Zend_Translate
-         * @param $strText
-         * @param $strPlural
-         * @param $intCnt
-         * @return string
-         */
-        public static function Translate($strText, $strPlural = null, $intCnt = null) {
-            if (isset(self::$TranslationEngine))
-                return self::$TranslationEngine->_($strText);
-            else
-                return $strText;
-        }
-
-        public static function ResetUser($intUserId) {
-            foreach(QApplication::$Cache->getIdsMatchingTags(array('NarroUser' . $intUserId)) as $strCacheId)
-                QApplication::$Cache->remove($strCacheId);
-        }
-
         public static function GetBrowserLanguage() {
 
             if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
@@ -168,47 +132,7 @@
         }
 
         public static function InitializeSession() {
-            /////////////////////////////
-            // Start Session Handler (if required)
-            /////////////////////////////
-            require_once 'Zend/Session.php';
-            Zend_Session::setOptions(
-                array(
-                    'name'              => 'NARRO_ID',
-                    'cookie_lifetime'   => 31*24*3600,
-                    'gc_maxlifetime'    => 31*24*3600,
-                    'cookie_path'       => __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
-                )
-            );
-
-            require_once 'Zend/Session/Namespace.php';
-            QApplication::$Session = new Zend_Session_Namespace('Narro');
-        }
-
-        public static function InitializeCache() {
-            require_once 'Zend/Cache.php';
-
-
-            $frontendOptions = array(
-                'lifetime' => null, // cache forever
-                'automatic_serialization' => true,
-                'caching' => defined('__ZEND_CACHE_ENABLED__')?__ZEND_CACHE_ENABLED__:true
-            );
-
-            require_once __NARRO_INCLUDES__ . '/Zend_Cache_Backend_Pdomysql.php';
-            Zend_Cache::$standardExtendedBackends[] = 'Zend_Cache_Backend_Pdomysql';
-            Zend_Cache::$availableBackends[] = 'Zend_Cache_Backend_Pdomysql';
-            $arrDB = unserialize(DB_CONNECTION_1);
-
-            $backendOptions = array(
-                'host' => $arrDB['server'],
-                'port' => $arrDB['port'],
-                'dbname' => $arrDB['database'],
-                'user' => $arrDB['username'],
-                'password' => $arrDB['password'],
-            );
-
-            QApplication::$Cache = Zend_Cache::factory('Core', 'Zend_Cache_Backend_Pdomysql', $frontendOptions, $backendOptions, true, true, true);
+            self::$Session = new NarroSession();
         }
 
         public static function InitializeLanguage() {
@@ -264,8 +188,8 @@
         }
 
         public static function InitializeUser() {
-            if (isset(QApplication::$Session->User) && QApplication::$Session->User instanceof NarroUser) {
-                QApplication::$User = QApplication::$Session->User;
+            if (QApplication::$Session->User) {
+                QApplication::$User = QType::Cast(QApplication::$Session->User, 'NarroUser');
             }
             else {
                 QApplication::$User = NarroUser::LoadAnonymousUser();
@@ -297,23 +221,8 @@
         }
 
         public static function InitializeTranslationEngine() {
-            if (file_exists(__LOCALE_DIRECTORY__ . '/narro.mo')) {
-                require_once('Zend/Translate.php');
-                require_once('Zend/Translate/Adapter/Gettext.php');
-                try {
-                    QApplication::$TranslationEngine = new Zend_Translate(
-                        'gettext', __LOCALE_DIRECTORY__ . '/narro.mo',
-                        QApplication::$User->GetPreferenceValueByName('Application language'),
-                        array(
-                            'disableNotices'=>true
-                        )
-                    );
-                }
-                catch (Exception $objEx) {
-                    QFirebug::error($objEx);
-                    // gettext installed on the system does not support the language
-                }
-            }
+            QApplication::$LanguageCode = QApplication::$User->GetPreferenceValueByName('Application language');
+            QI18n::Initialize();
         }
     }
 ?>

@@ -32,9 +32,7 @@
                 if ($strPassHash && $strUsername) {
                     $objUser = NarroUser::LoadByUsernameAndPassword($strUsername, $strPassHash);
                     if ($objUser instanceof NarroUser) {
-                        require_once 'Zend/Session/Namespace.php';
-                        $objNarroSession = new Zend_Session_Namespace('Narro');
-                        $objNarroSession->User = $objUser;
+                        QApplication::$Session->User = $objUser;
                         QApplication::$User = $objUser;
                     }
                     else
@@ -65,9 +63,7 @@
                 $this->lblMessage->Text = t('Failed to change the password.');
             }
 
-            require_once 'Zend/Session/Namespace.php';
-            $objNarroSession = new Zend_Session_Namespace('Narro');
-            $objNarroSession->User = QApplication::$User;
+            QApplication::$Session->User = QApplication::$User;
             $this->lblMessage->ForeColor = 'green';
             $this->lblMessage->Text = t('Password changed succesfully.');
 

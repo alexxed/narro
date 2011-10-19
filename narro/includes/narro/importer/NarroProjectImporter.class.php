@@ -427,10 +427,6 @@
 
             }
 
-            foreach(QApplication::$Cache->getIdsMatchingTags(array('Project' . $this->objProject->ProjectId)) as $strCacheId) {
-                QApplication::$Cache->remove($strCacheId);
-            }
-
             return true;
         }
 
@@ -1065,7 +1061,7 @@
             $arrRoles = NarroRole::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroRole()->RoleName)));
             NarroLogger::LogInfo(sprintf('Found %d role names to localize.', count($arrRoles)));
 
-            $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'), null, '/.*\/drafts\/.*|.*\/data\/.*|.*\/qcubed\/.*|.*\/qcubed_generated\/.*|.*\/Zend\/.*/');
+            $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'), null, '/.*\/drafts\/.*|.*\/data\/.*|.*\/qcubed\/.*|.*\/qcubed_generated\/.*/');
 
             NarroLogger::LogInfo(sprintf('Found %d php files to search for localizable messages.', count($allFiles)));
             foreach($allFiles as $strFileName) {
@@ -1075,7 +1071,6 @@
                 $strShortPath = str_ireplace(realpath(__DOCROOT__ . __SUBDIRECTORY__) . '/', '', $strFileName);
 
                 if (strpos($strShortPath, 'data') === 0) continue;
-                if (strpos($strShortPath, 'includes/Zend') === 0) continue;
                 if (strpos($strShortPath, 'includes/qcubed_generated') === 0) continue;
 
                 $strFile = str_replace("\'", "&&&escapedsimplequote&&&", $strFile);

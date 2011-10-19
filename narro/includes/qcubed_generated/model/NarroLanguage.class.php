@@ -45,100 +45,27 @@
             return sprintf('NarroLanguage Object %s',  $this->intLanguageId);
         }
 
-        public static function Load($intLanguageId, $objOptionalClauses = null) {
-            $objLanguage = QApplication::$Cache->load('narrolanguage_' . $intLanguageId);
-
-            if (!$objLanguage instanceof NarroLanguage) {
-                $objLanguage = parent::Load($intLanguageId);
-                if ($objLanguage instanceof NarroLanguage) {
-                    QApplication::$Cache->save($objLanguage, 'narrolanguage_' . $intLanguageId, array('language', 'language' . $intLanguageId));
-                }
-            }
-
-            return $objLanguage;
-        }
-
-        public static function LoadAll($objOptionalClauses = null) {
-            $arrLanguage = QApplication::$Cache->load('narrolanguage_loadall_' . md5(serialize($objOptionalClauses)));
-
-            if (!$arrLanguage) {
-                $arrLanguage = parent::LoadAll($objOptionalClauses);
-                if ($arrLanguage) {
-                    QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadall_' . md5(serialize($objOptionalClauses)), array('language'));
-                }
-            }
-
-            return $arrLanguage;
-        }
-
         public static function LoadAllActive($objOptionalClauses = null) {
-            $arrLanguage = QApplication::$Cache->load('narrolanguage_loadallactive_' . md5(serialize($objOptionalClauses)));
-
-            if (!$arrLanguage) {
-                $arrLanguage = parent::QueryArray(
-                    QQ::Equal(QQN::NarroLanguage()->Active, 1),
-                    $objOptionalClauses
-                );
-                if ($arrLanguage) {
-                    QApplication::$Cache->save($arrLanguage, 'narrolanguage_loadallactive_' . md5(serialize($objOptionalClauses)), array('language'));
-                }
-            }
-
-            return $arrLanguage;
-        }
-
-        public static function CountAll() {
-            $intCount = QApplication::$Cache->load('narrolanguage_countall');
-
-            if (!$intCount) {
-                $intCount = parent::QueryCount(
-                    QQ::NotEqual(QQN::NarroLanguage()->LanguageCode, NarroLanguage::SOURCE_LANGUAGE_CODE)
-                );
-                if ($intCount) {
-                    QApplication::$Cache->save($intCount, 'narrolanguage_countall', array('language'));
-                }
-            }
-
-            return $intCount;
-        }
-
-        public static function CountAllActive() {
-            $intCount = QApplication::$Cache->load('narrolanguage_countallactive');
-
-            if (!$intCount) {
-                $intCount = parent::QueryCount(
+            return
+                parent::QueryArray(
                     QQ::AndCondition(
                         QQ::NotEqual(QQN::NarroLanguage()->LanguageCode, NarroLanguage::SOURCE_LANGUAGE_CODE),
                         QQ::Equal(QQN::NarroLanguage()->Active, 1)
-                    )
+                    ),
+                    $objOptionalClauses
                 );
-                if ($intCount) {
-                    QApplication::$Cache->save($intCount, 'narrolanguage_countallactive', array('language'));
-                }
-            }
-
-            return $intCount;
         }
 
-        public static function LoadByLanguageCode($strLanguageCode, $objOptionalClauses = null) {
-            if (preg_match('/[^a-zA-Z0-9\_\-]+/', $strLanguageCode))
-                return false;
-            $objLanguage = QApplication::$Cache->load('narrolanguage_' . str_replace('-', '_', $strLanguageCode));
-
-            if (!$objLanguage instanceof NarroLanguage) {
-                $objLanguage = parent::LoadByLanguageCode($strLanguageCode);
-                if ($objLanguage instanceof NarroLanguage) {
-                    QApplication::$Cache->save($objLanguage, 'narrolanguage_' . str_replace('-', '_', $strLanguageCode), array('language', 'language' . $objLanguage->LanguageId));
-                }
-            }
-
-            return $objLanguage;
+        public static function CountAllActive() {
+            return parent::QueryCount(
+                QQ::AndCondition(
+                    QQ::NotEqual(QQN::NarroLanguage()->LanguageCode, NarroLanguage::SOURCE_LANGUAGE_CODE),
+                    QQ::Equal(QQN::NarroLanguage()->Active, 1)
+                )
+            );
         }
 
         public function Save($blnForceInsert = false, $blnForceUpdate = false) {
-            foreach(QApplication::$Cache->getIdsMatchingTags(array('language')) as $strCacheId) {
-                QApplication::$Cache->remove($strCacheId);
-            }
 
             $mixResult = parent::Save($blnForceInsert, $blnForceUpdate);
 
@@ -151,19 +78,6 @@
 
             return $mixResult;
         }
-
-        public function Delete() {
-            foreach(QApplication::$Cache->getIdsMatchingTags(array('language')) as $strCacheId) {
-                QApplication::$Cache->remove($strCacheId);
-            }
-
-            parent::Delete();
-        }
-
-        // Override or Create New Properties and Variables
-        // For performance reasons, these variables and __set and __get override methods
-        // are commented out.  But if you wish to implement or override any
-        // of the data generated properties, please feel free to uncomment them.
 
         public function __get($strName) {
             switch ($strName) {
@@ -182,26 +96,6 @@
                     }
             }
         }
-/*
-        public function __set($strName, $mixValue) {
-            switch ($strName) {
-                case 'SomeNewProperty':
-                    try {
-                        return ($this->strSomeNewProperty = QType::Cast($mixValue, QType::String));
-                    } catch (QInvalidCastException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
 
-                default:
-                    try {
-                        return (parent::__set($strName, $mixValue));
-                    } catch (QCallerException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
-            }
-        }
-*/
     }
 ?>

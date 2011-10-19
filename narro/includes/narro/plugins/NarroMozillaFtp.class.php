@@ -28,11 +28,12 @@
         
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
             $strExportText = '';
-
+            
+            $objCache = new NarroCache(QApplication::GetLanguageId() . '/' . $objProject->ProjectId, __CLASS__);
+            $arrData = $objCache->GetData();
+            
             switch($objProject->ProjectName) {
                 case 'Fennec Aurora':
-                    $strCacheId = __CLASS__ . QApplication::GetLanguageId() . 'p' . $objProject->ProjectId;
-                    $arrData = QApplication::$Cache->load($strCacheId);
                     if ($arrData)
                         return $arrData;
                     // set up basic connection
@@ -58,7 +59,7 @@
                             $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
                             $arrLink[] = sprintf('<a title="Download a localized nightly build %s built %s ago" href="ftp://ftp.mozilla.org%s">win32</a>', $arrMatches[1], $objDateSpan->SimpleDisplay(), $strFile);
                         }
-                    }   
+                    }
                     
                     $contents = ftp_nlist($conn_id, "/pub/mobile/nightly/latest-mozilla-aurora-macosx-l10n");
                     if (is_array($contents))
@@ -67,7 +68,7 @@
                             $objDateSpan = new QDateTimeSpan(time() - ftp_mdtm($conn_id, $strFile));
                             $arrLink[] = sprintf('<a title="Download a localized nightly build %s built %s ago" href="ftp://ftp.mozilla.org%s">mac</a>', $arrMatches[1], $objDateSpan->SimpleDisplay(), $strFile);
                         }
-                    }                
+                    }
                     
                     $contents = ftp_nlist($conn_id, "/pub/mobile/nightly/latest-mozilla-aurora-android");
                     if (is_array($contents))
@@ -81,7 +82,7 @@
                     $strLinks = join(', ', $arrLink);
                     if ($strLinks != '') {
                         $arrData = array($objProject, sprintf('nightly: %s', $strLinks));
-                        QApplication::$Cache->save($arrData, $strCacheId, array(), 43200);
+                        $objCache->SaveData($arrData);
                         return $arrData;
                     }
                     else {
@@ -89,8 +90,6 @@
                     }
                     
                 case 'Firefox Aurora':
-                    $strCacheId = __CLASS__ . QApplication::GetLanguageId() . 'p' . $objProject->ProjectId;
-                    $arrData = QApplication::$Cache->load($strCacheId);
                     if ($arrData)
                         return $arrData;
                     // set up basic connection
@@ -134,7 +133,7 @@
                     $strLinks = join(', ', $arrLink);
                     if ($strLinks != '') {
                         $arrData = array($objProject, sprintf('nightly: %s', $strLinks));
-                        QApplication::$Cache->save($arrData, $strCacheId, array(), 43200);
+                        $objCache->SaveData($arrData);
                         return $arrData;
                     }
                     else {
@@ -143,7 +142,6 @@
                     
                 case 'Thunderbird Aurora':
                     $strCacheId = __CLASS__ . QApplication::GetLanguageId() . 'p' . $objProject->ProjectId;
-                    $arrData = QApplication::$Cache->load($strCacheId);
                     if ($arrData)
                     return $arrData;
                     // set up basic connection
@@ -185,7 +183,7 @@
                     $strLinks = join(', ', $arrLink);
                     if ($strLinks != '') {
                         $arrData = array($objProject, sprintf('nightly: %s', $strLinks));
-                        QApplication::$Cache->save($arrData, $strCacheId, array(), 43200);
+                        $objCache->SaveData($arrData);
                         return $arrData;
                     }
                     else {

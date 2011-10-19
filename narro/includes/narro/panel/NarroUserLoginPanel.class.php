@@ -1,11 +1,13 @@
 <?php
-
+    require_once(__NARRO_INCLUDES__ . '/lightopenid/openid.php');
     class NarroUserLoginPanel extends QPanel {
         public $lblMessage;
         public $txtUsername;
         public $txtPassword;
         public $btnLogin;
         public $txtPreviousUrl;
+        public $txtOpenId;
+        public $btnGoogleLogin;
 
         public function __construct($objParentObject, $strControlId = null) {
             // Call the Parent
@@ -20,201 +22,111 @@
 
             $this->lblMessage = new QLabel($this);
             $this->lblMessage->HtmlEntities = false;
+            
             $this->txtUsername = new QTextBox($this, 'username');
             $this->txtUsername->TabIndex = 1;
+            
+            $this->txtOpenId = new QTextBox($this, 'openid');
+            $this->txtOpenId->TabIndex = 1;
+            
             $this->txtPassword = new QTextBox($this, 'password');
             $this->txtPassword->TabIndex = 2;
             $this->txtPassword->TextMode = QTextMode::Password;
+            
             $this->btnLogin = new QButton($this);
             $this->btnLogin->Text = t('Login');
             $this->btnLogin->PrimaryButton = true;
             $this->btnLogin->TabIndex = 3;
             $this->btnLogin->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnLogin_Click'));
+            
+            $this->btnGoogleLogin = new QButton($this);
+            $this->btnGoogleLogin->Text = t('Login with your Google account');
+            $this->btnGoogleLogin->PrimaryButton = false;
+            $this->btnGoogleLogin->TabIndex = 4;
+            $this->btnGoogleLogin->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnGoogleLogin_Click'));
 
             if (isset($_SERVER['HTTP_REFERER']) && !strstr($_SERVER['HTTP_REFERER'], basename(__FILE__)) && $_SERVER['HTTP_REFERER'] !='')
                 $this->txtPreviousUrl = $_SERVER['HTTP_REFERER'];
 
-            if (isset($_REQUEST['openid_mode'])) {
-                require_once "Zend/Uri.php";
-                require_once "Zend/Uri/Http.php";
-                require_once "Zend/Auth.php";
-                require_once "Zend/Auth/Adapter/OpenId.php";
-                require_once "Zend/Auth/Storage/NonPersistent.php";
-
-                $auth = Zend_Auth::getInstance();
-                $auth->authenticate(new Zend_Auth_Adapter_OpenId($this->txtUsername->Text));
-
-                if ($auth->hasIdentity()) {
-                    $objUser = NarroUser::LoadByUsername($auth->getIdentity());
-                    require_once 'Zend/Session/Namespace.php';
-                    $objNarroSession = new Zend_Session_Namespace('Narro');
-
-                    if (!$objUser instanceof NarroUser) {
-                        try {
-                            $objUser = NarroUser::RegisterUser($auth->getIdentity(), $auth->getIdentity(), '');
+            $openid = new LightOpenID($_SERVER['HTTP_HOST']);
+            if ($openid->mode) {
+                if ($openid->mode == 'cancel') {
+                    $this->lblMessage->Text = t('The user has canceled authentication');
+                    $this->lblMessage->ForeColor = 'red';
+                }
+                else {
+                    if ($openid->validate()) {
+                        $arrAttributes = $openid->getAttributes();
+                        
+                        $objUser = NarroUser::LoadByUsername($openid->identity);
+    
+                        if (!$objUser instanceof NarroUser) {
+                            try {
+                                $objUser = NarroUser::RegisterUser($openid->identity, $openid->identity, '');
+                                if (isset($arrAttributes['namePerson']))
+                                    $objUser->Username = $arrAttributes['namePerson'];
+                                if (isset($arrAttributes['contact/email']))
+                                    $objUser->Email = $arrAttributes['contact/email'];
+                                $objUser->Save();
+                            }
+                            catch (Exception $objEx) {
+                                $this->lblMessage->ForeColor = 'red';
+                                $this->lblMessage->Text = t('Failed to create an associated user for this OpenId') . $objEx->getMessage() . var_export($openid->identity, true);
+                                return false;
+                            }
+    
+                            QApplication::$Session->User = $objUser;
+                            QApplication::Redirect(NarroLink::UserPreferences($objUser->UserId));
                         }
-                        catch (Exception $objEx) {
+                        elseif ($objUser->Password != md5('')) {
                             $this->lblMessage->ForeColor = 'red';
-                            $this->lblMessage->Text = t('Failed to create an associated user for this OpenId') . $objEx->getMessage() . var_export($auth->getIdentity(), true);
+                            $this->lblMessage->Text = t('This user has a password set, please login with that instead');
                             return false;
                         }
-
-                        $objNarroSession->User = $objUser;
-                        QApplication::Redirect(NarroLink::UserPreferences($objUser->UserId));
+    
+                        QApplication::$Session->User = $objUser;
+                        QApplication::$User = $objUser;
+                        
+                        if ($this->txtPreviousUrl)
+                            QApplication::Redirect($this->txtPreviousUrl);
+                        else
+                            QApplication::Redirect(NarroLink::ProjectList());
                     }
-                    elseif ($objUser->Password != md5('')) {
+                    else {
+                        $this->lblMessage->Text = t('OpenID login failed');
                         $this->lblMessage->ForeColor = 'red';
-                        $this->lblMessage->Text = t('This user has a password set, please login with that instead');
-                        return false;
                     }
-
-                    $objNarroSession->User = $objUser;
-
-                    QApplication::$User = $objUser;
-                    if ($this->txtPreviousUrl)
-                        QApplication::Redirect($this->txtPreviousUrl);
-                    else
-                        QApplication::Redirect(NarroLink::ProjectList());
                 }
             }
         }
+        
+        public function btnGoogleLogin_Click($strFormId, $strControlId, $strParameter) {
+            $openid = new LightOpenID($_SERVER['HTTP_HOST']);
+            $openid->identity = 'https://www.google.com/accounts/o8/id';
+            header('Location: ' . $openid->authUrl());
+            exit;
+        }
 
         public function btnLogin_Click($strFormId, $strControlId, $strParameter) {
-            if (trim($this->txtPassword->Text) == '') {
-                require_once "Zend/Uri.php";
-                require_once "Zend/Uri/Http.php";
-                require_once "Zend/Http/Client/Adapter/Socket.php";
-                require_once "Zend/Auth.php";
-                require_once "Zend/Auth/Adapter/OpenId.php";
-                require_once "Zend/Auth/Storage/NonPersistent.php";
-
-                $this->txtUsername->Text = preg_replace('/\/$/', '', $this->txtUsername->Text);
-
-                $status = "";
-                $auth = Zend_Auth::getInstance();
-                $result = $auth->authenticate(new Zend_Auth_Adapter_OpenId($this->txtUsername->Text));
-                if ($result->isValid()) {
-                    Zend_OpenId::redirect(Zend_OpenId::selfURL());
-                } else {
-                    $auth->clearIdentity();
-                    foreach ($result->getMessages() as $message) {
-                        $status .= "$message<br>\n";
-                    }
+            if ($this->txtOpenId->Text != '') {
+                try {
+                    $openid = new LightOpenID($_SERVER['HTTP_HOST']);
+                    $openid->identity = $this->txtOpenId->Text;
+                    $openid->required = array('contact/email', 'namePerson');
+                    header('Location: ' . $openid->authUrl());
+                    exit;
+                } catch(Exception $objEx) {
+                    $this->lblMessage->Text = sprintf(t('OpenID login failed: %s'), $objEx->getMessage());
                     $this->lblMessage->ForeColor = 'red';
-                    $this->lblMessage->Text = 'OpenId: ' . $status;
-                    return false;
                 }
             }
             else {
                 $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text));
-
-                /**
-                 * If the stored password is empty, try to authenticate against an external database
-                 */
-                if (defined('__AUTH_EXTERNAL_DB_HOST__') &&
-                    !$objUser instanceof NarroUser &&
-                    NarroUser::QueryCount(
-                        QQ::AndCondition(QQ::Equal(QQN::NarroUser()->Username, $this->txtUsername->Text), QQ::NotEqual(QQN::NarroUser()->Password, md5('')))
-                    ) == 0
-                    ) {
-                    require_once "Zend/Auth.php";
-                    require_once "Zend/Auth/Adapter/DbTable.php";
-                    require_once "Zend/Db/Adapter/Pdo/Mysql.php";
-                    require_once "Zend/Db/Adapter/Pdo/Pgsql.php";
-                    require_once "Zend/Db/Adapter/Pdo/Mssql.php";
-                    require_once "Zend/Db/Adapter/Pdo/Sqlite.php";
-
-                    $external_db = Zend_Db::factory('Pdo_Mysql', array(
-                        'host'     => __AUTH_EXTERNAL_DB_HOST__,
-                        'username' => __AUTH_EXTERNAL_DB_USERNAME__,
-                        'password' => __AUTH_EXTERNAL_DB_PASSWORD__,
-                        'dbname'   => __AUTH_EXTERNAL_DB_NAME__
-                    ));
-
-                    try {
-                        $external_db->getServerVersion();
-                    }
-                    catch (Exception $objEx) {
-                        $this->lblMessage->ForeColor = 'red';
-                        $this->lblMessage->Text = sprintf(t('There was an error while trying to authenticate you against an external database: %s'), $objEx->getMessage());
-                        return false;
-                    }
-
-                    /**
-                     * your_user is the table name from the external database
-                     * username is a unique identifier
-                     * password is something that will be checked with MD5 in this example
-                     *   feel free to change MD5 with PASSWORD or even add extra conditions
-                     *   example: MD5(?) AND active <> 0
-                     */
-                    try {
-
-                        $auth_adapter = new Zend_Auth_Adapter_DbTable(
-                            $external_db,
-                            __AUTH_EXTERNAL_DB_TABLE__,
-                            __AUTH_EXTERNAL_DB_TABLE_USER_FIELD__,
-                            __AUTH_EXTERNAL_DB_TABLE_PASSWORD_FIELD__,
-                            __AUTH_EXTERNAL_DB_TABLE_PASSWORD_FUNCTION__
-                        );
-
-                        /**
-                         * set here the username and password provided by the user on the external login page
-                         */
-                        $auth_adapter->setIdentity($this->txtUsername->Text);
-                        $auth_adapter->setCredential($this->txtPassword->Text);
-
-                        $auth = Zend_Auth::getInstance();
-                        $result = $auth->authenticate($auth_adapter);
-                    }
-                    catch (Exception $objEx) {
-                        $this->lblMessage->ForeColor = 'red';
-                        $this->lblMessage->Text = sprintf(t('There was an error while trying to authenticate you against an external database: %s'), $objEx->getMessage());
-                        return false;
-                    }
-
-                    if ($result->isValid()) {
-                        /**
-                         * Try loading the user from Narro
-                         */
-                        $objUser = NarroUser::LoadByUsername($auth->getIdentity());
-
-                        /**
-                         * Register the user in Narro if not registered yet
-                         */
-                        if (!$objUser instanceof NarroUser) {
-                            try {
-                                $objUser = NarroUser::RegisterUser($auth->getIdentity(), $auth->getIdentity(), '');
-//                                /**
-//                                 * If you want to assing an extra role, here's a bit of code to do so
-//                                 */
-//                                $objUserRole = new NarroUserRole();
-//
-//                                $objUserRole->RoleId = 1;
-//                                $objUserRole->UserId = $objUser->UserId;
-//
-//                                /**
-//                                 * LanguageId and ProjectId are optional, if not set, the role is valid for any project or language
-//                                 */
-//                                $objUserRole->ProjectId = 1;
-//                                $objUserRole->LanguageId = 1;
-//
-//                                $objUserRole->Save();
-                            }
-                            catch( Exception $objEx ) {
-                                $this->lblMessage->ForeColor = 'red';
-                                $this->lblMessage->Text = sprintf(t('The authentication against an external database suceeded, but the registration in Narro failed: %s'), $objEx->getMessage());
-                                return false;
-                            }
-                        }
-                    }
-                }
             }
 
             if ($objUser instanceof NarroUser) {
-                require_once 'Zend/Session/Namespace.php';
-                $objNarroSession = new Zend_Session_Namespace('Narro');
-                $objNarroSession->User = $objUser;
-
+                QApplication::$Session->User = $objUser;
+                
                 QApplication::$User = $objUser;
                 if ($this->txtPreviousUrl)
                     QApplication::Redirect($this->txtPreviousUrl);

@@ -139,9 +139,7 @@
                 return false;
             }
             if ($this->objNarroUser->UserId == QApplication::GetUserId()) {
-                require_once 'Zend/Session/Namespace.php';
-                $objNarroSession = new Zend_Session_Namespace('Narro');
-                $objNarroSession->User = $this->objNarroUser;
+                QApplication::$Session->User = $this->objNarroUser;
             }
             else {
                 /**

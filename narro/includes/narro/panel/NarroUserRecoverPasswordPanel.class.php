@@ -60,30 +60,34 @@
                     $this->lblMessage->Text = t('Hey, the anonymous user doesn\'t have a password. What are you trying to do?');
                     return false;
                 }
-
-                require_once('Zend/Mail.php');
-
-                $objEmailMessage = new Zend_Mail('UTF-8');
-                $objEmailMessage->setBodyText(
-                    sprintf(
-                        t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this link: %s'),
-                        $objUser->Username,
-                        $_SERVER['HTTP_HOST'],
-                        ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')?'https://':'http://') . $_SERVER['HTTP_HOST'] . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . sprintf('/change_password.php?l=%s&u=%s&h=%s', QApplication::$TargetLanguage->LanguageCode, $objUser->Username, $objUser->Password)
-                    )
+                
+                $objMessage = new QEmailMessage();
+                $objMessage->From = sprintf('%s <%s>', __FROM_EMAIL_NAME__, __FROM_EMAIL_ADDRESS__);
+                $objMessage->To = sprintf('%s <%s>', $objUser->Username, $objUser->Email);
+                $objMessage->Subject = sprintf(t('Password recovery for "%s" on "%s"'), $objUser->Username, $_SERVER['HTTP_HOST']);
+                
+                $objMessage->Body = strip_tags(sprintf(
+                    t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this link: %s'),
+                    $objUser->Username,
+                    $_SERVER['HTTP_HOST'],
+                    ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')?'https://':'http://') . $_SERVER['HTTP_HOST'] . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . sprintf('/change_password.php?l=%s&u=%s&h=%s', QApplication::$TargetLanguage->LanguageCode, $objUser->Username, $objUser->Password)
+                ));
+                
+                $objMessage->HtmlBody = sprintf(
+                    t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this link: %s'),
+                    $objUser->Username,
+                    $_SERVER['HTTP_HOST'],
+                    ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')?'https://':'http://') . $_SERVER['HTTP_HOST'] . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . sprintf('/change_password.php?l=%s&u=%s&h=%s', QApplication::$TargetLanguage->LanguageCode, $objUser->Username, $objUser->Password)
                 );
-                $objEmailMessage->setFrom(__FROM_EMAIL_ADDRESS__, __FROM_EMAIL_NAME__);
-                $objEmailMessage->addTo($objUser->Email, $objUser->Username);
-                $objEmailMessage->setSubject(sprintf(t('Password recovery for "%s" on "%s"'), $objUser->Username, $_SERVER['HTTP_HOST']));
 
                 try {
-                    $objEmailMessage->send();
+                    QEmailServer::Send($objMessage);
                     $this->lblMessage->ForeColor = 'green';
                     $this->lblMessage->Text = t('You should have a new email message with instructions. Check your spam/bulk directory too.');
                 } catch (Exception $objEx) {
-                        $this->lblMessage->ForeColor = 'red';
-                        $this->lblMessage->Text = t('Failed to send email. This may be a server issue. Please try again later.');
-                        return false;
+                    $this->lblMessage->ForeColor = 'red';
+                    $this->lblMessage->Text = t('Failed to send email. This may be a server issue. Please try again later.');
+                    return false;
                 }
             }
             else {
