@@ -22,7 +22,6 @@
             session_id('narro');
             session_start();
             global $_SESSION;
-            QFirebug::error($_SESSION);
         }
         public function __get($strName) {
             global $_SESSION;

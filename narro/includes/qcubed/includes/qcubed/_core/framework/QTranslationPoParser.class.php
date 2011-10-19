@@ -22,6 +22,7 @@ class QTranslationPoParser implements QTranslationBase {
 				$strCode = $strLanguageCode;
 				$strLanguageFiles = array(
 				__QCUBED_CORE__ . '/i18n/' . $strLanguageCode . '.po',
+				__LOCALE_DIRECTORY__ . '/narro.po',
 				__QI18N_PO_PATH__ . '/' . $strLanguageCode . '.po'
 				);
 			}

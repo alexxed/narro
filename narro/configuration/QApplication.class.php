@@ -221,8 +221,10 @@
         }
 
         public static function InitializeTranslationEngine() {
+            require_once(__NARRO_INCLUDES__ . '/gettext_reader.class.php');
+            require_once(__NARRO_INCLUDES__ . '/StreamReader.class.php');
             QApplication::$LanguageCode = QApplication::$User->GetPreferenceValueByName('Application language');
-            QI18n::Initialize();
+            QI18n::Initialize('NarroPoParser');
         }
     }
 ?>

@@ -9,8 +9,8 @@ if (!defined('__PREPEND_INCLUDED__')) {
 
     QDateTime::$DefaultFormat = QDateTime::FormatIso;
 
-    function t($strText, $strPlural = null, $intCnt = null) {
-        return QApplication::Translate($strText, $strPlural, $intCnt);
+    function t($strText) {
+        return QApplication::Translate($strText);
     }
 
     ///////////////////////
