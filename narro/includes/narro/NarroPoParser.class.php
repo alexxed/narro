@@ -14,13 +14,18 @@ class NarroPoParser implements QTranslationBase {
 	    self::$objGettextTables = new gettext_reader(
 	        new CachedFileReader(__LOCALE_DIRECTORY__ . '/narro.mo')
 	    );
-	    self::$objGettextTables->load_tables();
+	    
+	    if (self::$objGettextTables->STREAM instanceof CachedFileReader)
+	        self::$objGettextTables->load_tables();
 	    
 	    return new self();
 	}
 
 	public function TranslateToken($strToken) {
-		return self::$objGettextTables->translate($strToken);
+	    if (self::$objGettextTables instanceof gettext_reader)
+	        return self::$objGettextTables->translate($strToken);
+	    else
+	        return $strToken;
 	}
 
 }

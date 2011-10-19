@@ -5,11 +5,11 @@
 	 * is saved in its own file, and only the form state that is needed for loading will
 	 * be accessed (as opposed to with session, ALL the form states are loaded into memory
 	 * every time).
-	 * 
+	 *
 	 * The downside is that because it doesn't utilize PHP's session management subsystem,
 	 * this class must take care of its own garbage collection/deleting of old/outdated
 	 * formstate files.
-	 * 
+	 *
 	 * Because the index is randomy generated and MD5-hashed, there is no benefit from
 	 * encrypting it -- therefore, the QForm encryption preferences are ignored when using
 	 * QFileFormStateHandler.
@@ -44,7 +44,7 @@
 		 * The minimum age (in days) a formstate file has to be in order to be considered old enough
 		 * to be garbage collected.  So if set to "1.5", then all formstate files older than 1.5 days
 		 * will be deleted when the GC interval is kicked off.
-		 * 
+		 *
 		 * Obviously, if the GC Interval is set to 0, then this GC Days Old value will be never used.
 		 *
 		 * @var integer GarbageCollectDaysOld
@@ -55,7 +55,7 @@
 		 * If PHP SESSION is enabled, then this method will delete all formstate files specifically
 		 * for this SESSION user (and no one else).  This can be used in lieu of or in addition to the
 		 * standard interval-based garbage collection mechanism.
-		 * 
+		 *
 		 * Also, for standard web applications with logins, it might be a good idea to call
 		 * this method whenever the user logs out.
 		 */
@@ -108,8 +108,8 @@
 			}
 
 			// Compress (if available)
-			if (function_exists('gzcompress'))
-				$strFormState = gzcompress($strFormState, 9);
+			if (__COMPRESS_FORM_STATES__ && function_exists('gzdeflate'))
+				$strFormState = gzdeflate($strFormState);
 
 			// Figure Out Session Id (if applicable)
 			$strSessionId = session_id();
@@ -157,8 +157,8 @@
 				$strSerializedForm = file_get_contents($strFilePath);
 
 				// Uncompress (if available)
-				if (function_exists('gzcompress'))
-					$strSerializedForm = gzuncompress($strSerializedForm);
+				if (__COMPRESS_FORM_STATES__ && function_exists('gzinflate'))
+					$strSerializedForm = gzinflate($strSerializedForm);
 
 				return $strSerializedForm;
 			} else
