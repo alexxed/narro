@@ -14,8 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Mime
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Part.php 23775 2011-03-01 17:25:24Z ralph $
  */
 
 /**
@@ -24,16 +25,11 @@
 require_once 'Zend/Mime.php';
 
 /**
- * Zend_Mime_Exception
- */
-require_once 'Zend/Mime/Exception.php';
-
-/**
  * Class representing a MIME part.
  *
  * @category   Zend
  * @package    Zend_Mime
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Mime_Part {
@@ -96,6 +92,7 @@ class Zend_Mime_Part {
     public function getEncodedStream()
     {
         if (!$this->_isStream) {
+            require_once 'Zend/Mime/Exception.php';
             throw new Zend_Mime_Exception('Attempt to get a stream from a string part');
         }
 
@@ -112,6 +109,7 @@ class Zend_Mime_Part {
                     )
                 );
                 if (!is_resource($filter)) {
+                    require_once 'Zend/Mime/Exception.php';
                     throw new Zend_Mime_Exception('Failed to append quoted-printable filter');
                 }
                 break;
@@ -126,6 +124,7 @@ class Zend_Mime_Part {
                     )
                 );
                 if (!is_resource($filter)) {
+                    require_once 'Zend/Mime/Exception.php';
                     throw new Zend_Mime_Exception('Failed to append base64 filter');
                 }
                 break;
@@ -147,6 +146,19 @@ class Zend_Mime_Part {
             return Zend_Mime::encode($this->_content, $this->encoding, $EOL);
         }
     }
+    
+    /**
+     * Get the RAW unencoded content from this part
+     * @return string
+     */
+    public function getRawContent()
+    {
+        if ($this->_isStream) {
+            return stream_get_contents($this->_content);
+        } else {
+            return $this->_content;
+        }
+    }
 
     /**
      * Create and return the array of headers for this MIME part
@@ -160,7 +172,7 @@ class Zend_Mime_Part {
 
         $contentType = $this->type;
         if ($this->charset) {
-            $contentType .= '; charset="' . $this->charset . '"';
+            $contentType .= '; charset=' . $this->charset;
         }
 
         if ($this->boundary) {
@@ -189,11 +201,11 @@ class Zend_Mime_Part {
         if ($this->description) {
             $headers[] = array('Content-Description', $this->description);
         }
-        
+
         if ($this->location) {
             $headers[] = array('Content-Location', $this->location);
         }
-        
+
         if ($this->language){
             $headers[] = array('Content-Language', $this->language);
         }

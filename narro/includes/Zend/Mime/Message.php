@@ -14,8 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Mime
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Message.php 23775 2011-03-01 17:25:24Z ralph $
  */
 
 
@@ -33,7 +34,7 @@ require_once 'Zend/Mime/Part.php';
 /**
  * @category   Zend
  * @package    Zend_Mime
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Mime_Message
@@ -247,12 +248,11 @@ class Zend_Mime_Message
         $res = new self();
         foreach ($parts as $part) {
             // now we build a new MimePart for the current Message Part:
-            $newPart = new Zend_Mime_Part($part);
+            $newPart = new Zend_Mime_Part($part['body']);
             foreach ($part['header'] as $key => $value) {
                 /**
                  * @todo check for characterset and filename
                  */
-                // list($key, $value) = $header;
                 switch(strtolower($key)) {
                     case 'content-type':
                         $newPart->type = $value;
