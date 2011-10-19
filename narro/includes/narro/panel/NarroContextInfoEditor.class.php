@@ -185,8 +185,9 @@
         public function btnSaveIgnore_Create() {
             if ($this->btnSaveIgnore instanceof QLinkButton) return true;
             
-            $this->btnSaveIgnore = new QLinkButton($this);
+            $this->btnSaveIgnore = new QButton($this);
             $this->btnSaveIgnore->Text = t('Ignore and save');
+            $this->btnSaveIgnore->DisplayStyle = QDisplayStyle::Block;
             $this->btnSaveIgnore->Display = false;
             $this->btnSaveIgnore->TabIndex = -1;
         }
@@ -449,9 +450,8 @@
                     $this->btnSaveIgnore->RemoveAllActions('click');
                     $this->btnSaveIgnore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
                     $this->btnSaveIgnore->Text = t('Ignore and save');
-                    $this->lblMessage->Text .= t('Clear the textbox to skip this translation or ');
+                    $this->lblMessage->Text .= sprintf(t('Clear the textbox to skip this translation, click Ignore and save or click the save button to try again'));
                     $this->btnSaveIgnore->Display = true;
-                    $this->btnSave->Display = false;
                     $this->chkChanged->Checked = false;
                     return false;
                 }

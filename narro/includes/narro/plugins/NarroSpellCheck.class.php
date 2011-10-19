@@ -24,8 +24,6 @@
         }
 
         public static function GetSpellSuggestions($strText) {
-            if (QApplication::$User->GetPreferenceValueByName('Spellchecking') == 'I don\'t need it')
-                return true;
 
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strText);
             $strCleanText = str_replace(array('\n', '\r'), array(' ', ' '), $strText);
@@ -51,14 +49,13 @@
             $strCleanText = mb_ereg_replace('[„”]', ' ', $strCleanText);
             $strCleanText = mb_ereg_replace('[…\\n\.,:;\\\!\?0-9]+', ' ', $strCleanText);
 
-            $strSpellLang = QApplication::$User->GetPreferenceValueByName('Language');
-
-            return self::GetSpellSuggestionsWithPspell($strCleanText, $strSpellLang);
+            return self::GetSpellSuggestionsWithPspell($strCleanText, QApplication::$TargetLanguage->LanguageCode);
         }
 
         public static function GetSpellSuggestionsWithPspell($strText, $strSpellLang) {
-            if (!function_exists('pspell_new'))
+            if (!function_exists('pspell_new')) {
                 return true;
+            }
 
             if (file_exists(__DICTIONARY_PATH__ . '/' . $strSpellLang . '.dat')) {
                 if (!defined('PSPELL_FAST'))
@@ -115,6 +112,7 @@
 
         public function ApproveSuggestion($strOriginal, $strTranslation, $strContext, $objFile, $objProject) {
             $arrTextSuggestions = self::GetSpellSuggestions($strTranslation);
+            
             $strSpellcheckText = '';
 
             if (is_array($arrTextSuggestions) && count($arrTextSuggestions)) {
@@ -133,7 +131,7 @@
                             $strWord
                         ) . '<br />';
                 }
-
+                
                 if ($strSpellcheckText)
                     $this->arrErrors[] =  $strSpellcheckText;
             }
