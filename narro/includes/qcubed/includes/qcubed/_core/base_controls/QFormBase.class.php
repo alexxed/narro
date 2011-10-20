@@ -169,8 +169,14 @@
                     // We might have a valid form state -- let's see by unserializing this object
                     $objClass = QForm::Unserialize($strPostDataState);
 
-                // If there is no QForm Class, then we have an Invalid Form State
-                if (!$objClass) throw new QInvalidFormStateException($strFormId);
+                try {
+                    // If there is no QForm Class, then we have an Invalid Form State
+                    if (!$objClass) throw new QInvalidFormStateException($strFormId);
+                }
+                catch (QInvalidFormStateException $objEx) {
+                    error_log(__CLASS__ . __FUNCTION__ . __LINE__ . ':' . $objEx->getMessage());
+                    // continue as if there was no form state
+                }
             }
 
             if ($objClass) {
