@@ -57,19 +57,6 @@
     define ('__FROM_EMAIL_ADDRESS__', 'root@localhost');
     define ('__FROM_EMAIL_NAME__', 'Narro');
 
-    /**
-     * Uncomment this lines and fill in the values if you want to use external authentication
-     * @see login.php for more detailes
-     */
-//    define ('__AUTH_EXTERNAL_DB_HOST__', 'localhost');
-//    define ('__AUTH_EXTERNAL_DB_USERNAME__', 'root');
-//    define ('__AUTH_EXTERNAL_DB_PASSWORD__', '');
-//    define ('__AUTH_EXTERNAL_DB_NAME__', 'drupal');
-//    define ('__AUTH_EXTERNAL_DB_TABLE__', 'users');
-//    define ('__AUTH_EXTERNAL_DB_TABLE_USER_FIELD__', 'name');
-//    define ('__AUTH_EXTERNAL_DB_TABLE_PASSWORD_FIELD__', 'pass');
-//    define ('__AUTH_EXTERNAL_DB_TABLE_PASSWORD_FUNCTION__', 'MD5(?)');
-
     define ('__NARRO_INCLUDES__', __DOCROOT__ . __SUBDIRECTORY__ . '/includes');
     define ('__NARRO_DATA__', __DOCROOT__ . __SUBDIRECTORY__ . '/data');
     define ('__NARRO_IMAGE_ASSETS__', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images');
@@ -100,5 +87,5 @@
     define ('SERVER_INSTANCE', 'prod');
     define ('NARRO_VERSION', '2.0');
 
-    define ('__ZEND_CACHE_ENABLED__', true);
+    define ('__COMPRESS_FORM_STATES__', true);
 ?>
