@@ -18,8 +18,7 @@
     class NarroSession {
         public function __construct() {
             session_name('narro');
-            session_set_cookie_params(31*24*3600, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
-            session_id('narro');
+            session_set_cookie_params(31*24*3600, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__, null, null, true);
             session_start();
             global $_SESSION;
         }
@@ -32,6 +31,22 @@
         public function __set($strName, $mixValue) {
             global $_SESSION;
             $_SESSION[$strName] = serialize($mixValue);
+        }
+        
+        public function Destroy() {
+            global $_SESSION;
+            $_SESSION = array();
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+            session_destroy();
         }
     }
 ?>

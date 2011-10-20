@@ -73,4 +73,3 @@
     
     check_boolean('form states are properly restored', sprintf('This version of Narro needs the %s php extension, please install php-%s or php5-%s', $strExtensionName, $strExtensionName, $strExtensionName), extension_loaded($strExtensionName));
     
-    require_once (dirname(__FILE__) . '/../../configuration/footer.inc.php');
