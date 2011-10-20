@@ -16,28 +16,5 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
     $strPageTitle = t('Login');
-?>
-    <p><?php echo t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>
-    <br />
-    <?php $_CONTROL->lblMessage->Render() ?>
-    <table>
-        <tr>
-            <td><?php echo t('Username')?>:</td>
-            <td><?php $_CONTROL->txtUsername->Render() ?></td>
-        </tr>
-        <tr>
-            <td><?php echo t('Password')?>:</td>
-            <td><?php $_CONTROL->txtPassword->Render() ?></td>
-        </tr>
-        <tr>
-            <td><?php echo t('<a href="http://www.openid.net">OpenID</a>')?>:</td>
-            <td><?php $_CONTROL->txtOpenId->Render() ?></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><?php $_CONTROL->btnGoogleLogin->Render() ?></td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align:right"><?php $_CONTROL->btnLogin->Render() ?></td>
-        </tr>
-    </table>
+    $_CONTROL->lblMessage->Render();
+    $_CONTROL->objAccordion->Render();
