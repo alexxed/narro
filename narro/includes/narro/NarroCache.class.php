@@ -25,7 +25,13 @@
         }
         
         public function SaveData($strData) {
-            return parent::SaveData(unserialize($strData));
+            $mixResult = parent::SaveData(unserialize($strData));
+            chmod($this->GetFilePath(), 0666);
+            
+            if (count($this->strCheckFilesArray))
+                chmod($this->GetFilePath() . '.hash', 0666);
+            
+            return $mixResult;
         }
         
         public static function Reset() {
