@@ -210,7 +210,7 @@
             if (is_numeric(@$_REQUEST['p']))
                 $intProjectId = @$_REQUEST['p'];
             // project log via cli
-            elseif (isset($argv))
+            elseif (isset($argv) && array_search('--project', $argv))
                 $intProjectId = $argv[array_search('--project', $argv)+1];
 
             if (isset($intProjectId))
