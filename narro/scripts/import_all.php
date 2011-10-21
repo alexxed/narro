@@ -147,6 +147,7 @@
                         unlink($strProcPidFile);
 
                     file_put_contents($strProcPidFile, getmypid());
+                    chmod($strProcPidFile, 0666);
 
                     $blnResult = $objNarroImporter->ImportProject();
                 }
