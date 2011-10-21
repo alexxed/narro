@@ -239,7 +239,8 @@
             if (SERVER_INSTANCE == 'dev') {
                 $strQueryData = '';
                 $intTimeSpentOnQueries = 0;
-                foreach(@$GLOBALS['arrQueries'] as $arrQueryData) {
+                if (isset($GLOBALS['arrQueries']) && is_array($GLOBALS['arrQueries']))
+                foreach($GLOBALS['arrQueries'] as $arrQueryData) {
                     $strQueryData .= sprintf('"%s";"%d"', str_replace("\n", " ", $arrQueryData[0]), $arrQueryData[1]) . "\n";
                     $intTimeSpentOnQueries += $arrQueryData[1];
                 }
@@ -247,7 +248,8 @@
                 chmod(__TMP_PATH__ . '/queries.csv', 0666);
             
                 $strCacheData = '';
-                foreach(@$GLOBALS['arrCacheQueries'] as $arrCacheData) {
+                if (isset($GLOBALS['arrCacheQueries']) && is_array($GLOBALS['arrCacheQueries']))
+                foreach($GLOBALS['arrCacheQueries'] as $arrCacheData) {
                     $strCacheData .= sprintf('"%s";"%d"', str_replace("\n", " ", $arrCacheData[0]), $arrCacheData[1]) . "\n";
                 }
                 file_put_contents(__TMP_PATH__ . '/cache.csv', $strCacheData);
@@ -625,7 +627,8 @@
             if (SERVER_INSTANCE == 'dev') {
                 $strQueryData = '';
                 $intTimeSpentOnQueries = 0;
-                foreach(@$GLOBALS['arrQueries'] as $arrQueryData) {
+                if (isset($GLOBALS['arrQueries']) && is_array($GLOBALS['arrQueries']))
+                foreach($GLOBALS['arrQueries'] as $arrQueryData) {
                     $strQueryData .= '"' . join('";"', $arrQueryData) . '"';
                     $intTimeSpentOnQueries += $arrQueryData[1];
                 }
@@ -633,7 +636,8 @@
                 chmod(__TMP_PATH__ . '/queries.csv', 0666);
                 
                 $strCacheData = '';
-                foreach(@$GLOBALS['arrCacheQueries'] as $arrCacheData) {
+                if (isset($GLOBALS['arrCacheQueries']) && is_array($GLOBALS['arrCacheQueries']))
+                foreach($GLOBALS['arrCacheQueries'] as $arrCacheData) {
                     $strCacheData .= '"' . join('";"', $arrCacheData) . '"';
                 }
                 file_put_contents(__TMP_PATH__ . '/cache.csv', $strCacheData);
