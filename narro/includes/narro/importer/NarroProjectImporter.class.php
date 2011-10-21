@@ -244,12 +244,14 @@
                     $intTimeSpentOnQueries += $arrQueryData[1];
                 }
                 file_put_contents(__TMP_PATH__ . '/queries.csv', $strQueryData);
+                chmod(__TMP_PATH__ . '/queries.csv', 0666);
             
                 $strCacheData = '';
                 foreach(@$GLOBALS['arrCacheQueries'] as $arrCacheData) {
                     $strCacheData .= sprintf('"%s";"%d"', str_replace("\n", " ", $arrCacheData[0]), $arrCacheData[1]) . "\n";
                 }
                 file_put_contents(__TMP_PATH__ . '/cache.csv', $strCacheData);
+                chmod(__TMP_PATH__ . '/cache.csv', 0666);
             
                 NarroLogger::LogInfo(sprintf('%d queries in total, %d seconds spent on them', count(@$GLOBALS['arrQueries']), $intTimeSpentOnQueries));
                 NarroLogger::LogInfo(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
@@ -628,12 +630,14 @@
                     $intTimeSpentOnQueries += $arrQueryData[1];
                 }
                 file_put_contents(__TMP_PATH__ . '/queries.csv', $strQueryData);
+                chmod(__TMP_PATH__ . '/queries.csv', 0666);
                 
                 $strCacheData = '';
                 foreach(@$GLOBALS['arrCacheQueries'] as $arrCacheData) {
                     $strCacheData .= '"' . join('";"', $arrCacheData) . '"';
                 }
                 file_put_contents(__TMP_PATH__ . '/cache.csv', $strCacheData);
+                chmod(__TMP_PATH__ . '/cache.csv', 0666);
                 
                 NarroLogger::LogInfo(sprintf('%d queries in total, %d seconds spent on them', count(@$GLOBALS['arrQueries']), $intTimeSpentOnQueries));
                 NarroLogger::LogInfo(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
