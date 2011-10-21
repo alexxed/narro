@@ -27,6 +27,7 @@
         protected $txtAccessKey;
         protected $txtCommandKey;
         protected $dtgTranslation;
+        protected $pnlComment;
         protected $lblMessage;
         protected $btnCopy;
         protected $btnHelp;
@@ -108,7 +109,7 @@
             $this->btnHelp->TabIndex = -1;
             $this->btnHelp->DisplayStyle = QDisplayStyle::None;
             $this->btnHelp->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnHelp_Click'));
-
+            
             $this->btnSave = new QImageButton($this);
             $this->btnSave->AlternateText = t('Save');
             $this->btnSave->CssClass = 'imgbutton save';
@@ -375,6 +376,9 @@
 
             if (!$this->lblContextInfo)
                 $this->lblContextInfo_Create();
+            
+            if (!$this->pnlComment)
+                $this->pnlComment_Create();
 
             $this->dtgTranslation->Display = true;
             $this->lblContextInfo->Display = true;
@@ -383,7 +387,10 @@
             if ($strParameter != '1')
                 $this->txtTranslation->Focus();
         }
-
+        
+        public function pnlComment_Create() {
+            $this->pnlComment = new NarroTextCommentPanel($this->objContextInfo->Context->Text, $this);
+        }
 
         public function Validate() {
             if ($_POST['Qform__FormControl'] == $this->btnSaveIgnore->ControlId) return true;
@@ -717,6 +724,7 @@
                 case 'Translation': return $this->txtTranslation;
                 case 'ContextInfo': return $this->lblContextInfo;
                 case 'TranslationList': return $this->dtgTranslation;
+                case 'CommentList': return $this->pnlComment;
                 case 'Message': return $this->lblMessage;
                 case 'Changed': return $this->chkChanged->Checked;
                 case 'Index': return $this->lblIndex;

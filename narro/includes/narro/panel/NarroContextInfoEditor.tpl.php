@@ -34,7 +34,11 @@ if ($_CONTROL->CommandKey)
 $_CONTROL->CopyButton->Render();
 $_CONTROL->SaveButton->Render();
 $_CONTROL->HelpButton->Render();
-if ($_CONTROL->TranslationList)
+if ($_CONTROL->TranslationList) {
+    printf('<br /><b>%s</b>', t('Translations'));
     $_CONTROL->TranslationList->Render();
+}
+if ($_CONTROL->CommentList)
+    $_CONTROL->CommentList->Render();
 
 ?>

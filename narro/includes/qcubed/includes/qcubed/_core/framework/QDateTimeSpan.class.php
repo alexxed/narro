@@ -16,6 +16,10 @@
 		const SecondsPerDay 	= 86400;
 		const SecondsPerHour 	= 3600;
 		const SecondsPerMinute 	= 60;
+		
+		public function __toString() {
+		    return $this->SimpleDisplay();
+		}
 
 		public function __construct($intSeconds = 0) {
 			$this->intSeconds = $intSeconds;
@@ -23,7 +27,7 @@
 
 		/*
 			Is functions
-		*/ 
+		*/
 		
 		/**
 		 * Checks if the current DateSpan is positive
@@ -81,7 +85,7 @@
 		
 		/*
 			Add methods
-		*/	
+		*/
 		
 		/**
 		 * Adds an amount of seconds to the current QDateTimeSpan
@@ -128,7 +132,7 @@
 			$this->intSeconds = $this->intSeconds + ($intMonths * QDateTimeSpan::SecondsPerMonth);
 		}
 		
-		/* 
+		/*
 			Get methods
 		*/
 		
@@ -190,7 +194,7 @@
 			$intMinutes = floor($this->intSeconds / $intSecondsPerMinute);
 			if($this->IsNegative()) $intMinutes = (-1) * $intMinutes;
 			return $intMinutes;
-		} 
+		}
  		
 		/*
 			DateMathSettings
@@ -249,7 +253,7 @@
 		
 		/**
 		 * Return an array of timeunints
-		 * 
+		 *
 		 *
 		 * @return array of timeunits
 		 */
@@ -336,7 +340,7 @@
 						return ($this->intSeconds = QType::Cast($mixValue, QType::Integer));
 					default:
 						return (parent::__set($strName, $mixValue));
-				}				
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
