@@ -480,61 +480,6 @@ CREATE TABLE `narro_user_role` (
   CONSTRAINT `narro_user_role_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`),
   CONSTRAINT `narro_user_role_ibfk_4` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `zend_cache`
---
-
-DROP TABLE IF EXISTS `zend_cache`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `zend_cache` (
-  `id` varchar(255) NOT NULL,
-  `content` text,
-  `lastModified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `expire` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `zend_cache_id_expire_index` (`id`,`expire`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `zend_cache_tag`
---
-
-DROP TABLE IF EXISTS `zend_cache_tag`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `zend_cache_tag` (
-  `name` text,
-  `id` text
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `zend_cache_version`
---
-
-DROP TABLE IF EXISTS `zend_cache_version`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `zend_cache_version` (
-  `num` int(11) NOT NULL,
-  PRIMARY KEY (`num`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2011-09-10 11:04:03
 
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'DumbGettextPo');
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Folder');
@@ -751,12 +696,6 @@ INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'Approver');
 INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'Project manager');
 INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'User');
 
---
--- Dumping data for table `zend_cache_version`
---
-
-INSERT INTO `zend_cache_version` (`num`) VALUES(1);
-
 ALTER TABLE `narro_context` ADD `text_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `text_access_key`;
 ALTER TABLE `narro_context_info` ADD `suggestion_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `suggestion_access_key`;
 
@@ -798,3 +737,29 @@ ALTER TABLE `narro_context_info`
   REFERENCES `narro_language` (`language_id` )
   ON DELETE CASCADE
   ON UPDATE CASCADE;
+
+ALTER TABLE `narro_text_comment` DROP FOREIGN KEY `narro_text_comment_ibfk_11` ;
+
+ALTER TABLE `narro_text_comment` ADD FOREIGN KEY ( `language_id` ) REFERENCES `narro_language` (
+`language_id`
+) ON DELETE CASCADE ON UPDATE CASCADE ;
+
+ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_6` ;
+
+ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `role_id` ) REFERENCES `narro_role` (
+`role_id`
+) ON DELETE CASCADE ON UPDATE CASCADE ;
+
+ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_7` ;
+
+ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `project_id` ) REFERENCES `narro_project` (
+`project_id`
+) ON DELETE CASCADE ON UPDATE CASCADE ;
+
+ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_8` ;
+
+ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `language_id` ) REFERENCES `narro_language` (
+`language_id`
+) ON DELETE CASCADE ON UPDATE CASCADE ;
+
+DROP TABLE `narro_suggestion_comment`;

@@ -586,12 +586,6 @@
                 $this->MarkAsModified();
                 return true;
             }
-            elseif ($intCommentsCount = NarroSuggestionComment::QueryCount(QQ::AndCondition(QQ::Equal(QQN::NarroSuggestionComment()->SuggestionId, $strSuggestionId), QQ::NotEqual(QQN::NarroSuggestionComment()->UserId, QApplication::GetUserId())))) {
-                $this->lblMessage->ForeColor = 'red';
-                $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it has %d comment(s).'), $intVoteCount);
-                $this->MarkAsModified();
-                return true;
-            }
             */
 
             return false;

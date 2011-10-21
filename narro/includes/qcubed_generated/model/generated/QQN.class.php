@@ -79,12 +79,6 @@
 			return new QQNodeNarroSuggestion('narro_suggestion', null, null);
 		}
 		/**
-		 * @return QQNodeNarroSuggestionComment
-		 */
-		static public function NarroSuggestionComment() {
-			return new QQNodeNarroSuggestionComment('narro_suggestion_comment', null, null);
-		}
-		/**
 		 * @return QQNodeNarroSuggestionVote
 		 */
 		static public function NarroSuggestionVote() {

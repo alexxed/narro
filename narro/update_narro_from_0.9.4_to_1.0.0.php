@@ -58,11 +58,6 @@
 //                    foreach($arrDuplicateSuggestions as $objDuplicateSuggestion) {
 //                        if ($objSuggestion->SuggestionValue !== $objDuplicateSuggestion->SuggestionValue) continue;
 //
-//                        foreach(NarroSuggestionComment::LoadArrayBySuggestionId($objDuplicateSuggestion->SuggestionId) as $objSuggestionComment) {
-//                            error_log('Moving suggestion comment');
-//                            $objSuggestionComment->SuggestionId = $objSuggestion->SuggestionId;
-//                            $objSuggestionComment->Save();
-//                        }
 //
 //                        foreach(NarroSuggestionVote::LoadArrayBySuggestionId($objDuplicateSuggestion->SuggestionId) as $objSuggestionVote) {
 //                            error_log('Moving suggestion vote');

@@ -90,13 +90,6 @@
 		QApplicationBase::$ClassFile['narrosuggestionmetacontrol'] = __META_CONTROLS__ . '/NarroSuggestionMetaControl.class.php';
 		QApplicationBase::$ClassFile['narrosuggestiondatagrid'] = __META_CONTROLS__ . '/NarroSuggestionDataGrid.class.php';
 
-	// ClassPaths for the NarroSuggestionComment class
-		QApplicationBase::$ClassFile['narrosuggestioncomment'] = __MODEL__ . '/NarroSuggestionComment.class.php';
-		QApplicationBase::$ClassFile['qqnodenarrosuggestioncomment'] = __MODEL__ . '/NarroSuggestionComment.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodenarrosuggestioncomment'] = __MODEL__ . '/NarroSuggestionComment.class.php';
-		QApplicationBase::$ClassFile['narrosuggestioncommentmetacontrol'] = __META_CONTROLS__ . '/NarroSuggestionCommentMetaControl.class.php';
-		QApplicationBase::$ClassFile['narrosuggestioncommentdatagrid'] = __META_CONTROLS__ . '/NarroSuggestionCommentDataGrid.class.php';
-
 	// ClassPaths for the NarroSuggestionVote class
 		QApplicationBase::$ClassFile['narrosuggestionvote'] = __MODEL__ . '/NarroSuggestionVote.class.php';
 		QApplicationBase::$ClassFile['qqnodenarrosuggestionvote'] = __MODEL__ . '/NarroSuggestionVote.class.php';

@@ -138,25 +138,35 @@ ALTER TABLE `narro_context_info`
   ON DELETE CASCADE
   ON UPDATE CASCADE;
   
--- ALTER TABLE `narro_context` DROP INDEX `context_md5`;
--- ALTER TABLE `narro_context` DROP INDEX `project_id`;
+ALTER TABLE `narro_text_comment` DROP FOREIGN KEY `narro_text_comment_ibfk_11` ;
 
--- INSERT INTO narro_context_data
--- SELECT NULL , `context_id` , `text_access_key` , `context` , `comment` , `created` , `modified`
--- FROM narro_context;
+ALTER TABLE `narro_text_comment` ADD FOREIGN KEY ( `language_id` ) REFERENCES `narro`.`narro_language` (
+`language_id`
+) ON DELETE CASCADE ON UPDATE CASCADE ;
 
--- INSERT INTO narro_context_info_data
--- SELECT NULL , `context_info_id` , `validator_user_id` , `valid_suggestion_id` , `suggestion_access_key` , `created` , `modified`
--- FROM narro_context_info ;
 
--- ALTER TABLE `narro_context_info` DROP FOREIGN KEY `narro_context_info_ibfk_13` ;
--- ALTER TABLE `narro_context_info` DROP FOREIGN KEY `narro_context_info_ibfk_9` ;
--- ALTER TABLE `narro_context_info` DROP INDEX `validator_user_id`;
--- ALTER TABLE `narro_context_info` DROP INDEX `suggestion_id`;
 
--- ALTER TABLE `narro_context_info`
---  DROP `validator_user_id`,
---  DROP `valid_suggestion_id`,
---  DROP `suggestion_access_key`,
---  DROP `created`,
---  DROP `modified`;
+ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_6` ;
+
+ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `role_id` ) REFERENCES `narro_role` (
+`role_id`
+) ON DELETE CASCADE ON UPDATE CASCADE ;
+
+ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_7` ;
+
+ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `project_id` ) REFERENCES `narro_project` (
+`project_id`
+) ON DELETE CASCADE ON UPDATE CASCADE ;
+
+ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_8` ;
+
+ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `language_id` ) REFERENCES `narro_language` (
+`language_id`
+) ON DELETE CASCADE ON UPDATE CASCADE ;
+;
+
+DROP TABLE `zend_cache` ,
+`zend_cache_tag` ,
+`zend_cache_version` ;
+
+DROP TABLE `narro_suggestion_comment`;

@@ -32,8 +32,6 @@
 	 * @property NarroLanguage $Language the value for the NarroLanguage object referenced by intLanguageId (Not Null)
 	 * @property-read NarroContextInfo $_NarroContextInfoAsValidSuggestion the value for the private _objNarroContextInfoAsValidSuggestion (Read-Only) if set due to an expansion on the narro_context_info.valid_suggestion_id reverse relationship
 	 * @property-read NarroContextInfo[] $_NarroContextInfoAsValidSuggestionArray the value for the private _objNarroContextInfoAsValidSuggestionArray (Read-Only) if set due to an ExpandAsArray on the narro_context_info.valid_suggestion_id reverse relationship
-	 * @property-read NarroSuggestionComment $_NarroSuggestionCommentAsSuggestion the value for the private _objNarroSuggestionCommentAsSuggestion (Read-Only) if set due to an expansion on the narro_suggestion_comment.suggestion_id reverse relationship
-	 * @property-read NarroSuggestionComment[] $_NarroSuggestionCommentAsSuggestionArray the value for the private _objNarroSuggestionCommentAsSuggestionArray (Read-Only) if set due to an ExpandAsArray on the narro_suggestion_comment.suggestion_id reverse relationship
 	 * @property-read NarroSuggestionVote $_NarroSuggestionVoteAsSuggestion the value for the private _objNarroSuggestionVoteAsSuggestion (Read-Only) if set due to an expansion on the narro_suggestion_vote.suggestion_id reverse relationship
 	 * @property-read NarroSuggestionVote[] $_NarroSuggestionVoteAsSuggestionArray the value for the private _objNarroSuggestionVoteAsSuggestionArray (Read-Only) if set due to an ExpandAsArray on the narro_suggestion_vote.suggestion_id reverse relationship
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
@@ -156,22 +154,6 @@
 		 * @var NarroContextInfo[] _objNarroContextInfoAsValidSuggestionArray;
 		 */
 		private $_objNarroContextInfoAsValidSuggestionArray = null;
-
-		/**
-		 * Private member variable that stores a reference to a single NarroSuggestionCommentAsSuggestion object
-		 * (of type NarroSuggestionComment), if this NarroSuggestion object was restored with
-		 * an expansion on the narro_suggestion_comment association table.
-		 * @var NarroSuggestionComment _objNarroSuggestionCommentAsSuggestion;
-		 */
-		private $_objNarroSuggestionCommentAsSuggestion;
-
-		/**
-		 * Private member variable that stores a reference to an array of NarroSuggestionCommentAsSuggestion objects
-		 * (of type NarroSuggestionComment[]), if this NarroSuggestion object was restored with
-		 * an ExpandAsArray on the narro_suggestion_comment association table.
-		 * @var NarroSuggestionComment[] _objNarroSuggestionCommentAsSuggestionArray;
-		 */
-		private $_objNarroSuggestionCommentAsSuggestionArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NarroSuggestionVoteAsSuggestion object
@@ -595,25 +577,6 @@
 							$blnExpandedViaArray = true;
 						}
 
-						// Expanding reverse references: NarroSuggestionCommentAsSuggestion
-						$strAlias = $strAliasPrefix . 'narrosuggestioncommentassuggestion__comment_id';
-						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-						if ((array_key_exists($strAlias, $strExpandAsArrayNodes)) &&
-							(!is_null($objDbRow->GetColumn($strAliasName)))) {
-							if(null === $objPreviousItem->_objNarroSuggestionCommentAsSuggestionArray)
-								$objPreviousItem->_objNarroSuggestionCommentAsSuggestionArray = array();
-							if ($intPreviousChildItemCount = count($objPreviousItem->_objNarroSuggestionCommentAsSuggestionArray)) {
-								$objPreviousChildItems = $objPreviousItem->_objNarroSuggestionCommentAsSuggestionArray;
-								$objChildItem = NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentassuggestion__', $strExpandAsArrayNodes, $objPreviousChildItems, $strColumnAliasArray);
-								if ($objChildItem) {
-									$objPreviousItem->_objNarroSuggestionCommentAsSuggestionArray[] = $objChildItem;
-								}
-							} else {
-								$objPreviousItem->_objNarroSuggestionCommentAsSuggestionArray[] = NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentassuggestion__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-							}
-							$blnExpandedViaArray = true;
-						}
-
 						// Expanding reverse references: NarroSuggestionVoteAsSuggestion
 						$strAlias = $strAliasPrefix . 'narrosuggestionvoteassuggestion__suggestion_id';
 						$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -680,9 +643,6 @@
 					if (array_diff($objPreviousItem->_objNarroContextInfoAsValidSuggestionArray, $objToReturn->_objNarroContextInfoAsValidSuggestionArray) != null) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroSuggestionCommentAsSuggestionArray, $objToReturn->_objNarroSuggestionCommentAsSuggestionArray) != null) {
-						continue;
-					}
 					if (array_diff($objPreviousItem->_objNarroSuggestionVoteAsSuggestionArray, $objToReturn->_objNarroSuggestionVoteAsSuggestionArray) != null) {
 						continue;
 					}
@@ -736,19 +696,6 @@
 					$objToReturn->_objNarroContextInfoAsValidSuggestionArray[] = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoasvalidsuggestion__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 				else
 					$objToReturn->_objNarroContextInfoAsValidSuggestion = NarroContextInfo::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrocontextinfoasvalidsuggestion__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-			}
-
-			// Check for NarroSuggestionCommentAsSuggestion Virtual Binding
-			$strAlias = $strAliasPrefix . 'narrosuggestioncommentassuggestion__comment_id';
-			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$blnExpanded = $strExpandAsArrayNodes && array_key_exists($strAlias, $strExpandAsArrayNodes);
-			if ($blnExpanded && null === $objToReturn->_objNarroSuggestionCommentAsSuggestionArray)
-				$objToReturn->_objNarroSuggestionCommentAsSuggestionArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded)
-					$objToReturn->_objNarroSuggestionCommentAsSuggestionArray[] = NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentassuggestion__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
-				else
-					$objToReturn->_objNarroSuggestionCommentAsSuggestion = NarroSuggestionComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestioncommentassuggestion__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
 			// Check for NarroSuggestionVoteAsSuggestion Virtual Binding
@@ -1351,22 +1298,6 @@
 					 */
 					return $this->_objNarroContextInfoAsValidSuggestionArray;
 
-				case '_NarroSuggestionCommentAsSuggestion':
-					/**
-					 * Gets the value for the private _objNarroSuggestionCommentAsSuggestion (Read-Only)
-					 * if set due to an expansion on the narro_suggestion_comment.suggestion_id reverse relationship
-					 * @return NarroSuggestionComment
-					 */
-					return $this->_objNarroSuggestionCommentAsSuggestion;
-
-				case '_NarroSuggestionCommentAsSuggestionArray':
-					/**
-					 * Gets the value for the private _objNarroSuggestionCommentAsSuggestionArray (Read-Only)
-					 * if set due to an ExpandAsArray on the narro_suggestion_comment.suggestion_id reverse relationship
-					 * @return NarroSuggestionComment[]
-					 */
-					return $this->_objNarroSuggestionCommentAsSuggestionArray;
-
 				case '_NarroSuggestionVoteAsSuggestion':
 					/**
 					 * Gets the value for the private _objNarroSuggestionVoteAsSuggestion (Read-Only)
@@ -1835,156 +1766,6 @@
 
 			
 		
-		// Related Objects' Methods for NarroSuggestionCommentAsSuggestion
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated NarroSuggestionCommentsAsSuggestion as an array of NarroSuggestionComment objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroSuggestionComment[]
-		*/
-		public function GetNarroSuggestionCommentAsSuggestionArray($objOptionalClauses = null) {
-			if ((is_null($this->intSuggestionId)))
-				return array();
-
-			try {
-				return NarroSuggestionComment::LoadArrayBySuggestionId($this->intSuggestionId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated NarroSuggestionCommentsAsSuggestion
-		 * @return int
-		*/
-		public function CountNarroSuggestionCommentsAsSuggestion() {
-			if ((is_null($this->intSuggestionId)))
-				return 0;
-
-			return NarroSuggestionComment::CountBySuggestionId($this->intSuggestionId);
-		}
-
-		/**
-		 * Associates a NarroSuggestionCommentAsSuggestion
-		 * @param NarroSuggestionComment $objNarroSuggestionComment
-		 * @return void
-		*/
-		public function AssociateNarroSuggestionCommentAsSuggestion(NarroSuggestionComment $objNarroSuggestionComment) {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionCommentAsSuggestion on this unsaved NarroSuggestion.');
-			if ((is_null($objNarroSuggestionComment->CommentId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateNarroSuggestionCommentAsSuggestion on this NarroSuggestion with an unsaved NarroSuggestionComment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_suggestion_comment`
-				SET
-					`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-				WHERE
-					`comment_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionComment->CommentId) . '
-			');
-		}
-
-		/**
-		 * Unassociates a NarroSuggestionCommentAsSuggestion
-		 * @param NarroSuggestionComment $objNarroSuggestionComment
-		 * @return void
-		*/
-		public function UnassociateNarroSuggestionCommentAsSuggestion(NarroSuggestionComment $objNarroSuggestionComment) {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsSuggestion on this unsaved NarroSuggestion.');
-			if ((is_null($objNarroSuggestionComment->CommentId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsSuggestion on this NarroSuggestion with an unsaved NarroSuggestionComment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_suggestion_comment`
-				SET
-					`suggestion_id` = null
-				WHERE
-					`comment_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionComment->CommentId) . ' AND
-					`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all NarroSuggestionCommentsAsSuggestion
-		 * @return void
-		*/
-		public function UnassociateAllNarroSuggestionCommentsAsSuggestion() {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsSuggestion on this unsaved NarroSuggestion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`narro_suggestion_comment`
-				SET
-					`suggestion_id` = null
-				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated NarroSuggestionCommentAsSuggestion
-		 * @param NarroSuggestionComment $objNarroSuggestionComment
-		 * @return void
-		*/
-		public function DeleteAssociatedNarroSuggestionCommentAsSuggestion(NarroSuggestionComment $objNarroSuggestionComment) {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsSuggestion on this unsaved NarroSuggestion.');
-			if ((is_null($objNarroSuggestionComment->CommentId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsSuggestion on this NarroSuggestion with an unsaved NarroSuggestionComment.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_suggestion_comment`
-				WHERE
-					`comment_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionComment->CommentId) . ' AND
-					`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated NarroSuggestionCommentsAsSuggestion
-		 * @return void
-		*/
-		public function DeleteAllNarroSuggestionCommentsAsSuggestion() {
-			if ((is_null($this->intSuggestionId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateNarroSuggestionCommentAsSuggestion on this unsaved NarroSuggestion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = NarroSuggestion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`narro_suggestion_comment`
-				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
-			');
-		}
-
-			
-		
 		// Related Objects' Methods for NarroSuggestionVoteAsSuggestion
 		//-------------------------------------------------------------------
 
@@ -2312,7 +2093,6 @@
      *
      *
      * @property-read QQReverseReferenceNodeNarroContextInfo $NarroContextInfoAsValidSuggestion
-     * @property-read QQReverseReferenceNodeNarroSuggestionComment $NarroSuggestionCommentAsSuggestion
      * @property-read QQReverseReferenceNodeNarroSuggestionVote $NarroSuggestionVoteAsSuggestion
 
      * @property-read QQNode $_PrimaryKeyNode
@@ -2355,8 +2135,6 @@
 					return new QQNode('modified', 'Modified', 'DateTime', $this);
 				case 'NarroContextInfoAsValidSuggestion':
 					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoasvalidsuggestion', 'reverse_reference', 'valid_suggestion_id');
-				case 'NarroSuggestionCommentAsSuggestion':
-					return new QQReverseReferenceNodeNarroSuggestionComment($this, 'narrosuggestioncommentassuggestion', 'reverse_reference', 'suggestion_id');
 				case 'NarroSuggestionVoteAsSuggestion':
 					return new QQReverseReferenceNodeNarroSuggestionVote($this, 'narrosuggestionvoteassuggestion', 'reverse_reference', 'suggestion_id');
 
@@ -2392,7 +2170,6 @@
      *
      *
      * @property-read QQReverseReferenceNodeNarroContextInfo $NarroContextInfoAsValidSuggestion
-     * @property-read QQReverseReferenceNodeNarroSuggestionComment $NarroSuggestionCommentAsSuggestion
      * @property-read QQReverseReferenceNodeNarroSuggestionVote $NarroSuggestionVoteAsSuggestion
 
      * @property-read QQNode $_PrimaryKeyNode
@@ -2435,8 +2212,6 @@
 					return new QQNode('modified', 'Modified', 'QDateTime', $this);
 				case 'NarroContextInfoAsValidSuggestion':
 					return new QQReverseReferenceNodeNarroContextInfo($this, 'narrocontextinfoasvalidsuggestion', 'reverse_reference', 'valid_suggestion_id');
-				case 'NarroSuggestionCommentAsSuggestion':
-					return new QQReverseReferenceNodeNarroSuggestionComment($this, 'narrosuggestioncommentassuggestion', 'reverse_reference', 'suggestion_id');
 				case 'NarroSuggestionVoteAsSuggestion':
 					return new QQReverseReferenceNodeNarroSuggestionVote($this, 'narrosuggestionvoteassuggestion', 'reverse_reference', 'suggestion_id');
 
