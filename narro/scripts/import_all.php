@@ -82,61 +82,61 @@
             $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($objProject->ProjectId, $objLanguage->LanguageId);
 
             if (!$objProjectProgress || $objProjectProgress->Active) {
-                $objNarroImporter = new NarroProjectImporter();
-
-                /**
-                 * Get boolean options
-                 */
-                $objNarroImporter->CheckEqual = !(bool) array_search('--do-not-check-equal', $argv);
-                $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
-                $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
-                $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv) || $intLangIdx > 0;
-                $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
-                NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
-
-                $strSourceLanguage = NarroLanguage::SOURCE_LANGUAGE_CODE;
-
-                if (array_search('--user', $argv) !== false)
-                    $intUserId = $argv[array_search('--user', $argv)+1];
-
-
-                /**
-                 * Load the specified user or the anonymous user if unspecified
-                 */
-                $objUser = NarroUser::LoadByUserId($intUserId);
-                if (!$objUser instanceof NarroUser) {
-                    NarroLogger::LogInfo(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
-                    $objUser = NarroUser::LoadAnonymousUser();
+                try {
+                    $objNarroImporter = new NarroProjectImporter();
+    
+                    /**
+                     * Get boolean options
+                     */
+                    $objNarroImporter->CheckEqual = !(bool) array_search('--do-not-check-equal', $argv);
+                    $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
+                    $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
+                    $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv) || $intLangIdx > 0;
+                    $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
+                    NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
+    
+                    $strSourceLanguage = NarroLanguage::SOURCE_LANGUAGE_CODE;
+    
+                    if (array_search('--user', $argv) !== false)
+                        $intUserId = $argv[array_search('--user', $argv)+1];
+    
+    
+                    /**
+                     * Load the specified user or the anonymous user if unspecified
+                     */
+                    $objUser = NarroUser::LoadByUserId($intUserId);
                     if (!$objUser instanceof NarroUser) {
-                        NarroLogger::LogInfo(sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
+                        NarroLogger::LogInfo(sprintf('User id=%s does not exist in the database, will try to use the anonymous user.', $intUserId));
+                        $objUser = NarroUser::LoadAnonymousUser();
+                        if (!$objUser instanceof NarroUser) {
+                            NarroLogger::LogInfo(sprintf('The anonymous user id=%s does not exist in the database.', $intUserId));
+                            return false;
+                        }
+                    }
+    
+                    QApplication::$User = $objUser;
+    
+                    $objNarroImporter->TargetLanguage = $objLanguage;
+    
+                    NarroLogger::LogInfo(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
+    
+                    /**
+                     * Load the specified source language
+                     */
+                    $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
+                    if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
+                        NarroLogger::LogInfo(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
                         return false;
                     }
-                }
+    
+                    NarroLogger::LogInfo(sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
+    
+                    $objNarroImporter->Project = $objProject;
+                    $objNarroImporter->User = $objUser;
+    
+                    $objNarroImporter->TemplatePath = $objNarroImporter->Project->DefaultTemplatePath;
+                    $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
 
-                QApplication::$User = $objUser;
-
-                $objNarroImporter->TargetLanguage = $objLanguage;
-
-                NarroLogger::LogInfo(sprintf('Target language is %s', $objNarroImporter->TargetLanguage->LanguageName));
-
-                /**
-                 * Load the specified source language
-                 */
-                $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode($strSourceLanguage);
-                if (!$objNarroImporter->SourceLanguage instanceof NarroLanguage) {
-                    NarroLogger::LogInfo(sprintf('Language %s does not exist in the database.', $strSourceLanguage));
-                    return false;
-                }
-
-                NarroLogger::LogInfo(sprintf('Source language is %s', $objNarroImporter->SourceLanguage->LanguageName));
-
-                $objNarroImporter->Project = $objProject;
-                $objNarroImporter->User = $objUser;
-
-                $objNarroImporter->TemplatePath = $objNarroImporter->Project->DefaultTemplatePath;
-                $objNarroImporter->TranslationPath = $objNarroImporter->Project->DefaultTranslationPath;
-
-                try {
                     $intPid = NarroUtils::IsProcessRunning('import', $objNarroImporter->Project->ProjectId);
 
                     if ($intPid && $intPid <> getmypid())
@@ -154,8 +154,9 @@
                     unlink($strProcPidFile);
                 }
                 catch (Exception $objEx) {
+                    printf("\n%s: %s\n", $objEx->getMessage(), $objEx->getTraceAsString());
                     NarroLogger::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
-                    exit();
+                    continue;
                 }
 
                 if ($blnResult)
