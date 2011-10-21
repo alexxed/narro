@@ -872,7 +872,14 @@
                     if (file_exists($mixValue))
                         $this->strTranslationPath = $mixValue;
                     else {
-                        @chmod($mixValue . '/..', 0777);
+                        if (!file_exists(dirname($mixValue)))
+                            throw new Exception(sprintf('Cannot create "%s" because the parent directory "%s" does not exist', $mixValue, dirname($mixValue)));
+                        
+                        if (!is_writable(dirname($mixValue)))
+                            throw new Exception(sprintf('Cannot create "%s" because the parent directory "%s" is not writable', $mixValue, dirname($mixValue)));
+                        
+                        chmod(dirname($mixValue), 0777);
+                        
                         if (mkdir($mixValue, 0777, true))
                             $this->strTranslationPath = $mixValue;
                         else
@@ -887,6 +894,14 @@
                     if (file_exists($mixValue))
                         $this->strTemplatePath = $mixValue;
                     else {
+                        if (!file_exists(dirname($mixValue)))
+                        throw new Exception(sprintf('Cannot create "%s" because the parent directory "%s" does not exist', $mixValue, dirname($mixValue)));
+                        
+                        if (!is_writable(dirname($mixValue)))
+                        throw new Exception(sprintf('Cannot create "%s" because the parent directory "%s" is not writable', $mixValue, dirname($mixValue)));
+                        
+                        chmod(dirname($mixValue), 0777);
+                                                
                         if (mkdir($mixValue, 0777, true))
                             $this->strTranslationPath = $mixValue;
                         else
