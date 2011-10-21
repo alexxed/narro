@@ -26,6 +26,7 @@
             sprintf(
                     "php %s [options]\n" .
         			"--project                    project id instead of exporting all projects\n" .
+        			"--language                   language code instead of importing all languages\n" .
                     "--disable-plugins            disable plugins during import/export\n" .
                     "                             suggestions, optional, defaults to anonymous\n" .
                     "--exported-suggestion        1 for approved,\n" .
@@ -45,6 +46,7 @@
         if (in_array('--project', $argv) && $objProject->ProjectId != $argv[array_search('--project', $argv)+1]) continue;
         
         foreach(NarroLanguage::LoadAllActive() as $objLanguage) {
+            if (in_array('--language', $argv) && $objLanguage->LanguageCode != $argv[array_search('--language', $argv)+1]) continue;
             QApplication::$TargetLanguage = $objLanguage;
 
             $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($objProject->ProjectId, $objLanguage->LanguageId);
@@ -112,3 +114,8 @@
             }
         }
     }
+    
+    $objDateSpan = new QDateTimeSpan(time() - $intStartTime);
+    printf("Export started %s ago, finished in %d seconds\n", $objDateSpan->SimpleDisplay(), time() - $intStartTime);
+    NarroLogger::LogInfo(sprintf('Export started %s ago, finished in %d seconds', $objDateSpan->SimpleDisplay(), time() - $intStartTime));
+    

@@ -265,7 +265,7 @@
                             (($this->chkApproveImportedTranslations->Checked)?'--approve ':'') .
                             (($this->chkImportUnchangedFiles->Checked)?'--import-unchanged-files ':'') .
                             (($this->chkApproveOnlyNotApproved->Checked)?'':'--approve-already-approved ') .
-                            (($this->chkImportOnlyTranslations->Checked || !QApplication::HasPermission('Can import project', $this->objProject->ProjectId))?'--only-suggestions --do-not-deactivate-files --do-not-deactivate-contexts ':'') .
+                            (($this->chkImportOnlyTranslations->Checked || !QApplication::HasPermission('Can import project', $this->objProject->ProjectId))?'--only-suggestions ':'') .
                             ' --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s"',
                         $this->objProject->ProjectId,
                         QApplication::$User->UserId,

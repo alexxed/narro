@@ -27,11 +27,9 @@
                     "php %s [options]\n" .
                     "--user                       user id that will be used for the added translations\n" .
                     "--project                    project id instead of importing all projects\n" .
+        			"--language                   language code instead of importing all languages\n" .
                     "--disable-plugins            disable plugins during import/export\n" .
                     "                             suggestions, optional, defaults to anonymous\n" .
-                    "--do-not-deactivate-files    do not deactivate project files before importing\n" .
-                    "--do-not-deactivate-contexts do not deactivate project contexts before\n" .
-                    "                             importing\n" .
                     "--do-not-check-equal         don't check if the translation is equal to the original\n" .
                     "                             text and don't import it\n" .
                     "--skip-untranslated          skip likes that don't have translated texts\n" .
@@ -55,6 +53,8 @@
         if (in_array('--project', $argv) && $objProject->ProjectId != $argv[array_search('--project', $argv)+1]) continue;
         
         foreach(NarroLanguage::LoadAllActive() as $intLangIdx=>$objLanguage) {
+            if (in_array('--language', $argv) && $objLanguage->LanguageCode != $argv[array_search('--language', $argv)+1]) continue;
+            
             if (in_array('--progress', $argv)) {
                 $strProjectProgress = '';
                 for($i=1;$i<11;$i++) {
@@ -169,3 +169,7 @@
             }
         }
     }
+    
+    $objDateSpan = new QDateTimeSpan(time() - $intStartTime);
+    printf("Import started %s ago, finished in %d seconds\n", $objDateSpan->SimpleDisplay(), time() - $intStartTime);
+    NarroLogger::LogInfo(sprintf('Import started %s ago, finished in %d seconds', $objDateSpan->SimpleDisplay(), time() - $intStartTime));
