@@ -129,6 +129,7 @@
 			// In theory, this SHOULD work.  But if there is a webserver/os/php version that doesn't like
 			// binary session streams, you can first base64_encode before saving to session (see note below).
 			file_put_contents($strFilePath, $strFormState);
+			chmod($strFilePath, 0666);
 
 			// Return the Page Id
 			// Because of the MD5-random nature of the Page ID, there is no need/reason to encrypt it
