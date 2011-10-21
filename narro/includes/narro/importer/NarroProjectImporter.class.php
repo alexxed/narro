@@ -223,7 +223,8 @@
             if (file_exists($strUploadPath))
                 NarroUtils::RecursiveDelete($strUploadPath);
 
-            $this->MarkUnusedFilesAsInactive();
+            if ($this->blnOnlySuggestions == false)
+                $this->MarkUnusedFilesAsInactive();
 
             NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'import');
 
