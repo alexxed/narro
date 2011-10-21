@@ -57,6 +57,12 @@
         public function __toString() {
             return sprintf('NarroProject Object %s',  $this->intProjectId);
         }
+        
+        public static function LoadArrayByActive($intActive, $objOptionalClauses = null) {
+            if (is_null($objOptionalClauses))
+                $objOptionalClauses = array(QQ::OrderBy(QQN::NarroProject()->ProjectName));
+            return parent::LoadArrayByActive($intActive, $objOptionalClauses);
+        }
 
         public function CountTranslatedTextsByLanguage($intLanguageId = null) {
             $intTranslatedTexts = 0;

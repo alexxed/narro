@@ -46,6 +46,9 @@
         }
 
         public static function LoadAllActive($objOptionalClauses = null) {
+            if (is_null($objOptionalClauses))
+                $objOptionalClauses = array(QQ::OrderBy(QQN::NarroLanguage()->LanguageName));
+            
             return
                 parent::QueryArray(
                     QQ::AndCondition(
