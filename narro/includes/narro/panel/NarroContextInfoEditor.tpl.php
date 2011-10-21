@@ -35,7 +35,6 @@ $_CONTROL->CopyButton->Render();
 $_CONTROL->SaveButton->Render();
 $_CONTROL->HelpButton->Render();
 if ($_CONTROL->TranslationList) {
-    printf('<br /><b>%s</b>', t('Translations'));
     $_CONTROL->TranslationList->Render();
 }
 if ($_CONTROL->CommentList)

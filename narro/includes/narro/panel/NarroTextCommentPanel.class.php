@@ -35,18 +35,20 @@
             
             $this->intTextId = $objText->TextId;
             
-            $this->strText = sprintf('<b>%s</b>', t('Comments'));
+            $this->strText = sprintf('<span class="instructions">%s</span>', t('User comments'));
             
             $this->dtgComments = new NarroTextCommentDataGrid($this);
-            $this->dtgComments->MetaAddColumn(QQN::NarroTextComment()->CommentText);
-            $this->dtgComments->MetaAddColumn(QQN::NarroTextComment()->Language->LanguageName);
-            $this->dtgComments->MetaAddColumn(QQN::NarroTextComment()->User->Username, 'Html="<?=sprintf(\'<a href="%s" tabindex="-1">%s</a>\', NarroLink::UserProfile($_ITEM->UserId), $_ITEM->User->Username)?>"', 'HtmlEntities=false');
-            $this->dtgComments->MetaAddColumn(QQN::NarroTextComment()->Created, 'Html="<?=sprintf(t(\'%s ago \'), new QDateTimeSpan(time() - strtotime($_ITEM->Created)))?>"');
+            $colComment = $this->dtgComments->MetaAddColumn(QQN::NarroTextComment()->CommentText);
+            $colComment->HtmlEntities = false;
+            $colComment->Html = '<?=$_CONTROL->ParentControl->colComment_Render($_ITEM)?>';
             $this->dtgComments->ShowFilter = false;
             $this->dtgComments->ShowHeader = false;
-            $this->dtgComments->SortColumnIndex = 3;
-            $this->dtgComments->SortDirection = 1;
             $this->dtgComments->AdditionalConditions = QQ::Equal(QQN::NarroTextComment()->TextId, $objText->TextId);
+            $this->dtgComments->AdditionalClauses = array(
+                QQ::OrderBy(QQN::NarroTextComment()->Created, 1),
+                QQ::Expand(QQN::NarroTextComment()->Language),
+                QQ::Expand(QQN::NarroTextComment()->User)
+            );
             
             $this->txtComment = new QTextBox($this);
             $this->txtComment->Name = t('Comment');
@@ -60,6 +62,17 @@
             $this->btnSave->ToolTip = $this->btnSave->AlternateText;
             $this->btnSave->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/comment.png';
             $this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+        }
+        
+        public function colComment_Render(NarroTextComment $objComment) {
+            return sprintf(
+            	'%s<br /><small>-- added by <a href="%s" tabindex="-1">%s</a> in %s, %s ago</small>',
+            	$objComment->CommentText,
+            	NarroLink::UserProfile($objComment->UserId),
+            	$objComment->User->Username,
+            	$objComment->Language->LanguageName,
+                new QDateTimeSpan(time() - strtotime($objComment->Created))
+            );
         }
         
         public function btnSave_Click() {

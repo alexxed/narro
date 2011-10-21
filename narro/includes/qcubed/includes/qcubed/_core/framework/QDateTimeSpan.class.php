@@ -18,7 +18,7 @@
 		const SecondsPerMinute 	= 60;
 		
 		public function __toString() {
-		    return $this->SimpleDisplay();
+		    return (string) $this->SimpleDisplay();
 		}
 
 		public function __construct($intSeconds = 0) {
