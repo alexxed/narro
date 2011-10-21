@@ -150,6 +150,8 @@
                     chmod($strProcPidFile, 0666);
 
                     $blnResult = $objNarroImporter->ImportProject();
+                    
+                    unlink($strProcPidFile);
                 }
                 catch (Exception $objEx) {
                     NarroLogger::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));

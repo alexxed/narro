@@ -107,6 +107,8 @@
                     chmod($strProcPidFile, 0666);
 
                     $objNarroImporter->ExportProject();
+                    
+                    unlink($strProcPidFile);
                 }
                 catch (Exception $objEx) {
                     NarroLogger::LogError(sprintf('An error occurred during export: %s', $objEx->getMessage()));
