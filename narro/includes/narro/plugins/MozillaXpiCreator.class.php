@@ -40,10 +40,10 @@
 
         public function __construct() {
             parent::__construct();
-            $this->blnEnable = false;
+            self::$blnEnable = false;
             $this->strName = t('Mozilla XPI creator');
             $this->Enable();
-            $this->blnEnable = $this->blnEnable;
+            self::$blnEnable = self::$blnEnable;
         }
         
         protected function GetOutputFileName($objProject) {

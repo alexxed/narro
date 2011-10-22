@@ -38,10 +38,10 @@
 
         public function __construct() {
             parent::__construct();
-            $this->blnEnable = false;
+            self::$blnEnable = false;
             $this->strName = t('Mozilla compare locales');
             $this->Enable();
-            $this->blnEnable = $this->blnEnable;
+            self::$blnEnable = self::$blnEnable;
             
             // NarroProject::RegisterPreference('Compare locales Python path', true, NarroProjectType::Mozilla, 'text', 'e.g. /home/alexxed/apps/compare-locales-0.9/lib', '');
             // NarroProject::RegisterPreference('Path to a hg clone of this project', true, NarroProjectType::Mozilla, 'text', 'e.g. /home/alexxed/mozilla_projects/mozilla-aurora', '');

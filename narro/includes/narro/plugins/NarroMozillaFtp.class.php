@@ -20,10 +20,10 @@
 
         public function __construct() {
             parent::__construct();
-            $this->blnEnable = false;
+            self::$blnEnable = false;
             $this->strName = t('Mozilla FTP');
             $this->Enable();
-            $this->blnEnable = $this->blnEnable && extension_loaded('ftp');
+            self::$blnEnable = self::$blnEnable && extension_loaded('ftp');
         }
         
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {

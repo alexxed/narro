@@ -21,10 +21,10 @@
 
         public function __construct() {
             parent::__construct();
-            $this->blnEnable = false;
+            self::$blnEnable = false;
             $this->strName = t('Mozilla l10n dashboard');
             $this->Enable();
-            $this->blnEnable = $this->blnEnable && function_exists('json_decode');
+            self::$blnEnable = self::$blnEnable && function_exists('json_decode');
             $this->strUrl = sprintf($this->strUrl, QApplication::$TargetLanguage->LanguageCode);
             
             NarroProject::RegisterPreference('Code name on mozilla l10n dashboard', true, NarroProjectType::Mozilla, 'text', 'e.g. fx_aurora, see <a href="https://l10n-stage-sj.mozilla.org/shipping/dashboard">https://l10n-stage-sj.mozilla.org/shipping/dashboard</a>', '');

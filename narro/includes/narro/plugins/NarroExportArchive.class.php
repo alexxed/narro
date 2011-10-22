@@ -40,7 +40,7 @@
 
         public function __construct() {
             parent::__construct();
-            $this->blnEnable = true;
+            self::$blnEnable = true;
             $this->strName = t('Archive Exporter');
             $this->Enable();
         }
