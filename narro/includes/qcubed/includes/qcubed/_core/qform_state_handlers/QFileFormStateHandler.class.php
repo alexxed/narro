@@ -50,7 +50,7 @@
 		 * @var integer GarbageCollectDaysOld
 		 */
 		public static $GarbageCollectDaysOld = 2;
-
+		
 		/**
 		 * If PHP SESSION is enabled, then this method will delete all formstate files specifically
 		 * for this SESSION user (and no one else).  This can be used in lieu of or in addition to the
@@ -106,10 +106,9 @@
 				if (rand(1, self::$GarbageCollectInterval) == 1)
 					self::GarbageCollect();
 			}
-
-			// Compress (if available)
-			if (__COMPRESS_FORM_STATES__ && function_exists('gzdeflate'))
-				$strFormState = gzdeflate($strFormState);
+			
+			if (__ENCODE_FORM_STATES__)
+			    $strFormState = base64_encode($strFormState);
 
 			// Figure Out Session Id (if applicable)
 			$strSessionId = session_id();
@@ -118,17 +117,28 @@
 			$strPageId = md5(microtime());
 
 			// Figure Out FilePath
-			$strFilePath = sprintf('%s/%s%s_%s',
+			$strFilePath = sprintf(
+				'%s/%s%s_%s%s',
 				self::$StatePath,
 				self::$FileNamePrefix,
 				$strSessionId,
-				$strPageId);
+				$strPageId,
+				(__COMPRESS_FORM_STATES__)?'.gz':''
+			);
 			
 			// Save THIS formstate to the file system
 			// NOTE: if gzcompress is used, we are saving the *BINARY* data stream of the compressed formstate
 			// In theory, this SHOULD work.  But if there is a webserver/os/php version that doesn't like
 			// binary session streams, you can first base64_encode before saving to session (see note below).
-			file_put_contents($strFilePath, $strFormState);
+			// Compress (if available)
+			if (__COMPRESS_FORM_STATES__ && function_exists('gzopen')) {
+			    $gz = gzopen($strFilePath, 'w9');
+			    gzwrite($gz, $strFormState);
+			    gzclose($gz);
+			}
+			else
+			    file_put_contents($strFilePath, $strFormState);
+			
 			chmod($strFilePath, 0666);
 
 			// Return the Page Id
@@ -144,26 +154,48 @@
 			$strSessionId = session_id();
 
 			// Figure Out FilePath
-			$strFilePath = sprintf('%s/%s%s_%s',
+			$strFilePath = sprintf(
+				'%s/%s%s_%s%s',
 				self::$StatePath,
 				self::$FileNamePrefix,
 				$strSessionId,
-				$strPageId);
+				$strPageId,
+			    (__COMPRESS_FORM_STATES__)?'.gz':''
+			);
 
 			if (file_exists($strFilePath)) {
 				// Pull FormState from file system
 				// NOTE: if gzcompress is used, we are restoring the *BINARY* data stream of the compressed formstate
 				// In theory, this SHOULD work.  But if there is a webserver/os/php version that doesn't like
 				// binary session streams, you can first base64_decode before restoring from session (see note above).
-				$strSerializedForm = file_get_contents($strFilePath);
+				
 
 				// Uncompress (if available)
-				if (__COMPRESS_FORM_STATES__ && function_exists('gzinflate'))
-					$strSerializedForm = gzinflate($strSerializedForm);
+				if (__COMPRESS_FORM_STATES__ && function_exists('gzopen')) {
+					$gz = gzopen($strFilePath, "r");
+                    $contents = gzread($gz, 1000);
+                    while ($contents) {
+                        $strSerializedForm .= $contents;
+                        $contents = gzread($gz, 1000);
+                    }
+                    
+                    gzclose($gz);
+				}
+				else
+				    $strSerializedForm = file_get_contents($strFilePath);
+				
+				if (__ENCODE_FORM_STATES__)
+				    $strSerializedForm = base64_decode($strSerializedForm);
 
 				return $strSerializedForm;
 			} else
 				return null;
 		}
+	}
+	
+	class QInvalidFileFormStateHandlerException extends Exception {
+	    public function __construct($message, $code = null, $previous = null) {
+	        QFirebug::error($message);
+	    }
 	}
 ?>

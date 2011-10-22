@@ -87,5 +87,7 @@
     define ('SERVER_INSTANCE', 'prod');
     define ('NARRO_VERSION', '2.0');
 
+    // Problems with form states? Try flipping these values
     define ('__COMPRESS_FORM_STATES__', true);
+    define ('__ENCODE_FORM_STATES__', true);
 ?>
