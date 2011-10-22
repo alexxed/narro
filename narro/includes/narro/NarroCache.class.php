@@ -24,8 +24,8 @@
                 return unserialize($mixResult);
         }
         
-        public function SaveData($strData) {
-            $mixResult = parent::SaveData(unserialize($strData));
+        public function SaveData($mixData) {
+            $mixResult = parent::SaveData(serialize($mixData));
             NarroUtils::RecursiveChmod(__CACHE__);
             return $mixResult;
         }
