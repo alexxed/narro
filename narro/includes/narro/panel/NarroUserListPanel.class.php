@@ -18,12 +18,6 @@
 
     class NarroUserListPanel extends QPanel {
         public $dtgUser;
-
-        // DataGrid Columns
-        protected $colUsername;
-        protected $colEmail;
-        protected $colActions;
-
         public $txtSearch;
         public $btnSearch;
 
@@ -38,20 +32,15 @@
 
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroUserListPanel.tpl.php';
 
-            // Setup DataGrid Columns            // Setup DataGrid Columns
-            $this->colUsername = new QDataGridColumn(QApplication::Translate('Username'), '<?= $_CONTROL->ParentControl->dtgUser_UsernameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUser()->Username), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUser()->Username, false)));
-            $this->colUsername->HtmlEntities = false;
-            $this->colEmail = new QDataGridColumn(QApplication::Translate('Email'), '<?= $_CONTROL->ParentControl->dtgUser_EmailColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUser()->Email), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUser()->Email, false)));
-            $this->colEmail->HtmlEntities = false;
-
-            $this->colActions = new QDataGridColumn(QApplication::Translate('Actions'), '<?= $_CONTROL->ParentControl->dtgUser_ActionsColumn_Render($_ITEM) ?>');
-            $this->colActions->HtmlEntities = false;
+            $colActions = new QDataGridColumn(QApplication::Translate('Actions'), '<?= $_CONTROL->ParentControl->dtgUser_ActionsColumn_Render($_ITEM) ?>');
+            $colActions->HtmlEntities = false;
 
 
             // Setup DataGrid
-            $this->dtgUser = new NarroDataGrid($this);
+            $this->dtgUser = new NarroUserDataGrid($this);
             $this->dtgUser->UseAjax = QApplication::$UseAjax;
             $this->dtgUser->ShowHeader = true;
+            $this->dtgUser->ShowFilter = false;
             $this->dtgUser->Title = t('Users');
 
             // Datagrid Paginator
@@ -62,14 +51,15 @@
             // Specify the local databind method this datagrid will use
             $this->dtgUser->SetDataBinder('dtgUser_Bind', $this);
 
-            $this->dtgUser->AddColumn($this->colUsername);
+            $this->dtgUser->MetaAddColumn(QQN::NarroUser()->RealName, sprintf('Name="%s"', t('Real name')), 'Html="<?= $_CONTROL->ParentControl->dtgUser_RealNameColumn_Render($_ITEM) ?>"', 'HtmlEntities=false');
+            $this->dtgUser->MetaAddColumn(QQN::NarroUser()->Username, sprintf('Name="%s"', t('Username')), 'Html="<?= $_CONTROL->ParentControl->dtgUser_UsernameColumn_Render($_ITEM) ?>"', 'HtmlEntities=false');
 
             if (QApplication::HasPermissionForThisLang('Administrator', null)) {
-                $this->dtgUser->AddColumn($this->colEmail);
+                $this->dtgUser->MetaAddColumn(QQN::NarroUser()->Email, sprintf('Name="%s"', t('Email')), 'Html="<?= $_CONTROL->ParentControl->dtgUser_EmailColumn_Render($_ITEM) ?>"', 'HtmlEntities=false');
             }
 
             if (QApplication::HasPermissionForThisLang('Can manage users', null)) {
-                $this->dtgUser->AddColumn($this->colActions);
+                $this->dtgUser->AddColumn($colActions);
             }
 
             $this->dtgUser->SortColumnIndex = 0;
@@ -93,6 +83,13 @@
             else
                 return NarroLink::UserProfile($objUser->UserId, $objUser->Username);
         }
+        
+        public function dtgUser_RealNameColumn_Render(NarroUser $objUser) {
+            if ($objUser->UserId == NarroUser::ANONYMOUS_USER_ID)
+                return t('Anonymous');
+            else
+                return NarroLink::UserProfile($objUser->UserId, $objUser->RealName);
+        }
 
         public function dtgUser_EmailColumn_Render(NarroUser $objUser) {
             return $objUser->Email;
@@ -105,6 +102,7 @@
         public function dtgUser_Bind() {
             if ($this->txtSearch->Text != '')
                 $objSearchCondition = QQ::OrCondition(
+                    QQ::Like(QQN::NarroUser()->RealName, sprintf('%%%s%%', $this->txtSearch->Text)),
                     QQ::Like(QQN::NarroUser()->Username, sprintf('%%%s%%', $this->txtSearch->Text)),
                     QQ::Like(QQN::NarroUser()->Email, sprintf('%%%s%%', $this->txtSearch->Text))
                 );
