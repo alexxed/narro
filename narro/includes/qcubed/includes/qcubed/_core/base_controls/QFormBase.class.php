@@ -169,8 +169,11 @@
                     // We might have a valid form state -- let's see by unserializing this object
                     $objClass = QForm::Unserialize($strPostDataState);
 
+                $blnInvalidFormState = false;
                 // If there is no QForm Class, then we have an Invalid Form State
-                if (!$objClass) throw new QInvalidFormStateException($strFormId);
+                if (!$objClass) {
+                    $blnInvalidFormState = true;
+                }
             }
 
             if ($objClass) {
@@ -276,17 +279,31 @@
                 // By default, this form is being created NOT via a PostBack
                 // So there is no CallType
                 $objClass->strCallType = QCallType::None;
+                if ($blnInvalidFormState) {
+                    $objClass->strCallType = $_POST['Qform__FormCallType'];
+                }
 
                 $objClass->strFormId = $strFormId;
                 $objClass->intFormStatus = QFormBase::FormStatusUnrendered;
                 $objClass->objControlArray = array();
                 $objClass->objGroupingArray = array();
+                
 
                 // Trigger Run Event (if applicable)
                 $objClass->Form_Run();
 
                 // Trigger Create Event (if applicable)
                 $objClass->Form_Create();
+                
+                if ($blnInvalidFormState) {
+                    QApplication::ExecuteJavaScript(
+                        sprintf(
+                    		"alert('%s'); document.location='%s';",
+                            t('It seems that you left the page open for a while and the session expired.\nYou will be redirected to the project list after you close this dialogue.\nIf you get this message repeatedly, please report the problem to the administrator.'),
+                            NarroLink::ProjectList()
+                        )
+                    );
+                }
             }
 
             // Trigger PreRender Event (if applicable)
