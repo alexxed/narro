@@ -163,6 +163,8 @@
         }
 
         public function btnLogin_Click($strFormId, $strControlId, $strParameter) {
+            if ($this->txtOpenId->Text != '') return $this->btnOpenIdLogin($strFormId, $strControlId, $strParameter);
+            
             $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text));
 
             if ($objUser instanceof NarroUser) {
