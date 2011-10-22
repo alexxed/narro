@@ -24,6 +24,11 @@
 
         protected function Form_Create() {
             parent::Form_Create();
+            
+            if (QApplication::GetUserId() == NarroUser::ANONYMOUS_USER_ID) {
+                QApplication::Redirect(NarroLink::ProjectList());
+                exit;
+            }
 
             if (QApplication::GetUserId() != QApplication::QueryString('u') && QApplication::HasPermissionForThisLang('Can manage users', null))
                 $this->objUser = NarroUser::Load(QApplication::QueryString('u'));
