@@ -26,7 +26,7 @@
         
         public function SaveData($strData) {
             $mixResult = parent::SaveData(unserialize($strData));
-            NarroUtils::RecursiveChmod(__CACHE__ . '/*');
+            NarroUtils::RecursiveChmod(__CACHE__);
             return $mixResult;
         }
         
