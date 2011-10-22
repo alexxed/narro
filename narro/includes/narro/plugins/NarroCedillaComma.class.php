@@ -19,9 +19,9 @@
 
         public function __construct() {
             parent::__construct();
-            self::$blnEnable = false;
+            $this->blnEnable = false;
             $this->strName = t('Cedill/Comma issue solver');
-            if (self::$blnEnable)
+            if ($this->blnEnable)
                 NarroUser::RegisterPreference('Cedilla or comma', 'option', 'Select whether you want to see s and t with comma or cedilla undernieth', 'cedilla', array('cedilla', 'comma'));
             /**
              * Preference value: t('cedilla');

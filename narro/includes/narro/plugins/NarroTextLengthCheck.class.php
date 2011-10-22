@@ -19,7 +19,7 @@
 
         public function __construct() {
             parent::__construct();
-            self::$blnEnable = true;
+            $this->blnEnable = true;
             $this->strName = t('Text length check');
             $this->Enable();
         }

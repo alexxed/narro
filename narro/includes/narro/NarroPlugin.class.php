@@ -18,16 +18,16 @@
     class NarroPlugin {
         protected $strName;
         protected $arrErrors = array();
-        public static $blnEnable = true;
+        protected $blnEnable = true;
 
         public function __construct() {
             $this->strName = __CLASS__;
         }
         
         protected function Enable() {
-            if (self::$blnEnable) {
-                NarroUser::RegisterPreference($this->strName, 'option', sprintf(t('Enables the %s plugin'), $this->strName), (self::$blnEnable)?'Yes':'No', array('Yes', 'No'));
-                self::$blnEnable = self::$blnEnable && (QApplication::$User->GetPreferenceValueByName($this->strName) == 'Yes');
+            if ($this->blnEnable) {
+                NarroUser::RegisterPreference($this->strName, 'option', sprintf(t('Enables the %s plugin'), $this->strName), ($this->blnEnable)?'Yes':'No', array('Yes', 'No'));
+                $this->blnEnable = $this->blnEnable && (QApplication::$User->GetPreferenceValueByName($this->strName) == 'Yes');
             }
         }
 
@@ -39,7 +39,7 @@
                 case "Errors": return $this->arrErrors;
                 case "Error": return QType::Cast(count($this->arrErrors), QType::Boolean);
                 case "Name": return $this->strName;
-                case "Enable": return self::$blnEnable;
+                case "Enable": return $this->blnEnable;
                 default:
                     throw new QUndefinedPropertyException("GET", __CLASS__, $strName);
             }
