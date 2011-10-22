@@ -40,6 +40,10 @@ if ($_CONTROL->objNarroUser->Password == md5('')) {
 <td><label for="<?php echo $_CONTROL->txtEmail->ControlId; ?>"><?php echo $_CONTROL->txtEmail->Name; ?>:</label></td>
 <td><?php $_CONTROL->txtEmail->RenderWithError(); ?></td>
 </tr>
+<tr class="datagrid_row datagrid_even">
+<td><label for="<?php echo $_CONTROL->txtRealname->ControlId; ?>"><?php echo $_CONTROL->txtRealname->Name; ?>:</label></td>
+<td><?php $_CONTROL->txtRealname->RenderWithError(); ?></td>
+</tr>
 </table>
 <br />
 <?php $_CONTROL->btnSave->Render() ?>

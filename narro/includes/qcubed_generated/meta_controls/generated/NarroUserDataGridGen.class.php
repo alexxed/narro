@@ -293,6 +293,7 @@
 				case 'Username': return QQN::NarroUser()->Username;
 				case 'Password': return QQN::NarroUser()->Password;
 				case 'Email': return QQN::NarroUser()->Email;
+				case 'RealName': return QQN::NarroUser()->RealName;
 				case 'Data': return QQN::NarroUser()->Data;
 				default: throw new QCallerException('Simple Property not found in NarroUserDataGrid content: ' . $mixContent);
 			} else if ($mixContent instanceof QQAssociationNode)

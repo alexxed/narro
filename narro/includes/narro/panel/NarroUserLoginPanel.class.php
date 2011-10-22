@@ -104,7 +104,7 @@
     
                         if (!$objUser instanceof NarroUser) {
                             try {
-                                $objUser = NarroUser::RegisterUser($openid->identity, $openid->identity, '');
+                                $objUser = NarroUser::RegisterUser($openid->identity, '', '', $openid->identity);
                                 if (isset($arrAttributes['namePerson']))
                                     $objUser->Username = $arrAttributes['namePerson'];
                                 if (isset($arrAttributes['contact/email']))

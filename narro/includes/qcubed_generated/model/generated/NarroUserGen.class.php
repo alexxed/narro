@@ -19,6 +19,7 @@
 	 * @property string $Username the value for strUsername (Unique)
 	 * @property string $Password the value for strPassword (Not Null)
 	 * @property string $Email the value for strEmail (Unique)
+	 * @property string $RealName the value for strRealName (Unique)
 	 * @property string $Data the value for strData 
 	 * @property-read NarroContextInfo $_NarroContextInfoAsValidatorUser the value for the private _objNarroContextInfoAsValidatorUser (Read-Only) if set due to an expansion on the narro_context_info.validator_user_id reverse relationship
 	 * @property-read NarroContextInfo[] $_NarroContextInfoAsValidatorUserArray the value for the private _objNarroContextInfoAsValidatorUserArray (Read-Only) if set due to an ExpandAsArray on the narro_context_info.validator_user_id reverse relationship
@@ -80,6 +81,15 @@
 		protected $strEmail;
 		const EmailMaxLength = 128;
 		const EmailDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column narro_user.real_name
+		 * @var string strRealName
+		 */
+		protected $strRealName;
+		const RealNameMaxLength = 255;
+		const RealNameDefault = null;
 
 
 		/**
@@ -219,6 +229,7 @@
 			$this->strUsername = NarroUser::UsernameDefault;
 			$this->strPassword = NarroUser::PasswordDefault;
 			$this->strEmail = NarroUser::EmailDefault;
+			$this->strRealName = NarroUser::RealNameDefault;
 			$this->strData = NarroUser::DataDefault;
 		}
 
@@ -491,6 +502,7 @@
 			$objBuilder->AddSelectItem($strTableName, 'username', $strAliasPrefix . 'username');
 			$objBuilder->AddSelectItem($strTableName, 'password', $strAliasPrefix . 'password');
 			$objBuilder->AddSelectItem($strTableName, 'email', $strAliasPrefix . 'email');
+			$objBuilder->AddSelectItem($strTableName, 'real_name', $strAliasPrefix . 'real_name');
 			$objBuilder->AddSelectItem($strTableName, 'data', $strAliasPrefix . 'data');
 		}
 
@@ -666,6 +678,8 @@
 			$objToReturn->strPassword = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'email', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'email'] : $strAliasPrefix . 'email';
 			$objToReturn->strEmail = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAliasName = array_key_exists($strAliasPrefix . 'real_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'real_name'] : $strAliasPrefix . 'real_name';
+			$objToReturn->strRealName = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAliasName = array_key_exists($strAliasPrefix . 'data', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'data'] : $strAliasPrefix . 'data';
 			$objToReturn->strData = $objDbRow->GetColumn($strAliasName, 'Blob');
 
@@ -881,6 +895,22 @@
 				$objOptionalClauses
 			);
 		}
+			
+		/**
+		 * Load a single NarroUser object,
+		 * by RealName Index(es)
+		 * @param string $strRealName
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return NarroUser
+		*/
+		public static function LoadByRealName($strRealName, $objOptionalClauses = null) {
+			return NarroUser::QuerySingle(
+				QQ::AndCondition(
+					QQ::Equal(QQN::NarroUser()->RealName, $strRealName)
+				),
+				$objOptionalClauses
+			);
+		}
 
 
 
@@ -916,12 +946,14 @@
 							`username`,
 							`password`,
 							`email`,
+							`real_name`,
 							`data`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intUserId) . ',
 							' . $objDatabase->SqlVariable($this->strUsername) . ',
 							' . $objDatabase->SqlVariable($this->strPassword) . ',
 							' . $objDatabase->SqlVariable($this->strEmail) . ',
+							' . $objDatabase->SqlVariable($this->strRealName) . ',
 							' . $objDatabase->SqlVariable($this->strData) . '
 						)
 					');
@@ -941,6 +973,7 @@
 							`username` = ' . $objDatabase->SqlVariable($this->strUsername) . ',
 							`password` = ' . $objDatabase->SqlVariable($this->strPassword) . ',
 							`email` = ' . $objDatabase->SqlVariable($this->strEmail) . ',
+							`real_name` = ' . $objDatabase->SqlVariable($this->strRealName) . ',
 							`data` = ' . $objDatabase->SqlVariable($this->strData) . '
 						WHERE
 							`user_id` = ' . $objDatabase->SqlVariable($this->__intUserId) . '
@@ -1026,6 +1059,7 @@
 			$this->strUsername = $objReloaded->strUsername;
 			$this->strPassword = $objReloaded->strPassword;
 			$this->strEmail = $objReloaded->strEmail;
+			$this->strRealName = $objReloaded->strRealName;
 			$this->strData = $objReloaded->strData;
 		}
 
@@ -1074,6 +1108,13 @@
 					 * @return string
 					 */
 					return $this->strEmail;
+
+				case 'RealName':
+					/**
+					 * Gets the value for strRealName (Unique)
+					 * @return string
+					 */
+					return $this->strRealName;
 
 				case 'Data':
 					/**
@@ -1262,6 +1303,19 @@
 					 */
 					try {
 						return ($this->strEmail = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'RealName':
+					/**
+					 * Sets the value for strRealName (Unique)
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strRealName = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2231,6 +2285,7 @@
 			$strToReturn .= '<element name="Username" type="xsd:string"/>';
 			$strToReturn .= '<element name="Password" type="xsd:string"/>';
 			$strToReturn .= '<element name="Email" type="xsd:string"/>';
+			$strToReturn .= '<element name="RealName" type="xsd:string"/>';
 			$strToReturn .= '<element name="Data" type="xsd:string"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
@@ -2262,6 +2317,8 @@
 				$objToReturn->strPassword = $objSoapObject->Password;
 			if (property_exists($objSoapObject, 'Email'))
 				$objToReturn->strEmail = $objSoapObject->Email;
+			if (property_exists($objSoapObject, 'RealName'))
+				$objToReturn->strRealName = $objSoapObject->RealName;
 			if (property_exists($objSoapObject, 'Data'))
 				$objToReturn->strData = $objSoapObject->Data;
 			if (property_exists($objSoapObject, '__blnRestored'))
@@ -2300,6 +2357,7 @@
 			$iArray['Username'] = $this->strUsername;
 			$iArray['Password'] = $this->strPassword;
 			$iArray['Email'] = $this->strEmail;
+			$iArray['RealName'] = $this->strRealName;
 			$iArray['Data'] = $this->strData;
 			return new ArrayIterator($iArray);
 		}
@@ -2326,6 +2384,7 @@
      * @property-read QQNode $Username
      * @property-read QQNode $Password
      * @property-read QQNode $Email
+     * @property-read QQNode $RealName
      * @property-read QQNode $Data
      *
      *
@@ -2352,6 +2411,8 @@
 					return new QQNode('password', 'Password', 'VarChar', $this);
 				case 'Email':
 					return new QQNode('email', 'Email', 'VarChar', $this);
+				case 'RealName':
+					return new QQNode('real_name', 'RealName', 'VarChar', $this);
 				case 'Data':
 					return new QQNode('data', 'Data', 'Blob', $this);
 				case 'NarroContextInfoAsValidatorUser':
@@ -2385,6 +2446,7 @@
      * @property-read QQNode $Username
      * @property-read QQNode $Password
      * @property-read QQNode $Email
+     * @property-read QQNode $RealName
      * @property-read QQNode $Data
      *
      *
@@ -2411,6 +2473,8 @@
 					return new QQNode('password', 'Password', 'string', $this);
 				case 'Email':
 					return new QQNode('email', 'Email', 'string', $this);
+				case 'RealName':
+					return new QQNode('real_name', 'RealName', 'string', $this);
 				case 'Data':
 					return new QQNode('data', 'Data', 'string', $this);
 				case 'NarroContextInfoAsValidatorUser':

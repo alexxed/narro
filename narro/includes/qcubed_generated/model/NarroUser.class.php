@@ -253,12 +253,13 @@
                 return false;
         }
 
-        public static function RegisterUser($strUsername, $strEmail, $strPassword) {
+        public static function RegisterUser($strUsername, $strEmail, $strPassword, $strRealName) {
             $objMaxUser = NarroUser::LoadAll(QQ::Clause(QQ::LimitInfo(1,0), QQ::OrderBy(QQN::NarroUser()->UserId, false)));
 
             $objUser = new NarroUser();
             $objUser->UserId = $objMaxUser[0]->UserId + 1;
             $objUser->Username = $strUsername;
+            $objUser->RealName = $strRealName;
             $objUser->Email = $strEmail;
             $objUser->Password = md5($strPassword);
 

@@ -59,6 +59,7 @@
 			$this->dtgNarroUsers->MetaAddColumn('Username');
 			$this->dtgNarroUsers->MetaAddColumn('Password');
 			$this->dtgNarroUsers->MetaAddColumn('Email');
+			$this->dtgNarroUsers->MetaAddColumn('RealName');
 			$this->dtgNarroUsers->MetaAddColumn('Data');
 		}
 	}

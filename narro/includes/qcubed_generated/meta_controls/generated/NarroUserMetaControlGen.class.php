@@ -24,6 +24,8 @@
 	 * @property-read QLabel $PasswordLabel
 	 * @property QTextBox $EmailControl
 	 * @property-read QLabel $EmailLabel
+	 * @property QTextBox $RealNameControl
+	 * @property-read QLabel $RealNameLabel
 	 * @property QTextBox $DataControl
 	 * @property-read QLabel $DataLabel
 	 * @property-read string $TitleVerb a verb indicating whether or not this is being edited or created
@@ -75,6 +77,11 @@
 		 */
 		protected $txtEmail;
 		/**
+		 * @var QTextBox txtRealName
+		 * @access protected
+		 */
+		protected $txtRealName;
+		/**
 		 * @var QTextBox txtData
 		 * @access protected
 		 */
@@ -101,6 +108,11 @@
 		 * @access protected
 		 */
 		protected $lblEmail;
+		/**
+		 * @var QLabel lblRealName
+		 * @access protected
+		 */
+		protected $lblRealName;
 		/**
 		 * @var QLabel lblData
 		 * @access protected
@@ -314,6 +326,31 @@
 		}
 
 		/**
+		 * Create and setup QTextBox txtRealName
+		 * @param string $strControlId optional ControlId to use
+		 * @return QTextBox
+		 */
+		public function txtRealName_Create($strControlId = null) {
+			$this->txtRealName = new QTextBox($this->objParentObject, $strControlId);
+			$this->txtRealName->Name = QApplication::Translate('Real Name');
+			$this->txtRealName->Text = $this->objNarroUser->RealName;
+			$this->txtRealName->MaxLength = NarroUser::RealNameMaxLength;
+			return $this->txtRealName;
+		}
+
+		/**
+		 * Create and setup QLabel lblRealName
+		 * @param string $strControlId optional ControlId to use
+		 * @return QLabel
+		 */
+		public function lblRealName_Create($strControlId = null) {
+			$this->lblRealName = new QLabel($this->objParentObject, $strControlId);
+			$this->lblRealName->Name = QApplication::Translate('Real Name');
+			$this->lblRealName->Text = $this->objNarroUser->RealName;
+			return $this->lblRealName;
+		}
+
+		/**
 		 * Create and setup QTextBox txtData
 		 * @param string $strControlId optional ControlId to use
 		 * @return QTextBox
@@ -361,6 +398,9 @@
 			if ($this->txtEmail) $this->txtEmail->Text = $this->objNarroUser->Email;
 			if ($this->lblEmail) $this->lblEmail->Text = $this->objNarroUser->Email;
 
+			if ($this->txtRealName) $this->txtRealName->Text = $this->objNarroUser->RealName;
+			if ($this->lblRealName) $this->lblRealName->Text = $this->objNarroUser->RealName;
+
 			if ($this->txtData) $this->txtData->Text = $this->objNarroUser->Data;
 			if ($this->lblData) $this->lblData->Text = $this->objNarroUser->Data;
 
@@ -391,6 +431,7 @@
 				if ($this->txtUsername) $this->objNarroUser->Username = $this->txtUsername->Text;
 				if ($this->txtPassword) $this->objNarroUser->Password = $this->txtPassword->Text;
 				if ($this->txtEmail) $this->objNarroUser->Email = $this->txtEmail->Text;
+				if ($this->txtRealName) $this->objNarroUser->RealName = $this->txtRealName->Text;
 				if ($this->txtData) $this->objNarroUser->Data = $this->txtData->Text;
 
 				// Update any UniqueReverseReferences (if any) for controls that have been created for it
@@ -458,6 +499,12 @@
 				case 'EmailLabel':
 					if (!$this->lblEmail) return $this->lblEmail_Create();
 					return $this->lblEmail;
+				case 'RealNameControl':
+					if (!$this->txtRealName) return $this->txtRealName_Create();
+					return $this->txtRealName;
+				case 'RealNameLabel':
+					if (!$this->lblRealName) return $this->lblRealName_Create();
+					return $this->lblRealName;
 				case 'DataControl':
 					if (!$this->txtData) return $this->txtData_Create();
 					return $this->txtData;
@@ -494,6 +541,8 @@
 						return ($this->txtPassword = QType::Cast($mixValue, 'QControl'));
 					case 'EmailControl':
 						return ($this->txtEmail = QType::Cast($mixValue, 'QControl'));
+					case 'RealNameControl':
+						return ($this->txtRealName = QType::Cast($mixValue, 'QControl'));
 					case 'DataControl':
 						return ($this->txtData = QType::Cast($mixValue, 'QControl'));
 					default:

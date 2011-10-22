@@ -19,6 +19,7 @@
     class NarroUserRegisterPanel extends QPanel {
         public $lblMessage;
         public $txtUsername;
+        public $txtRealname;
         public $txtPassword;
         public $txtEmail;
         public $btnRegister;
@@ -38,7 +39,10 @@
             $this->lblMessage->HtmlEntities = false;
             $this->txtUsername = new QTextBox($this, 'username');
             $this->txtUsername->Required = true;
+            $this->txtRealname = new QTextBox($this, 'name');
+            $this->txtRealname->Required = false;
             $this->txtEmail = new QTextBox($this, 'email');
+            $this->txtEmail->Required = true;
             $this->txtPassword = new QTextBox($this, 'password');
             $this->txtPassword->TextMode = QTextMode::Password;
             $this->btnRegister = new QButton($this);
@@ -53,7 +57,7 @@
                 $this->txtUsername->Warning = t("No <, please.");
                 return false;
             }
-            elseif (strstr($this->txtEmail->Text, '<')) {
+            elseif (trim($this->txtEmail->Text) && strstr($this->txtEmail->Text, '<')) {
                 $this->txtEmail->Warning = t("No <, please.");
                 return false;
             }
@@ -62,22 +66,14 @@
         }
 
         public function btnRegister_Click($strFormId, $strControlId, $strParameter) {
-            if (!trim($this->txtUsername->Text) || !trim($this->txtPassword->Text) || !trim($this->txtEmail->Text)) {
+            if (!trim($this->txtUsername->Text) || !trim($this->txtPassword->Text)) {
                 $this->lblMessage->ForeColor = 'red';
                 $this->lblMessage->Text = t("It's just three fields, don't leave one empty please.");
                 return false;
             }
 
-            $objMaxUser = NarroUser::LoadAll(QQ::Clause(QQ::LimitInfo(1,0), QQ::OrderBy(QQN::NarroUser()->UserId, false)));
-
-            $objUser = new NarroUser();
-            $objUser->UserId = $objMaxUser[0]->UserId + 1;
-            $objUser->Username = $this->txtUsername->Text;
-            $objUser->Email = $this->txtEmail->Text;
-            $objUser->Password = md5($this->txtPassword->Text);
-
             try {
-                $objUser = NarroUser::RegisterUser($this->txtUsername->Text, $this->txtEmail->Text, $this->txtPassword->Text);
+                $objUser = NarroUser::RegisterUser($this->txtUsername->Text, $this->txtEmail->Text, $this->txtPassword->Text, $this->txtRealname->Text);
             } catch(Exception $objEx) {
                 $this->lblMessage->ForeColor = 'red';
                 $this->lblMessage->Text = t("Seems like the username or email is already in use.") . $objEx->getMessage();

@@ -27,6 +27,7 @@
 		protected $txtUsername;
 		protected $txtPassword;
 		protected $txtEmail;
+		protected $txtRealName;
 		protected $txtData;
 
 		// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
@@ -67,6 +68,7 @@
 			$this->txtUsername = $this->mctNarroUser->txtUsername_Create();
 			$this->txtPassword = $this->mctNarroUser->txtPassword_Create();
 			$this->txtEmail = $this->mctNarroUser->txtEmail_Create();
+			$this->txtRealName = $this->mctNarroUser->txtRealName_Create();
 			$this->txtData = $this->mctNarroUser->txtData_Create();
 
 			// Create Buttons and Actions on this Form
@@ -104,6 +106,10 @@
 			if (($objNarroUser = NarroUser::LoadByEmail($this->txtEmail->Text)) && ($objNarroUser->UserId != $this->mctNarroUser->NarroUser->UserId )){
 				$blnToReturn = false;
 				$this->txtEmail->Warning = QApplication::Translate("Already in Use");
+			}
+			if (($objNarroUser = NarroUser::LoadByRealName($this->txtRealName->Text)) && ($objNarroUser->UserId != $this->mctNarroUser->NarroUser->UserId )){
+				$blnToReturn = false;
+				$this->txtRealName->Warning = QApplication::Translate("Already in Use");
 			}
 
 

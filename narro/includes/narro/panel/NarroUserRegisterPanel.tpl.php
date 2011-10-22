@@ -44,6 +44,11 @@
             <td><?php echo t('This is used for password recovery and opt-in notifications.') ?></td>
         </tr>
         <tr>
+            <td><?php echo t('Real name') ?>:</td>
+            <td><?php $_CONTROL->txtRealname->RenderWithError() ?></td>
+            <td><?php echo t('Optionally, enter your real name. It can be used to give you credit for your translations. If you do not fill it, your username will be used instead.') ?></td>
+        </tr>
+        <tr>
             <td colspan="3" style="text-align:left"><?php $_CONTROL->btnRegister->Render() ?></td>
         </tr>
     </table>

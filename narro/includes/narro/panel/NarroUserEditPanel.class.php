@@ -24,6 +24,7 @@
 
         // Controls for NarroUser's Data Fields
         public $txtUsername;
+        public $txtRealname;
         public $txtPassword;
         public $txtEmail;
 
@@ -49,6 +50,7 @@
             $this->txtUsername_Create();
             $this->txtPassword_Create();
             $this->txtEmail_Create();
+            $this->txtRealname_Create();
 
             // Create/Setup ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -69,6 +71,15 @@
             $this->txtUsername->Text = $this->objNarroUser->Username;
             $this->txtUsername->Required = true;
             $this->txtUsername->MaxLength = NarroUser::UsernameMaxLength;
+        }
+        
+        // Create and Setup txtRealname
+        protected function txtRealname_Create() {
+            $this->txtRealname = new QTextBox($this);
+            $this->txtRealname->Name = QApplication::Translate('Real name');
+            $this->txtRealname->Text = $this->objNarroUser->RealName;
+            $this->txtRealname->Required = false;
+            $this->txtRealname->MaxLength = NarroUser::RealNameMaxLength;
         }
 
         // Create and Setup txtPassword
@@ -118,6 +129,7 @@
         // Protected Update Methods
         protected function UpdateNarroUserFields() {
             $this->objNarroUser->Username = $this->txtUsername->Text;
+            $this->objNarroUser->RealName = $this->txtRealname->Text;
             if ($this->txtPassword->Text)
                 $this->objNarroUser->Password = md5($this->txtPassword->Text);
             $this->objNarroUser->Email = $this->txtEmail->Text;

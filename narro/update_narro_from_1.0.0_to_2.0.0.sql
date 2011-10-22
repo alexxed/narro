@@ -170,3 +170,11 @@ DROP TABLE `zend_cache` ,
 `zend_cache_version` ;
 
 DROP TABLE `narro_suggestion_comment`;
+
+ALTER TABLE `narro_user` ADD `real_name` VARCHAR( 255 ) NULL AFTER `email` ;
+
+ALTER TABLE `narro_user` ADD UNIQUE (
+`real_name`
+);
+
+UPDATE narro_user SET real_name=username;
