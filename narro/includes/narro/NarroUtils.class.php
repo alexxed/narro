@@ -77,7 +77,7 @@
 
                 if ((file_exists($strFilePath) || is_link($strFilePath)) && !@unlink($strFilePath)) {
                     if (!is_writable($strFilePath))
-                        $strError = sprintf('"%s" is only writable by "%s".', realpath($strFilePath . '/..'), get_current_user());
+                        $strError = sprintf('"%s" is only writable by "%s".', realpath($strFilePath . '/..'), fileowner(realpath($strFilePath . '/..')));
                     else
                         $strError = 'Unknown error.';
 
@@ -96,7 +96,7 @@
                  * If it's writable, we don't care if chmod failed, it's probably due to selinux
                  */
                 if (!is_writable($strFilePath)) {
-                    $strError = sprintf('"%s" is not writable by "%s".', $strFilePath, get_current_user());
+                    $strError = sprintf('"%s" is not writable by "%s".', $strFilePath, fileowner($strFilePath));
                     throw new Exception(sprintf('Could not chmod file %s: %s', $strFilePath, $strError));
                 }
 
@@ -120,7 +120,7 @@
                     closedir($hndDir);
                 }
                 else {
-                    throw new Exception(sprintf('Can\'t open directory %s for reading, maybe %s doesn\'t have execute permissions on it.', $strFilePath, get_current_user()));
+                    throw new Exception(sprintf('Can\'t open directory %s for reading, maybe %s doesn\'t have execute permissions on it.', $strFilePath, fileowner($strFilePath)));
                 }
 
                 if (!@chmod($strFilePath, $intDirMode)) {
@@ -128,7 +128,7 @@
                      * If it's writable, we don't care if chmod failed, it's probably due to selinux
                      */
                     if (!is_writable($strFilePath)) {
-                        $strError = sprintf('"%s" is only writable by "%s".', $strFilePath, get_current_user());
+                        $strError = sprintf('"%s" is only writable by "%s".', $strFilePath, fileowner($strFilePath));
                         throw new Exception(sprintf('Could not chmod file %s: %s', $strFilePath, $strError));
                     }
 
@@ -144,7 +144,7 @@
                      * If it's writable, we don't care if chmod failed, it's probably due to selinux
                      */
                     if (!is_writable($strFilePath)) {
-                        $strError = sprintf('"%s" is only writable by "%s".', $strFilePath, get_current_user());
+                        $strError = sprintf('"%s" is only writable by "%s".', $strFilePath, fileowner($strFilePath));
                         throw new Exception(sprintf('Could not chmod file %s: %s', $strFilePath, $strError));
                     }
 
@@ -161,7 +161,7 @@
 
         public static function RecursiveCopy( $source, $target ) {
             if ( is_dir( $source ) ) {
-                if (!file_exists($target) && !@mkdir( $target, 0777 )) {
+                if (!file_exists($target) && !@mkdir( $target, 0777, true )) {
                     if (is_writable($target))
                         throw new Exception(
                                     sprintf('Could not create directory %s. The parent directory has owner %s and permissions %s',
@@ -174,7 +174,7 @@
                         throw new Exception(
                                     sprintf('Could not create directory %s. The parent directory is only writable by %s',
                                         $target,
-                                        get_current_user()
+                                        fileowner($target)
                                     )
                         );
                 }
@@ -206,7 +206,7 @@
                                     $source,
                                     $target,
                                     dirname($target),
-                                    get_current_user()
+                                    fileowner(dirname($target))
                                 )
                             );
                         else
