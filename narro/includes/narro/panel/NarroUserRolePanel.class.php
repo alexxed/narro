@@ -59,7 +59,7 @@
 
             // Setup DataGrid
             $this->dtgUserRole = new NarroDataGrid($this);
-            $this->dtgUserRole->Title = sprintf(t('<b>%s</b>\'s roles'), NarroLink::UserProfile($this->objUser->UserId, $this->objUser->Username));
+            $this->dtgUserRole->Title = sprintf(t('<b>%s</b>\'s roles'), NarroLink::UserProfile($this->objUser->UserId, $this->objUser->RealName));
             $this->dtgUserRole->ShowHeader = true;
             $this->dtgUserRole->Paginator = new QPaginator($this->dtgUserRole);
             $this->dtgUserRole->PaginatorAlternate = new QPaginator($this->dtgUserRole);

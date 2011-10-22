@@ -344,7 +344,7 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
                     else
                     $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strCharsetLine ;
 
-                    $strTranslatorLine = sprintf('Last-Translator: %s <%s>\n', QApplication::$User->Username, QApplication::$User->Email);
+                    $strTranslatorLine = sprintf('Last-Translator: %s <%s>\n', QApplication::$User->RealName, QApplication::$User->Email);
 
                     if (strstr($arrTemplateFields['MsgStr'], '"Last-Translator:'))
                     $arrTemplateFields['MsgStr'] = preg_replace('/Last\-Translator:[^"]+/mi', $strTranslatorLine, $arrTemplateFields['MsgStr']);

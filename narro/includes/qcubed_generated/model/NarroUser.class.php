@@ -295,6 +295,11 @@
 
         public function __get($strName) {
             switch ($strName) {
+                case 'RealName':
+                    if ($this->strRealName)
+                        return htmlspecialchars($this->strRealName, ENT_NOQUOTES, 'UTF-8');
+                    else
+                        return htmlspecialchars($this->strUsername, ENT_NOQUOTES, 'UTF-8');
                 case 'Username':
                     /**
                     * Gets the value for strUsername (Unique)

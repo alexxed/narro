@@ -61,7 +61,7 @@
 
             $colUsername = new QDataGridColumn(t('Translator'));
             $colUsername->HtmlEntities = false;
-            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->Username) ?>';
+            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->RealName) ?>';
             $this->dtgTranslators->AddColumn($colUsername);
 
             $colWordCount = new QDataGridColumn(t('Texts translated'));
@@ -89,7 +89,7 @@
 
             $colUsername = new QDataGridColumn(t('Reviewer'));
             $colUsername->HtmlEntities = false;
-            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->Username) ?>';
+            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->RealName) ?>';
             $this->dtgReviewers->AddColumn($colUsername);
 
             $colReviews = new QDataGridColumn(t('Reviews'));

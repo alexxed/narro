@@ -676,7 +676,7 @@
                 case 5:
                     $objSuggestion = $this->GetUserSuggestion($objContextInfo->ContextId, $objContextInfo->Context->TextId, QApplication::GetUserId());
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        // NarroLogger::LogDebug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$User->Username, $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
+                        // NarroLogger::LogDebug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$User->RealName, $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
@@ -685,7 +685,7 @@
                 case 6:
                     $objSuggestion = $this->GetUserListSuggestion($objContextInfo->ContextId, $objContextInfo->Context->TextId, QApplication::GetUserId());
                     if ($objSuggestion instanceof NarroSuggestion) {
-                        // NarroLogger::LogDebug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$User->Username, $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
+                        // NarroLogger::LogDebug(sprintf('Exporting %s\'s suggestion "%s" for "%s"', QApplication::$User->RealName, $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {

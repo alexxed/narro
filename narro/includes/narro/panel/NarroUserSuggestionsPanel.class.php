@@ -41,7 +41,7 @@
             // Setup DataGrid
             $this->dtgSuggestions = new NarroSuggestionDataGrid($this);
             $this->dtgSuggestions->SetCustomStyle('padding', '5px');
-            $this->dtgSuggestions->Title = sprintf(t('Translations made by <b>%s</b>'), $this->objUser->Username);
+            $this->dtgSuggestions->Title = sprintf(t('Translations made by <b>%s</b>'), $this->objUser->RealName);
             //$this->dtgSuggestions->SetCustomStyle('margin-left', '15px');
 
             $this->colSuggestion = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->SuggestionValue);

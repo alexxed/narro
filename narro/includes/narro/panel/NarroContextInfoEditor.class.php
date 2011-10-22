@@ -214,20 +214,20 @@
             $objDateSpan = new QDateTimeSpan(time() - strtotime($objSuggestion->Created));
             $strModifiedWhen = $objDateSpan->SimpleDisplay();
 
-            if (strtotime($objSuggestion->Modified) > 0 && $strModifiedWhen && $objSuggestion->User->Username)
+            if (strtotime($objSuggestion->Modified) > 0 && $strModifiedWhen && $objSuggestion->User->RealName)
                 $strAuthorInfo = sprintf(
                     (($objSuggestion->IsImported)?t('imported by <a href="%s" tabindex="-1">%s</a>, %s ago'):t('<a href="%s" tabindex="-1">%s</a>, %s ago')),
                     NarroLink::UserProfile($objSuggestion->User->UserId),
-                    $objSuggestion->User->Username,
+                    $objSuggestion->User->RealName,
                     $strModifiedWhen
                 );
-            elseif (strtotime($objSuggestion->Modified) > 0 && $strModifiedWhen && !$objSuggestion->User->Username)
+            elseif (strtotime($objSuggestion->Modified) > 0 && $strModifiedWhen && !$objSuggestion->User->RealName)
                 $strAuthorInfo = sprintf(t('%s ago'), $strModifiedWhen);
             elseif ($objSuggestion->User)
                 $strAuthorInfo = sprintf(
                     ($objSuggestion->IsImported)?t('imported by <a href="%s" tabindex="-1">%s</a>'):'<a href="%s" tabindex="-1">%s</a>',
                     NarroLink::UserProfile($objSuggestion->User->UserId),
-                    $objSuggestion->User->Username
+                    $objSuggestion->User->RealName
                 );
             else
                 $strAuthorInfo = t('Unknown');
@@ -235,7 +235,7 @@
             if ($objSuggestion->SuggestionId == $this->objContextInfo->ValidSuggestionId && $this->objContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID) {
                 $objDateSpan = new QDateTimeSpan(time() - strtotime($this->objContextInfo->Modified));
                 $strModifiedWhen = $objDateSpan->SimpleDisplay();
-                $strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by <a href="%s" tabindex="-1">%s</a>'), NarroLink::UserProfile($this->objContextInfo->ValidatorUser->UserId), $this->objContextInfo->ValidatorUser->Username . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
+                $strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by <a href="%s" tabindex="-1">%s</a>'), NarroLink::UserProfile($this->objContextInfo->ValidatorUser->UserId), $this->objContextInfo->ValidatorUser->RealName . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
             }
 
             return sprintf('<small>-- %s</small>', $strAuthorInfo);

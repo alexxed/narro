@@ -66,7 +66,7 @@
             $this->txtCommitUsername = new QTextBox($this);
             $this->txtCommitUsername->Required = true;
             $this->txtCommitUsername->Name = t('Author shown in the commit message');
-            $this->txtCommitUsername->Text = sprintf('%s <%s>', QApplication::$User->Username, QApplication::$User->Email);
+            $this->txtCommitUsername->Text = sprintf('%s <%s>', QApplication::$User->RealName, QApplication::$User->Email);
             $this->txtCommitUsername->Instructions = t('Usually, this is something like Alexandru Szasz <alexxed@gmail.com>');
             $this->txtCommitUsername->PreferedRenderMethod = 'RenderWithName';    
             

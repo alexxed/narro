@@ -137,13 +137,13 @@
                             null,
                             '<p>' . t('Original text') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->Text->TextValue) . '</p>' .
                             '<p>' . t('Translation') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->SuggestionValue) . '</p>' .
-                            '<p>' . t('Author') . ': ' . sprintf('<a href="%s">%s</a>', $strUserLink, $objNarroSuggestion->User->Username) . '</p>' .
+                            '<p>' . t('Author') . ': ' . sprintf('<a href="%s">%s</a>', $strUserLink, $objNarroSuggestion->User->RealName) . '</p>' .
                             '<p>' . t('Contexts where the suggestion can be used:') . '</p>' .
                             '<ul>' . $strDescription . '</ul>' .
                             t('Click on the context to use the suggestion, on the file name or project name to search for the suggestion in them.')
                         );
                         $objItem->PubDate = new QDateTime($objNarroSuggestion->Created);
-                        $objItem->Author = $objNarroSuggestion->User->Username;
+                        $objItem->Author = $objNarroSuggestion->User->RealName;
                         $objRssFeed->AddItem($objItem);
                     }
                 }
@@ -414,13 +414,13 @@
                             t('The text has no suggestions')) .
                         (
                             ($objNarroContextInfo->ValidSuggestionId && $objNarroContextInfo->ValidatorUserId != NarroUser::ANONYMOUS_USER_ID)?
-                                sprintf('<p>' . t('Approved by') . ': <a href="%s">%s</a>', $strUserLink, ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:''):
+                                sprintf('<p>' . t('Approved by') . ': <a href="%s">%s</a>', $strUserLink, ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->RealName:''):
                                 ''
                         );
 
                     $objItem->PubDate = new QDateTime($objNarroContextInfo->Modified);
 
-                    $objItem->Author = ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->Username:'';
+                    $objItem->Author = ($objNarroContextInfo->ValidSuggestionId)?$objNarroContextInfo->ValidatorUser->RealName:'';
 
                     $objRssFeed->AddItem($objItem);
                     $strDescription = '';
@@ -498,7 +498,7 @@
                                 <span style="font-size:80%%;color:gray;">' . t('%s wrote on %s:') . '</span>
                                 <br />
                                 <span style="margin-left:5px;padding:3px;">%s</span>',
-                                NarroLink::UserProfile($objTextComment->UserId, '<b>' . $objTextComment->User->Username . '</b>'),
+                                NarroLink::UserProfile($objTextComment->UserId, '<b>' . $objTextComment->User->RealName . '</b>'),
                                 $objTextComment->Created,
                                 nl2br($objTextComment->CommentText)
                             );
@@ -560,7 +560,7 @@
 
                         $objItem->Description = $strDescription;
                         $objItem->PubDate = new QDateTime($objTextComment->Created);
-                        $objItem->Author = $objTextComment->User->Username;
+                        $objItem->Author = $objTextComment->User->RealName;
                         /**
                          * Damn Google Reader doesn't care about PubDate, so we need this
                          */

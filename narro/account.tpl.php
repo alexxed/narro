@@ -17,7 +17,7 @@
      */
 
 
-    $strPageTitle = $this->objUser->Username;
+    $strPageTitle = $this->objUser->RealName;
 
     require(dirname(__FILE__) . '/configuration/header.inc.php');
     $this->RenderBegin();

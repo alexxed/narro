@@ -69,7 +69,7 @@
             	'%s<br /><small>-- added by <a href="%s" tabindex="-1">%s</a> in %s, %s ago</small>',
             	$objComment->CommentText,
             	NarroLink::UserProfile($objComment->UserId),
-            	$objComment->User->Username,
+            	$objComment->User->RealName,
             	$objComment->Language->LanguageName,
                 new QDateTimeSpan(time() - strtotime($objComment->Created))
             );

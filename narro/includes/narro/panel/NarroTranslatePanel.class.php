@@ -359,7 +359,7 @@
                             break;
                         case self::SEARCH_IN_AUTHORS:
                             $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
-                            $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username, $strLikeSearch);
+                            $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->RealName, $strLikeSearch);
                             break;
                         case self::SEARCH_IN_CONTEXTS:
                             $this->arrConditions[] = QQ::OrCondition(
@@ -373,7 +373,7 @@
                             $this->arrConditions[] = QQ::OrCondition(
                                 QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch),
                                 QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch),
-                                QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->Username, $strLikeSearch),
+                                QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->RealName, $strLikeSearch),
                                 QQ::Like(QQN::NarroContextInfo()->Context->Context, $strLikeSearch),
                                 QQ::Like(QQN::NarroContextInfo()->Context->Comment, $strLikeSearch)
                             );

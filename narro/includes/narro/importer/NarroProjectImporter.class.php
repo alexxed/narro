@@ -1028,7 +1028,7 @@
                                 $arrAuthor[$intIdx] = trim($strAuthor);
                             }
                             
-                            foreach(NarroUser::QueryArray(QQ::In(QQN::NarroUser()->Username, $arrAuthor)) as $objUser) {
+                            foreach(NarroUser::QueryArray(QQ::In(QQN::NarroUser()->RealName, $arrAuthor)) as $objUser) {
                                 $this->arrExportAuthorList[] = $objUser->UserId;
                             }
                         }

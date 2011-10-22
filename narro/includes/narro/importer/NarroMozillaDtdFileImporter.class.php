@@ -96,7 +96,7 @@
                 if ($this->objProject->GetPreferenceValueByName('Export translators and reviewers in the file header as a comment') == 'Yes') {
                     $arrUsers = array();
                     foreach($this->objFile->GetTranslatorArray($this->objTargetLanguage->LanguageId) as $objUser) {
-                        $arrUsers[] = sprintf("# %s <%s>", $objUser->Username, $objUser->Email);
+                        $arrUsers[] = sprintf("# %s <%s>", $objUser->RealName, $objUser->Email);
                     }
     
                     if (count($arrUsers))
@@ -104,7 +104,7 @@
     
                     $arrUsers = array();
                     foreach($this->objFile->GetReviewerArray($this->objTargetLanguage->LanguageId) as $objUser) {
-                        $arrUsers[] = sprintf("# %s <%s>", $objUser->Username, $objUser->Email);
+                        $arrUsers[] = sprintf("# %s <%s>", $objUser->RealName, $objUser->Email);
                     }
     
                     if (count($arrUsers))

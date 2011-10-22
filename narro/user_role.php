@@ -30,7 +30,7 @@
             if (!$this->objUser instanceof NarroUser)
                 QApplication::Redirect(NarroLink::UserList());
 
-            $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), $this->objUser->Username);
+            $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), $this->objUser->RealName);
 
             $this->pnlTab = new QTabPanel($this);
             $this->pnlTab->UseAjax = false;

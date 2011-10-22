@@ -16,7 +16,7 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = sprintf(t('Preferences for %s'), $this->objUser->Username);
+    $strPageTitle = sprintf(t('Preferences for %s'), $this->objUser->RealName);
 
     require(dirname(__FILE__) . '/configuration/header.inc.php');
     $this->RenderBegin();
