@@ -31,6 +31,8 @@
     *
     * @property array $Preferences
     * @property NarroProjectProgress $ProjectProgressForCurrentLanguage
+    * @property string $DefaultTemplatePath
+    * @property string $DefaultTranslationPath
     *
     */
     class NarroProject extends NarroProjectGen {
@@ -197,8 +199,10 @@
             $mixResult = parent::Save($blnForceInsert, $blnForceUpdate);
 
             if ($blnNew) {
-                if (!file_exists($this->DefaultTemplatePath))
+                if (!file_exists($this->DefaultTemplatePath)) {
                     @mkdir($this->DefaultTemplatePath, 0777, true);
+                    NarroUtils::RecursiveChmod($this->DefaultTemplatePath);
+                }
 
                 foreach(NarroLanguage::LoadAll() as $objLanguage) {
 
