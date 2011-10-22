@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 2.0
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2011-19-10 23:48+0300\n"
-"PO-Revision-Date: 2011-19-10 23:48+0300\n"
+"POT-Creation-Date: 2011-22-10 12:46+0300\n"
+"PO-Revision-Date: 2011-22-10 12:46+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -364,12 +364,12 @@ msgid "Role name"
 msgstr ""
 
 #. $this->colUsername = new QDataGridColumn(QApplication::Translate('Username'), '<?= $_CONTROL->ParentControl->dtgUser_UsernameColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroUser()->Username), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroUser()->Username, false)));
-#: includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroRoleUserListPanel.class.php includes/narro/panel/NarroUserRecoverPasswordPanel.tpl.php includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroUserLoginPanel.tpl.php includes/narro/panel/NarroUserListPanel.class.php
+#: includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroRoleUserListPanel.class.php includes/narro/panel/NarroUserRecoverPasswordPanel.tpl.php includes/narro/panel/NarroUserLoginPanel.class.php includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroUserListPanel.class.php
 msgid "Username"
 msgstr ""
 
 #. <td><?php echo t('Password')?>:</td>
-#: includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroUserLoginPanel.tpl.php change_password.tpl.php
+#: includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroUserLoginPanel.class.php includes/narro/panel/NarroUserRegisterPanel.tpl.php change_password.tpl.php
 msgid "Password"
 msgstr ""
 
@@ -379,7 +379,7 @@ msgid "Email"
 msgstr ""
 
 #. $this->btnSave->Text = t('Save');
-#: includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php preferences.php
+#: includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroTextCommentPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php preferences.php
 msgid "Save"
 msgstr ""
 
@@ -471,6 +471,16 @@ msgstr ""
 #. <?php $_CONTROL->chkShowFolders->Render();?>  <label for="<?php echo $_CONTROL->chkShowFolders->ControlId; ?>"><?php echo t('Show folders') ?></label>
 #: includes/narro/panel/NarroProjectFileListPanel.tpl.php
 msgid "Show folders"
+msgstr ""
+
+#. $this->strText = sprintf('<span class="instructions">%s</span>', t('User comments'));
+#: includes/narro/panel/NarroTextCommentPanel.class.php
+msgid "User comments"
+msgstr ""
+
+#. $this->txtComment->Name = t('Comment');
+#: includes/narro/panel/NarroTextCommentPanel.class.php
+msgid "Comment"
 msgstr ""
 
 #. sprintf('<p>' . t('Project') . ': <a href="%s">%s</a></p>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName) .
@@ -565,13 +575,6 @@ msgstr ""
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Arabic"
-msgstr ""
-
-#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
-msgid "Aragonese"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
@@ -712,13 +715,6 @@ msgstr ""
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
 msgid "Dari (Eastern Persian)"
-msgstr ""
-
-#. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
-msgid "Dutch"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
@@ -2083,9 +2079,9 @@ msgstr ""
 msgid "A plugin returned an empty value after processing your translation."
 msgstr ""
 
-#. $this->lblMessage->Text .= t('Clear the textbox to skip this translation or ');
+#. $this->lblMessage->Text .= sprintf(t('Clear the textbox to skip this translation, click Ignore and save or click the save button to try again'));
 #: includes/narro/panel/NarroContextInfoEditor.class.php
-msgid "Clear the textbox to skip this translation or "
+msgid "Clear the textbox to skip this translation, click Ignore and save or click the save button to try again"
 msgstr ""
 
 #. $this->txtTranslation->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it or %s'), $strLink, '');
@@ -2096,11 +2092,6 @@ msgstr ""
 #. $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it has %d vote(s).'), $intVoteCount);
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "You cannot alter this suggestion because it has %d vote(s)."
-msgstr ""
-
-#. $this->lblMessage->Text = sprintf(t('You cannot alter this suggestion because it has %d comment(s).'), $intVoteCount);
-#: includes/narro/panel/NarroContextInfoEditor.class.php
-msgid "You cannot alter this suggestion because it has %d comment(s)."
 msgstr ""
 
 #. $this->lblMessage->Text = t('Suggestion succesfully deleted.');
@@ -2223,14 +2214,41 @@ msgstr ""
 msgid "Project saved sucessfully."
 msgstr ""
 
+#. $lblNarroLogin->Text = t('Login with your Narro account');
+#: includes/narro/panel/NarroUserLoginPanel.class.php
+msgid "Login with your Narro account"
+msgstr ""
+
 #. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Login'), NarroLink::UserLogin());
 #: includes/narro/panel/NarroUserLoginPanel.class.php includes/narro/panel/NarroUserLoginPanel.tpl.php login.tpl.php password.php login.php join.php
 msgid "Login"
 msgstr ""
 
-#. $this->btnGoogleLogin->Text = t('Login with your Google account');
+#. $lblOpenIdLogin->Text = t('Login with your OpenID');
+#: includes/narro/panel/NarroUserLoginPanel.class.php
+msgid "Login with your OpenID"
+msgstr ""
+
+#. $this->txtOpenId->Name = t('OpenID URL');
+#: includes/narro/panel/NarroUserLoginPanel.class.php
+msgid "OpenID URL"
+msgstr ""
+
+#. $this->txtOpenId->Instructions = t('Use your existing OpenID account information to login.');
+#: includes/narro/panel/NarroUserLoginPanel.class.php
+msgid "Use your existing OpenID account information to login."
+msgstr ""
+
+#. $lblGoogleLogin->Text = t('Login with your Google account');
+#. $this->btnGoogleLogin->AlternateText = t('Login with your Google account');
+#. $this->btnGoogleLogin->ToolTip = t('Login with your Google account');
 #: includes/narro/panel/NarroUserLoginPanel.class.php
 msgid "Login with your Google account"
+msgstr ""
+
+#. $this->btnGoogleLogin->Instructions = t('Just click on the image above to use your Google account');
+#: includes/narro/panel/NarroUserLoginPanel.class.php
+msgid "Just click on the image above to use your Google account"
 msgstr ""
 
 #. $this->lblMessage->Text = t('The user has canceled authentication');
@@ -2364,16 +2382,6 @@ msgstr ""
 #. return t('never');
 #: includes/narro/panel/NarroProjectListPanel.class.php
 msgid "never"
-msgstr ""
-
-#. <p><?php echo t('Please login so everyone else knows who is adding those great suggestions that you will add.'); ?></p>
-#: includes/narro/panel/NarroUserLoginPanel.tpl.php
-msgid "Please login so everyone else knows who is adding those great suggestions that you will add."
-msgstr ""
-
-#. <td><?php echo t('<a href="http://www.openid.net">OpenID</a>')?>:</td>
-#: includes/narro/panel/NarroUserLoginPanel.tpl.php
-msgid "<a href=\"http://www.openid.net\">OpenID</a>"
 msgstr ""
 
 #.
