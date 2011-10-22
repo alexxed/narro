@@ -207,8 +207,8 @@
             global $argv;
 
             // project log via browser
-            if (is_numeric(@$_REQUEST['p']))
-                $intProjectId = @$_REQUEST['p'];
+            if (isset($_REQUEST['p']) && is_numeric($_REQUEST['p']))
+                $intProjectId = $_REQUEST['p'];
             // project log via cli
             elseif (isset($argv) && array_search('--project', $argv))
                 $intProjectId = $argv[array_search('--project', $argv)+1];
