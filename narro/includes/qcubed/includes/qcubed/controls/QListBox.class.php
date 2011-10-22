@@ -28,14 +28,14 @@
 		 * 
 		 */
 		protected function GetResetButtonHtml() {
-			$strJavaScriptOnClick = sprintf('$j("#%s").val(null);$j("#%s").trigger("change"); return false;', $this->strControlId,$this->strControlId);
+			$strJavaScriptOnClick = sprintf('jQuery("#%s").val(null);jQuery("#%s").trigger("change"); return false;', $this->strControlId,$this->strControlId);
 			
 			$strToReturn = sprintf(' <a id="reset_ctl_%s" href="#" class="listboxReset">%s</a>',
 				$this->strControlId,
 				QApplication::Translate('Reset')
 			);
 
-			QApplication::ExecuteJavaScript(sprintf('$j("#reset_ctl_%s").bind("%s", function(){ %s });', $this->strControlId, "click",  $strJavaScriptOnClick));
+			QApplication::ExecuteJavaScript(sprintf('jQuery("#reset_ctl_%s").bind("%s", function(){ %s });', $this->strControlId, "click",  $strJavaScriptOnClick));
 					
 			return $strToReturn;
 		}

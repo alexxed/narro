@@ -59,8 +59,8 @@
 			$this->strJavaScripts = __JQUERY_EFFECTS__;
 			
 			if($objTargetControl && $objTargetControl->ControlId != $this->ControlId) {
-				QApplication::ExecuteJavascript(sprintf('var pos_%s = $j("#%s").offset()', $objTargetControl->ControlId, $objTargetControl->ControlId));
-				QApplication::ExecuteJavascript(sprintf('$j("#%s").bind("drag",  function (ev, ui) { p = $j("#%s").offset(); p.left = pos_%s.left + ui.position.left; p.top = pos_%s.top + ui.position.top; $j("#%s").offset(p); } );', $this->strControlId,	$objTargetControl->ControlId,  $objTargetControl->ControlId,  $objTargetControl->ControlId, $objTargetControl->ControlId ));
+				QApplication::ExecuteJavascript(sprintf('var pos_%s = jQuery("#%s").offset()', $objTargetControl->ControlId, $objTargetControl->ControlId));
+				QApplication::ExecuteJavascript(sprintf('jQuery("#%s").bind("drag",  function (ev, ui) { p = jQuery("#%s").offset(); p.left = pos_%s.left + ui.position.left; p.top = pos_%s.top + ui.position.top; jQuery("#%s").offset(p); } );', $this->strControlId,	$objTargetControl->ControlId,  $objTargetControl->ControlId,  $objTargetControl->ControlId, $objTargetControl->ControlId ));
 			}
 			
 			$this->blnMoveable = true;
@@ -95,7 +95,7 @@
 		}
 
 		public function RemoveAllDropZones() {
-			QApplication::ExecuteJavascript(sprintf('$j("#%s").draggable("option", "revert", "invalid");',$this->strControlId));
+			QApplication::ExecuteJavascript(sprintf('jQuery("#%s").draggable("option", "revert", "invalid");',$this->strControlId));
 			
 			foreach ($this->objDropsControlsArray as $strControlId => $blnValue) {
 				if ($blnValue) {
@@ -113,14 +113,14 @@
 			// DROP ZONES
 			foreach ($this->objDropsControlsArray as $strKey => $blnIsDropZone) {
 				if ($blnIsDropZone)
-					$strToReturn .= sprintf('$j("#%s").droppable(); ', $strKey);
+					$strToReturn .= sprintf('jQuery("#%s").droppable(); ', $strKey);
 			}
 
 			foreach ($this->objIsDropZoneFor as $strKey => $blnIsDropZone) {
 				if ($blnIsDropZone) {
 					$objControl = $this->objForm->GetControl($strKey);
 					if ($objControl && ($objControl->strRenderMethod)) {
-						$strToReturn .= sprintf('$j("#%s").droppable("option", "accept", "#%s");', $this->strControlId, $strKey);
+						$strToReturn .= sprintf('jQuery("#%s").droppable("option", "accept", "#%s");', $this->strControlId, $strKey);
 					}
 				}
 			}

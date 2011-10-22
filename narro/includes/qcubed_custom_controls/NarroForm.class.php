@@ -36,21 +36,23 @@
         *
         * @var array
         */
-        protected $strIgnoreJavaScriptFileArray = array();
-        /* protected $strIgnoreJavaScriptFileArray = array(
-            '_core/calendar.js',
-            '_core/control.js',
-            '_core/control_dialog.js',
-            '_core/control_handle.js',
-            '_core/control_move.js',
-            '_core/control_resize.js',
-            '_core/date_time_picker.js',
-            '_core/event.js',
-            '_core/listbox.js',
-            '_core/logger.js',
-            '_core/post.js',
-            '_core/qcodo.js',
-            '_core/treenav.js'); */
+        protected $strIgnoreJavaScriptFileArray = array(
+            'calendar.js',
+            'control.js',
+            'control_dialog.js',
+            'control_handle.js',
+            'control_move.js',
+            'control_resize.js',
+            'date_time_picker.js',
+            'event.js',
+            'listbox.js',
+            'logger.js',
+            'post.js',
+            'qcubed.js',
+            'treenav.js',
+		    __JQUERY_BASE__,
+		    __JQUERY_EFFECTS__
+        );
 
         /**
         * This should be very rarely used.
@@ -62,7 +64,7 @@
         *
         * @var array
         */
-        protected $strIgnoreStyleSheetFileArray = array();
+        protected $strIgnoreStyleSheetFileArray = array(__JQUERY_CSS__);
         // protected $strIgnoreStyleSheetFileArray = array('datagrid.css', 'calendar.css', 'textbox.css', 'listbox.css');
 
         protected $pnlHeader;

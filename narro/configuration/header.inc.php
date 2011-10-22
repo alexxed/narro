@@ -29,6 +29,7 @@
         <?php } ?>
         <link rel="stylesheet" type="text/css" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__; ?>/assets/css/style.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__; ?>/assets/css/tabs.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo __CSS_ASSETS__ . '/' . __JQUERY_CSS__; ?>" />
         <?php if (class_exists('QApplication')) { ?>
             <link rel="stylesheet" type="text/css" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__; ?>/assets/css/font-<?php if (QApplication::$User instanceof NarroUser) echo QApplication::$User->GetPreferenceValueByName('Font size'); else echo 'medium' ?>.css" />
 
@@ -48,6 +49,9 @@
         <link type="image/x-icon" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ ?>/assets/images/narro.ico" rel="shortcut icon"/>
         <link type="image/x-icon" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ ?>/assets/images/narro.ico" rel="icon"/>
         <script type="text/javascript" src="<?php echo __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__?>/assets/js/table_row_highlight.js"></script>
+        <script type="text/javascript" src="<?php echo __JS_ASSETS__ . '/' . __JQUERY_BASE__?>"></script>
+        <script type="text/javascript" src="<?php echo  __JS_ASSETS__ . '/' . __JQUERY_EFFECTS__?>"></script>
+        <script type="text/javascript" src="<?php echo  __JS_ASSETS__ . '/_qc_packed.js'?>"></script>
     </head>
     <body>
         <?php if (SERVER_INSTANCE == 'dev') {

@@ -896,10 +896,10 @@
 			$strToReturn = $this->GetActionAttributes();
 			
 			if ($this->blnResizable)
-					$strToReturn = sprintf('$j("#%s").resizable({}); %s', $this->strControlId, $strToReturn);
+					$strToReturn = sprintf('jQuery("#%s").resizable({}); %s', $this->strControlId, $strToReturn);
 				
 			if ($this->blnMoveable)
-				return sprintf('$j("#%s").draggable(); %s', $this->strControlId, $strToReturn);
+				return sprintf('jQuery("#%s").draggable(); %s', $this->strControlId, $strToReturn);
 			else
 				return $strToReturn;
 		}

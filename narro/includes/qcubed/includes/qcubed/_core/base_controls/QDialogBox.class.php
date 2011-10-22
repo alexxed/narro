@@ -53,13 +53,13 @@
 				$strOptions .= ', height: '. $this->strHeight;
 			$strParentId = $this->ParentControl ? $this->ParentControl->ControlId : $this->Form->FormId;
 			//move both the dialog and the matte back into the form, to ensure they continue to function
-			$strOptions .= sprintf(', open: function() { $j(this).parent().appendTo("#%s"); $j(".ui-widget-overlay").appendTo("#%s"); }', $strParentId, $strParentId);
+			$strOptions .= sprintf(', open: function() { jQuery(this).parent().appendTo("#%s"); jQuery(".ui-widget-overlay").appendTo("#%s"); }', $strParentId, $strParentId);
 
-			return sprintf('$j(qc.getW("%s")).dialog({%s}); $j(qc.getW("%s")).dialog("open");', $this->strControlId, $strOptions, $this->strControlId);
+			return sprintf('jQuery(qc.getW("%s")).dialog({%s}); jQuery(qc.getW("%s")).dialog("open");', $this->strControlId, $strOptions, $this->strControlId);
 		}
 
 		public function GetHideDialogJavaScript() {
-			return sprintf('$j(qc.getW("%s")).dialog("close");', $this->strControlId);
+			return sprintf('jQuery(qc.getW("%s")).dialog("close");', $this->strControlId);
 		}
 
 		public function ShowDialogBox() {

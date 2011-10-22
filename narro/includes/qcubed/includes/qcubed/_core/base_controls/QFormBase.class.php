@@ -1123,6 +1123,7 @@
             // Setup IncludeJs
             $strToReturn = "\r\n";
             // Include javascripts that need to be included
+            if (is_array($strJavaScriptArray))
             foreach ($strJavaScriptArray as $strScript) {
                 $strToReturn .= sprintf('<script type="text/javascript" src="%s/%s"></script>', __VIRTUAL_DIRECTORY__ . __JS_ASSETS__, $strScript);
                 $strToReturn .= "\r\n";
@@ -1226,7 +1227,7 @@
             $strEndScript = sprintf('qc.imageAssets = "%s"; ', __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__) . $strEndScript;
 
             // Create Final EndScript Script
-            $strEndScript = sprintf('<script type="text/javascript">$j(document).ready(function() { %s; });</script>', $strEndScript);
+            $strEndScript = sprintf('<script type="text/javascript">jQuery(document).ready(function() { %s; });</script>', $strEndScript);
 
             // Persist Controls (if applicable)
             foreach ($this->objPersistentControlArray as $objControl)

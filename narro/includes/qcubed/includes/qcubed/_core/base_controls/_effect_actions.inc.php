@@ -36,7 +36,7 @@ class QJQShowAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s").show("%s");', $this->strControlId, $this->strMethod);
+		return sprintf('jQuery("#%s").show("%s");', $this->strControlId, $this->strMethod);
 	}
 }
 
@@ -57,7 +57,7 @@ class QJQShowEffectAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s").show("%s", {%s}, %s);', $this->strControlId, $this->strMethod, $this->strOptions, $this->strSpeed);
+		return sprintf('jQuery("#%s").show("%s", {%s}, %s);', $this->strControlId, $this->strMethod, $this->strOptions, $this->strSpeed);
 	}
 }		
 
@@ -79,7 +79,7 @@ class QJQToggleEffectAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s").toggle("%s", {%s}, %s);', $this->strControlId, $this->strMethod, $this->strOptions, $this->strSpeed);
+		return sprintf('jQuery("#%s").toggle("%s", {%s}, %s);', $this->strControlId, $this->strMethod, $this->strOptions, $this->strSpeed);
 	}
 }	
 
@@ -95,7 +95,7 @@ class QJQToggleAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s").toggle("%s");', $this->strControlId, $this->strMethod);		  
+		return sprintf('jQuery("#%s").toggle("%s");', $this->strControlId, $this->strMethod);		  
 	}
 }
 
@@ -110,7 +110,7 @@ class QJQHideAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s").hide("%s");', $this->strControlId, $this->strMethod);		  
+		return sprintf('jQuery("#%s").hide("%s");', $this->strControlId, $this->strMethod);		  
 	}
 }
 
@@ -131,7 +131,7 @@ class QJQHideEffectAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s").hide("%s", {%s}, %s);', $this->strControlId, $this->strMethod, $this->strOptions, $this->strSpeed);		  
+		return sprintf('jQuery("#%s").hide("%s", {%s}, %s);', $this->strControlId, $this->strMethod, $this->strOptions, $this->strSpeed);		  
 	}
 }
 
@@ -152,7 +152,7 @@ class QJQBounceAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s_ctl").effect("bounce", {%s}, %s);', $this->strControlId, $this->strOptions, $this->strSpeed);
+		return sprintf('jQuery("#%s_ctl").effect("bounce", {%s}, %s);', $this->strControlId, $this->strOptions, $this->strSpeed);
 	}
 }
 
@@ -173,7 +173,7 @@ class QJQShakeAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s_ctl").effect("shake", {%s}, %s);', $this->strControlId, $this->strOptions, $this->strSpeed);		  
+		return sprintf('jQuery("#%s_ctl").effect("shake", {%s}, %s);', $this->strControlId, $this->strOptions, $this->strSpeed);		  
 	}
 }
 
@@ -194,7 +194,7 @@ class QJQHighlightAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s").effect("highlight", {%s}, %s);', $this->strControlId, $this->strOptions, $this->strSpeed);
+		return sprintf('jQuery("#%s").effect("highlight", {%s}, %s);', $this->strControlId, $this->strOptions, $this->strSpeed);
 	}
 }
 
@@ -215,7 +215,7 @@ class QJQPulsateAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s").effect("pulsate", {%s}, %s);', $this->strControlId, $this->strOptions, $this->strSpeed);
+		return sprintf('jQuery("#%s").effect("pulsate", {%s}, %s);', $this->strControlId, $this->strOptions, $this->strSpeed);
 	}
 }
 
@@ -236,7 +236,7 @@ class QJQSizeAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s").effect("size", {%s}, %s);', $this->strControlId, $this->strOptions, $this->strSpeed);
+		return sprintf('jQuery("#%s").effect("size", {%s}, %s);', $this->strControlId, $this->strOptions, $this->strSpeed);
 	}
 }
 
@@ -260,7 +260,7 @@ class QJQTransferAction extends QJQAction {
 	}
 
 	public function RenderScript(QControl $objControl) {
-		return sprintf('$j("#%s").effect("transfer", {to: "#%s_ctl" %s}, %s);', $this->strControlId, $this->strTargetControlId, $this->strOptions, $this->strSpeed);
+		return sprintf('jQuery("#%s").effect("transfer", {to: "#%s_ctl" %s}, %s);', $this->strControlId, $this->strTargetControlId, $this->strOptions, $this->strSpeed);
 	}
 }
 ?>

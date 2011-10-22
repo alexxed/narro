@@ -100,7 +100,7 @@
 			$strToReturn = parent::GetEndScript();
 			$strControlId = ($this->strLinkUrl) ? $this->strControlId . '_img' : $this->strControlId;
 			if ($this->blnVisible && $this->mixImageHover) {
-				$strToReturn .= sprintf('$j("#%s").hover(function(){$j("#%s").attr("src", "%s"); }, function(){$j("#%s").attr("src", "%s"); });', $strControlId, 
+				$strToReturn .= sprintf('jQuery("#%s").hover(function(){jQuery("#%s").attr("src", "%s"); }, function(){jQuery("#%s").attr("src", "%s"); });', $strControlId, 
 					$strControlId,
 					($this->mixImageHover instanceof QImageBase) ? $this->mixImageHover->RenderAsImgSrc(false) : $this->mixImageHover,
 					$strControlId,					

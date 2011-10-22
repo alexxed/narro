@@ -50,13 +50,13 @@
 			if (strlen($strToReturn)) {
 				if ($objControl instanceof QControlProxy) {
 					if ($objControl->TargetControlId) {
-						return sprintf('$j("#%s").bind("%s", function(){
+						return sprintf('jQuery("#%s").bind("%s", function(){
 									%s
 									});
 									', $objControl->TargetControlId, $strEventName,  substr($strToReturn, 1));
 					}
 				} else {
-					return sprintf('$j("#%s").bind("%s", function(event){
+					return sprintf('jQuery("#%s").bind("%s", function(event){
 								%s
 								});
 								', $objControl->ControlId, $strEventName,  substr($strToReturn, 1));
@@ -547,7 +547,7 @@
 			if ($this->strControlId == null)
 				$this->strControlId = $objControl->ControlId;
 			// Specified a Temporary Css Class to use?
-			return sprintf('$j("#%s").css("%s", "%s"); ', $this->strControlId, $this->strCssProperty, $this->strCssValue);
+			return sprintf('jQuery("#%s").css("%s", "%s"); ', $this->strControlId, $this->strCssProperty, $this->strCssValue);
 		}
 	}	
 

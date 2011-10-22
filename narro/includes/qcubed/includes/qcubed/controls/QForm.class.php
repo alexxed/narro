@@ -31,10 +31,10 @@
 		/**
 		 * These are the list of core QForm JavaScript files, or JavaScript files needed by
 		 * a QControl, which QForm should IGNORE trying to load during a RenderBegin() or RenderAjax() call.
-		 * 
+		 *
 		 * In production or as a performance tweak, you may want to use the compressed "_qc_packed.js"
 		 * library (which is a compressed, single file version of ALL the QCubed .js files that is in _core).
-		 * 
+		 *
 		 * If you want to do this, MAKE SURE you FIRST MANUALLY do a <script> inclusion of "/assets/js/_qc_packed.js" in
 		 * your HTML.  Then, you can specify that QForm "ignore" all the other QCubed _core javascripts.
 		 *
@@ -60,10 +60,10 @@
 
 		/**
 		 * This should be very rarely used.
-		 * 
+		 *
 		 * This mechanism acts similarly to the strIgnoreJavascriptFileArray, except it applies to StyleSheets.
 		 * However, any QControl that specifies a StyleSheet file to include is MEANT to have that property be modified / customized.
-		 * 
+		 *
 		 * Therefore, there should be little to no need for this attribute.  However, it is here anyway, just in case.
 		 *
 		 * @var array
