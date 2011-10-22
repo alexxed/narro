@@ -68,9 +68,13 @@
             // Create/Setup Controls for NarroProject's Data Fields
             $this->lblMessage_Create();
             $this->lstProjectCategory_Create();
+            $this->lstProjectCategory->Enabled = QApplication::HasPermission('Can edit project', $this->objProject->ProjectId);
             $this->txtProjectName_Create();
+            $this->txtProjectName->Enabled = QApplication::HasPermission('Can edit project', $this->objProject->ProjectId);
             $this->lstProjectType_Create();
+            $this->lstProjectType->Enabled = QApplication::HasPermission('Can edit project', $this->objProject->ProjectId);
             $this->txtProjectDescription_Create();
+            $this->txtProjectDescription->Enabled = QApplication::HasPermission('Can edit project', $this->objProject->ProjectId);
             $this->txtActive_Create();
 
             // Create/Setup ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References

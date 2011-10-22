@@ -40,7 +40,7 @@
             if ($this->objProject instanceof NarroProject)
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Overview'), NarroLink::Project($this->objProject->ProjectId));
 
-            if ($this->objProject instanceof NarroProject && QApplication::HasPermission('Can edit project', $this->objProject->ProjectId))
+            if ($this->objProject instanceof NarroProject && QApplication::HasPermissionForThisLang('Can edit project', $this->objProject->ProjectId))
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Edit'), NarroLink::ProjectEdit($this->objProject->ProjectId));
             elseif (QApplication::HasPermission('Can add project'))
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Add'));

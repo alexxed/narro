@@ -56,6 +56,8 @@
                         $txtNumber->Maximum = 100;
                         $txtNumber->MaxLength = 3;
                         $txtNumber->Width = 50;
+                        if ($arrPref['global'])
+                            $txtNumber->Enabled = QApplication::HasPermission('Can edit project', $this->objProject->ProjectId);
                         $txtNumber->Text = $this->objProject->GetPreferenceValueByName($strName);
                         $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtNumber->RenderWithError(false), t($arrPref['description']));
                         $this->arrControls[$strName] = $txtNumber;
@@ -63,6 +65,8 @@
                     case 'text':
                         $txtTextPref = new QTextBox($this);
                         $txtTextPref->Name = $strName;
+                        if ($arrPref['global'])
+                            $txtTextPref->Enabled = QApplication::HasPermission('Can edit project', $this->objProject->ProjectId);
                         $txtTextPref->Text = $this->objProject->GetPreferenceValueByName($strName);
     
                         $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), $arrPref['description']);
@@ -71,6 +75,8 @@
                     case 'option':
                         $lstOption = new QListBox($this);
                         $lstOption->Name = $strName;
+                        if ($arrPref['global'])
+                            $lstOption->Enabled = QApplication::HasPermission('Can edit project', $this->objProject->ProjectId);
                         foreach($arrPref['values'] as $strValue) {
                             $lstOption->AddItem(t($strValue), $strValue, ($strValue == $this->objProject->GetPreferenceValueByName($strName)));
                         }
