@@ -30,7 +30,7 @@
         protected $strHgDir;
         protected $strObjDir;
         protected $strApplicationType;
-        protected $blnEnable = true;
+        protected $blnEnable = false;
         protected $objFirefoxProject;
 
         public function __construct() {
@@ -230,8 +230,8 @@
                     NarroUtils::RecursiveDelete($objProject->DefaultTemplatePath . '/*');
                     foreach($this->get_l10n_ini_dirs($this->strHgDir, $this->strApplicationType) as $strBuildPath=>$strLocalePath) {
                         $strFirstDir = preg_replace('/\/.*$/', '', $strLocalePath);
-                        if (!in_array($strFirstDir, self::$arrBrowserDirList))
-                        NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
+                        if (!in_array($strFirstDir, self::$arrBrowserDirList) && !in_array($strLocalePath, array('extensions/spellcheck')))
+                            NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
                     }
                     break;
                      
@@ -240,7 +240,7 @@
                     foreach($this->get_l10n_ini_dirs($this->strHgDir, $this->strApplicationType) as $strBuildPath=>$strLocalePath) {
                         $strFirstDir = preg_replace('/\/.*$/', '', $strLocalePath);
                         if (!in_array($strFirstDir, self::$arrBrowserDirList))
-                        NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
+                            NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
                     }
                     break;
 
@@ -249,7 +249,7 @@
                     foreach($this->get_l10n_ini_dirs($this->strHgDir, $this->strApplicationType) as $strBuildPath=>$strLocalePath) {
                         $strFirstDir = preg_replace('/\/.*$/', '', $strLocalePath);
                         if (!in_array($strFirstDir, self::$arrBrowserDirList))
-                        NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
+                            NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
                     }
                     break;
             }
@@ -268,6 +268,9 @@
             }
             
             $this->UpdateBuildDirectory($objProject);
+            
+            NarroUtils::RecursiveChmod($this->strHgDir);
+            NarroUtils::RecursiveChmod($this->strObjDir);
         
             return array($objProject);
         }
@@ -288,22 +291,37 @@
             }
 
             exec(sprintf('make -s langpack-%s', QApplication::$TargetLanguage->LanguageCode), $arrOutput, $retVal);
-            if ($retVal!=0)
+            if ($retVal!=0) {
+                NarroLogger::LogError(sprintf('make -s langpack-%s returned %d', QApplication::$TargetLanguage->LanguageCode, $retVal));
                 foreach($arrOutput as $strOutput)
-                    NarroLogger::LogInfo($strOutput);
-
-            exec(
-                sprintf(
-            		'cp "%s/%s/locales/mozilla/dist/install/*.%s.langpack.xpi" "%s/%s/%s-%s.xpi"',
-                    $this->strObjDir,
-                    $this->strApplicationType,
-                    QApplication::$TargetLanguage->LanguageCode,
+                    NarroLogger::LogError($strOutput);
+            }
+            
+            if ($this->strApplicationType != 'browser') {
+                foreach(self::$arrBrowserDirList as $strDir) {
+                    NarroUtils::RecursiveDelete($objProject->DefaultTranslationPath . '/' . $strDir);
+                }
+            }
+            
+            foreach(NarroUtils::ListDirectory(sprintf('%s/dist', $this->strObjDir), sprintf('/.*%s.langpack.xpi/', preg_quote(QApplication::$TargetLanguage->LanguageCode, '/'))) as $strFile) {
+                $strXpiFile = sprintf(
+                	'%s/%s/%s-%s.xpi',
                     __IMPORT_PATH__,
                     $objProject->ProjectId,
                     $objProject->ProjectName,
                     QApplication::$TargetLanguage->LanguageCode
-                )
-            );
+                );
+                copy(
+                    $strFile,
+                    $strXpiFile
+                );
+                chmod($strXpiFile, 0666);
+            }
+            
+            NarroUtils::RecursiveChmod($this->strHgDir);
+            NarroUtils::RecursiveChmod($this->strObjDir);
+            
+            return array($objProject);
         }
     }
 ?>
