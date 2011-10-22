@@ -177,7 +177,8 @@
                     }
                 }
 
-                QApplication::$PluginHandler->BeforeImportProject($this->objProject);
+                if ($this->blnOnlySuggestions == false)
+                    QApplication::$PluginHandler->BeforeImportProject($this->objProject);
 
                 /**
                  * Go ahead and import from the directory.
@@ -208,10 +209,6 @@
             else
                 throw new Exception(sprintf('Template path "%s" is not a directory.', $this->strTemplatePath));
 
-
-            /**
-             * Clean the upload directory if present
-             */
 
             QApplication::$PluginHandler->AfterImportProject($this->objProject);
 
