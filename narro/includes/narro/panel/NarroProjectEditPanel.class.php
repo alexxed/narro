@@ -175,7 +175,12 @@
             $this->objProject->ProjectName = $this->txtProjectName->Text;
             $this->objProject->ProjectType = $this->lstProjectType->SelectedValue;
             $this->objProject->ProjectDescription = $this->txtProjectDescription->Text;
-            $this->objProject->Active = (int) $this->txtActive->Checked;
+            if (QApplication::HasPermission('Can edit project', $this->objProject->ProjectId))
+                $this->objProject->Active = (int) $this->txtActive->Checked;
+            else {
+                $this->objProject->ProjectProgressForCurrentLanguage->Active = (int) $this->txtActive->Checked;
+                $this->objProject->ProjectProgressForCurrentLanguage->Save();
+            }
         }
 
 
