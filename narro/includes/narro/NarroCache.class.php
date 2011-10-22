@@ -26,11 +26,7 @@
         
         public function SaveData($strData) {
             $mixResult = parent::SaveData(unserialize($strData));
-            chmod($this->GetFilePath(), 0666);
-            
-            if (count($this->strCheckFilesArray))
-                chmod($this->GetFilePath() . '.hash', 0666);
-            
+            NarroUtils::RecursiveChmod(__CACHE__ . '/*');
             return $mixResult;
         }
         
