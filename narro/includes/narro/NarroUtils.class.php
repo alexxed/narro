@@ -106,7 +106,7 @@
                 return true;
         }
 
-        public static function RecursiveChmod($strFilePath, $intFileMode = 0666, $intDirMode = 0777) {
+        public static function RecursiveChmod($strFilePath, $intFileMode = 0666, $intDirMode = 0777, $blnKeepExecutableFiles = true) {
             if (is_dir($strFilePath) && !is_link($strFilePath)) {
                 if ($hndDir = opendir($strFilePath)) {
                     while (($strFileName = readdir($hndDir)) !== false) {
@@ -138,7 +138,10 @@
                     return true;
             }
 
-            if (is_file($strFilePath))
+            if (is_file($strFilePath)) {
+                if ($blnKeepExecutableFiles && is_executable($strFilePath))
+                    $intFileMode = 0777;
+
                 if (!@chmod($strFilePath, $intFileMode)) {
                     /**
                      * If it's writable, we don't care if chmod failed, it's probably due to selinux
@@ -152,6 +155,7 @@
                 }
                 else
                     return true;
+            }
             else
                 /**
                  * ignore symlinks and other non-regular files

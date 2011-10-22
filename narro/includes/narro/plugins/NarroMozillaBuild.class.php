@@ -16,6 +16,27 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
+    if (isset($_REQUEST['p']) && isset($_REQUEST['pn']) && isset($_REQUEST['l'])) {
+        require_once(dirname(__FILE__) . '/../../../configuration/configuration.narro.inc.php');
+        $strFullPath = sprintf('%s/%d/%s-%s.xpi', __IMPORT_PATH__, $_REQUEST['p'], $_REQUEST['pn'], $_REQUEST['l']);
+        // File Exists?
+        if( file_exists($strFullPath)) {
+            header("Pragma: public"); // required
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            header("Cache-Control: private",false); // required for certain browsers
+            header("Content-Type: application/zip");
+            header("Content-Disposition: attachment; filename=\"" . basename($strFullPath) . "\";" );
+            header("Content-Transfer-Encoding: binary");
+            header("Content-Length: " . filesize($strFullPath));
+            ob_clean();
+            flush();
+            readfile($strFullPath);
+            exit;
+        }
+    }
+
+
     class NarroMozillaBuild extends NarroPlugin {
         public static $arrBrowserDirList = array(
             'dom',
@@ -287,6 +308,11 @@
             }
             
             if ($this->strApplicationType != 'browser') {
+                if (!$this->objFirefoxProject instanceof NarroProject) {
+                    NarroLogger::LogError(sprintf('Associated Firefox project not set or does not exist'));
+                    return false;
+                }
+                NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrBrowserDirList), $this->objFirefoxProject->DefaultTranslationPath));
                 NarroUtils::RecursiveCopy($this->objFirefoxProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
             }
 
@@ -303,7 +329,12 @@
                 }
             }
             
-            foreach(NarroUtils::ListDirectory(sprintf('%s/dist', $this->strObjDir), sprintf('/.*%s.langpack.xpi/', preg_quote(QApplication::$TargetLanguage->LanguageCode, '/'))) as $strFile) {
+            if (in_array($this->strApplicationType, array('mobile', 'browser')))
+                $strXpiDir = sprintf('%s/dist', $this->strObjDir);
+            else
+                $strXpiDir = sprintf('%s/mozilla/dist', $this->strObjDir);
+            
+            foreach(NarroUtils::ListDirectory($strXpiDir, sprintf('/.*%s.langpack.xpi/', preg_quote(QApplication::$TargetLanguage->LanguageCode, '/'))) as $strFile) {
                 $strXpiFile = sprintf(
                 	'%s/%s/%s-%s.xpi',
                     __IMPORT_PATH__,
@@ -322,6 +353,35 @@
             NarroUtils::RecursiveChmod($this->strObjDir);
             
             return array($objProject);
+        }
+        
+        protected function GetOutputFileName(NarroProject $objProject) {
+            return __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.xpi';
+        }
+        
+        public function DisplayExportMessage(NarroProject $objProject, $strText = '') {
+            $strExportText = '';
+            if (file_exists($this->GetOutputFileName($objProject))) {
+                $strDownloadUrl = sprintf(
+                    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/includes/narro/plugins/' . __CLASS__ . '.class.php?p=%d&pn=%s&l=%s',
+                    $objProject->ProjectId,
+                    $objProject->ProjectName,
+                    QApplication::$TargetLanguage->LanguageCode
+                );
+                $objDateSpan = new QDateTimeSpan(time() - filemtime($this->GetOutputFileName($objProject)));
+                $strExportText = sprintf(
+                    '<a href="%s">%s</a>, ' . t('generated %s ago'),
+                    $strDownloadUrl ,
+                    basename($this->GetOutputFileName($objProject)),
+                    $objDateSpan->SimpleDisplay()
+                );
+            }
+        
+            return array($objProject, $strExportText);
+        }
+        
+        public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
+            return $this->DisplayExportMessage($objProject, $strText);
         }
     }
 ?>

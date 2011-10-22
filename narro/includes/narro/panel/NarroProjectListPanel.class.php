@@ -182,7 +182,18 @@
 
             $objProgressBar = new NarroProjectTranslationProgressBar($objProject->_NarroProjectProgressAsProject, $this->dtgProjectList);
 
-            return NarroLink::Translate($objProject->ProjectId, '', 0, '', 0, 0, 10, 0, 0, $objProgressBar->Render(false));
+            QApplication::$PluginHandler->DisplayInProjectListInProgressColumn($objProject);
+            
+            $strOutput = '';
+            if (is_array(QApplication::$PluginHandler->PluginReturnValues)) {
+                foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
+                    if (count($mixReturnValue) == 2 && $mixReturnValue[0] instanceof NarroProject && is_string($mixReturnValue[1]) && $mixReturnValue[1] != '') {
+                        $strOutput .= sprintf('<br /><span style="font-size:small" title="%s">%s</span>', $strPluginName, $mixReturnValue[1]);
+                    }
+                }
+            }
+            
+            return NarroLink::Translate($objProject->ProjectId, '', 0, '', 0, 0, 10, 0, 0, $objProgressBar->Render(false)) . $strOutput;
         }
 
         public function dtgProjectList_ProjectNameColumn_Render(NarroProject $objProject) {
