@@ -27,10 +27,7 @@ if (!defined('__PREPEND_INCLUDED__')) {
     QApplication::InitializeDatabaseConnections();
     if (!isset($argv))
         QApplication::InitializeSession();
-    if (isset($argv))
-        QApplication::$User = NarroUser::LoadAnonymousUser();
-    else
-        QApplication::InitializeUser();
+    QApplication::InitializeUser();
     QApplication::InitializeLanguage();
     
     NarroUser::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
@@ -38,8 +35,6 @@ if (!defined('__PREPEND_INCLUDED__')) {
     NarroUser::RegisterPreference('Language', 'option', t('The language you are translating to'), QApplication::QueryString('l'), array(QApplication::QueryString('l')));
     NarroUser::RegisterPreference('Application language', 'option', t('The language you want to see Narro in'), (isset(QApplication::$TargetLanguage))?QApplication::$TargetLanguage->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE, array((isset(QApplication::$TargetLanguage))?QApplication::$TargetLanguage->LanguageCode:NarroLanguage::SOURCE_LANGUAGE_CODE));
     NarroUser::RegisterPreference('Special characters', 'text', t('Characters that are not on your keyboard, separated by spaces'), '$€');
-    NarroUser::RegisterPreference('Other languages', 'text', t('Other languages that you want to check for suggestions, separated by spaces'), 'ro');
-    NarroUser::RegisterPreference('Force ascii letters as access keys', 'option', t('Access keys are the letters that are underlined in menus and on buttons that you can use to quickly get to that button or menu item'), 'No', array('Yes', 'No'));
     NarroUser::RegisterPreference('Automatically save translations', 'option', t('Save translations when moving to the next text to translate'), 'No', array('Yes', 'No'));
     NarroUser::RegisterPreference('Launch imports and exports in background', 'option', t('Launch imports and exports in background'), 'Yes', array('Yes', 'No'));
     
