@@ -29,6 +29,7 @@
                     "--project                    project id instead of importing all projects\n" .
         			"--language                   language code instead of importing all languages\n" .
                     "--disable-plugins            disable plugins during import/export\n" .
+        			"--do-not-clear-logs          doesn't clear the logs before starting\n" .
                     "                             suggestions, optional, defaults to anonymous\n" .
                     "--do-not-check-equal         don't check if the translation is equal to the original\n" .
                     "                             text and don't import it\n" .
@@ -47,6 +48,10 @@
 
     $intProjCnt = NarroProject::CountByActive(1);
     $intLangCnt = NarroLanguage::CountAllActive();
+    
+    if (!in_array('--do-not-clear-logs', $argv)) {
+        NarroLog::Truncate();
+    }
 
     $intStartTime = time();
     foreach(NarroProject::LoadArrayByActive(1) as $intProjIdx=>$objProject) {
