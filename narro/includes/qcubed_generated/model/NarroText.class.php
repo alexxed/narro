@@ -55,6 +55,19 @@
             parent::Save($blnForceInsert, $blnForceUpdate);
 
         }
-
+        
+        /**
+        * Internally called method to assist with calling Qcubed Query for this class
+        * on load methods.
+        * @param QQueryBuilder &$objQueryBuilder the QueryBuilder object that will be created
+        * @param QQCondition $objConditions any conditions on the query, itself
+        * @param QQClause[] $objOptionalClausees additional optional QQClause object or array of QQClause objects for this query
+        * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with (sending in null will skip the PrepareStatement step)
+        * @param boolean $blnCountOnly only select a rowcount
+        * @return string the query statement
+        */
+        public static function GetQueryStatement(&$objQueryBuilder, QQCondition $objConditions, $objOptionalClauses, $mixParameterArray, $blnCountOnly) {
+            return self::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, $blnCountOnly);
+        }
     }
 ?>
