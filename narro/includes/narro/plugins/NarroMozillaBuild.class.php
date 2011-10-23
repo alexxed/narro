@@ -168,9 +168,17 @@
             if ($blnResult == false)
                 return false;
             
-            if (!file_exists('/usr/bin/autoconf-2.13')) {
-                NarroLogger::LogError('autoconf-2.13 not found in /usr/bin, aborting build');
-                return false;
+            if (file_exists('/usr/bin/autoconf-2.13')) {
+                $strAutoConf = 'autoconf-2.13';
+            }
+            else {
+                if (file_exists('/usr/bin/autoconf2.13')) {
+                    $strAutoConf = 'autoconf2.13';
+                }
+                else {
+                    NarroLogger::LogError('autoconf-2.13 or autoconf2.13 not found in /usr/bin, aborting build');
+                    return false;
+                }
             }
             
             if (!file_exists('/usr/bin/python') && !file_exists('/usr/bin/python2.6')) {
@@ -189,7 +197,7 @@
                 "ac_add_options --disable-libjpeg-turbo\n" .
                 "ac_add_options --disable-necko-wifi\n" .
                 "ac_add_options --disable-webm\n" .
-                "mk_add_options AUTOCONF=autoconf-2.13\n" .
+                sprintf("mk_add_options AUTOCONF=%s\n", $strAutoConf) .
                 sprintf("ac_cv_path_PYTHON=/usr/bin/%s", (file_exists('/usr/bin/python2.6')?'python2.6':'python'))
             );
             
@@ -279,8 +287,9 @@
         }
         
         public function BeforeImportProject(NarroProject $objProject) {
-            if (!QApplication::HasPermission('Administrator'))
+            if (!QApplication::HasPermission('Administrator')) {
                 return false;
+            }
             
             $this->SetupProject($objProject);
             if (!$this->strApplicationType || !$this->strHgDir || !$this->strObjDir || !$this->strRepoUrl) {
