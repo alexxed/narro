@@ -93,6 +93,7 @@
             if (!file_exists(__NARRO_DATA__ . '/mozilla-build'))
                 mkdir(__NARRO_DATA__ . '/mozilla-build', 0777);
             
+            chmod(__NARRO_DATA__ . '/mozilla-build', 0777);
         }
         
         private function InitBuildDirectory(NarroProject $objProject) {
