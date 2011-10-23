@@ -155,7 +155,8 @@
             NarroLogger::LogInfo(sprintf('Starting import for the project %s', $this->objProject->ProjectName));
             NarroLogger::LogInfo(sprintf('Template path is %s', $this->strTemplatePath));
             NarroLogger::LogInfo(sprintf('Translation path is %s', $this->strTranslationPath));
-
+            NarroLogger::LogInfo(sprintf('Active plugins: %s', join(',', QApplication::$PluginHandler->ActivePlugins)));
+            NarroLogger::LogInfo(sprintf('Running import under user %s', $this->objUser->Username));
 
             if (is_dir($this->strTemplatePath)) {
                 /**
@@ -542,6 +543,8 @@
             }
 
             NarroLogger::LogInfo(sprintf(t('Starting export for the project %s using as template %s'), $this->objProject->ProjectName, $this->strTemplatePath));
+            NarroLogger::LogInfo(sprintf('Active plugins: %s', join(',', QApplication::$PluginHandler->ActivePlugins)));
+            NarroLogger::LogInfo(sprintf('Running export under user %s', $this->objUser->Username));
 
             $this->startTimer();
 
