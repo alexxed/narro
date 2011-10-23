@@ -54,6 +54,23 @@
             catch (Exception $objEx) {
                 error_log($objEx->getMessage() . $objEx->getTraceAsString());
             }
+            
+            if (QFirebug::getEnabled()) {
+                switch($intPriority) {
+                    case NarroLog::PRIORITY_INFO:
+                        QFirebug::info($objLogEntry->Message . ' / ' . $objLogEntry->UserId . ' / ' . $objLogEntry->ProjectId . ' / ' . $objLogEntry->LanguageId);
+                        break;
+                    case NarroLog::PRIORITY_WARN:
+                        QFirebug::warn($objLogEntry->Message . ' / ' . $objLogEntry->UserId . ' / ' . $objLogEntry->ProjectId . ' / ' . $objLogEntry->LanguageId);
+                        break;
+                    case NarroLog::PRIORITY_ERROR:
+                        QFirebug::error($objLogEntry->Message . ' / ' . $objLogEntry->UserId . ' / ' . $objLogEntry->ProjectId . ' / ' . $objLogEntry->LanguageId);
+                        break;
+                    default:
+                        QFirebug::log($objLogEntry->Message . ' / ' . $objLogEntry->UserId . ' / ' . $objLogEntry->ProjectId . ' / ' . $objLogEntry->LanguageId);
+                }
+            }
+            
         }
 
     }
