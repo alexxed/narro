@@ -34,6 +34,8 @@
             readfile($strFullPath);
             exit;
         }
+        elseif (!defined('__PREPEND_INCLUDED__'))
+            exit;
     }
 
     class NarroExportArchive extends NarroPlugin {
