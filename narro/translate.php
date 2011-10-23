@@ -19,7 +19,7 @@
     require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
 
     class NarroTranslateForm extends NarroGenericProjectForm {
-        protected $pnlTab;
+        protected $pnlMainTab;
         protected $pnlTranslate;
 
         protected function Form_Create() {
@@ -27,23 +27,23 @@
             
             if (QApplication::QueryString('p') < 1) {
     
-                $this->pnlTab = new QTabPanel($this);
-                $this->pnlTab->UseAjax = false;
-                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
-                $this->pnlTranslate = new NarroTranslatePanel($this->pnlTab);
-                $this->pnlTab->addTab($this->pnlTranslate, t('Translate'));
+                $this->pnlMainTab = new QTabPanel($this);
+                $this->pnlMainTab->UseAjax = false;
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Projects'), NarroLink::ProjectList());
+                $this->pnlTranslate = new NarroTranslatePanel($this->pnlMainTab);
+                $this->pnlMainTab->addTab($this->pnlTranslate, t('Translate'));
                 if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator'))
-                    $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());
-                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
-                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::RoleList());
+                    $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Languages'), NarroLink::LanguageList());
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Roles'), NarroLink::RoleList());
                 if (QApplication::HasPermissionForThisLang('Administrator'))
-                    $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Application Log'), NarroLink::Log());
+                    $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Application Log'), NarroLink::Log());
             }
             else {
-                $this->pnlTab->replaceTab(new NarroTranslatePanel($this->pnlTab), t('Translate'));
+                $this->pnlMainTab->replaceTab(new NarroTranslatePanel($this->pnlMainTab), t('Translate'));
             }
             
-            $this->pnlTab->SelectedTab = t('Translate');
+            $this->pnlMainTab->SelectedTab = t('Translate');
         }
     }
 
