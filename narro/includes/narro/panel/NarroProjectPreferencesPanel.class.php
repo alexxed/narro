@@ -68,6 +68,7 @@
                         if ($arrPref['global'])
                             $txtTextPref->Enabled = QApplication::HasPermission('Can edit project', $this->objProject->ProjectId);
                         $txtTextPref->Text = $this->objProject->GetPreferenceValueByName($strName);
+                        $txtTextPref->Columns = strlen($txtTextPref->Text);
     
                         $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), $arrPref['description']);
                         $this->arrControls[$strName] = $txtTextPref;
