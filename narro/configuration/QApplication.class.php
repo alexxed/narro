@@ -207,22 +207,24 @@
 
             define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$User->GetPreferenceValueByName('Application language'));
         }
-
-        public static function InitializeLogging($intProjectId = null) {
+        
+        public static function GetProjectId() {
             global $argv;
-
+            
             // project log via browser
             if (isset($_REQUEST['p']) && is_numeric($_REQUEST['p']))
-                $intProjectId = $_REQUEST['p'];
+                return (int) $_REQUEST['p'];
             // project log via cli
-            elseif (isset($argv) && array_search('--project', $argv))
-                $intProjectId = $argv[array_search('--project', $argv)+1];
+            elseif (isset($argv) && array_search('--project', $argv) && isset($argv[array_search('--project', $argv)+1]) && $argv[array_search('--project', $argv)+1] > 0)
+                return (int) $argv[array_search('--project', $argv)+1];
+            else
+                return null;
+        }
 
-            if (isset($intProjectId))
-                NarroLogger::$intProjectId = $intProjectId;
-            
-            NarroLogger::$intLanguageId = QApplication::GetLanguageId();
-            NarroLogger::$intUserId = QApplication::GetUserId();
+        public static function InitializeLogging($intProjectId = null) {
+            NarroLogger::$intProjectId = self::GetProjectId();
+            NarroLogger::$intLanguageId = self::GetLanguageId();
+            NarroLogger::$intUserId = self::GetUserId();
         }
 
         public static function InitializeTranslationEngine() {
