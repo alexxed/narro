@@ -99,6 +99,104 @@
                     }
             }
         }
+        
+        /**
+         * Returns a tmx file
+         * @param QQCondition $objLangCondition e.g. QQ::In(QQN::NarroText()->NarroSuggestionAsText->LanguageId, QApplication::GetLanguageId());
+         * @return a tmx file, formatted as a string
+         */
+        public static function GetTmx($objLangCondition) {
+            $tmx = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE tmx SYSTEM "tmx13.dtd"><tmx />');
+            
+            $tmx->addAttribute('version', '1.3');
+            $header = $tmx->addChild('header');
+            // mandatory
+            $header->addAttribute('creationtool', "Narro");
+            $header->addAttribute('creationtoolversion', NARRO_VERSION);
+            $header->addAttribute('segtype', "sentence");
+            $header->addAttribute('o-tmf', "ABCTransMem");
+            $header->addAttribute('adminlang', NarroLanguage::SOURCE_LANGUAGE_CODE);
+            $header->addAttribute('srclang', NarroLanguage::SOURCE_LANGUAGE_CODE);
+            $header->addAttribute('datatype', "PlainText");
+            // optional
+            $header->addAttribute('creationdate', QDateTime::NowToString('YYYYMMDDThhmmssZ'));
+            if (QApplication::$User)
+                $header->addAttribute('creationid', QApplication::$User->Username);
+            $header->addAttribute('changedate', "19970314T023401Z");
+            $header->addAttribute('o-encoding', "utf-8");
+            
+            $body = $tmx->addChild('body');
+            
+            $strQuery = NarroText::GetQueryStatement(
+                $objQueryBuilder,
+                QQ::AndCondition(
+                    QQ::IsNotNull(QQN::NarroText()->NarroSuggestionAsText->SuggestionId),
+                    $objLangCondition
+                ),
+                array(
+                    QQ::ExpandAsArray(QQN::NarroText()->NarroSuggestionAsText)
+                ),
+                array(),
+                false
+            );
+            
+            
+            $objDbResult = NarroText::GetDatabase()->Query($strQuery);
+            $intRowCount = $objDbResult->CountRows();
+            $intLastTextId = 0;
+            while ($objDbRow = $objDbResult->GetNextRow()) {
+                $objText = NarroText::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNodes, null, $objQueryBuilder->ColumnAliasArray);
+                if ($intLastTextId != $objText->TextId) {
+                    $intLastTextId = $objText->TextId;
+                    $tu = $body->addChild('tu');
+                    $tu->addAttribute('tuid', $objText->TextId);
+                    $tu->addAttribute('datatype', 'Text');
+                    $tu->addAttribute('usagecount', $objText->CountNarroContextsAsText());
+                    $objLastContext = NarroContext::QuerySingle(QQ::Equal(QQN::NarroContext()->TextId, $objText->TextId), array(QQ::OrderBy(QQN::NarroContext()->Created, 0)));
+                    
+                    if ($objLastContext && $objLastContext->Created instanceof QDateTime)
+                        $tu->addAttribute('lastusagedate', $objLastContext->Created->qFormat('YYYYMMDDThhmmssZ'));
+            
+                    $tuv = $tu->addChild('tuv');
+                    $tuv->addAttribute('xml:lang', NarroLanguage::SOURCE_LANGUAGE_CODE);
+                    $seg = $tuv->addChild('seg');
+                    $tuv->seg = $objText->TextValue;
+                    
+                    if ($objText->Created instanceof QDateTime)
+                        $tuv->addAttribute('creationdate', $objText->Created->qFormat('YYYYMMDDThhmmssZ'));
+                    
+                    if ($objText->Modified instanceof QDateTime)
+                        $tuv->addAttribute('changedate', $objText->Modified->qFormat('YYYYMMDDThhmmssZ'));
+                }
+            
+            
+            
+                foreach($objText->_NarroSuggestionAsTextArray as $objSuggestion) {
+                    /* @var $objSuggestion NarroSuggestion */
+                    $tuv = $tu->addChild('tuv');
+                    $tuv->addAttribute('xml:lang', $objSuggestion->Language->LanguageCode);
+                    $seg = $tuv->addChild('seg');
+                    $tuv->seg = $objSuggestion->SuggestionValue;
+                    if ($objSuggestion->Created instanceof QDateTime)
+                        $tuv->addAttribute('creationdate', $objSuggestion->Created->qFormat('YYYYMMDDThhmmssZ'));
+            
+                    if ($objSuggestion->Modified instanceof QDateTime)
+                        $tuv->addAttribute('changedate', $objSuggestion->Modified->qFormat('YYYYMMDDThhmmssZ'));
+            
+                    if ($objSuggestion->User instanceof NarroUser)
+                        $tuv->addAttribute('creationid', $objSuggestion->User->RealName);
+            
+                    $tuv->addAttribute('usagecount', $objSuggestion->CountNarroContextInfosAsValidSuggestion());
+                    
+                    $objLastContextInfo = NarroContextInfo::QuerySingle(QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, $objSuggestion->SuggestionId), array(QQ::OrderBy(QQN::NarroContextInfo()->Created, 0)));
+                    
+                    if ($objLastContextInfo && $objLastContextInfo->Created instanceof QDateTime)
+                        $tuv->addAttribute('lastusagedate', $objLastContextInfo->Created->qFormat('YYYYMMDDThhmmssZ'));
+                }
+            }
+            
+            return $tmx->asXML();
+        }
 
     }
 ?>

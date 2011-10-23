@@ -60,7 +60,7 @@
             $this->colActions->HtmlEntities = false;
 
             // Setup DataGrid
-            $this->dtgLanguage = new NarroDataGrid($this);
+            $this->dtgLanguage = new NarroLanguageDataGrid($this);
             $this->dtgLanguage->ShowHeader = true;
             $this->dtgLanguage->Title = t('Languages');
 
@@ -73,10 +73,18 @@
 
             // Specify the local databind method this datagrid will use
             $this->dtgLanguage->SetDataBinder('dtgLanguage_Bind', $this);
+            
+            $colTranslationCount = new QDataGridColumn(t('Translations'));
+            $colTranslationCount->Html = '<?=$_CONTROL->ParentControl->colTranslationCount_Render($_ITEM)?>';
+            $colTranslationCount->HtmlEntities = false;
+            $colTranslationCount->OrderByClause = QQ::OrderBy(QQ::Virtual('__translations_count', QQ::SubSql('SELECT COUNT(suggestion_id)')), 1);
+            $colTranslationCount->ReverseOrderByClause = QQ::OrderBy(QQ::Virtual('__translations_count', QQ::SubSql('SELECT COUNT(suggestion_id)')), 0);
+            $colTranslationCount->HorizontalAlign = QHorizontalAlign::Right;
 
             $this->dtgLanguage->AddColumn($this->colLanguageName);
             $this->dtgLanguage->AddColumn($this->colLanguageCode);
             $this->dtgLanguage->AddColumn($this->colCountryCode);
+            $this->dtgLanguage->AddColumn($colTranslationCount);
             $this->dtgLanguage->AddColumn($this->colEncoding);
             $this->dtgLanguage->AddColumn($this->colTextDirection);
             $this->dtgLanguage->AddColumn($this->colSpecialCharacters);
@@ -190,7 +198,7 @@
             $this->dtgLanguage->TotalItemCount = NarroLanguage::QueryCount($objFilterCondition);
 
             // Setup the $objClauses Array
-            $objClauses = array();
+            $objClauses = array(QQ::Count(QQN::NarroLanguage()->NarroSuggestionAsLanguage->SuggestionId, 'translations_count'), QQ::GroupBy(QQN::NarroLanguage()->LanguageId),);
 
             // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
             // the OrderByClause to the $objClauses array
@@ -223,6 +231,36 @@
                 $objLanguage->Save();
             }
             $this->dtgLanguage->MarkAsModified();
+        }
+        
+        public function colTranslationCount_Render(NarroLanguage $objLanguage) {
+            $btnTmx = $this->dtgLanguage->GetChildControl('tmx' . $objLanguage->LanguageId);
+            if (!$btnTmx instanceof QButton) {
+                $btnTmx = new QButton($this->dtgLanguage, 'tmx' . $objLanguage->LanguageId);
+                $btnTmx->ActionParameter = $objLanguage->LanguageId;
+                $btnTmx->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnTmx_Click'));
+                $btnTmx->Text = 'TMX';
+                $btnTmx->ToolTip = t('Download all translations in a TMX file');
+            
+            }
+            return $objLanguage->GetVirtualAttribute("translations_count") . ' ' . $btnTmx->Render(false);
+        }
+        
+        public function btnTmx_Click($strFormId, $strControlId, $intLanguageId) {
+            $objLanguage = NarroLanguage::Load($intLanguageId);
+            if (!$objLanguage) return false;
+            
+            header("Pragma: public"); // required
+            header("Expires: 0");
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            header("Cache-Control: private",false); // required for certain browsers
+            header("Content-Type: text/xml");
+            header("Content-Disposition: attachment; filename=\"" . sprintf('%s %s.tmx', preg_replace('/^[a-z]/i', '_', __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__), $objLanguage->LanguageName) . "\";" );
+            ob_clean();
+            $strXml = NarroLanguage::GetTmx(QQ::Equal(QQN::NarroText()->NarroSuggestionAsText->LanguageId, $intLanguageId));
+            header("Content-Length: " . strlen($strXml));
+            echo $strXml;
+            exit;
         }
     }
 ?>
