@@ -50,7 +50,7 @@
                         $strLogContents .= '<div class="info"';
                         break;
                     case NarroLog::PRIORITY_WARN:
-                        $strLogContents .= '<div class="warn"';
+                        $strLogContents .= '<div class="warning"';
                         break;
                     case NarroLog::PRIORITY_ERROR:
                         $strLogContents .= '<div class="error"';

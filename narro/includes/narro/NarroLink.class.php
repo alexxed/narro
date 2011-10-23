@@ -277,6 +277,14 @@
             else
                 return $strLink;
         }
+        
+        public static function Log($strSearch = '', $strLinkText = '') {
+            $strLink = sprintf('log.php?l=%s&s=%s', QApplication::$TargetLanguage->LanguageCode, $strSearch);
+            if ($strLinkText != '')
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+            else
+                return $strLink;
+        }
 
     }
 ?>

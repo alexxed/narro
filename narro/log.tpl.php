@@ -1,8 +1,5 @@
 <?php
     /**
-     * @package Narro
-     * @subpackage Templates
-     *
      * Narro is an application that allows online software translation and maintenance.
      * Copyright (C) 2008-2011 Alexandru Szasz <alexxed@gmail.com>
      * http://code.google.com/p/narro/
@@ -19,13 +16,15 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-    $strPageTitle = t('Projects');
+    $strPageTitle = t('Application log');
 
-    require(dirname(__FILE__) . '/configuration/header.inc.php');
 
-    $this->RenderBegin();
-    $this->pnlHeader->Render();
-    $this->pnlTab->Render();
-    $this->RenderEnd();
+    require(dirname(__FILE__) . '/configuration/header.inc.php')
+?>
 
-    require(dirname(__FILE__) . '/configuration/footer.inc.php');
+    <?php $this->RenderBegin() ?>
+    <?php $this->pnlHeader->Render() ?>
+    <?php $this->pnlTab->Render() ?>
+    <?php $this->RenderEnd() ?>
+
+<?php require(dirname(__FILE__) . '/configuration/footer.inc.php'); ?>

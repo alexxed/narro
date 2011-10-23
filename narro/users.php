@@ -34,6 +34,8 @@
                 $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());
             $this->pnlTab->addTab($this->pnlUserList, t('Users'));
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::RoleList());
+            if (QApplication::HasPermissionForThisLang('Administrator'))
+                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Application Log'), NarroLink::Log());
 
             $this->pnlTab->SelectedTab = t('Users');
         }

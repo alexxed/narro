@@ -22,6 +22,6 @@
     $this->RenderBegin();
     $this->pnlHeader->Render();
     $this->pnlBreadcrumb->Render();
-    $this->pnlMainTab->Render();
+    $this->pnlTab->Render();
     $this->RenderEnd();
     require(dirname(__FILE__) . '/configuration/footer.inc.php');
