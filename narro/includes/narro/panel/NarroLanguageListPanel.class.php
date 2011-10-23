@@ -80,11 +80,19 @@
             $colTranslationCount->OrderByClause = QQ::OrderBy(QQ::Virtual('__translations_count', QQ::SubSql('SELECT COUNT(suggestion_id)')), 1);
             $colTranslationCount->ReverseOrderByClause = QQ::OrderBy(QQ::Virtual('__translations_count', QQ::SubSql('SELECT COUNT(suggestion_id)')), 0);
             $colTranslationCount->HorizontalAlign = QHorizontalAlign::Right;
+            
+            $colLastTranslation = new QDataGridColumn(t('Last translation'));
+            $colLastTranslation->Html = '<?=$_CONTROL->ParentControl->colLastTranslation_Render($_ITEM)?>';
+            $colLastTranslation->HtmlEntities = false;
+            $colLastTranslation->OrderByClause = QQ::OrderBy(QQ::Virtual('last_translation'), 1);
+            $colLastTranslation->ReverseOrderByClause = QQ::OrderBy(QQ::Virtual('last_translation'), 0);
+            $colLastTranslation->HorizontalAlign = QHorizontalAlign::Right;
 
             $this->dtgLanguage->AddColumn($this->colLanguageName);
             $this->dtgLanguage->AddColumn($this->colLanguageCode);
             $this->dtgLanguage->AddColumn($this->colCountryCode);
             $this->dtgLanguage->AddColumn($colTranslationCount);
+            $this->dtgLanguage->AddColumn($colLastTranslation);
             $this->dtgLanguage->AddColumn($this->colEncoding);
             $this->dtgLanguage->AddColumn($this->colTextDirection);
             $this->dtgLanguage->AddColumn($this->colSpecialCharacters);
@@ -198,7 +206,10 @@
             $this->dtgLanguage->TotalItemCount = NarroLanguage::QueryCount($objFilterCondition);
 
             // Setup the $objClauses Array
-            $objClauses = array(QQ::Count(QQN::NarroLanguage()->NarroSuggestionAsLanguage->SuggestionId, 'translations_count'), QQ::GroupBy(QQN::NarroLanguage()->LanguageId),);
+            $objClauses = array(
+                QQ::Expand(QQ::Virtual('last_translation', QQ::SubSql('SELECT MAX(created) FROM narro_suggestion WHERE language_id={1}', QQN::NarroLanguage()->LanguageId))),
+                QQ::Count(QQN::NarroLanguage()->NarroSuggestionAsLanguage->SuggestionId, 'translations_count'), QQ::GroupBy(QQN::NarroLanguage()->LanguageId)
+            );
 
             // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
             // the OrderByClause to the $objClauses array
@@ -244,6 +255,11 @@
             
             }
             return $objLanguage->GetVirtualAttribute("translations_count") . ' ' . $btnTmx->Render(false);
+        }
+        
+        public function colLastTranslation_Render(NarroLanguage $objLanguage) {
+            $dttCreated = new QDateTimeSpan(time() - strtotime($objLanguage->GetVirtualAttribute('last_translation')));
+            return sprintf(t('%s ago'), $dttCreated->SimpleDisplay());
         }
         
         public function btnTmx_Click($strFormId, $strControlId, $intLanguageId) {
