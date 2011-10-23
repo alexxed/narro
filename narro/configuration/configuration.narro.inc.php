@@ -65,7 +65,6 @@
     define ('__TMP_PATH__', __NARRO_DATA__ . '/tmp');
     define ('__IMPORT_PATH__', __NARRO_DATA__ . '/import');
     define ('__RSS_PATH__', __NARRO_DATA__ . '/rss');
-    define ('__SEARCH_INDEX_PATH__', __NARRO_DATA__ . '/search');
 
     set_include_path(
         __DOCROOT__ . __SUBDIRECTORY__ . PATH_SEPARATOR .
