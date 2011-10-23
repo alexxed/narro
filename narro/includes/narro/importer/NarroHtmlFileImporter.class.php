@@ -17,7 +17,7 @@
      */
 
     class NarroHtmlFileImporter extends NarroFileImporter {
-        const SUPPORTED_TAGS = 'p,li,h1,h2,h3,h4,h5,title,textarea';
+        const SUPPORTED_TAGS = 'p,li,h1,h2,h3,h4,h5,title,textarea,dt,dd';
         const SUPPORTED_ATTRS = 'alt';
 
         public function __construct($objImporter = null) {

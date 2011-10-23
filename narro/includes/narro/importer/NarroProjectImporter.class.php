@@ -834,6 +834,7 @@
                         return NarroFileType::PhpMyAdmin;
                 case 'htm':
                 case 'html':
+                case 'thtml':
                         return NarroFileType::Html;
                 default:
                         return NarroFileType::Unsupported;
