@@ -62,7 +62,7 @@
             
             if ($this->blnEnable) {
                 NarroProject::RegisterPreference('Mozilla repository to build from', true, NarroProjectType::Mozilla, 'text', 'e.g. http://hg.mozilla.org/releases/mozilla-aurora/', '');
-                NarroProject::RegisterPreference('Mozilla application type', true, NarroProjectType::Mozilla, 'option', '', '', array('browser', 'mail', 'suite', 'calendar'));
+                NarroProject::RegisterPreference('Mozilla application type', true, NarroProjectType::Mozilla, 'option', '', '', array('browser', 'mail', 'suite', 'calendar', 'mobile'));
                 NarroProject::RegisterPreference('Mozilla release name', true, NarroProjectType::Mozilla, 'text', 'leave empty for central', '');
                 NarroProject::RegisterPreference('Firefox project name for this release', true, NarroProjectType::Mozilla, 'text', 'leave empty for Firefox, if this project would be Thunderbird Aurora, fill in the name of the Narro project that holds Firefox Aurora', '');
             }
