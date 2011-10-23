@@ -57,7 +57,7 @@
         public function __construct() {
             parent::__construct();
             $this->strName = t('Mozilla build system (en-US sources, XPI generation, Compare Locales)');
-            $this->blnEnable = $this->blnEnable && QApplication::HasPermission('Administrator');
+            $this->blnEnable = $this->blnEnable;
             $this->Enable();
             
             if ($this->blnEnable) {
@@ -279,6 +279,9 @@
         }
         
         public function BeforeImportProject(NarroProject $objProject) {
+            if (!QApplication::HasPermission('Administrator'))
+                return false;
+            
             $this->SetupProject($objProject);
             if (!$this->strApplicationType || !$this->strHgDir || !$this->strObjDir || !$this->strRepoUrl) {
                 return false;
