@@ -56,7 +56,7 @@
 
         public function __construct() {
             parent::__construct();
-            $this->strName = t('Mozilla build system (gets the en-US files from Mercurial for Firefox, Thunderbird and SeaMonkey and generates XPI language packs when exporting)');
+            $this->strName = t('Mozilla build system (en-US sources, XPI generation, Compare Locales)');
             $this->blnEnable = $this->blnEnable && QApplication::HasPermission('Administrator');
             $this->Enable();
             
@@ -355,12 +355,129 @@
             return array($objProject);
         }
         
+        private function GetCompareLocales() {
+            if (file_exists('/usr/bin/easy_install')) {
+                if (!file_exists(sprintf('%s/compare-locales/lib', $this->strObjDir)))
+                    mkdir(sprintf('%s/compare-locales/lib', $this->strObjDir), 0777, true);
+                
+                if (!
+                    NarroUtils::Exec(
+                        sprintf('/usr/bin/easy_install --install-dir=%s/compare-locales/lib/ -U compare-locales', $this->strObjDir),
+                        $arrOutput,
+                        $arrError,
+                        $intRetVal,
+                        false,
+                        array('PYTHONPATH' => sprintf('%s/compare-locales/lib', $this->strObjDir))
+                    )
+                )
+                    return false;
+                
+                return true;
+            }
+            else {
+                NarroLogger::LogInfo('/usr/bin/easy_install not found, compare locales will not run');
+                return false;
+            }
+        }
+        
+        private function CompareLocales(NarroProject $objProject) {
+            $this->SetupProject($objProject);
+            if (!$this->strApplicationType || !$this->strHgDir || !$this->strObjDir || !$this->strRepoUrl) {
+                return false;
+            }
+            $blnResult = $this->GetCompareLocales();
+            NarroUtils::RecursiveChmod(sprintf('%s/compare-locales', $this->strObjDir));
+            if(!$blnResult)
+                return false;
+            
+            $strCompareLocales = sprintf(
+            	'%s/compare-locales/lib/compare-locales %s/%s/locales/l10n%s.ini %s/%s %s',
+                $this->strObjDir,
+                $this->strHgDir,
+                $this->strApplicationType,
+                ($this->strReleaseName && file_exists(sprintf('%s/%s/locales/l10n%s.ini', $this->strHgDir, $this->strApplicationType, '-' . $this->strReleaseName)))?'-' . $this->strReleaseName:'',
+                __IMPORT_PATH__,
+                $objProject->ProjectId,
+                QApplication::$TargetLanguage->LanguageCode
+            );
+            
+            if (!$strCompareLocales)
+                return false;
+            
+            if ($this->strApplicationType != 'browser') {
+                if (!$this->objFirefoxProject instanceof NarroProject) {
+                    NarroLogger::LogError(sprintf('Associated Firefox project not set or does not exist'));
+                    return false;
+                }
+                NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrBrowserDirList), $this->objFirefoxProject->DefaultTranslationPath));
+                NarroUtils::RecursiveCopy($this->objFirefoxProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
+            }
+                        
+            NarroUtils::Exec(
+                $strCompareLocales,
+                $arrOutput,
+                $arrError,
+                $intRetVal,
+                false,
+                array('PYTHONPATH' => sprintf('%s/compare-locales/lib', $this->strObjDir)),
+                null,
+                false
+            );
+            
+            if ($this->strApplicationType != 'browser') {
+                foreach(self::$arrBrowserDirList as $strDir) {
+                    NarroUtils::RecursiveDelete($objProject->DefaultTranslationPath . '/' . $strDir);
+                }
+            }
+            
+            $strOutput = join("\n", $arrOutput);
+            
+            $strOutput = preg_replace(
+            	'/within\s+([a-zA-Z0-9\.\-_]+)/',
+        	    sprintf(
+        	    	'within <a target="_blank" href="%s/translate.php?l=%s&p=%d&t=%d&in=%d&s=\1">\1</a>',
+        	    	__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
+        	    	QApplication::$TargetLanguage->LanguageCode,
+                    $objProject->ProjectId,
+                    NarroTranslatePanel::SHOW_ALL,
+                    NarroTranslatePanel::SEARCH_IN_CONTEXTS
+                ),
+                $strOutput
+            );
+            $strOutput = preg_replace(
+            	'/(\s+)\+([a-zA-Z0-9\.\-_]+)/',
+            	sprintf(
+            		'\1+<a target="_blank" href="%s/translate.php?l=%s&p=%d&t=%d&in=%d&s=\2">\2</a>',
+            	    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
+        	    	QApplication::$TargetLanguage->LanguageCode,
+                    $objProject->ProjectId,
+                    NarroTranslatePanel::SHOW_ALL,
+                    NarroTranslatePanel::SEARCH_IN_CONTEXTS
+                ),
+                $strOutput
+            );
+                                            
+            $strOutput = str_replace('ERROR', '<span style="background-color:red;font-weight:bold">ERROR</span>', $strOutput);
+            
+            $strOutput = str_replace('WARNING', '<span style="background-color:orange;font-weight:bold">WARNING</span>', $strOutput);
+            
+            return $strOutput;
+        }
+        
         protected function GetOutputFileName(NarroProject $objProject) {
             return __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.xpi';
         }
         
         public function DisplayExportMessage(NarroProject $objProject, $strText = '') {
+            $strExportText = $this->CompareLocales($objProject);
+            
+            return array($objProject, '<br />' . $strExportText . '<br />' . $this->GetXpiLink($objProject));
+        }
+        
+        private function GetXpiLink(NarroProject $objProject) {
+            
             $strExportText = '';
+            
             if (file_exists($this->GetOutputFileName($objProject))) {
                 $strDownloadUrl = sprintf(
                     __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/includes/narro/plugins/' . __CLASS__ . '.class.php?p=%d&pn=%s&l=%s',
@@ -377,11 +494,11 @@
                 );
             }
         
-            return array($objProject, $strExportText);
+            return $strExportText;
         }
         
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
-            return $this->DisplayExportMessage($objProject, $strText);
+            return array($objProject, $this->GetXpiLink($objProject));
         }
     }
 ?>
