@@ -33,7 +33,8 @@
             flush();
             readfile($strFullPath);
             exit;
-        }
+        } elseif (!defined('__PREPEND_INCLUDED__'))
+            exit;
     }
 
 
@@ -285,7 +286,42 @@
             }
             
             NarroUtils::RecursiveChmod($objProject->DefaultTemplatePath);
+            
+            $this->CreateExportArchive($objProject);
         }
+        
+        private function CreateExportArchive(NarroProject $objProject) {
+            $strArchive = __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-en-US.zip';
+            if (file_exists($strArchive))
+                unlink($strArchive);
+        
+            $arrFiles = NarroUtils::ListDirectory($objProject->DefaultTemplatePath, null, null, null, true);
+        
+            $objZipFile = new ZipArchive();
+            if ($objZipFile->open($strArchive, ZipArchive::OVERWRITE) === TRUE) {
+                foreach($arrFiles as $strFileName) {
+                    if ($objProject->DefaultTemplatePath == $strFileName) continue;
+                    if (is_dir($strFileName)) {
+                        $objZipFile->addEmptyDir(str_replace($objProject->DefaultTemplatePath . '/', '', $strFileName ));
+                    }
+                    elseif (is_file($strFileName)) {
+                        $objZipFile->addFile($strFileName, str_replace($objProject->DefaultTemplatePath . '/', '', $strFileName ));
+                    }
+                }
+            } else {
+                NarroLogger::LogError(sprintf('Failed to create a new archive %s', $strArchive));
+                return false;
+            }
+            $objZipFile->close();
+            if (file_exists($strArchive))
+                chmod($strArchive, 0666);
+            else {
+                NarroLogger::LogError(sprintf('Failed to create an archive %s', $strArchive));
+                return false;
+            }
+            return true;
+        }
+        
         
         public function BeforeImportProject(NarroProject $objProject) {
             if (!QApplication::HasPermission('Administrator')) {
