@@ -43,7 +43,7 @@
     	file_exists(__NARRO_DATA__)
 	);
 
-    foreach (array(__TMP_PATH__, __NARRO_DATA__, __DICTIONARY_PATH__, __IMPORT_PATH__, __RSS_PATH__, __SEARCH_INDEX_PATH__, __FILE_FORM_STATE_HANDLER_PATH__, ERROR_LOG_PATH) as $strDirName) {
+    foreach (array(__TMP_PATH__, __NARRO_DATA__, __DICTIONARY_PATH__, __IMPORT_PATH__, __RSS_PATH__, __FILE_FORM_STATE_HANDLER_PATH__, ERROR_LOG_PATH) as $strDirName) {
         if (!file_exists($strDirName)) {
             if (
                 check_boolean(
