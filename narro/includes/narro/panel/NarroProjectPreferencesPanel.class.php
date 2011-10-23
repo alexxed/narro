@@ -59,7 +59,7 @@
                         if ($arrPref['global'])
                             $txtNumber->Enabled = QApplication::HasPermission('Can edit project', $this->objProject->ProjectId);
                         $txtNumber->Text = $this->objProject->GetPreferenceValueByName($strName);
-                        $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtNumber->RenderWithError(false), t($arrPref['description']));
+                        $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtNumber->RenderWithError(false), ($arrPref['description'])?t($arrPref['description']):'');
                         $this->arrControls[$strName] = $txtNumber;
                         break;
                     case 'text':
@@ -70,7 +70,7 @@
                         $txtTextPref->Text = $this->objProject->GetPreferenceValueByName($strName);
                         $txtTextPref->Columns = strlen($txtTextPref->Text);
     
-                        $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), $arrPref['description']);
+                        $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $txtTextPref->RenderWithError(false), ($arrPref['description'])?t($arrPref['description']):'');
                         $this->arrControls[$strName] = $txtTextPref;
                         break;
                     case 'option':
@@ -81,7 +81,7 @@
                         foreach($arrPref['values'] as $strValue) {
                             $lstOption->AddItem(t($strValue), $strValue, ($strValue == $this->objProject->GetPreferenceValueByName($strName)));
                         }
-                        $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $lstOption->RenderWithError(false), t($arrPref['description']));
+                        $strOutput .= sprintf('<tr class="datagrid_row datagrid_even" style="height:40px"><td>%s:</td><td>%s</td><td style="font-size:-1">%s</td></tr>', t($strName), $lstOption->RenderWithError(false), ($arrPref['description'])?t($arrPref['description']):'');
                         $this->arrControls[$strName] = $lstOption;
                         break;
                 }
