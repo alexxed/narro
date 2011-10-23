@@ -355,5 +355,67 @@
 
             return false;
         }
+        
+        /**
+         *
+         * A better version of exec()
+         * @param string $strCommand The command to run
+         * @param array $arrOutput An array where you'll get the output
+         * @param array $arrError An array where you'll get the errors
+         * @param integer $intRetVal The return value of the command
+         * @param boolean $blnInBackground Whether to launch the command in background
+         * @param string $cwd The directory to switch to before running the command
+         * @param array $env Associative array with environment variables
+         * @return boolean
+         */
+        public static function Exec($strCommand, &$arrOutput, &$arrError, &$intRetVal, $blnInBackground = false, $env = null, $cwd = null, $blnLogErrors = true) {
+            $process = proc_open(
+                $strCommand . (($blnInBackground)?' &':''),
+                array(
+                    1 => array("pipe", 'w'),
+                    2 => array("pipe", 'w')
+                ),
+                $pipes,
+                $cwd,
+                $env
+            );
+            
+            if (!$blnInBackground) {
+                if (is_resource($process)) {
+                    $arrOutput = explode("\n", stream_get_contents($pipes[1]));
+                    fclose($pipes[1]);
+                    
+                    $arrError = explode("\n", stream_get_contents($pipes[2]));
+                    fclose($pipes[2]);
+                
+                    // It is important that you close any pipes before calling
+                    // proc_close in order to avoid a deadlock
+                    $intRetVal = proc_close($process);
+                    
+                    if ($intRetVal != 0 && $blnLogErrors) {
+                        NarroLogger::LogError(sprintf('Running "%s" in "%s" returned %d', $strCommand, is_null($cwd)?getcwd():$cwd, $intRetVal));
+                        foreach($arrOutput as $strOutput)
+                            NarroLogger::LogInfo($strOutput);
+                    
+                        foreach($arrError as $strOutput)
+                            NarroLogger::LogError($strOutput);
+                        
+                        return false;
+                    }
+                    
+                    NarroLogger::LogInfo(sprintf('Running "%s" in "%s"', $strCommand, is_null($cwd)?getcwd():$cwd));
+                                        
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else {
+                if (is_resource($process))
+                    return true;
+                else
+                    return false;
+            }
+        }
     }
 ?>
