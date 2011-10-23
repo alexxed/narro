@@ -260,8 +260,14 @@
                 $objDatabase->NonQuery($strQuery);
                 $strQuery = sprintf("DELETE FROM `narro_user_role` WHERE project_id = %d", $this->objProject->ProjectId);
                 $objDatabase->NonQuery($strQuery);
+                
+                $intProjectId = $this->objProject->ProjectId;
 
                 $this->objProject->Delete();
+                
+                NarroUtils::RecursiveDelete(__IMPORT_PATH__ . '/' . $intProjectId);
+                NarroUtils::RecursiveDelete(sprintf('%s/project-%d-hg', __NARRO_DATA__ . '/mozilla-build', $intProjectId));
+                NarroUtils::RecursiveDelete(sprintf('%s/project-%d-obj', __NARRO_DATA__ . '/mozilla-build', $intProjectId));
             }
             catch (Exception $objEx) {
                 $this->lblMessage->Text = $objEx->getMessage();
