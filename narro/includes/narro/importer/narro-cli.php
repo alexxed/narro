@@ -71,6 +71,8 @@
         $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
         $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
         NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
+        if (!NarroPluginHandler::$blnEnablePlugins)
+            NarroLogger::LogInfo('Plugins deactivated');
 
         /**
          * Get specific options
@@ -190,6 +192,8 @@
         $objNarroImporter = new NarroProjectImporter();
         $objNarroImporter->SkipUntranslated = (bool) array_search('--skip-untranslated', $argv);
         NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
+        if (!NarroPluginHandler::$blnEnablePlugins)
+            NarroLogger::LogInfo('Plugins deactivated');
 
         if (array_search('--exported-suggestion', $argv))
             $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];
