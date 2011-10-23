@@ -16,6 +16,10 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      *
      * @property array $PluginErrors
+     * @property array $ActivePlugins
+     * @property boolean $Error
+     * @property array $PluginReturnValues
+     * @property string $CurrentPluginName
      */
 
     class NarroPluginHandler {
@@ -65,6 +69,7 @@
                 if ($objDirHandler = opendir($strPluginFolder)) {
                     while (($strFileName = readdir($objDirHandler)) !== false) {
                         if (strstr($strFileName, '.class.php')) {
+                            // NarroLogger::LogDebug(sprintf('Found plugin in %s', $strFileName));
                             include_once($strPluginFolder . '/' . $strFileName);
                             $this->RegisterPlugin(str_replace('.class.php', '', $strFileName));
                         }
@@ -78,6 +83,7 @@
             if (!isset($this->arrPlugins[$strPluginClass]) || $this->arrPlugins[$strPluginClass] instanceof $strPluginClass)
                 $this->arrPlugins[$strPluginClass] = new $strPluginClass();
                 if (!$this->arrPlugins[$strPluginClass]->Enable) {
+                    // NarroLogger::LogDebug(sprintf('Plugin %s disabled', $this->arrPlugins[$strPluginClass]->Name));
                     unset($this->arrPlugins[$strPluginClass]);
                 }
         }
@@ -153,6 +159,12 @@
                 case "PluginErrors": return $this->arrPluginErrors;
                 case "PluginReturnValues": return $this->arrPluginReturnValues;
                 case "CurrentPluginName": return $this->strCurrentPluginName;
+                case "ActivePlugins":
+                    $arrResult = array();
+                    if (is_array($this->arrPlugins))
+                    foreach($this->arrPlugins as $objPlugin)
+                        $arrResult[] = $objPlugin->Name;
+                    return $arrResult;
                 case "Error": return QType::Cast(count($this->arrPluginErrors), QType::Boolean);
                 default:
                     throw new QUndefinedPropertyException("GET", __CLASS__, $strName);
