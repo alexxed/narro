@@ -258,6 +258,10 @@
                 NarroLogger::LogInfo(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
             }
         }
+        
+        public function ImportFromXpi() {
+            
+        }
 
         public function ImportFromDirectory() {
 
@@ -614,8 +618,6 @@
 
             }
 
-            $this->MarkUnusedFilesAsInactive();
-
             NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'export');
 
             QApplication::$PluginHandler->AfterExportProject($this->objProject);
@@ -648,7 +650,10 @@
                 NarroLogger::LogInfo(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
             }
         }
-
+        
+        public function ExportToXpi() {
+        
+        }
 
         public function ExportFromDirectory() {
 
