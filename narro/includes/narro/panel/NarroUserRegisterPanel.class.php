@@ -83,7 +83,7 @@
             if (!$objUser instanceof NarroUser)
                 QApplication::Redirect(sprintf('login.php?l=%s', QApplication::$TargetLanguage->LanguageCode));
 
-            QApplication::$Session->User = $objUser;
+            QApplication::$Session->UserId = $objUser->UserId;
             QApplication::Redirect(NarroLink::UserPreferences($objUser->UserId));
         }
 

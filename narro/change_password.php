@@ -32,7 +32,6 @@
                 if ($strPassHash && $strUsername) {
                     $objUser = NarroUser::LoadByUsernameAndPassword($strUsername, $strPassHash);
                     if ($objUser instanceof NarroUser) {
-                        QApplication::$Session->User = $objUser;
                         QApplication::$User = $objUser;
                     }
                     else
@@ -63,9 +62,8 @@
                 $this->lblMessage->Text = t('Failed to change the password.');
             }
 
-            QApplication::$Session->User = QApplication::$User;
             $this->lblMessage->ForeColor = 'green';
-            $this->lblMessage->Text = t('Password changed succesfully.');
+            $this->lblMessage->Text = sprintf(t('Password changed succesfully. Click <a href="%s">here</a> to go to the project list.'), NarroLink::ProjectList());
 
         }
     }

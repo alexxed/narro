@@ -87,10 +87,10 @@
             $this->btnGoogleLogin->TabIndex = 4;
             $this->btnGoogleLogin->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnGoogleLogin_Click'));
 
-            if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !='' && !strstr($_SERVER['HTTP_REFERER'], $_SERVER['REQUEST_URI']))
+            $openid = new LightOpenID($_SERVER['HTTP_HOST']);
+            if (!$openid->mode && isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !='' && !strstr($_SERVER['HTTP_REFERER'], $_SERVER['REQUEST_URI']))
                 $this->txtPreviousUrl = $_SERVER['HTTP_REFERER'];
 
-            $openid = new LightOpenID($_SERVER['HTTP_HOST']);
             if ($openid->mode) {
                 if ($openid->mode == 'cancel') {
                     $this->lblMessage->Text = t('The user has canceled authentication');
@@ -117,8 +117,9 @@
                                 return false;
                             }
     
-                            QApplication::$Session->User = $objUser;
+                            QApplication::$Session->UserId = $objUser->UserId;
                             QApplication::Redirect(NarroLink::UserPreferences($objUser->UserId));
+                            exit;
                         }
                         elseif ($objUser->Password != md5('')) {
                             $this->lblMessage->ForeColor = 'red';
@@ -126,13 +127,15 @@
                             return false;
                         }
     
-                        QApplication::$Session->User = $objUser;
+                        QApplication::$Session->UserId = $objUser->UserId;
                         QApplication::$User = $objUser;
                         
                         if ($this->txtPreviousUrl)
                             QApplication::Redirect($this->txtPreviousUrl);
                         else
                             QApplication::Redirect(NarroLink::ProjectList());
+                        
+                        exit;
                     }
                     else {
                         $this->lblMessage->Text = t('OpenID login failed');
@@ -168,7 +171,7 @@
             $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text));
 
             if ($objUser instanceof NarroUser) {
-                QApplication::$Session->User = $objUser;
+                QApplication::$Session->UserId = $objUser->UserId;
                 
                 QApplication::$User = $objUser;
                 if ($this->txtPreviousUrl)

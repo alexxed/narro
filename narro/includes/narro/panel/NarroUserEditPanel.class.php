@@ -150,14 +150,6 @@
                 $this->blnModified = true;
                 return false;
             }
-            if ($this->objNarroUser->UserId == QApplication::GetUserId()) {
-                QApplication::$Session->User = $this->objNarroUser;
-            }
-            else {
-                /**
-                 * @todo update the cache file for that particular user
-                 */
-            }
 
             QApplication::Redirect(NarroLink::UserList($this->objNarroUser->Username));
         }

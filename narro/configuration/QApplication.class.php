@@ -189,8 +189,8 @@
 
         public static function InitializeUser() {
             global $argv;
-            if (QApplication::$Session->User) {
-                QApplication::$User = QType::Cast(QApplication::$Session->User, 'NarroUser');
+            if (QApplication::$Session->UserId) {
+                QApplication::$User = NarroUser::Load(QApplication::$Session->UserId);
             }
             elseif (is_array($argv) && array_search('--user', $argv) !== false) {
                 QApplication::$User = NarroUser::LoadByUserId((int) $argv[array_search('--user', $argv)+1]);
@@ -198,7 +198,6 @@
             
             if (!QApplication::$User instanceof NarroUser) {
                 QApplication::$User = NarroUser::LoadAnonymousUser();
-                QApplication::$Session->User = QApplication::$User;
             }
             
             if (!QApplication::$User instanceof NarroUser)

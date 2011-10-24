@@ -159,10 +159,6 @@
 
             $this->objUser->Data = serialize($this->objUser->Preferences);
 
-            if ($this->objUser->UserId == QApplication::GetUserId()) {
-                QApplication::$Session->User = $this->objUser;
-            }
-
             /**
              * Don't save the preferences for the anonymous user in the database
              */

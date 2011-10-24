@@ -259,7 +259,8 @@
             $objUser = new NarroUser();
             $objUser->UserId = $objMaxUser[0]->UserId + 1;
             $objUser->Username = $strUsername;
-            $objUser->RealName = $strRealName;
+            if ($strRealName)
+                $objUser->RealName = $strRealName;
             $objUser->Email = $strEmail;
             $objUser->Password = md5($strPassword);
 
