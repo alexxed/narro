@@ -165,14 +165,15 @@
             if (array_key_exists('Qform__FormId', $_POST) && ($_POST['Qform__FormId'] == $strFormId) && array_key_exists('Qform__FormState', $_POST)) {
                 $strPostDataState = $_POST['Qform__FormState'];
 
-                if ($strPostDataState)
+                if ($strPostDataState) {
                     // We might have a valid form state -- let's see by unserializing this object
                     $objClass = QForm::Unserialize($strPostDataState);
 
-                $blnInvalidFormState = false;
-                // If there is no QForm Class, then we have an Invalid Form State
-                if (!$objClass) {
-                    $blnInvalidFormState = true;
+                    $blnInvalidFormState = false;
+                    // If there is no QForm Class, then we have an Invalid Form State
+                    if (!$objClass) {
+                        $blnInvalidFormState = true;
+                    }
                 }
             }
 
