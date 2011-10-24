@@ -60,14 +60,27 @@
                 $arrTranslatedColumn[9] = 'ro';
 
                 $objNarroContextInfo = $this->GetContextInfo($strText, $strContext);
+                if (!$objContextInfo) {
+                    // NarroLogger::LogDebug('No context info found, trying database');
+                    $objContextInfo = NarroContextInfo::QueryArray(
+                        QQ::AndCondition(
+                            QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
+                            QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId),
+                            QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strText)),
+                            QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5($strContext))
+                        )
+                    );
+                }
 
                 /**
                  * the original texts are used if no suggestion is found, so we export only approved texts
                  */
                 if ($objNarroContextInfo instanceof NarroContextInfo)
                     $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
-                else
+                else  {
+                    // NarroLogger::LogDebug('No context info found, skipping');
                     continue;
+                }
 
                 if (!isset($strSuggestionValue) || !$strSuggestionValue)
                     continue;
@@ -84,21 +97,6 @@
                         $strSuggestionValue = $strTextAccKeyPrefix . $strSuggestionValue;
                 }
 
-
-                $arrResult = QApplication::$PluginHandler->ExportSuggestion($strText, $strSuggestionValue, $strContext, new NarroFile(), $this->objProject);
-                if
-                (
-                    $arrResult[1] != '' &&
-                    $arrResult[0] == $strText &&
-                    $arrResult[2] == $strContext &&
-                    $arrResult[3] == new NarroFile() &&
-                    $arrResult[4] == $this->objProject
-                ) {
-
-                    $strSuggestionValue = $arrResult[1];
-                }
-                else
-                    NarroLogger::LogWarn(sprintf('The plugin "%s" returned an unexpected result while processing the suggestion "%s": %s', QApplication::$PluginHandler->CurrentPluginName, $strSuggestionValue, print_r($arrResult, true)));
 
                 $arrTranslatedColumn[10] = str_replace(array("\n", "\r"), array("",""), $strSuggestionValue);
 
@@ -117,7 +115,10 @@
             }
 
             fclose($hndTranslatedFile);
-            chmod($strTranslatedFile, 0666);
+            if (filesize($strTranslatedFile) == 0)
+                unlink($strTranslatedFile);
+            else
+                chmod($strTranslatedFile, 0666);
         }
 
         public function ImportFile($strTemplateFile, $strTranslatedFile = null) {
