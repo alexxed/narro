@@ -151,11 +151,11 @@
                     $tu = $body->addChild('tu');
                     $tu->addAttribute('tuid', $objText->TextId);
                     $tu->addAttribute('datatype', 'Text');
-                    $tu->addAttribute('usagecount', $objText->CountNarroContextsAsText());
-                    $objLastContext = NarroContext::QuerySingle(QQ::Equal(QQN::NarroContext()->TextId, $objText->TextId), array(QQ::OrderBy(QQN::NarroContext()->Created, 0)));
+                    // $tu->addAttribute('usagecount', $objText->CountNarroContextsAsText());
+                    // $objLastContext = NarroContext::QuerySingle(QQ::Equal(QQN::NarroContext()->TextId, $objText->TextId), array(QQ::OrderBy(QQN::NarroContext()->Created, 0)));
                     
-                    if ($objLastContext && $objLastContext->Created instanceof QDateTime)
-                        $tu->addAttribute('lastusagedate', $objLastContext->Created->qFormat('YYYYMMDDThhmmssZ'));
+                    // if ($objLastContext && $objLastContext->Created instanceof QDateTime)
+                        // $tu->addAttribute('lastusagedate', $objLastContext->Created->qFormat('YYYYMMDDThhmmssZ'));
             
                     $tuv = $tu->addChild('tuv');
                     $tuv->addAttribute('xml:lang', NarroLanguage::SOURCE_LANGUAGE_CODE);
@@ -186,12 +186,12 @@
                     if ($objSuggestion->User instanceof NarroUser)
                         $tuv->addAttribute('creationid', $objSuggestion->User->RealName);
             
-                    $tuv->addAttribute('usagecount', $objSuggestion->CountNarroContextInfosAsValidSuggestion());
+                    // $tuv->addAttribute('usagecount', $objSuggestion->CountNarroContextInfosAsValidSuggestion());
                     
-                    $objLastContextInfo = NarroContextInfo::QuerySingle(QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, $objSuggestion->SuggestionId), array(QQ::OrderBy(QQN::NarroContextInfo()->Created, 0)));
+                    // $objLastContextInfo = NarroContextInfo::QuerySingle(QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, $objSuggestion->SuggestionId), array(QQ::OrderBy(QQN::NarroContextInfo()->Created, 0)));
                     
-                    if ($objLastContextInfo && $objLastContextInfo->Created instanceof QDateTime)
-                        $tuv->addAttribute('lastusagedate', $objLastContextInfo->Created->qFormat('YYYYMMDDThhmmssZ'));
+                    // if ($objLastContextInfo && $objLastContextInfo->Created instanceof QDateTime)
+                        // $tuv->addAttribute('lastusagedate', $objLastContextInfo->Created->qFormat('YYYYMMDDThhmmssZ'));
                 }
             }
             
