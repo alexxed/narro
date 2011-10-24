@@ -553,18 +553,22 @@
          */
         public function GetMostVotedSuggestion($intContextId, $intTextId, $intUserId) {
             $strQuery = sprintf(
-                'SELECT suggestion_id, SUM(vote_value) as votes ' .
-                'FROM narro_suggestion_vote, narro_context_info ' .
-                'WHERE narro_context_info.context_id=narro_suggestion_vote.context_id AND narro_context_info.language_id=%d AND narro_suggestion_vote.context_id=%d ' .
-                'GROUP BY suggestion_id ' .
-                'ORDER BY votes DESC ' .
-                'LIMIT 1',
-                $this->objTargetLanguage->LanguageId,
-                $intContextId
+                'SELECT
+                	narro_suggestion_vote.suggestion_id, SUM(vote_value) as votes
+                FROM
+                	narro_suggestion_vote, narro_suggestion
+                WHERE
+                	narro_suggestion_vote.suggestion_id=narro_suggestion.suggestion_id AND
+                	narro_suggestion.text_id=%d AND
+                	narro_suggestion.language_id=%d
+                GROUP BY narro_suggestion_vote.suggestion_id
+                ORDER BY votes DESC
+                LIMIT 1',
+                $intTextId,
+                $this->objTargetLanguage->LanguageId
             );
-            $objDatabase = QApplication::$Database[1];
 
-            if (!$objDbResult = $objDatabase->Query($strQuery)) {
+            if (!$objDbResult = NarroSuggestion::GetDatabase()->Query($strQuery)) {
                 NarroLogger::LogError('db_query failed. $strQuery=' . $strQuery);
                 return false;
             }
@@ -634,7 +638,7 @@
                  * If there is no approved suggestion, export the most voted one (minimum 1 vote required)
                  */
                 case 2:
-                    $objSuggestion = $this->GetMostVotedSuggestion($objContextInfo->ContextId);
+                    $objSuggestion = $this->GetMostVotedSuggestion($objContextInfo->ContextId, $objContextInfo->Context->TextId, $this->objUser->UserId);
                     if ($objSuggestion instanceof NarroSuggestion) {
                         // NarroLogger::LogDebug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
@@ -646,7 +650,7 @@
                  * If there is no approved suggestion, export the most recent one added
                  */
                 case 3:
-                    $objSuggestion = $this->GetMostRecentSuggestion($objContextInfo->Context->TextId);
+                    $objSuggestion = $this->GetMostRecentSuggestion($objContextInfo->ContextId, $objContextInfo->Context->TextId, $this->objUser->UserId);
                     if ($objSuggestion instanceof NarroSuggestion) {
                         // NarroLogger::LogDebug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
@@ -659,18 +663,19 @@
                  * If there is no voted suggestion, export the most recent one
                  */
                 case 4:
-                    $objSuggestion = $this->GetMostVotedSuggestion($objContextInfo->ContextId);
+                    $objSuggestion = $this->GetMostVotedSuggestion($objContextInfo->ContextId, $objContextInfo->Context->TextId, $this->objUser->UserId);
                     if ($objSuggestion instanceof NarroSuggestion) {
                         // NarroLogger::LogDebug(sprintf('Exporting most voted suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                         return $objSuggestion->SuggestionValue;
                     }
                     else {
-                        $objSuggestion = $this->GetMostRecentSuggestion($objContextInfo->Context->TextId);
+                        $objSuggestion = $this->GetMostRecentSuggestion($objContextInfo->ContextId, $objContextInfo->Context->TextId, $this->objUser->UserId);
                         if ($objSuggestion instanceof NarroSuggestion) {
                             // NarroLogger::LogDebug(sprintf('Exporting most recent suggestion "%s" for "%s"', $objSuggestion->SuggestionValue, $objContextInfo->Context->Text->TextValue));
                             return $objSuggestion->SuggestionValue;
                         }
                         else {
+                            // NarroLogger::LogDebug(sprintf('No suggestion found for "%s"', $objContextInfo->Context->Text->TextValue));
                             return false;
                         }
                     }
