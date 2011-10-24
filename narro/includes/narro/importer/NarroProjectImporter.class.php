@@ -527,7 +527,8 @@
 
             $blnFileImportResult = $objFileImporter->ImportFile($strTemplateFile, $strTranslatedFile);
 
-            $objFileImporter->MarkUnusedContextsAsInactive();
+            if ($this->blnOnlySuggestions == false)
+                $objFileImporter->MarkUnusedContextsAsInactive();
 
             QApplication::$PluginHandler->AfterImportFile($objFile);
 
