@@ -562,8 +562,10 @@
 
                 // Return the Form
                 return $objForm;
-            } else
+            } else {
+                NarroLogger::LogError(sprintf('Loading the form state %s through %s::Load() returned an empty result', $strPostDataState, QForm::$FormStateHandler));
                 return null;
+            }
         }
 
         public function AddControl(QControl $objControl) {

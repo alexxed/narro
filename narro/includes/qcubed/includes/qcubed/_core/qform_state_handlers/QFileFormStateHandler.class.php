@@ -173,23 +173,35 @@
 				// Uncompress (if available)
 				if (__COMPRESS_FORM_STATES__ && function_exists('gzopen')) {
 					$gz = gzopen($strFilePath, "r");
-                    $contents = gzread($gz, 1000);
-                    while ($contents) {
-                        $strSerializedForm .= $contents;
-                        $contents = gzread($gz, 1000);
+					$strSerializedForm = '';
+                    while (!gzeof($gz)) {
+                        $strSerializedForm .= gzread($gz, 1000);
+                    }
+                    if ($strSerializedForm == '') {
+                        NarroLogger::LogError(sprintf('gzread found an empty file while reading the form state %s from %s', $strPostDataState, $strFilePath));
                     }
                     
                     gzclose($gz);
 				}
-				else
+				else {
 				    $strSerializedForm = file_get_contents($strFilePath);
+				    if ($strSerializedForm == '') {
+				        NarroLogger::LogError(sprintf('Found an empty file while reading the form state %s from %s', $strPostDataState, $strFilePath));
+				    }
+				}
 				
-				if (__ENCODE_FORM_STATES__)
+				if (__ENCODE_FORM_STATES__) {
 				    $strSerializedForm = base64_decode($strSerializedForm);
+				    if ($strSerializedForm == false) {
+				        NarroLogger::LogError(sprintf('base64_decode failed on the form state %s', $strPostDataState));
+				    }
+				}
 
 				return $strSerializedForm;
-			} else
+			} else {
+			    NarroLogger::LogError(sprintf('Tried to load the form state %s but the file %s does not exist on the disk', $strPostDataState, $strFilePath));
 				return null;
+			}
 		}
 	}
 	
