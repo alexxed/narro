@@ -18,7 +18,7 @@
     class NarroSession {
         public function __construct() {
             session_name('narro');
-            session_set_cookie_params(86400, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__, null, null, true);
+            session_set_cookie_params(86400, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
             session_cache_expire(86400);
             session_start();
             global $_SESSION;
