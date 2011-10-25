@@ -96,7 +96,9 @@
                     $objNarroImporter->CheckEqual = !(bool) array_search('--do-not-check-equal', $argv);
                     $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
                     $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
-                    $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv) || $intLangIdx > 0;
+                    $objNarroImporter->OnlySuggestions = fasle;
+                    // @todo fixme
+                    // (bool) array_search('--only-suggestions', $argv) || $intLangIdx > 0;
                     $objNarroImporter->ImportUnchangedFiles = (bool) array_search('--import-unchanged-files', $argv);
                     NarroPluginHandler::$blnEnablePlugins = !(bool) array_search('--disable-plugins', $argv);
     
