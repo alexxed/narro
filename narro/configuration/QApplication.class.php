@@ -190,7 +190,7 @@
         public static function InitializeUser() {
             global $argv;
             if (QApplication::$Session->UserId) {
-                QApplication::$User = NarroUser::Load(QApplication::$Session->UserId);
+                QApplication::$User = NarroUser::LoadByUserId(QApplication::$Session->UserId);
             }
             elseif (is_array($argv) && array_search('--user', $argv) !== false) {
                 QApplication::$User = NarroUser::LoadByUserId((int) $argv[array_search('--user', $argv)+1]);
