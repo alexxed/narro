@@ -34,11 +34,14 @@
             sprintf(
                 t('Translating in %s as %s'),
                 (($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name),
-                sprintf(' <b>%s</b> ',
-                    NarroLink::UserProfile(QApplication::$User->UserId, ((QApplication::$User->RealName)?QApplication::$User->RealName:QApplication::$User->RealName))
+                sprintf(' <a title="%s" href="%s"><b>%s</b></a> ',
+                    t('Profile'),
+                    NarroLink::UserProfile(QApplication::$User->UserId),
+                    ((QApplication::$User->RealName)?QApplication::$User->RealName:QApplication::$User->RealName)
                 ) .
                 sprintf(
-                	'<a href="%s" style="vertical-align:middle"><img src="%s/settings.png" /></a>',
+                	'<a title="%s" href="%s" style="vertical-align:middle"><img src="%s/settings.png" /></a>',
+                	t('Preferences'),
                     NarroLink::UserPreferences(QApplication::GetUserId()),
                     __NARRO_IMAGE_ASSETS__
                 ) . ' ' .
