@@ -21,7 +21,7 @@
     if (QApplication::GetUserId() == NarroUser::ANONYMOUS_USER_ID) {
         echo
             sprintf(
-                t('Viewing translations in: %s'),
+                t('Translating in %s'),
                 ($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name
             ) .
             sprintf(
@@ -32,10 +32,17 @@
     } else {
         echo
             sprintf(
-                t('Logged in as <b>%s</b>, translating in %s'),
-                NarroLink::UserPreferences(QApplication::GetUserId(), (QApplication::$User->RealName)?QApplication::$User->RealName:QApplication::$User->RealName),
-                ($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name
-            ) .
-            '&nbsp;<a href="logout.php?l=' . QApplication::$TargetLanguage->LanguageCode . '" style="vertical-align:middle"><img src="assets/images/logout.png" alt="' . t('Logout') . '" border="0" title="' . t('Logout') . '" /></a>';
+                t('Translating in %s as %s'),
+                (($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name),
+                sprintf(' <b>%s</b> ',
+                    NarroLink::UserProfile(QApplication::$User->UserId, ((QApplication::$User->RealName)?QApplication::$User->RealName:QApplication::$User->RealName))
+                ) .
+                sprintf(
+                	'<a href="%s" style="vertical-align:middle"><img src="%s/settings.png" /></a>',
+                    NarroLink::UserPreferences(QApplication::GetUserId()),
+                    __NARRO_IMAGE_ASSETS__
+                ) . ' ' .
+                '<a href="logout.php?l=' . QApplication::$TargetLanguage->LanguageCode . '" style="vertical-align:middle"><img src="assets/images/logout.png" alt="' . t('Logout') . '" border="0" title="' . t('Logout') . '" /></a>'
+            );
     }
 ?>
