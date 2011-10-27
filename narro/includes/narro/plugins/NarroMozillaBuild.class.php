@@ -198,7 +198,7 @@
                 sprintf("ac_add_options --enable-application=%s\n", $this->strApplicationType) .
                 "ac_add_options --disable-libjpeg-turbo\n" .
                 "ac_add_options --disable-necko-wifi\n" .
-                (in_array($this->strApplicationType, array('mail', 'suite', 'calendar')))?"ac_add_options --enable-chrome-format=both\n":'' .
+                ((in_array($this->strApplicationType, array('mail', 'suite', 'calendar')))?"ac_add_options --enable-chrome-format=both\n":'') .
                 "ac_add_options --disable-webm\n" .
                 sprintf("mk_add_options AUTOCONF=%s\n", $strAutoConf) .
                 sprintf("ac_cv_path_PYTHON=/usr/bin/%s", (file_exists('/usr/bin/python2.6')?'python2.6':'python'))
