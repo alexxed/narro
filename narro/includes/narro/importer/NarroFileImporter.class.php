@@ -278,7 +278,6 @@
                 NarroImportStatistics::$arrStatistics['Reused contexts']++;
             }
             else {
-                $this->arrContextId[$objContext->ContextId] = $objContext->ContextId;
                 NarroLogger::LogWarn(sprintf('Cannot add the context for text "%s" from the file "%s" because the importer is running with the option to import only suggestions.', $objText->TextValue, $this->objFile->FilePath));
                 return false;
             }
