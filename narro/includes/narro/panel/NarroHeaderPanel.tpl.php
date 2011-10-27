@@ -25,7 +25,7 @@
                 ($_CONTROL->lstLanguage->ItemCount>1)?$_CONTROL->lstLanguage->Render(false):$_CONTROL->lstLanguage->GetItem(0)->Name
             ) .
             sprintf(
-                ', <a href="%s">' . t('login or register to contribute') . '</a>',
+                ', <a href="%s">' . t('sign in') . '</a>',
                 'login.php?l=' . QApplication::$TargetLanguage->LanguageCode
             );
 
