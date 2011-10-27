@@ -58,6 +58,26 @@
 
     $arrConData = unserialize(DB_CONNECTION_1);
 
+    if (session_id())
+        session_destroy();
+    
+    $blnResult = session_start();
+    $blnResultRestore = false;
+    if ($blnResult) {
+        $_SESSION['test'] = 1;
+        session_write_close();
+        unset($_SESSION);
+        $blnResultRestore = session_start();
+        if ($blnResultRestore) {
+            $blnResultRestore = $blnResultRestore && isset($_SESSION['test']);
+            session_destroy();
+        }
+    }
+
+    check_boolean('a session can be started', 'The session_start() function is returning false. Check the php.ini file to see if the session is set to start automatically or if /var/lib/php/session is writable', $blnResult);
+    check_boolean('a session can be restored', 'The session_start() function is returning false. Check the php.ini file to see if the session is set to start automatically or if /var/lib/php/session is writable', $blnResultRestore);
+    
+
     $link = mysql_connect($arrConData['server'].(($arrConData['port'])?':' . $arrConData['port']:''), $arrConData['username'], $arrConData['password']);
     check_boolean('Database server connection', sprintf('Unable to connect to the database. Please check database settings in file "%s"', __CONFIGURATION__. '/configuration.narro.inc.php'), $link);
     check_boolean('Database selection', sprintf('Unable to select the database. Please check database settings in file "%s"', __CONFIGURATION__ . '/configuration.narro.inc.php'), mysql_select_db($arrConData['database'], $link));
@@ -71,5 +91,4 @@
     
     check_boolean('locale directory writable', sprintf('Please give write permissions for everyone (chmod 777) to the directory "%s"', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/'), is_writable(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/'));
     
-    check_boolean('form states are properly restored', sprintf('This version of Narro needs the %s php extension, please install php-%s or php5-%s', $strExtensionName, $strExtensionName, $strExtensionName), extension_loaded($strExtensionName));
     

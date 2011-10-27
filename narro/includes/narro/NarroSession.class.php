@@ -20,7 +20,10 @@
             session_name('narro');
             session_set_cookie_params(86400, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
             session_cache_expire(86400);
-            session_start();
+            $blnResult = session_start();
+            if (!$blnResult)
+                throw new Exception('Failed to start a session');
+            
             global $_SESSION;
         }
         public function __get($strName) {
