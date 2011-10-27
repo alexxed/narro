@@ -484,9 +484,12 @@
                         $this->dtgTranslation->MarkAsModified();
                 }
                 
-                if ($this->ParentControl->ParentControl->chkApprove->Checked == true)
+                if ($this->ParentControl->ParentControl->chkApprove->Checked == true) {
                     $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
+                }
                 else {
+                    if ($this->ParentControl->ParentControl->chkRefresh->Checked)
+                        $this->ParentControl->ParentControl->btnSearch_Click();
                     foreach($this->Form->GetAllControls() as $ctl) {
                         if ($ctl instanceof NarroContextInfoEditor) {
                             if ($ctl->Text->Text == $this->lblText->Text) {
@@ -569,6 +572,9 @@
 
                 if ($this->dtgTranslation)
                     $this->dtgTranslation->MarkAsModified();
+                
+                if ($this->ParentControl->ParentControl->chkRefresh->Checked)
+                    $this->ParentControl->ParentControl->btnSearch_Click();
             }
         }
 

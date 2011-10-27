@@ -34,11 +34,11 @@
         public $lstSort;
         public $lstSortDir;
         public $btnSearch;
-        public $btnAdvancedSearch;
         public $chkLast;
         public $chkRequestMoreSent;
 
         public $chkApprove;
+        public $chkRefresh;
 
         public $intTotalItemCount = 0;
         public $blnNewEditorCreated = true;
@@ -86,8 +86,6 @@
             $this->btnMore->Text = t('More');
             $this->btnMore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMore_Click', $this->objWaitIcon));
             
-            $this->btnAdvancedSearch_Create();
-
             $this->lstProject_Create();
 
             $this->txtFile_Create();
@@ -106,6 +104,7 @@
 
             $this->btnLess_Create();
 
+            $this->chkRefresh_Create();
             $this->chkApprove_Create();
 
             $this->btnMore->DisplayStyle = QDisplayStyle::Block;
@@ -115,8 +114,7 @@
         
         protected function txtFile_Create() {
             $this->txtFile = new QTextBox($this, 'filename');
-            $this->txtFile->Name = t('File');
-            $this->txtFile->Display = false;
+            $this->txtFile->Text = t('all files');
             $this->txtFile->RenderWithNameCssClass = 'inline_block';
             if (QApplication::QueryString('f'))
                 $this->txtFile->Text = QApplication::QueryString('f');
@@ -128,20 +126,23 @@
             $this->chkApprove->Checked = true;
             $this->chkApprove->Display = QApplication::HasPermissionForThisLang('Can approve');
         }
+        
+        public function chkRefresh_Create() {
+            $this->chkRefresh = new QCheckBox($this);
+            $this->chkRefresh->Name = t('Refresh after saving');
+            $this->chkRefresh->Checked = false;
+        }
 
         public function txtSearch_Create() {
             $this->txtSearch = new QTextBox($this, 'search');
             $this->txtSearch->RenderWithNameCssClass = 'inline_block';
-            $this->txtSearch->Name = t('Search for');
             if (QApplication::QueryString('s'))
                 $this->txtSearch->Text = QApplication::QueryString('s');
         }
 
         public function lstProject_Create() {
             $this->lstProject = new QListBox($this);
-            $this->lstProject->AddItem(t('All'));
-            $this->lstProject->Name = t('Project');
-            $this->lstProject->Display = false;
+            $this->lstProject->AddItem(t('all projects'));
             $this->lstProject->RenderWithNameCssClass = 'inline_block';
             foreach(NarroProject::LoadArrayByActive(1, array(QQ::OrderBy(QQN::NarroProject()->ProjectName))) as $objProject)
                 $this->lstProject->AddItem($objProject->ProjectName, $objProject->ProjectId);
@@ -158,27 +159,24 @@
             $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
         }
         
-        public function btnAdvancedSearch_Create() {
-            $this->btnAdvancedSearch = new QButton($this);
-            $this->btnAdvancedSearch->RenderWithNameCssClass = 'inline_block';
-            $this->btnAdvancedSearch->PrimaryButton = true;
-            $this->btnAdvancedSearch->Text = t('Advanced Search');
-            $this->btnAdvancedSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnAdvancedSearch_Click'));
-        }
-
         public function dtrText_Create() {
             $this->dtrText = new QDataRepeater($this);
             $this->dtrText->Template = dirname(__FILE__) . '/NarroTranslatePanel_DataRepeater.tpl.php';
             $this->dtrText->SetDataBinder('dtrText_Bind', $this);
+            $this->dtrText->Paginator = new QPaginator($this);
+            $this->dtrText->Paginator->SetCustomStyle('float', 'right');
+            $this->dtrText->UseAjax = true;
+            $this->dtrText->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
+            
+            // Let's create a second paginator
+            $this->dtrText->PaginatorAlternate = new QPaginator($this);
         }
 
         public function lstSortDir_Create() {
             $this->lstSortDir = new QListBox($this);
-            $this->lstSortDir->Display = false;
-            $this->lstSortDir->Name = t('Sort order');
             $this->lstSortDir->RenderWithNameCssClass = 'inline_block';
-            $this->lstSortDir->AddItem(t('Ascending'), 1, true);
-            $this->lstSortDir->AddItem(t('Descending'), 0);
+            $this->lstSortDir->AddItem(t('ascending'), 1, true);
+            $this->lstSortDir->AddItem(t('descending'), 0);
             $this->lstSortDir->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
             if (QApplication::QueryString('h'))
                 $this->lstSortDir->SelectedValue = QApplication::QueryString('h');
@@ -188,12 +186,12 @@
             $this->lstFilter = new QListBox($this);
             $this->lstFilter->RenderWithNameCssClass = 'inline_block';
             $this->lstFilter->Name = t('Show');
-            $this->lstFilter->AddItem(t('All'), self::SHOW_ALL);
-            $this->lstFilter->AddItem(t('Not translated yet'), self::SHOW_NOT_TRANSLATED, true);
-            $this->lstFilter->AddItem(t('Translated, but not approved'), self::SHOW_NOT_APPROVED);
-            $this->lstFilter->AddItem(t('Translated or approved'), self::SHOW_APPROVED_AND_NOT_APPROVED);
-            $this->lstFilter->AddItem(t('Not translated or not approved'), self::SHOW_NOT_APPROVED_AND_NOT_TRANSLATED);
-            $this->lstFilter->AddItem(t('Approved'), self::SHOW_APPROVED);
+            $this->lstFilter->AddItem(t('translated or untranslated texts'), self::SHOW_ALL);
+            $this->lstFilter->AddItem(t('untranslated texts'), self::SHOW_NOT_TRANSLATED, true);
+            $this->lstFilter->AddItem(t('unapproved texts'), self::SHOW_NOT_APPROVED);
+            $this->lstFilter->AddItem(t('translated or approved texts'), self::SHOW_APPROVED_AND_NOT_APPROVED);
+            $this->lstFilter->AddItem(t('untranslated or unapproved texts'), self::SHOW_NOT_APPROVED_AND_NOT_TRANSLATED);
+            $this->lstFilter->AddItem(t('approved texts'), self::SHOW_APPROVED);
             $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
             if (QApplication::QueryString('t'))
                 $this->lstFilter->SelectedValue = QApplication::QueryString('t');
@@ -201,13 +199,11 @@
 
         public function lstSort_Create() {
             $this->lstSort = new QListBox($this);
-            $this->lstSort->Display = false;
             $this->lstSort->RenderWithNameCssClass = 'inline_block';
-            $this->lstSort->Name = t('Sort by');
-            $this->lstSort->AddItem(t('-- unsorted --'));
-            $this->lstSort->AddItem(t('Original text'), self::SORT_TEXT);
-            $this->lstSort->AddItem(t('Translation'), self::SORT_TRANSLATION);
-            $this->lstSort->AddItem(t('Words in the original text'), self::SORT_TEXT_LENGTH);
+            $this->lstSort->AddItem(t('sorted by age'));
+            $this->lstSort->AddItem(t('sorted by texts'), self::SORT_TEXT);
+            $this->lstSort->AddItem(t('sorted by translations'), self::SORT_TRANSLATION);
+            $this->lstSort->AddItem(t('sorted by text length'), self::SORT_TEXT_LENGTH);
             $this->lstSort->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
             if (QApplication::QueryString('o'))
                 $this->lstSort->SelectedValue = QApplication::QueryString('o');
@@ -215,14 +211,13 @@
 
         public function lstSearchIn_Create() {
             $this->lstSearchIn = new QListBox($this);
-            $this->lstSearchIn->Display = false;
-            $this->lstSearchIn->Name = t('Search in');
+            $this->lstSearchIn->Name = t('Search');
             $this->lstSearchIn->RenderWithNameCssClass = 'inline_block';
-            $this->lstSearchIn->AddItem(t('Texts'), self::SEARCH_IN_TEXTS);
-            $this->lstSearchIn->AddItem(t('Translations'), self::SEARCH_IN_TRANSLATIONS);
-            $this->lstSearchIn->AddItem(t('Contexts'), self::SEARCH_IN_CONTEXTS);
-            $this->lstSearchIn->AddItem(t('Authors'), self::SEARCH_IN_AUTHORS);
-            $this->lstSearchIn->AddItem(t('All'), self::SEARCH_IN_ALL);
+            $this->lstSearchIn->AddItem(t('texts'), self::SEARCH_IN_TEXTS);
+            $this->lstSearchIn->AddItem(t('translations'), self::SEARCH_IN_TRANSLATIONS);
+            $this->lstSearchIn->AddItem(t('contexts'), self::SEARCH_IN_CONTEXTS);
+            $this->lstSearchIn->AddItem(t('authors'), self::SEARCH_IN_AUTHORS);
+            $this->lstSearchIn->AddItem(t('everywhere'), self::SEARCH_IN_ALL);
             $this->lstSearchIn->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
             if (QApplication::QueryString('in'))
                 $this->lstSearchIn->SelectedValue = QApplication::QueryString('in');
@@ -237,19 +232,6 @@
             $this->btnLess->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnLess_Click', $this->objWaitIcon));
         }
         
-        public function btnAdvancedSearch_Click($strFormId = null, $strControlId = null, $strParameter = null) {
-            $this->lstProject->Display = ($this->btnAdvancedSearch->Text == t('Advanced Search'));
-            $this->txtFile->Display = $this->lstProject->Display;
-            $this->lstSearchIn->Display = $this->lstProject->Display;
-            $this->lstSort->Display = $this->lstProject->Display;
-            $this->lstSortDir->Display = $this->lstProject->Display;
-            
-            if ($this->btnAdvancedSearch->Text == t('Advanced Search'))
-                $this->btnAdvancedSearch->Text = t('Simple Search');
-            else
-                $this->btnAdvancedSearch->Text = t('Advanced Search');
-        }
-
         public function btnLess_Click($strFormId = null, $strControlId = null, $strParameter = null) {
             $this->intStart = max (0, $this->intStart -= 10);
             $this->dtrText_Conditions(false);
@@ -257,6 +239,7 @@
         }
 
         public function btnMore_Click($strFormId = null, $strControlId = null, $strParameter = null) {
+            $this->dtrText->ItemsPerPage += $this->dtrText->ItemsPerPage;
             $this->dtrText_Conditions(false);
             $this->dtrText_Bind(null, null, null, false);
         }
@@ -291,7 +274,6 @@
                 $this->intMaxRowCount = 0;
 
             $this->arrClauses = array(
-                QQ::LimitInfo($this->intMaxRowCount+=10, $this->intStart),
                 QQ::Expand(QQN::NarroContextInfo()->Context),
                 QQ::Expand(QQN::NarroContextInfo()->Context->Text),
                 QQ::Expand(QQN::NarroContextInfo()->Context->File),
@@ -332,7 +314,7 @@
 
             }
 
-            if ($this->txtFile->Text)
+            if ($this->txtFile->Text != t('all files') && $this->txtFile->Text != '')
                 if (preg_match("/^'.*'$/", $this->txtFile->Text))
                     $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->Context->File->FilePath, substr($this->txtFile->Text, 1, -1));
                 else
@@ -398,18 +380,22 @@
         public function dtrText_Bind($strFormId = null, $strControlId = null, $strParameter = null, $blnReset = false) {
             if ($blnReset) $this->dtrText->RemoveChildControls(true);
             
+            $arrClausesWithLimit = $this->arrClauses;
+            $arrClausesWithLimit[] = $this->dtrText->LimitClause;
+            
             $this->dtrText->DataSource = NarroContextInfo::QueryArray(
                 QQ::AndCondition($this->arrConditions),
-                $this->arrClauses
+                $arrClausesWithLimit
             );
             
-            $arrClausesNoLimit = array_slice($this->arrClauses, 1);
-            
-            if ($this->lstProject->SelectedValue)
+            if ($this->lstProject->SelectedValue) {
                 $this->intTotalItemCount = NarroContextInfo::QueryCount(
                     QQ::AndCondition($this->arrConditions),
-                    $arrClausesNoLimit
+                    $this->arrClauses
                 );
+                
+                $this->dtrText->TotalItemCount = $this->intTotalItemCount;
+            }
             else
                 $this->intTotalItemCount = 0;
             

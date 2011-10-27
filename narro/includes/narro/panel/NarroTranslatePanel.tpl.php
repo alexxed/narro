@@ -142,18 +142,35 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
 <p>
 <?php _t("To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text.");?>
 </p>
+<div class="section_title"><?php _t('Options')?></div>
+<div class="section">
 <?php
-    $_CONTROL->lstProject->RenderWithName();
-    $_CONTROL->txtFile->RenderWithName();
-    $_CONTROL->lstFilter->RenderWithName();
+    $_CONTROL->chkRefresh->RenderWithName();
+    $_CONTROL->chkApprove->RenderWithName();
+?>
+</div>
+<div class="section_title">Search</div>
+<div class="section">
+<?php
     $_CONTROL->lstSearchIn->RenderWithName();
     $_CONTROL->txtSearch->RenderWithName();
+    $_CONTROL->btnSearch->Render();
+?>
+</div>
+<div class="section_title">Results</div>
+<div class="section">
+<?php
+    
+    $_CONTROL->lstProject->RenderWithName();
+    $_CONTROL->txtFile->Render();
+    $_CONTROL->lstFilter->Render();
     $_CONTROL->lstSort->RenderWithName();
     $_CONTROL->lstSortDir->RenderWithName();
-    $_CONTROL->btnSearch->Render();
-    $_CONTROL->btnAdvancedSearch->Render();
-    $_CONTROL->chkApprove->RenderWithName();
     $_CONTROL->btnLess->Render();
+    if ($_CONTROL->lstProject->SelectedValue) $_CONTROL->dtrText->Paginator->Render();
+?>
+</div>
+<?php
     $_CONTROL->dtrText->Render();
     $_CONTROL->objWaitIcon->Render();
     $_CONTROL->btnMore->Render();
@@ -162,7 +179,8 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
      QApplication::ExecuteJavaScript(
          sprintf(
 "jQuery(window).scroll(function(){
-        if  (jQuery(window).scrollTop() == (jQuery(document).height() - jQuery(window).height() - 1) && jQuery('#endReached').attr('checked') == false && jQuery('#requestMoreSent').attr('checked') == false) {
+        if  (jQuery(window).scrollTop() == (jQuery(document).height() - jQuery(window).height()) && jQuery('#endReached').attr('checked') == false && jQuery('#requestMoreSent').attr('checked') == false) {
+        
         	jQuery('#requestMoreSent').attr('checked', true);
             qc.pA('%s', '%s', 'QClickEvent', '', '%s');
         }
