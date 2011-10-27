@@ -204,42 +204,65 @@
                 sprintf("ac_cv_path_PYTHON=/usr/bin/%s", (file_exists('/usr/bin/python2.6')?'python2.6':'python'))
             );
             
-            exec('hg pull -u', $arrOutput, $retVal);
-            foreach($arrOutput as $strOutput)
-            NarroLogger::LogInfo($strOutput);
-            
-            if ($retVal != 0) {
-                NarroLogger::LogError(sprintf('hg pull -u failed: %d', $retVal));
+            if (!
+                NarroUtils::Exec(
+                    sprintf('hg pull -u %s', $this->strRepoUrl),
+                    $arrOutput,
+                    $arrError,
+                    $intRetVal,
+                    false,
+                    array(),
+                    $this->strHgDir,
+                    true
+                )
+            )
                 return false;
-            }
             
-            exec('hg update -C', $arrOutput, $retVal);
-            foreach($arrOutput as $strOutput)
-            NarroLogger::LogInfo($strOutput);
-            
-            if ($retVal != 0) {
-                NarroLogger::LogError(sprintf('hg update -C failed: %d', $retVal));
+
+            if (!
+                NarroUtils::Exec(
+                    'hg update -C',
+                    $arrOutput,
+                    $arrError,
+                    $intRetVal,
+                    false,
+                    array(),
+                    $this->strHgDir,
+                    true
+                )
+            )
                 return false;
-            }
             
             if (in_array($this->strApplicationType, array('suite', 'calendar', 'mail'))) {
-                exec(sprintf('/usr/bin/%s client.py checkout', (file_exists('/usr/bin/python2.6')?'python2.6':'python')), $arrOutput, $retVal);
-                if ($retVal != 0) {
-                    NarroLogger::LogError(sprintf('make -sf client.mk configure failed: %d', $retVal));
-                    foreach($arrOutput as $strOutput)
-                    NarroLogger::LogInfo($strOutput);
+                if (!
+                    NarroUtils::Exec(
+                        sprintf('/usr/bin/%s client.py checkout', (file_exists('/usr/bin/python2.6')?'python2.6':'python')),
+                        $arrOutput,
+                        $arrError,
+                        $intRetVal,
+                        false,
+                        array(),
+                        $this->strHgDir,
+                        true
+                    )
+                )
                     return false;
-                }
             }
             
-            exec('make -sf client.mk configure', $arrOutput, $retVal);
-            
-            if ($retVal != 0) {
-                NarroLogger::LogError(sprintf('make -sf client.mk configure failed: %d', $retVal));
-                foreach($arrOutput as $strOutput)
-                    NarroLogger::LogInfo($strOutput);
+            if (!
+                NarroUtils::Exec(
+                    'make -sf client.mk configure',
+                    $arrOutput,
+                    $arrError,
+                    $intRetVal,
+                    false,
+                    array(),
+                    $this->strHgDir,
+                    true
+                )
+            )
                 return false;
-            }
+
             
             switch($this->strApplicationType) {
                 case 'browser':
