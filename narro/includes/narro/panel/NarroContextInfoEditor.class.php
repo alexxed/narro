@@ -60,6 +60,7 @@
             $this->txtTranslation->Rows = 1;
             $this->txtTranslation->Width = '100%';
             $this->txtTranslation->DisplayStyle = QDisplayStyle::Block;
+            $this->txtTranslation->ToolTip = t('Enter your translation here');
 
             if ($this->objContextInfo->Context->TextAccessKey) {
                 $this->txtAccessKey = new QTextBox($this);
@@ -101,14 +102,7 @@
             $this->lblText->CssClass = 'originalText';
             $this->lblText->Text = $this->objContextInfo->Context->Text->TextValue;
 
-            $this->btnHelp = new QImageButton($this);
-            $this->btnHelp->AlternateText = t('Help');
-            $this->btnHelp->CssClass = 'imgbutton help';
-            $this->btnHelp->ToolTip = $this->btnHelp->AlternateText;
-            $this->btnHelp->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/help.png';
-            $this->btnHelp->TabIndex = -1;
-            $this->btnHelp->DisplayStyle = QDisplayStyle::None;
-            $this->btnHelp->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnHelp_Click'));
+            $this->btnHelp_Create();
             
             $this->btnSave = new QImageButton($this);
             $this->btnSave->AlternateText = t('Save');
@@ -161,12 +155,35 @@
             $this->strTemplate = dirname(__FILE__) . '/' . __CLASS__ . '.tpl.php';
         }
         
+        public function btnHelp_Create() {
+            $this->btnHelp = new QLinkButton($this);
+            $this->btnHelp->CssClass = 'help';
+            $this->btnHelp->ToolTip = $this->btnHelp->Text;
+            $this->btnHelp->TabIndex = -1;
+            $this->btnHelp->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnHelp_Click'));
+            $this->btnHelp_Update();
+        }
+        
+        public function btnHelp_Update() {
+            $intComments = $this->objContextInfo->Context->Text->CountNarroTextCommentsAsText();
+            $intTranslations = NarroSuggestion::CountByTextIdLanguageId($this->objContextInfo->Context->TextId, QApplication::GetLanguageId());
+            
+            if ($intComments == 0 && $intTranslations == 0)
+                $this->btnHelp->Text = sprintf(t('No translations, no comments'));
+            elseif ($intComments > 0 && $intTranslations == 0)
+                $this->btnHelp->Text = sprintf(t('No translations, %d comments'), $intComments);
+            elseif ($intComments == 0 && $intTranslations > 0)
+                $this->btnHelp->Text = sprintf(t('%d translations, no comments'), $intTranslations);
+            elseif ($intComments > 0 && $intTranslations > 0)
+                $this->btnHelp->Text = sprintf(t('%d translations, %d comments'), $intTranslations, $intComments);
+        }
+        
         public function btnKeepUntranslated_Create($strControlId = null) {
             if (QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId)) {
                 $this->btnKeepUntranslated = new QImageButton($this, $strControlId);
                 $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/approve.png';
                 $this->btnKeepUntranslated->AlternateText = t('Keep untranslated');
-                $this->btnKeepUntranslated->CssClass = 'keep_untranslated';
+                $this->btnKeepUntranslated->CssClass = 'imgbutton';
                 $this->btnKeepUntranslated->ToolTip = $this->btnKeepUntranslated->AlternateText;
                 $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                 $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKeepUntranslated_Click'));
@@ -176,7 +193,7 @@
                 $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/vote.png';
                 $this->btnKeepUntranslated->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
                 $this->btnKeepUntranslated->AlternateText = t('Keep untranslated');
-                $this->btnKeepUntranslated->CssClass = 'keep_untranslated';
+                $this->btnKeepUntranslated->CssClass = 'imgbutton';
                 $this->btnKeepUntranslated->ToolTip = $this->btnKeepUntranslated->AlternateText;
                 $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                 $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKeepUntranslated_Click'));
@@ -490,6 +507,9 @@
                 else {
                     if ($this->ParentControl->ParentControl->chkRefresh->Checked)
                         $this->ParentControl->ParentControl->btnSearch_Click();
+                    
+                    $this->btnHelp_Update();
+                    
                     foreach($this->Form->GetAllControls() as $ctl) {
                         if ($ctl instanceof NarroContextInfoEditor) {
                             if ($ctl->Text->Text == $this->lblText->Text) {
@@ -575,6 +595,8 @@
                 
                 if ($this->ParentControl->ParentControl->chkRefresh->Checked)
                     $this->ParentControl->ParentControl->btnSearch_Click();
+                
+                $this->btnHelp_Update();
             }
         }
 

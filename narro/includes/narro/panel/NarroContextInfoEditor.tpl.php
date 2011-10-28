@@ -18,8 +18,6 @@
 
 $_CONTROL->ChangedCheckbox->Render();
 $_CONTROL->Index->Render();
-if ($_CONTROL->KeepUntranslatedButton)
-    $_CONTROL->KeepUntranslatedButton->Render();
 $_CONTROL->Text->Render();
 $_CONTROL->Translation->RenderWithError();
 $_CONTROL->Message->Render();
@@ -32,9 +30,12 @@ if ($_CONTROL->AccessKey)
 if ($_CONTROL->CommandKey)
     $_CONTROL->CommandKey->RenderWithName();
 $_CONTROL->CopyButton->Render();
+if ($_CONTROL->KeepUntranslatedButton)
+    $_CONTROL->KeepUntranslatedButton->Render();
 $_CONTROL->SaveButton->Render();
 $_CONTROL->HelpButton->Render();
 if ($_CONTROL->TranslationList) {
+    printf('<div class="instructions">%s</div>', t('Other translations'));
     $_CONTROL->TranslationList->Render();
 }
 if ($_CONTROL->CommentList)

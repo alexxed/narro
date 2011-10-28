@@ -98,7 +98,20 @@
 .narro_context_info_editor .imgbutton {
     padding: 5px;
     cursor: pointer;
+    vertical-align: bottom;
 }
+
+.narro_context_info_editor .help {
+    vertical-align: super;
+    cursor: pointer;
+    font-size: 0.8em;
+    color: #6c871d;
+}
+
+.narro_context_info_editor .comment {
+
+}
+
 
 .narro_context_info_editor .approved {
     font-weight: bold;
@@ -123,7 +136,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
                 if (this.id != ctl && jQuery('#' + this.id + ' .error').length == 0) {
                     jQuery(this).removeClass("narro_context_info_editor_selected");
                     jQuery('#' + this.id + ' .ctxinfo').hide();
-                    jQuery('#' + this.id + ' .help').hide();
+                    //jQuery('#' + this.id + ' .help').hide();
                     jQuery('#' + this.id + ' .copy').hide();
                     jQuery('#' + this.id + ' .translation_box').attr("rows", "1");
                     jQuery('#' + this.id + ' .translation_box').attr("height", "auto");
@@ -131,7 +144,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
                 else {
                     jQuery(this).addClass("narro_context_info_editor_selected");
                     jQuery('#' + this.id + ' .ctxinfo').show();
-                    jQuery('#' + this.id + ' .help').show();
+                    //jQuery('#' + this.id + ' .help').show();
                     jQuery('#' + this.id + ' .copy').show();
                 }
             }

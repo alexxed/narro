@@ -55,9 +55,12 @@
             $this->txtComment->TextMode = QTextMode::MultiLine;
             $this->txtComment->PreferedRenderMethod = 'Render';
             $this->txtComment->Columns = 80;
+            $this->txtComment->ToolTip = t('Enter your comments here');
+            $this->txtComment->CssClass = 'comment';
+            $this->txtComment->DisplayStyle = QDisplayStyle::Block;
             
             $this->btnSave = new QImageButton($this);
-            $this->btnSave->AlternateText = t('Save');
+            $this->btnSave->AlternateText = t('Add comment');
             $this->btnSave->CssClass = 'imgbutton save';
             $this->btnSave->ToolTip = $this->btnSave->AlternateText;
             $this->btnSave->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/comment.png';
@@ -66,7 +69,7 @@
         
         public function colComment_Render(NarroTextComment $objComment) {
             return sprintf(
-            	'%s<br /><small>-- added by <a href="%s" tabindex="-1">%s</a> in %s, %s ago</small>',
+            	'%s<br /><small>-- <a href="%s" tabindex="-1">%s</a> in %s, %s ago</small>',
             	$objComment->CommentText,
             	NarroLink::UserProfile($objComment->UserId),
             	$objComment->User->RealName,
