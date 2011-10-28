@@ -189,8 +189,8 @@
 
         public static function InitializeUser() {
             global $argv;
-            if (QApplication::$Session->UserId) {
-                QApplication::$User = NarroUser::LoadByUserId(QApplication::$Session->UserId);
+            if (QApplication::$Session->User) {
+                QApplication::$User = QApplication::$Session->User;
             }
             elseif (is_array($argv) && array_search('--user', $argv) !== false) {
                 QApplication::$User = NarroUser::LoadByUserId((int) $argv[array_search('--user', $argv)+1]);
@@ -198,13 +198,12 @@
             
             if (!QApplication::$User instanceof NarroUser) {
                 QApplication::$User = NarroUser::LoadAnonymousUser();
+                QApplication::$Session->User = QApplication::$User;
             }
             
             if (!QApplication::$User instanceof NarroUser)
                 // @todo add handling here
                 throw new Exception('Could not create an instance of NarroUser');
-
-            define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$User->GetPreferenceValueByName('Application language'));
         }
         
         public static function GetProjectId() {
@@ -229,7 +228,13 @@
         public static function InitializeTranslationEngine() {
             require_once(__NARRO_INCLUDES__ . '/gettext_reader.class.php');
             require_once(__NARRO_INCLUDES__ . '/StreamReader.class.php');
-            QApplication::$LanguageCode = QApplication::$User->GetPreferenceValueByName('Application language');
+            if (QApplication::$User->Language instanceof NarroLanguage)
+                QApplication::$LanguageCode = QApplication::$User->Language->LanguageCode;
+            else
+                QApplication::$LanguageCode = QApplication::$User->GetPreferenceValueByName('Application language');
+            
+            define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$LanguageCode);
+            
             QI18n::Initialize('NarroPoParser');
         }
     }

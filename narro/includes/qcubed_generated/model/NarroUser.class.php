@@ -133,44 +133,24 @@
 
                 $objCache->SaveData($objUser);
             }
+            
+            $objUser->Data = serialize(array());
 
             if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
                 if (strstr($_SERVER['HTTP_ACCEPT_LANGUAGE'], ';')) {
-                    $arrLangGroups = explode(';', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+                    $arrLangGroups = preg_split('/[,;]/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
                     foreach($arrLangGroups as $strLangGroup) {
-                        if (strstr($strLangGroup, ',')) {
-                            $arrLangCodes = explode(',', $strLangGroup);
-                            foreach($arrLangCodes as $strLangCode) {
-                                $objLanguage = NarroLanguage::QuerySingle(QQ::AndCondition(QQ::Equal(QQN::NarroLanguage()->LanguageCode, $strLangCode), QQ::Equal(QQN::NarroLanguage()->Active, 1)));
-                                if ($objLanguage instanceof NarroLanguage) {
-                                    $objUser->Language = $objLanguage;
-                                    return $objUser;
-                                }
-                            }
-                        }
-                        else {
-                            $objLanguage = NarroLanguage::QuerySingle(QQ::AndCondition(QQ::Equal(QQN::NarroLanguage()->LanguageCode, $strLangGroup), QQ::Equal(QQN::NarroLanguage()->Active, 1)));
-                            if ($objLanguage instanceof NarroLanguage) {
-                                $objUser->Language = $objLanguage;
-                                return $objUser;
-                            }
+                        $objLanguage = NarroLanguage::LoadByLanguageCode($strLangGroup);
+                        if ($objLanguage instanceof NarroLanguage) {
+                            $objUser->Language = $objLanguage;
+                            return $objUser;
                         }
                     }
                 }
             }
 
-            if (isset($objUser->Preferences['Language'])) {
-                $objLanguage = NarroLanguage::LoadByLanguageCode($objUser->Preferences['Language']);
-
-                if ($objLanguage instanceof NarroLanguage) {
-                    $objUser->Language = $objLanguage;
-                }
-                else {
-                    $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
-                }
-            }
-            else
-                $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+            if (!$objUser->Language)
+                $objUser->Language = QApplication::$TargetLanguage;
 
             return $objUser;
         }

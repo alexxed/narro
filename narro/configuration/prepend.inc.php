@@ -25,11 +25,8 @@ if (!defined('__PREPEND_INCLUDED__')) {
 
     QApplication::Initialize();
     QApplication::InitializeDatabaseConnections();
-    if (!isset($argv))
-        QApplication::InitializeSession();
-    QApplication::InitializeUser();
-    QApplication::InitializeLanguage();
-    
+    QApplication::$EncodingType = 'UTF-8';
+    NarroUser::GetDatabase()->NonQuery("SET NAMES 'utf8'");
     NarroUser::RegisterPreference('Items per page', 'number', t('How many items are displayed per page'), 10);
     NarroUser::RegisterPreference('Font size', 'option', t('The application font size'), 'medium', array('x-small', 'small', 'medium', 'large', 'x-large'));
     NarroUser::RegisterPreference('Language', 'option', t('The language you are translating to'), QApplication::QueryString('l'), array(QApplication::QueryString('l')));
@@ -37,14 +34,16 @@ if (!defined('__PREPEND_INCLUDED__')) {
     NarroUser::RegisterPreference('Special characters', 'text', t('Characters that are not on your keyboard, separated by spaces'), '$€');
     NarroUser::RegisterPreference('Automatically save translations', 'option', t('Save translations when moving to the next text to translate'), 'No', array('Yes', 'No'));
     NarroUser::RegisterPreference('Launch imports and exports in background', 'option', t('Launch imports and exports in background'), 'Yes', array('Yes', 'No'));
+    if (!isset($argv))
+        QApplication::InitializeSession();
+    QApplication::InitializeUser();
+    QApplication::InitializeLanguage();
+    
     
     NarroProject::RegisterPreference('Export translators and reviewers in the file header as a comment', false, 0, 'option', '', 'No', array('Yes', 'No'));
 
     QApplication::InitializeLogging();
     QApplication::InitializeTranslationEngine();
-
-    QApplication::$EncodingType = 'UTF-8';
-    QApplication::$Database[1]->NonQuery("SET NAMES 'utf8'");
 
     QApplication::$PluginHandler = new NarroPluginHandler(dirname(__FILE__) . '/../includes/narro/plugins');
 }
