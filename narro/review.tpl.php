@@ -16,28 +16,12 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 
-$_CONTROL->ChangedCheckbox->Render();
-$_CONTROL->Index->Render();
-$_CONTROL->Text->Render();
-$_CONTROL->Translation->RenderWithError();
-$_CONTROL->Message->Render();
-if ($_CONTROL->SaveIgnoreButton)
-    $_CONTROL->SaveIgnoreButton->RenderWithError();
-if ($_CONTROL->ContextInfo)
-    $_CONTROL->ContextInfo->Render();
-if ($_CONTROL->TextAccessKey)
-    $_CONTROL->TextAccessKey->RenderWithName();
-if ($_CONTROL->TextCommandKey)
-    $_CONTROL->TextCommandKey->RenderWithName();
-$_CONTROL->CopyButton->Render();
-if ($_CONTROL->KeepUntranslatedButton)
-    $_CONTROL->KeepUntranslatedButton->Render();
-$_CONTROL->SaveButton->Render();
-$_CONTROL->HelpButton->Render();
-if ($_CONTROL->TranslationList) {
-    $_CONTROL->TranslationList->Render();
-}
-if ($_CONTROL->CommentList)
-    $_CONTROL->CommentList->Render();
+    $strPageTitle = t('Review');
 
-?>
+    require(dirname(__FILE__) . '/configuration/header.inc.php');
+    $this->RenderBegin();
+    $this->pnlHeader->Render();
+    $this->pnlBreadcrumb->Render();
+    $this->pnlMainTab->Render();
+    $this->RenderEnd();
+    require(dirname(__FILE__) . '/configuration/footer.inc.php');

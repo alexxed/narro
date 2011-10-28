@@ -56,6 +56,7 @@
         const SORT_TEXT = 1;
         const SORT_TRANSLATION = 2;
         const SORT_TEXT_LENGTH = 3;
+        const SORT_TRANSLATION_DATE = 4;
 
         const SEARCH_IN_TEXTS = 1;
         const SEARCH_IN_TRANSLATIONS = 2;
@@ -66,7 +67,7 @@
         public function __construct($objParentObject, $strControlId = null) {
             parent::__construct($objParentObject, $strControlId);
 
-            $this->strTemplate = dirname(__FILE__) . '/' . __CLASS__ . '.tpl.php';
+            $this->strTemplate = dirname(__FILE__) . '/' . get_class($this) . '.tpl.php';
 
             $this->chkLast = new QCheckBox($this, 'endReached');
             if (SERVER_INSTANCE != 'dev')
@@ -163,8 +164,9 @@
             $this->dtrText = new QDataRepeater($this);
             $this->dtrText->Template = dirname(__FILE__) . '/NarroTranslatePanel_DataRepeater.tpl.php';
             $this->dtrText->SetDataBinder('dtrText_Bind', $this);
-            $this->dtrText->Paginator = new QPaginator($this);
-            $this->dtrText->Paginator->SetCustomStyle('float', 'right');
+            $this->dtrText->Paginator = new QPaginator($this->dtrText);
+            $this->dtrText->Paginator->DisplayStyle = QDisplayStyle::Block;
+            $this->dtrText->Paginator->SetCustomStyle('text-align', 'right');
             $this->dtrText->UseAjax = true;
             $this->dtrText->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
             
@@ -373,8 +375,10 @@
                 case self::SORT_TRANSLATION:
                     $this->arrClauses[] = QQ::OrderBy(QQN::NarroContextInfo()->ValidSuggestion->SuggestionValue, $this->lstSortDir->SelectedValue);
                     break;
-
-            }
+                case self::SORT_TRANSLATION_DATE:
+                    $this->arrClauses[] = QQ::OrderBy(QQN::NarroContextInfo()->Modified, $this->lstSortDir->SelectedValue);
+                    break;
+             }
         }
 
         public function dtrText_Bind($strFormId = null, $strControlId = null, $strParameter = null, $blnReset = false) {

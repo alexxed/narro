@@ -57,6 +57,7 @@
 
             $this->pnlTab->addTab($this->pnlProjectList, t('Projects'));
             $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Translate'), NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, '', 0, 0, 10, 0, 0));
+            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Review'), NarroLink::Review(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0));
 
             /**
              * Do not show the langauge tab if only two languages are active (source and target

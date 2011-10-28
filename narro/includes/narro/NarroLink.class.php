@@ -88,6 +88,53 @@
             else
                 return $strLink;
         }
+        
+        /**
+        * Creates a link to the review page
+        *
+        * @param integer $intProjectId 0
+        * @param string $strFilePath ''
+        * @param integer $intFilter NarroTranslatePanel::SHOW_NOT_TRANSLATED
+        * @param string $strSearch ''
+        * @param integer $intSortBy 0
+        * @param integer $intSortDir 1
+        * @param integer $intMaxRowCount 10
+        * @param integer $intStart 0
+        * @param integer $intContextInfoId ''
+        * @param string $strLinkText ''
+        *
+        * @return string if you provide the last parameter, a full <a> string is return, if not, just the href value
+        */
+        public static function Review(
+            $intProjectId,
+            $strFilePath,
+            $intFilter,
+            $strSearch,
+            $intSortBy,
+            $intSortDir,
+            $intMaxRowCount,
+            $intStart,
+            $intContextInfoId,
+            $strLinkText = '') {
+                $strLink = sprintf(
+                            'review.php?l=%s&p=%s&f=%s&t=%s&s=%s&o=%s&h=%s&m=%d&i=%d%s',
+                QApplication::$TargetLanguage->LanguageCode,
+                $intProjectId,
+                $strFilePath,
+                $intFilter,
+                urlencode($strSearch),
+                $intSortBy,
+                $intSortDir,
+                $intMaxRowCount,
+                $intStart,
+                (($intContextInfoId>0)?'#i' . $intContextInfoId:'')
+                );
+                if ($strLinkText != '')
+                return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
+                else
+            return $strLink;
+        }
+        
 
         /**
          * Creates a link to the translation page

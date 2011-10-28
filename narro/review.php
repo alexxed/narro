@@ -18,9 +18,9 @@
 
     require_once(dirname(__FILE__) . '/configuration/prepend.inc.php');
 
-    class NarroTranslateForm extends NarroGenericProjectForm {
+    class NarroReviewForm extends NarroGenericProjectForm {
         protected $pnlMainTab;
-        protected $pnlTranslate;
+        protected $pnlReview;
 
         protected function Form_Create() {
             parent::Form_Create();
@@ -30,9 +30,9 @@
                 $this->pnlMainTab = new QTabPanel($this);
                 $this->pnlMainTab->UseAjax = false;
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Projects'), NarroLink::ProjectList());
-                $this->pnlTranslate = new NarroTranslatePanel($this->pnlMainTab);
-                $this->pnlMainTab->addTab($this->pnlTranslate, t('Translate'));
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::Review(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0));
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, '', 0, 0, 0, 0, 0));
+                $this->pnlReview = new NarroReviewPanel($this->pnlMainTab);
+                $this->pnlMainTab->addTab($this->pnlReview, t('Review'));
                 if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator'))
                     $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Languages'), NarroLink::LanguageList());
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
@@ -41,12 +41,12 @@
                     $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Application Log'), NarroLink::Log());
             }
             else {
-                $this->pnlMainTab->replaceTab(new NarroTranslatePanel($this->pnlMainTab), t('Translate'));
+                $this->pnlMainTab->replaceTab(new NarroReviewPanel($this->pnlMainTab), t('Review'));
             }
             
-            $this->pnlMainTab->SelectedTab = t('Translate');
+            $this->pnlMainTab->SelectedTab = t('Review');
         }
     }
 
-    NarroTranslateForm::Run('NarroTranslateForm');
+    NarroReviewForm::Run('NarroReviewForm');
 

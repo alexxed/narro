@@ -16,6 +16,10 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      *
      * @property QLabel $Message
+     * @property NarroTextCommentPanel $CommentList
+     * @property QLabel $Text
+     * @property QTextBox $TextAccessKey
+     * @property QTextbox $TextCommandKey
      */
 
     class NarroContextInfoEditor extends QPanel {
@@ -345,7 +349,7 @@
             return '<div style="float:right">' . $strText . '</div>';
         }
 
-        private function dtgTranslation_Create() {
+        public function dtgTranslation_Create() {
             $this->dtgTranslation = new NarroSuggestionDataGrid($this);
             $this->dtgTranslation->ShowFilter = false;
             $this->dtgTranslation->ShowHeader = false;
@@ -400,6 +404,11 @@
             $this->dtgTranslation->Display = true;
             $this->lblContextInfo->Display = true;
             $this->btnHelp->Display = false;
+            
+            $this->txtTranslation->Display = true;
+            $this->btnSave->Display = true;
+            $this->btnCopy->Display = true;
+            $this->btnKeepUntranslated->Display = true;
             
             if ($strParameter != '1')
                 $this->txtTranslation->Focus();
@@ -496,6 +505,8 @@
                     $objSuggestion->Save();
                     
                     $this->objContextInfo->HasSuggestions = 1;
+                    $this->objContextInfo->Modified = QDateTime::Now();;
+                    $this->objContextInfo->Save();
 
                     if ($this->dtgTranslation)
                         $this->dtgTranslation->MarkAsModified();
@@ -721,6 +732,12 @@
 
             $objNarroSuggestionVote->Modified = QDateTime::Now();;
             $objNarroSuggestionVote->Save();
+            
+            $this->objContextInfo->Modified = QDateTime::Now();;
+            $this->objContextInfo->Save();
+            
+            if ($this->ParentControl->ParentControl->chkRefresh->Checked)
+                $this->ParentControl->ParentControl->btnSearch_Click();
 
             $this->txtTranslation->Warning = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
 
@@ -747,8 +764,8 @@
                 case 'SaveButton': return $this->btnSave;
                 case 'KeepUntranslatedButton': return $this->btnKeepUntranslated;
                 case 'Text': return $this->lblText;
-                case 'AccessKey': return $this->txtAccessKey;
-                case 'CommandKey': return $this->txtCommandKey;
+                case 'TextAccessKey': return $this->txtAccessKey;
+                case 'TextCommandKey': return $this->txtCommandKey;
                 case 'Translation': return $this->txtTranslation;
                 case 'ContextInfo': return $this->lblContextInfo;
                 case 'TranslationList': return $this->dtgTranslation;
@@ -809,3 +826,4 @@
 
     }
 ?>
+

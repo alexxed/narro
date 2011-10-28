@@ -47,6 +47,7 @@
 
             if ($this->objProject instanceof NarroProject) {
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::Translate($this->objProject->ProjectId, '', 0, '', 0, 0, 10, 0, 0));
+                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Review'), NarroLink::Review($this->objProject->ProjectId, '', NarroReviewPanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0));
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Files'), NarroLink::ProjectFileList($this->objProject->ProjectId));
                 $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Languages'), NarroLink::ProjectLanguages($this->objProject->ProjectId));
                 if (QApplication::HasPermissionForThisLang('Can import project', $this->objProject->ProjectId))

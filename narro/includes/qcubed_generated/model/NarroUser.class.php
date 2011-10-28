@@ -211,14 +211,15 @@
             $objUser = NarroUser::QuerySingle(
                         QQ::AndCondition(
                             QQ::Equal(QQN::NarroUser()->UserId, $intUserId)
-                        )
+                        ),
+                        QQ::ExpandAsArray(QQN::NarroUser()->NarroUserRoleAsUser)
             );
             if (!$objUser instanceof NarroUser)
                 return false;
 
-            $arrUserRole = NarroUserRole::LoadArrayByUserId($objUser->intUserId);
-            foreach($arrUserRole as $objRole) {
-                $arrRolePermission = NarroRolePermission::LoadArrayByRoleId($objRole->RoleId);
+            foreach($objUser->_NarroUserRoleAsUserArray as $objRole) {
+                /* @var $objRole NarroUserRole */
+                $arrRolePermission = NarroRolePermission::LoadArrayByRoleId($objRole->RoleId, QQ::Expand(QQN::NarroRolePermission()->Permission));
                 foreach($arrRolePermission as $objRolePermission)
                     $objUser->arrPermissions[$objRolePermission->Permission->PermissionName . '-' . $objRole->LanguageId . '-' . $objRole->ProjectId] = $objRolePermission;
             }
