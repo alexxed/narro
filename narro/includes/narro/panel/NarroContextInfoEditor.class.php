@@ -99,6 +99,7 @@
             $this->btnCopy->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/copy.png';
             $this->btnCopy->TabIndex = -1;
             $this->btnCopy->DisplayStyle = QDisplayStyle::None;
+            $this->btnCopy->Display = QApplication::HasPermissionForThisLang('Can suggest');
 
             $this->lblText = new QLabel($this);
             $this->lblText->Width = '100%';
@@ -113,6 +114,7 @@
             $this->btnSave->CssClass = 'imgbutton save';
             $this->btnSave->ToolTip = $this->btnSave->AlternateText;
             $this->btnSave->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/save.png';
+            $this->btnSave->Display = QApplication::HasPermissionForThisLang('Can suggest');
             
             if (QApplication::$User->GetPreferenceValueByName('Automatically save translations') == 'Yes') {
                 $this->btnSave->DisplayStyle = QDisplayStyle::None;

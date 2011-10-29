@@ -3,13 +3,16 @@ $pnlEditor = $_FORM->GetControl('i' . $_ITEM->ContextInfoId);
 if (!$pnlEditor) {
     $pnlEditor = new NarroContextInfoEditor($_CONTROL, 'i' . $_ITEM->ContextInfoId, $_ITEM);
     $pnlEditor->Translation->Display = false;
+    if ($pnlEditor->SaveButton instanceof QControl)
     $pnlEditor->SaveButton->Display = false;
     if ($pnlEditor->TextCommandKey)
         $pnlEditor->TextCommandKey->Display = false;
     if ($pnlEditor->TextAccessKey)
         $pnlEditor->TextAccessKey->Display = false;
-    $pnlEditor->CopyButton->Display = false;
-    $pnlEditor->KeepUntranslatedButton->Display = false;
+    if ($pnlEditor->CopyButton instanceof QControl)
+        $pnlEditor->CopyButton->Display = false;
+    if ($pnlEditor->KeepUntranslatedButton instanceof QControl)
+        $pnlEditor->KeepUntranslatedButton->Display = false;
     $pnlEditor->dtgTranslation_Create();
     $pnlEditor->Translation->AddAction(new QFocusEvent(), new QJavaScriptAction(
             sprintf("if  (jQuery(window).scrollTop() + 200 > jQuery(document).height() - jQuery(window).height() && jQuery('#endReached').attr('checked') == false) qc.pA('%s', '%s', 'QClickEvent', '%s', '%s')", $_CONTROL->Form->FormId, $_CONTROL->ParentControl->btnMore->ControlId, $pnlEditor->Translation->ControlId, $_CONTROL->ParentControl->objWaitIcon->ControlId)));

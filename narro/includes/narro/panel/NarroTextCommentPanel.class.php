@@ -58,6 +58,7 @@
             $this->txtComment->ToolTip = t('Enter your comments here');
             $this->txtComment->CssClass = 'comment';
             $this->txtComment->DisplayStyle = QDisplayStyle::Block;
+            $this->txtComment->Display = QApplication::HasPermissionForThisLang('Can comment');
             
             $this->btnSave = new QImageButton($this);
             $this->btnSave->AlternateText = t('Add comment');
@@ -65,6 +66,7 @@
             $this->btnSave->ToolTip = $this->btnSave->AlternateText;
             $this->btnSave->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/comment.png';
             $this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
+            $this->btnSave->Display = QApplication::HasPermissionForThisLang('Can comment');
         }
         
         public function colComment_Render(NarroTextComment $objComment) {

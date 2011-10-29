@@ -29,10 +29,12 @@ if ($_CONTROL->TextAccessKey)
     $_CONTROL->TextAccessKey->RenderWithName();
 if ($_CONTROL->TextCommandKey)
     $_CONTROL->TextCommandKey->RenderWithName();
-$_CONTROL->CopyButton->Render();
-if ($_CONTROL->KeepUntranslatedButton)
+if (QApplication::HasPermissionForThisLang('Can suggest'))
+    $_CONTROL->CopyButton->Render();
+if ($_CONTROL->KeepUntranslatedButton instanceof QImageButton)
     $_CONTROL->KeepUntranslatedButton->Render();
-$_CONTROL->SaveButton->Render();
+if (QApplication::HasPermissionForThisLang('Can suggest'))
+    $_CONTROL->SaveButton->Render();
 $_CONTROL->HelpButton->Render();
 if ($_CONTROL->TranslationList) {
     $_CONTROL->TranslationList->Render();
