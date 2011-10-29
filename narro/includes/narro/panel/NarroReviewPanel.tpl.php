@@ -162,7 +162,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
     $_CONTROL->chkApprove->RenderWithName();
 ?>
 </div>
-<div class="section_title">Search</div>
+<div class="section_title"><?php _t('Search')?></div>
 <div class="section">
 <?php
     $_CONTROL->lstSearchIn->RenderWithName();
@@ -170,7 +170,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
     $_CONTROL->btnSearch->Render();
 ?>
 </div>
-<div class="section_title">Results</div>
+<div class="section_title"><?php _t('Results')?></div>
 <div class="section">
 <?php
     
