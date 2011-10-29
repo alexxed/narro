@@ -259,8 +259,71 @@
             }
         }
         
-        public function ImportFromXpi() {
+        public function ImportFromXpi($strXpiFilePath) {
+            $strWorkingDir = $strXpiFilePath . '_extract';
+            mkdir($strWorkingDir, 0777);
+            NarroLogger::LogInfo(sprintf('Trying to uncompress %s', $strXpiFilePath));
+            $objZipFile = new ZipArchive();
+            $intErrCode = $objZipFile->open($strXpiFilePath);
+            if ($intErrCode === TRUE) {
+                $objZipFile->extractTo($strWorkingDir);
+                $objZipFile->close();
+                NarroLogger::LogInfo(sprintf('Sucessfully uncompressed %s.', $strXpiFilePath));
+            } else {
+                switch($intErrCode) {
+                    case ZIPARCHIVE::ER_NOZIP:
+                        $strError = 'Not a zip archive';
+                        break;
+                    default:
+                        $strError = 'Error code: '. $intErrCode;
+                }
             
+                throw new Exception(sprintf('Failed to uncompress %s: %s', $strXpiFilePath, $strError));
+            }
+
+            NarroUtils::RecursiveChmod($strWorkingDir);
+            
+            // Search source directory
+            $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode);
+            
+            if ($arrSearchResult == false)
+                $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode . '-' . $this->objSourceLanguage->CountryCode);
+            
+            if ($arrSearchResult == false)
+                $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode . '_' . $this->objSourceLanguage->CountryCode);
+            
+            
+            if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
+                NarroLogger::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $strWorkingDir, $arrSearchResult[0], $this->objSourceLanguage->LanguageCode));
+                
+                $strTemplatePath = $arrSearchResult[0];
+            }
+            
+            // Search target directory
+            $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode);
+            
+            if ($arrSearchResult == false)
+                $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode . '-' . $this->objTargetLanguage->CountryCode);
+            
+            if ($arrSearchResult == false)
+                $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode . '_' . $this->objTargetLanguage->CountryCode);
+            
+            
+            if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
+                NarroLogger::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $strWorkingDir, $arrSearchResult[0], $this->objTargetLanguage->LanguageCode));
+            
+                $strTranslationPath = $arrSearchResult[0];
+            }
+            
+            if (isset($strTemplatePath) && isset($strTranslationPath)) {
+                $this->strTemplatePath = $strTemplatePath;
+                $this->strTranslationPath = $strTranslationPath;
+                
+                $this->ImportFromDirectory();
+            }
+            
+            NarroUtils::RecursiveDelete($strWorkingDir);
+
         }
 
         public function ImportFromDirectory() {
@@ -270,6 +333,9 @@
              */
             $arrFiles = $this->ListDir($this->strTemplatePath);
             $intTotalFilesToProcess = count($arrFiles);
+            
+            if ($intTotalFilesToProcess == 1 && pathinfo($arrFiles[0], PATHINFO_EXTENSION) == 'xpi')
+                return $this->ImportFromXpi($arrFiles[0]);
 
             if ($intTotalFilesToProcess > __MAXIMUM_FILE_COUNT_TO_IMPORT__) {
                 NarroLogger::LogError(sprintf('Too many files to process: %d. The maximum number of files to import is set in the configuration file at %d', $intTotalFilesToProcess, __MAXIMUM_FILE_COUNT_TO_IMPORT__));
@@ -481,7 +547,7 @@
             }
 
             if ($strTranslatedFile) {
-                // NarroLogger::LogDebug( sprintf( t('Starting to import from "%s" and translations from "%s"'), str_replace($this->objProject->DefaultTemplatePath, '', $strTemplateFile), str_replace($this->objProject->DefaultTranslationPath, '', $strTranslatedFile)));
+                // NarroLogger::LogDebug( sprintf( t('Starting to import from$this->strTemplatePathr_replace($this->objProject->DefaultTemplatePath, '', $strTemplateFile), str_replace($this->objProject->DefaultTranslationPath, '', $strTranslatedFile)));
             }
             else {
                 // NarroLogger::LogDebug( sprintf( t('Starting to import from "%s", no translations file'), str_replace($this->objProject->DefaultTemplatePath, '', $strTemplateFile)));
@@ -652,8 +718,134 @@
             }
         }
         
-        public function ExportToXpi() {
-        
+        public function ExportToXpi($strXpiFilePath) {
+            $strArchive = $this->strTranslationPath . '/' . basename($strXpiFilePath);
+            if (file_exists($strArchive)) {
+                unlink($strArchive);
+            }
+            
+            $strWorkingDir = $strXpiFilePath . '_extract';
+            mkdir($strWorkingDir, 0777);
+            NarroLogger::LogInfo(sprintf('Trying to uncompress %s', $strXpiFilePath));
+            $objZipFile = new ZipArchive();
+            $intErrCode = $objZipFile->open($strXpiFilePath);
+            if ($intErrCode === TRUE) {
+                $objZipFile->extractTo($strWorkingDir);
+                $objZipFile->close();
+                NarroLogger::LogInfo(sprintf('Sucessfully uncompressed %s.', $strXpiFilePath));
+            } else {
+                switch($intErrCode) {
+                    case ZIPARCHIVE::ER_NOZIP:
+                        $strError = 'Not a zip archive';
+                        break;
+                    default:
+                        $strError = 'Error code: '. $intErrCode;
+                }
+            
+                throw new Exception(sprintf('Failed to uncompress %s: %s', $strXpiFilePath, $strError));
+            }
+            
+            NarroUtils::RecursiveChmod($strWorkingDir);
+            
+            // Search source directory
+            $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode);
+            
+            if ($arrSearchResult == false)
+            $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode . '-' . $this->objSourceLanguage->CountryCode);
+            
+            if ($arrSearchResult == false)
+            $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode . '_' . $this->objSourceLanguage->CountryCode);
+            
+            
+            if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
+                NarroLogger::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $strWorkingDir, $arrSearchResult[0], $this->objSourceLanguage->LanguageCode));
+            
+                $strTemplatePath = $arrSearchResult[0];
+            }
+            
+            // Search target directory
+            $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode);
+            
+            if ($arrSearchResult == false)
+            $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode . '-' . $this->objTargetLanguage->CountryCode);
+            
+            if ($arrSearchResult == false)
+            $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode . '_' . $this->objTargetLanguage->CountryCode);
+            
+            
+            if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
+                NarroLogger::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $strWorkingDir, $arrSearchResult[0], $this->objTargetLanguage->LanguageCode));
+            
+                $strTranslationPath = $arrSearchResult[0];
+            }
+            
+            if (isset($strTemplatePath)) {
+                $strOldTemplatePath = $this->strTemplatePath;
+                $this->strTemplatePath = $strTemplatePath;
+                if (isset($strTranslationPath))
+                    $this->strTranslationPath = $strTranslationPath;
+            
+                $this->ExportFromDirectory();
+                
+                $arrFiles = NarroUtils::ListDirectory($strWorkingDir, null, null, null, true);
+            
+                $objZipFile = new ZipArchive();
+                if ($objZipFile->open($strArchive, ZipArchive::OVERWRITE) === TRUE) {
+                    foreach($arrFiles as $strFileName) {
+                        if (basename($strFileName) == 'chrome.manifest') {
+                            $strManifest = file_get_contents($strFileName);
+                            preg_match_all('/^locale\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+/m', $strManifest, $arrMatches);
+                            if (isset($arrMatches[2]) && in_array($this->objTargetLanguage->LanguageCode, $arrMatches[2])) {
+                                // locale already in the manifest
+                                NarroLogger::LogInfo('Locale already in the manifest');
+                            }
+                            else {
+                                $strLastLocaleCode = $arrMatches[2][count($arrMatches[2]) - 1];
+                                $strLastLocaleLine = $arrMatches[0][count($arrMatches[2]) - 1];
+                                $strLastLocalePath = $arrMatches[3][count($arrMatches[2]) - 1];
+                                NarroLogger::LogWarn($strLastLocaleLine);
+                                $strManifest = str_replace(
+                                    $strLastLocaleLine,
+                                    $strLastLocaleLine . "\n" .
+                                    sprintf(
+                                    	'locale %s %s %s',
+                                    	$arrMatches[1][count($arrMatches[2]) - 1],
+                                    	$this->objTargetLanguage->LanguageCode,
+                                    	preg_replace('/\/[^\/]+\/\s*$/m', '/' . $this->objTargetLanguage->LanguageCode . '/', $strLastLocalePath)
+                                	),
+                                    $strManifest
+                                );
+                                
+                                NarroLogger::LogInfo($strManifest);
+                            }
+                            
+                        }
+                        
+                        if ($strWorkingDir == $strFileName) continue;
+                        if (is_dir($strFileName)) {
+                            $objZipFile->addEmptyDir(str_replace($strWorkingDir . '/', '', $strFileName ));
+                        }
+                        elseif (is_file($strFileName)) {
+                            $objZipFile->addFile($strFileName, str_replace($strWorkingDir . '/', '', $strFileName ));
+                        }
+                    }
+                    $objZipFile->close();
+                    if (file_exists($strArchive))
+                        chmod($strArchive, 0666);
+                    else {
+                        NarroLogger::LogError(sprintf('Failed to create an archive %s', $strArchive));
+                        NarroUtils::RecursiveDelete($strWorkingDir);
+                        return false;
+                    }
+                } else {
+                    NarroLogger::LogError(sprintf('Failed to create a new archive %s', $strArchive));
+                    NarroUtils::RecursiveDelete($strWorkingDir);
+                    return false;
+                }
+            }
+            
+            NarroUtils::RecursiveDelete($strWorkingDir);
+            return true;
         }
 
         public function ExportFromDirectory() {
@@ -666,6 +858,9 @@
             $arrFiles = $this->ListDir($this->strTemplatePath);
 
             $intTotalFilesToProcess = count($arrFiles);
+            
+            if ($intTotalFilesToProcess == 1 && pathinfo($arrFiles[0], PATHINFO_EXTENSION) == 'xpi')
+                return $this->ExportToXpi($arrFiles[0]);
 
             if ($intTotalFilesToProcess > __MAXIMUM_FILE_COUNT_TO_EXPORT__) {
                 NarroLogger::LogError(sprintf('Too many files to process: %d. The maximum number of files to export is set in the configuration file at %d', $intTotalFilesToProcess, __MAXIMUM_FILE_COUNT_TO_EXPORT__));
@@ -1092,7 +1287,7 @@
             $arrRoles = NarroRole::QueryArray(QQ::All(), QQ::Clause(QQ::OrderBy(QQN::NarroRole()->RoleName)));
             NarroLogger::LogInfo(sprintf('Found %d role names to localize.', count($arrRoles)));
 
-            $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'), null, '/.*\/drafts\/.*|.*\/data\/.*|.*\/qcubed\/.*|.*\/qcubed_generated\/.*/');
+            $allFiles = NarroUtils::ListDirectory(realpath(dirname(__FILE__) . '/../../..'), null, '/.*\/drafts\/.*|.*\/data\/.*|.*\/qcubed_generated\/.*/');
 
             NarroLogger::LogInfo(sprintf('Found %d php files to search for localizable messages.', count($allFiles)));
             foreach($allFiles as $strFileName) {
