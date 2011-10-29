@@ -65,13 +65,13 @@
             $this->dtgSuggestion = new NarroSuggestionDataGrid($this);
             $this->dtgSuggestion->ShowHeader = false;
             $this->dtgSuggestion->MetaAddColumn(QQN::NarroSuggestion()->SuggestionValue);
-            $this->dtgSuggestion->AdditionalConditions = QQ::Like(QQN::NarroSuggestion()->Text->TextValue, '');
             $this->dtgSuggestion->AdditionalClauses = array(QQ::LimitInfo(20), QQ::OrderBy(QQN::NarroSuggestion()->Text->TextCharCount));
+            $this->btnClear_Click();
         }
         
         public function btnClear_Click() {
             $this->txtSearch->Text = '';
-            $this->txtSearch_KeyUp();
+            $this->dtgSuggestion->AdditionalConditions = QQ::None();
         }
         
         public function txtSearch_KeyUp() {
