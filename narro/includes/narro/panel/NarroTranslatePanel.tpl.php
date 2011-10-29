@@ -122,6 +122,13 @@
     font-size: 1.2em;
 }
 
+.clear_button {
+    vertical-align: middle;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
 </style>
 
 <script type="text/javascript">
@@ -160,6 +167,12 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
 <?php
     $_CONTROL->chkRefresh->RenderWithName();
     $_CONTROL->chkApprove->RenderWithName();
+?>
+</div>
+<div class="section_title"><?php _t('Glossary')?></div>
+<div class="section">
+<?php
+    $_CONTROL->pnlGlossary->RenderWithName();
 ?>
 </div>
 <div class="section_title"><?php _t('Search')?></div>

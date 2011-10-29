@@ -39,6 +39,8 @@
 
         public $chkApprove;
         public $chkRefresh;
+        
+        public $pnlGlossary;
 
         public $intTotalItemCount = 0;
         public $blnNewEditorCreated = true;
@@ -109,6 +111,9 @@
 
             $this->chkRefresh_Create();
             $this->chkApprove_Create();
+            
+            $this->pnlGlossary = new NarroSuggestionSearchPanel($this);
+            $this->pnlGlossary->Instructions = t('Put the text in quotes to do an exact search, e.g. "file". Press Enter to search.');
 
             $this->btnMore->DisplayStyle = QDisplayStyle::Block;
             $this->dtrText_Conditions(false);
