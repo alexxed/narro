@@ -29,6 +29,8 @@
     * @package Narro
     * @subpackage DataObjects
     *
+    * @property integer $Votes the sum of all positive and negative votes
+    *
     */
     class NarroSuggestion extends NarroSuggestionGen {
         /**
@@ -109,6 +111,32 @@
                 }
             }
 
+        }
+        
+        public function __get($strName) {
+            switch ($strName) {
+                case 'Votes':
+                    $mixResult = NarroSuggestionVote::QuerySingle(
+                        QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $this->SuggestionId),
+                        array(
+                            QQ::Sum(QQN::NarroSuggestionVote()->VoteValue, 'votes'),
+                            QQ::GroupBy(QQN::NarroSuggestionVote()->SuggestionId)
+                        )
+                    );
+                    if ($mixResult instanceof NarroSuggestionVote)
+                        return $mixResult->GetVirtualAttribute('votes');
+                    else
+                        return 0;
+
+                default:
+                    try {
+                    return parent::__get($strName);
+                    break;
+                } catch (QCallerException $objExc) {
+                    $objExc->IncrementOffset();
+                    throw $objExc;
+                }
+            }
         }
     }
 ?>
