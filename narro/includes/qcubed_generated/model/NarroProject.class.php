@@ -199,6 +199,11 @@
             $mixResult = parent::Save($blnForceInsert, $blnForceUpdate);
 
             if ($blnNew) {
+                if (!file_exists(__IMPORT_PATH__ . '/' . $this->ProjectId)) {
+                    @mkdir(__IMPORT_PATH__ . '/' . $this->ProjectId, 0777, true);
+                    NarroUtils::RecursiveChmod(__IMPORT_PATH__ . '/' . $this->ProjectId);
+                }
+                
                 if (!file_exists($this->DefaultTemplatePath)) {
                     @mkdir($this->DefaultTemplatePath, 0777, true);
                     NarroUtils::RecursiveChmod($this->DefaultTemplatePath);
