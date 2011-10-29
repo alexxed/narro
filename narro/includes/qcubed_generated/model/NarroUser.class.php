@@ -41,7 +41,6 @@
         protected $objLanguage;
 
         const ANONYMOUS_USER_ID = 0;
-        const ANONYMOUS_LANGUAGE_ID = 1;
         /**
         * Default "to string" handler
         * Allows pages to _p()/echo()/print() this object, and to define the default
@@ -64,7 +63,7 @@
                     $this->Language = $objLanguage;
                 }
                 else {
-                    $this->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                    $this->Language = QApplication::$TargetLanguage;
                 }
             }
 
@@ -106,11 +105,11 @@
                     $objUser->Language = $objLanguage;
                 }
                 else {
-                    $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                    $objUser->Language = QApplication::$TargetLanguage;
                 }
             }
             else
-                $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                $objUser->Language = QApplication::$TargetLanguage;
 
             return $objUser;
         }
@@ -134,22 +133,6 @@
                 $objCache->SaveData($objUser);
             }
             
-            $objUser->Data = serialize(array());
-            $objUser->Language = QApplication::$TargetLanguage;
-
-            if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-                if (strstr($_SERVER['HTTP_ACCEPT_LANGUAGE'], ';')) {
-                    $arrLangGroups = preg_split('/[,;]/', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-                    foreach($arrLangGroups as $strLangGroup) {
-                        $objLanguage = NarroLanguage::LoadByLanguageCode($strLangGroup);
-                        if ($objLanguage instanceof NarroLanguage) {
-                            $objUser->Language = $objLanguage;
-                            return $objUser;
-                        }
-                    }
-                }
-            }
-
             return $objUser;
         }
 
@@ -176,11 +159,11 @@
                     $objUser->Language = $objLanguage;
                 }
                 else {
-                    $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                    $objUser->Language = QApplication::$TargetLanguage;
                 }
             }
             else
-                $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                $objUser->Language = QApplication::$TargetLanguage;
 
             return $objUser;
         }
@@ -209,11 +192,11 @@
                     $objUser->Language = $objLanguage;
                 }
                 else {
-                    $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                    $objUser->Language = QApplication::$TargetLanguage;
                 }
             }
             else
-                $objUser->Language = NarroLanguage::Load(self::ANONYMOUS_LANGUAGE_ID);
+                $objUser->Language = QApplication::$TargetLanguage;
 
             return $objUser;
         }

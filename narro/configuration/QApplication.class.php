@@ -228,8 +228,8 @@
         public static function InitializeTranslationEngine() {
             require_once(__NARRO_INCLUDES__ . '/gettext_reader.class.php');
             require_once(__NARRO_INCLUDES__ . '/StreamReader.class.php');
-            if (QApplication::$User->Language instanceof NarroLanguage)
-                QApplication::$LanguageCode = QApplication::$User->Language->LanguageCode;
+            if (QApplication::$User->UserId == NarroUser::ANONYMOUS_USER_ID)
+                QApplication::$LanguageCode = QApplication::$TargetLanguage->LanguageCode;
             else
                 QApplication::$LanguageCode = QApplication::$User->GetPreferenceValueByName('Application language');
             
