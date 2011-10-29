@@ -135,6 +135,7 @@
             }
             
             $objUser->Data = serialize(array());
+            $objUser->Language = QApplication::$TargetLanguage;
 
             if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
                 if (strstr($_SERVER['HTTP_ACCEPT_LANGUAGE'], ';')) {
@@ -148,9 +149,6 @@
                     }
                 }
             }
-
-            if (!$objUser->Language)
-                $objUser->Language = QApplication::$TargetLanguage;
 
             return $objUser;
         }
