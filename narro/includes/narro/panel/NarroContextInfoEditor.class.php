@@ -185,7 +185,7 @@
         public function btnKeepUntranslated_Create($strControlId = null) {
             if (QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId)) {
                 $this->btnKeepUntranslated = new QImageButton($this, $strControlId);
-                $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/approve.png';
+                $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/arrow-down.gif';
                 $this->btnKeepUntranslated->AlternateText = t('Keep untranslated');
                 $this->btnKeepUntranslated->CssClass = 'imgbutton';
                 $this->btnKeepUntranslated->ToolTip = $this->btnKeepUntranslated->AlternateText;
@@ -194,7 +194,7 @@
             }
             elseif (QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId)) {
                 $this->btnKeepUntranslated = new QImageButton($this, $strControlId);
-                $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/vote.png';
+                $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/arrow-down.gif';
                 $this->btnKeepUntranslated->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
                 $this->btnKeepUntranslated->AlternateText = t('Keep untranslated');
                 $this->btnKeepUntranslated->CssClass = 'imgbutton';
@@ -259,7 +259,7 @@
                 $strAuthorInfo .= ', ' . sprintf(sprintf(t('approved by <a href="%s" tabindex="-1">%s</a>'), NarroLink::UserProfile($this->objContextInfo->ValidatorUser->UserId), $this->objContextInfo->ValidatorUser->RealName . ' %s'), (($objDateSpan->SimpleDisplay())?sprintf(t('%s ago'), $objDateSpan->SimpleDisplay()):''));
             }
 
-            return sprintf('<small>-- %s</small>', $strAuthorInfo);
+            return sprintf('<small>-- %s, %s</small>', $strAuthorInfo, sprintf(t('%d votes'), $objSuggestion->Votes));
         }
 
         public function dtgTranslation_colActions_Render(NarroSuggestion $objSuggestion) {
@@ -292,26 +292,45 @@
                 $btnDelete->ActionParameter = $objSuggestion->SuggestionId;
             }
 
-            $strControlId = 'vot' . $this->objContextInfo->ContextInfoId . 's' . $objSuggestion->SuggestionId;
 
-            if ($objSuggestion->UserId <> QApplication::GetUserId() && QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId)) {
-                $btnVote = $this->dtgTranslation->GetChildControl($strControlId);
-                if (!$btnVote) {
-                    $btnVote = new QImageButton($this->dtgTranslation, $strControlId);
-                    $btnVote->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/vote.png';
-                    $btnVote->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
-                    $btnVote->AlternateText = t('Vote');
-                    $btnVote->ToolTip = $btnVote->AlternateText;
-                    $btnVote->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
+            if (QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId)) {
+                $strControlId = 'votup' . $this->objContextInfo->ContextInfoId . 's' . $objSuggestion->SuggestionId;
+                $btnVoteUp = $this->dtgTranslation->GetChildControl($strControlId);
+                if (!$btnVoteUp) {
+                    $btnVoteUp = new QImageButton($this->dtgTranslation, $strControlId);
+                    $btnVoteUp->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/vote_up.png';
+                    $btnVoteUp->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
+                    $btnVoteUp->AlternateText = t('Vote');
+                    $btnVoteUp->ToolTip = $btnVoteUp->AlternateText;
+                    $btnVoteUp->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     if (QApplication::$UseAjax)
-                        $btnVote->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
+                        $btnVoteUp->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
                     else
-                        $btnVote->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnVote_Click')
+                        $btnVoteUp->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnVote_Click')
                     );
 
                 }
 
-                $btnVote->ActionParameter = $objSuggestion->SuggestionId;
+                $btnVoteUp->ActionParameter = $objSuggestion->SuggestionId;
+                
+                $strControlId = 'votdn' . $this->objContextInfo->ContextInfoId . 's' . $objSuggestion->SuggestionId;
+                $btnVoteDown = $this->dtgTranslation->GetChildControl($strControlId);
+                if (!$btnVoteDown) {
+                    $btnVoteDown = new QImageButton($this->dtgTranslation, $strControlId);
+                    $btnVoteDown->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/vote_down.png';
+                    $btnVoteDown->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
+                    $btnVoteDown->AlternateText = t('Vote');
+                    $btnVoteDown->ToolTip = $btnVoteDown->AlternateText;
+                    $btnVoteDown->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
+                    if (QApplication::$UseAjax)
+                        $btnVoteDown->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
+                    else
+                        $btnVoteDown->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnVote_Click')
+                    );
+                
+                }
+                
+                $btnVoteDown->ActionParameter = $objSuggestion->SuggestionId;
             }
 
             if ($this->objContextInfo->ValidSuggestionId != $objSuggestion->SuggestionId && QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId)) {
@@ -337,14 +356,17 @@
 
             $strText = '';
 
-            if (isset($btnApprove))
-                $strText .= '&nbsp;' . $btnApprove->Render(false);
+            if (isset($btnVoteUp))
+                $strText .= '&nbsp;' . $btnVoteUp->Render(false);
 
-            if (isset($btnVote))
-                $strText .= '&nbsp;' . $btnVote->Render(false);
+            if (isset($btnVoteDown))
+                $strText .= '&nbsp;' . $btnVoteDown->Render(false);
+            
+            if (isset($btnApprove))
+                $strText .= '&nbsp;&nbsp;' . $btnApprove->Render(false);
 
             if (isset($btnDelete))
-                $strText .= '&nbsp;' . $btnDelete->Render(false);
+                $strText .= '&nbsp;&nbsp;' . $btnDelete->Render(false);
 
             return '<div style="float:right">' . $strText . '</div>';
         }
@@ -701,35 +723,28 @@
             if (!QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId))
                 return false;
 
-            $objSuggestion = NarroSuggestion::Load($strParameter);
-            if ($objSuggestion->UserId == QApplication::GetUserId())
-                return false;
-
-            QApplication::$PluginHandler->VoteSuggestion($this->objContextInfo->Context->Text->TextValue, $objSuggestion->SuggestionValue, $this->objContextInfo->Context->Context, $this->objContextInfo->Context->File, $this->objContextInfo->Context->Project);
-
-            $arrSuggestion = NarroSuggestionVote::QueryArray(
+            $objNarroSuggestionVote = NarroSuggestionVote::QuerySingle(
                 QQ::AndCondition(
                     QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $this->objContextInfo->ContextId),
+                    QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $strParameter),
                     QQ::Equal(QQN::NarroSuggestionVote()->UserId, QApplication::GetUserId())
                 )
             );
 
-            if (count($arrSuggestion)) {
-                $objNarroSuggestionVote = $arrSuggestion[0];
-                if ($objNarroSuggestionVote->SuggestionId == $strParameter)
-                    return true;
-                    $objNarroSuggestionVote->SuggestionId = $strParameter;
-            }
-            else {
+            if (!$objNarroSuggestionVote) {
 
                 $objNarroSuggestionVote = new NarroSuggestionVote();
                 $objNarroSuggestionVote->SuggestionId = $strParameter;
                 $objNarroSuggestionVote->ContextId = $this->objContextInfo->ContextId;
                 $objNarroSuggestionVote->UserId = QApplication::GetUserId();
-                $objNarroSuggestionVote->Created = QDateTime::Now();;
-                $objNarroSuggestionVote->VoteValue = 1;
+                $objNarroSuggestionVote->Created = QDateTime::Now();
             }
-
+            
+            if (strpos($strControlId, 'votdn') === 0)
+                $objNarroSuggestionVote->VoteValue = -1;
+            else
+                $objNarroSuggestionVote->VoteValue = 1;
+            
             $objNarroSuggestionVote->Modified = QDateTime::Now();;
             $objNarroSuggestionVote->Save();
             
