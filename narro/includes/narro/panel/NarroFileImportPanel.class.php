@@ -35,7 +35,7 @@
             $this->btnImport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnImport_Click'));
 
             $strTemplateFile = $this->objNarroFile->Project->DefaultTemplatePath . $this->objNarroFile->FilePath;
-            if ((filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_IMPORT__ || QApplication::HasPermissionForThisLang('Can import file', $this->objNarroFile->ProjectId)) && file_exists($strTemplateFile))
+            if (file_exists($strTemplateFile) && (filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_IMPORT__ || QApplication::HasPermissionForThisLang('Can import file', $this->objNarroFile->ProjectId)) && file_exists($strTemplateFile))
                 $this->blnDisplay = true;
             else
                 $this->blnDisplay = false;

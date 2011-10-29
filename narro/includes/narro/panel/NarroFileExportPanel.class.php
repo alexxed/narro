@@ -32,7 +32,7 @@
             $this->btnExport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnExport_Click'));
 
             $strTemplateFile = $this->objNarroFile->Project->DefaultTemplatePath . $this->objNarroFile->FilePath;
-            if ((filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_EXPORT__ || QApplication::HasPermissionForThisLang('Can export file', $this->objNarroFile->ProjectId)) && file_exists($strTemplateFile))
+            if (file_exists($strTemplateFile) && (filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_EXPORT__ || QApplication::HasPermissionForThisLang('Can export file', $this->objNarroFile->ProjectId)) && file_exists($strTemplateFile))
                 $this->blnDisplay = true;
             else
                 $this->blnDisplay = false;
