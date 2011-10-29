@@ -164,9 +164,10 @@
             $this->dtrText = new QDataRepeater($this);
             $this->dtrText->Template = dirname(__FILE__) . '/NarroTranslatePanel_DataRepeater.tpl.php';
             $this->dtrText->SetDataBinder('dtrText_Bind', $this);
-            $this->dtrText->Paginator = new QPaginator($this->dtrText);
+            $this->dtrText->Paginator = new QPaginator($this);
             $this->dtrText->Paginator->DisplayStyle = QDisplayStyle::Block;
             $this->dtrText->Paginator->SetCustomStyle('text-align', 'right');
+            $this->dtrText->Paginator->UseAjax = true;
             $this->dtrText->UseAjax = true;
             $this->dtrText->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
             
@@ -188,7 +189,7 @@
             $this->lstFilter = new QListBox($this);
             $this->lstFilter->RenderWithNameCssClass = 'inline_block';
             $this->lstFilter->Name = t('Show');
-            $this->lstFilter->AddItem(t('translated or untranslated texts'), self::SHOW_ALL);
+            $this->lstFilter->AddItem(t('all texts'), self::SHOW_ALL);
             $this->lstFilter->AddItem(t('untranslated texts'), self::SHOW_NOT_TRANSLATED, true);
             $this->lstFilter->AddItem(t('unapproved texts'), self::SHOW_NOT_APPROVED);
             $this->lstFilter->AddItem(t('translated or approved texts'), self::SHOW_APPROVED_AND_NOT_APPROVED);
