@@ -34,6 +34,9 @@
             $this->lstFilter->AddItem(t('unapproved texts'), self::SHOW_NOT_APPROVED, true);
             $this->lstFilter->AddItem(t('approved texts'), self::SHOW_APPROVED);
             $this->lstFilter->AddItem(t('translated or approved texts'), self::SHOW_APPROVED_AND_NOT_APPROVED);
+            $this->lstFilter->AddItem(t('translated with no votes'), self::SHOW_NOT_APPROVED_AND_WITHOUT_VOTES);
+            $this->lstFilter->AddItem(t('translated with votes'), self::SHOW_NOT_APPROVED_AND_WITH_VOTES);
+            
             $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
             if (QApplication::QueryString('t'))
                 $this->lstFilter->SelectedValue = QApplication::QueryString('t');

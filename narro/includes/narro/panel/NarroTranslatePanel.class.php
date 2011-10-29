@@ -52,6 +52,8 @@
         const SHOW_NOT_APPROVED_AND_NOT_TRANSLATED = 4;
         const SHOW_APPROVED = 5;
         const SHOW_ALL = 6;
+        const SHOW_NOT_APPROVED_AND_WITHOUT_VOTES = 7;
+        const SHOW_NOT_APPROVED_AND_WITH_VOTES = 8;
 
         const SORT_TEXT = 1;
         const SORT_TRANSLATION = 2;
@@ -311,6 +313,26 @@
                     $this->arrConditions[] = QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId);
                     break;
                     
+                case self::SHOW_NOT_APPROVED_AND_WITHOUT_VOTES:
+                    $this->arrConditions[] = QQ::Equal(
+                        QQ::SubSql(
+                        	'SELECT COUNT(*) FROM narro_suggestion_vote, narro_suggestion WHERE narro_suggestion_vote.suggestion_id=narro_suggestion.suggestion_id AND narro_suggestion.text_id={1}',
+                            QQN::NarroContextInfo()->Context->TextId
+                        ),
+                        0
+                    );
+                    break;
+                    
+                case self::SHOW_NOT_APPROVED_AND_WITH_VOTES:
+                    $this->arrConditions[] = QQ::NotEqual(
+                        QQ::SubSql(
+                        	'SELECT COUNT(*) FROM narro_suggestion_vote, narro_suggestion WHERE narro_suggestion_vote.suggestion_id=narro_suggestion.suggestion_id AND narro_suggestion.text_id={1}',
+                            QQN::NarroContextInfo()->Context->TextId
+                        ),
+                        0
+                    );
+                    break;
+                            
                 case self::SHOW_ALL:
                 default:
                     
