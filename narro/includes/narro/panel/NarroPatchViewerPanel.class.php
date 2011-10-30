@@ -19,6 +19,7 @@
         protected $chkSelectAll;
         protected $btnExpandAll;
         protected $blnAutoRenderChildren = true;
+        public static $strFileExpression = '/^\-\-\-\s+a\/(.*)$/';
         public function __construct($strPatchFilePath, $objParentObject, $strControlId = null) {
             parent::__construct($objParentObject, $strControlId);
     
@@ -39,7 +40,7 @@
             $strCurrentFileContents = '';
             while(!feof($hndFile)) {
                 $strFileLine = fgets($hndFile);
-                preg_match('/^\-\-\-\s+a\/(.*)$/', $strFileLine, $arrMatches);
+                preg_match(self::$strFileExpression, $strFileLine, $arrMatches);
                 if (isset($arrMatches[1])) {
                     if ($strCurrentFileContents != '' && isset($pnlWrap)) {
                         $pnlFileDiff = $this->pnlFileDiff_Create($pnlWrap);
@@ -137,7 +138,7 @@
             }
         }
     
-        public function lblFile_Click($strFormId, $strControlId, $strParameter) {            
+        public function lblFile_Click($strFormId, $strControlId, $strParameter) {
             $pnlWrap = $this->GetChildControl($strParameter);
             $pnlFileDiff = $pnlWrap->GetChildControl($strParameter . 'pnl');
             if ($pnlFileDiff instanceof QPanel) {
@@ -156,7 +157,7 @@
                                 $arrFiles[] = $chkControl->Name;
                             }
                         }
-                    }  
+                    }
 
                     return $arrFiles;
                 default:
@@ -168,7 +169,7 @@
                     throw $objExc;
                 }
             }
-        }        
+        }
         
         public function __set($strName, $mixValue) {
             $this->blnModified = true;
@@ -184,6 +185,6 @@
                 }
                 break;
             }
-        }        
+        }
     }
 ?>
