@@ -201,7 +201,8 @@
                 ((in_array($this->strApplicationType, array('mail', 'suite', 'calendar')))?"ac_add_options --enable-chrome-format=jar\n":'') .
                 "ac_add_options --disable-webm\n" .
                 sprintf("mk_add_options AUTOCONF=%s\n", $strAutoConf) .
-                sprintf("ac_cv_path_PYTHON=/usr/bin/%s", (file_exists('/usr/bin/python2.6')?'python2.6':'python'))
+                sprintf("ac_cv_path_PYTHON=/usr/bin/%s\n", (file_exists('/usr/bin/python2.6')?'python2.6':'python')) .
+                ((in_array($this->strApplicationType, array('suite')))?"ac_add_options --disable-mailnews\n":'')
             );
             
             if (!
