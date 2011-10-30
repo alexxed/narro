@@ -268,7 +268,9 @@
                 case 'browser':
                     NarroUtils::RecursiveDelete($objProject->DefaultTemplatePath . '/*');
                     foreach($this->get_l10n_ini_dirs($this->strHgDir, $this->strApplicationType) as $strBuildPath=>$strLocalePath) {
-                        NarroUtils::RecursiveCopy($this->strHgDir . '/' . $strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
+                        $strFirstDir = preg_replace('/\/.*$/', '', $strLocalePath);
+                        if (!in_array($strFirstDir, self::$arrBrowserDirList) && !in_array($strLocalePath, array('extensions/spellcheck')))
+                            NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
                     }
                     break;
                     
@@ -276,7 +278,7 @@
                     NarroUtils::RecursiveDelete($objProject->DefaultTemplatePath . '/*');
                     foreach($this->get_l10n_ini_dirs($this->strHgDir, $this->strApplicationType) as $strBuildPath=>$strLocalePath) {
                         $strFirstDir = preg_replace('/\/.*$/', '', $strLocalePath);
-                        if (!in_array($strFirstDir, self::$arrBrowserDirList))
+                        if (!in_array($strFirstDir, self::$arrBrowserDirList) && !in_array($strLocalePath, array('extensions/spellcheck')))
                             NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
                     }
                     break;
@@ -294,7 +296,7 @@
                     NarroUtils::RecursiveDelete($objProject->DefaultTemplatePath . '/*');
                     foreach($this->get_l10n_ini_dirs($this->strHgDir, $this->strApplicationType) as $strBuildPath=>$strLocalePath) {
                         $strFirstDir = preg_replace('/\/.*$/', '', $strLocalePath);
-                        if (!in_array($strFirstDir, self::$arrBrowserDirList))
+                        if (!in_array($strFirstDir, self::$arrBrowserDirList) && !in_array($strLocalePath, array('extensions/spellcheck')))
                             NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
                     }
                     break;
