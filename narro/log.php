@@ -96,7 +96,7 @@
         public function btnClearLog_Click($strFormId, $strControlId, $strParameter) {
             if (QApplication::HasPermissionForThisLang('Administrator')) {
                 if (QApplication::HasPermission('Administrator'))
-                    NarroLog::Truncate();
+                    NarroLog::GetDatabase()->NonQuery(sprintf('DELETE FROM narro_log'));
                 else
                     NarroLog::GetDatabase()->NonQuery(sprintf('DELETE FROM narro_log WHERE language_id=%d', QApplication::GetLanguageId()));
                 $this->dtgLog->btnFilterReset_Click($strFormId, $strControlId, $strParameter);
