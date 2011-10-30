@@ -540,7 +540,7 @@
                     $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
                 }
                 else {
-                    if ($this->ParentControl->ParentControl->chkRefresh->Checked)
+                    if ($this->ParentControl->ParentControl->chkRefresh->Checked && $strControlId != $this->btnKeepUntranslated->ControlId)
                         $this->ParentControl->ParentControl->btnSearch_Click();
                     
                     $this->btnHelp_Update();
@@ -628,7 +628,7 @@
                 if ($this->dtgTranslation)
                     $this->dtgTranslation->MarkAsModified();
                 
-                if ($this->ParentControl->ParentControl->chkRefresh->Checked)
+                if ($this->ParentControl->ParentControl->chkRefresh->Checked && $strControlId != $this->btnKeepUntranslated->ControlId)
                     $this->ParentControl->ParentControl->btnSearch_Click();
                 
                 $this->btnHelp_Update();
@@ -646,7 +646,7 @@
                 )
             ) {
                 $strLink = NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_APPROVED, "'" . $objSuggestion->Text->TextValue . "'", 0, 1, 30, 0, 0, '');
-                $this->txtTranslation->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it or %s'), $strLink, '');
+                $this->lblText->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it or %s'), $strLink, '');
                 return true;
             }
             /**
@@ -753,10 +753,10 @@
             $this->objContextInfo->Modified = QDateTime::Now();;
             $this->objContextInfo->Save();
             
-            if ($this->ParentControl->ParentControl->chkRefresh->Checked)
+            if ($this->ParentControl->ParentControl->chkRefresh->Checked && $strControlId != $this->btnKeepUntranslated->ControlId)
                 $this->ParentControl->ParentControl->btnSearch_Click();
 
-            $this->txtTranslation->Warning = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
+            $this->lblText->Warning = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
 
         }
         

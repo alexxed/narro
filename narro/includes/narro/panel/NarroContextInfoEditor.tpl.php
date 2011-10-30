@@ -18,7 +18,7 @@
 
 $_CONTROL->ChangedCheckbox->Render();
 $_CONTROL->Index->Render();
-$_CONTROL->Text->Render();
+$_CONTROL->Text->RenderWithError();
 $_CONTROL->Translation->RenderWithError();
 $_CONTROL->Message->Render();
 if ($_CONTROL->SaveIgnoreButton)
