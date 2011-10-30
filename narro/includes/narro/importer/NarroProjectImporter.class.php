@@ -803,7 +803,6 @@
                                 $strLastLocaleCode = $arrMatches[2][count($arrMatches[2]) - 1];
                                 $strLastLocaleLine = $arrMatches[0][count($arrMatches[2]) - 1];
                                 $strLastLocalePath = $arrMatches[3][count($arrMatches[2]) - 1];
-                                NarroLogger::LogWarn($strLastLocaleLine);
                                 $strManifest = str_replace(
                                     $strLastLocaleLine,
                                     $strLastLocaleLine . "\n" .
@@ -816,7 +815,6 @@
                                     $strManifest
                                 );
                                 
-                                NarroLogger::LogInfo($strManifest);
                             }
                             
                         }
