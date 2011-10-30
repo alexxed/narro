@@ -364,8 +364,10 @@
          * @param array $arrError An array where you'll get the errors
          * @param integer $intRetVal The return value of the command
          * @param boolean $blnInBackground Whether to launch the command in background
-         * @param string $cwd The directory to switch to before running the command
          * @param array $env Associative array with environment variables
+         * @param string $cwd The directory to switch to before running the command
+         * @param boolean $blnLogErrors Whether to log the errors in the database
+         *
          * @return boolean
          */
         public static function Exec($strCommand, &$arrOutput, &$arrError, &$intRetVal, $blnInBackground = false, $env = null, $cwd = null, $blnLogErrors = true) {
