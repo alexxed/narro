@@ -20,14 +20,13 @@
         protected $txtRepositoryUrl;
         protected $fileSSHPrivateKey;
         protected $txtUsername;
-        protected $txtPassword;
-        protected $txtCommitUsername;
         protected $txtCommitMessage;
         protected $lblOutput;
         protected $pnlPatchViewer;
         
         protected $btnCommit;
         protected $btnTest;
+        protected $strSSHKey;
 
         public function __construct(NarroProject $objProject, NarroLanguage $objLanguage, $objParentObject, $strControlId = null) {
             parent::__construct($objProject, $objLanguage, $objParentObject, $strControlId);
@@ -49,31 +48,19 @@
             $this->txtUsername->Required = true;
             $this->txtUsername->PreferedRenderMethod = 'RenderWithName';
             
-            $this->txtPassword = new QTextBox($this);
-            $this->txtPassword->Name = t('Password for SVN');
-            $this->txtPassword->Text = '';
-            $this->txtPassword->Instructions = t('Not needed if you use a private SSH key');
-            $this->txtPassword->PreferedRenderMethod = 'RenderWithName';
-            
             $this->fileSSHPrivateKey = new QFileControl($this);
             $this->fileSSHPrivateKey->Name = t('Private SSH key for SVN');
             $this->fileSSHPrivateKey->Required = true;
             $this->fileSSHPrivateKey->Instructions = t("Uploading a private key is really unsecure unless you're using https. Proceed with caution.");
             $this->fileSSHPrivateKey->PreferedRenderMethod = 'RenderWithName';
             
-            $this->txtCommitUsername = new QTextBox($this);
-            $this->txtCommitUsername->Required = true;
-            $this->txtCommitUsername->Name = t('Author shown in the commit message');
-            $this->txtCommitUsername->Text = sprintf('%s <%s>', QApplication::$User->RealName, QApplication::$User->Email);
-            $this->txtCommitUsername->Instructions = t('Usually, this is something like Alexandru Szasz <alexxed@gmail.com>');
-            $this->txtCommitUsername->PreferedRenderMethod = 'RenderWithName';    
-            
             $this->txtCommitMessage = new QTextBox($this);
             $this->txtCommitMessage->Required = true;
+            $this->txtCommitMessage->TextMode = QTextMode::MultiLine;
             $this->txtCommitMessage->Name = t('The commit message');
-            $this->txtCommitMessage->Text = t('Commit from Narro');
+            $this->txtCommitMessage->Text = sprintf(t('Commit from Narro by %s'), sprintf('%s <%s>', QApplication::$User->RealName, QApplication::$User->Email));
             $this->txtCommitMessage->Instructions = t('Be creative or leave it as it is');
-            $this->txtCommitMessage->PreferedRenderMethod = 'RenderWithName';            
+            $this->txtCommitMessage->PreferedRenderMethod = 'RenderWithName';
 
             $this->btnTest = new QButton($this);
             $this->btnTest->Text = 'Test before commit';
@@ -91,113 +78,117 @@
             $this->lblOutput->HtmlEntities = false;
         }
         
-        public function btnCommit_Click() {
+        protected function RepositorySetup() {
+            
             NarroProject::RegisterPreference('SVN commit path', false, 0, 'text', 'The url to commit this project to SVN.', '');
             NarroProject::RegisterPreference('Username for SVN', false, 0, 'text', '', '');
             
             $this->objProject->SetPreferenceValueByName('SVN commit path', $this->txtRepositoryUrl->Text);
             $this->objProject->SetPreferenceValueByName('Username for SVN', $this->txtUsername->Text);
             $this->objProject->Save();
-                        
-            $strSSHKey = sprintf('%s/svn_%d_%s_%d', __TMP_PATH__, QApplication::$User->UserId, QApplication::$TargetLanguage->LanguageCode, $this->objProject->ProjectId);
+            
+            $this->strSSHKey = sprintf('%s/svn_%d_%s_%d', __TMP_PATH__, QApplication::$User->UserId, QApplication::$TargetLanguage->LanguageCode, $this->objProject->ProjectId);
             $strProcLogFile = __TMP_PATH__ . '/' . $this->objProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-svn.log';
-            copy($this->fileSSHPrivateKey->File, $strSSHKey);
-            chmod($strSSHKey, 0600);
-            file_put_contents(
-                $strSSHKey . '_hgrc',
-                sprintf(
-                    "[paths]\n" .
-                    "default = %s\n" .
-                    "\n" .
-                    "[ui]\n" .
-                    "ssh = ssh -i %s -o StrictHostKeyChecking=no -l %s\n" .
-                    "username = %s\n",
-                    $this->txtRepositoryUrl->Text,
-                    $strSSHKey,
-                    $this->txtUsername->Text,
-                    $this->txtCommitUsername->Text
-                )
-            );
+            copy($this->fileSSHPrivateKey->File, $this->strSSHKey);
+            chmod($this->strSSHKey, 0600);
             
-            $mixProcess = exec(
+            $mixProcess = NarroUtils::Exec(
                 sprintf(
-                    'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_svn;cd %s_svn; cp -f -R %s/* .; hg commit -m "%s" %s; hg push %s', 
-                    __TMP_PATH__,
-                    $strSSHKey . '_hgrc',
+                	'svn checkout %s %s_svn',
                     $this->txtRepositoryUrl->Text,
-                    $strSSHKey,
-                    $strSSHKey,
-                    $this->objProject->DefaultTranslationPath,
-                    $this->txtCommitMessage->Text,
-                    ($this->pnlPatchViewer && count($this->pnlPatchViewer->SelectedFiles))?join(" ", $this->pnlPatchViewer->SelectedFiles):"",
-                    $this->txtRepositoryUrl->Text
+                    $this->strSSHKey
                 ),
-                $arrOutput
+                $arrOutput,
+                $arrError,
+                $intRetVal,
+                false,
+                array(
+                    'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 7822 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+            		'HOME' => __TMP_PATH__
+                ),
+                __TMP_PATH__,
+                true
             );
             
-            $this->lblOutput->Text = join("\n", $arrOutput);
-            
-            unlink($strSSHKey);
-            unlink($strSSHKey . '_hgrc');
-            
-            NarroUtils::RecursiveDelete($strSSHKey . '_svn');            
+            if ($intRetVal == 0) {
+                NarroUtils::RecursiveCopy($this->objProject->DefaultTranslationPath, $this->strSSHKey . '_svn');
+                
+                $mixProcess = NarroUtils::Exec(
+                	'svn add -q ./*',
+                    $arrOutput,
+                    $arrError,
+                    $intRetVal,
+                    false,
+                    array(
+                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 7822 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+                		'HOME' => __TMP_PATH__
+                    ),
+                    $this->strSSHKey . '_svn',
+                    true
+                );
+                
+                return $intRetVal;
+            }
+            else
+                return $intRetVal;
         }
         
-        public function btnTest_Click() {  
-            NarroProject::RegisterPreference('SVN commit path', false, 0, 'text', 'The url to commit this project to SVN.', '');
-            NarroProject::RegisterPreference('Username for SVN', false, 0, 'text', '', '');
-            
-            $this->objProject->SetPreferenceValueByName('SVN commit path', $this->txtRepositoryUrl->Text);
-            $this->objProject->SetPreferenceValueByName('Username for SVN', $this->txtUsername->Text);
-            $this->objProject->Save();
-            
-            $strSSHKey = sprintf('%s/svn_%d_%s_%d', __TMP_PATH__, QApplication::$User->UserId, QApplication::$TargetLanguage->LanguageCode, $this->objProject->ProjectId);
-            $strProcLogFile = __TMP_PATH__ . '/' . $this->objProject->ProjectId . '-' . QApplication::$TargetLanguage->LanguageCode . '-svn.log';
-            copy($this->fileSSHPrivateKey->File, $strSSHKey);
-            chmod($strSSHKey, 0600);
-            file_put_contents(
-                $strSSHKey . '_hgrc',
-                sprintf(
-                    "[paths]\n" .
-                    "default = %s\n" .
-                    "\n" .
-                    "[ui]\n" .
-                    "ssh = ssh -i %s -o StrictHostKeyChecking=no -l %s\n" .
-                    "username = %s\n",
-                    $this->txtRepositoryUrl->Text,
-                    $strSSHKey,
-                    $this->txtUsername->Text,
-                    $this->txtCommitUsername->Text
-                )
-            );
-            
-            $mixProcess = exec(
-                sprintf(
-                	'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_svn;cd %s_svn; cp -f -R %s/* .; hg diff -w --nodates > %s_diff; hg commit -m "%s" %s; hg outgoing', 
-                    __TMP_PATH__, 
-                    $strSSHKey . '_hgrc', 
-                    $this->txtRepositoryUrl->Text, 
-                    $strSSHKey,
-                    $strSSHKey, 
-                    $this->objProject->DefaultTranslationPath,
-                    $strSSHKey,
-                    $this->txtCommitMessage->Text,
-                    ($this->pnlPatchViewer && count($this->pnlPatchViewer->SelectedFiles))?join(" ", $this->pnlPatchViewer->SelectedFiles):""
-                ),
-                $arrOutput
-            );
+        public function btnCommit_Click() {
+            if ($this->RepositorySetup() == 0) {
+                $mixProcess = NarroUtils::Exec(
+                    sprintf(
+                    	'svn commit -m "%s" %s',
+                        $this->txtCommitMessage->Text,
+                        (($this->pnlPatchViewer && count($this->pnlPatchViewer->SelectedFiles))?join(" ", $this->pnlPatchViewer->SelectedFiles):"")
+                	),
+                    $arrOutput,
+                    $arrError,
+                    $intRetVal,
+                    false,
+                    array(
+                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 7822 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+                        'HOME' => __TMP_PATH__
+                    ),
+                    $this->strSSHKey . '_svn',
+                    true
+                );
+            }
             
             $this->lblOutput->Text = join("\n", $arrOutput);
+            
+            unlink($this->strSSHKey);
+            NarroUtils::RecursiveDelete($this->strSSHKey . '_svn');
+        }
+        
+        public function btnTest_Click() {
+            if ($this->RepositorySetup() == 0) {
+                $mixProcess = NarroUtils::Exec(
+            		sprintf('svn diff > %s_diff', $this->strSSHKey),
+                    $arrOutput,
+                    $arrError,
+                    $intRetVal,
+                    false,
+                    array(
+                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 7822 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+                		'HOME' => __TMP_PATH__
+                    ),
+                    $this->strSSHKey . '_svn',
+                    true
+                );
+                
+            }
+            else
+                $this->lblOutput->Text = join("\n", $arrOutput);
             
             $this->Form->RemoveControl($this->pnlPatchViewer->ControlId);
             
-            $this->pnlPatchViewer = new NarroPatchViewerPanel($strSSHKey . '_diff', $this);
+            NarroPatchViewerPanel::$strFileExpression = '/^\-\-\-\s([^\(]+).*$/';
+            $this->pnlPatchViewer = new NarroPatchViewerPanel($this->strSSHKey . '_diff', $this);
             
-            unlink($strSSHKey);
-            unlink($strSSHKey . '_hgrc');
-            unlink($strSSHKey . '_diff');
+            unlink($this->strSSHKey);
+            unlink($this->strSSHKey . '_diff');
             
-            NarroUtils::RecursiveDelete($strSSHKey . '_svn');
+            NarroUtils::RecursiveDelete($this->strSSHKey . '_svn');
             
             $this->btnCommit->Display = true;
         }
