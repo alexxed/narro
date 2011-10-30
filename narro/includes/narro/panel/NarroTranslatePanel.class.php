@@ -138,7 +138,6 @@
         public function chkRefresh_Create() {
             $this->chkRefresh = new QCheckBox($this);
             $this->chkRefresh->Name = t('Refresh after saving');
-            $this->chkRefresh->Display = false;
             $this->chkRefresh->Checked = false;
         }
 
