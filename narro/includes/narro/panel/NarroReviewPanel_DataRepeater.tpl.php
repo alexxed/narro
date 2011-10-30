@@ -11,8 +11,6 @@ if (!$pnlEditor) {
         $pnlEditor->TextAccessKey->Display = false;
     if ($pnlEditor->CopyButton instanceof QControl)
         $pnlEditor->CopyButton->Display = false;
-    if ($pnlEditor->KeepUntranslatedButton instanceof QControl)
-        $pnlEditor->KeepUntranslatedButton->Display = false;
     $pnlEditor->dtgTranslation_Create();
     $pnlEditor->Translation->AddAction(new QFocusEvent(), new QJavaScriptAction(
             sprintf("if  (jQuery(window).scrollTop() + 200 > jQuery(document).height() - jQuery(window).height() && jQuery('#endReached').attr('checked') == false) qc.pA('%s', '%s', 'QClickEvent', '%s', '%s')", $_CONTROL->Form->FormId, $_CONTROL->ParentControl->btnMore->ControlId, $pnlEditor->Translation->ControlId, $_CONTROL->ParentControl->objWaitIcon->ControlId)));
