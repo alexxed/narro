@@ -54,7 +54,7 @@
         
         public function chkRefresh_Create() {
             parent::chkRefresh_Create();
-            $this->chkRefresh->Checked = true;
+            // $this->chkRefresh->Checked = true;
         }
         
     }
