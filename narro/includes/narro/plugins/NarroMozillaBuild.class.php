@@ -313,8 +313,6 @@
             }
             
             NarroUtils::RecursiveChmod($objProject->DefaultTemplatePath);
-            
-            $this->CreateExportArchive($objProject);
         }
         
         private function CreateExportArchive(NarroProject $objProject) {
@@ -365,6 +363,8 @@
             }
             
             $this->UpdateBuildDirectory($objProject);
+            
+            $this->CreateExportArchive($objProject);
             
             NarroUtils::RecursiveChmod($this->strHgDir);
             NarroUtils::RecursiveChmod($this->strObjDir);
