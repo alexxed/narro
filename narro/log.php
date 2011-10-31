@@ -47,7 +47,9 @@
             $this->dtgLog->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
             $this->dtgLog->SortColumnIndex = 0;
             $this->dtgLog->SortDirection = 1;
-            $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Date);
+            $colDate = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Date);
+            $colDate->OrderByClause = QQ::OrderBy(QQN::NarroLog()->LogId);
+            $colDate->ReverseOrderByClause = QQ::OrderBy(QQN::NarroLog()->LogId, 0);
             
             if (QApplication::HasPermission('Administrator')) {
                 $colLanguage = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Language->LanguageName);
