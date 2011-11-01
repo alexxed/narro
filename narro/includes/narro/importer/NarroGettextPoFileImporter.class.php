@@ -359,7 +359,7 @@
                         $strGeneratorLine = sprintf('X-Generator: Narro %s on %s\n', NARRO_VERSION, __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__);
 
                         if (strstr($arrTemplateFields['MsgStr'], '"X-Generator:'))
-                            $arrTemplateFields['MsgStr'] = preg_replace('/X\-Generator:[^"]+/mi', $strGeneratorLine, $arrTemplateFields['MsgStr']);
+                            $arrTemplateFields['MsgStr'] = $strGeneratorLine;
                         else
                             $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strGeneratorLine ;
 
