@@ -510,8 +510,18 @@
             if (file_exists($strTranslatedFile . '~')) {
                 unlink($strTranslatedFile . '~');
             }
+            
+            NarroUtils::Exec(
+                sprintf('msgcat %s -w 80 -o %s~', $strTranslatedFile, $strTranslatedFile),
+                $arrOutput,
+                $arrError,
+                $intRetVal,
+                false,
+                array(),
+                __TMP_PATH__,
+                true
+            );
 
-            exec(sprintf('msgcat %s -w 80 -o %s~', $strTranslatedFile, $strTranslatedFile));
             if (file_exists($strTranslatedFile . '~')) {
                 unlink($strTranslatedFile);
                 copy($strTranslatedFile . '~', $strTranslatedFile);
