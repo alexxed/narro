@@ -292,6 +292,24 @@
                 NarroLogger::LogError(sprintf('Cannot create or write to "%s".', $strTranslatedFile));
                 return false;
             }
+            
+            if ($this->objProject->GetPreferenceValueByName('Export translators and reviewers in the file header as a comment') == 'Yes') {
+                $arrUsers = array();
+                foreach($this->objFile->GetTranslatorArray($this->objTargetLanguage->LanguageId) as $objUser) {
+                    $arrUsers[] = sprintf("# %s <%s>", $objUser->RealName, $objUser->Email);
+                }
+            
+                if (count($arrUsers))
+                    fwrite($hndExportFile, sprintf("# Translator(s):\n#\n%s\n#\n", join("\n", $arrUsers)));
+            
+                $arrUsers = array();
+                foreach($this->objFile->GetReviewerArray($this->objTargetLanguage->LanguageId) as $objUser) {
+                    $arrUsers[] = sprintf("# %s <%s>", $objUser->RealName, $objUser->Email);
+                }
+            
+                if (count($arrUsers))
+                    fwrite($hndExportFile, sprintf("# Reviewer(s):\n#\n%s\n#\n", join("\n", $arrUsers)));
+            }
 
             $arrTemplateFile = $this->getFieldGroups($strTemplate);
             $intTotalContexts = count($arrTemplateFile);
@@ -397,7 +415,15 @@
                             $arrTemplateFields['MsgStr'] = preg_replace('/PO\-Revision\-Date:[^"]+/mi', $strRevisionLine, $arrTemplateFields['MsgStr']);
                         else
                             $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"' . $strRevisionLine;
-
+                        
+                        if (!strstr($arrTemplateFields['MsgStr'], '"MIME-Version'))
+                            $arrTemplateFields['MsgStr'] .= '"' . "\n" . '"MIME-Version: 1.0\n';
+                            
+                        if (!strstr($arrTemplateFields['MsgStr'], '"Content-Type'))
+                        	$arrTemplateFields['MsgStr'] .= '"' . "\n" . '"Content-Type: text/plain; charset=UTF-8\n';
+                        	
+                    	if (!strstr($arrTemplateFields['MsgStr'], '"Content-Transfer-Encoding'))
+                        	$arrTemplateFields['MsgStr'] .= '"' . "\n" . '"Content-Transfer-Encoding: 8bit\n';
                     }
                     else
                         $arrTemplateFields['MsgStr'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgId']), $this->getAccessKey($arrTemplateFields['MsgId']), $this->getAccessKeyPrefix($arrTemplateFields['MsgId']), null , null, $arrTemplateFields['Context']);
