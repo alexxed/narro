@@ -64,6 +64,7 @@
             $this->btnSearch = new QButton($this);
             $this->btnSearch->Text = t('Search');
             $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            $this->btnSearch->PrimaryButton = true;
 
             $this->txtSearch = new QTextBox($this);
             $this->txtSearch->Text = QApplication::QueryString('s');
