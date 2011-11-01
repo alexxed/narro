@@ -87,6 +87,7 @@
             $this->txtPassword = new QTextBox($this);
             $this->txtPassword->Name = QApplication::Translate('Password');
             $this->txtPassword->Required = false;
+            $this->txtPassword->TextMode = QTextMode::Password;
             $this->txtPassword->MaxLength = NarroUser::PasswordMaxLength;
         }
 
