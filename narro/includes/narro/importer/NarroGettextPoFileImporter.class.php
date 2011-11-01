@@ -424,6 +424,9 @@
                         	
                     	if (!strstr($arrTemplateFields['MsgStr'], '"Content-Transfer-Encoding'))
                         	$arrTemplateFields['MsgStr'] .= '"' . "\n" . '"Content-Transfer-Encoding: 8bit\n';
+                    	
+                    	if (!strstr($arrTemplateFields['MsgStr'], '"Plural-Forms'))
+                    	    $arrTemplateFields['MsgStr'] .= '"' . "\n" . $this->objTargetLanguage->PluralForm . "\n" . '"';
                     }
                     else
                         $arrTemplateFields['MsgStr'] = $this->GetTranslation($this->stripAccessKey($arrTemplateFields['MsgId']), $this->getAccessKey($arrTemplateFields['MsgId']), $this->getAccessKeyPrefix($arrTemplateFields['MsgId']), null , null, $arrTemplateFields['Context']);
