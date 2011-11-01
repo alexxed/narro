@@ -98,9 +98,18 @@
         
         private function InitBuildDirectory(NarroProject $objProject) {
             NarroLogger::LogInfo(sprintf('Running hg clone %s %s', $this->strRepoUrl, $this->strHgDir));
-            exec(sprintf('hg clone %s %s', $this->strRepoUrl, $this->strHgDir), $arrOutput, $retVal);
-            foreach($arrOutput as $strOutput)
-                NarroLogger::LogInfo($strOutput);
+            NarroUtils::Exec(
+                sprintf('hg clone %s %s', $this->strRepoUrl, $this->strHgDir),
+                $arrOutput,
+                $arrError,
+                $intRetVal,
+                false,
+                array(
+                	'PYTHONPATH' => sprintf('%s/compare-locales/lib', $this->strObjDir)
+                ),
+                __TMP_PATH__,
+                true
+            );
             
             if ($retVal != 0) {
                 NarroLogger::LogError(sprintf('Cloning the Mercurial repository failed: %d', $retVal));
@@ -391,14 +400,20 @@
                 NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrBrowserDirList), $this->objFirefoxProject->DefaultTranslationPath));
                 NarroUtils::RecursiveCopy($this->objFirefoxProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
             }
-
-            exec(sprintf('make -s langpack-%s', QApplication::$TargetLanguage->LanguageCode), $arrOutput, $retVal);
-            if ($retVal!=0) {
-                NarroLogger::LogError(sprintf('make -s langpack-%s returned %d', QApplication::$TargetLanguage->LanguageCode, $retVal));
-                foreach($arrOutput as $strOutput)
-                    NarroLogger::LogError($strOutput);
-            }
             
+            NarroUtils::Exec(
+                sprintf('make -s langpack-%s', QApplication::$TargetLanguage->LanguageCode),
+                $arrOutput,
+                $arrError,
+                $intRetVal,
+                false,
+                array(
+                	'PYTHONPATH' => sprintf('%s/compare-locales/lib', $this->strObjDir)
+            	),
+                $this->strObjDir . '/' . $this->strApplicationType . '/locales',
+                true
+            );
+
             if ($this->strApplicationType != 'browser') {
                 foreach(self::$arrBrowserDirList as $strDir) {
                     NarroUtils::RecursiveDelete($objProject->DefaultTranslationPath . '/' . $strDir);
