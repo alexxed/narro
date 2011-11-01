@@ -216,6 +216,14 @@
                     file_put_contents(
                         $strProjectDir . '/export.sh',
                         "#!/bin/bash\n".
+                        "#\n".
+                        "PROJECT_DIR=$(readlink -f $0)\n".
+                        "PROJECT_DIR=`dirname $PROJECT_DIR`\n".
+                        "PARENT_DIR=`dirname $PROJECT_DIR`\n".
+                        "PROJECT_ID=`basename $PROJECT_DIR`\n".
+                        "\n".
+                        "cd $PROJECT_DIR\n".
+                        "\n".
                         "# \$1 - language code\n".
                         "# \$2 - language id\n".
                         "# \$3 - project name\n".
