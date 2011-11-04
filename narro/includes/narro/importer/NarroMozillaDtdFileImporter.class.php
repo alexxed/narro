@@ -20,6 +20,11 @@
         const ENTITY_REGEX = '/(.*)(<!ENTITY\s+)([^\s]+)(\s+")([^"]*)("\s?>\s*)/m';
         const ENTITY_REGEX_2 = "/(.*)(<!ENTITY\s+)([^\s]+)(\s+')([^']*)('\s?>\s*)/m";
         const COMMENT_REGEX = '/<!--([^>]+)-->/m';
+        
+        protected $blnCommentStart = false;
+        protected $blnCommentEnd = true;
+        protected $intCommments = 0;
+        
         /**
          * Preprocesses the whole file, e.g. removing trailing spaces
          * @param string $strFile file content
@@ -42,6 +47,32 @@
 
             return $strLine;
         }
+        
+        protected function GetComments($strLine) {
+            $strLineToProcess = $strLine;
+            $arrComment = array();
+            while (($intCommentStart = strpos($strLineToProcess, '<!--')) !== false) {
+                if (($intCommentEnd = strpos($strLineToProcess, '-->')) !== false)
+                    $strComment = substr($strLineToProcess, $intCommentStart, $intCommentEnd + 3);
+                else
+                    $strComment = substr($strLineToProcess, $intCommentStart);
+                
+                $strLineToProcess = NarroString::Replace($strComment, '', $strLineToProcess, 1);
+                
+                $arrComment[] = trim($strComment);
+            }
+            
+            return $arrComment;
+        }
+        
+        protected function StripComments($strLine) {
+            $strResult = $strLine;
+            foreach($this->GetComments($strLine) as $strComment) {
+                $strResult = NarroString::Replace($strComment, '', $strResult, 1);
+            }
+            
+            return $strResult;
+        }
 
         /**
          * Process the line by splitting the $strLine in key=>value
@@ -52,7 +83,8 @@
          * @return NarroFileEntity
          */
         protected function ProcessLine($strLine) {
-            if (preg_match(self::ENTITY_REGEX, $strLine, $arrMatches) || preg_match(self::ENTITY_REGEX_2, $strLine, $arrMatches) ) {
+            
+            if (preg_match(self::ENTITY_REGEX, $this->StripComments($strLine), $arrMatches) || preg_match(self::ENTITY_REGEX_2, $this->StripComments($strLine), $arrMatches) ) {
                 $objEntity = new NarroFileEntity();
 
                 $objEntity->Key = $arrMatches[3];
@@ -60,14 +92,11 @@
 
                 $strLineWithoutEntity = str_replace($arrMatches[0], '', $strLine);
 
-                if (preg_match_all(self::COMMENT_REGEX, $strLineWithoutEntity, $arrCommentMatches))
-                    $objEntity->Comment = join("\n", $arrCommentMatches[0]);
-                else
-                    $objEntity->Comment = '';
+                $objEntity->Comment = join("\n", $this->GetComments($strLine));
 
-                $objEntity->BeforeValue = $strLineWithoutEntity . $arrMatches[1] . $arrMatches[2] . $arrMatches[3] . $arrMatches[4];
-                $objEntity->AfterValue = $arrMatches[6];
-
+                $objEntity->BeforeValue = substr($strLine, 0, strpos($strLine, $arrMatches[0])) . $arrMatches[1] . $arrMatches[2] . $arrMatches[3] . $arrMatches[4];
+                $objEntity->AfterValue = $arrMatches[6] . substr($strLine, strpos($strLine, $arrMatches[0]) + strlen($arrMatches[0]));
+                
                 return $objEntity;
             }
             else {
