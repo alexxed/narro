@@ -128,7 +128,7 @@
                             return false;
                         }
     
-                        QApplication::$Session->User = $objUser->User;
+                        QApplication::$Session->User = $objUser;
                         QApplication::$User = $objUser;
                         
                         if ($this->txtPreviousUrl)
