@@ -53,13 +53,13 @@
             $arrComment = array();
             while (($intCommentStart = strpos($strLineToProcess, '<!--')) !== false) {
                 if (($intCommentEnd = strpos($strLineToProcess, '-->')) !== false)
-                    $strComment = substr($strLineToProcess, $intCommentStart, $intCommentEnd + 3);
+                    $strComment = substr($strLineToProcess, $intCommentStart, $intCommentEnd - $intCommentStart + 3);
                 else
                     $strComment = substr($strLineToProcess, $intCommentStart);
                 
                 $strLineToProcess = NarroString::Replace($strComment, '', $strLineToProcess, 1);
                 
-                $arrComment[] = trim($strComment);
+                $arrComment[] = $strComment;
             }
             
             return $arrComment;
