@@ -79,10 +79,10 @@
             }
             
             if (isset($strLastKey) && $strPreviousLines)
-                $arrKeys[$strLastKey]->AfterValue .=  $strPreviousLines;
+                $arrKeys[$strLastKey]->AfterValue .=  "\n" . $strPreviousLines;
 
             // NarroLogger::LogDebug(sprintf('Converted file to array in %s second(s)', (time() - $intTime)));
-
+            
             return $arrKeys;
         }
         
