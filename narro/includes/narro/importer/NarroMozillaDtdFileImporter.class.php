@@ -17,8 +17,8 @@
      */
 
     class NarroMozillaDtdFileImporter extends NarroMozillaFileImporter {
-        const ENTITY_REGEX = '/(.*)(<!ENTITY\s+)([^\s]+)(\s+")([^"]*)("\s?>\s*)/m';
-        const ENTITY_REGEX_2 = "/(.*)(<!ENTITY\s+)([^\s]+)(\s+')([^']*)('\s?>\s*)/m";
+        const ENTITY_REGEX = '/(.*)(<!ENTITY\s+)([a-z][^\s]+)(\s+")([^"]*)("\s?>\s*)/m';
+        const ENTITY_REGEX_2 = "/(.*)(<!ENTITY\s+)([a-z][^\s]+)(\s+')([^']*)('\s?>\s*)/m";
         const COMMENT_REGEX = '/<!--([^>]+)-->/m';
         
         protected $blnCommentStart = false;
@@ -51,7 +51,9 @@
         protected function GetComments($strLine) {
             $strLineToProcess = $strLine;
             $arrComment = array();
-            while (($intCommentStart = strpos($strLineToProcess, '<!--')) !== false) {
+            $blnHasComment = preg_match_all('/\<\!\-\-/', $strLineToProcess, $arrMatches);
+            foreach($arrMatches[0] as $arrMatch) {
+                $intCommentStart = strpos($strLineToProcess, '<!--');
                 if (($intCommentEnd = strpos($strLineToProcess, '-->')) !== false)
                     $strComment = substr($strLineToProcess, $intCommentStart, $intCommentEnd - $intCommentStart + 3);
                 else
