@@ -26,7 +26,6 @@
 		public function ParsePostData() {
 		    if ($_POST['Qform__FormControl'] == $this->strControlId && $_POST['Qform__FormEvent'] == 'QTabs_SelectEvent')
 		        $this->intSelected = $_POST['Qform__FormParameter'];
-		    QFirebug::error($this->intSelected);
 		}
 
 		protected function RenderChildren($blnDisplayOutput = true) {
