@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 2.0
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2011-19-11 14:07+0200\n"
-"PO-Revision-Date: 2011-19-11 14:07+0200\n"
+"POT-Creation-Date: 2011-19-11 14:13+0200\n"
+"PO-Revision-Date: 2011-19-11 14:13+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,8 +17,8 @@ msgstr ""
 msgid "It seems that you left the page open for a while and the session expired.\nYou will be redirected to the project list after you close this dialogue.\nIf you get this message repeatedly, please report the problem to the administrator."
 msgstr ""
 
-#. $this->colSelect = new QCheckBoxColumn(QApplication::Translate('Select All'), $this->dtgPersons);
-#: includes/qcubed/includes/qcubed/_core/base_controls/QCheckBoxColumn.class.php includes/qcubed/assets/_core/php/examples/dynamic/qcheckboxcolumn.php
+#. $this->chkSelectAll->Name = QApplication::Translate('Select All');
+#: includes/qcubed/includes/qcubed/_core/base_controls/QCheckBoxColumn.class.php
 msgid "Select All"
 msgstr ""
 
@@ -32,8 +32,8 @@ msgstr ""
 msgid " is required"
 msgstr ""
 
-#. Required -> <?php _t('Required'); ?><br/>
-#: includes/qcubed/includes/qcubed/_core/base_controls/QFileAssetBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QTextBoxBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QListBoxBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QCheckBox.class.php includes/qcubed/includes/qcubed/_core/base_controls/QDateTimePicker.class.php includes/qcubed/includes/qcubed/_core/base_controls/QTreeNav.class.php includes/qcubed/includes/qcubed/_core/tests/qcubed-unit/QI18nTests.php includes/qcubed/assets/_core/php/examples/communication/advanced_intl.tpl.php
+#. $this->verifyTranslation("Required", QApplication::Translate("Required"), "Requis");
+#: includes/qcubed/includes/qcubed/_core/base_controls/QFileAssetBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QTextBoxBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QListBoxBase.class.php includes/qcubed/includes/qcubed/_core/base_controls/QCheckBox.class.php includes/qcubed/includes/qcubed/_core/base_controls/QDateTimePicker.class.php includes/qcubed/includes/qcubed/_core/base_controls/QTreeNav.class.php includes/qcubed/includes/qcubed/_core/tests/qcubed-unit/QI18nTests.php
 msgid "Required"
 msgstr ""
 
@@ -391,7 +391,7 @@ msgid "Upload"
 msgstr ""
 
 #. $this->btnCancel->Text = t('Cancel');
-#: includes/qcubed/includes/qcubed/controls/QFileAsset.class.php includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php preferences.php
+#: includes/qcubed/includes/qcubed/controls/QFileAsset.class.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php preferences.php
 msgid "Cancel"
 msgstr ""
 
@@ -403,134 +403,6 @@ msgstr ""
 #. $this->DialogBoxHtml = '<p>' . QApplication::Translate('Please select a file to upload.') . '</p>';
 #: includes/qcubed/includes/qcubed/controls/QFileAsset.class.php
 msgid "Please select a file to upload."
-msgstr ""
-
-#. Optional -> <?php _t('Optional'); ?>
-#: includes/qcubed/assets/_core/php/examples/communication/advanced_intl.tpl.php
-msgid "Optional"
-msgstr ""
-
-#. <h1 class="instruction_title"><?php _t('Internationalization and Translation') ?></h1>
-#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
-msgid "Internationalization and Translation"
-msgstr ""
-
-#. <?php _t('
-#. 		QQubed offers internationalization support via <b>QApplication::Translate()</b> (which internally
-#. 		will use the <b>QI18n</b> class). Default language and country
-#. 		settings can be setup in <b>prepend.inc.php</b>.  Out of the box, QCubed will check the session to determine
-#. 		which language and country is currently being used, but it is really up to the developer to
-#. 		determine how you want the language and country codes get discovered (e.g., via the URL, via
-#. 		GET arguments, etc.)'); ?>
-#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
-msgid "\n		QQubed offers internationalization support via <b>QApplication::Translate()</b> (which internally\n		will use the <b>QI18n</b> class). Default language and country\n		settings can be setup in <b>prepend.inc.php</b>.  Out of the box, QCubed will check the session to determine\n		which language and country is currently being used, but it is really up to the developer to\n		determine how you want the language and country codes get discovered (e.g., via the URL, via\n		GET arguments, etc.)"
-msgstr ""
-
-#. <?php _t('If at any point, you wish to translate to a different language than the one set by the session,
-#. 		you can use the <b>QI18n::Load()</b> function to create a unique I18n object, and call <b>TranslateToken()</b>
-#. 		on it.'); ?>
-#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
-msgid "If at any point, you wish to translate to a different language than the one set by the session,\n		you can use the <b>QI18n::Load()</b> function to create a unique I18n object, and call <b>TranslateToken()</b>\n		on it."
-msgstr ""
-
-#. <?php _t('Language files are in the GNU PO format (see'); ?>
-#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
-msgid "Language files are in the GNU PO format (see"
-msgstr ""
-
-#. <?php _t('
-#. 		To translate any piece of text, simply use <b>QApplication::Translate(xxx)</b>. Or as a shortcut,
-#. 		if you want to do a PHP <b>print()</b> of any translated text in your template, you can use
-#. 		the QCubed printing shortcut <b>_t(xxx)</b> -- this does the equivalent of
-#. 		<b>print(QApplication::Translate(xxx))</b>.'); ?>
-#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
-msgid "\n		To translate any piece of text, simply use <b>QApplication::Translate(xxx)</b>. Or as a shortcut,\n		if you want to do a PHP <b>print()</b> of any translated text in your template, you can use\n		the QCubed printing shortcut <b>_t(xxx)</b> -- this does the equivalent of\n		<b>print(QApplication::Translate(xxx))</b>."
-msgstr ""
-
-#. <h2><?php _t('Internationalization Example'); ?></h2>
-#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
-msgid "Internationalization Example"
-msgstr ""
-
-#. <?php _t('Current Language'); ?>:
-#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
-msgid "Current Language"
-msgstr ""
-
-#. <?php $this->btnEn->Render('Text="' . QApplication::Translate('Switch to') . ' en"'); ?>
-#. <?php $this->btnEs->Render('Text="' . QApplication::Translate('Switch to') . ' es"'); ?>
-#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
-msgid "Switch to"
-msgstr ""
-
-#. <?php _t('To view the People form draft translated into the selected language, go to'); ?>
-#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
-msgid "To view the People form draft translated into the selected language, go to"
-msgstr ""
-
-#. <?php _t('We used the <b>QI18n::Load</b> approach to ensure the following is always Spanish:'); ?><br/>
-#: includes/qcubed/assets/_core/php/examples/communication/i18n.tpl.php
-msgid "We used the <b>QI18n::Load</b> approach to ensure the following is always Spanish:"
-msgstr ""
-
-#. <div class="title"><?php _t('Person')?></div>
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.tpl.php
-msgid "Person"
-msgstr ""
-
-#. $arrHeaders[] = NarroLink::ProjectEdit($this->objProject->ProjectId, t('Edit'));
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php account.php translate.php review.php preferences.php import.php user_role.php project_languages.php user.php language_edit.php project.php export.php role.php project_edit.php files.php
-msgid "Edit"
-msgstr ""
-
-#. $this->strTitleVerb = QApplication::Translate('Create');
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php
-msgid "Create"
-msgstr ""
-
-#. $this->lblId->Name = QApplication::Translate('Id');
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
-msgid "Id"
-msgstr ""
-
-#. $this->txtFirstName->Name = QApplication::Translate('First Name');
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
-msgid "First Name"
-msgstr ""
-
-#. $this->txtLastName->Name = QApplication::Translate('Last Name');
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
-msgid "Last Name"
-msgstr ""
-
-#. $arrHeaders[] = NarroLink::UserLogin(t('Login'));
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php includes/narro/panel/NarroUserLoginPanel.class.php includes/narro/panel/NarroUserLoginPanel.tpl.php login.tpl.php password.php login.php join.php
-msgid "Login"
-msgstr ""
-
-#. $this->lstLogin->AddItem(QApplication::Translate('- Select One -'), null);
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
-msgid "- Select One -"
-msgstr ""
-
-#. $this->lstProjectsAsTeamMember->Name = QApplication::Translate('Projects As Team Member');
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php
-msgid "Projects As Team Member"
-msgstr ""
-
-#. $this->btnSave->Text = t('Save');
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php preferences.php
-msgid "Save"
-msgstr ""
-
-#. $this->colProjectSelected = new QCheckBoxColumn(QApplication::Translate('Select'), $this->dtgProjects);
-#: includes/qcubed/assets/_core/php/examples/dynamic/qcheckboxcolumn.php
-msgid "Select"
-msgstr ""
-
-#. t('Name'),
-#: includes/qcubed/assets/_core/php/examples/dynamic/qcheckboxcolumn.php includes/narro/panel/NarroProjectEditPanel.tpl.php includes/narro/panel/NarroProjectListPanel.class.php
-msgid "Name"
 msgstr ""
 
 #. $this->lblName->Name = QApplication::Translate('Title');
@@ -892,6 +764,11 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
+#. $arrHeaders[] = NarroLink::ProjectEdit($this->objProject->ProjectId, t('Edit'));
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php account.php translate.php review.php preferences.php import.php user_role.php project_languages.php user.php language_edit.php project.php export.php role.php project_edit.php files.php
+msgid "Edit"
+msgstr ""
+
 #. $btnTmx->ToolTip = t('Download all translations in a TMX file');
 #: includes/narro/panel/NarroLanguageListPanel.class.php
 msgid "Download all translations in a TMX file"
@@ -925,6 +802,11 @@ msgstr ""
 #. $this->dtgUser->MetaAddColumn(QQN::NarroUser()->Email, sprintf('Name="%s"', t('Email')), 'Html="<?= $_CONTROL->ParentControl->dtgUser_EmailColumn_Render($_ITEM) ?>"', 'HtmlEntities=false');
 #: includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroUserRecoverPasswordPanel.tpl.php includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroUserListPanel.class.php
 msgid "Email"
+msgstr ""
+
+#. $this->btnSave->Text = t('Save');
+#: includes/narro/panel/NarroUserEditPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php preferences.php
+msgid "Save"
 msgstr ""
 
 #. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you SURE you want to DELETE this user?')));
@@ -1040,6 +922,11 @@ msgstr ""
 #. t('Operation log'),
 #: includes/narro/panel/NarroLogViewerPanel.class.php
 msgid "Operation log"
+msgstr ""
+
+#. $this->strTitleVerb = QApplication::Translate('Create');
+#: includes/narro/panel/NarroLanguageEditPanel.class.php
+msgid "Create"
 msgstr ""
 
 #. $this->txtDialectCode->Name = QApplication::Translate('Dialect Code');
@@ -1486,6 +1373,11 @@ msgstr ""
 #. '<a href="logout.php?l=' . QApplication::$TargetLanguage->LanguageCode . '" style="vertical-align:middle"><img src="assets/images/logout.png" alt="' . t('Logout') . '" border="0" title="' . t('Logout') . '" /></a>'
 #: includes/narro/panel/NarroHeaderPanel.tpl.php
 msgid "Logout"
+msgstr ""
+
+#. t('Name'),
+#: includes/narro/panel/NarroProjectEditPanel.tpl.php includes/narro/panel/NarroProjectListPanel.class.php
+msgid "Name"
 msgstr ""
 
 #. <td><?php _t('Category') ?></td>
@@ -2007,6 +1899,11 @@ msgstr ""
 #. $lblNarroLogin->Text = t('Login with your Narro account');
 #: includes/narro/panel/NarroUserLoginPanel.class.php
 msgid "Login with your Narro account"
+msgstr ""
+
+#. $arrHeaders[] = NarroLink::UserLogin(t('Login'));
+#: includes/narro/panel/NarroUserLoginPanel.class.php includes/narro/panel/NarroUserLoginPanel.tpl.php login.tpl.php password.php login.php join.php
+msgid "Login"
 msgstr ""
 
 #. $lblOpenIdLogin->Text = t('Login with your OpenID');
