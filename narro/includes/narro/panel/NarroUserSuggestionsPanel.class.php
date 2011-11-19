@@ -81,11 +81,14 @@
 
             $this->dtgSuggestions->SortColumnIndex = 2;
             $this->dtgSuggestions->SortDirection = true;
+
             
             $this->dtgSuggestions->AdditionalClauses = array(
                 QQ::Expand(QQN::NarroSuggestion()->Text),
                 QQ::Expand(QQN::NarroSuggestion()->Language)
             );
+            
+            $this->dtgSuggestions->AdditionalConditions = QQ::Equal(QQN::NarroSuggestion()->UserId, $this->objUser->UserId);
             
             $this->dtgSuggestions->btnFilter_Click($this->Form->FormId, $this->dtgSuggestions->FilterButton->ControlId, '');
         }
@@ -116,6 +119,17 @@
 
         public function dtgSuggestions_Bind() {
             $this->dtgSuggestions->MetaDataBinder();
+            $objConditions = $this->dtgSuggestions->Conditions;
+            if(null !== $this->dtgSuggestions->AdditionalConditions)
+            $objConditions = QQ::AndCondition($this->dtgSuggestions->AdditionalConditions, $objConditions);
+            
+            // Setup the $objClauses Array
+            $objClauses = array();
+            
+            if(null !== $this->dtgSuggestions->AdditionalClauses)
+                $objClauses = $this->dtgSuggestions->AdditionalClauses;
+            
+            $this->dtgSuggestions->TotalItemCount = NarroSuggestion::QueryCount($objConditions, $objClauses);
             QApplication::ExecuteJavaScript('highlight_datagrid();');
         }
 
