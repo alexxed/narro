@@ -661,21 +661,18 @@
 
             if ($this->objProject->ProjectName == 'Narro') {
 
-                $fp = popen(
+                NarroUtils::Exec(
                     sprintf(
                         'msgfmt -cv %s -o %s 2>&1',
                         $this->strTranslationPath . '/narro.po',
                         $this->strTranslationPath . '/narro.mo'
                     ),
-                    'r'
+                    $arrOutput,
+                    $arrError,
+                    $intRetVal
                 );
 
-                $strOutput = '';
-
-                while(!feof($fp)) {
-                    $strOutput .= fread($fp, 1024);
-                }
-                if (pclose($fp))
+                if ($intRetVal != 0)
                     NarroLogger::LogError("Exporting Narro's translation failed:\n" . $strOutput);
                 else
                     NarroLogger::LogInfo("Exported Narro's translation succesfully. Press Ctrl+F5 to reload and see it.");
