@@ -104,12 +104,7 @@
                 if ($objLanguage instanceof NarroLanguage) {
                     $objUser->Language = $objLanguage;
                 }
-                else {
-                    $objUser->Language = QApplication::$TargetLanguage;
-                }
             }
-            else
-                $objUser->Language = QApplication::$TargetLanguage;
 
             return $objUser;
         }
@@ -269,7 +264,11 @@
                     * @return string
                     */
                     return htmlspecialchars($this->strUsername, ENT_NOQUOTES, 'UTF-8');
-                case 'Language': return $this->objLanguage;
+                case 'Language':
+                    if (!$this->objLanguage instanceof NarroLanguage)
+                        return QApplication::$TargetLanguage;
+                    else
+                        return $this->objLanguage;
                 case 'Preferences': return $this->arrPreferences;
                 case 'Permissions': return $this->arrPermissions;
 
