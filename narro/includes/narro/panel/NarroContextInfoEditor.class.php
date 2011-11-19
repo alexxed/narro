@@ -521,6 +521,14 @@
                     $this->objContextInfo->HasSuggestions = 1;
                     $this->objContextInfo->Modified = QDateTime::Now();;
                     $this->objContextInfo->Save();
+                    
+                    QApplication::ExecuteJavaScript(
+                    	sprintf(
+                    		'jQuery(\'#%s\').after(\'&nbsp;<small style="padding: 2px;" class="ui-state-highlight ui-corner-all"><span style="width:16px; height: 16px; display:inline-block" class="ui-icon ui-icon-info"></span>&nbsp;%s.</small>\')',
+                            $this->btnHelp->ControlId,
+                            t('Translation saved')
+                        )
+                    );
 
                     if ($this->dtgTranslation)
                         $this->dtgTranslation->MarkAsModified();

@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 2.0
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2011-19-11 14:13+0200\n"
-"PO-Revision-Date: 2011-19-11 14:13+0200\n"
+"POT-Creation-Date: 2011-19-11 15:34+0200\n"
+"PO-Revision-Date: 2011-19-11 15:34+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -557,9 +557,14 @@ msgstr ""
 msgid "Text length check"
 msgstr ""
 
-#. '<span style="color:red">' . t('Your translation seems really short compared to the original, or the other way around. Are you sure it is correct?') . '</span>';
+#. '<span style="color:red">' . t('Your translation seems really short compared to the original. Are you sure it is correct?') . '</span>';
 #: includes/narro/plugins/NarroTextLengthCheck.class.php
-msgid "Your translation seems really short compared to the original, or the other way around. Are you sure it is correct?"
+msgid "Your translation seems really short compared to the original. Are you sure it is correct?"
+msgstr ""
+
+#. '<span style="color:red">' . t('Your translation seems really long compared to the original. Are you sure it is correct?') . '</span>';
+#: includes/narro/plugins/NarroTextLengthCheck.class.php
+msgid "Your translation seems really long compared to the original. Are you sure it is correct?"
 msgstr ""
 
 #. $this->strName = t('Archive Exporter');
@@ -1739,6 +1744,11 @@ msgstr ""
 #. $this->lblMessage->Text .= sprintf(t('Clear the textbox to skip this translation, click Ignore and save or click the save button to try again'));
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "Clear the textbox to skip this translation, click Ignore and save or click the save button to try again"
+msgstr ""
+
+#. t('Translation saved')
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Translation saved"
 msgstr ""
 
 #. $this->lblText->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it or %s'), $strLink, '');
