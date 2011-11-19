@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 2.0
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2011-29-10 10:16+0300\n"
-"PO-Revision-Date: 2011-29-10 10:16+0300\n"
+"POT-Creation-Date: 2011-19-11 14:07+0200\n"
+"PO-Revision-Date: 2011-19-11 14:07+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -478,8 +478,8 @@ msgstr ""
 msgid "Person"
 msgstr ""
 
-#. $strTabTitle = t('Edit');
-#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php includes/narro/NarroGenericProjectForm.class.php includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php account.php preferences.php user_role.php user.php language_edit.php role.php project_edit.php
+#. $arrHeaders[] = NarroLink::ProjectEdit($this->objProject->ProjectId, t('Edit'));
+#: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroLanguageEditPanel.class.php includes/narro/panel/NarroRoleListPanel.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php account.php translate.php review.php preferences.php import.php user_role.php project_languages.php user.php language_edit.php project.php export.php role.php project_edit.php files.php
 msgid "Edit"
 msgstr ""
 
@@ -503,7 +503,7 @@ msgstr ""
 msgid "Last Name"
 msgstr ""
 
-#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Login'), NarroLink::UserLogin());
+#. $arrHeaders[] = NarroLink::UserLogin(t('Login'));
 #: includes/qcubed/assets/_core/php/examples/multiple_qform/PersonEditPanel.class.php includes/narro/panel/NarroUserLoginPanel.class.php includes/narro/panel/NarroUserLoginPanel.tpl.php login.tpl.php password.php login.php join.php
 msgid "Login"
 msgstr ""
@@ -583,11 +583,6 @@ msgstr ""
 msgid "Create New"
 msgstr ""
 
-#. // NarroLogger::LogDebug( sprintf( t('Starting to import from "%s" and translations from "%s"'), str_replace($this->objProject->DefaultTemplatePath, '', $strTemplateFile), str_replace($this->objProject->DefaultTranslationPath, '', $strTranslatedFile)));
-#: includes/narro/importer/NarroProjectImporter.class.php
-msgid "Starting to import from \"%s\" and translations from \"%s\""
-msgstr ""
-
 #. // NarroLogger::LogDebug( sprintf( t('Starting to import from "%s", no translations file'), str_replace($this->objProject->DefaultTemplatePath, '', $strTemplateFile)));
 #: includes/narro/importer/NarroProjectImporter.class.php
 msgid "Starting to import from \"%s\", no translations file"
@@ -647,48 +642,6 @@ msgstr ""
 #. NarroUser::RegisterPreference($this->strName, 'option', sprintf(t('Enables the %s plugin'), $this->strName), ($this->blnEnable)?'Yes':'No', array('Yes', 'No'));
 #: includes/narro/NarroPlugin.class.php
 msgid "Enables the %s plugin"
-msgstr ""
-
-#. $this->pnlMainTab->replaceTab(new NarroProjectPanel($this->objProject, $this->pnlMainTab), t('Overview'));
-#: includes/narro/NarroGenericProjectForm.class.php project.php
-msgid "Overview"
-msgstr ""
-
-#. $strTabTitle = t('Add');
-#: includes/narro/NarroGenericProjectForm.class.php includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroProjectListPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php languages.php roles.php language_edit.php role.php project_edit.tpl.php project_edit.php
-msgid "Add"
-msgstr ""
-
-#. $strPageTitle = t('Translate');
-#: includes/narro/NarroGenericProjectForm.class.php projects.php translate.php languages.php review.php users.php roles.php language_edit.php role.php log.php translate.tpl.php
-msgid "Translate"
-msgstr ""
-
-#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Review'), NarroLink::Review(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0));
-#: includes/narro/NarroGenericProjectForm.class.php projects.php translate.php languages.php review.php users.php roles.php review.tpl.php log.php
-msgid "Review"
-msgstr ""
-
-#. $this->pnlMainTab->replaceTab($this->pnlSelectedTab, t('Files'));
-#. $this->pnlMainTab->SelectedTab = t('Files');
-#: includes/narro/NarroGenericProjectForm.class.php files.php
-msgid "Files"
-msgstr ""
-
-#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());
-#: includes/narro/NarroGenericProjectForm.class.php includes/narro/panel/NarroLanguageListPanel.class.php projects.php translate.php languages.php review.php users.php project_languages.php roles.php language_edit.php role.php log.php
-msgid "Languages"
-msgstr ""
-
-#. $strPageTitle = $this->objProject->ProjectName . ' :: ' . t('Import');
-#: includes/narro/NarroGenericProjectForm.class.php includes/narro/panel/NarroProjectImportPanel.class.php includes/narro/panel/NarroFileImportPanel.class.php import.php import.tpl.php
-msgid "Import"
-msgstr ""
-
-#. $this->pnlMainTab->replaceTab(new NarroProjectExportPanel($this->objProject, $this->pnlMainTab), t('Export'));
-#. $this->pnlMainTab->SelectedTab = t('Export');
-#: includes/narro/NarroGenericProjectForm.class.php includes/narro/panel/NarroFileExportPanel.class.php includes/narro/panel/NarroProjectFileListPanel.class.php includes/narro/sources/NarroDirectoryTargetPanel.class.php export.tpl.php export.php
-msgid "Export"
 msgstr ""
 
 #. NarroLink::ProjectList(t('Projects')),
@@ -909,13 +862,18 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#. <div class="section_title"><?php _t('Translations')?></div>
-#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroProjectImportPanel.tpl.php
+#. $arrHeaders[] = NarroLink::ProjectLanguages($this->objProject->ProjectId, t('Languages'));
+#: includes/narro/panel/NarroLanguageListPanel.class.php projects.php translate.php languages.php review.php users.php import.php project_languages.php roles.php language_edit.php project.php export.php role.php log.php project_edit.php files.php
+msgid "Languages"
+msgstr ""
+
+#. <a><?php _t('Translations')?></a>
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroTopPanel.class.php includes/narro/panel/NarroProjectImportPanel.tpl.php
 msgid "Translations"
 msgstr ""
 
 #. $colLastTranslation = new QDataGridColumn(t('Last translation'));
-#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroProjectPanel.class.php
+#: includes/narro/panel/NarroLanguageListPanel.class.php
 msgid "Last translation"
 msgstr ""
 
@@ -929,8 +887,8 @@ msgstr ""
 msgid "active languages"
 msgstr ""
 
-#. $this->btnSearch->Text = t('Search');
-#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroTranslatePanel.tpl.php includes/narro/panel/NarroReviewPanel.tpl.php includes/narro/panel/NarroTranslatePanel.class.php includes/narro/panel/NarroProjectFileListPanel.class.php includes/narro/panel/NarroProjectListPanel.class.php includes/narro/panel/NarroUserListPanel.class.php
+#. $this->btnSearch->AlternateText = t('Search');
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroTranslatePanel.tpl.php includes/narro/panel/NarroReviewPanel.tpl.php includes/narro/panel/NarroTranslatePanel.class.php includes/narro/panel/NarroProjectFileListPanel.class.php includes/narro/panel/NarroProjectListPanel.class.php includes/narro/panel/NarroUserListPanel.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php
 msgid "Search"
 msgstr ""
 
@@ -940,7 +898,7 @@ msgid "Download all translations in a TMX file"
 msgstr ""
 
 #. return sprintf(t('%s ago'), $strModifiedWhen);
-#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroProjectPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroUserSuggestionsPanel.class.php includes/narro/panel/NarroProjectListPanel.class.php
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroUserSuggestionsPanel.class.php includes/narro/panel/NarroProjectListPanel.class.php
 msgid "%s ago"
 msgstr ""
 
@@ -979,9 +937,14 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#. <div class="section_title"><?php _t('Options')?></div>
+#. <a><?php _t('Options')?></a>
 #: includes/narro/panel/NarroTranslatePanel.tpl.php includes/narro/panel/NarroReviewPanel.tpl.php includes/narro/panel/NarroProjectImportPanel.tpl.php includes/narro/sources/NarroDirectoryTargetPanel.tpl.php
 msgid "Options"
+msgstr ""
+
+#. <a><?php _t('Glossary')?></a>
+#: includes/narro/panel/NarroTranslatePanel.tpl.php
+msgid "Glossary"
 msgstr ""
 
 #. <div class="section_title"><?php _t('Results')?></div>
@@ -1004,34 +967,14 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-#. $this->dtgTranslators->Title = t('Translators');
+#. $this->pnlTop->Headers = array(t('Weekly'), t('All time'));
 #: includes/narro/panel/NarroProjectPanel.class.php
-msgid "Translators"
+msgid "Weekly"
 msgstr ""
 
-#. $colUsername = new QDataGridColumn(t('Translator'));
+#. $this->pnlTop->Headers = array(t('Weekly'), t('All time'));
 #: includes/narro/panel/NarroProjectPanel.class.php
-msgid "Translator"
-msgstr ""
-
-#. $colWordCount = new QDataGridColumn(t('Texts translated'));
-#: includes/narro/panel/NarroProjectPanel.class.php
-msgid "Texts translated"
-msgstr ""
-
-#. $this->dtgReviewers->Title = t('Reviewers');
-#: includes/narro/panel/NarroProjectPanel.class.php
-msgid "Reviewers"
-msgstr ""
-
-#. $colUsername = new QDataGridColumn(t('Reviewer'));
-#: includes/narro/panel/NarroProjectPanel.class.php
-msgid "Reviewer"
-msgstr ""
-
-#. $colReviews = new QDataGridColumn(t('Reviews'));
-#: includes/narro/panel/NarroProjectPanel.class.php
-msgid "Reviews"
+msgid "All time"
 msgstr ""
 
 #. <?php _t('Click on any file to view or on the progress bar to translate it.') ?><br />
@@ -1127,62 +1070,67 @@ msgstr ""
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+#: includes/narro/panel/NarroHeaderPanel.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php preferences.php
 msgid "English US"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+#: includes/narro/panel/NarroHeaderPanel.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php preferences.php
 msgid "French"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+#: includes/narro/panel/NarroHeaderPanel.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php preferences.php
 msgid "German"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+#: includes/narro/panel/NarroHeaderPanel.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php preferences.php
 msgid "Italian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+#: includes/narro/panel/NarroHeaderPanel.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php preferences.php
 msgid "Portuguese, Brazil"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+#: includes/narro/panel/NarroHeaderPanel.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php preferences.php
 msgid "Portuguese, Portugal"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+#: includes/narro/panel/NarroHeaderPanel.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php preferences.php
 msgid "Romanian"
 msgstr ""
 
 #. $strSelect .= sprintf('<option value="%s">%s (%s)', $objLanguage->LanguageCode, t($objLanguage->LanguageName), $objLanguage->LanguageCode);
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
 #. $lstOption->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == $this->objUser->GetPreferenceValueByName($strName)));
-#: includes/narro/panel/NarroHeaderPanel.class.php preferences.php
+#: includes/narro/panel/NarroHeaderPanel.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php preferences.php
 msgid "Spanish"
 msgstr ""
 
 #. echo t('These are the roles used on this website.');
 #: includes/narro/panel/NarroRoleListPanel.tpl.php
 msgid "These are the roles used on this website."
+msgstr ""
+
+#. $arrHeaders[] = NarroLink::ProjectExport($this->objProject->ProjectId, t('Export'));
+#: includes/narro/panel/NarroFileExportPanel.class.php includes/narro/panel/NarroProjectFileListPanel.class.php includes/narro/sources/NarroDirectoryTargetPanel.class.php translate.php review.php export.tpl.php import.php project_languages.php project.php export.php project_edit.php files.php
+msgid "Export"
 msgstr ""
 
 #. $this->strText .=  t('Model to use') . ': ' . $this->fileToUpload->Render(false) . $this->btnExport->Render(false);
@@ -1198,6 +1146,11 @@ msgstr ""
 #. $this->btnMore->Text = t('More');
 #: includes/narro/panel/NarroTranslatePanel.class.php
 msgid "More"
+msgstr ""
+
+#. $this->pnlGlossary->Instructions = t('Put the text in quotes to do an exact search, e.g. "file". Press Enter to search.');
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Put the text in quotes to do an exact search, e.g. \"file\". Press Enter to search."
 msgstr ""
 
 #. $this->txtFile->Text = t('all files');
@@ -1336,6 +1289,11 @@ msgstr ""
 msgid "Kill process"
 msgstr ""
 
+#. $arrHeaders[] = NarroLink::ProjectImport($this->objProject->ProjectId, t('Import'));
+#: includes/narro/panel/NarroProjectImportPanel.class.php includes/narro/panel/NarroFileImportPanel.class.php translate.php review.php import.php project_languages.php project.php export.php import.tpl.php project_edit.php files.php
+msgid "Import"
+msgstr ""
+
 #. $this->btnImport->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=&&&escapedsimplequote&&&disabled&&&escapedsimplequote&&&;this.value=&&&escapedsimplequote&&&%s&&&escapedsimplequote&&&', t('Please wait...'))));
 #: includes/narro/panel/NarroProjectImportPanel.class.php
 msgid "Please wait..."
@@ -1432,42 +1390,67 @@ msgstr ""
 
 #. $lblRoleName->Text = t($objNarroRole->RoleName);
 #: includes/narro/panel/NarroRoleListPanel.class.php
+msgid "Test"
+msgstr ""
+
+#. $lblRoleName->Text = t($objNarroRole->RoleName);
+#: includes/narro/panel/NarroRoleListPanel.class.php
 msgid "User"
 msgstr ""
 
-#. $this->pnlTextSource->addTab($objDirectoryPanel, t('On this server'));
+#. t('On this server'),
 #: includes/narro/panel/NarroProjectTranslationSourcePanel.class.php includes/narro/panel/NarroProjectTextSourcePanel.class.php
 msgid "On this server"
 msgstr ""
 
-#. $this->pnlTextSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On my computer'));
+#. t('On my computer'),
 #: includes/narro/panel/NarroProjectTranslationSourcePanel.class.php includes/narro/panel/NarroProjectTextSourcePanel.class.php
 msgid "On my computer"
 msgstr ""
 
-#. $this->pnlTextSource->addTab(new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On the web'));
+#. t('On the web'),
 #: includes/narro/panel/NarroProjectTranslationSourcePanel.class.php includes/narro/panel/NarroProjectTextSourcePanel.class.php
 msgid "On the web"
 msgstr ""
 
-#. $this->pnlTranslationSource->addTab(new NarroProjectSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Another project'));
+#. t('Another project'),
 #: includes/narro/panel/NarroProjectTranslationSourcePanel.class.php
 msgid "Another project"
 msgstr ""
 
-#. $this->pnlTranslationSource->addTab(new NarroLanguageSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Another language'));
+#. t('Another language'),
 #: includes/narro/panel/NarroProjectTranslationSourcePanel.class.php
 msgid "Another language"
 msgstr ""
 
-#. $this->pnlTextSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('Mercurial'));
+#. t('Mercurial'),
 #: includes/narro/panel/NarroProjectTranslationSourcePanel.class.php includes/narro/panel/NarroProjectTextSourcePanel.class.php
 msgid "Mercurial"
 msgstr ""
 
-#. $this->pnlTextSource->addTab(new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('SVN'));
+#. t('SVN')
 #: includes/narro/panel/NarroProjectTranslationSourcePanel.class.php includes/narro/panel/NarroProjectTextSourcePanel.class.php
 msgid "SVN"
+msgstr ""
+
+#. $this->tabTop->Headers = array(t('Translators'), t('Reviewers'), t('Voters'), t('Comments'));
+#: includes/narro/panel/NarroTopPanel.class.php
+msgid "Reviewers"
+msgstr ""
+
+#. $this->tabTop->Headers = array(t('Translators'), t('Reviewers'), t('Voters'), t('Comments'));
+#: includes/narro/panel/NarroTopPanel.class.php
+msgid "Translators"
+msgstr ""
+
+#. $this->tabTop->Headers = array(t('Translators'), t('Reviewers'), t('Voters'), t('Comments'));
+#: includes/narro/panel/NarroTopPanel.class.php
+msgid "Voters"
+msgstr ""
+
+#. $this->tabTop->Headers = array(t('Translators'), t('Reviewers'), t('Voters'), t('Comments'));
+#: includes/narro/panel/NarroTopPanel.class.php
+msgid "Comments"
 msgstr ""
 
 #. <?php echo t('Click on any project name to start translating.'); ?>
@@ -1490,12 +1473,12 @@ msgstr ""
 msgid "Translating in %s as %s"
 msgstr ""
 
-#. $this->pnlTab->addTab($this->pnlUserSuggestions, t('Profile'));
+#. $arrHeaders[] = NarroLink::UserProfile($this->objUser->UserId, t('Profile'));
 #: includes/narro/panel/NarroHeaderPanel.tpl.php account.php preferences.php user_role.php user.php
 msgid "Profile"
 msgstr ""
 
-#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Preferences'), NarroLink::UserPreferences($this->objUser->UserId));
+#. $arrHeaders[] = NarroLink::UserPreferences($this->objUser->UserId, t('Preferences'));
 #: includes/narro/panel/NarroHeaderPanel.tpl.php account.php preferences.php user_role.php user.php
 msgid "Preferences"
 msgstr ""
@@ -1758,15 +1741,15 @@ msgstr ""
 msgid "This is the letter that appears in menus and buttons after the text and you can use Ctrl + this letter to select, e.g. <b>%s Ctrl+%s</b>"
 msgstr ""
 
-#. $this->btnCopy->AlternateText = t('Copy');
+#. $this->btnCopy->Text = t('Copy');
 #. t('Copy'),
 #. t('Copy'),
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "Copy"
 msgstr ""
 
-#. t('Clear'),
-#: includes/narro/panel/NarroContextInfoEditor.class.php
+#. $this->btnClear->AlternateText = t('Clear');
+#: includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php
 msgid "Clear"
 msgstr ""
 
@@ -1790,10 +1773,14 @@ msgstr ""
 msgid "%d translations, %d comments"
 msgstr ""
 
-#. $this->btnKeepUntranslated->AlternateText = t('Keep untranslated');
-#. $this->btnKeepUntranslated->AlternateText = t('Keep untranslated');
+#. $this->btnKeepUntranslated->ToolTip = t('Keep untranslated');
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "Keep untranslated"
+msgstr ""
+
+#. $this->btnKeepUntranslated->Text = t('Keep');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Keep"
 msgstr ""
 
 #. $this->btnSaveIgnore->Text = t('Ignore and save');
@@ -1827,17 +1814,27 @@ msgstr ""
 msgid "approved by <a href=\"%s\" tabindex=\"-1\">%s</a>"
 msgstr ""
 
+#. return sprintf('<small>-- %s, %s</small>', $strAuthorInfo, sprintf(t('%d votes'), $objSuggestion->Votes));
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "%d votes"
+msgstr ""
+
 #. $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this suggestion?')));
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "Are you sure you want to delete this suggestion?"
 msgstr ""
 
-#. $btnVote->AlternateText = t('Vote');
+#. $btnVoteUp->ToolTip = t('Vote up');
 #: includes/narro/panel/NarroContextInfoEditor.class.php
-msgid "Vote"
+msgid "Vote up"
 msgstr ""
 
-#. $btnApprove->AlternateText = t('Approve');
+#. $btnVoteDown->ToolTip = t('Vote down');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Vote down"
+msgstr ""
+
+#. $btnApprove->ToolTip = t('Approve');
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "Approve"
 msgstr ""
@@ -1852,7 +1849,7 @@ msgstr ""
 msgid "Clear the textbox to skip this translation, click Ignore and save or click the save button to try again"
 msgstr ""
 
-#. $this->txtTranslation->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it or %s'), $strLink, '');
+#. $this->lblText->Warning = sprintf(t('This translation was already approved somewhere.<br />If you still want to delete it, click <a href="%s" target="_blank">here</a> to edit all the texts that use it or %s'), $strLink, '');
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "This translation was already approved somewhere.<br />If you still want to delete it, click <a href=\"%s\" target=\"_blank\">here</a> to edit all the texts that use it or %s"
 msgstr ""
@@ -1872,7 +1869,7 @@ msgstr ""
 msgid "Ignore and delete"
 msgstr ""
 
-#. $this->txtTranslation->Warning = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
+#. $this->lblText->Warning = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "Thank you for your vote. You can change it anytime by voting another suggestion."
 msgstr ""
@@ -1910,6 +1907,16 @@ msgstr ""
 #. <p><?php echo t('If you remember your username or email address, we can send you a link at the email address you registered with to change your password.'); ?></p>
 #: includes/narro/panel/NarroUserRecoverPasswordPanel.tpl.php
 msgid "If you remember your username or email address, we can send you a link at the email address you registered with to change your password."
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('translated with no votes'), self::SHOW_NOT_APPROVED_AND_WITHOUT_VOTES);
+#: includes/narro/panel/NarroReviewPanel.class.php
+msgid "translated with no votes"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('translated with votes'), self::SHOW_NOT_APPROVED_AND_WITH_VOTES);
+#: includes/narro/panel/NarroReviewPanel.class.php
+msgid "translated with votes"
 msgstr ""
 
 #. $this->lstSort->AddItem(t('not sorted'), null, true);
@@ -1952,22 +1959,22 @@ msgstr ""
 msgid "Plural formula"
 msgstr ""
 
-#. $this->pnlMainTab->addTab(new NarroDirectoryTargetPanel($objProject, $objLanguage, $this->pnlMainTab), t('Save to disk'));
+#. t('Save to disk'),
 #: includes/narro/panel/NarroProjectTranslationTargetPanel.class.php
 msgid "Save to disk"
 msgstr ""
 
-#. $this->pnlMainTab->addTab(new NarroMercurialTargetPanel($objProject, $objLanguage, $this->pnlMainTab), t('Commit to Mercurial'));
+#. t('Commit to Mercurial'),
 #: includes/narro/panel/NarroProjectTranslationTargetPanel.class.php
 msgid "Commit to Mercurial"
 msgstr ""
 
-#. // $this->pnlMainTab->addTab(new NarroSvnTargetPanel($objProject, $objLanguage, $this->pnlMainTab), t('Commit to SVN'));
+#. t('Commit to SVN')
 #: includes/narro/panel/NarroProjectTranslationTargetPanel.class.php
 msgid "Commit to SVN"
 msgstr ""
 
-#. <div class="section_title"><?php _t('Texts')?></div>
+#. <a><?php _t('Texts')?></a>
 #: includes/narro/panel/NarroProjectImportPanel.tpl.php
 msgid "Texts"
 msgstr ""
@@ -1980,6 +1987,11 @@ msgstr ""
 #. <?php _t('Where are the translated texts?')?>
 #: includes/narro/panel/NarroProjectImportPanel.tpl.php
 msgid "Where are the translated texts?"
+msgstr ""
+
+#. $strPageTitle = ($this->objProject instanceof NarroProject)?sprintf(t('Edit %s'), $this->objProject->ProjectName):t('Add');
+#: includes/narro/panel/NarroProjectEditPanel.class.php includes/narro/panel/NarroProjectListPanel.class.php includes/narro/panel/NarroUserRolePanel.class.php includes/narro/panel/NarroRoleEditPanel.class.php languages.php roles.php language_edit.php role.php project_edit.tpl.php
+msgid "Add"
 msgstr ""
 
 #. $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(t('Are you SURE you want to DELETE %s?\nThe texts and associated suggestions will NOT be deleted.\nThey will be preserved for use in other projects.'), addslashes($this->objProject->ProjectName))));
@@ -2055,8 +2067,7 @@ msgid "Bad username or password"
 msgstr ""
 
 #. $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), t('Register'));
-#. $this->pnlTab->addTab($this->pnlUserRegister, t('Register'));
-#. $this->pnlTab->SelectedTab = t('Register');
+#. $arrHeaders[] = t('Register');
 #: includes/narro/panel/NarroUserRegisterPanel.tpl.php includes/narro/panel/NarroUserRegisterPanel.class.php password.php login.php join.tpl.php join.php
 msgid "Register"
 msgstr ""
@@ -2209,9 +2220,14 @@ msgstr ""
 msgid "Are you SURE you want to DELETE this %s?"
 msgstr ""
 
-#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
+#. $arrHeaders[] = NarroLink::UserList('', t('Users'));
 #: includes/narro/panel/NarroUserListPanel.class.php account.php projects.php translate.php languages.php review.php users.php preferences.php user_role.php password.php user.php login.php roles.php language_edit.php join.php role.php users.tpl.php log.php
 msgid "Users"
+msgstr ""
+
+#. $this->txtSearch->Name = t('Text');
+#: includes/narro/panel/NarroSuggestionSearchPanel.class.php
+msgid "Text"
 msgstr ""
 
 #. $this->txtRepository->Instructions = t('Please enter the path to the SVN repository');
@@ -2234,29 +2250,9 @@ msgstr ""
 msgid "Username for SVN"
 msgstr ""
 
-#. $this->txtPassword->Name = t('Password for SVN');
-#: includes/narro/sources/NarroSvnTargetPanel.class.php
-msgid "Password for SVN"
-msgstr ""
-
-#. $this->txtPassword->Instructions = t('Not needed if you use a private SSH key');
-#: includes/narro/sources/NarroSvnTargetPanel.class.php includes/narro/sources/NarroMercurialTargetPanel.class.php
-msgid "Not needed if you use a private SSH key"
-msgstr ""
-
 #. $this->fileSSHPrivateKey->Name = t('Private SSH key for SVN');
 #: includes/narro/sources/NarroSvnTargetPanel.class.php
 msgid "Private SSH key for SVN"
-msgstr ""
-
-#. $this->txtCommitUsername->Name = t('Author shown in the commit message');
-#: includes/narro/sources/NarroSvnTargetPanel.class.php includes/narro/sources/NarroMercurialTargetPanel.class.php
-msgid "Author shown in the commit message"
-msgstr ""
-
-#. $this->txtCommitUsername->Instructions = t('Usually, this is something like Alexandru Szasz <alexxed@gmail.com>');
-#: includes/narro/sources/NarroSvnTargetPanel.class.php includes/narro/sources/NarroMercurialTargetPanel.class.php
-msgid "Usually, this is something like Alexandru Szasz <alexxed@gmail.com>"
 msgstr ""
 
 #. $this->txtCommitMessage->Name = t('The commit message');
@@ -2264,9 +2260,9 @@ msgstr ""
 msgid "The commit message"
 msgstr ""
 
-#. $this->txtCommitMessage->Text = t('Commit from Narro');
-#: includes/narro/sources/NarroSvnTargetPanel.class.php includes/narro/sources/NarroMercurialTargetPanel.class.php
-msgid "Commit from Narro"
+#. $this->txtCommitMessage->Text = sprintf(t('Commit from Narro by %s'), sprintf('%s <%s>', QApplication::$User->RealName, QApplication::$User->Email));
+#: includes/narro/sources/NarroSvnTargetPanel.class.php
+msgid "Commit from Narro by %s"
 msgstr ""
 
 #. $this->txtCommitMessage->Instructions = t('Be creative or leave it as it is');
@@ -2396,9 +2392,29 @@ msgstr ""
 msgid "Password for Mercurial"
 msgstr ""
 
+#. $this->txtPassword->Instructions = t('Not needed if you use a private SSH key');
+#: includes/narro/sources/NarroMercurialTargetPanel.class.php
+msgid "Not needed if you use a private SSH key"
+msgstr ""
+
 #. $this->fileSSHPrivateKey->Name = t('Private SSH key for Mercurial');
 #: includes/narro/sources/NarroMercurialTargetPanel.class.php
 msgid "Private SSH key for Mercurial"
+msgstr ""
+
+#. $this->txtCommitUsername->Name = t('Author shown in the commit message');
+#: includes/narro/sources/NarroMercurialTargetPanel.class.php
+msgid "Author shown in the commit message"
+msgstr ""
+
+#. $this->txtCommitUsername->Instructions = t('Usually, this is something like Alexandru Szasz <alexxed@gmail.com>');
+#: includes/narro/sources/NarroMercurialTargetPanel.class.php
+msgid "Usually, this is something like Alexandru Szasz <alexxed@gmail.com>"
+msgstr ""
+
+#. $this->txtCommitMessage->Text = t('Commit from Narro');
+#: includes/narro/sources/NarroMercurialTargetPanel.class.php
+msgid "Commit from Narro"
 msgstr ""
 
 #. $arrData[t('Others')] = 0;
@@ -2436,13 +2452,33 @@ msgstr ""
 msgid "%s's roles"
 msgstr ""
 
-#. $this->pnlTab->addTab($this->pnlLog, t('Application Log'));
-#. $this->pnlTab->SelectedTab = t('Application Log');
-#: projects.php translate.php languages.php review.php users.php roles.php log.php
+#. $strPageTitle = t('Translate');
+#: projects.php translate.php languages.php review.php users.php import.php project_languages.php roles.php language_edit.php project.php export.php role.php log.php project_edit.php files.php translate.tpl.php
+msgid "Translate"
+msgstr ""
+
+#. $arrHeaders[] = NarroLink::Review($this->objProject->ProjectId, '', NarroReviewPanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0, t('Review'));
+#: projects.php translate.php languages.php review.php import.php project_languages.php language_edit.php project.php review.tpl.php export.php project_edit.php files.php
+msgid "Review"
+msgstr ""
+
+#. $arrHeaders[] = NarroLink::Log('', t('Application Log'));
+#: projects.php translate.php languages.php review.php users.php roles.php language_edit.php role.php log.php
 msgid "Application Log"
 msgstr ""
 
+#. $arrHeaders[] = NarroLink::Project($this->objProject->ProjectId, t('Overview'));
+#: translate.php review.php import.php project_languages.php project.php export.php project_edit.php files.php
+msgid "Overview"
+msgstr ""
+
+#. $arrHeaders[] = NarroLink::ProjectFileList($this->objProject->ProjectId, '', '', t('Files'));
+#: translate.php review.php import.php project_languages.php project.php export.php project_edit.php files.php
+msgid "Files"
+msgstr ""
+
 #. $this->pnlRoleTab->addTab(new QPanel($this->pnlRoleTab), t('List'), NarroLink::RoleList());
+#. $arrRoleHeaders[] = NarroLink::RoleList(0, '', t('List'));
 #: languages.php roles.php language_edit.php role.php
 msgid "List"
 msgstr ""
@@ -2557,7 +2593,7 @@ msgstr ""
 msgid "Click <a href=\"%s\">here</a> to return to the page you were."
 msgstr ""
 
-#. $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Lost and found'), NarroLink::UserRecoverPassword());
+#. $arrHeaders[] = NarroLink::UserRecoverPassword(t('Lost and found'));
 #: password.php login.php join.php
 msgid "Lost and found"
 msgstr ""
@@ -2765,6 +2801,7 @@ msgstr ""
 msgid "<a href=\"%s\">%s</a>"
 msgstr ""
 
+#. $this->pnlMainTab->Headers = array(NarroLink::ProjectEdit($this->objProject->ProjectId, t('Add project')));
 #. t('Add project')
 #: project_edit.php
 msgid "Add project"
