@@ -158,6 +158,8 @@
             }
 
             $this->objUser->Data = serialize($this->objUser->Preferences);
+            
+            QApplication::$Session->User = $this->objUser;
 
             /**
              * Don't save the preferences for the anonymous user in the database
