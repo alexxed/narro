@@ -17,11 +17,16 @@
      */
 ?>
 
-<div class="section_title"><?php _t('Options')?></div>
-<div class="section">
+<div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+<h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+<span class="ui-icon ui-icon-triangle-1-s"></span>
+<a><?php _t('Options')?></a>
+</h3>
+<div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
 <?php $_CONTROL->lstExportSuggestionType->RenderWithName(); ?>
 <?php $_CONTROL->txtAuthor->RenderWithName(); ?>
 <?php $_CONTROL->chkCleanDirectory->RenderWithName(); ?>
+</div>
 </div>
 <?php
     $_CONTROL->pnlLogViewer->Render();

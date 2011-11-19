@@ -102,10 +102,24 @@
 }
 
 .narro_context_info_editor .help {
-    vertical-align: super;
+    vertical-align: middle;
     cursor: pointer;
-    font-size: 0.8em;
-    color: #6c871d;
+    margin-left: 5px;
+}
+
+.narro_context_info_editor .keep {
+    margin-left: 5px;
+}
+
+.narro_context_info_editor .copy {
+    margin-left: 5px;
+    display-style: inline-block;
+}
+
+.narro_context_info_editor .save {
+    vertical-align: middle;
+    cursor: pointer;
+    margin-left: 5px;
 }
 
 .narro_context_info_editor .comment {
@@ -141,7 +155,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
     jQuery(".narro_context_info_editor").each(
             function() {
                 if (this.id != ctl && jQuery('#' + this.id + ' .error').length == 0) {
-                    jQuery(this).removeClass("narro_context_info_editor_selected");
+                    jQuery(this).removeClass("ui-state-focus");
                     jQuery('#' + this.id + ' .ctxinfo').hide();
                     //jQuery('#' + this.id + ' .help').hide();
                     jQuery('#' + this.id + ' .copy').hide();
@@ -149,7 +163,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
                     jQuery('#' + this.id + ' .translation_box').attr("height", "auto");
                 }
                 else {
-                    jQuery(this).addClass("narro_context_info_editor_selected");
+                    jQuery(this).addClass("ui-state-focus");
                     jQuery('#' + this.id + ' .ctxinfo').show();
                     //jQuery('#' + this.id + ' .help').show();
                     jQuery('#' + this.id + ' .copy').show();
@@ -162,29 +176,48 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
 <p>
 <?php _t("To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text.");?>
 </p>
-<div class="section_title"><?php _t('Options')?></div>
-<div class="section">
+<div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+<h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+<span class="ui-icon ui-icon-triangle-1-s"></span>
+<a><?php _t('Options')?></a>
+</h3>
+<div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
 <?php
     $_CONTROL->chkRefresh->RenderWithName();
     $_CONTROL->chkApprove->RenderWithName();
 ?>
 </div>
-<div class="section_title"><?php _t('Glossary')?></div>
-<div class="section">
+</div>
+<div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+<h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+<span class="ui-icon ui-icon-triangle-1-s"></span>
+<a><?php _t('Glossary')?></a>
+</h3>
+<div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
 <?php
     $_CONTROL->pnlGlossary->RenderWithName();
 ?>
 </div>
-<div class="section_title"><?php _t('Search')?></div>
-<div class="section">
+</div>
+<div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+<h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+<span class="ui-icon ui-icon-triangle-1-s"></span>
+<a><?php _t('Search')?></a>
+</h3>
+<div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
 <?php
     $_CONTROL->lstSearchIn->RenderWithName();
     $_CONTROL->txtSearch->RenderWithName();
     $_CONTROL->btnSearch->Render();
 ?>
 </div>
-<div class="section_title"><?php _t('Results')?></div>
-<div class="section">
+</div>
+<div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+<h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+<span class="ui-icon ui-icon-triangle-1-s"></span>
+<a><?php _t('Results')?></a>
+</h3>
+<div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
 <?php
     
     $_CONTROL->lstProject->RenderWithName();
@@ -195,6 +228,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
     $_CONTROL->btnLess->Render();
     if ($_CONTROL->lstProject->SelectedValue) $_CONTROL->dtrText->Paginator->Render();
 ?>
+</div>
 </div>
 <?php
     $_CONTROL->dtrText->Render();

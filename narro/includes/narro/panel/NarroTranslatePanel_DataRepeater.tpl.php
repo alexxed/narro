@@ -27,7 +27,7 @@ if ($_CONTROL->ParentControl->intTotalItemCount == $_CONTROL->CurrentItemIndex +
 }
 
 if ($pnlEditor->Translation->Warning != '')
-    $pnlEditor->CssClass = 'narro_context_info_editor narro_context_info_editor_selected';
+    $pnlEditor->CssClass = 'narro_context_info_editor ui-state-focus';
 else
     $pnlEditor->CssClass = 'narro_context_info_editor';
 

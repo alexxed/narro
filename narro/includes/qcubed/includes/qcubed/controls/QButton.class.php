@@ -8,7 +8,7 @@
 		///////////////////////////
 
 		// Feel free to specify global display preferences/defaults for all QButton controls
-		protected $strCssClass = 'button';
+		protected $strCssClass = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
 //		protected $strFontNames = QFontFamily::Verdana;
 //		protected $strFontSize = '10px';
 //		protected $blnFontBold = true;

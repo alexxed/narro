@@ -63,9 +63,14 @@
             }
 
             $this->strText = sprintf(
-                '<div class="section_title">%s</div>
-                <div class="section">
-                    <div style="max-height:300px;overflow:auto">%s</div>
+                '<div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+                <h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+                <span class="ui-icon ui-icon-triangle-1-s"></span>
+                <a>%s</a>
+                </h3>
+                <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="max-height:300px;overflow:auto">
+                %s
+                </div>
                 </div>',
                 t('Operation log'),
                 $strLogContents

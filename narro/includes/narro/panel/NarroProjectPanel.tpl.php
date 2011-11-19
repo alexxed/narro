@@ -45,5 +45,4 @@ if (is_array(QApplication::$PluginHandler->PluginReturnValues)) {
     echo $strOutput;
 }
 
-$_CONTROL->dtgTranslators->Render();
-$_CONTROL->dtgReviewers->Render();
+$_CONTROL->pnlTop->Render();

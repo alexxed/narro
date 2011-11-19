@@ -25,6 +25,7 @@
 		// APPEARANCE
 		protected $strText = null;
 		protected $blnHtmlEntities = true;
+		protected $strCssClass = 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only';
 
 		//////////
 		// Methods
@@ -38,7 +39,7 @@
 				$this->strControlId,
 				$this->GetAttributes(),
 				$strStyle,
-				($this->blnHtmlEntities) ? 
+				($this->blnHtmlEntities) ?
 					QApplication::HtmlEntities($this->strText) :
 					$this->strText);
 

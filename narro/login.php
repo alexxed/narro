@@ -26,17 +26,20 @@
             parent::Form_Create();
 
             $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), t('Login'));
-
-            $this->pnlTab = new QTabPanel($this);
-            $this->pnlTab->UseAjax = false;
-
+            
+            $this->pnlTab = new QTabs($this);
+            
             $this->pnlUserLogin = new NarroUserLoginPanel($this->pnlTab);
-
-            $this->pnlTab->addTab($this->pnlUserLogin, t('Login'));
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Register'), NarroLink::UserRegister());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Lost and found'), NarroLink::UserRecoverPassword());
-
-            $this->pnlTab->SelectedTab = t('Login');
+            $arrHeaders[] = NarroLink::UserLogin(t('Login'));
+            $this->pnlTab->Selected = count($arrHeaders) - 1;
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::UserRegister(t('Register'));
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::UserRecoverPassword(t('Lost and found'));
+            
+            $this->pnlTab->Headers = $arrHeaders;
         }
     }
 

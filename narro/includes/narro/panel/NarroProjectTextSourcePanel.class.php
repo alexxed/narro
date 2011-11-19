@@ -34,15 +34,21 @@
             $this->objProject = $objProject;
             $this->objLanguage = $objLanguage;
 
-            $this->pnlTextSource = new QTabPanel($this);
-            $this->pnlTextSource->UseAjax = QApplication::$UseAjax;
+            $this->pnlTextSource = new QTabs($this);
             $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $objLanguage, $this->pnlTextSource);
             $objDirectoryPanel->Directory = $this->objProject->DefaultTemplatePath;
-            $this->pnlTextSource->addTab($objDirectoryPanel, t('On this server'));
-            $this->pnlTextSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On my computer'));
-            $this->pnlTextSource->addTab(new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('On the web'));
-            $this->pnlTextSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('Mercurial'));
-            $this->pnlTextSource->addTab(new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTextSource), t('SVN'));
+            new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTextSource);
+            new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTextSource);
+            new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTextSource);
+            new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTextSource);
+            
+            $this->pnlTextSource->Headers = array(
+                t('On this server'),
+                t('On my computer'),
+                t('On the web'),
+                t('Mercurial'),
+                t('SVN')
+            );
         }
 
         public function GetControlHtml() {

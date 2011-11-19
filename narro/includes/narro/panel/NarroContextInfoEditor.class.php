@@ -92,13 +92,11 @@
                 $this->txtTranslation->Text = $objContextInfo->ValidSuggestion->SuggestionValue;
             $this->txtTranslation->Columns = 50;
 
-            $this->btnCopy = new QImageButton($this);
-            $this->btnCopy->AlternateText = t('Copy');
-            $this->btnCopy->CssClass = 'imgbutton copy';
-            $this->btnCopy->ToolTip = $this->btnCopy->AlternateText;
-            $this->btnCopy->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/copy.png';
-            $this->btnCopy->TabIndex = -1;
+            $this->btnCopy = new QButton($this);
+            $this->btnCopy->Text = t('Copy');
             $this->btnCopy->DisplayStyle = QDisplayStyle::None;
+            $this->btnCopy->TabIndex = -1;
+            $this->btnCopy->CssClass = $this->btnCopy->CssClass . ' copy';
             $this->btnCopy->Display = QApplication::HasPermissionForThisLang('Can suggest');
 
             $this->lblText = new QLabel($this);
@@ -109,11 +107,10 @@
 
             $this->btnHelp_Create();
             
-            $this->btnSave = new QImageButton($this);
-            $this->btnSave->AlternateText = t('Save');
-            $this->btnSave->CssClass = 'imgbutton save';
-            $this->btnSave->ToolTip = $this->btnSave->AlternateText;
-            $this->btnSave->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/save.png';
+            $this->btnSave = new QButton($this);
+            $this->btnSave->Text = t('Save');
+            $this->btnSave->CssClass = $this->btnSave->CssClass . ' save';
+            $this->btnSave->DisplayStyle = QDisplayStyle::InlineBlock;
             $this->btnSave->Display = QApplication::HasPermissionForThisLang('Can suggest');
             
             if (QApplication::$User->GetPreferenceValueByName('Automatically save translations') == 'Yes') {
@@ -163,6 +160,7 @@
         
         public function btnHelp_Create() {
             $this->btnHelp = new QLinkButton($this);
+            $this->btnHelp->DisplayStyle = QDisplayStyle::InlineBlock;
             $this->btnHelp->CssClass = 'help';
             $this->btnHelp->ToolTip = $this->btnHelp->Text;
             $this->btnHelp->TabIndex = -1;
@@ -185,25 +183,16 @@
         }
         
         public function btnKeepUntranslated_Create($strControlId = null) {
-            if (QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId)) {
-                $this->btnKeepUntranslated = new QImageButton($this, $strControlId);
-                $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/arrow-down.gif';
-                $this->btnKeepUntranslated->AlternateText = t('Keep untranslated');
-                $this->btnKeepUntranslated->CssClass = 'imgbutton';
-                $this->btnKeepUntranslated->ToolTip = $this->btnKeepUntranslated->AlternateText;
-                $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
-                $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKeepUntranslated_Click'));
-            }
-            elseif (QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId)) {
-                $this->btnKeepUntranslated = new QImageButton($this, $strControlId);
-                $this->btnKeepUntranslated->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/arrow-down.gif';
-                $this->btnKeepUntranslated->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
-                $this->btnKeepUntranslated->AlternateText = t('Keep untranslated');
-                $this->btnKeepUntranslated->CssClass = 'imgbutton';
-                $this->btnKeepUntranslated->ToolTip = $this->btnKeepUntranslated->AlternateText;
-                $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
-                $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKeepUntranslated_Click'));
-            }
+            $this->btnKeepUntranslated = new QButton($this, $strControlId);
+            $this->btnKeepUntranslated->ToolTip = t('Keep untranslated');
+            $this->btnKeepUntranslated->Text = t('Keep');
+            $this->btnKeepUntranslated->CssClass = $this->btnKeepUntranslated->CssClass . ' keep';
+            $this->btnKeepUntranslated->Display =
+                QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId) ||
+                QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId);
+            $this->btnKeepUntranslated->DisplayStyle = QDisplayStyle::InlineBlock;
+            $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
+            $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKeepUntranslated_Click'));
         }
         
         public function btnSaveIgnore_Create() {
@@ -277,10 +266,10 @@
 
                 $btnDelete = $this->dtgTranslation->GetChildControl($strControlId);
                 if (!$btnDelete) {
-                    $btnDelete = new QImageButton($this->dtgTranslation, $strControlId);
-                    $btnDelete->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/delete.png';
-                    $btnDelete->AlternateText = t('Delete');
-                    $btnDelete->ToolTip = $btnDelete->AlternateText;
+                    $btnDelete = new QLabel($this->dtgTranslation, $strControlId);
+                    $btnDelete->ToolTip = t('Delete');
+                    $btnDelete->CssClass = 'ui-icon ui-icon-circle-close';
+                    $btnDelete->DisplayStyle = QDisplayStyle::InlineBlock;
                     $btnDelete->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this suggestion?')));
                     if (QApplication::$UseAjax)
@@ -299,11 +288,11 @@
                 $strControlId = 'votup' . $this->objContextInfo->ContextInfoId . 's' . $objSuggestion->SuggestionId;
                 $btnVoteUp = $this->dtgTranslation->GetChildControl($strControlId);
                 if (!$btnVoteUp) {
-                    $btnVoteUp = new QImageButton($this->dtgTranslation, $strControlId);
-                    $btnVoteUp->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/vote_up.png';
+                    $btnVoteUp = new QLabel($this->dtgTranslation, $strControlId);
                     $btnVoteUp->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
-                    $btnVoteUp->AlternateText = t('Vote');
-                    $btnVoteUp->ToolTip = $btnVoteUp->AlternateText;
+                    $btnVoteUp->ToolTip = t('Vote up');
+                    $btnVoteUp->CssClass = 'ui-icon ui-icon-circle-arrow-n';
+                    $btnVoteUp->DisplayStyle = QDisplayStyle::InlineBlock;
                     $btnVoteUp->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     if (QApplication::$UseAjax)
                         $btnVoteUp->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
@@ -318,11 +307,11 @@
                 $strControlId = 'votdn' . $this->objContextInfo->ContextInfoId . 's' . $objSuggestion->SuggestionId;
                 $btnVoteDown = $this->dtgTranslation->GetChildControl($strControlId);
                 if (!$btnVoteDown) {
-                    $btnVoteDown = new QImageButton($this->dtgTranslation, $strControlId);
-                    $btnVoteDown->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/vote_down.png';
+                    $btnVoteDown = new QLabel($this->dtgTranslation, $strControlId);
                     $btnVoteDown->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
-                    $btnVoteDown->AlternateText = t('Vote');
-                    $btnVoteDown->ToolTip = $btnVoteDown->AlternateText;
+                    $btnVoteDown->ToolTip = t('Vote down');
+                    $btnVoteDown->CssClass = 'ui-icon ui-icon-circle-arrow-s';
+                    $btnVoteDown->DisplayStyle = QDisplayStyle::InlineBlock;
                     $btnVoteDown->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     if (QApplication::$UseAjax)
                         $btnVoteDown->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
@@ -341,10 +330,10 @@
 
                 $btnApprove = $this->dtgTranslation->GetChildControl($strControlId);
                 if (!$btnApprove) {
-                    $btnApprove = new QImageButton($this->dtgTranslation, $strControlId);
-                    $btnApprove->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/approve.png';
-                    $btnApprove->AlternateText = t('Approve');
-                    $btnApprove->ToolTip = $btnApprove->AlternateText;
+                    $btnApprove = new QLabel($this->dtgTranslation, $strControlId);
+                    $btnApprove->CssClass = 'ui-icon ui-icon-check';
+                    $btnApprove->ToolTip = t('Approve');
+                    $btnApprove->DisplayStyle = QDisplayStyle::InlineBlock;
                     $btnApprove->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     if (QApplication::$UseAjax)
                         $btnApprove->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnApprove_Click'));

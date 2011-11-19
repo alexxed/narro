@@ -22,7 +22,37 @@
         protected function Form_Create() {
             parent::Form_Create();
 
-            $this->pnlMainTab->replaceTab(new NarroProjectPanel($this->objProject, $this->pnlMainTab), t('Overview'));
+            $this->pnlSelectedTab = new NarroProjectPanel($this->objProject, $this->pnlMainTab);
+            $arrHeaders[] = t('Overview');
+            
+            if ($this->objProject instanceof NarroProject && QApplication::HasPermissionForThisLang('Can edit project', $this->objProject->ProjectId)) {
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::ProjectEdit($this->objProject->ProjectId, t('Edit'));
+            }
+            
+            $pnlDummy = new QPanel($this->pnlMainTab);
+            $arrHeaders[] = NarroLink::Translate($this->objProject->ProjectId, '', 0, '', 0, 0, 10, 0, 0, t('Translate'));
+            
+            $pnlDummy = new QPanel($this->pnlMainTab);
+            $arrHeaders[] = NarroLink::Review($this->objProject->ProjectId, '', NarroReviewPanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0, t('Review'));
+            
+            $pnlDummy = new QPanel($this->pnlMainTab);
+            $arrHeaders[] = NarroLink::ProjectFileList($this->objProject->ProjectId, '', '', t('Files'));
+            
+            $pnlDummy = new QPanel($this->pnlMainTab);
+            $arrHeaders[] = NarroLink::ProjectLanguages($this->objProject->ProjectId, t('Languages'));
+            
+            if (QApplication::HasPermissionForThisLang('Can import project', $this->objProject->ProjectId)) {
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::ProjectImport($this->objProject->ProjectId, t('Import'));
+            }
+            
+            if (QApplication::HasPermissionForThisLang('Can export project', $this->objProject->ProjectId)) {
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::ProjectExport($this->objProject->ProjectId, t('Export'));
+            }
+            
+            $this->pnlMainTab->Headers = $arrHeaders;
         }
     }
 

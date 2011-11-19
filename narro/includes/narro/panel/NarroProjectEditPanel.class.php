@@ -53,7 +53,7 @@
             }
         }
 
-        public function __construct($objNarroProject, $objParentObject, $strControlId = null) {
+        public function __construct($objNarroProject = null, $objParentObject, $strControlId = null) {
             // Call the Parent
             try {
                 parent::__construct($objParentObject, $strControlId);

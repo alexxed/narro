@@ -32,7 +32,11 @@
 			$childControls = $this->GetChildControls();
 			for ($i = 0, $cnt = count($childControls); $i < $cnt; ++$i) {
 				$strControlId = $childControls[$i]->ControlId;
-				$strResult .= '<li><a href="#'.$strControlId.'">';
+				if (strstr($this->objTabHeadersArray[$i], '</a>'))
+				    $strResult .= '<li><a href="#'.$strControlId.'" style="display:none">';
+				else
+				    $strResult .= '<li><a href="#'.$strControlId.'">';
+				
 				if (array_key_exists($key = $strControlId, $this->objTabHeadersArray) ||
 						array_key_exists($key = $i, $this->objTabHeadersArray)) {
 					$objHeader = $this->objTabHeadersArray[$key];
@@ -44,7 +48,7 @@
 				} else {
 					$strResult .= 'Tab '. ($i+1);
 				}
-				$strResult .= '</a></li>';
+			    $strResult .= '</a></li>';
 			}
 
 			$strResult .= '</ul>';

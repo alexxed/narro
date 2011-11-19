@@ -47,15 +47,7 @@
                 $objExc->IncrementOffset();
                 throw $objExc;
             }
-            $objStyle = new QDataGridRowStyle();
-            $objStyle->CssClass = 'datagrid_header';
-            $this->HeaderRowStyle = $objStyle;
-            $objStyle = new QDataGridRowStyle();
-            $objStyle->CssClass = 'datagrid_row datagrid_even';
-            $this->RowStyle = $objStyle;
-            $objStyle = new QDataGridRowStyle();
-            $objStyle->CssClass = 'datagrid_row datagrid_odd';
-            $this->AlternateRowStyle = $objStyle;
+           
 
 
         }

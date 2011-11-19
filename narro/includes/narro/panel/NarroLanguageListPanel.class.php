@@ -263,6 +263,7 @@
         }
         
         public function btnTmx_Click($strFormId, $strControlId, $intLanguageId) {
+            set_time_limit(0);
             $objLanguage = NarroLanguage::Load($intLanguageId);
             if (!$objLanguage) return false;
             

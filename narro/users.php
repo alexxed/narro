@@ -23,22 +23,38 @@
 
         protected function Form_Create() {
             parent::Form_Create();
-            $this->pnlTab = new QTabPanel($this);
-            $this->pnlTab->UseAjax = false;
 
+            $this->pnlTab = new QTabs($this);
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::ProjectList(t('Projects'));
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_NOT_TRANSLATED, '', 0, 0, 10, 0, 0, t('Translate'));
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::Review(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0, t('Translate'));
+            
+            
+            if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator')) {
+                $pnlDummy = new QPanel($this->pnlTab);
+                $arrHeaders[] = NarroLink::LanguageList(t('Languages'));
+            }
+            
             $this->pnlUserList = new NarroUserListPanel($this->pnlTab);
-
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Translate'), NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, '', 0, 0, 10, 0, 0));
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Review'), NarroLink::Review(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0));
-            if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator'))
-                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());
-            $this->pnlTab->addTab($this->pnlUserList, t('Users'));
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::RoleList());
-            if (QApplication::HasPermissionForThisLang('Administrator'))
-                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Application Log'), NarroLink::Log());
-
-            $this->pnlTab->SelectedTab = t('Users');
+            $arrHeaders[] = NarroLink::UserList('', t('Users'));
+            $this->pnlTab->Selected = count($arrHeaders) - 1;
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::RoleList(0, '', t('Roles'));
+            
+            if (QApplication::HasPermissionForThisLang('Administrator')) {
+                $pnlDummy = new QPanel($this->pnlTab);
+                $arrHeaders[] = NarroLink::Log('', t('Application Log'));
+            }
+            
+            $this->pnlTab->Headers = $arrHeaders;
+            
         }
     }
 

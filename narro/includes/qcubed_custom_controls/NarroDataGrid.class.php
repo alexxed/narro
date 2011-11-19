@@ -20,27 +20,6 @@
         // DataGrid Preferences
         ///////////////////////////
 
-        // Feel free to specify global display preferences/defaults for all QDataGrid controls
-        public function __construct($objParentObject, $strControlId = null) {
-            try {
-                parent::__construct($objParentObject, $strControlId);
-            } catch (QCallerException  $objExc) {
-                $objExc->IncrementOffset();
-                throw $objExc;
-            }
-            $objStyle = new QDataGridRowStyle();
-            $objStyle->CssClass = 'datagrid_header';
-            $this->HeaderRowStyle = $objStyle;
-            $objStyle = new QDataGridRowStyle();
-            $objStyle->CssClass = 'datagrid_row datagrid_even';
-            $this->RowStyle = $objStyle;
-            $objStyle = new QDataGridRowStyle();
-            $objStyle->CssClass = 'datagrid_row datagrid_odd';
-            $this->AlternateRowStyle = $objStyle;
-
-
-        }
-
         protected function GetPaginatorRowHtml($objPaginator) {
             if (!$this->blnAlwaysShowPaginator && $this->objPaginator->TotalItemCount < $this->objPaginator->ItemsPerPage)
                 return false;

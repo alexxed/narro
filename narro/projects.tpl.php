@@ -25,7 +25,16 @@
 
     $this->RenderBegin();
     $this->pnlHeader->Render();
-    $this->pnlTab->Render();
+?>
+<table width="100%" cellspacing="0">
+<tbody>
+<tr></tr>
+<td style="vertical-align:top"><?php $this->pnlTab->Render(); ?></td>
+<td style="vertical-align:top"><?php $this->pnlTop->Render(); ?></td>
+</tbody>
+</table>
+<?php
+    
     $this->RenderEnd();
 
     require(dirname(__FILE__) . '/configuration/footer.inc.php');

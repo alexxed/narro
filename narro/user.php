@@ -32,22 +32,27 @@
 
             $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), $this->objUser->RealName);
 
-            $this->pnlTab = new QTabPanel($this);
-            $this->pnlTab->UseAjax = false;
+            $this->pnlTab = new QTabs($this);
 
             $this->pnlUserSuggestions = new NarroUserSuggestionsPanel($this->objUser, $this->pnlTab);
+            $arrHeaders[] = NarroLink::UserProfile($this->objUser->UserId, t('Profile'));
+            $this->pnlTab->Selected = count($arrHeaders) - 1;
 
-            $this->pnlTab->addTab($this->pnlUserSuggestions, t('Profile'));
 
-            if (QApplication::GetUserId() == $this->objUser->UserId || QApplication::HasPermissionForThisLang('Can manage users', null))
-                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Preferences'), NarroLink::UserPreferences($this->objUser->UserId));
+            if (QApplication::GetUserId() == $this->objUser->UserId || QApplication::HasPermissionForThisLang('Can manage users', null)) {
+                new QPanel($this->pnlTab);
+                $arrHeaders[] = NarroLink::UserPreferences($this->objUser->UserId, t('Preferences'));
+            }
 
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::UserRole($this->objUser->UserId));
+            new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::UserRole($this->objUser->UserId, t('Roles'));
 
-            if (QApplication::GetUserId() == $this->objUser->UserId || QApplication::HasPermissionForThisLang('Can manage users', null))
-                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Edit'), NarroLink::UserEdit($this->objUser->UserId));
-
-            $this->pnlTab->SelectedTab = 0;
+            if (QApplication::GetUserId() == $this->objUser->UserId || QApplication::HasPermissionForThisLang('Can manage users', null)) {
+                new QPanel($this->pnlTab);
+                $arrHeaders[] = NarroLink::UserEdit($this->objUser->UserId, t('Edit'));
+            }
+            
+            $this->pnlTab->Headers = $arrHeaders;
         }
     }
 

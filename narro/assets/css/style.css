@@ -27,8 +27,8 @@ body {
 .item_label_disabled { padding-bottom: 4px; color: #999999; }
 
 .button {  }
-.listbox {  }
-.textbox {  }
+.listbox { height: 2.2em }
+.textbox { height: 1.6em }
 
 .paginator_inactive_step { font-weight: bold; color: #aaaaaa; }
 .paginator_active_step { font-weight: bold; color: #000000; text-decoration: none; }
@@ -49,7 +49,7 @@ body {
 .dotted_box_content { padding:5px; }
 
 a:link, a:visited {
-  color: #557D0C;
+  color: #297ED3;
   text-decoration: none;
 }
 a:hover {
@@ -57,7 +57,7 @@ a:hover {
   text-decoration: underline;
 }
 a:active, a.active {
-  color: #6c871d;
+  color: #297ED3;
 }
 
 td, th{
@@ -130,10 +130,10 @@ th.datagrid_header a:hover{
 }
 
 tr.datagrid_even {
-    background: url(../images/bg_td1.jpg) repeat-x top;
+
 }
 tr.datagrid_odd {
-    background: #FFFFFF url(../images/bg_td1.jpg) repeat-x;
+
 }
 
 tr.selected {
@@ -256,14 +256,9 @@ table.datagrid { border: 1px solid #BDD4B3; width:100%; overflow:auto;}
         table.datagrid tr.alternate {  }
     table.datagrid th {
     padding: 3px 5px 3px 5px; text-align: left; color:#000;
-    background:none repeat scroll 0 0 #D4EDC9;
-    border-bottom:1px solid #BDD4B3;
+    border-bottom:1px solid #BDD4B3; 
     }
-        table.datagrid th a { color: #557D0C; text-decoration: none; }
-        table.datagrid th a:hover { color: #000; text-decoration: underline;}
     table.datagrid td { padding: 5px; border-bottom:1px solid #DEDEDE;}
-        table.datagrid td a { color: #557D0C; }
-        table.datagrid td a:hover { color: #000; text-decoration: underline;}
     table.datagrid tfoot td {border:0 none}
     table.datagrid caption {border-top:1px solid #BDD4B3;border-right:1px solid #BDD4B3;border-left:1px solid #BDD4B3;}
 
@@ -517,4 +512,5 @@ table.datagrid td a.nolink {text-decoration: none; color: black}
 .inline_block {
     display: inline-block;
 }
+
 

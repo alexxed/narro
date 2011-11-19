@@ -17,20 +17,34 @@
      */
 ?>
 <?php if ($_CONTROL->pnlTextsSource->Display) { ?>
-    <div class="section_title"><?php _t('Texts')?></div>
-    <div class="section">
+    <div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+    <h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+    <span class="ui-icon ui-icon-triangle-1-s"></span>
+    <a><?php _t('Texts')?></a>
+    </h3>
+    <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
     <?php _t('Where are the texts to translate?')?>
     <?php $_CONTROL->pnlTextsSource->Render() ?>
     </div>
+    </div>
 <?php } ?>
-<div class="section_title"><?php _t('Translations')?></div>
-<div class="section">
+<div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+<h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+<span class="ui-icon ui-icon-triangle-1-s"></span>
+<a><?php _t('Translations')?></a>
+</h3>
+<div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
 <?php _t('Where are the translated texts?')?>
 <?php $_CONTROL->pnlTranslationsSource->Render(); ?>
 </div>
+</div>
 
-<div class="section_title"><?php _t('Options')?></div>
-<div class="section">
+<div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+<h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+<span class="ui-icon ui-icon-triangle-1-s"></span>
+<a><?php _t('Options')?></a>
+</h3>
+<div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
 <?php
 $_CONTROL->chkApproveImportedTranslations->RenderWithName();
 $_CONTROL->chkApproveOnlyNotApproved->RenderWithName();
@@ -38,6 +52,7 @@ $_CONTROL->chkImportOnlyTranslations->RenderWithName();
 $_CONTROL->chkImportUnchangedFiles->RenderWithName();
 $_CONTROL->chkDontCheckEqual->RenderWithName();
 ?>
+</div>
 </div>
 <?php
 $_CONTROL->pnlLogViewer->Render();

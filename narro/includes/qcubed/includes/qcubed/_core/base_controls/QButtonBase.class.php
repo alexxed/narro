@@ -42,16 +42,16 @@
 			else
 				$strCommand = "button";
 
-			$strToReturn = sprintf('%s<button type="%s" name="%s" id="%s" %s%s > %s </button>%s',
-				$this->strHtmlBefore, 
+			$strToReturn = sprintf('%s<button type="%s" name="%s" id="%s" %s%s > <span class="ui-button-text">%s</span> </button>%s',
+				$this->strHtmlBefore,
 				$strCommand,
 				$this->strControlId,
 				$this->strControlId,
 				$this->GetAttributes(),
-				$strStyle,                    
+				$strStyle,
 				($this->blnHtmlEntities) ?
 					QApplication::HtmlEntities($this->strText) :
-					$this->strText, 
+					$this->strText,
 				$this->strHtmlAfter);
   
 			return $strToReturn;
@@ -90,7 +90,7 @@
 
 			switch ($strName) {
 				// APPEARANCE
-				case "Text": 
+				case "Text":
 					try {
 						$this->strText = QType::Cast($mixValue, QType::String);
 						break;

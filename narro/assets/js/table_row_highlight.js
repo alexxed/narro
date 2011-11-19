@@ -11,30 +11,30 @@ function highlight_datagrid(ctl_id) {
 
 function highlight_datagrid_row() {
   if (this.parentNode.className == 'datagrid_row datagrid_even')
-    this.parentNode.className = 'selected datagrid_row datagrid_even';
+    this.parentNode.className = 'ui-state-focus datagrid_row datagrid_even';
   else if (this.parentNode.className == 'datagrid_row datagrid_odd')
-    this.parentNode.className = 'selected datagrid_row datagrid_odd';
+    this.parentNode.className = 'ui-state-focus datagrid_row datagrid_odd';
 
 }
 
 function reset_datagrid_row() {
-  if (this.parentNode.className == 'selected datagrid_row datagrid_even')
+  if (this.parentNode.className == 'ui-state-focus datagrid_row datagrid_even')
     this.parentNode.className = 'datagrid_row datagrid_even';
-  else if (this.parentNode.className == 'selected datagrid_row datagrid_odd')
+  else if (this.parentNode.className == 'ui-state-focus datagrid_row datagrid_odd')
     this.parentNode.className = 'datagrid_row datagrid_odd';
 }
 
 function highlight_datagrid_row_by_control(ctl) {
   if (ctl.parentNode.parentNode.parentNode.className == 'datagrid_row datagrid_even')
-    ctl.parentNode.parentNode.parentNode.className = 'selected datagrid_row datagrid_even';
+    ctl.parentNode.parentNode.parentNode.className = 'ui-state-focus datagrid_row datagrid_even';
   else if (ctl.parentNode.parentNode.parentNode.className == 'datagrid_row datagrid_odd')
-    ctl.parentNode.parentNode.parentNode.className = 'selected datagrid_row datagrid_odd';
+    ctl.parentNode.parentNode.parentNode.className = 'ui-state-focus datagrid_row datagrid_odd';
 
 }
 
 function reset_datagrid_row_by_control(ctl) {
-  if (ctl.parentNode.parentNode.parentNode.className == 'selected datagrid_row datagrid_even')
+  if (ctl.parentNode.parentNode.parentNode.className == 'ui-state-focus datagrid_row datagrid_even')
     ctl.parentNode.parentNode.parentNode.className = 'datagrid_row datagrid_even';
-  else if (ctl.parentNode.parentNode.parentNode.className == 'selected datagrid_row datagrid_odd')
+  else if (ctl.parentNode.parentNode.parentNode.className == 'ui-state-focus datagrid_row datagrid_odd')
     ctl.parentNode.parentNode.parentNode.className = 'datagrid_row datagrid_odd';
 }

@@ -25,26 +25,72 @@
         protected function Form_Create() {
             parent::Form_Create();
             
-            if (QApplication::QueryString('p') < 1) {
-    
-                $this->pnlMainTab = new QTabPanel($this);
-                $this->pnlMainTab->UseAjax = false;
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Projects'), NarroLink::ProjectList());
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Translate'), NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, '', 0, 0, 0, 0, 0));
-                $this->pnlReview = new NarroReviewPanel($this->pnlMainTab);
-                $this->pnlMainTab->addTab($this->pnlReview, t('Review'));
-                if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator'))
-                    $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Languages'), NarroLink::LanguageList());
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Users'), NarroLink::UserList());
-                $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Roles'), NarroLink::RoleList());
-                if (QApplication::HasPermissionForThisLang('Administrator'))
-                    $this->pnlMainTab->addTab(new QPanel($this->pnlMainTab), t('Application Log'), NarroLink::Log());
+            if (QApplication::QueryString('p') == 0) {
+                $this->pnlMainTab = new QTabs($this);
+                
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::ProjectList(t('Projects'));
+                
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0, t('Translate'));
+                
+                $this->pnlReview = new NarroTranslatePanel($this->pnlMainTab);
+                $arrHeaders[] = t('Review');
+                $this->pnlMainTab->Selected = count($arrHeaders) - 1;
+                
+                
+                if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator')) {
+                    $pnlDummy = new QPanel($this->pnlMainTab);
+                    $arrHeaders[] = NarroLink::LanguageList(t('Languages'));
+                }
+                
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::UserList('', t('Users'));
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::RoleList(0, '', t('Roles'));
+                
+                if (QApplication::HasPermissionForThisLang('Administrator')) {
+                    $pnlDummy = new QPanel($this->pnlMainTab);
+                    $arrHeaders[] = NarroLink::Log('', t('Application Log'));
+                }
+                
+                $this->pnlMainTab->Headers = $arrHeaders;
+                
             }
             else {
-                $this->pnlMainTab->replaceTab(new NarroReviewPanel($this->pnlMainTab), t('Review'));
-            }
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::Project($this->objProject->ProjectId, t('Overview'));
             
-            $this->pnlMainTab->SelectedTab = t('Review');
+                if ($this->objProject instanceof NarroProject && QApplication::HasPermissionForThisLang('Can edit project', $this->objProject->ProjectId)) {
+                    $pnlDummy = new QPanel($this->pnlMainTab);
+                    $arrHeaders[] = NarroLink::ProjectEdit($this->objProject->ProjectId, t('Edit'));
+                }
+            
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::Translate($this->objProject->ProjectId, '', NarroTranslatePanel::SHOW_NOT_TRANSLATED, '', 0, 0, 10, 0, 0, t('Translate'));
+                
+                $this->pnlReview = new NarroTranslatePanel($this->pnlMainTab);
+                $arrHeaders[] = t('Review');
+                $this->pnlMainTab->Selected = count($arrHeaders) - 1;
+            
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::ProjectFileList($this->objProject->ProjectId, '', '', t('Files'));
+            
+                $pnlDummy = new QPanel($this->pnlMainTab);
+                $arrHeaders[] = NarroLink::ProjectLanguages($this->objProject->ProjectId, t('Languages'));
+            
+                if (QApplication::HasPermissionForThisLang('Can import project', $this->objProject->ProjectId)) {
+                    $pnlDummy = new QPanel($this->pnlMainTab);
+                    $arrHeaders[] = NarroLink::ProjectImport($this->objProject->ProjectId, t('Import'));
+                }
+            
+                if (QApplication::HasPermissionForThisLang('Can export project', $this->objProject->ProjectId)) {
+                    $pnlDummy = new QPanel($this->pnlMainTab);
+                    $arrHeaders[] = NarroLink::ProjectExport($this->objProject->ProjectId, t('Export'));
+                }
+            
+                $this->pnlMainTab->Headers = $arrHeaders;
+            }
         }
     }
 

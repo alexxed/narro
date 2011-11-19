@@ -29,70 +29,86 @@
             if (!QApplication::HasPermissionForThisLang('Administrator'))
                 QApplication::Redirect(NarroLink::ProjectList());
 
-            $this->pnlTab = new QTabPanel($this);
-            $this->pnlTab->UseAjax = false;
-
-            $this->pnlLog = new QPanel($this->pnlTab);
-            $this->pnlLog->AutoRenderChildren = true;
+            $this->pnlTab = new QTabs($this);
             
-            $btnClearLog = new QButton($this->pnlLog);
-            $btnClearLog->Text = t('Clear the log');
-            $btnClearLog->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete all the logged messages?')));
-            $btnClearLog->AddAction(new QClickEvent(), new QAjaxAction('btnClearLog_Click'));
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::ProjectList(t('Projects'));
             
-            $this->dtgLog = new NarroLogDataGrid($this->pnlLog);
-            // Datagrid Paginator
-            $this->dtgLog->Paginator = new QPaginator($this->dtgLog);
-            $this->dtgLog->PaginatorAlternate = new QPaginator($this->dtgLog);
-            $this->dtgLog->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
-            $this->dtgLog->SortColumnIndex = 0;
-            $this->dtgLog->SortDirection = 1;
-            $colDate = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Date);
-            $colDate->OrderByClause = QQ::OrderBy(QQN::NarroLog()->LogId);
-            $colDate->ReverseOrderByClause = QQ::OrderBy(QQN::NarroLog()->LogId, 0);
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_NOT_TRANSLATED, '', 0, 0, 10, 0, 0, t('Translate'));
             
-            if (QApplication::HasPermission('Administrator')) {
-                $colLanguage = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Language->LanguageName);
-                $colLanguage->Filter = null;
-                $colLanguage->FilterAddListItem(t('-Not set-'), QQ::IsNull(QQN::NarroLog()->LanguageId));
-                foreach(NarroLanguage::LoadAll(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)) as $objLanguage) {
-                    $colLanguage->FilterAddListItem($objLanguage->LanguageName, QQ::Equal(QQN::NarroLog()->LanguageId, $objLanguage->LanguageId));
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::Review(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0, t('Translate'));
+            
+            
+            if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator')) {
+                $pnlDummy = new QPanel($this->pnlTab);
+                $arrHeaders[] = NarroLink::LanguageList(t('Languages'));
+            }
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::UserList('', t('Users'));
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::RoleList(0, '', t('Roles'));
+            
+            if (QApplication::HasPermissionForThisLang('Administrator')) {
+                $this->pnlLog = new QPanel($this->pnlTab);
+                $this->pnlLog->AutoRenderChildren = true;
+                
+                $btnClearLog = new QButton($this->pnlLog);
+                $btnClearLog->Text = t('Clear the log');
+                $btnClearLog->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete all the logged messages?')));
+                $btnClearLog->AddAction(new QClickEvent(), new QAjaxAction('btnClearLog_Click'));
+                
+                $this->dtgLog = new NarroLogDataGrid($this->pnlLog);
+                // Datagrid Paginator
+                $this->dtgLog->Paginator = new QPaginator($this->dtgLog);
+                $this->dtgLog->PaginatorAlternate = new QPaginator($this->dtgLog);
+                $this->dtgLog->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
+                $this->dtgLog->SortColumnIndex = 0;
+                $this->dtgLog->SortDirection = 1;
+                $colDate = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Date);
+                $colDate->OrderByClause = QQ::OrderBy(QQN::NarroLog()->LogId);
+                $colDate->ReverseOrderByClause = QQ::OrderBy(QQN::NarroLog()->LogId, 0);
+                
+                if (QApplication::HasPermission('Administrator')) {
+                    $colLanguage = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Language->LanguageName);
+                    $colLanguage->Filter = null;
+                    $colLanguage->FilterAddListItem(t('-Not set-'), QQ::IsNull(QQN::NarroLog()->LanguageId));
+                    foreach(NarroLanguage::LoadAll(QQ::OrderBy(QQN::NarroLanguage()->LanguageName)) as $objLanguage) {
+                        $colLanguage->FilterAddListItem($objLanguage->LanguageName, QQ::Equal(QQN::NarroLog()->LanguageId, $objLanguage->LanguageId));
+                    }
                 }
+                else
+                    $this->dtgLog->AdditionalConditions = QQ::Equal(QQN::NarroLog()->LanguageId, QApplication::GetLanguageId());
+                
+                $colProject = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Project->ProjectName);
+                $colProject->Filter = null;
+                $colProject->FilterAddListItem(t('-Not set-'), QQ::IsNull(QQN::NarroLog()->ProjectId));
+                foreach(NarroProject::LoadAll(QQ::OrderBy(QQN::NarroProject()->ProjectName)) as $objProject) {
+                    $colProject->FilterAddListItem($objProject->ProjectName, QQ::Equal(QQN::NarroLog()->ProjectId, $objProject->ProjectId));
+                }
+                
+                $colUser = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->User->Username);
+                $colUser->Html = '<?=(($_ITEM->UserId)?NarroLink::UserProfile($_ITEM->UserId, $_ITEM->User->Username):"")?>';
+                $colUser->HtmlEntities = false;
+                
+                $colPriority = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Priority);
+                $colPriority->Name = 'P';
+                $colPriority->Width = 16;
+                $colPriority->FilterBoxSize = 1;
+                $colPriority->HtmlEntities = false;
+                
+                $colMessage = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Message);
+                $colMessage->HtmlEntities = false;
+                $colMessage->Html = '<?=$_FORM->dtgLog_colMessage_Render($_ITEM)?>';
+                
+                $arrHeaders[] = NarroLink::Log('', t('Application Log'));
+                $this->pnlTab->Selected = count($arrHeaders) - 1;
             }
-            else
-                $this->dtgLog->AdditionalConditions = QQ::Equal(QQN::NarroLog()->LanguageId, QApplication::GetLanguageId());
             
-            $colProject = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Project->ProjectName);
-            $colProject->Filter = null;
-            $colProject->FilterAddListItem(t('-Not set-'), QQ::IsNull(QQN::NarroLog()->ProjectId));
-            foreach(NarroProject::LoadAll(QQ::OrderBy(QQN::NarroProject()->ProjectName)) as $objProject) {
-                $colProject->FilterAddListItem($objProject->ProjectName, QQ::Equal(QQN::NarroLog()->ProjectId, $objProject->ProjectId));
-            }
-            
-            $colUser = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->User->Username);
-            $colUser->Html = '<?=(($_ITEM->UserId)?NarroLink::UserProfile($_ITEM->UserId, $_ITEM->User->Username):"")?>';
-            $colUser->HtmlEntities = false;
-            
-            $colPriority = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Priority);
-            $colPriority->Name = 'P';
-            $colPriority->Width = 16;
-            $colPriority->FilterBoxSize = 1;
-            $colPriority->HtmlEntities = false;
-            
-            $colMessage = $this->dtgLog->MetaAddColumn(QQN::NarroLog()->Message);
-            $colMessage->HtmlEntities = false;
-            $colMessage->Html = '<?=$_FORM->dtgLog_colMessage_Render($_ITEM)?>';
-
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Projects'), NarroLink::ProjectList());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Translate'), NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, '', 0, 0, 10, 0, 0));
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Review'), NarroLink::Review(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0));
-            if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator'))
-                $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Languages'), NarroLink::LanguageList());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Users'), NarroLink::UserList());
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::RoleList());
-            $this->pnlTab->addTab($this->pnlLog, t('Application Log'));
-
-            $this->pnlTab->SelectedTab = t('Application Log');
+            $this->pnlTab->Headers = $arrHeaders;
         }
         
         public function btnClearLog_Click($strFormId, $strControlId, $strParameter) {

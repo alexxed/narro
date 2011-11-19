@@ -31,7 +31,7 @@
         <link rel="stylesheet" type="text/css" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__; ?>/assets/css/tabs.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo __CSS_ASSETS__ . '/' . __JQUERY_CSS__; ?>" />
         <?php if (class_exists('QApplication')) { ?>
-            <link rel="stylesheet" type="text/css" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__; ?>/assets/css/font-<?php if (QApplication::$User instanceof NarroUser) echo QApplication::$User->GetPreferenceValueByName('Font size'); else echo 'medium' ?>.css" />
+            <link rel="stylesheet" type="text/css" href="<?php echo __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__; ?>/assets/css/font-<?php if (QApplication::$User instanceof NarroUser && QApplication::$User->UserId != NarroUser::ANONYMOUS_USER_ID) echo QApplication::$User->GetPreferenceValueByName('Font size'); else echo 'medium' ?>.css" />
 
             <?php if (QApplication::QueryString('p') && isset($this) && $objProject instanceof NarroProject) { ?>
                 <link rel="alternate" type="application/rss+xml" title="<?php echo sprintf(t('Context changes for %s'), $objProject->ProjectName) ?>" href="rss.php?t=context_info_changes&l=<?php echo QApplication::GetLanguageId() ?>&p=<?php echo $objProject->ProjectId ?>" />

@@ -34,11 +34,17 @@
             $this->objProject = $objProject;
             $this->objLanguage = $objLanguage;
 
-            $this->pnlMainTab = new QTabPanel($this);
-            $this->pnlMainTab->UseAjax = QApplication::$UseAjax;
-            $this->pnlMainTab->addTab(new NarroDirectoryTargetPanel($objProject, $objLanguage, $this->pnlMainTab), t('Save to disk'));
-            $this->pnlMainTab->addTab(new NarroMercurialTargetPanel($objProject, $objLanguage, $this->pnlMainTab), t('Commit to Mercurial'));
-            $this->pnlMainTab->addTab(new NarroSvnTargetPanel($objProject, $objLanguage, $this->pnlMainTab), t('Commit to SVN'));
+            $this->pnlMainTab = new QTabs($this);
+            
+            new NarroDirectoryTargetPanel($objProject, $objLanguage, $this->pnlMainTab);
+            new NarroMercurialTargetPanel($objProject, $objLanguage, $this->pnlMainTab);
+            new NarroSvnTargetPanel($objProject, $objLanguage, $this->pnlMainTab);
+            
+            $this->pnlMainTab->Headers = array(
+                t('Save to disk'),
+                t('Commit to Mercurial'),
+                t('Commit to SVN')
+            );
         }
 
         public function GetControlHtml() {

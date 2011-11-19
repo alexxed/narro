@@ -34,17 +34,25 @@
             $this->objProject = $objProject;
             $this->objLanguage = $objLanguage;
 
-            $this->pnlTranslationSource = new QTabPanel($this);
-            $this->pnlTranslationSource->UseAjax = QApplication::$UseAjax;
+            $this->pnlTranslationSource = new QTabs($this);
             $objDirectoryPanel = new NarroDirectorySourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
             $objDirectoryPanel->Directory = $this->objProject->DefaultTranslationPath;
-            $this->pnlTranslationSource->addTab($objDirectoryPanel, t('On this server'));
-            $this->pnlTranslationSource->addTab(new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('On my computer'));
-            $this->pnlTranslationSource->addTab(new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('On the web'));
-            $this->pnlTranslationSource->addTab(new NarroProjectSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Another project'));
-            $this->pnlTranslationSource->addTab(new NarroLanguageSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Another language'));
-            $this->pnlTranslationSource->addTab(new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('Mercurial'));
-            $this->pnlTranslationSource->addTab(new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource), t('SVN'));
+            new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
+            new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
+            new NarroProjectSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
+            new NarroLanguageSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
+            new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
+            new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
+            
+            $this->pnlTranslationSource->Headers = array(
+                t('On this server'),
+                t('On my computer'),
+                t('On the web'),
+                t('Another project'),
+                t('Another language'),
+                t('Mercurial'),
+                t('SVN')
+            );
         }
 
         public function GetControlHtml() {

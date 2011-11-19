@@ -134,7 +134,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
     jQuery(".narro_context_info_editor").each(
             function() {
                 if (this.id != ctl && jQuery('#' + this.id + ' .error').length == 0) {
-                    jQuery(this).removeClass("narro_context_info_editor_selected");
+                    jQuery(this).removeClass("ui-state-focus");
                     jQuery('#' + this.id + ' .ctxinfo').hide();
                     //jQuery('#' + this.id + ' .help').hide();
                     jQuery('#' + this.id + ' .copy').hide();
@@ -142,7 +142,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
                     jQuery('#' + this.id + ' .translation_box').attr("height", "auto");
                 }
                 else {
-                    jQuery(this).addClass("narro_context_info_editor_selected");
+                    jQuery(this).addClass("ui-state-focus");
                     jQuery('#' + this.id + ' .ctxinfo').show();
                     //jQuery('#' + this.id + ' .help').show();
                     jQuery('#' + this.id + ' .copy').show();

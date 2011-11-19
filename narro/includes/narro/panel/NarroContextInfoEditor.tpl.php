@@ -31,7 +31,7 @@ if ($_CONTROL->TextCommandKey)
     $_CONTROL->TextCommandKey->RenderWithName();
 if (QApplication::HasPermissionForThisLang('Can suggest'))
     $_CONTROL->CopyButton->Render();
-if ($_CONTROL->KeepUntranslatedButton instanceof QImageButton)
+if ($_CONTROL->KeepUntranslatedButton)
     $_CONTROL->KeepUntranslatedButton->Render();
 if (QApplication::HasPermissionForThisLang('Can suggest'))
     $_CONTROL->SaveButton->Render();

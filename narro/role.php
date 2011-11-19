@@ -43,6 +43,45 @@
 
             $this->pnlTab->SelectedTab = 4;
             $this->pnlRoleTab->SelectedTab = 1;
+            
+            $this->pnlTab = new QTabs($this);
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::ProjectList(t('Projects'));
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_NOT_TRANSLATED, '', 0, 0, 10, 0, 0, t('Translate'));
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::Review(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0, t('Translate'));
+            
+            
+            if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator')) {
+                $pnlDummy = new QPanel($this->pnlTab);
+                $arrHeaders[] = NarroLink::LanguageList(t('Languages'));
+            }
+            
+            $pnlDummy = new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::UserList('', t('Users'));
+            
+            $this->pnlRoleTab = new QTabs($this->pnlTab);
+            new QPanel($this->pnlRoleTab);
+            $arrRoleHeaders[] = NarroLink::RoleList(0, '', t('List'));
+            if (QApplication::HasPermissionForThisLang('Can add role')) {
+                $pnlDummy = new NarroRoleEditPanel($this->pnlRoleTab, NarroRole::Load(QApplication::QueryString('rid')));
+                $arrRoleHeaders[] = NarroLink::RoleEdit(null, t('Add'));
+                $this->pnlRoleTab->Selected = count($arrRoleHeaders) - 1;
+            }
+            $this->pnlRoleTab->Headers = $arrRoleHeaders;
+            $arrHeaders[] = t('Roles');
+            $this->pnlTab->Selected = count($arrHeaders) - 1;
+            
+            if (QApplication::HasPermissionForThisLang('Administrator')) {
+                $pnlDummy = new QPanel($this->pnlTab);
+                $arrHeaders[] = NarroLink::Log('', t('Application Log'));
+            }
+            
+            $this->pnlTab->Headers = $arrHeaders;
         }
     }
 

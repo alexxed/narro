@@ -22,8 +22,7 @@
          */
         public $objProject;
 
-        public $dtgTranslators;
-        public $dtgReviewers;
+        public $pnlTop;
         
         public $pnlProgressBar;
 
@@ -46,147 +45,14 @@
 
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroProjectPanel.tpl.php';
 
-            // Setup DataGrid
-            $this->dtgTranslators = new NarroDataGrid($this);
-            $this->dtgTranslators->SetCustomStyle('width', 'auto');
-            $this->dtgTranslators->ShowFilter = false;
-
-            $this->dtgTranslators->SortColumnIndex = 1;
-            $this->dtgTranslators->SortDirection = 1;
-
-            $this->dtgTranslators->Title = t('Translators');
-            $this->dtgTranslators->SetDataBinder('dtgTranslators_Bind', $this);
-            $this->dtgTranslators->DisplayStyle = QDisplayStyle::InlineBlock;
-            $this->dtgTranslators->SetCustomStyle('margin', '10px');
-
-            $colUsername = new QDataGridColumn(t('Translator'));
-            $colUsername->HtmlEntities = false;
-            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->RealName) ?>';
-            $this->dtgTranslators->AddColumn($colUsername);
-
-            $colWordCount = new QDataGridColumn(t('Texts translated'));
-            $colWordCount->Html = '<?=$_CONTROL->ParentControl->colWorldsTranslated_Render($_ITEM);?>';
-            $colWordCount->HtmlEntities = false;
-            $this->dtgTranslators->AddColumn($colWordCount);
+            $this->pnlTop = new QTabs($this);
             
-            $colLastTranslation = new QDataGridColumn(t('Last translation'));
-            $colLastTranslation->Html = '<?=$_ITEM["last_translation"];?>';
-            $this->dtgTranslators->AddColumn($colLastTranslation);            
-
-            // Setup DataGrid
-            $this->dtgReviewers = new NarroDataGrid($this);
-            $this->dtgReviewers->SetCustomStyle('width', 'auto');
-            $this->dtgReviewers->ShowFilter = false;
-            $this->dtgReviewers->DisplayStyle = QDisplayStyle::InlineBlock;
-            $this->dtgReviewers->SetCustomStyle('vertical-align', 'top');
-            $this->dtgReviewers->SetCustomStyle('margin', '10px');
-
-            $this->dtgReviewers->SortColumnIndex = 1;
-            $this->dtgReviewers->SortDirection = 1;
-
-            $this->dtgReviewers->Title = t('Reviewers');
-            $this->dtgReviewers->SetDataBinder('dtgReviewers_Bind', $this);
-
-            $colUsername = new QDataGridColumn(t('Reviewer'));
-            $colUsername->HtmlEntities = false;
-            $colUsername->Html = '<?= NarroLink::UserProfile($_ITEM["user"]->UserId, $_ITEM["user"]->RealName) ?>';
-            $this->dtgReviewers->AddColumn($colUsername);
-
-            $colReviews = new QDataGridColumn(t('Reviews'));
-            $colReviews->Html = '<?=$_ITEM["reviews"];?>';
-            $this->dtgReviewers->AddColumn($colReviews);
+            $pnlOverall = new NarroTopPanel(date(sprintf('Y-m-%d 00:00:00', date('d') - date('N') + 1)), $this->pnlTop);
+            $pnlWeekly = new NarroTopPanel('1970-01-01 00:00:00', $this->pnlTop);
+            
+            $this->pnlTop->Headers = array(t('Weekly'), t('All time'));
             
             $this->pnlProgressBar = new NarroProjectTranslationProgressBar($this->objProject->ProjectProgressForCurrentLanguage, $this);
         }
 
-        public function dtgTranslators_Bind() {
-            $objDbResult = NarroSuggestion::GetDatabase()->Query(
-                sprintf(
-            		'SELECT 
-            			narro_suggestion.user_id, 
-            			COUNT(narro_suggestion.suggestion_id) AS words_translated, 
-            			MAX(narro_suggestion.created) AS last_translation 
-            		FROM 
-            			narro_text, narro_suggestion, narro_context 
-            		WHERE 
-            			narro_context.text_id=narro_text.text_id AND 
-            			narro_suggestion.text_id=narro_text.text_id AND 
-            			narro_suggestion.is_imported=0 AND 
-            			narro_suggestion.language_id=%d AND
-            			narro_context.project_id=%d 
-            		GROUP BY narro_suggestion.user_id',
-            		QApplication::GetLanguageId(),
-                    $this->objProject->ProjectId
-                )
-            );
-            
-            $arrWordsTranslated = array();
-            $arrData = array();
-            if ($objDbResult)
-                while($arrRow = $objDbResult->FetchArray()) {
-                    if ($arrRow['user_id'] != NarroUser::ANONYMOUS_USER_ID && $arrRow['words_translated'] > 0) {
-                        $objUser = NarroUser::Load($arrRow['user_id']);
-                        $arrWordsTranslated[] = $arrRow['words_translated'];
-                        $objDateSpan = new QDateTimeSpan(time() - strtotime($arrRow['last_translation']));
-                        $strLastTranslation = $objDateSpan->SimpleDisplay();
-                        $arrData[] = array('user' => $objUser, 'words_translated' => $arrRow['words_translated'], 'last_translation' => sprintf(t('%s ago'), $strLastTranslation));
-                    }
-                }
-            
-            array_multisort($arrWordsTranslated, SORT_DESC, SORT_NUMERIC, $arrData);
-            
-            $this->dtgTranslators->DataSource = $arrData;
-        }
-
-        
-
-        
-        public function dtgReviewers_Bind() {
-            $objDbResult = NarroSuggestion::GetDatabase()->Query(
-                sprintf(
-            		'SELECT
-                    	narro_context_info.validator_user_id,
-                    	COUNT(narro_context_info.context_info_id) AS reviews,
-                    	MAX(narro_context_info.modified) AS last_review
-                    FROM
-                    	narro_context_info, narro_context
-                    WHERE
-                    	narro_context_info.context_id=narro_context.context_id AND
-                    	narro_context_info.validator_user_id IS NOT NULL AND
-                    	narro_context_info.language_id=%d AND
-                    	narro_context.project_id=%d
-                    GROUP BY narro_context_info.validator_user_id',
-                    QApplication::GetLanguageId(),
-                    $this->objProject->ProjectId
-                )
-            );
-            
-            $arrReviews = array();
-            $arrData = array();
-            if ($objDbResult)
-                while($arrRow = $objDbResult->FetchArray()) {
-                    if ($arrRow['validator_user_id'] != NarroUser::ANONYMOUS_USER_ID && $arrRow['reviews'] > 0) {
-                        $objUser = NarroUser::Load($arrRow['validator_user_id']);
-                        $arrReviews[] = $arrRow['reviews'];
-                        $objDateSpan = new QDateTimeSpan(time() - strtotime($arrRow['last_review']));
-                        $strLastReview = $objDateSpan->SimpleDisplay();
-                        $arrData[] = array('user' => $objUser, 'reviews' => $arrRow['reviews'], 'last_review' => sprintf(t('%s ago'), $strLastReview));
-                    }
-                }
-            
-            array_multisort($arrReviews, SORT_DESC, SORT_NUMERIC, $arrData);
-            
-            $this->dtgReviewers->DataSource = $arrData;
-        }
-
-        public function colWorldsTranslated_Render($arrRow) {
-            return $arrRow['words_translated'];
-        }
-        
-        public function btnRefresh_Click($strFormId, $strControlId, $strParameter) {
-            $this->pnlProgressBar->Total = $this->objProject->CountAllTextsByLanguage();
-            $this->pnlProgressBar->Translated = $this->objProject->CountApprovedTextsByLanguage();
-            $this->pnlProgressBar->Fuzzy = $this->objProject->CountTranslatedTextsByLanguage();
-            $this->pnlProgressBar->MarkAsModified();
-        }        
     }

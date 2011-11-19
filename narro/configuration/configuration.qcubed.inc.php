@@ -24,7 +24,8 @@ if (!defined('SERVER_INSTANCE')) {
     define ('__PLUGIN_ASSETS__', __SUBDIRECTORY__ . '/includes/qcubed/assets/plugins');
     define ('__JQUERY_BASE__',  'jquery/jquery.min.js');
     define ('__JQUERY_EFFECTS__',   'jquery/jquery-ui.custom.min.js');
-    define ('__JQUERY_CSS__', 'jquery-ui-themes/south-street/jquery-ui-1.8.16.custom.css');
+    if (!defined('__JQUERY_CSS__'))
+        define ('__JQUERY_CSS__', 'jquery-ui-themes/redmond/jquery-ui-1.8.16.custom.css');
     define ('__DEVTOOLS__', __PHP_ASSETS__ . '/_devtools');
     define ('__EXAMPLES__', __PHP_ASSETS__ . '/examples');
     define ('__QI18N_PO_PATH__', __QCUBED__ . '/i18n');

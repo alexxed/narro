@@ -209,18 +209,27 @@
                 $this->objUser = QApplication::$User;
 
             $this->pnlBreadcrumb->setElements(NarroLink::ProjectList(t('Projects')), NarroLink::UserList('', t('Users')), $this->objUser->RealName);
-
-            $this->pnlTab = new QTabPanel($this);
-            $this->pnlTab->UseAjax = false;
-
-            $this->pnlPreferences = new NarroUserPreferencesPanel($this->objUser, $this->pnlTab);
-
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Profile'), NarroLink::UserProfile($this->objUser->UserId));
-            $this->pnlTab->addTab($this->pnlPreferences, t('Preferences'));
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Roles'), NarroLink::UserRole($this->objUser->UserId));
-            $this->pnlTab->addTab(new QPanel($this->pnlTab), t('Edit'), NarroLink::UserEdit($this->objUser->UserId));
-
-            $this->pnlTab->SelectedTab = 1;
+            
+            $this->pnlTab = new QTabs($this);
+                        
+            new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::UserProfile($this->objUser->UserId, t('Profile'));
+            
+            if (QApplication::GetUserId() == $this->objUser->UserId || QApplication::HasPermissionForThisLang('Can manage users', null)) {
+                $this->pnlPreferences = new NarroUserPreferencesPanel($this->objUser, $this->pnlTab);
+                $arrHeaders[] = NarroLink::UserPreferences($this->objUser->UserId, t('Preferences'));
+                $this->pnlTab->Selected = count($arrHeaders) - 1;
+            }
+            
+            new QPanel($this->pnlTab);
+            $arrHeaders[] = NarroLink::UserRole($this->objUser->UserId, t('Roles'));
+            
+            if (QApplication::GetUserId() == $this->objUser->UserId || QApplication::HasPermissionForThisLang('Can manage users', null)) {
+                new QPanel($this->pnlTab);
+                $arrHeaders[] = NarroLink::UserEdit($this->objUser->UserId, t('Edit'));
+            }
+            
+            $this->pnlTab->Headers = $arrHeaders;
         }
     }
 
