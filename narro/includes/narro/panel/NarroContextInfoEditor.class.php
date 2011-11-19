@@ -186,6 +186,7 @@
             $this->btnKeepUntranslated = new QButton($this, $strControlId);
             $this->btnKeepUntranslated->ToolTip = t('Keep untranslated');
             $this->btnKeepUntranslated->Text = t('Keep');
+            $this->btnKeepUntranslated->TabIndex = -1;
             $this->btnKeepUntranslated->CssClass = $this->btnKeepUntranslated->CssClass . ' keep';
             $this->btnKeepUntranslated->Display =
                 QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId) ||
