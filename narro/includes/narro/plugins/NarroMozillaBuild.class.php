@@ -259,19 +259,16 @@
                     return false;
             }
             
-            if (!
-                NarroUtils::Exec(
-                    'make -sf client.mk configure',
-                    $arrOutput,
-                    $arrError,
-                    $intRetVal,
-                    false,
-                    array(),
-                    $this->strHgDir,
-                    true
-                )
-            )
-                return false;
+            NarroUtils::Exec(
+                'make -sf client.mk configure',
+                $arrOutput,
+                $arrError,
+                $intRetVal,
+                false,
+                array(),
+                $this->strHgDir,
+                true
+            );
 
             
             switch($this->strApplicationType) {
