@@ -20,7 +20,7 @@
         public $tabTop;
 
 
-        public function __construct($strDate, $objParentObject, $strControlId = null) {
+        public function __construct($strDate, $objParentObject, NarroProject $objProject = null, $strControlId = null) {
             // Call the Parent
             try {
                 parent::__construct($objParentObject, $strControlId);
@@ -50,7 +50,8 @@
             $pnlTranslators->AdditionalConditions = QQ::AndCondition(
                 QQ::GreaterOrEqual(QQN::NarroUser()->NarroSuggestionAsUser->Created, $strDate),
                 QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->LanguageId, QApplication::GetLanguageId()),
-                QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
+                QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID),
+                ($objProject)?QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->Text->NarroContextAsText->ProjectId, $objProject->ProjectId):QQ::All()
             );
             $pnlTranslators->AdditionalClauses = array(QQ::Count(QQN::NarroUser()->NarroSuggestionAsUser->SuggestionId, 'suggestion_cnt'), QQ::GroupBy(QQN::NarroUser()->UserId));
             
@@ -70,7 +71,8 @@
             $pnlReviewers->AdditionalConditions = QQ::AndCondition(
                 QQ::GreaterOrEqual(QQN::NarroUser()->NarroContextInfoAsValidatorUser->Modified, $strDate),
                 QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->LanguageId, QApplication::GetLanguageId()),
-                QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
+                QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID),
+                ($objProject)?QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->Context->ProjectId, $objProject->ProjectId):QQ::All()
             );
             $pnlReviewers->AdditionalClauses = array(QQ::Count(QQN::NarroUser()->NarroContextInfoAsValidatorUser->ValidSuggestionId, 'suggestion_cnt'), QQ::GroupBy(QQN::NarroUser()->UserId));
             
@@ -90,7 +92,8 @@
             $pnlVoters->AdditionalConditions = QQ::AndCondition(
                 QQ::GreaterOrEqual(QQN::NarroUser()->NarroSuggestionVoteAsUser->Created, $strDate),
                 QQ::Equal(QQN::NarroUser()->NarroSuggestionVoteAsUser->Suggestion->LanguageId, QApplication::GetLanguageId()),
-                QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
+                QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID),
+                ($objProject)?QQ::Equal(QQN::NarroUser()->NarroSuggestionVoteAsUser->Suggestion->Text->NarroContextAsText->ProjectId, $objProject->ProjectId):QQ::All()
             );
             $pnlVoters->AdditionalClauses = array(QQ::Count(QQN::NarroUser()->NarroSuggestionVoteAsUser->SuggestionId, 'suggestion_cnt'), QQ::GroupBy(QQN::NarroUser()->UserId));
             

@@ -47,8 +47,8 @@
 
             $this->pnlTop = new QTabs($this);
             
-            $pnlOverall = new NarroTopPanel(date(sprintf('Y-m-%d 00:00:00', date('d') - date('N') + 1)), $this->pnlTop);
-            $pnlWeekly = new NarroTopPanel('1970-01-01 00:00:00', $this->pnlTop);
+            $pnlOverall = new NarroTopPanel(date(sprintf('Y-m-%d 00:00:00', date('d') - date('N') + 1)), $this->pnlTop, $this->objProject);
+            $pnlWeekly = new NarroTopPanel('1970-01-01 00:00:00', $this->pnlTop, $this->objProject);
             
             $this->pnlTop->Headers = array(t('Weekly'), t('All time'));
             
