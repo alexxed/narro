@@ -32,9 +32,14 @@
             /**
              * If the translated text is more than 50% shorter than the original, show a warning
              */
-            if ((abs(mb_strlen($strOriginal) - mb_strlen($strTranslation)) * 100) / mb_strlen($strOriginal) > 50) {
+            if (mb_strlen($strTranslation) < mb_strlen($strOriginal) / 2) {
                 $this->arrErrors[] =
-                    '<span style="color:red">' . t('Your translation seems really short compared to the original, or the other way around. Are you sure it is correct?') . '</span>';
+                    '<span style="color:red">' . t('Your translation seems really short compared to the original. Are you sure it is correct?') . '</span>';
+            }
+            
+            if (mb_strlen($strTranslation) > mb_strlen($strOriginal) * 2) {
+                $this->arrErrors[] =
+                    '<span style="color:red">' . t('Your translation seems really long compared to the original. Are you sure it is correct?') . '</span>';
             }
 
             return array($strOriginal, $strTranslation, $strContext, $objFile, $objProject);
