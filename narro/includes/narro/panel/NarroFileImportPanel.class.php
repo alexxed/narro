@@ -30,7 +30,7 @@
             $this->objNarroFile = $objNarroFile;
 
             $this->btnImport = new QButton($this);
-            $this->btnImport->Text = t('Import');
+            $this->btnImport->Text = t('Upload');
             $this->btnImport->ActionParameter = $this->objNarroFile->FileId;
             $this->btnImport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnImport_Click'));
 
@@ -41,13 +41,14 @@
                 $this->blnDisplay = false;
 
             $this->fileToUpload = new QFileControl($this);
+            $this->fileToUpload->ToolTip = t('File to import');
         }
 
         public function GetControlHtml() {
             $this->strText = '';
 
             if ($this->fileToUpload->Display)
-                $this->strText .=  t('File to import') . ': ' . $this->fileToUpload->Render(false);
+                $this->strText .=  $this->fileToUpload->Render(false);
 
             if ($this->btnImport->Display)
                 $this->strText .=  $this->btnImport->Render(false);

@@ -187,14 +187,19 @@
             if (!$chkExport) {
                 $chkExport = new QCheckBox($this->dtgFile, $strControlId);
                 $chkExport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkExport_Click'));
+                $chkExport->Name = t('Export');
+                $chkExport->Instructions = t('If ticked, this file will be exported when doing a project export. Useful for excluding some files from the project export.');
             }
             $chkExport->ActionParameter = $objProgress->File->FileId;
             $chkExport->Checked = NarroFileProgress::CountByFileIdLanguageIdExport($objProgress->File->FileId, QApplication::GetLanguageId(), 1);
+            $chkExport->Display = QApplication::HasPermission('Can export project', $this->objProject->ProjectId, QApplication::GetLanguageId());
 
             $pnlImport = new NarroFileImportPanel($objProgress->File, $this->dtgFile);
+            $pnlImport->DisplayStyle = QDisplayStyle::InlineBlock;
             $pnlExport = new NarroFileExportPanel($objProgress->File, $this->dtgFile);
+            $pnlExport->DisplayStyle = QDisplayStyle::InlineBlock;
 
-            return $chkExport->Render(false) . $pnlImport->Render(false) . $pnlExport->Render(false);
+            return $chkExport->RenderWithName(false) . $pnlImport->Render(false) . $pnlExport->Render(false);
         }
 
         public function chkExport_Click($strFormId, $strControlId, $intFileId) {
@@ -230,8 +235,7 @@
             $this->colFileName->Html = '<?= $_CONTROL->ParentControl->dtgFile_PercentTranslated_Render($_ITEM) ?>';
             $this->colFileName->Name = t('Translation Progress');
 
-            if (QApplication::HasPermission('Can manage project', $this->objProject->ProjectId, QApplication::GetLanguageId()))
-                $this->dtgFile->AddColumn($this->colExport);
+            $this->dtgFile->AddColumn($this->colExport);
         }
 
         public function dtgFile_SetConditions() {

@@ -27,7 +27,7 @@
             $this->objNarroFile = $objNarroFile;
 
             $this->btnExport = new QButton($this);
-            $this->btnExport->Text = t('Export');
+            $this->btnExport->Text = t('Download');
             $this->btnExport->ActionParameter = $this->objNarroFile->FileId;
             $this->btnExport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnExport_Click'));
 
@@ -41,9 +41,8 @@
         }
 
         public function GetControlHtml() {
-            $this->strText = '';
 
-            $this->strText .=  t('Model to use') . ': ' . $this->fileToUpload->Render(false) . $this->btnExport->Render(false);
+            $this->strText = $this->btnExport->Render(false);
 
             return parent::GetControlHtml();
         }
