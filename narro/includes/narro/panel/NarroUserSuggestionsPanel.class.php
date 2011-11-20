@@ -144,6 +144,7 @@
                 WHERE
                     narro_context.text_id = narro_suggestion.text_id AND
                     narro_project.project_id = narro_context.project_id AND
+                    narro_suggestion.language_id=%d AND
                     narro_suggestion.user_id=%d
                 GROUP BY narro_context.project_id',
                 QApplication::GetLanguageId(),
