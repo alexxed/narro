@@ -86,7 +86,7 @@
 
             $this->chkImportUnchangedFiles = new QCheckBox($this);
             $this->chkImportUnchangedFiles->Name = t('Import files even if they are unchanged from the last import');
-            $this->chkImportUnchangedFiles->Checked = false;
+            $this->chkImportUnchangedFiles->Checked = true;
 
             $this->chkImportOnlyTranslations = new QCheckBox($this);
             $this->chkImportOnlyTranslations->Name = t('Do not add texts, just add found translations for existing texts');
