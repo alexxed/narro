@@ -62,9 +62,13 @@
             $this->txtTranslation->CssClass = 'translation_box';
             $this->txtTranslation->CrossScripting = QCrossScripting::Allow;
             $this->txtTranslation->Rows = 1;
+            $this->txtTranslation->ReadOnly = !QApplication::HasPermissionForThisLang('Can suggest');
             $this->txtTranslation->Width = '100%';
             $this->txtTranslation->DisplayStyle = QDisplayStyle::Block;
-            $this->txtTranslation->ToolTip = t('Enter your translation here');
+            if ($this->txtTranslation->ReadOnly)
+                $this->txtTranslation->ToolTip = t('Sign in to add translations');
+            else
+                $this->txtTranslation->ToolTip = t('Enter your translation here');
 
             if ($this->objContextInfo->Context->TextAccessKey) {
                 $this->txtAccessKey = new QTextBox($this);
@@ -156,6 +160,9 @@
                 $this->dtgTranslation_Create();
 
             $this->strTemplate = dirname(__FILE__) . '/' . __CLASS__ . '.tpl.php';
+            
+            if ($this->txtTranslation->ReadOnly)
+                $this->btnHelp_Click($this->Form->FormId, $this->btnHelp->ControlId, '');
         }
         
         public function btnHelp_Create() {
@@ -421,8 +428,9 @@
             
             $this->txtTranslation->Display = true;
             $this->btnSave->Display = true;
-            $this->btnCopy->Display = true;
-            $this->btnKeepUntranslated->Display = true;
+            $this->btnCopy->Display = QApplication::HasPermissionForThisLang('Can suggest');
+            $this->btnKeepUntranslated->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId) ||
+                QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId);
             
             if ($strParameter != '1')
                 $this->txtTranslation->Focus();
