@@ -501,6 +501,12 @@
 		 * @return int
 		 */
 		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
+		    if ($this->ValidSuggestionId && $this->ValidSuggestion->TextId != $this->objContext->TextId)
+		        throw new Exception('Tried to approve a translation for a different text.');
+		    
+		    if ($this->ValidSuggestionId && $this->ValidSuggestion->LanguageId != $this->LanguageId)
+		        throw new Exception('Tried to approve a translation for a different language.');
+		    
 		    $blnIsNew = false;
 		    if (((!$this->__blnRestored) || ($blnForceInsert))) {
 		        $this->blnHasSuggestions = QType::Cast(NarroSuggestion::CountByTextIdLanguageId($this->Context->TextId, $this->LanguageId), QType::Boolean);
