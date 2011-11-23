@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 2.0
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2011-19-11 15:34+0200\n"
-"PO-Revision-Date: 2011-19-11 15:34+0200\n"
+"POT-Creation-Date: 2011-24-11 00:28+0200\n"
+"PO-Revision-Date: 2011-24-11 00:28+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -384,9 +384,8 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#. $this->UploadText = QApplication::Translate('Upload');
-#. $this->btnUpload->Text = '<img src="' . __VIRTUAL_DIRECTORY__ . __IMAGE_ASSETS__ . '/add.png" alt="' . QApplication::Translate('Upload') . '" border="0"/> ' . QApplication::Translate('Upload');
-#: includes/qcubed/includes/qcubed/controls/QFileAsset.class.php
+#. $this->btnImport->Text = t('Upload');
+#: includes/qcubed/includes/qcubed/controls/QFileAsset.class.php includes/narro/panel/NarroFileImportPanel.class.php
 msgid "Upload"
 msgstr ""
 
@@ -1020,14 +1019,9 @@ msgstr ""
 msgid "These are the roles used on this website."
 msgstr ""
 
-#. $arrHeaders[] = NarroLink::ProjectExport($this->objProject->ProjectId, t('Export'));
-#: includes/narro/panel/NarroFileExportPanel.class.php includes/narro/panel/NarroProjectFileListPanel.class.php includes/narro/sources/NarroDirectoryTargetPanel.class.php translate.php review.php export.tpl.php import.php project_languages.php project.php export.php project_edit.php files.php
-msgid "Export"
-msgstr ""
-
-#. $this->strText .=  t('Model to use') . ': ' . $this->fileToUpload->Render(false) . $this->btnExport->Render(false);
+#. $this->btnExport->Text = t('Download');
 #: includes/narro/panel/NarroFileExportPanel.class.php
-msgid "Model to use"
+msgid "Download"
 msgstr ""
 
 #. <?php _t("To approve translations, go through the list and click on the vote button next to the right translation.");?>
@@ -1064,6 +1058,31 @@ msgstr ""
 #. $this->lstProject->AddItem(t('all projects'));
 #: includes/narro/panel/NarroTranslatePanel.class.php
 msgid "all projects"
+msgstr ""
+
+#. $this->btnSearch->Instructions = t('Or hit enter');
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Or hit enter"
+msgstr ""
+
+#. $this->txtReplace->Name = t('and replace it with');
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "and replace it with"
+msgstr ""
+
+#. $this->txtReplace->Instructions = t('Exact and case sensitive.');
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Exact and case sensitive."
+msgstr ""
+
+#. $this->btnReplace->Text = t('Replace');
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "Replace"
+msgstr ""
+
+#. $this->btnReplace->Instructions = t('If the approve checkbox found above is checked, the replacements will also be approved everywhere.');
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "If the approve checkbox found above is checked, the replacements will also be approved everywhere."
 msgstr ""
 
 #. $this->lstSortDir->AddItem(t('ascending'), 1, true);
@@ -1126,6 +1145,11 @@ msgstr ""
 msgid "sorted by text length"
 msgstr ""
 
+#. $this->lstSearchIn->Instructions = t('where to search');
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "where to search"
+msgstr ""
+
 #. $this->lstSearchIn->AddItem(t('texts'), self::SEARCH_IN_TEXTS);
 #: includes/narro/panel/NarroTranslatePanel.class.php
 msgid "texts"
@@ -1156,6 +1180,16 @@ msgstr ""
 msgid "Less"
 msgstr ""
 
+#. sprintf(t('%d occurences of "%s" replaced with "%s", out of which %d were already approved, %d translations added.'), $intReplaceCnt, $strToReplace, $this->txtReplace->Text, $intApproved, $intTranslations)
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "%d occurences of \"%s\" replaced with \"%s\", out of which %d were already approved, %d translations added."
+msgstr ""
+
+#. $this->txtSearch->Instructions = t("'exact' does an exact search");
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "'exact' does an exact search"
+msgstr ""
+
 #. $this->chkApproveImportedTranslations->Name = t('Approve the imported translations');
 #: includes/narro/panel/NarroProjectImportPanel.class.php
 msgid "Approve the imported translations"
@@ -1182,7 +1216,7 @@ msgid "Kill process"
 msgstr ""
 
 #. $arrHeaders[] = NarroLink::ProjectImport($this->objProject->ProjectId, t('Import'));
-#: includes/narro/panel/NarroProjectImportPanel.class.php includes/narro/panel/NarroFileImportPanel.class.php translate.php review.php import.php project_languages.php project.php export.php import.tpl.php project_edit.php files.php
+#: includes/narro/panel/NarroProjectImportPanel.class.php translate.php review.php import.php project_languages.php project.php export.php import.tpl.php project_edit.php files.php
 msgid "Import"
 msgstr ""
 
@@ -1603,6 +1637,11 @@ msgstr ""
 msgid "Bad username or/and email"
 msgstr ""
 
+#. $this->txtTranslation->ToolTip = t('Sign in to add translations');
+#: includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Sign in to add translations"
+msgstr ""
+
 #. $this->txtTranslation->ToolTip = t('Enter your translation here');
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "Enter your translation here"
@@ -2019,7 +2058,7 @@ msgstr ""
 msgid "Optionally, enter your real name. It can be used to give you credit for your translations. If you do not fill it, your username will be used instead."
 msgstr ""
 
-#. $this->strText .=  t('File to import') . ': ' . $this->fileToUpload->Render(false);
+#. $this->fileToUpload->ToolTip = t('File to import');
 #: includes/narro/panel/NarroFileImportPanel.class.php
 msgid "File to import"
 msgstr ""
@@ -2069,6 +2108,16 @@ msgstr ""
 #. $this->lblMessage->Text = t("Seems like the username or email is already in use.") . $objEx->getMessage();
 #: includes/narro/panel/NarroUserRegisterPanel.class.php
 msgid "Seems like the username or email is already in use."
+msgstr ""
+
+#. $arrHeaders[] = NarroLink::ProjectExport($this->objProject->ProjectId, t('Export'));
+#: includes/narro/panel/NarroProjectFileListPanel.class.php includes/narro/sources/NarroDirectoryTargetPanel.class.php translate.php review.php export.tpl.php import.php project_languages.php project.php export.php project_edit.php files.php
+msgid "Export"
+msgstr ""
+
+#. $chkExport->Instructions = t('If ticked, this file will be exported when doing a project export. Useful for excluding some files from the project export.');
+#: includes/narro/panel/NarroProjectFileListPanel.class.php
+msgid "If ticked, this file will be exported when doing a project export. Useful for excluding some files from the project export."
 msgstr ""
 
 #. $this->colFileName->Name = t('File name');
