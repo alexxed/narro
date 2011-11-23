@@ -49,31 +49,15 @@
         }
         
         protected function GetComments($strLine) {
-            $strLineToProcess = $strLine;
-            $arrComment = array();
-            $blnHasComment = preg_match_all('/\<\!\-\-/', $strLineToProcess, $arrMatches);
-            foreach($arrMatches[0] as $arrMatch) {
-                $intCommentStart = strpos($strLineToProcess, '<!--');
-                if (($intCommentEnd = strpos($strLineToProcess, '-->')) !== false)
-                    $strComment = substr($strLineToProcess, $intCommentStart, $intCommentEnd - $intCommentStart + 3);
-                else
-                    $strComment = substr($strLineToProcess, $intCommentStart);
-                
-                $strLineToProcess = NarroString::Replace($strComment, '', $strLineToProcess, 1);
-                
-                $arrComment[] = $strComment;
+            if (preg_match_all(self::COMMENT_REGEX, $strLine, $arrMatches)) {
+                return $arrMatches[0];
             }
-            
-            return $arrComment;
+            else
+                return array();
         }
         
         protected function StripComments($strLine) {
-            $strResult = $strLine;
-            foreach($this->GetComments($strLine) as $strComment) {
-                $strResult = NarroString::Replace($strComment, '', $strResult, 1);
-            }
-            
-            return $strResult;
+            return preg_replace(self::COMMENT_REGEX, '', $strLine);
         }
 
         /**
@@ -85,7 +69,6 @@
          * @return NarroFileEntity
          */
         protected function ProcessLine($strLine) {
-            
             if (preg_match(self::ENTITY_REGEX, $this->StripComments($strLine), $arrMatches) || preg_match(self::ENTITY_REGEX_2, $this->StripComments($strLine), $arrMatches) ) {
                 $objEntity = new NarroFileEntity();
 
@@ -102,6 +85,13 @@
                 return $objEntity;
             }
             else {
+                $arrComments = $this->GetComments($strLine);
+                if ($this->blnHeaderFound == false && $this->blnFirstEntityFound == false && count($arrComments) == 1) {
+                    if (strstr($arrComments[0], 'BEGIN LICENSE BLOCK')) {
+                        $this->blnHeaderFound = true;
+                        $this->blnIsHeader = true;
+                    }
+                }
                 return false;
             }
         }
