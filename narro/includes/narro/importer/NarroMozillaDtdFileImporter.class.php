@@ -17,8 +17,8 @@
      */
 
     class NarroMozillaDtdFileImporter extends NarroMozillaFileImporter {
-        const ENTITY_REGEX = '/(.*)(<!ENTITY\s+)([a-z][^\s]+)(\s+")([^"]*)("\s?>\s*)/m';
-        const ENTITY_REGEX_2 = "/(.*)(<!ENTITY\s+)([a-z][^\s]+)(\s+')([^']*)('\s?>\s*)/m";
+        const ENTITY_REGEX = '/(.*)(<!ENTITY\s+)([a-z][^\s]+)(\s+")([^"]*)("\s?>\s*)/im';
+        const ENTITY_REGEX_2 = "/(.*)(<!ENTITY\s+)([a-z][^\s]+)(\s+')([^']*)('\s?>\s*)/im";
         const COMMENT_REGEX = '/<!--([^>]+)-->/m';
         
         protected $blnCommentStart = false;
@@ -69,6 +69,9 @@
          * @return NarroFileEntity
          */
         protected function ProcessLine($strLine) {
+            QFirebug::error($strLine);
+            QFirebug::error($this->StripComments($strLine));
+            QFirebug::error(preg_match(self::ENTITY_REGEX, $this->StripComments($strLine)));
             if (preg_match(self::ENTITY_REGEX, $this->StripComments($strLine), $arrMatches) || preg_match(self::ENTITY_REGEX_2, $this->StripComments($strLine), $arrMatches) ) {
                 $objEntity = new NarroFileEntity();
 
@@ -100,6 +103,10 @@
             $intTime = time();
 
             $arrSourceKey = $this->FileAsArray($strTemplateFile);
+            
+            QFirebug::error($strTemplateFile);
+            QFirebug::error($arrSourceKey);
+            QFirebug::error($this->objFile->Header);
             
             $intElapsedTime = time() - $intTime;
             if ($intElapsedTime > 0) {
