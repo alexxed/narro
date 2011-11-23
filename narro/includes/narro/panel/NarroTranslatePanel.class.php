@@ -30,10 +30,12 @@
         public $txtFile;
         public $lstFilter;
         public $txtSearch;
+        public $txtReplace;
         public $lstSearchIn;
         public $lstSort;
         public $lstSortDir;
         public $btnSearch;
+        public $btnReplace;
         public $chkLast;
         public $chkRequestMoreSent;
 
@@ -101,6 +103,8 @@
             $this->lstSort_Create();
             $this->lstSortDir_Create();
             $this->btnSearch_Create();
+            $this->txtReplace_Create();
+            $this->btnReplace_Create();
 
             if (QApplication::QueryString('a'))
                 $this->intMaxRowCount = QApplication::QueryString('a');
@@ -144,6 +148,7 @@
         public function txtSearch_Create() {
             $this->txtSearch = new QTextBox($this, 'search');
             $this->txtSearch->RenderWithNameCssClass = 'inline_block';
+            $this->txtSearch->Instructions = t("'exact' does an exact search");
             if (QApplication::QueryString('s'))
                 $this->txtSearch->Text = QApplication::QueryString('s');
         }
@@ -164,7 +169,25 @@
             $this->btnSearch->RenderWithNameCssClass = 'inline_block';
             $this->btnSearch->PrimaryButton = true;
             $this->btnSearch->Text = t('Search');
+            $this->btnSearch->Instructions = t('Or hit enter');
             $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+        }
+        
+        public function txtReplace_Create() {
+            $this->txtReplace = new QTextBox($this, 'replace');
+            $this->txtReplace->RenderWithNameCssClass = 'inline_block';
+            $this->txtReplace->Name = t('and replace it with');
+            $this->txtReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TRANSLATIONS);
+            $this->txtReplace->Instructions = t('Exact and case sensitive.');
+        }
+                
+        public function btnReplace_Create() {
+            $this->btnReplace = new QButton($this);
+            $this->btnReplace->RenderWithNameCssClass = 'inline_block';
+            $this->btnReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TRANSLATIONS);
+            $this->btnReplace->Text = t('Replace');
+            $this->btnReplace->Instructions = t('If the approve checkbox found above is checked, the replacements will also be approved everywhere.');
+            $this->btnReplace->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnReplace_Click'));
         }
         
         public function dtrText_Create() {
@@ -223,6 +246,7 @@
             $this->lstSearchIn = new QListBox($this);
             $this->lstSearchIn->Name = t('Search');
             $this->lstSearchIn->RenderWithNameCssClass = 'inline_block';
+            $this->lstSearchIn->Instructions = t('where to search');
             $this->lstSearchIn->AddItem(t('texts'), self::SEARCH_IN_TEXTS);
             $this->lstSearchIn->AddItem(t('translations'), self::SEARCH_IN_TRANSLATIONS);
             $this->lstSearchIn->AddItem(t('contexts'), self::SEARCH_IN_CONTEXTS);
@@ -255,6 +279,8 @@
         }
 
         public function btnSearch_Click($strFormId = null, $strControlId = null, $strParameter = null) {
+            $this->btnReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TRANSLATIONS);
+            $this->txtReplace->Display = $this->btnReplace->Display;
             $this->btnMore->DisplayStyle = QDisplayStyle::Block;
             $this->dtrText_Conditions(true);
             $this->dtrText_Bind(null, null, null, true);
@@ -452,5 +478,88 @@
             }
             
             $this->chkRequestMoreSent->Checked = false;
+        }
+        
+        public function btnReplace_Click() {
+            if (!QApplication::HasPermissionForThisLang('Can approve')) return false;
+            
+            if ($this->txtReplace->Display == false)
+                $this->txtReplace->Display = true;
+            else {
+                $strQuery = NarroContextInfo::GetQueryForConditions($objQueryBuilder, QQ::AndCondition($this->arrConditions), $this->arrClauses);
+                $objDbResult = NarroContextInfo::GetDatabase()->Query($strQuery);
+                if ($objDbResult) {
+                    $intReplaceCnt = 0;
+                    $intApproved = 0;
+                    $intTranslations = 0;
+                    $arrProcessed = array();
+                    while ($objDbRow = $objDbResult->GetNextRow()) {
+                        $objContextInfo = NarroContextInfo::InstantiateDbRow($objDbRow, null, null, null, $objQueryBuilder->ColumnAliasArray);
+                        if (in_array($objContextInfo->ContextInfoId, $arrProcessed))
+                            continue;
+                        else
+                            $arrProcessed[] = $objContextInfo->ContextInfoId;
+                        
+                        if (preg_match("/^'.*'$/", $this->txtSearch->Text))
+                            $strToReplace = substr($this->txtSearch->Text, 1, -1);
+                        else
+                            $strToReplace = $this->txtSearch->Text;
+                        
+                        $arrMatchingSuggestion = NarroSuggestion::QueryArray(
+                            QQ::AndCondition(
+                                QQ::Equal(QQN::NarroSuggestion()->TextId, $objContextInfo->Context->TextId),
+                                QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::GetLanguageId()),
+                                QQ::Equal(QQN::NarroSuggestion()->Text->NarroSuggestionAsText->SuggestionValue, $strToReplace)
+                            )
+                        );
+                        
+                        $objReplaceSuggestion = null;
+                        // find the suggestion to be replaced; it can be one or none
+                        foreach($arrMatchingSuggestion as $objSuggestion) {
+                            /* @var $objSuggestion NarroSuggestion */
+                            if ($this->txtSearch->Text == $objSuggestion->SuggestionValue) {
+                                $objReplaceSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($objSuggestion->TextId, $objSuggestion->LanguageId, md5($this->txtReplace->Text));
+                                if (!$objReplaceSuggestion) {
+                                    $objSuggestion->SuggestionValue = $this->txtReplace->Text;
+                                    $objSuggestion->UserId = QApplication::GetUserId();
+                                    $objSuggestion->Created = QDateTime::Now();
+                                    $objSuggestion->Modified = null;
+                                    $objSuggestion->Save(true);
+                                    $intTranslations++;
+                                    
+                                    $objReplaceSuggestion = $objSuggestion;
+                                }
+                                
+                                if ($objReplaceSuggestion)
+                                    break;
+                            }
+                        }
+                        
+                        if ($objReplaceSuggestion instanceof NarroSuggestion) {
+                            $intReplaceCnt++;
+                            
+                            if ($objContextInfo->ValidSuggestionId == $objSuggestion->SuggestionId || $this->chkApprove->Checked) {
+                                if ($objContextInfo->ValidSuggestionId == null)
+                                    $intApproved++;
+                                $objContextInfo->ValidSuggestionId = $objReplaceSuggestion->SuggestionId;
+                                $objContextInfo->ValidatorUserId = QApplication::GetUserId();
+                                $objContextInfo->Modified = QDateTime::Now();
+                                $objContextInfo->Save();
+                            }
+                        }
+                    }
+                    
+                    $this->dtrText->RemoveChildControls(true);
+                    $this->btnReplace->Refresh();
+                    QApplication::ExecuteJavaScript(
+                    	sprintf(
+                    		'jQuery(\'#%s\').after(\'&nbsp;<small style="padding: 2px;" class="ui-state-highlight ui-corner-all"><span style="width:16px; height: 16px; display:inline-block" class="ui-icon ui-icon-info"></span>&nbsp;%s.</small>\')',
+                            $this->btnReplace->ControlId,
+                            sprintf(t('%d occurences of "%s" replaced with "%s", out of which %d were already approved, %d translations added.'), $intReplaceCnt, $strToReplace, $this->txtReplace->Text, $intApproved, $intTranslations)
+                        )
+                    );
+                }
+                
+            }
         }
     }

@@ -208,7 +208,9 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
 <?php
     $_CONTROL->lstSearchIn->RenderWithName();
     $_CONTROL->txtSearch->RenderWithName();
-    $_CONTROL->btnSearch->Render();
+    $_CONTROL->btnSearch->RenderWithName();
+    $_CONTROL->txtReplace->RenderWithName();
+    $_CONTROL->btnReplace->RenderWithName();
 ?>
 </div>
 </div>
