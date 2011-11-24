@@ -25,7 +25,7 @@
         // Let's Show a Footer
         protected $blnShowFooter = true;
 
-        protected $blnAlwaysShowPaginator = false;
+        protected $blnAlwaysShowPaginator = true;
 
         // Let's define the footer to be to display our alternate paginator
         // We'll use the already built-in GetPaginatorRowHtml, sending in our ALTERNATE paginator, to help with the rendering
@@ -62,6 +62,30 @@
         public function GetEndScript() {
             QApplication::ExecuteJavaScript(sprintf('highlight_datagrid("%s");', $this->ControlId));
             return parent::GetEndScript();
+        }
+        
+        public function colSuggestion_Render( NarroSuggestion $objNarroSuggestion ) {
+            return $objNarroSuggestion->SuggestionValue;
+        }
+        
+        public function colText_Render( NarroSuggestion $objNarroSuggestion ) {
+            return
+            str_replace(
+                    		'?l=' . QApplication::$TargetLanguage->LanguageCode,
+                        	'?l=' . $objNarroSuggestion->Language->LanguageCode,
+            NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_ALL, "'" . $objNarroSuggestion->Text->TextValue . "'", 0, 0, 10, 0, 0, NarroString::HtmlEntities($objNarroSuggestion->Text->TextValue))
+            );
+        }
+        
+        public function colLanguage_Render( NarroSuggestion $objNarroSuggestion ) {
+            return t($objNarroSuggestion->Language->LanguageName);
+        }
+        
+        public function colCreated_Render( NarroSuggestion $objNarroSuggestion ) {
+            $objDateSpan = new QDateTimeSpan(time() - $objNarroSuggestion->Created->Timestamp);
+            $strModifiedWhen = $objDateSpan->SimpleDisplay();
+        
+            return sprintf(t('%s ago'), $strModifiedWhen);
         }
 
         /////////////////////////

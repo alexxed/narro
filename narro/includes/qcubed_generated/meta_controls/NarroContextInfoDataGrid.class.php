@@ -25,7 +25,7 @@
         // Let's Show a Footer
         protected $blnShowFooter = true;
 
-        protected $blnAlwaysShowPaginator = false;
+        protected $blnAlwaysShowPaginator = true;
 
         // Let's define the footer to be to display our alternate paginator
         // We'll use the already built-in GetPaginatorRowHtml, sending in our ALTERNATE paginator, to help with the rendering
@@ -57,6 +57,39 @@
                 return false;
             else
                 return parent::GetPaginatorRowHtml($objPaginator);
+        }
+        
+        public function colSuggestion_Render( NarroContextInfo $objContextInfo ) {
+            return $objContextInfo->ValidSuggestion->SuggestionValue;
+        }
+        
+        public function colProject_Render( NarroContextInfo $objContextInfo ) {
+            return
+            str_replace(
+                    		'?l=' . QApplication::$TargetLanguage->LanguageCode,
+                        	'?l=' . $objContextInfo->Language->LanguageCode,
+            NarroLink::Translate($objContextInfo->Context->ProjectId, '', NarroTranslatePanel::SHOW_ALL, "'" . $objContextInfo->ValidSuggestion->Text->TextValue . "'", 0, 0, 10, 0, 0, NarroString::HtmlEntities($objContextInfo->Context->Project->ProjectName))
+            );
+        }
+        
+        public function colText_Render( NarroContextInfo $objContextInfo ) {
+            return
+            str_replace(
+                		'?l=' . QApplication::$TargetLanguage->LanguageCode,
+                    	'?l=' . $objContextInfo->Language->LanguageCode,
+            NarroLink::Translate($objContextInfo->Context->ProjectId, '', NarroTranslatePanel::SHOW_ALL, "'" . $objContextInfo->ValidSuggestion->Text->TextValue . "'", 0, 0, 10, 0, 0, NarroString::HtmlEntities($objContextInfo->ValidSuggestion->Text->TextValue))
+            );
+        }
+        
+        public function colLanguage_Render( NarroContextInfo $objContextInfo ) {
+            return t($objContextInfo->Language->LanguageName);
+        }
+        
+        public function colModified_Render( NarroContextInfo $objContextInfo ) {
+            $objDateSpan = new QDateTimeSpan(time() - $objContextInfo->Modified->Timestamp);
+            $strModifiedWhen = $objDateSpan->SimpleDisplay();
+        
+            return sprintf(t('%s ago'), $strModifiedWhen);
         }
 
         /////////////////////////
