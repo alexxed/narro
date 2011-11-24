@@ -23,7 +23,7 @@
         public $pnlTranslatedPerProjectPie;
         public $pnlApprovedPie;
 
-        public function __construct($objUser, $objParentObject, $strControlId = null) {
+        public function __construct(NarroUser $objUser, $objParentObject, $strControlId = null) {
             // Call the Parent
             try {
                 parent::__construct($objParentObject, $strControlId);
@@ -93,9 +93,10 @@
             $this->dtgVotes_Create();
             $arrHeaders[] = t('Votes');
             
-             $this->dtgLog_Create();
-             $arrHeaders[] = t('Logged messages');
-            
+            if (QApplication::HasPermissionForThisLang('Administrator') || QApplication::GetUserId() == $this->objUser->UserId) {
+                $this->dtgLog_Create();
+                $arrHeaders[] = t('Logged messages');
+            }
             
             $this->tabActivity->Headers = $arrHeaders;
         }
