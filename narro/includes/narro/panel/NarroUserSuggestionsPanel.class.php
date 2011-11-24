@@ -22,6 +22,8 @@
         protected $colSuggestion;
         protected $colCreated;
         protected $colLanguage;
+        
+        protected $dtgApprovals;
 
         protected $objUser;
         protected $pnlTranslatedPerProjectPie;
@@ -44,14 +46,14 @@
             $this->dtgSuggestions->Title = sprintf(t('Translations made by <b>%s</b>'), $this->objUser->RealName);
             //$this->dtgSuggestions->SetCustomStyle('margin-left', '15px');
 
-            $this->colSuggestion = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->SuggestionValue);
-            $this->colSuggestion->Name = t('Translated text');
-            $this->colSuggestion->Html = '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>';
-            
             $this->colText = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->Text->TextValue);
             $this->colText->Name = t('Original text');
             $this->colText->Html = '<?= $_CONTROL->ParentControl->dtgSuggestions_colText_Render($_ITEM); ?>';
             $this->colText->HtmlEntities = false;
+            
+            $this->colSuggestion = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->SuggestionValue);
+            $this->colSuggestion->Name = t('Translated text');
+            $this->colSuggestion->Html = '<?= $_CONTROL->ParentControl->dtgSuggestions_colSuggestion_Render($_ITEM); ?>';
             
             $this->colLanguage = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->Language->LanguageName);
             $this->colLanguage->Name = t('Language');
@@ -62,7 +64,7 @@
             $this->colLanguage->FilterActivate(QApplication::$TargetLanguage->LanguageName);
             $this->colLanguage->Html = '<?= $_CONTROL->ParentControl->dtgSuggestions_colLanguage_Render($_ITEM); ?>';
             
-            $this->colCreated = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->Language->LanguageName);
+            $this->colCreated = $this->dtgSuggestions->MetaAddColumn(QQN::NarroSuggestion()->Created);
             $this->colCreated->Name = t('Created');
             $this->colCreated->FilterType = QFilterType::None;
             $this->colCreated->Html = '<?= $_CONTROL->ParentControl->dtgSuggestions_colCreated_Render($_ITEM); ?>';
@@ -79,7 +81,7 @@
             // Specify the local databind method this datagrid will use
             $this->dtgSuggestions->SetDataBinder('dtgSuggestions_Bind', $this);
 
-            $this->dtgSuggestions->SortColumnIndex = 2;
+            $this->dtgSuggestions->SortColumnIndex = 3;
             $this->dtgSuggestions->SortDirection = true;
 
             
@@ -91,6 +93,68 @@
             $this->dtgSuggestions->AdditionalConditions = QQ::Equal(QQN::NarroSuggestion()->UserId, $this->objUser->UserId);
             
             $this->dtgSuggestions->btnFilter_Click($this->Form->FormId, $this->dtgSuggestions->FilterButton->ControlId, '');
+            
+            // Setup DataGrid
+            $this->dtgApprovals = new NarroContextInfoDataGrid($this);
+            $this->dtgApprovals->SetCustomStyle('padding', '5px');
+            $this->dtgApprovals->Title = sprintf(t('Texts approved by <b>%s</b>'), $this->objUser->RealName);
+            
+            $colText = $this->dtgApprovals->MetaAddColumn(QQN::NarroContextInfo()->ValidSuggestion->Text->TextValue);
+            $colText->Name = t('Original text');
+            $colText->Html = '<?= $_CONTROL->ParentControl->dtgApprovals_colText_Render($_ITEM); ?>';
+            $colText->HtmlEntities = false;
+            
+            $colSuggestion = $this->dtgApprovals->MetaAddColumn(QQN::NarroContextInfo()->ValidSuggestion->SuggestionValue);
+            $colSuggestion->Name = t('Approved translation');
+            $colSuggestion->Html = '<?= $_CONTROL->ParentControl->dtgApprovals_colSuggestion_Render($_ITEM); ?>';
+            
+            $colProject = $this->dtgApprovals->MetaAddColumn(QQN::NarroContextInfo()->Context->Project->ProjectName);
+            $colProject->Name = t('Project');
+            $colProject->Filter = null;
+            foreach(NarroProject::LoadArrayByActive(1) as $objProject) {
+                $colProject->FilterAddListItem($objProject->ProjectName, QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $objProject->ProjectId));
+            }
+            $colProject->Html = '<?= $_CONTROL->ParentControl->dtgApprovals_colProject_Render($_ITEM); ?>';
+            $colProject->HtmlEntities = false;
+            
+            $colLanguage = $this->dtgApprovals->MetaAddColumn(QQN::NarroContextInfo()->Language->LanguageName);
+            $colLanguage->Name = t('Language');
+            $colLanguage->Filter = null;
+            foreach(NarroLanguage::LoadAllActive() as $objLanguage) {
+                $colLanguage->FilterAddListItem($objLanguage->LanguageName, QQ::Equal(QQN::NarroContextInfo()->LanguageId, $objLanguage->LanguageId));
+            }
+            $colLanguage->FilterActivate(QApplication::$TargetLanguage->LanguageName);
+            $colLanguage->Html = '<?= $_CONTROL->ParentControl->dtgApprovals_colLanguage_Render($_ITEM); ?>';
+            
+            $colModified = $this->dtgApprovals->MetaAddColumn(QQN::NarroContextInfo()->Modified);
+            $colModified->Name = t('Approved');
+            $colModified->FilterType = QFilterType::None;
+            $colModified->Html = '<?= $_CONTROL->ParentControl->dtgApprovals_colModified_Render($_ITEM); ?>';
+            $colModified->HtmlEntities = false;
+            $colModified->Wrap = false;
+            
+            // Datagrid Paginator
+            $this->dtgApprovals->Paginator = new QPaginator($this->dtgApprovals);
+            $this->dtgApprovals->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
+            
+            // Specify Whether or Not to Refresh using Ajax
+            $this->dtgApprovals->UseAjax = true;
+            
+            $this->dtgApprovals->SortColumnIndex = 4;
+            $this->dtgApprovals->SortDirection = true;
+            
+            
+            $this->dtgApprovals->AdditionalClauses = array(
+                QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion),
+                QQ::Expand(QQN::NarroContextInfo()->Language)
+            );
+            
+            $this->dtgApprovals->AdditionalConditions = QQ::AndCondition(
+                QQ::IsNotNull(QQN::NarroContextInfo()->ValidSuggestionId),
+                QQ::Equal(QQN::NarroContextInfo()->ValidatorUserId, $this->objUser->UserId)
+            );
+            
+            $this->dtgApprovals->btnFilter_Click($this->Form->FormId, $this->dtgApprovals->FilterButton->ControlId, '');
         }
 
         public function dtgSuggestions_colSuggestion_Render( NarroSuggestion $objNarroSuggestion ) {
@@ -114,6 +178,39 @@
             $objDateSpan = new QDateTimeSpan(time() - $objNarroSuggestion->Created->Timestamp);
             $strModifiedWhen = $objDateSpan->SimpleDisplay();
 
+            return sprintf(t('%s ago'), $strModifiedWhen);
+        }
+        
+        public function dtgApprovals_colSuggestion_Render( NarroContextInfo $objContextInfo ) {
+            return $objContextInfo->ValidSuggestion->SuggestionValue;
+        }
+        
+        public function dtgApprovals_colProject_Render( NarroContextInfo $objContextInfo ) {
+            return
+                str_replace(
+            		'?l=' . QApplication::$TargetLanguage->LanguageCode,
+                	'?l=' . $objContextInfo->Language->LanguageCode,
+                    NarroLink::Translate($objContextInfo->Context->ProjectId, '', NarroTranslatePanel::SHOW_ALL, "'" . $objContextInfo->ValidSuggestion->Text->TextValue . "'", 0, 0, 10, 0, 0, NarroString::HtmlEntities($objContextInfo->Context->Project->ProjectName))
+                );
+        }
+        
+        public function dtgApprovals_colText_Render( NarroContextInfo $objContextInfo ) {
+            return
+            str_replace(
+        		'?l=' . QApplication::$TargetLanguage->LanguageCode,
+            	'?l=' . $objContextInfo->Language->LanguageCode,
+                NarroLink::Translate($objContextInfo->Context->ProjectId, '', NarroTranslatePanel::SHOW_ALL, "'" . $objContextInfo->ValidSuggestion->Text->TextValue . "'", 0, 0, 10, 0, 0, NarroString::HtmlEntities($objContextInfo->ValidSuggestion->Text->TextValue))
+            );
+        }
+        
+        public function dtgApprovals_colLanguage_Render( NarroContextInfo $objContextInfo ) {
+            return t($objContextInfo->Language->LanguageName);
+        }
+        
+        public function dtgApprovals_colModified_Render( NarroContextInfo $objContextInfo ) {
+            $objDateSpan = new QDateTimeSpan(time() - $objContextInfo->Modified->Timestamp);
+            $strModifiedWhen = $objDateSpan->SimpleDisplay();
+        
             return sprintf(t('%s ago'), $strModifiedWhen);
         }
 
@@ -183,7 +280,7 @@
                 $this->strText .= '</tr></table>';
             }
 
-            $this->strText .= $this->dtgSuggestions->Render(false);
+            $this->strText .= $this->dtgSuggestions->Render(false) . $this->dtgApprovals->Render(false);
 
             return parent::GetControlHtml();
         }
