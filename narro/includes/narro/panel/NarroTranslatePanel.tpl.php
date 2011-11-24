@@ -211,6 +211,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
     $_CONTROL->btnSearch->RenderWithName();
     $_CONTROL->txtReplace->RenderWithName();
     $_CONTROL->btnReplace->RenderWithName();
+    $_CONTROL->objWaitIcon->Render();
 ?>
 </div>
 </div>
@@ -234,8 +235,8 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
 </div>
 <?php
     $_CONTROL->dtrText->Render();
-    $_CONTROL->objWaitIcon->Render();
     $_CONTROL->btnMore->Render();
+    $_CONTROL->objMoreWaitIcon->Render();
     $_CONTROL->chkLast->Render();
     $_CONTROL->chkRequestMoreSent->Render();
      QApplication::ExecuteJavaScript(

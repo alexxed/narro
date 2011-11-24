@@ -25,6 +25,7 @@
         public $intMaxRowCount = 0;
         public $intStart = 0;
         public $objWaitIcon;
+        public $objMoreWaitIcon;
 
         public $lstProject;
         public $txtFile;
@@ -86,12 +87,14 @@
             $this->dtrText_Create();
 
             $this->objWaitIcon = new QWaitIcon($this);
-            $this->objWaitIcon->Text = sprintf('<div align="center"><img align="center" src="%s/translations_loading.gif" width="110" height="64" alt="Loading..."/></div>', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images');
+            $this->objWaitIcon->Text = sprintf('<img style="vertical-align: top" src="%s/horizontal_loader.gif" alt="Loading..."/>', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images');
 
+            $this->objMoreWaitIcon = new QWaitIcon($this);
+            $this->objMoreWaitIcon->Text = sprintf('<div align="center"><img align="center" src="%s/horizontal_loader.gif" alt="Loading..."/></div>', __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/assets/images');
 
             $this->btnMore = new QButton($this);
             $this->btnMore->Text = t('More');
-            $this->btnMore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMore_Click', $this->objWaitIcon));
+            $this->btnMore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMore_Click', $this->objMoreWaitIcon));
             
             $this->lstProject_Create();
 
@@ -159,7 +162,7 @@
             $this->lstProject->RenderWithNameCssClass = 'inline_block';
             foreach(NarroProject::LoadArrayByActive(1, array(QQ::OrderBy(QQN::NarroProject()->ProjectName))) as $objProject)
                 $this->lstProject->AddItem($objProject->ProjectName, $objProject->ProjectId);
-            $this->lstProject->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            $this->lstProject->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
             if (QApplication::QueryString('p') > 0)
                 $this->lstProject->SelectedValue = QApplication::QueryString('p');
         }
@@ -170,7 +173,7 @@
             $this->btnSearch->PrimaryButton = true;
             $this->btnSearch->Text = t('Search');
             $this->btnSearch->Instructions = t('Or hit enter');
-            $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
         }
         
         public function txtReplace_Create() {
@@ -187,7 +190,7 @@
             $this->btnReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TRANSLATIONS);
             $this->btnReplace->Text = t('Replace');
             $this->btnReplace->Instructions = t('If the approve checkbox found above is checked, the replacements will also be approved everywhere.');
-            $this->btnReplace->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnReplace_Click'));
+            $this->btnReplace->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnReplace_Click', $this->objWaitIcon));
         }
         
         public function dtrText_Create() {
@@ -210,7 +213,7 @@
             $this->lstSortDir->RenderWithNameCssClass = 'inline_block';
             $this->lstSortDir->AddItem(t('ascending'), 1, true);
             $this->lstSortDir->AddItem(t('descending'), 0);
-            $this->lstSortDir->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            $this->lstSortDir->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
             if (QApplication::QueryString('h'))
                 $this->lstSortDir->SelectedValue = QApplication::QueryString('h');
         }
@@ -225,7 +228,7 @@
             $this->lstFilter->AddItem(t('translated or approved texts'), self::SHOW_APPROVED_AND_NOT_APPROVED);
             $this->lstFilter->AddItem(t('untranslated or unapproved texts'), self::SHOW_NOT_APPROVED_AND_NOT_TRANSLATED);
             $this->lstFilter->AddItem(t('approved texts'), self::SHOW_APPROVED);
-            $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
             if (QApplication::QueryString('t'))
                 $this->lstFilter->SelectedValue = QApplication::QueryString('t');
         }
@@ -237,7 +240,7 @@
             $this->lstSort->AddItem(t('sorted by texts'), self::SORT_TEXT);
             $this->lstSort->AddItem(t('sorted by translations'), self::SORT_TRANSLATION);
             $this->lstSort->AddItem(t('sorted by text length'), self::SORT_TEXT_LENGTH);
-            $this->lstSort->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            $this->lstSort->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
             if (QApplication::QueryString('o'))
                 $this->lstSort->SelectedValue = QApplication::QueryString('o');
         }
@@ -252,7 +255,7 @@
             $this->lstSearchIn->AddItem(t('contexts'), self::SEARCH_IN_CONTEXTS);
             $this->lstSearchIn->AddItem(t('authors'), self::SEARCH_IN_AUTHORS);
             $this->lstSearchIn->AddItem(t('everywhere'), self::SEARCH_IN_ALL);
-            $this->lstSearchIn->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            $this->lstSearchIn->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
             if (QApplication::QueryString('in'))
                 $this->lstSearchIn->SelectedValue = QApplication::QueryString('in');
             else
@@ -486,6 +489,8 @@
             if ($this->txtReplace->Display == false)
                 $this->txtReplace->Display = true;
             else {
+                if ($this->txtSearch->Text == '') return false;
+                
                 $strQuery = NarroContextInfo::GetQueryForConditions($objQueryBuilder, QQ::AndCondition($this->arrConditions), $this->arrClauses);
                 $objDbResult = NarroContextInfo::GetDatabase()->Query($strQuery);
                 if ($objDbResult) {

@@ -489,8 +489,8 @@ table.datagrid td a.nolink {text-decoration: none; color: black}
 
 #QFormWaitIcon {
     position: fixed;
-    top: 50%;
-    right: 50%;
+    top: 5px;
+    right: 5px;
 }
 
 .install_setting {
