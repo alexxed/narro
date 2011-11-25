@@ -151,7 +151,7 @@
         public function txtSearch_Create() {
             $this->txtSearch = new QTextBox($this, 'search');
             $this->txtSearch->RenderWithNameCssClass = 'inline_block';
-            $this->txtSearch->Instructions = t("'exact' does an exact search");
+            $this->txtSearch->ToolTip = t("'exact' does an exact search");
             if (QApplication::QueryString('s'))
                 $this->txtSearch->Text = QApplication::QueryString('s');
         }
@@ -172,24 +172,37 @@
             $this->btnSearch->RenderWithNameCssClass = 'inline_block';
             $this->btnSearch->PrimaryButton = true;
             $this->btnSearch->Text = t('Search');
-            $this->btnSearch->Instructions = t('Or hit enter');
+            $this->btnSearch->ToolTip = t('Or hit enter');
             $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
         }
         
         public function txtReplace_Create() {
             $this->txtReplace = new QTextBox($this, 'replace');
             $this->txtReplace->RenderWithNameCssClass = 'inline_block';
-            $this->txtReplace->Name = t('and replace it with');
-            $this->txtReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TRANSLATIONS);
-            $this->txtReplace->Instructions = t('Exact and case sensitive.');
+            $this->txtReplace->Name = t('and translate it with');
+            $this->txtReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TEXTS);
+            $this->txtReplace->ToolTip = t('Exact and case sensitive.');
         }
                 
         public function btnReplace_Create() {
             $this->btnReplace = new QButton($this);
             $this->btnReplace->RenderWithNameCssClass = 'inline_block';
-            $this->btnReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TRANSLATIONS);
-            $this->btnReplace->Text = t('Replace');
-            $this->btnReplace->Instructions = t('If the approve checkbox found above is checked, the replacements will also be approved everywhere.');
+            $this->btnReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TEXTS);
+            $this->btnReplace->Text = t('Translate');
+            $this->btnReplace->ToolTip = t('This will translate all occurences with what you enter here. If the approve checkbox found above is checked, the replacements will also be approved everywhere.');
+            $this->btnReplace->AddAction(
+                new QClickEvent(),
+                new QJavaScriptAction(
+                    sprintf(
+                        "if (!confirm('%s')) return false;",
+                        sprintf(
+                            addslashes(t('By proceeding, you will translate all the search results of "%s" with "%s"')),
+                            sprintf("' + jQuery('#%s').val() + '", $this->txtSearch->ControlId),
+                            sprintf("' + jQuery('#%s').val() + '", $this->txtReplace->ControlId)
+                        )
+                    )
+                )
+            );
             $this->btnReplace->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnReplace_Click', $this->objWaitIcon));
         }
         
@@ -249,7 +262,7 @@
             $this->lstSearchIn = new QListBox($this);
             $this->lstSearchIn->Name = t('Search');
             $this->lstSearchIn->RenderWithNameCssClass = 'inline_block';
-            $this->lstSearchIn->Instructions = t('where to search');
+            $this->lstSearchIn->ToolTip = t('where to search');
             $this->lstSearchIn->AddItem(t('texts'), self::SEARCH_IN_TEXTS);
             $this->lstSearchIn->AddItem(t('translations'), self::SEARCH_IN_TRANSLATIONS);
             $this->lstSearchIn->AddItem(t('contexts'), self::SEARCH_IN_CONTEXTS);
@@ -282,7 +295,7 @@
         }
 
         public function btnSearch_Click($strFormId = null, $strControlId = null, $strParameter = null) {
-            $this->btnReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TRANSLATIONS);
+            $this->btnReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TEXTS);
             $this->txtReplace->Display = $this->btnReplace->Display;
             $this->btnMore->DisplayStyle = QDisplayStyle::Block;
             $this->dtrText_Conditions(true);
@@ -482,6 +495,9 @@
         }
         
         public function btnReplace_Click() {
+            if ($this->txtSearch->Text == '') return false;
+            if ($this->txtReplace->Text == '') return false;
+            
             if (!QApplication::HasPermissionForThisLang('Can approve')) return false;
             
             if ($this->txtReplace->Display == false)
@@ -520,7 +536,7 @@
                         // find the suggestion to be replaced; it can be one or none
                         foreach($arrMatchingSuggestion as $objSuggestion) {
                             /* @var $objSuggestion NarroSuggestion */
-                            if ($this->txtSearch->Text == $objSuggestion->SuggestionValue) {
+                            if ($this->txtSearch->Text == $objSuggestion->Text->TextValue) {
                                 $objReplaceSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($objSuggestion->TextId, $objSuggestion->LanguageId, md5($this->txtReplace->Text));
                                 if (!$objReplaceSuggestion) {
                                     $objSuggestion->SuggestionValue = $this->txtReplace->Text;
@@ -558,7 +574,7 @@
                     	sprintf(
                     		'jQuery(\'#%s\').after(\'&nbsp;<small style="padding: 2px;" class="ui-state-highlight ui-corner-all"><span style="width:16px; height: 16px; display:inline-block" class="ui-icon ui-icon-info"></span>&nbsp;%s.</small>\')',
                             $this->btnReplace->ControlId,
-                            sprintf(t('%d occurences of "%s" replaced with "%s", out of which %d were already approved, %d translations added.'), $intReplaceCnt, $strToReplace, $this->txtReplace->Text, $intApproved, $intTranslations)
+                            sprintf(t('%d occurences of "%s" translated with "%s", out of which %d were already approved, %d translations added.'), $intReplaceCnt, $strToReplace, $this->txtReplace->Text, $intApproved, $intTranslations)
                         )
                     );
                 }
