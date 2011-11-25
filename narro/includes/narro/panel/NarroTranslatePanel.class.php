@@ -495,8 +495,6 @@
         }
         
         public function btnReplace_Click() {
-            if ($this->txtSearch->Text == '') return false;
-            if ($this->txtReplace->Text == '') return false;
             
             if (!QApplication::HasPermissionForThisLang('Can approve')) return false;
             
@@ -504,6 +502,7 @@
                 $this->txtReplace->Display = true;
             else {
                 if ($this->txtSearch->Text == '') return false;
+                if ($this->txtReplace->Text == '') return false;
                 
                 $strQuery = NarroContextInfo::GetQueryForConditions($objQueryBuilder, QQ::AndCondition($this->arrConditions), $this->arrClauses);
                 $objDbResult = NarroContextInfo::GetDatabase()->Query($strQuery);
@@ -519,45 +518,37 @@
                         else
                             $arrProcessed[] = $objContextInfo->ContextInfoId;
                         
+                        $objReplaceSuggestion = null;
+                        
                         if (preg_match("/^'.*'$/", $this->txtSearch->Text))
                             $strToReplace = substr($this->txtSearch->Text, 1, -1);
                         else
                             $strToReplace = $this->txtSearch->Text;
                         
-                        $arrMatchingSuggestion = NarroSuggestion::QueryArray(
-                            QQ::AndCondition(
-                                QQ::Equal(QQN::NarroSuggestion()->TextId, $objContextInfo->Context->TextId),
-                                QQ::Equal(QQN::NarroSuggestion()->LanguageId, QApplication::GetLanguageId()),
-                                QQ::Equal(QQN::NarroSuggestion()->Text->NarroSuggestionAsText->SuggestionValue, $strToReplace)
-                            )
-                        );
-                        
-                        $objReplaceSuggestion = null;
-                        // find the suggestion to be replaced; it can be one or none
-                        foreach($arrMatchingSuggestion as $objSuggestion) {
-                            /* @var $objSuggestion NarroSuggestion */
-                            if ($this->txtSearch->Text == $objSuggestion->Text->TextValue) {
-                                $objReplaceSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($objSuggestion->TextId, $objSuggestion->LanguageId, md5($this->txtReplace->Text));
-                                if (!$objReplaceSuggestion) {
-                                    $objSuggestion->SuggestionValue = $this->txtReplace->Text;
-                                    $objSuggestion->UserId = QApplication::GetUserId();
-                                    $objSuggestion->Created = QDateTime::Now();
-                                    $objSuggestion->Modified = null;
-                                    $objSuggestion->Save(true);
-                                    $intTranslations++;
-                                    
-                                    $objReplaceSuggestion = $objSuggestion;
-                                }
+                        if ($strToReplace == $objContextInfo->Context->Text->TextValue) {
+                            $objReplaceSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($objContextInfo->Context->TextId, QApplication::GetLanguageId(), md5($this->txtReplace->Text));
+                            if (!$objReplaceSuggestion) {
+                                $objSuggestion = new NarroSuggestion();
+                                $objSuggestion->UserId = QApplication::GetUserId();
+                                $objSuggestion->TextId = $objContextInfo->Context->TextId;
+                                $objSuggestion->LanguageId = QApplication::GetLanguageId();
+                                $objSuggestion->SuggestionValue = $this->txtReplace->Text;
+                                $objSuggestion->HasComments = 0;
+                                $objSuggestion->IsImported = 0;
+                                $objSuggestion->Created = QDateTime::Now();
+                                $objSuggestion->Modified = null;
+                                $objSuggestion->Save();
+                                $intTranslations++;
                                 
-                                if ($objReplaceSuggestion)
-                                    break;
+                                $objReplaceSuggestion = $objSuggestion;
                             }
+                            
                         }
                         
                         if ($objReplaceSuggestion instanceof NarroSuggestion) {
                             $intReplaceCnt++;
                             
-                            if ($objContextInfo->ValidSuggestionId == $objSuggestion->SuggestionId || $this->chkApprove->Checked) {
+                            if ($objContextInfo->ValidSuggestionId != $objReplaceSuggestion->SuggestionId || $this->chkApprove->Checked) {
                                 if ($objContextInfo->ValidSuggestionId == null)
                                     $intApproved++;
                                 $objContextInfo->ValidSuggestionId = $objReplaceSuggestion->SuggestionId;
