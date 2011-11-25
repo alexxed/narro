@@ -374,51 +374,49 @@
             }
 
             if ($this->txtFile->Text != t('all files') && $this->txtFile->Text != '')
-                if (preg_match("/^'.*'$/", $this->txtFile->Text))
+                if (preg_match("/^'.+'$/", $this->txtFile->Text))
+                    $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->Context->File->FilePath, substr($this->txtFile->Text, 1, -1));
+                elseif (preg_match('/^".+"$/', $this->txtFile->Text))
                     $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->Context->File->FilePath, substr($this->txtFile->Text, 1, -1));
                 else
                     $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->File->FilePath, '%' . $this->txtFile->Text . '%');
 
             if ($this->txtSearch->Text) {
-                if (preg_match("/^'.*'$/", $this->txtSearch->Text)) {
-                    $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
-                    $this->arrConditions[] = QQ::OrCondition(
-                        QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValue, substr($this->txtSearch->Text, 1, -1)),
-                        QQ::Equal(QQN::NarroContextInfo()->Context->Context, substr($this->txtSearch->Text, 1, -1)),
-                        QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, substr($this->txtSearch->Text, 1, -1))
-                    );
-                }
-                else {
+                if (preg_match("/^'.+'$/", $this->txtSearch->Text))
+                    $strLikeSearch = substr($this->txtSearch->Text, 1, -1);
+                elseif (preg_match('/^".+"$/', $this->txtSearch->Text))
+                    $strLikeSearch = substr($this->txtSearch->Text, 1, -1);
+                else
                     $strLikeSearch = '%' . $this->txtSearch->Text . '%';
-                    switch($this->lstSearchIn->SelectedValue) {
-                        case self::SEARCH_IN_TEXTS:
-                            $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch);
-                            break;
-                        case self::SEARCH_IN_TRANSLATIONS:
-                            $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
-                            $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch);
-                            break;
-                        case self::SEARCH_IN_AUTHORS:
-                            $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
-                            $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->RealName, $strLikeSearch);
-                            break;
-                        case self::SEARCH_IN_CONTEXTS:
-                            $this->arrConditions[] = QQ::OrCondition(
-                                QQ::Like(QQN::NarroContextInfo()->Context->Context, $strLikeSearch),
-                                QQ::Like(QQN::NarroContextInfo()->Context->Comment, $strLikeSearch)
-                            );
-                            break;
-                        case self::SEARCH_IN_ALL:
-                        default:
-                            $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
-                            $this->arrConditions[] = QQ::OrCondition(
-                                QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch),
-                                QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch),
-                                QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->RealName, $strLikeSearch),
-                                QQ::Like(QQN::NarroContextInfo()->Context->Context, $strLikeSearch),
-                                QQ::Like(QQN::NarroContextInfo()->Context->Comment, $strLikeSearch)
-                            );
-                    }
+                
+                switch($this->lstSearchIn->SelectedValue) {
+                    case self::SEARCH_IN_TEXTS:
+                        $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch);
+                        break;
+                    case self::SEARCH_IN_TRANSLATIONS:
+                        $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
+                        $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch);
+                        break;
+                    case self::SEARCH_IN_AUTHORS:
+                        $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
+                        $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->RealName, $strLikeSearch);
+                        break;
+                    case self::SEARCH_IN_CONTEXTS:
+                        $this->arrConditions[] = QQ::OrCondition(
+                            QQ::Like(QQN::NarroContextInfo()->Context->Context, $strLikeSearch),
+                            QQ::Like(QQN::NarroContextInfo()->Context->Comment, $strLikeSearch)
+                        );
+                        break;
+                    case self::SEARCH_IN_ALL:
+                    default:
+                        $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
+                        $this->arrConditions[] = QQ::OrCondition(
+                            QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch),
+                            QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch),
+                            QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->RealName, $strLikeSearch),
+                            QQ::Like(QQN::NarroContextInfo()->Context->Context, $strLikeSearch),
+                            QQ::Like(QQN::NarroContextInfo()->Context->Comment, $strLikeSearch)
+                        );
                 }
             }
 
