@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 2.0
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2011-24-11 00:28+0200\n"
-"PO-Revision-Date: 2011-24-11 00:28+0200\n"
+"POT-Creation-Date: 2011-27-11 13:42+0200\n"
+"PO-Revision-Date: 2011-27-11 13:42+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -249,9 +249,9 @@ msgstr ""
 msgid "Can't translate me!"
 msgstr ""
 
-#. $preset = new QDateRangePickerPreset('specificDate', QApplication::Translate('Sepcific Date'));
+#. $preset = new QDateRangePickerPreset('specificDate', QApplication::Translate('Specific Date'));
 #: includes/qcubed/includes/qcubed/plugins/QDateRangePicker/includes/QDateRangePickerPreset.class.php
-msgid "Sepcific Date"
+msgid "Specific Date"
 msgstr ""
 
 #. $preset = new QDateRangePickerPreset('allDatesBefore', QApplication::Translate('All Dates Before'));
@@ -384,8 +384,8 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#. $this->btnImport->Text = t('Upload');
-#: includes/qcubed/includes/qcubed/controls/QFileAsset.class.php includes/narro/panel/NarroFileImportPanel.class.php
+#. $colUpload = new QDataGridColumn(t('Upload'), '<?= $_CONTROL->ParentControl->dtgFile_colUpload_Render($_ITEM) ?>');
+#: includes/qcubed/includes/qcubed/controls/QFileAsset.class.php includes/narro/panel/NarroFileImportPanel.class.php includes/narro/panel/NarroProjectFileListPanel.class.php
 msgid "Upload"
 msgstr ""
 
@@ -743,8 +743,8 @@ msgstr ""
 msgid "Languages"
 msgstr ""
 
-#. <a><?php _t('Translations')?></a>
-#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroTopPanel.class.php includes/narro/panel/NarroProjectImportPanel.tpl.php
+#. $arrHeaders[] = t('Translations');
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroTopPanel.class.php includes/narro/panel/NarroProjectImportPanel.tpl.php includes/narro/panel/NarroUserSuggestionsPanel.class.php
 msgid "Translations"
 msgstr ""
 
@@ -779,7 +779,7 @@ msgid "Download all translations in a TMX file"
 msgstr ""
 
 #. return sprintf(t('%s ago'), $strModifiedWhen);
-#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroUserSuggestionsPanel.class.php includes/narro/panel/NarroProjectListPanel.class.php
+#: includes/narro/panel/NarroLanguageListPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php includes/narro/panel/NarroProjectListPanel.class.php
 msgid "%s ago"
 msgstr ""
 
@@ -838,6 +838,11 @@ msgstr ""
 msgid "Results"
 msgstr ""
 
+#. <a><?php _t('Screenshots')?></a>
+#: includes/narro/panel/NarroTranslatePanel.tpl.php
+msgid "Screenshots"
+msgstr ""
+
 #. <?php _t("To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text.");?>
 #: includes/narro/panel/NarroTranslatePanel.tpl.php
 msgid "To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text."
@@ -883,8 +888,8 @@ msgstr ""
 msgid "User comments"
 msgstr ""
 
-#. $this->txtComment->Name = t('Comment');
-#: includes/narro/panel/NarroTextCommentPanel.class.php
+#. $colSuggestion->Name = t('Comment');
+#: includes/narro/panel/NarroTextCommentPanel.class.php includes/narro/panel/NarroUserSuggestionsPanel.class.php
 msgid "Comment"
 msgstr ""
 
@@ -899,7 +904,7 @@ msgid "Add comment"
 msgstr ""
 
 #. sprintf('<p>' . t('Project') . ': <a href="%s">%s</a></p>', $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName) .
-#: includes/narro/panel/NarroRoleUserListPanel.class.php includes/narro/panel/NarroUserRolePanel.tpl.php includes/narro/panel/NarroUserRolePanel.class.php rss.php
+#: includes/narro/panel/NarroRoleUserListPanel.class.php includes/narro/panel/NarroUserSuggestionsPanel.class.php includes/narro/panel/NarroUserRolePanel.tpl.php includes/narro/panel/NarroUserRolePanel.class.php rss.php
 msgid "Project"
 msgstr ""
 
@@ -1019,8 +1024,8 @@ msgstr ""
 msgid "These are the roles used on this website."
 msgstr ""
 
-#. $this->btnExport->Text = t('Download');
-#: includes/narro/panel/NarroFileExportPanel.class.php
+#. $colDownload = new QDataGridColumn(t('Download'), '<?= $_CONTROL->ParentControl->dtgFile_colDownload_Render($_ITEM) ?>');
+#: includes/narro/panel/NarroFileExportPanel.class.php includes/narro/panel/NarroProjectFileListPanel.class.php
 msgid "Download"
 msgstr ""
 
@@ -1060,29 +1065,34 @@ msgstr ""
 msgid "all projects"
 msgstr ""
 
-#. $this->btnSearch->Instructions = t('Or hit enter');
+#. $this->btnSearch->ToolTip = t('Or hit enter');
 #: includes/narro/panel/NarroTranslatePanel.class.php
 msgid "Or hit enter"
 msgstr ""
 
-#. $this->txtReplace->Name = t('and replace it with');
+#. $this->txtReplace->Name = t('and translate it with');
 #: includes/narro/panel/NarroTranslatePanel.class.php
-msgid "and replace it with"
+msgid "and translate it with"
 msgstr ""
 
-#. $this->txtReplace->Instructions = t('Exact and case sensitive.');
+#. $this->txtReplace->ToolTip = t('Exact and case sensitive.');
 #: includes/narro/panel/NarroTranslatePanel.class.php
 msgid "Exact and case sensitive."
 msgstr ""
 
-#. $this->btnReplace->Text = t('Replace');
-#: includes/narro/panel/NarroTranslatePanel.class.php
-msgid "Replace"
+#. $strPageTitle = t('Translate');
+#: includes/narro/panel/NarroTranslatePanel.class.php projects.php translate.php languages.php review.php users.php import.php project_languages.php roles.php language_edit.php project.php export.php role.php log.php project_edit.php files.php translate.tpl.php
+msgid "Translate"
 msgstr ""
 
-#. $this->btnReplace->Instructions = t('If the approve checkbox found above is checked, the replacements will also be approved everywhere.');
+#. $this->btnReplace->ToolTip = t('This will translate all occurences with what you enter here. If the approve checkbox found above is checked, the replacements will also be approved everywhere.');
 #: includes/narro/panel/NarroTranslatePanel.class.php
-msgid "If the approve checkbox found above is checked, the replacements will also be approved everywhere."
+msgid "This will translate all occurences with what you enter here. If the approve checkbox found above is checked, the replacements will also be approved everywhere."
+msgstr ""
+
+#. addslashes(t('By proceeding, you will translate all the search results of "%s" with "%s"')),
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "By proceeding, you will translate all the search results of \"%s\" with \"%s\""
 msgstr ""
 
 #. $this->lstSortDir->AddItem(t('ascending'), 1, true);
@@ -1145,7 +1155,7 @@ msgstr ""
 msgid "sorted by text length"
 msgstr ""
 
-#. $this->lstSearchIn->Instructions = t('where to search');
+#. $this->lstSearchIn->ToolTip = t('where to search');
 #: includes/narro/panel/NarroTranslatePanel.class.php
 msgid "where to search"
 msgstr ""
@@ -1180,12 +1190,12 @@ msgstr ""
 msgid "Less"
 msgstr ""
 
-#. sprintf(t('%d occurences of "%s" replaced with "%s", out of which %d were already approved, %d translations added.'), $intReplaceCnt, $strToReplace, $this->txtReplace->Text, $intApproved, $intTranslations)
+#. sprintf(t('%d occurences of "%s" translated with "%s", out of which %d were already approved, %d translations added.'), $intReplaceCnt, $strToReplace, $this->txtReplace->Text, $intApproved, $intTranslations)
 #: includes/narro/panel/NarroTranslatePanel.class.php
-msgid "%d occurences of \"%s\" replaced with \"%s\", out of which %d were already approved, %d translations added."
+msgid "%d occurences of \"%s\" translated with \"%s\", out of which %d were already approved, %d translations added."
 msgstr ""
 
-#. $this->txtSearch->Instructions = t("'exact' does an exact search");
+#. $this->txtSearch->ToolTip = t("'exact' does an exact search");
 #: includes/narro/panel/NarroTranslatePanel.class.php
 msgid "'exact' does an exact search"
 msgstr ""
@@ -1242,9 +1252,9 @@ msgstr ""
 msgid "Don't check if the translation is equal to the source text"
 msgstr ""
 
-#. $this->chkDontCheckEqual->Instructions = t("Usually untranslated texts are exported as original. When importing them back, it's usually safe to asume that you don't want to import those as translations. However, if you know that you want to do this, check this box.");
+#. $this->chkDontCheckEqual->Instructions = t("Usually untranslated texts are exported as original. When importing them back, it's usually safe to assume that you don't want to import those as translations. However, if you know that you want to do this, check this box.");
 #: includes/narro/panel/NarroProjectImportPanel.class.php
-msgid "Usually untranslated texts are exported as original. When importing them back, it's usually safe to asume that you don't want to import those as translations. However, if you know that you want to do this, check this box."
+msgid "Usually untranslated texts are exported as original. When importing them back, it's usually safe to assume that you don't want to import those as translations. However, if you know that you want to do this, check this box."
 msgstr ""
 
 #. $this->chkDontCheckEqual->AddAction(new QClickEvent(), new QConfirmAction(t("If you proceed, all the translations that are untranslated or kept as original will be imported and approved if you chose so. Are you sure you want to do this ?")));
@@ -1374,8 +1384,8 @@ msgstr ""
 msgid "Voters"
 msgstr ""
 
-#. $this->tabTop->Headers = array(t('Translators'), t('Reviewers'), t('Voters'), t('Comments'));
-#: includes/narro/panel/NarroTopPanel.class.php
+#. $arrHeaders[] = t('Comments');
+#: includes/narro/panel/NarroTopPanel.class.php includes/narro/panel/NarroUserSuggestionsPanel.class.php
 msgid "Comments"
 msgstr ""
 
@@ -2063,14 +2073,81 @@ msgstr ""
 msgid "File to import"
 msgstr ""
 
-#. $this->dtgSuggestions->Title = sprintf(t('Translations made by <b>%s</b>'), $this->objUser->RealName);
+#. $colCreated->Name = t('Approved');
+#. $colModified->Name = t('Approved');
 #: includes/narro/panel/NarroUserSuggestionsPanel.class.php
-msgid "Translations made by <b>%s</b>"
+msgid "Approved"
 msgstr ""
 
-#. $this->colSuggestion->Name = t('Translated text');
+#. $this->pnlApprovedPie->Data = array(t('Approved')=>$intValidSuggestionCount, t('Not approved') => ($intSuggestionCount - $intValidSuggestionCount));
 #: includes/narro/panel/NarroUserSuggestionsPanel.class.php
-msgid "Translated text"
+msgid "Not approved"
+msgstr ""
+
+#. $arrHeaders[] = t('Reviews');
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Reviews"
+msgstr ""
+
+#. $arrHeaders[] = t('Votes');
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Votes"
+msgstr ""
+
+#. $arrHeaders[] = t('Logged messages');
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Logged messages"
+msgstr ""
+
+#. $dtgLog->Title = sprintf(t('Logged messages for <b>%s</b>'), $this->objUser->RealName);
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Logged messages for <b>%s</b>"
+msgstr ""
+
+#. $colPriority->Name = t('Priority');
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Priority"
+msgstr ""
+
+#. $colMessage->Name = t('Message');
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Message"
+msgstr ""
+
+#. $colCreated->Name = t('Added');
+#. $colCreated->Name = t('Added');
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Added"
+msgstr ""
+
+#. $dtgVotes->Title = sprintf(t('Votes added by <b>%s</b>'), $this->objUser->RealName);
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Votes added by <b>%s</b>"
+msgstr ""
+
+#. '<p>' . t('Translation') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->SuggestionValue) . '</p>' .
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php rss.php
+msgid "Translation"
+msgstr ""
+
+#. $colVote->Name = t('Vote');
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Vote"
+msgstr ""
+
+#. $dtgComments->Title = sprintf(t('Comments added by <b>%s</b>'), $this->objUser->RealName);
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Comments added by <b>%s</b>"
+msgstr ""
+
+#. $this->txtSearch->Name = t('Text');
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php includes/narro/panel/NarroSuggestionSearchPanel.class.php
+msgid "Text"
+msgstr ""
+
+#. $dtgReviews->Title = sprintf(t('Translations approved by <b>%s</b>'), $this->objUser->RealName);
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Translations approved by <b>%s</b>"
 msgstr ""
 
 #. '<p>' . t('Original text') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->Text->TextValue) . '</p>' .
@@ -2079,19 +2156,24 @@ msgstr ""
 msgid "Original text"
 msgstr ""
 
-#. $this->colCreated->Name = t('Created');
+#. $colSuggestion->Name = t('Approved translation');
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Approved translation"
+msgstr ""
+
+#. $dtgSuggestions->Title = sprintf(t('Translations added by <b>%s</b>'), $this->objUser->RealName);
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Translations added by <b>%s</b>"
+msgstr ""
+
+#. $colSuggestion->Name = t('Translated text');
+#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
+msgid "Translated text"
+msgstr ""
+
+#. $colCreated->Name = t('Created');
 #: includes/narro/panel/NarroUserSuggestionsPanel.class.php
 msgid "Created"
-msgstr ""
-
-#. $this->pnlApprovedPie->Data = array(t('Approved')=>$intValidSuggestionCount, t('Not approved') => ($intSuggestionCount - $intValidSuggestionCount));
-#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
-msgid "Approved"
-msgstr ""
-
-#. $this->pnlApprovedPie->Data = array(t('Approved')=>$intValidSuggestionCount, t('Not approved') => ($intSuggestionCount - $intValidSuggestionCount));
-#: includes/narro/panel/NarroUserSuggestionsPanel.class.php
-msgid "Not approved"
 msgstr ""
 
 #. $this->txtUsername->Warning = t("No <, please.");
@@ -2110,12 +2192,12 @@ msgstr ""
 msgid "Seems like the username or email is already in use."
 msgstr ""
 
-#. $arrHeaders[] = NarroLink::ProjectExport($this->objProject->ProjectId, t('Export'));
-#: includes/narro/panel/NarroProjectFileListPanel.class.php includes/narro/sources/NarroDirectoryTargetPanel.class.php translate.php review.php export.tpl.php import.php project_languages.php project.php export.php project_edit.php files.php
-msgid "Export"
+#. $chkExport->Name = t('Export with project');
+#: includes/narro/panel/NarroProjectFileListPanel.class.php
+msgid "Export with project"
 msgstr ""
 
-#. $chkExport->Instructions = t('If ticked, this file will be exported when doing a project export. Useful for excluding some files from the project export.');
+#. $chkExport->ToolTip = t('If ticked, this file will be exported when doing a project export. Useful for excluding some files from the project export.');
 #: includes/narro/panel/NarroProjectFileListPanel.class.php
 msgid "If ticked, this file will be exported when doing a project export. Useful for excluding some files from the project export."
 msgstr ""
@@ -2128,6 +2210,11 @@ msgstr ""
 #. $this->colFileName->Name = t('Translation Progress');
 #: includes/narro/panel/NarroProjectFileListPanel.class.php
 msgid "Translation Progress"
+msgstr ""
+
+#. $this->colExport = new QDataGridColumn(t('Settings'), '<?= $_CONTROL->ParentControl->dtgFile_colSettings_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export, false)));
+#: includes/narro/panel/NarroProjectFileListPanel.class.php
+msgid "Settings"
 msgstr ""
 
 #. t('Last Activity'),
@@ -2179,11 +2266,6 @@ msgstr ""
 #. $arrHeaders[] = NarroLink::UserList('', t('Users'));
 #: includes/narro/panel/NarroUserListPanel.class.php account.php projects.php translate.php languages.php review.php users.php preferences.php user_role.php password.php user.php login.php roles.php language_edit.php join.php role.php users.tpl.php log.php
 msgid "Users"
-msgstr ""
-
-#. $this->txtSearch->Name = t('Text');
-#: includes/narro/panel/NarroSuggestionSearchPanel.class.php
-msgid "Text"
 msgstr ""
 
 #. $this->txtRepository->Instructions = t('Please enter the path to the SVN repository');
@@ -2269,6 +2351,11 @@ msgstr ""
 #. $this->lstExportSuggestionType->AddItem(t('Approved, then the most recent suggestion from selected users'), 6);
 #: includes/narro/sources/NarroDirectoryTargetPanel.class.php
 msgid "Approved, then the most recent suggestion from selected users"
+msgstr ""
+
+#. $arrHeaders[] = NarroLink::ProjectExport($this->objProject->ProjectId, t('Export'));
+#: includes/narro/sources/NarroDirectoryTargetPanel.class.php translate.php review.php export.tpl.php import.php project_languages.php project.php export.php project_edit.php files.php
+msgid "Export"
 msgstr ""
 
 #. $this->lblExport->Text = t('Export finished.');
@@ -2406,11 +2493,6 @@ msgstr ""
 #.
 #: user_role.tpl.php
 msgid "%s's roles"
-msgstr ""
-
-#. $strPageTitle = t('Translate');
-#: projects.php translate.php languages.php review.php users.php import.php project_languages.php roles.php language_edit.php project.php export.php role.php log.php project_edit.php files.php translate.tpl.php
-msgid "Translate"
 msgstr ""
 
 #. $arrHeaders[] = NarroLink::Review($this->objProject->ProjectId, '', NarroReviewPanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0, t('Review'));
@@ -2634,11 +2716,6 @@ msgstr ""
 #. $strDescription = sprintf('<li>' . t('<a href="%s">%s</a> from the file <a href="%s">%s</a>, project <a href="%s">%s</a>') . '</li>', $strContextLink, NarroString::HtmlEntities($objNarroContextInfo->Context->Context), $strFileLink, $objNarroContextInfo->Context->File->FileName, $strProjectLink, $objNarroContextInfo->Context->Project->ProjectName);
 #: rss.php
 msgid "<a href=\"%s\">%s</a> from the file <a href=\"%s\">%s</a>, project <a href=\"%s\">%s</a>"
-msgstr ""
-
-#. '<p>' . t('Translation') . ': ' . NarroString::HtmlEntities($objNarroSuggestion->SuggestionValue) . '</p>' .
-#: rss.php
-msgid "Translation"
 msgstr ""
 
 #. '<p>' . t('Contexts where the suggestion can be used:') . '</p>' .
