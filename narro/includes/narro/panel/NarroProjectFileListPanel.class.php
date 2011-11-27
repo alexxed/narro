@@ -178,28 +178,43 @@
             }
         }
 
-        public function dtgFile_ExportColumn_Render(NarroFileProgress $objProgress) {
+        public function dtgFile_colSettings_Render(NarroFileProgress $objProgress) {
             if ($objProgress->File->TypeId == NarroFileType::Folder)
                 return '';
-
+        
             $strControlId = 'chkExport' . $objProgress->FileId;
             $chkExport = $this->dtgFile->GetChildControl($strControlId);
             if (!$chkExport) {
                 $chkExport = new QCheckBox($this->dtgFile, $strControlId);
                 $chkExport->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'chkExport_Click'));
-                $chkExport->Name = t('Export');
-                $chkExport->Instructions = t('If ticked, this file will be exported when doing a project export. Useful for excluding some files from the project export.');
+                $chkExport->Name = t('Export with project');
+                $chkExport->ToolTip = t('If ticked, this file will be exported when doing a project export. Useful for excluding some files from the project export.');
             }
             $chkExport->ActionParameter = $objProgress->File->FileId;
             $chkExport->Checked = NarroFileProgress::CountByFileIdLanguageIdExport($objProgress->File->FileId, QApplication::GetLanguageId(), 1);
             $chkExport->Display = QApplication::HasPermission('Can export project', $this->objProject->ProjectId, QApplication::GetLanguageId());
+    
+            return $chkExport->RenderWithName(false);
+        }
+
+        public function dtgFile_colUpload_Render(NarroFileProgress $objProgress) {
+            if ($objProgress->File->TypeId == NarroFileType::Folder)
+                return '';
 
             $pnlImport = new NarroFileImportPanel($objProgress->File, $this->dtgFile);
             $pnlImport->DisplayStyle = QDisplayStyle::InlineBlock;
+
+            return $pnlImport->Render(false);
+        }
+        
+        public function dtgFile_colDownload_Render(NarroFileProgress $objProgress) {
+            if ($objProgress->File->TypeId == NarroFileType::Folder)
+                return '';
+        
             $pnlExport = new NarroFileExportPanel($objProgress->File, $this->dtgFile);
             $pnlExport->DisplayStyle = QDisplayStyle::InlineBlock;
-
-            return $chkExport->RenderWithName(false) . $pnlImport->Render(false) . $pnlExport->Render(false);
+        
+            return $pnlExport->Render(false);
         }
 
         public function chkExport_Click($strFormId, $strControlId, $intFileId) {
@@ -212,8 +227,7 @@
         }
 
         protected function dtgFile_Create() {
-            $this->colExport = new QDataGridColumn(t('Export'), '<?= $_CONTROL->ParentControl->dtgFile_ExportColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export, false)));
-            $this->colExport->HtmlEntities = false;
+            
 
             // Setup DataGrid
             $this->dtgFile = new NarroFileProgressDataGrid($this);
@@ -235,7 +249,17 @@
             $this->colFileName->Html = '<?= $_CONTROL->ParentControl->dtgFile_PercentTranslated_Render($_ITEM) ?>';
             $this->colFileName->Name = t('Translation Progress');
 
+            $this->colExport = new QDataGridColumn(t('Settings'), '<?= $_CONTROL->ParentControl->dtgFile_colSettings_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroFile()->NarroFileProgressAsFile->Export, false)));
+            $this->colExport->HtmlEntities = false;
             $this->dtgFile->AddColumn($this->colExport);
+            
+            $colUpload = new QDataGridColumn(t('Upload'), '<?= $_CONTROL->ParentControl->dtgFile_colUpload_Render($_ITEM) ?>');
+            $colUpload->HtmlEntities = false;
+            $this->dtgFile->AddColumn($colUpload);
+            
+            $colDownload = new QDataGridColumn(t('Download'), '<?= $_CONTROL->ParentControl->dtgFile_colDownload_Render($_ITEM) ?>');
+            $colDownload->HtmlEntities = false;
+            $this->dtgFile->AddColumn($colDownload);
         }
 
         public function dtgFile_SetConditions() {
