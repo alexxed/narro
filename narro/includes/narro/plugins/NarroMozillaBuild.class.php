@@ -521,12 +521,14 @@
                 NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrBrowserDirList), $this->objFirefoxProject->DefaultTranslationPath));
                 NarroUtils::RecursiveCopy($this->objFirefoxProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
                 
-                if (!$this->objMailProject instanceof NarroProject) {
-                    NarroLogger::LogError(sprintf('Associated Thunderbird project not set or does not exist'));
-                    return false;
+                if ($this->strApplicationType == 'suite') {
+                    if (!$this->objMailProject instanceof NarroProject) {
+                        NarroLogger::LogError(sprintf('Associated Thunderbird project not set or does not exist'));
+                        return false;
+                    }
+                    NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrMailDirList), $this->objMailProject->DefaultTranslationPath));
+                    NarroUtils::RecursiveCopy($this->objMailProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
                 }
-                NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrMailDirList), $this->objMailProject->DefaultTranslationPath));
-                NarroUtils::RecursiveCopy($this->objMailProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
             }
                         
             NarroUtils::Exec(
