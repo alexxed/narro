@@ -15,7 +15,7 @@
 		public static function SpecificDate() {
 			static $preset = null;
 			if (null === $preset) {
-				$preset = new QDateRangePickerPreset('specificDate', QApplication::Translate('Sepcific Date'));
+				$preset = new QDateRangePickerPreset('specificDate', QApplication::Translate('Specific Date'));
 			}
 			return $preset;
 		}
