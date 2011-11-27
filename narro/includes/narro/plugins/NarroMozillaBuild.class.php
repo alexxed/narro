@@ -72,7 +72,7 @@
                 NarroProject::RegisterPreference('Mozilla application type', true, NarroProjectType::Mozilla, 'option', '', '', array('browser', 'mail', 'suite', 'calendar', 'mobile'));
                 NarroProject::RegisterPreference('Mozilla release name', true, NarroProjectType::Mozilla, 'text', 'leave empty for central', '');
                 NarroProject::RegisterPreference('Firefox project name for this release', true, NarroProjectType::Mozilla, 'text', 'leave empty for Firefox, if this project would be Thunderbird Aurora, fill in the name of the Narro project that holds Firefox Aurora', '');
-                NarroProject::RegisterPreference('Thunderbird project name for this release', true, NarroProjectType::Mozilla, 'text', 'leave empty for Firefox, if this project would be Seamonkey Aurora, fill in the name of the Narro project that holds Thunderbird Aurora', '');
+                NarroProject::RegisterPreference('Thunderbird project name for this release', true, NarroProjectType::Mozilla, 'text', 'leave empty for Thunderbird and Firefox, if this project would be Seamonkey Aurora, fill in the name of the Narro project that holds Thunderbird Aurora', '');
             }
             
         }
@@ -276,7 +276,7 @@
                 $arrError,
                 $intRetVal,
                 false,
-                array(),
+                null,
                 $this->strHgDir,
                 true
             );
@@ -408,12 +408,14 @@
                 NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrBrowserDirList), $this->objFirefoxProject->DefaultTranslationPath));
                 NarroUtils::RecursiveCopy($this->objFirefoxProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
                 
-                if (!$this->objMailProject instanceof NarroProject) {
-                    NarroLogger::LogError(sprintf('Associated Firefox project not set or does not exist'));
-                    return false;
+                if ($this->strApplicationType == 'suite') {
+                    if (!$this->objMailProject instanceof NarroProject) {
+                        NarroLogger::LogError(sprintf('Associated Thunderbird project not set or does not exist'));
+                        return false;
+                    }
+                    NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrMailDirList), $this->objMailProject->DefaultTranslationPath));
+                    NarroUtils::RecursiveCopy($this->objMailProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
                 }
-                NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrMailDirList), $this->objMailProject->DefaultTranslationPath));
-                NarroUtils::RecursiveCopy($this->objMailProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
                 
             }
             

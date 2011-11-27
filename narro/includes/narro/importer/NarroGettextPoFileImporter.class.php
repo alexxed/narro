@@ -517,7 +517,7 @@
                 $arrError,
                 $intRetVal,
                 false,
-                array(),
+                null,
                 __TMP_PATH__,
                 true
             );
