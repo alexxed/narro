@@ -96,7 +96,7 @@
                 $this->chkImportOnlyTranslations->Checked = false;
             }
             else {
-                $this->chkImportOnlyTranslations->Checked = true;
+                $this->chkImportOnlyTranslations->Checked = false;
                 $this->chkImportOnlyTranslations->Display = false;
                 $this->chkImportUnchangedFiles->Display = false;
             }
