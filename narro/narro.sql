@@ -744,19 +744,19 @@ ALTER TABLE `narro_text_comment` ADD FOREIGN KEY ( `language_id` ) REFERENCES `n
 `language_id`
 ) ON DELETE CASCADE ON UPDATE CASCADE ;
 
-ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_6` ;
+ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_2` ;
 
 ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `role_id` ) REFERENCES `narro_role` (
 `role_id`
 ) ON DELETE CASCADE ON UPDATE CASCADE ;
 
-ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_7` ;
+ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_3` ;
 
 ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `project_id` ) REFERENCES `narro_project` (
 `project_id`
 ) ON DELETE CASCADE ON UPDATE CASCADE ;
 
-ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_8` ;
+ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_4` ;
 
 ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `language_id` ) REFERENCES `narro_language` (
 `language_id`
