@@ -153,7 +153,7 @@
                 if ($objLanguage instanceof NarroLanguage) {
                     $objUser->Language = $objLanguage;
                 }
-                else {
+                elseif (QApplication::$TargetLanguage instanceof NarroLanguage) {
                     $objUser->Language = QApplication::$TargetLanguage;
                 }
             }
@@ -186,11 +186,11 @@
                 if ($objLanguage instanceof NarroLanguage) {
                     $objUser->Language = $objLanguage;
                 }
-                else {
+                elseif (QApplication::$TargetLanguage instanceof NarroLanguage) {
                     $objUser->Language = QApplication::$TargetLanguage;
                 }
             }
-            else
+            elseif (QApplication::$TargetLanguage instanceof NarroLanguage)
                 $objUser->Language = QApplication::$TargetLanguage;
 
             return $objUser;
