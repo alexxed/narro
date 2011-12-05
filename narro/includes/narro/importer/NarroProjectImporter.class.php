@@ -93,6 +93,14 @@
                         join(',', array_keys($this->arrFileId))
                     )
                 );
+                
+                NarroFile::GetDatabase()->NonQuery(
+                    sprintf(
+                    	'UPDATE narro_context SET active=0 WHERE project_id=%d AND file_id NOT IN (%s)',
+                        $this->objProject->ProjectId,
+                        join(',', array_keys($this->arrFileId))
+                    )
+                );
             }
         }
 
