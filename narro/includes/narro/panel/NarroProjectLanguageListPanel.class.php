@@ -19,6 +19,7 @@
     class NarroProjectLanguageListPanel extends QPanel {
         protected $objProject;
         protected $objFile;
+        public $btnRefreshAll;
         
         public $dtgLanguage;
 
@@ -37,7 +38,20 @@
             $this->strTemplate = dirname(__FILE__) . '/' . __CLASS__ . '.tpl.php';
 
             $this->dtgLanguage_Create();
+            
+            $this->btnRefreshAll = new QButton($this);
+            $this->btnRefreshAll->Text = t('Refresh all');
+            $this->btnRefreshAll->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefreshAll_Click'));
 
+        }
+        
+        public function btnRefreshAll_Click() {
+            foreach($this->dtgLanguage->GetChildControls() as $ctl) {
+                if ($ctl instanceof NarroProjectTranslationProgressBar)
+                    $ctl->btnRefresh_Click($this->Form->FormId, $ctl->ControlId, '');
+            }
+            
+            $this->dtgLanguage->Refresh();
         }
 
         public function dtgLanguage_PercentTranslated_Render(NarroLanguage $objLanguage) {

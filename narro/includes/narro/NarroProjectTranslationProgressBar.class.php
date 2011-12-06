@@ -62,9 +62,9 @@
         }
         
         public function btnRefresh_Click($strFormId, $strControlId, $strParameter) {
-            $this->Total = $this->objProjectProgress->Project->CountAllTextsByLanguage();
-            $this->Translated = $this->objProjectProgress->Project->CountApprovedTextsByLanguage();
-            $this->Fuzzy = $this->objProjectProgress->Project->CountTranslatedTextsByLanguage();
+            $this->Total = $this->objProjectProgress->Project->CountAllTextsByLanguage($this->ProjectProgress->LanguageId);
+            $this->Translated = $this->objProjectProgress->Project->CountApprovedTextsByLanguage($this->ProjectProgress->LanguageId);
+            $this->Fuzzy = $this->objProjectProgress->Project->CountTranslatedTextsByLanguage($this->ProjectProgress->LanguageId);
             $this->blnModified = true;
         }
 
