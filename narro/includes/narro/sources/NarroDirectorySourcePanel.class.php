@@ -51,7 +51,7 @@
         public function __get($strName) {
             switch ($strName) {
                 case "Directory":
-                    if ($this->chkCopyFilesToDefaultDirectory->Checked && $this->objProject->DefaultTemplatePath != $this->txtDirectory->Text) {
+                    if ($this->chkCopyFilesToDefaultDirectory->Checked && __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode != $this->txtDirectory->Text) {
                         if (file_exists(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode))
                             NarroUtils::RecursiveDelete(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode .'/*');
                         else {
