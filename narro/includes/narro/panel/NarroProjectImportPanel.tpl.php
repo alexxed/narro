@@ -36,7 +36,7 @@
 <?php
 $_CONTROL->chkApproveImportedTranslations->RenderWithName();
 $_CONTROL->chkApproveOnlyNotApproved->RenderWithName();
-$_CONTROL->chkImportOnlyTranslations->RenderWithName();
+$_CONTROL->chkImportSourceTexts->RenderWithName();
 $_CONTROL->chkImportUnchangedFiles->RenderWithName();
 $_CONTROL->chkDontCheckEqual->RenderWithName();
 ?>

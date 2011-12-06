@@ -31,7 +31,7 @@
 
         public $chkApproveImportedTranslations;
         public $chkApproveOnlyNotApproved;
-        public $chkImportOnlyTranslations;
+        public $chkImportSourceTexts;
         public $chkImportUnchangedFiles;
         public $chkDontCheckEqual;
 
@@ -89,16 +89,15 @@
             $this->chkImportUnchangedFiles->Name = t('Import files even if they are unchanged from the last import');
             $this->chkImportUnchangedFiles->Checked = true;
 
-            $this->chkImportOnlyTranslations = new QCheckBox($this);
-            $this->chkImportOnlyTranslations->Name = t('Import source files too');
-            $this->chkImportOnlyTranslations->Instructions = t('Checking this option will affect all active languages');
-            $this->chkImportOnlyTranslations->Checked = false;
+            $this->chkImportSourceTexts = new QCheckBox($this);
+            $this->chkImportSourceTexts->Name = t('Import source files too');
+            $this->chkImportSourceTexts->Instructions = t('Checking this option will affect all active languages');
+            $this->chkImportSourceTexts->Checked = false;
             if (QApplication::HasPermission('Can import project', $this->objProject->ProjectId)) {
                 $this->chkImportUnchangedFiles->Display = true;
-                $this->chkImportOnlyTranslations->Checked = false;
             }
             else {
-                $this->chkImportOnlyTranslations->Display = false;
+                $this->chkImportSourceTexts->Display = false;
                 $this->chkImportUnchangedFiles->Display = false;
             }
 
@@ -214,7 +213,7 @@
                 $objNarroImporter->CheckEqual = true;
                 $objNarroImporter->Approve = $this->chkApproveImportedTranslations->Checked;
                 $objNarroImporter->ApproveAlreadyApproved = !$this->chkApproveOnlyNotApproved->Checked;
-                $objNarroImporter->OnlySuggestions = $this->chkImportOnlyTranslations->Checked;
+                $objNarroImporter->OnlySuggestions = !$this->chkImportSourceTexts->Checked;
                 $objNarroImporter->Project = $this->objProject;
                 $objNarroImporter->ImportUnchangedFiles = $this->chkImportUnchangedFiles->Checked;
                 $objNarroImporter->User = QApplication::$User;
@@ -266,7 +265,7 @@
                             (($this->chkApproveImportedTranslations->Checked)?'--approve ':'') .
                             (($this->chkImportUnchangedFiles->Checked)?'--import-unchanged-files ':'') .
                             (($this->chkApproveOnlyNotApproved->Checked)?'':'--approve-already-approved ') .
-                            (($this->chkImportOnlyTranslations->Checked || !QApplication::HasPermission('Can import project', $this->objProject->ProjectId))?'--only-suggestions ':'') .
+                            ((!$this->chkImportSourceTexts->Checked || !QApplication::HasPermission('Can import project', $this->objProject->ProjectId))?'--only-suggestions ':'') .
                             ' --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s"',
                         $this->objProject->ProjectId,
                         QApplication::$User->UserId,
