@@ -34,6 +34,7 @@ if (!defined('__PREPEND_INCLUDED__')) {
     NarroUser::RegisterPreference('Special characters', 'text', t('Characters that are not on your keyboard, separated by spaces'), '$€');
     NarroUser::RegisterPreference('Automatically save translations', 'option', t('Save translations when moving to the next text to translate'), 'No', array('Yes', 'No'));
     NarroUser::RegisterPreference('Launch imports and exports in background', 'option', t('Launch imports and exports in background'), 'Yes', array('Yes', 'No'));
+    NarroUser::RegisterPreference('Load more texts while scrolling', 'option', t('Whether to load more content if you reach the bottom of the page'), 'No', array('Yes', 'No'));
     if (!isset($argv))
         QApplication::InitializeSession();
     QApplication::InitializeUser();

@@ -239,6 +239,7 @@ function ctx_editor_focus(ctl, trans, copy, help, ctxInfo, chkChanged) {
     $_CONTROL->objMoreWaitIcon->Render();
     $_CONTROL->chkLast->Render();
     $_CONTROL->chkRequestMoreSent->Render();
+    if (QApplication::$User->GetPreferenceValueByName('Load more texts while scrolling') == 'yes')
      QApplication::ExecuteJavaScript(
          sprintf(
 "jQuery(window).scroll(function(){
