@@ -17,6 +17,12 @@
      */
 ?>
 
+<div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+<h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+<span class="ui-icon ui-icon-triangle-1-s"></span>
+<a><?php _t('General')?></a>
+</h3>
+<div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
 <table>
     <tr>
         <td><?php _t('Name')?></td>
@@ -38,19 +44,40 @@
         <td><?php _t('Active')?></td>
         <td><?php $_CONTROL->txtActive->Render(); ?></td>
     </tr>
-    <tr>
-        <td colspan="2">
-        <?php if ($_CONTROL->pnlPreferences) $_CONTROL->pnlPreferences->Render(); ?>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <?php $_CONTROL->btnSave->Render() ?>
-            &nbsp;&nbsp;&nbsp;
-            <?php $_CONTROL->btnCancel->Render() ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <?php $_CONTROL->btnDelete->Render() ?>
-        </td>
-    </tr>
 </table>
+</div>
+</div>
+
+<?php if ($_CONTROL->pnlTextsSource) { ?>
+    <div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+    <h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+    <span class="ui-icon ui-icon-triangle-1-s"></span>
+    <a><?php _t('Texts')?></a>
+    </h3>
+    <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
+    <?php _t('Where are the texts to translate?'); ?>
+    <?php _t('Note that changing settings here will affect all future imports for all locales'); ?>
+    <?php $_CONTROL->pnlTextsSource->Render() ?>
+    </div>
+    </div>
+<?php } ?>
+<?php if ($_CONTROL->pnlPreferences) { ?>
+    <div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
+    <h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
+    <span class="ui-icon ui-icon-triangle-1-s"></span>
+    <a><?php _t('Preferences')?></a>
+    </h3>
+    <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
+    <?php $_CONTROL->pnlPreferences->Render() ?>
+    </div>
+    </div>
+<?php } ?>
+
+<div>
+<?php $_CONTROL->btnSave->Render() ?>
+&nbsp;&nbsp;&nbsp;
+<?php $_CONTROL->btnCancel->Render() ?>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<?php $_CONTROL->btnDelete->Render() ?>
 <?php $_CONTROL->lblMessage->Render();?>
+</div>

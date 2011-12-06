@@ -20,6 +20,7 @@
         protected $txtDirectory;
         protected $objProject;
         protected $objLanguage;
+        protected $chkCopyFilesToDefaultDirectory;
 
         public function __construct(NarroProject $objProject, NarroLanguage $objLanguage, $objParentObject, $strControlId = null) {
             // Call the Parent
@@ -39,11 +40,27 @@
             $this->txtDirectory->DisplayStyle = QDisplayStyle::Block;
             $this->txtDirectory->Width = 500;
             $this->txtDirectory->Instructions = t('Please enter the full path to the directory that contains the files');
+            
+            $this->chkCopyFilesToDefaultDirectory = new QCheckBox($this);
+            $this->chkCopyFilesToDefaultDirectory->Name = t('Copy files to the default project directory for later use');
+            $this->chkCopyFilesToDefaultDirectory->Instructions = sprintf(t('This will also delete the files from "%s/"'), __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode);
+            $this->chkCopyFilesToDefaultDirectory->Checked = true;
+            $this->chkCopyFilesToDefaultDirectory->PreferedRenderMethod = 'RenderWithName';
         }
 
         public function __get($strName) {
             switch ($strName) {
                 case "Directory":
+                    if ($this->chkCopyFilesToDefaultDirectory->Checked && $this->objProject->DefaultTemplatePath != $this->txtDirectory->Text) {
+                        if (file_exists(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode))
+                            NarroUtils::RecursiveDelete(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode .'/*');
+                        else {
+                            mkdir(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode, 0777);
+                        }
+                        NarroUtils::RecursiveCopy($this->txtDirectory->Text, __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode);
+                        NarroUtils::RecursiveChmod(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode);
+                    }
+                    
                     return $this->txtDirectory->Text;
 
                 default:

@@ -17,6 +17,9 @@
      */
 
     class NarroProjectImportPanel extends QPanel {
+        /**
+         * @var NarroProject
+         */
         protected $objProject;
         public $objImportProgress;
 
@@ -24,7 +27,6 @@
         public $lblImport;
         public $btnKillProcess;
 
-        public $pnlTextsSource;
         public $pnlTranslationsSource;
 
         public $chkApproveImportedTranslations;
@@ -53,13 +55,11 @@
             $this->lblImport = new QLabel($this);
             $this->lblImport->Visible = false;
 
-            $this->pnlTextsSource = new NarroProjectTextSourcePanel($this->objProject, NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE), $this);
-            $this->pnlTextsSource->Display = QApplication::HasPermission('Can import project', $this->objProject->ProjectId);
-
             $this->pnlTranslationsSource = new NarroProjectTranslationSourcePanel($this->objProject, QApplication::$TargetLanguage, $this);
 
             $this->chkApproveImportedTranslations = new QCheckBox($this);
-            $this->chkApproveImportedTranslations->Name = t('Approve the imported translations');
+            $this->chkApproveImportedTranslations->Instructions = t('Approve the imported translations');
+            $this->chkApproveImportedTranslations->Name = t('Approve');
             if (QApplication::HasPermissionForThisLang('Can approve', $this->objProject->ProjectId)) {
                 $this->chkApproveImportedTranslations->Display = true;
                 $this->chkApproveImportedTranslations->Checked = true;
@@ -75,7 +75,8 @@
                 $this->chkApproveImportedTranslations->AddAction(new QClickEvent(), new QServerControlAction($this, 'chkApproveImportedTranslations_Click'));
 
             $this->chkApproveOnlyNotApproved = new QCheckBox($this);
-            $this->chkApproveOnlyNotApproved->Name = t('Approve only translations that are not approved yet in Narro');
+            $this->chkApproveOnlyNotApproved->Instructions = t('Approve only translations that are not approved yet in Narro');
+            $this->chkApproveOnlyNotApproved->Name = t("Keep what's already approved");
             if (QApplication::HasPermissionForThisLang('Can approve', $this->objProject->ProjectId)) {
                 $this->chkApproveOnlyNotApproved->Display = true;
             }
@@ -89,14 +90,14 @@
             $this->chkImportUnchangedFiles->Checked = true;
 
             $this->chkImportOnlyTranslations = new QCheckBox($this);
-            $this->chkImportOnlyTranslations->Name = t('Do not add texts, just add found translations for existing texts');
+            $this->chkImportOnlyTranslations->Name = t('Import source files too');
+            $this->chkImportOnlyTranslations->Instructions = t('Checking this option will affect all active languages');
+            $this->chkImportOnlyTranslations->Checked = false;
             if (QApplication::HasPermission('Can import project', $this->objProject->ProjectId)) {
-                $this->chkImportOnlyTranslations->Display = true;
                 $this->chkImportUnchangedFiles->Display = true;
                 $this->chkImportOnlyTranslations->Checked = false;
             }
             else {
-                $this->chkImportOnlyTranslations->Checked = false;
                 $this->chkImportOnlyTranslations->Display = false;
                 $this->chkImportUnchangedFiles->Display = false;
             }
@@ -221,7 +222,7 @@
                 $objNarroImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
                 try {
                     $objNarroImporter->TranslationPath = $this->pnlTranslationsSource->Directory;
-                    $objNarroImporter->TemplatePath = $this->pnlTextsSource->Directory;
+                    $objNarroImporter->TemplatePath = $this->objProject->DefaultTemplatePath;
                 }
                 catch (Exception $objEx) {
                     NarroLogger::LogError(sprintf('An error occurred during import: %s', $objEx->getMessage()));
@@ -271,7 +272,7 @@
                         QApplication::$User->UserId,
                         NarroLanguage::SOURCE_LANGUAGE_CODE,
                         QApplication::$TargetLanguage->LanguageCode,
-                        $this->pnlTextsSource->Directory,
+                        $this->objProject->DefaultTemplatePath,
                         $this->pnlTranslationsSource->Directory
                     );
                 }
@@ -281,7 +282,7 @@
 
                     $this->lblImport->Visible = true;
                     $this->btnImport->Visible = true;
-                    $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator',$this->objProject,QApplication::$TargetLanguage->LanguageCode) && !$this->btnImport->Visible;
+                    $this->btnKillProcess->Visible = QApplication::HasPermission('Administrator', $this->objProject,QApplication::$TargetLanguage->LanguageCode) && !$this->btnImport->Visible;
                     $this->objImportProgress->Translated = 0;
                     $this->objImportProgress->Visible = false;
 
@@ -294,9 +295,9 @@
                     unlink($strProcLogFile);
                 }
 
-                $mixProcess = proc_open("$strCommand &", array(2 => array("file", $strProcLogFile, 'a')), $foo);
+                NarroUtils::Exec($strCommand, $arrOutput, $arrError, $intRetVal, true);
 
-                if ($mixProcess) {
+                if ($intRetVal == 0) {
                     if (QApplication::$UseAjax)
                         QApplication::ExecuteJavaScript(sprintf('lastImportId = setInterval("qc.pA(\'%s\', \'%s\', \'QClickEvent\', \'1\')", %d);', $strFormId, $strControlId, 2000));
                     else

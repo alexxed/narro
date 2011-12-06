@@ -16,18 +16,6 @@
      * Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
      */
 ?>
-<?php if ($_CONTROL->pnlTextsSource->Display) { ?>
-    <div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
-    <h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
-    <span class="ui-icon ui-icon-triangle-1-s"></span>
-    <a><?php _t('Texts')?></a>
-    </h3>
-    <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active">
-    <?php _t('Where are the texts to translate?')?>
-    <?php $_CONTROL->pnlTextsSource->Render() ?>
-    </div>
-    </div>
-<?php } ?>
 <div class="ui-accordion ui-widget ui-helper-reset ui-accordion-icons">
 <h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top">
 <span class="ui-icon ui-icon-triangle-1-s"></span>

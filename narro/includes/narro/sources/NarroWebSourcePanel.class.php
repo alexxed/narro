@@ -35,7 +35,7 @@
             $this->objProject = $objProject;
             $this->objLanguage = $objLanguage;
 
-            $this->txtWebAddress = new QTextBox($this);
+            $this->txtWebAddress = new QTextBox($this, 'webImport');
             $this->txtWebAddress->Name = t('Web Address');
             $this->txtWebAddress->PreferedRenderMethod = 'RenderWithName';
             $this->txtWebAddress->Instructions = t('Please enter a web address to a zip file or a single supported file');
@@ -48,9 +48,6 @@
 
             $this->blnAutoRenderChildren = true;
             
-            NarroProject::RegisterPreference('Web URL for source texts', false, 0, 'text', 'A URL to a zip archive with the texts', '');
-            $this->txtWebAddress->Text = $this->objProject->GetPreferenceValueByName('Web URL for source texts');
-
         }
 
         protected function CleanWorkingDirectory() {

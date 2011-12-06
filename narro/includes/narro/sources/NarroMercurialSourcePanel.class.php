@@ -26,9 +26,6 @@
             parent::__construct($objProject, $objLanguage, $objParentObject, $strControlId);
             
             $this->txtRepository->Instructions = t('Please enter the path to the Mercurial repository');
-            
-            NarroProject::RegisterPreference('Mercurial repository for source texts', false, 0, 'text', 'A URL to run hg clone it', '');
-            $this->txtRepository->Text = $this->objProject->GetPreferenceValueByName('Mercurial repository for source texts');
         }
 
         protected function GetWorkingDirectory($strCheckoutCommand = null) {

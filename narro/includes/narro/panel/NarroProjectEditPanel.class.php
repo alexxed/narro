@@ -32,6 +32,7 @@
         public $txtProjectDescription;
         public $txtActive;
         
+        public $pnlTextsSource;
         public $pnlPreferences;
 
         // Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
@@ -76,6 +77,13 @@
             $this->txtProjectDescription_Create();
             $this->txtProjectDescription->Enabled = QApplication::HasPermission('Can edit project', $this->objProject->ProjectId);
             $this->txtActive_Create();
+            
+            if (count(NarroProject::$AvailablePreferences) && $this->objProject->ProjectId) {
+                $this->pnlPreferences = new NarroProjectPreferencesPanel($this->objProject, $this);
+            }
+            
+            if (QApplication::HasPermission('Can import project', $this->objProject->ProjectId))
+                $this->pnlTextsSource = new NarroProjectTextSourcePanel($this->objProject, NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE), $this);
 
             // Create/Setup ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -84,9 +92,6 @@
             $this->btnCancel_Create();
             $this->btnDelete_Create();
             
-            if (count(NarroProject::$AvailablePreferences) && $this->objProject->ProjectId) {
-                $this->pnlPreferences = new NarroProjectPreferencesPanel($this->objProject, $this);
-            }
 
             $this->strTemplate = __NARRO_INCLUDES__ . '/narro/panel/NarroProjectEditPanel.tpl.php';
         }
@@ -131,8 +136,8 @@
             $this->txtProjectDescription->Text = $this->objProject->ProjectDescription;
             $this->txtProjectDescription->MaxLength = NarroProject::ProjectDescriptionMaxLength;
             $this->txtProjectDescription->TextMode = QTextMode::MultiLine;
-            $this->txtProjectDescription->Rows = 3;
             $this->txtProjectDescription->Width = 400;
+            $this->txtProjectDescription->Height = 50;
         }
 
         // Create and Setup txtActive
@@ -201,9 +206,7 @@
             $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->objProject->ProjectId, QApplication::GetLanguageId());
             $objProjectProgress->Active = $this->txtActive->Checked;
             $objProjectProgress->Save();
-
-            $this->lblMessage->Text = t('Project saved sucessfully.');
-
+            
             if ($this->strTitleVerb == t('Add')) {
                 /**
                  * If a new project is added, the project directory and source and target are created
@@ -247,6 +250,12 @@
                 }
                 QApplication::Redirect(NarroLink::ProjectImport($this->objProject->ProjectId));
             }
+            
+            if ($this->pnlTextsSource)
+                $this->pnlTextsSource->Directory;
+
+            $this->lblMessage->Text = t('Project saved sucessfully.');
+
         }
 
         public function btnCancel_Click($strFormId, $strControlId, $strParameter) {
