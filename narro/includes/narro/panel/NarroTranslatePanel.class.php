@@ -428,7 +428,7 @@
                         break;
                     case self::SEARCH_IN_ALL:
                     default:
-                        $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
+                        $this->arrClauses[] = QQ::Distinct();
                         $this->arrConditions[] = QQ::OrCondition(
                             QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch),
                             QQ::AndCondition(
