@@ -38,7 +38,7 @@
             $arrHeaders[] = NarroLink::Translate(0, '', NarroTranslatePanel::SHOW_NOT_TRANSLATED, '', 0, 0, 10, 0, 0, t('Translate'));
             
             $pnlDummy = new QPanel($this->pnlTab);
-            $arrHeaders[] = NarroLink::Review(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0, t('Translate'));
+            $arrHeaders[] = NarroLink::Review(0, '', NarroTranslatePanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0, t('Review'));
             
             
             if (NarroLanguage::CountAllActive() > 2 || QApplication::HasPermission('Administrator')) {
