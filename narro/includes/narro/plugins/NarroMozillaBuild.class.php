@@ -287,7 +287,7 @@
                     NarroUtils::RecursiveDelete($objProject->DefaultTemplatePath . '/*');
                     foreach($this->get_l10n_ini_dirs($this->strHgDir, $this->strApplicationType) as $strBuildPath=>$strLocalePath) {
                         $strFirstDir = preg_replace('/\/.*$/', '', $strLocalePath);
-                        if (!in_array($strFirstDir, self::$arrBrowserDirList) && !in_array($strLocalePath, array('extensions/spellcheck')))
+                        if (!in_array($strLocalePath, array('extensions/spellcheck')))
                             NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
                     }
                     break;
