@@ -23,6 +23,7 @@
         protected $txtPassword;
         protected $txtCommitUsername;
         protected $txtCommitMessage;
+        protected $chkForce;
         protected $lblOutput;
         protected $pnlPatchViewer;
         
@@ -68,14 +69,20 @@
             $this->txtCommitUsername->Name = t('Author shown in the commit message');
             $this->txtCommitUsername->Text = sprintf('%s <%s>', QApplication::$User->RealName, QApplication::$User->Email);
             $this->txtCommitUsername->Instructions = t('Usually, this is something like Alexandru Szasz <alexxed@gmail.com>');
-            $this->txtCommitUsername->PreferedRenderMethod = 'RenderWithName';    
+            $this->txtCommitUsername->PreferedRenderMethod = 'RenderWithName';
             
             $this->txtCommitMessage = new QTextBox($this);
             $this->txtCommitMessage->Required = true;
             $this->txtCommitMessage->Name = t('The commit message');
             $this->txtCommitMessage->Text = t('Commit from Narro');
             $this->txtCommitMessage->Instructions = t('Be creative or leave it as it is');
-            $this->txtCommitMessage->PreferedRenderMethod = 'RenderWithName';            
+            $this->txtCommitMessage->PreferedRenderMethod = 'RenderWithName';
+
+            $this->chkForce = new QCheckBox($this);
+            $this->chkForce->Text = t('Force');
+            $this->chkForce->Instructions = t('This would pass -f to hg and usually creates a new head');
+            $this->chkForce->PreferedRenderMethod = 'RenderWithName';
+            $this->chkForce->Display = false;
 
             $this->btnTest = new QButton($this);
             $this->btnTest->Text = 'Test before commit';
@@ -91,6 +98,7 @@
             $this->lblOutput = new QLabel($this);
             $this->lblOutput->TagName = 'pre';
             $this->lblOutput->HtmlEntities = false;
+            
         }
         
         public function btnCommit_Click() {
@@ -123,7 +131,7 @@
             
             $mixProcess = exec(
                 sprintf(
-                    'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_mercurial;cd %s_mercurial; cp -f -R %s/* .; hg addremove; hg commit -m "%s" %s; hg push %s', 
+                    'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_mercurial;cd %s_mercurial; cp -f -R %s/* .; hg addremove; hg commit -m "%s" %s; hg push %s%s',
                     __TMP_PATH__,
                     $strSSHKey . '_hgrc',
                     $this->txtRepositoryUrl->Text,
@@ -131,7 +139,8 @@
                     $strSSHKey,
                     $this->objProject->DefaultTranslationPath,
                     $this->txtCommitMessage->Text,
-                    ($this->pnlPatchViewer && count($this->pnlPatchViewer->SelectedFiles))?join(" ", $this->pnlPatchViewer->SelectedFiles):"",
+                    (($this->pnlPatchViewer && count($this->pnlPatchViewer->SelectedFiles))?join(" ", $this->pnlPatchViewer->SelectedFiles):""),
+                    (($this->chkForce->Checked)?'-f ':''),
                     $this->txtRepositoryUrl->Text
                 ),
                 $arrOutput
@@ -142,10 +151,10 @@
             unlink($strSSHKey);
             unlink($strSSHKey . '_hgrc');
             
-            NarroUtils::RecursiveDelete($strSSHKey . '_mercurial');            
+            NarroUtils::RecursiveDelete($strSSHKey . '_mercurial');
         }
         
-        public function btnTest_Click() {  
+        public function btnTest_Click() {
             NarroProject::RegisterPreference('Mercurial commit path', false, 0, 'text', 'The url to commit this project to mercurial.', '');
             NarroProject::RegisterPreference('Username for Mercurial', false, 0, 'text', '', '');
             
@@ -175,12 +184,12 @@
             
             $mixProcess = exec(
                 sprintf(
-                	'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_mercurial;cd %s_mercurial; cp -f -R %s/* .; hg addremove; hg diff -w --nodates > %s_diff; hg commit -m "%s" %s; hg outgoing', 
-                    __TMP_PATH__, 
-                    $strSSHKey . '_hgrc', 
-                    $this->txtRepositoryUrl->Text, 
+                	'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_mercurial;cd %s_mercurial; cp -f -R %s/* .; hg addremove; hg diff -w --nodates > %s_diff; hg commit -m "%s" %s; hg outgoing',
+                    __TMP_PATH__,
+                    $strSSHKey . '_hgrc',
+                    $this->txtRepositoryUrl->Text,
                     $strSSHKey,
-                    $strSSHKey, 
+                    $strSSHKey,
                     $this->objProject->DefaultTranslationPath,
                     $strSSHKey,
                     $this->txtCommitMessage->Text,
@@ -202,5 +211,6 @@
             NarroUtils::RecursiveDelete($strSSHKey . '_mercurial');
             
             $this->btnCommit->Display = true;
+            $this->chkForce->Display = true;
         }
     }
