@@ -407,7 +407,8 @@
                             $objFile->Modified = QDateTime::Now();
                             $objFile->Created = QDateTime::Now();
                             $objFile->Active = 1;
-                            $objFile->Save();
+                            if ($this->blnOnlySuggestions == false)
+                                $objFile->Save();
                             // NarroLogger::LogDebug(sprintf('Added folder "%s" from "%s"', $strDir, $strPath));
                             NarroImportStatistics::$arrStatistics['Imported folders']++;
                         }
@@ -416,7 +417,8 @@
                         
                         if (!$objFile->Active) {
                             $objFile->Active = 1;
-                            $objFile->Save();
+                            if ($this->blnOnlySuggestions == false)
+                                $objFile->Save();
                         }
                         
                         // Create the file progress if needed
@@ -476,7 +478,8 @@
                     $objFile->FileMd5 = md5_file($strFileToImport);
                     $objFile->Modified = QDateTime::Now();
                     $objFile->Created = QDateTime::Now();
-                    $objFile->Save();
+                    if ($this->blnOnlySuggestions == false)
+                        $objFile->Save();
                     $blnSourceFileChanged = true;
                     QApplication::$PluginHandler->ActivateFile($objFile, $this->objProject);
                     // NarroLogger::LogDebug(sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
@@ -485,24 +488,27 @@
                 
                 if ($objFile->Active == 0) {
                     $objFile->Active = 1;
-                    $objFile->Save();
+                    if ($this->blnOnlySuggestions == false)
+                        $objFile->Save();
                 }
                 
                 $this->arrFileId[$objFile->FileId] = 1;
 
                 $strTranslatedFileToImport = str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToImport);
 
-                $intTime = time();
-                if (file_exists($strTranslatedFileToImport)) {
-                    $this->ImportFile($objFile, $strFileToImport, $strTranslatedFileToImport);
+                if ($objFile->FileId > 0) {
+                    $intTime = time();
+                    if (file_exists($strTranslatedFileToImport)) {
+                        $this->ImportFile($objFile, $strFileToImport, $strTranslatedFileToImport);
+                    }
+                    else {
+                        // it's ok, equal strings won't be imported
+                        $this->ImportFile($objFile, $strFileToImport);
+                    }
+    
+                    $intElapsedTime = time() - $intTime;
+                    // NarroLogger::LogDebug(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
                 }
-                else {
-                    // it's ok, equal strings won't be imported
-                    $this->ImportFile($objFile, $strFileToImport);
-                }
-
-                $intElapsedTime = time() - $intTime;
-                // NarroLogger::LogDebug(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
 
                 NarroProgress::SetProgress(intval((($intFileNo+1)*100)/$intTotalFilesToProcess), $this->objProject->ProjectId, 'import', $intTotalFilesToProcess, 1);
 
@@ -538,7 +544,8 @@
 
             if ($strTranslatedFile) {
                 $objFileProgress->FileMd5 = md5_file($strTranslatedFile);
-                $objFileProgress->Save();
+                if ($this->blnOnlySuggestions == false || $objFileProgress->FileProgressId > 0)
+                    $objFileProgress->Save();
             }
 
             if (!$objFile instanceof NarroFile)
@@ -561,39 +568,7 @@
                 // NarroLogger::LogDebug( sprintf( t('Starting to import from "%s", no translations file'), str_replace($this->objProject->DefaultTemplatePath, '', $strTemplateFile)));
             }
 
-            switch($objFile->TypeId) {
-                case NarroFileType::MozillaDtd:
-                        $objFileImporter = new NarroMozillaDtdFileImporter($this);
-                        break;
-                case NarroFileType::MozillaIni:
-                        $objFileImporter = new NarroMozillaIniFileImporter($this);
-                        break;
-                case NarroFileType::MozillaInc:
-                        $objFileImporter = new NarroMozillaIncFileImporter($this);
-                        break;
-                case NarroFileType::GettextPo:
-                        $objFileImporter = new NarroGettextPoFileImporter($this);
-                        break;
-                case NarroFileType::OpenOfficeSdf:
-                        $objFileImporter = new NarroOpenOfficeSdfFileImporter($this);
-                        break;
-                case NarroFileType::Svg:
-                        $objFileImporter = new NarroSvgFileImporter($this);
-                        break;
-                case NarroFileType::DumbGettextPo:
-                        $objFileImporter = new NarroDumbGettextPoFileImporter($this);
-                        break;
-                case NarroFileType::PhpMyAdmin:
-                        $objFileImporter = new NarroPhpMyAdminFileImporter($this);
-                        break;
-                case NarroFileType::Html:
-                        $objFileImporter = new NarroHtmlFileImporter($this);
-                        break;
-                case NarroFileType::Unsupported:
-                default:
-                        $objFileImporter = new NarroUnsupportedFileImporter($this);
-
-            }
+            $objFileImporter = NarroFileType::GetFileImporter($objFile->TypeId, $this);
 
             QApplication::$PluginHandler->BeforeImportFile($objFile);
 
@@ -967,38 +942,7 @@
                 return false;
             }
 
-            switch($objFile->TypeId) {
-                case NarroFileType::MozillaDtd:
-                        $objFileImporter = new NarroMozillaDtdFileImporter($this);
-                        break;
-                case NarroFileType::MozillaIni:
-                        $objFileImporter = new NarroMozillaIniFileImporter($this);
-                        break;
-                case NarroFileType::MozillaInc:
-                        $objFileImporter = new NarroMozillaIncFileImporter($this);
-                        break;
-                case NarroFileType::GettextPo:
-                        $objFileImporter = new NarroGettextPoFileImporter($this);
-                        break;
-                case NarroFileType::OpenOfficeSdf:
-                        $objFileImporter = new NarroOpenOfficeSdfFileImporter($this);
-                        break;
-                case NarroFileType::Svg:
-                        $objFileImporter = new NarroSvgFileImporter($this);
-                        break;
-                case NarroFileType::DumbGettextPo:
-                        $objFileImporter = new NarroDumbGettextPoFileImporter($this);
-                        break;
-                case NarroFileType::PhpMyAdmin:
-                        $objFileImporter = new NarroPhpMyAdminFileImporter($this);
-                        break;
-                case NarroFileType::Html:
-                        $objFileImporter = new NarroHtmlFileImporter($this);
-                        break;
-                default:
-                        $objFileImporter = new NarroUnsupportedFileImporter($this);
-                        break;
-            }
+            $objFileImporter = NarroFileType::GetFileImporter($objFile->TypeId, $this);
 
             // NarroLogger::LogDebug( sprintf( t('Starting to export "%s"'), str_replace($this->objProject->DefaultTranslationPath, '', $strTranslatedFile) ) );
             $objFileImporter->File = $objFile;
@@ -1036,6 +980,8 @@
                         return NarroFileType::DumbGettextPo;
                 case 'php':
                         return NarroFileType::PhpMyAdmin;
+                case 'srt':
+                        return NarroFileType::Srt;
                 case 'htm':
                 case 'html':
                 case 'thtml':

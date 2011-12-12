@@ -33,5 +33,44 @@
     * @subpackage DataObjects
     */
     abstract class NarroFileType extends NarroFileTypeGen {
+        public static function GetFileImporter($intFileTypeId, NarroProjectImporter $objProjectImporter = null) {
+            switch($intFileTypeId) {
+                case NarroFileType::MozillaDtd:
+                    $objFileImporter = new NarroMozillaDtdFileImporter($objProjectImporter);
+                    break;
+                case NarroFileType::MozillaInc:
+                    $objFileImporter = new NarroMozillaIncFileImporter($objProjectImporter);
+                    break;
+                case NarroFileType::MozillaIni:
+                    $objFileImporter = new NarroMozillaIniFileImporter($objProjectImporter);
+                    break;
+                case NarroFileType::GettextPo:
+                    $objFileImporter = new NarroGettextPoFileImporter($objProjectImporter);
+                    break;
+                case NarroFileType::DumbGettextPo:
+                    $objFileImporter = new NarroDumbGettextPoFileImporter($objProjectImporter);
+                    break;
+                case NarroFileType::OpenOfficeSdf:
+                    $objFileImporter = new NarroOpenOfficeSdfFileImporter($objProjectImporter);
+                    break;
+                case NarroFileType::Svg:
+                    $objFileImporter = new NarroSvgFileImporter($objProjectImporter);
+                    break;
+                case NarroFileType::PhpMyAdmin:
+                    $objFileImporter = new NarroPhpMyAdminFileImporter($objProjectImporter);
+                    break;
+                case NarroFileType::Srt:
+                    $objFileImporter = new NarroSrtFileImporter($objProjectImporter);
+                    break;
+                case NarroFileType::Html:
+                    $objFileImporter = new NarroHtmlFileImporter($objProjectImporter);
+                    break;
+                case NarroFileType::Unsupported:
+                default:
+                    $objFileImporter = new NarroUnsupportedFileImporter($objProjectImporter);
+            }
+            
+            return $objFileImporter;
+        }
     }
 ?>

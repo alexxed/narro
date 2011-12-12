@@ -62,40 +62,7 @@
                 return false;
             }
 
-            switch($this->objNarroFile->TypeId) {
-                case NarroFileType::MozillaDtd:
-                    $objFileImporter = new NarroMozillaDtdFileImporter();
-                    break;
-                case NarroFileType::MozillaInc:
-                    $objFileImporter = new NarroMozillaIncFileImporter();
-                    break;
-                case NarroFileType::MozillaIni:
-                    $objFileImporter = new NarroMozillaIniFileImporter();
-                    break;
-                case NarroFileType::GettextPo:
-                    $objFileImporter = new NarroGettextPoFileImporter();
-                    break;
-                case NarroFileType::DumbGettextPo:
-                    $objFileImporter = new NarroDumbGettextPoFileImporter();
-                    break;
-                case NarroFileType::Svg:
-                    $objFileImporter = new NarroSvgFileImporter();
-                    break;
-                case NarroFileType::OpenOfficeSdf:
-                    $objFileImporter = new NarroOpenOfficeSdfFileImporter();
-                    break;
-                case NarroFileType::PhpMyAdmin:
-                    $objFileImporter = new NarroPhpMyAdminFileImporter();
-                    break;
-                case NarroFileType::Html:
-                    $objFileImporter = new NarroHtmlFileImporter();
-                    break;
-                case NarroFileType::Unsupported:
-                default:
-                    $objFileImporter = new NarroUnsupportedFileImporter();
-                    copy($this->fileToUpload->File, $this->objNarroFile->Project->DefaultTranslationPath . '/' . $this->objNarroFile->FilePath);
-            }
-
+            $objFileImporter = NarroFileType::GetFileImporter($objFile->TypeId);
             $objFileImporter->User = QApplication::$User;
             $objFileImporter->Project = $this->objNarroFile->Project;
             $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
