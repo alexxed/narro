@@ -493,6 +493,7 @@ INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'OpenOf
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'PhpMyAdmin');
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Svg');
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Unsupported');
+INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(13, 'Srt');
 
 --
 -- Dumping data for table `narro_language`

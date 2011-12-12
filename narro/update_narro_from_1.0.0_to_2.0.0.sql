@@ -178,3 +178,11 @@ ALTER TABLE `narro_user` ADD UNIQUE (
 );
 
 UPDATE narro_user SET real_name=username;
+
+INSERT INTO `narro_file_type` (
+`file_type_id` ,
+`file_type`
+)
+VALUES (
+13 , 'Srt'
+);
