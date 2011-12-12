@@ -59,6 +59,8 @@
         const SHOW_ALL = 6;
         const SHOW_NOT_APPROVED_AND_WITHOUT_VOTES = 7;
         const SHOW_NOT_APPROVED_AND_WITH_VOTES = 8;
+        const SHOW_IDENTICAL_APPROVED = 9;
+        const SHOW_IDENTICAL = 10;
 
         const SORT_TEXT = 1;
         const SORT_TRANSLATION = 2;
@@ -241,6 +243,8 @@
             $this->lstFilter->AddItem(t('translated or approved texts'), self::SHOW_APPROVED_AND_NOT_APPROVED);
             $this->lstFilter->AddItem(t('untranslated or unapproved texts'), self::SHOW_NOT_APPROVED_AND_NOT_TRANSLATED);
             $this->lstFilter->AddItem(t('approved texts'), self::SHOW_APPROVED);
+            $this->lstFilter->AddItem(t('identical to the text, approved'), self::SHOW_IDENTICAL_APPROVED);
+            $this->lstFilter->AddItem(t('identical to the text, not approved'), self::SHOW_IDENTICAL);
             $this->lstFilter->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
             if (QApplication::QueryString('t'))
                 $this->lstFilter->SelectedValue = QApplication::QueryString('t');
@@ -379,7 +383,22 @@
                         0
                     );
                     break;
-                            
+                    
+                case self::SHOW_IDENTICAL_APPROVED:
+                    $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
+                    
+                    $this->arrConditions[] = QQ::AndCondition(
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValueMd5),
+                        QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionId)
+                    );
+                    break;
+                    
+                case self::SHOW_IDENTICAL:
+                    $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
+                    
+                    $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValueMd5);
+                    break;
+                                             
                 case self::SHOW_ALL:
                 default:
                     
@@ -393,6 +412,7 @@
                     $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->Context->File->FilePath, substr($this->txtFile->Text, 1, -1));
                 else
                     $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->File->FilePath, '%' . $this->txtFile->Text . '%');
+                
 
             if ($this->txtSearch->Text) {
                 if (preg_match("/^'.+'$/", $this->txtSearch->Text))
