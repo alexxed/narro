@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Narro 2.0
 "Report-Msgid-Bugs-To: alexxed@gmail.com\n"
-"POT-Creation-Date: 2011-27-11 13:42+0200\n"
-"PO-Revision-Date: 2011-27-11 13:42+0200\n"
+"POT-Creation-Date: 2011-12-12 23:51+0200\n"
+"PO-Revision-Date: 2011-12-12 23:51+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -838,11 +838,6 @@ msgstr ""
 msgid "Results"
 msgstr ""
 
-#. <a><?php _t('Screenshots')?></a>
-#: includes/narro/panel/NarroTranslatePanel.tpl.php
-msgid "Screenshots"
-msgstr ""
-
 #. <?php _t("To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text.");?>
 #: includes/narro/panel/NarroTranslatePanel.tpl.php
 msgid "To translate, start writing your translation in the textboxes below. You can use «tab» to move to the next text. If there's no save button, the translation is saved after you move to the next text."
@@ -921,6 +916,11 @@ msgstr ""
 #. $this->SetCustomStyle('title', t('Special characters that might not be on your keyboard'));
 #: includes/narro/panel/NarroDiacriticsPanel.class.php
 msgid "Special characters that might not be on your keyboard"
+msgstr ""
+
+#. $this->btnRefreshAll->Text = t('Refresh all');
+#: includes/narro/panel/NarroProjectLanguageListPanel.class.php
+msgid "Refresh all"
 msgstr ""
 
 #. t('Progress'),
@@ -1135,6 +1135,16 @@ msgstr ""
 msgid "approved texts"
 msgstr ""
 
+#. $this->lstFilter->AddItem(t('identical to the text, approved'), self::SHOW_IDENTICAL_APPROVED);
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "identical to the text, approved"
+msgstr ""
+
+#. $this->lstFilter->AddItem(t('identical to the text, not approved'), self::SHOW_IDENTICAL);
+#: includes/narro/panel/NarroTranslatePanel.class.php
+msgid "identical to the text, not approved"
+msgstr ""
+
 #. $this->lstSort->AddItem(t('sorted by age'));
 #: includes/narro/panel/NarroTranslatePanel.class.php
 msgid "sorted by age"
@@ -1200,12 +1210,17 @@ msgstr ""
 msgid "'exact' does an exact search"
 msgstr ""
 
-#. $this->chkApproveImportedTranslations->Name = t('Approve the imported translations');
+#. $this->chkApproveImportedTranslations->Instructions = t('Approve the imported translations');
 #: includes/narro/panel/NarroProjectImportPanel.class.php
 msgid "Approve the imported translations"
 msgstr ""
 
-#. $this->chkApproveOnlyNotApproved->Name = t('Approve only translations that are not approved yet in Narro');
+#. $btnApprove->ToolTip = t('Approve');
+#: includes/narro/panel/NarroProjectImportPanel.class.php includes/narro/panel/NarroContextInfoEditor.class.php
+msgid "Approve"
+msgstr ""
+
+#. $this->chkApproveOnlyNotApproved->Instructions = t('Approve only translations that are not approved yet in Narro');
 #: includes/narro/panel/NarroProjectImportPanel.class.php
 msgid "Approve only translations that are not approved yet in Narro"
 msgstr ""
@@ -1215,9 +1230,14 @@ msgstr ""
 msgid "Import files even if they are unchanged from the last import"
 msgstr ""
 
-#. $this->chkImportOnlyTranslations->Name = t('Do not add texts, just add found translations for existing texts');
+#. $this->chkImportSourceTexts->Name = t('Import source files too');
 #: includes/narro/panel/NarroProjectImportPanel.class.php
-msgid "Do not add texts, just add found translations for existing texts"
+msgid "Import source files too"
+msgstr ""
+
+#. $this->chkImportSourceTexts->Instructions = t('Checking this option will affect all active languages');
+#: includes/narro/panel/NarroProjectImportPanel.class.php
+msgid "Checking this option will affect all active languages"
 msgstr ""
 
 #. $this->btnKillProcess->Text = t('Kill process');
@@ -1245,6 +1265,11 @@ msgstr ""
 #. $this->lblImport->Text = sprintf(t('Import failed: %s'), $objEx->getMessage());
 #: includes/narro/panel/NarroProjectImportPanel.class.php
 msgid "Import failed: %s"
+msgstr ""
+
+#. $this->chkApproveOnlyNotApproved->Name = t("Keep what's already approved");
+#: includes/narro/panel/NarroProjectImportPanel.class.php
+msgid "Keep what's already approved"
 msgstr ""
 
 #. $this->chkDontCheckEqual->Name = t("Don't check if the translation is equal to the source text");
@@ -1415,13 +1440,18 @@ msgid "Profile"
 msgstr ""
 
 #. $arrHeaders[] = NarroLink::UserPreferences($this->objUser->UserId, t('Preferences'));
-#: includes/narro/panel/NarroHeaderPanel.tpl.php account.php preferences.php user_role.php user.php
+#: includes/narro/panel/NarroHeaderPanel.tpl.php includes/narro/panel/NarroProjectEditPanel.tpl.php account.php preferences.php user_role.php user.php
 msgid "Preferences"
 msgstr ""
 
 #. '<a href="logout.php?l=' . QApplication::$TargetLanguage->LanguageCode . '" style="vertical-align:middle"><img src="assets/images/logout.png" alt="' . t('Logout') . '" border="0" title="' . t('Logout') . '" /></a>'
 #: includes/narro/panel/NarroHeaderPanel.tpl.php
 msgid "Logout"
+msgstr ""
+
+#. <a><?php _t('General')?></a>
+#: includes/narro/panel/NarroProjectEditPanel.tpl.php
+msgid "General"
 msgstr ""
 
 #. t('Name'),
@@ -1437,6 +1467,21 @@ msgstr ""
 #. <td><?php _t('Type')?></td>
 #: includes/narro/panel/NarroProjectEditPanel.tpl.php
 msgid "Type"
+msgstr ""
+
+#. <a><?php _t('Texts')?></a>
+#: includes/narro/panel/NarroProjectEditPanel.tpl.php
+msgid "Texts"
+msgstr ""
+
+#. <?php _t('Where are the texts to translate?'); ?>
+#: includes/narro/panel/NarroProjectEditPanel.tpl.php
+msgid "Where are the texts to translate?"
+msgstr ""
+
+#. <?php _t('Note that changing settings here will affect all future imports for all locales'); ?>
+#: includes/narro/panel/NarroProjectEditPanel.tpl.php
+msgid "Note that changing settings here will affect all future imports for all locales"
 msgstr ""
 
 #. $this->colPermission = new QDataGridColumn(QApplication::Translate('Permission'), '<?= $_CONTROL->ParentControl->dtgNarroPermission_PermissionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName, false)));
@@ -1617,21 +1662,6 @@ msgstr ""
 msgid "Hey, the anonymous user doesn't have a password. What are you trying to do?"
 msgstr ""
 
-#. $objMessage->Subject = sprintf(t('Password recovery for "%s" on "%s"'), $objUser->Username, $_SERVER['HTTP_HOST']);
-#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
-msgid "Password recovery for \"%s\" on \"%s\""
-msgstr ""
-
-#. t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this link: %s'),
-#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
-msgid "Somebody, probably you, requested a password recovery for \"%s\" on \"%s\". To change your password, please follow this link: %s"
-msgstr ""
-
-#. t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this <a href="%s">link</a>.'),
-#: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
-msgid "Somebody, probably you, requested a password recovery for \"%s\" on \"%s\". To change your password, please follow this <a href=\"%s\">link</a>."
-msgstr ""
-
 #. $this->lblMessage->Text = t('You should have a new email message with instructions. Check your spam/bulk directory too.');
 #: includes/narro/panel/NarroUserRecoverPasswordPanel.class.php
 msgid "You should have a new email message with instructions. Check your spam/bulk directory too."
@@ -1780,11 +1810,6 @@ msgstr ""
 msgid "Vote down"
 msgstr ""
 
-#. $btnApprove->ToolTip = t('Approve');
-#: includes/narro/panel/NarroContextInfoEditor.class.php
-msgid "Approve"
-msgstr ""
-
 #. $this->lblMessage->Text = t('A plugin returned an empty value after processing your translation.');
 #: includes/narro/panel/NarroContextInfoEditor.class.php
 msgid "A plugin returned an empty value after processing your translation."
@@ -1923,16 +1948,6 @@ msgstr ""
 #. t('Commit to SVN')
 #: includes/narro/panel/NarroProjectTranslationTargetPanel.class.php
 msgid "Commit to SVN"
-msgstr ""
-
-#. <a><?php _t('Texts')?></a>
-#: includes/narro/panel/NarroProjectImportPanel.tpl.php
-msgid "Texts"
-msgstr ""
-
-#. <?php _t('Where are the texts to translate?')?>
-#: includes/narro/panel/NarroProjectImportPanel.tpl.php
-msgid "Where are the texts to translate?"
 msgstr ""
 
 #. <?php _t('Where are the translated texts?')?>
@@ -2371,12 +2386,12 @@ msgid "Export failed."
 msgstr ""
 
 #. $this->chkCopyFilesToDefaultDirectory->Name = t('Copy files to the default project directory for later use');
-#: includes/narro/sources/NarroVcsSourcePanel.class.php includes/narro/sources/NarroWebSourcePanel.class.php includes/narro/sources/NarroUploadSourcePanel.class.php
+#: includes/narro/sources/NarroVcsSourcePanel.class.php includes/narro/sources/NarroWebSourcePanel.class.php includes/narro/sources/NarroDirectorySourcePanel.class.php includes/narro/sources/NarroUploadSourcePanel.class.php
 msgid "Copy files to the default project directory for later use"
 msgstr ""
 
 #. $this->chkCopyFilesToDefaultDirectory->Instructions = sprintf(t('This will also delete the files from "%s/"'), __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode);
-#: includes/narro/sources/NarroVcsSourcePanel.class.php includes/narro/sources/NarroWebSourcePanel.class.php includes/narro/sources/NarroUploadSourcePanel.class.php
+#: includes/narro/sources/NarroVcsSourcePanel.class.php includes/narro/sources/NarroWebSourcePanel.class.php includes/narro/sources/NarroDirectorySourcePanel.class.php includes/narro/sources/NarroUploadSourcePanel.class.php
 msgid "This will also delete the files from \"%s/\""
 msgstr ""
 
@@ -2460,6 +2475,16 @@ msgstr ""
 msgid "Commit from Narro"
 msgstr ""
 
+#. $this->chkForce->Text = t('Force');
+#: includes/narro/sources/NarroMercurialTargetPanel.class.php
+msgid "Force"
+msgstr ""
+
+#. $this->chkForce->Instructions = t('This would pass -f to hg and usually creates a new head');
+#: includes/narro/sources/NarroMercurialTargetPanel.class.php
+msgid "This would pass -f to hg and usually creates a new head"
+msgstr ""
+
 #. $arrData[t('Others')] = 0;
 #. $arrData[t('Others')] += round(($intCount * 100) / $this->intTotal, 2);
 #. $arrToolTip[t('Others')] = sprintf('%s (%d), ', t('Others'), $arrData[t('Others')]);
@@ -2496,7 +2521,7 @@ msgid "%s's roles"
 msgstr ""
 
 #. $arrHeaders[] = NarroLink::Review($this->objProject->ProjectId, '', NarroReviewPanel::SHOW_NOT_APPROVED, '', 0, 0, 10, 0, 0, t('Review'));
-#: projects.php translate.php languages.php review.php import.php project_languages.php language_edit.php project.php review.tpl.php export.php project_edit.php files.php
+#: projects.php translate.php languages.php review.php import.php project_languages.php language_edit.php project.php review.tpl.php export.php log.php project_edit.php files.php
 msgid "Review"
 msgstr ""
 
@@ -2594,6 +2619,11 @@ msgstr ""
 #. NarroUser::RegisterPreference('Launch imports and exports in background', 'option', t('Launch imports and exports in background'), 'Yes', array('Yes', 'No'));
 #: configuration/prepend.inc.php
 msgid "Launch imports and exports in background"
+msgstr ""
+
+#. NarroUser::RegisterPreference('Load more texts while scrolling', 'option', t('Whether to load more content if you reach the bottom of the page'), 'No', array('Yes', 'No'));
+#: configuration/prepend.inc.php
+msgid "Whether to load more content if you reach the bottom of the page"
 msgstr ""
 
 #. <?php echo sprintf((function_exists('t'))?t('%s, version %s'):'%s, version %s', 'Narro', NARRO_VERSION) ?>
