@@ -106,6 +106,7 @@
                 case 'sdf':
                 case 'svg':
                 case 'dpo':
+                case 'srt':
                 case 'php':
                     NarroLogger::LogInfo(sprintf('Single file uploaded, copied %s to %s', $this->txtWebAddress->Text, $this->strWorkingDirectory));
                     break;

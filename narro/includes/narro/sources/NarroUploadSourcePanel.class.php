@@ -98,6 +98,7 @@
                 case 'sdf':
                 case 'svg':
                 case 'dpo':
+                case 'srt':
                 case 'php':
                     copy($this->fileSource->File, $this->strWorkingDirectory . '/' . $this->fileSource->FileName);
                     chmod($this->strWorkingDirectory . '/' . $this->fileSource->FileName, 0666);
