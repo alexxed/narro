@@ -66,20 +66,13 @@
                 $objMessage->To = sprintf('%s <%s>', $objUser->Username, $objUser->Email);
                 $objMessage->Subject = sprintf(t('Password recovery for "%s" on "%s"'), $objUser->Username, $_SERVER['HTTP_HOST']);
                 
-                $objMessage->Body = strip_tags(sprintf(
+                $objMessage->Body = sprintf(
                     t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this link: %s'),
                     $objUser->Username,
                     $_SERVER['HTTP_HOST'],
                     ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')?'https://':'http://') . $_SERVER['HTTP_HOST'] . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . sprintf('/change_password.php?l=%s&u=%s&h=%s', QApplication::$TargetLanguage->LanguageCode, $objUser->Username, $objUser->Password)
-                ));
-                
-                $objMessage->HtmlBody = sprintf(
-                    t('Somebody, probably you, requested a password recovery for "%s" on "%s". To change your password, please follow this <a href="%s">link</a>.'),
-                    $objUser->Username,
-                    $_SERVER['HTTP_HOST'],
-                    ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')?'https://':'http://') . $_SERVER['HTTP_HOST'] . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . sprintf('/change_password.php?l=%s&u=%s&h=%s', QApplication::$TargetLanguage->LanguageCode, $objUser->Username, $objUser->Password)
                 );
-
+                
                 try {
                     QEmailServer::Send($objMessage);
                     $this->lblMessage->ForeColor = 'green';
