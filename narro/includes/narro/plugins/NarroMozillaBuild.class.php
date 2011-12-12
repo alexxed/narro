@@ -370,6 +370,10 @@
                 return false;
             }
             
+            if ($objProject->ProjectType != NarroProjectType::Mozilla) {
+                return false;
+            }
+            
             $this->SetupProject($objProject);
             if (!$this->strApplicationType || !$this->strHgDir || !$this->strObjDir || !$this->strRepoUrl) {
                 return false;
@@ -390,6 +394,10 @@
         }
         
         public function AfterExportProject(NarroProject $objProject) {
+            if ($objProject->ProjectType != NarroProjectType::Mozilla) {
+                return false;
+            }
+            
             $this->SetupProject($objProject);
             if (!$this->strApplicationType || !$this->strHgDir || !$this->strObjDir || !$this->strRepoUrl) {
                 return false;
@@ -587,6 +595,10 @@
         }
         
         public function DisplayExportMessage(NarroProject $objProject, $strText = '') {
+            if ($objProject->ProjectType != NarroProjectType::Mozilla) {
+                return array($objProject, '');
+            }
+            
             $strExportText = $this->CompareLocales($objProject);
             
             return array($objProject, '<br />' . $strExportText . '<br />' . $this->GetXpiLink($objProject));
@@ -616,6 +628,10 @@
         }
         
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
+            if ($objProject->ProjectType != NarroProjectType::Mozilla) {
+                return array($objProject, '');
+            }
+            
             return array($objProject, $this->GetXpiLink($objProject));
         }
     }
