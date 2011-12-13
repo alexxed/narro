@@ -386,17 +386,23 @@
                     
                 case self::SHOW_IDENTICAL_APPROVED:
                     $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
+                    $this->arrClauses[] = QQ::Distinct();
                     
                     $this->arrConditions[] = QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValueMd5),
-                        QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionId)
+                        QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionId),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QQN::NarroContextInfo()->LanguageId)
                     );
                     break;
                     
                 case self::SHOW_IDENTICAL:
                     $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
+                    $this->arrClauses[] = QQ::Distinct();
                     
-                    $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValueMd5);
+                    $this->arrConditions[] = QQ::AndCondition(
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValueMd5),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QQN::NarroContextInfo()->LanguageId)
+                    );
                     break;
                                              
                 case self::SHOW_ALL:
