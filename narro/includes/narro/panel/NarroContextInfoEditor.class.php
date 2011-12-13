@@ -107,7 +107,11 @@
             $this->lblText->Width = '100%';
             $this->lblText->TagName = 'pre';
             $this->lblText->CssClass = 'originalText';
-            $this->lblText->Text = $this->objContextInfo->Context->Text->TextValue;
+            $this->lblText->Text = NarroString::ShowLeadingAndTrailingSpaces(NarroString::HtmlEntities($this->objContextInfo->Context->Text->TextValue));
+            $this->lblText->HtmlEntities = false;
+            
+            $this->lblText->Text = str_replace("\n", '<span class="newline_block" title="Enter">&nbsp;</span><br />', $this->lblText->Text);
+            
 
             $this->btnHelp_Create();
             

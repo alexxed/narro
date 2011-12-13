@@ -514,3 +514,21 @@ table.datagrid td a.nolink {text-decoration: none; color: black}
 }
 
 
+.whitespace_block {
+    background:url(../images/whitespace.png); 
+    width: 14px; 
+    height: 9px; 
+    display: inline-block; 
+    vertical-align: middle; 
+    margin: 1px;
+}
+
+.newline_block {
+    background:url(../images/newline.png); 
+    width: 14px; 
+    height: 9px; 
+    display: inline-block; 
+    vertical-align: middle; 
+    margin: 1px;
+}
+
