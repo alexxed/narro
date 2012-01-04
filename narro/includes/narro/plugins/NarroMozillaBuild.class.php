@@ -227,7 +227,7 @@
             
             if (!
                 NarroUtils::Exec(
-                    sprintf('hg pull -u %s', $this->strRepoUrl),
+                    sprintf('hg pull %s', $this->strRepoUrl),
                     $arrOutput,
                     $arrError,
                     $intRetVal,
