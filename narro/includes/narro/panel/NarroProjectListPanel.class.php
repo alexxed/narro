@@ -161,8 +161,24 @@
         }
 
         protected function txtSearch_Create() {
-            $this->txtSearch = new QTextBox($this);
-            $this->txtSearch->AddAction(new QKeyUpEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+            $this->txtSearch = new QAutocomplete($this);
+            $this->txtSearch->SetDataBinder("txtSearch_Autocomplete", $this);
+            $this->txtSearch->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
+        }
+        
+        public function txtSearch_Autocomplete() {
+            $arrReturn = array();
+            
+            $arrConditions = array(QQ::Like(QQN::NarroProject()->ProjectName, '%' . $this->txtSearch->Text . '%'));
+            
+            if (!QApplication::HasPermission('Administrator'))
+                $arrConditions[] = QQ::Equal(QQN::NarroProject()->Active, true);
+            
+            foreach(NarroProject::QueryArray(QQ::AndCondition($arrConditions), array(QQ::LimitInfo(10, 0))) as $objProject) {
+                $arrReturn[] = $objProject->ProjectName;
+            }
+            
+            $this->txtSearch->DataSource = $arrReturn;
         }
 
         public function dtgProjectList_LastActivityColumn_Render(NarroProject $objProject) {
