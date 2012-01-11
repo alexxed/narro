@@ -59,6 +59,8 @@
         }
 
         public static function ShowLeadingAndTrailingSpaces($strText) {
+            $strResult = '';
+            
             for($i=0; $i < mb_strlen($strText); $i++) {
                 $chrCurrent = mb_substr($strText, $i, 1);
                 $chrPrevious = mb_substr($strText, $i - 1, 1);
