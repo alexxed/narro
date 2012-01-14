@@ -532,3 +532,6 @@ table.datagrid td a.nolink {text-decoration: none; color: black}
     margin: 1px;
 }
 
+td.actions .ui-icon {
+    cursor: pointer;
+}
