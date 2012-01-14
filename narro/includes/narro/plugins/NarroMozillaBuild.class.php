@@ -52,6 +52,15 @@
             'mail'
         );
         
+        public static $arrMobileDirList = array(
+            'mobile',
+            'embedding'
+        );
+        
+        public static $arrCalendarDirList = array(
+            'calendar'
+        );
+        
         protected $strRepoUrl;
         protected $strReleaseName;
         protected $strHgDir;
@@ -156,9 +165,10 @@
             $arrResult = array();
             preg_match_all('/dirs = ([^\[]+)/i', preg_replace('/^#.*$/m', '', file_get_contents($strHgDir . '/' . $strL10nIniFilePath)), $arrDirsToInclude);
             foreach($arrDirsToInclude[1] as $strDirToInclude) {
-                foreach(explode("\n", $strDirToInclude) as $strSingleDirToInclude) {
-                    if (trim($strSingleDirToInclude))
-                    $arrResult[] = trim($strSingleDirToInclude);
+                foreach(preg_split("/[$\s]/", $strDirToInclude) as $strSingleDirToInclude) {
+                    if (trim($strSingleDirToInclude)) {
+                        $arrResult[] = trim($strSingleDirToInclude);
+                    }
                 }
             }
         
