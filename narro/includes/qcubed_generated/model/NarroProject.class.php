@@ -107,6 +107,27 @@
 
             return $intTotalTexts;
         }
+        
+        public function CountAllWordsByLanguage($intLanguageId = null) {
+            $intTotalTexts = 0;
+        
+            if (is_null($intLanguageId)) $intLanguageId = QApplication::GetLanguageId();
+        
+            // Cache miss
+            $strQuery = sprintf('SELECT SUM(t.text_word_count) AS cnt FROM narro_context c, narro_text t, narro_file f WHERE t.text_id=c.text_id AND f.project_id=c.project_id AND f.file_id=c.file_id AND f.active=1 AND c.project_id = %d AND c.active=1', $this->ProjectId);
+        
+            // Perform the Query
+            $objDbResult = self::GetDatabase()->Query($strQuery);
+        
+            if ($objDbResult) {
+                $mixRow = $objDbResult->FetchArray();
+                $intTotalTexts = $mixRow['cnt'];
+        
+                // $this->UpdateProjectProgress($intLanguageId, 'TotalWordCount', $intTotalTexts);
+            }
+        
+            return $intTotalTexts;
+        }
 
         protected function UpdateProjectProgress($intLanguageId, $strColumn, $intValue) {
             $objProjectProgress = NarroProjectProgress::LoadByProjectIdLanguageId($this->ProjectId, $intLanguageId);

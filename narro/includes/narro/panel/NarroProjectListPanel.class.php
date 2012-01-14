@@ -67,6 +67,11 @@
             $this->dtgProjectList->AddColumn($this->colProjectName);
             $this->dtgProjectList->AddColumn($this->colLastActivity);
             $this->dtgProjectList->AddColumn($this->colPercentTranslated);
+            
+            $colWordCount = new QDataGridColumn(t('Word count'));
+            $colWordCount->Html = '<?=number_format($_ITEM->CountAllWordsByLanguage())?>';
+            $colWordCount->HorizontalAlign = QHorizontalAlign::Right;
+            $this->dtgProjectList->AddColumn($colWordCount);
 
             $this->dtgProjectList->SortColumnIndex = 1;
             $this->dtgProjectList->SortDirection = 1;
