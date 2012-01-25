@@ -120,7 +120,7 @@
                     $intRetVal,
                     false,
                     array(
-                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 7822 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', $this->txtUsername->Text, $this->strSSHKey),
                 		'HOME' => __TMP_PATH__
                     ),
                     $this->strSSHKey . '_svn',
@@ -146,7 +146,7 @@
                     $intRetVal,
                     false,
                     array(
-                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 7822 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', $this->txtUsername->Text, $this->strSSHKey),
                         'HOME' => __TMP_PATH__
                     ),
                     $this->strSSHKey . '_svn',
@@ -169,7 +169,7 @@
                     $intRetVal,
                     false,
                     array(
-                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 7822 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', $this->txtUsername->Text, $this->strSSHKey),
                 		'HOME' => __TMP_PATH__
                     ),
                     $this->strSSHKey . '_svn',
