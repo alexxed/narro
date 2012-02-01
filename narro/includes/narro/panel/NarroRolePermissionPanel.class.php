@@ -17,46 +17,42 @@
      */
 
     class NarroRolePermissionPanel extends QPanel {
+        /**
+         * @var NarroRole
+         */
         protected $objRole;
-        public $dtgNarroPermission;
-
-        // DataGrid Columns
-        protected $colPermission;
+        public $dtgPermission;
 
         public function __construct($objParentObject, $strControlId = null) {
             parent::__construct($objParentObject, $strControlId);
 
-            // Setup DataGrid Columns
-            $this->colPermission = new QDataGridColumn(QApplication::Translate('Permission'), '<?= $_CONTROL->ParentControl->dtgNarroPermission_PermissionColumn_Render($_ITEM) ?>', array('OrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName), 'ReverseOrderByClause' => QQ::OrderBy(QQN::NarroPermission()->PermissionName, false)));
-            $this->colPermission->HtmlEntities = false;
-
-
             // Setup DataGrid
-            $this->dtgNarroPermission = new NarroDataGrid($this);
+            $this->dtgPermission = new NarroPermissionDataGrid($this);
             // Datagrid Paginator
-            $this->dtgNarroPermission->ShowHeader = true;
+            $this->dtgPermission->ShowHeader = true;
+            $this->dtgPermission->ShowFilter = false;
 
             // Specify Whether or Not to Refresh using Ajax
-            $this->dtgNarroPermission->UseAjax = QApplication::$UseAjax;
+            $this->dtgPermission->UseAjax = QApplication::$UseAjax;
 
-            // Specify the local databind method this datagrid will use
-            $this->dtgNarroPermission->SetDataBinder('dtgNarroPermission_Bind', $this);
+            $colPermission = $this->dtgPermission->MetaAddColumn(QQN::NarroPermission()->PermissionName);
+            $colPermission->Name = t('Permission');
+            $colPermission->Html = '<?= $_CONTROL->ParentControl->dtgPermission_PermissionColumn_Render($_ITEM) ?>';
+            $colPermission->HtmlEntities = false;
 
-            $this->dtgNarroPermission->AddColumn($this->colPermission);
-
-            $this->dtgNarroPermission->SortColumnIndex = 0;
+            $this->dtgPermission->SortColumnIndex = 0;
         }
 
         public function GetControlHTML() {
-            return $this->dtgNarroPermission->Render(false);
+            return $this->dtgPermission->Render(false);
         }
 
-        public function dtgNarroPermission_PermissionColumn_Render(NarroPermission $objNarroPermission) {
+        public function dtgPermission_PermissionColumn_Render(NarroPermission $objPermission) {
             if (QApplication::HasPermission('Can manage roles')) {
-                $strControlId = 'chkPermission' . $objNarroPermission->PermissionId;
-                $chkPermission = new QCheckBox($this->dtgNarroPermission);
-                $chkPermission->Text = t($objNarroPermission->PermissionName);
-                $chkPermission->ActionParameter = $objNarroPermission->PermissionId;
+                $strControlId = 'chkPermission' . $objPermission->PermissionId;
+                $chkPermission = new QCheckBox($this->dtgPermission);
+                $chkPermission->Text = t($objPermission->PermissionName);
+                $chkPermission->ActionParameter = $objPermission->PermissionId;
                 $chkPermission->Checked = NarroRolePermission::QueryCount(
                     QQ::AndCondition(
                         QQ::Equal(
@@ -65,7 +61,7 @@
                         ),
                         QQ::Equal(
                             QQN::NarroRolePermission()->PermissionId,
-                            $objNarroPermission->PermissionId
+                            $objPermission->PermissionId
                         )
                     )
                 );
@@ -77,27 +73,8 @@
                 return $chkPermission->Render(false);
             }
             else {
-                return t($objNarroPermission->PermissionName);
+                return t($objPermission->PermissionName);
             }
-        }
-
-        public function dtgNarroPermission_Bind() {
-            // Because we want to enable pagination AND sorting, we need to setup the $objClauses array to send to LoadAll()
-
-            // Setup the $objClauses Array
-            $objClauses = array();
-
-            // If a column is selected to be sorted, and if that column has a OrderByClause set on it, then let's add
-            // the OrderByClause to the $objClauses array
-            if ($objClause = $this->dtgNarroPermission->OrderByClause)
-                array_push($objClauses, $objClause);
-
-            // Add the LimitClause information, as well
-            if ($objClause = $this->dtgNarroPermission->LimitClause)
-                array_push($objClauses, $objClause);
-
-            // Set the DataSource to be the array of all NarroUser objects, given the clauses above
-            $this->dtgNarroPermission->DataSource = NarroPermission::LoadAll($objClauses);
         }
 
         public function chkPermission_Click($strFormId, $strControlId, $strParameter) {
@@ -138,7 +115,7 @@
                 }
             }
             else {
-                $this->dtgNarroPermission_Bind();
+                $this->dtgPermission_Bind();
             }
 
         }
@@ -170,8 +147,9 @@
                 // APPEARANCE
                 case "Role":
                     $this->objRole = $mixValue;
-                    $this->dtgNarroPermission->Title = sprintf(t('%s\'s permissions'), $this->objRole->RoleName);
-                    $this->dtgNarroPermission_Bind();
+                    if (!QApplication::HasPermission('Can manage roles'))
+                        $this->dtgPermission->AdditionalConditions = QQ::Equal(QQN::NarroPermission()->NarroRolePermissionAsPermission->RoleId, $this->objRole->RoleId);
+                    $this->dtgPermission->MarkAsModified();
                     break;
                 default:
                     try {
