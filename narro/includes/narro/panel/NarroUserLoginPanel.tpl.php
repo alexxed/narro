@@ -1,3 +1,4 @@
+<script src="https://browserid.org/include.js" type="text/javascript"></script>
 <?php
     /**
      * Narro is an application that allows online software translation and maintenance.

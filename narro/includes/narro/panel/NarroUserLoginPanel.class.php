@@ -8,7 +8,6 @@
         public $txtPreviousUrl;
         public $txtOpenId;
         public $btnOpenIdLogin;
-        public $btnGoogleLogin;
         
         public $objAccordion;
 
@@ -54,7 +53,8 @@
             $this->btnLogin->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnLogin_Click'));
             
             $lblOpenIdLogin = new QLinkButton($this->objAccordion);
-            $lblOpenIdLogin->Text = t('Login with your OpenID');
+            $lblOpenIdLogin->HtmlEntities = false;
+            $lblOpenIdLogin->Text = '<img src="http://www.openid.net/favicon.ico" /> ' . t('Login with your OpenID');
             
             $pnlOpenIdLogin = new QPanel($this->objAccordion);
             $pnlOpenIdLogin->AutoRenderChildren = true;
@@ -69,23 +69,24 @@
             $this->btnOpenIdLogin->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnOpenIdLogin_Click'));
             
             $lblGoogleLogin = new QLinkButton($this->objAccordion);
-            $lblGoogleLogin->Text = t('Login with your Google account');
+            $lblGoogleLogin->HtmlEntities = false;
+            $lblGoogleLogin->Text = '<img src="http://www.google.com/favicon.ico" /> ' . t('Login with your Google account');
+            $lblGoogleLogin->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnGoogleLogin_Click'));
             
             $pnlGoogleLogin = new QPanel($this->objAccordion);
             $pnlGoogleLogin->AutoRenderChildren = true;
-                        
-            $this->btnGoogleLogin = new QImageButton($pnlGoogleLogin);
-            $this->btnGoogleLogin->ImageUrl = 'http://www.google.com/favicon.ico';
-            $this->btnGoogleLogin->AlternateText = t('Login with your Google account');
-            $this->btnGoogleLogin->ToolTip = t('Login with your Google account');
-            $this->btnGoogleLogin->SetCustomStyle('vertical-align', 'middle');
-            $this->btnGoogleLogin->SetCustomStyle('padding', '5px');
-            $this->btnGoogleLogin->Cursor = QCursor::Pointer;
-            $this->btnGoogleLogin->Instructions = t('Just click on the image above to use your Google account');
-            $this->btnGoogleLogin->PreferedRenderMethod = 'RenderWithName';
-            $this->btnGoogleLogin->PrimaryButton = false;
-            $this->btnGoogleLogin->TabIndex = 4;
-            $this->btnGoogleLogin->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnGoogleLogin_Click'));
+            
+            $lblBrowserIdLogin = new QLinkButton($this->objAccordion);
+            $lblBrowserIdLogin->HtmlEntities = false;
+            $lblBrowserIdLogin->Text = '<img src="https://browserid.org/favicon.ico" /> ' . t('Login with BrowserID');
+            $lblBrowserIdLogin->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf("navigator.id.get(function(assertion) {if (assertion) {qc.pA('%s', '%s', 'QClickEvent', assertion, '')} else {qc.pA('%s', '%s', 'QClickEvent', '', '')}}); return false;", $this->Form->FormId, $lblBrowserIdLogin->ControlId, $this->Form->FormId, $lblBrowserIdLogin->ControlId)));
+            $lblBrowserIdLogin->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnBrowserIdLogin_Click'));
+            
+            $pnlBrowserIdLogin = new QPanel($this->objAccordion);
+            $pnlBrowserIdLogin->AutoRenderChildren = true;
+            
+            
+            
 
             $openid = new LightOpenID($_SERVER['HTTP_HOST']);
             if (!$openid->mode && isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER'] !='' && !strstr($_SERVER['HTTP_REFERER'], $_SERVER['REQUEST_URI']))
@@ -185,6 +186,66 @@
                 $this->lblMessage->Text = t('Bad username or password');
                 return false;
             }
+        }
+        
+        public function btnBrowserIdLogin_Click($strFormId, $strControlId, $strAssertion) {
+            
+            // open connection
+            $ch = curl_init();
+            
+            // set the url, number of POST vars, POST data
+            curl_setopt($ch, CURLOPT_URL, 'https://browserid.org/verify');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, 2);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, sprintf('assertion=%s&audience=%s', $strAssertion, __HTTP_URL__));
+            
+            // execute post
+            $result = json_decode(curl_exec($ch));
+            
+            // close connection
+            curl_close($ch);
+            
+            if ($result && property_exists($result, 'status') && $result->status == 'okay') {
+            
+                $objUser = NarroUser::LoadByUsername($result->email);
+            
+                if (!$objUser instanceof NarroUser) {
+                    try {
+                        $objUser = NarroUser::RegisterUser($result->email, $result->email, '', $result->email);
+                    }
+                    catch (Exception $objEx) {
+                        $this->lblMessage->ForeColor = 'red';
+                        $this->lblMessage->Text = sprintf(t('Failed to create an associated user for the email address "%s": %s'), $result->email, $objEx->getMessage());
+                        return false;
+                    }
+            
+                    $objUser->Reload();
+                    QApplication::$Session->User = $objUser;
+                    QApplication::Redirect(NarroLink::UserPreferences($objUser->UserId));
+                    exit;
+                }
+                elseif ($objUser->Password != md5('')) {
+                    $this->lblMessage->ForeColor = 'red';
+                    $this->lblMessage->Text = t('This user has a password set, please login with that instead');
+                    return false;
+                }
+            
+                QApplication::$Session->User = $objUser;
+                QApplication::$User = $objUser;
+            
+                if ($this->txtPreviousUrl)
+                    QApplication::Redirect($this->txtPreviousUrl);
+                else
+                    QApplication::Redirect(NarroLink::ProjectList());
+            
+                exit;
+            }
+            else {
+                $this->lblMessage->Text = t('BrowserID login failed');
+                $this->lblMessage->ForeColor = 'red';
+            }
+            
+            
         }
 
     }
