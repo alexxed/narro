@@ -119,6 +119,7 @@
             $this->txtProjectName = new QTextBox($this);
             $this->txtProjectName->Text = $this->objProject->ProjectName;
             $this->txtProjectName->Required = true;
+            $this->txtProjectName->SafeHtml = true;
             $this->txtProjectName->MaxLength = NarroProject::ProjectNameMaxLength;
         }
 

@@ -92,6 +92,7 @@
             $this->txtLanguageName->Name = QApplication::Translate('Language Name');
             $this->txtLanguageName->Text = $this->objNarroLanguage->LanguageName;
             $this->txtLanguageName->Required = true;
+            $this->txtLanguageName->SafeHtml = true;
             $this->txtLanguageName->MaxLength = NarroLanguage::LanguageNameMaxLength;
         }
 
@@ -101,6 +102,7 @@
             $this->txtLanguageCode->Name = QApplication::Translate('Language Code');
             $this->txtLanguageCode->Text = $this->objNarroLanguage->LanguageCode;
             $this->txtLanguageCode->Required = true;
+            $this->txtLanguageCode->SafeHtml = true;
             $this->txtLanguageCode->MaxLength = NarroLanguage::LanguageCodeMaxLength;
         }
 
@@ -110,6 +112,7 @@
             $this->txtCountryCode->Name = QApplication::Translate('Country Code');
             $this->txtCountryCode->Text = $this->objNarroLanguage->CountryCode;
             $this->txtCountryCode->Required = true;
+            $this->txtCountryCode->SafeHtml = true;
             $this->txtCountryCode->MaxLength = NarroLanguage::CountryCodeMaxLength;
         }
 
@@ -119,6 +122,7 @@
             $this->txtDialectCode->Name = QApplication::Translate('Dialect Code');
             $this->txtDialectCode->Text = $this->objNarroLanguage->DialectCode;
             $this->txtDialectCode->MaxLength = NarroLanguage::DialectCodeMaxLength;
+            $this->txtDialectCode->SafeHtml = true;
         }
 
         // Create and Setup txtEncoding
@@ -127,6 +131,7 @@
             $this->txtEncoding->Name = QApplication::Translate('Encoding');
             $this->txtEncoding->Text = $this->objNarroLanguage->Encoding;
             $this->txtEncoding->Required = true;
+            $this->txtEncoding->SafeHtml = true;
             $this->txtEncoding->MaxLength = NarroLanguage::EncodingMaxLength;
         }
 

@@ -26,7 +26,7 @@
 <table>
     <tr>
         <td><?php _t('Name')?></td>
-        <td><?php $_CONTROL->txtProjectName->Render(); ?></td>
+        <td><?php $_CONTROL->txtProjectName->RenderWithError(); ?></td>
     </tr>
     <tr>
         <td><?php _t('Category') ?></td>
