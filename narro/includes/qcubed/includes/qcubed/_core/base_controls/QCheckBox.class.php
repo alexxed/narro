@@ -23,6 +23,8 @@
 		// APPEARANCE
 		protected $strText = null;
 		protected $strTextAlign = QTextAlign::Right;
+        protected $strLabelForRequired;
+        protected $strLabelForRequiredUnnamed;
 		
 		// BEHAVIOR
 		protected $blnHtmlEntities = true;
@@ -33,6 +35,19 @@
 		//////////
 		// Methods
 		//////////
+        /**
+        * QControl-Constructor
+        *
+        * @param QControl|QForm $objParentObject
+        * @param string $strControlId
+        */
+        public function __construct($objParentObject, $strControlId = null) {
+
+            parent::__construct($objParentObject, $strControlId);
+
+            $this->strLabelForRequired = QApplication::Translate('%s is required');
+            $this->strLabelForRequiredUnnamed = QApplication::Translate('Required');
+        }
 		public function ParsePostData() {
 			if ($this->objForm->IsCheckableControlRendered($this->strControlId)) {
 				if (array_key_exists($this->strControlId, $_POST)) {
@@ -142,9 +157,9 @@
 			if ($this->blnRequired) {
 				if (!$this->blnChecked) {
 					if ($this->strName)
-						$this->strValidationError = QApplication::Translate($this->strName) . ' ' . QApplication::Translate('is required');
+                        $this->strValidationError = sprintf($this->strLabelForRequired, $this->strName);
 					else
-						$this->strValidationError = QApplication::Translate('Required');
+                        $this->strValidationError = $this->strLabelForRequiredUnnamed;
 					return false;
 				}
 			}
@@ -161,6 +176,8 @@
 				// APPEARANCE
 				case "Text": return $this->strText;
 				case "TextAlign": return $this->strTextAlign;
+                case "LabelForRequired": return $this->strLabelForRequired;
+                case "LabelForRequiredUnnamed": return $this->strLabelForRequiredUnnamed;
 
 				// BEHAVIOR
 				case "HtmlEntities": return $this->blnHtmlEntities;
