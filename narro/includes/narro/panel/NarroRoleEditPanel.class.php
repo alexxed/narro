@@ -70,6 +70,7 @@
             $this->txtRoleName->Name = QApplication::Translate('Role Name');
             $this->txtRoleName->Text = $this->objNarroRole->RoleName;
             $this->txtRoleName->Required = true;
+            $this->txtRoleName->SafeHtml = true;
             $this->txtRoleName->MaxLength = NarroRole::RoleNameMaxLength;
         }
 

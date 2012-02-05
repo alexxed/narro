@@ -70,6 +70,7 @@
             $this->txtUsername->Name = QApplication::Translate('Username');
             $this->txtUsername->Text = $this->objNarroUser->Username;
             $this->txtUsername->Required = true;
+            $this->txtUsername->SafeHtml = true;
             $this->txtUsername->MaxLength = NarroUser::UsernameMaxLength;
         }
         
@@ -79,6 +80,7 @@
             $this->txtRealname->Name = QApplication::Translate('Real name');
             $this->txtRealname->Text = $this->objNarroUser->RealName;
             $this->txtRealname->Required = false;
+            $this->txtRealname->SafeHtml = true;
             $this->txtRealname->MaxLength = NarroUser::RealNameMaxLength;
         }
 
@@ -97,6 +99,7 @@
             $this->txtEmail->Name = QApplication::Translate('Email');
             $this->txtEmail->Text = $this->objNarroUser->Email;
             $this->txtEmail->Required = true;
+            $this->txtEmail->SafeHtml = true;
             $this->txtEmail->MaxLength = NarroUser::EmailMaxLength;
         }
 
