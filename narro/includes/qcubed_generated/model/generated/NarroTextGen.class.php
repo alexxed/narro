@@ -58,7 +58,7 @@
 		 * @var string strTextValueMd5
 		 */
 		protected $strTextValueMd5;
-		const TextValueMd5MaxLength = 64;
+		const TextValueMd5MaxLength = 32;
 		const TextValueMd5Default = null;
 
 

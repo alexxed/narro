@@ -925,38 +925,6 @@
 				)
 			);
 		}
-			
-		/**
-		 * Load an array of NarroSuggestion objects,
-		 * by Created Index(es)
-		 * @param QDateTime $dttCreated
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NarroSuggestion[]
-		*/
-		public static function LoadArrayByCreated($dttCreated, $objOptionalClauses = null) {
-			// Call NarroSuggestion::QueryArray to perform the LoadArrayByCreated query
-			try {
-				return NarroSuggestion::QueryArray(
-					QQ::Equal(QQN::NarroSuggestion()->Created, $dttCreated),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count NarroSuggestions
-		 * by Created Index(es)
-		 * @param QDateTime $dttCreated
-		 * @return int
-		*/
-		public static function CountByCreated($dttCreated) {
-			// Call NarroSuggestion::QueryCount to perform the CountByCreated query
-			return NarroSuggestion::QueryCount(
-				QQ::Equal(QQN::NarroSuggestion()->Created, $dttCreated)
-			);
-		}
 
 
 

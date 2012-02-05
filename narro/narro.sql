@@ -1,503 +1,381 @@
--- MySQL dump 10.13  Distrib 5.5.14, for Linux (x86_64)
---
--- Host: localhost    Database: narro_tradu
--- ------------------------------------------------------
--- Server version   5.5.14
+SET FOREIGN_KEY_CHECKS=0;
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT=0;
+START TRANSACTION;
+SET time_zone = "+00:00";
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `narro_context`
---
-
-DROP TABLE IF EXISTS `narro_context`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_context` (
-  `context_id` integer(10) unsigned NOT NULL AUTO_INCREMENT,
-  `text_id` integer(10) unsigned NOT NULL,
-  `text_access_key` char(1) DEFAULT NULL,
-  `project_id` int(10) unsigned NOT NULL,
+DROP TABLE IF EXISTS narro_context;
+CREATE TABLE IF NOT EXISTS narro_context (
+  context_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  text_id bigint(20) unsigned NOT NULL,
+  text_access_key char(1) DEFAULT NULL,
+  text_command_key char(1) DEFAULT NULL,
+  project_id int(10) unsigned NOT NULL,
   `context` text NOT NULL,
-  `context_md5` varchar(32) NOT NULL,
+  context_md5 varchar(32) NOT NULL,
   `comment` text,
-  `comment_md5` varchar(32) DEFAULT NULL,
-  `file_id` int(10) unsigned NOT NULL,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime DEFAULT '0000-00-00 00:00:00',
-  `active` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`context_id`),
-  UNIQUE KEY `text_id` (`text_id`,`context_md5`,`file_id`,`comment_md5`),
-  KEY `string_id` (`text_id`),
-  KEY `file_id` (`file_id`),
-  KEY `project_id` (`project_id`),
-  KEY `context_md5` (`context_md5`),
-  KEY `project_id_2` (`project_id`,`active`),
-  CONSTRAINT `narro_context_ibfk_13` FOREIGN KEY (`text_id`) REFERENCES `narro_text` (`text_id`),
-  CONSTRAINT `narro_context_ibfk_14` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`),
-  CONSTRAINT `narro_context_ibfk_15` FOREIGN KEY (`file_id`) REFERENCES `narro_file` (`file_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_context_info`
---
-
-DROP TABLE IF EXISTS `narro_context_info`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_context_info` (
-  `context_info_id` integer(10) unsigned NOT NULL AUTO_INCREMENT,
-  `context_id` integer(10) unsigned NOT NULL,
-  `language_id` int(10) unsigned NOT NULL,
-  `validator_user_id` int(10) unsigned DEFAULT NULL,
-  `valid_suggestion_id` integer(10) unsigned DEFAULT NULL,
-  `has_suggestions` tinyint(1) unsigned DEFAULT '0',
-  `suggestion_access_key` char(1) DEFAULT NULL,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`context_info_id`),
-  UNIQUE KEY `context_id_2` (`context_id`,`language_id`),
-  KEY `context_id` (`context_id`),
-  KEY `language_id` (`language_id`),
-  KEY `suggestion_id` (`valid_suggestion_id`),
-  KEY `validator_user_id` (`validator_user_id`),
-  KEY `created` (`created`),
-  KEY `modified` (`modified`),
-  CONSTRAINT `narro_context_info_ibfk_15` FOREIGN KEY (`validator_user_id`) REFERENCES `narro_user` (`user_id`) ON DELETE SET NULL ON UPDATE SET NULL,
-  CONSTRAINT `narro_context_info_ibfk_17` FOREIGN KEY (`context_id`) REFERENCES `narro_context` (`context_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `narro_context_info_ibfk_18` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`),
-  CONSTRAINT `narro_context_info_ibfk_9` FOREIGN KEY (`valid_suggestion_id`) REFERENCES `narro_suggestion` (`suggestion_id`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_file`
---
-
-DROP TABLE IF EXISTS `narro_file`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_file` (
-  `file_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `file_name` varchar(255) NOT NULL,
-  `file_path` varchar(255) NOT NULL,
-  `file_md5` varchar(32) DEFAULT NULL,
-  `parent_id` int(10) unsigned DEFAULT NULL,
-  `type_id` tinyint(3) unsigned NOT NULL,
-  `project_id` int(10) unsigned NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT '1',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime DEFAULT '0000-00-00 00:00:00',
-  `header` text,
-  PRIMARY KEY (`file_id`),
-  UNIQUE KEY `file_name` (`file_name`,`parent_id`),
-  KEY `type_id` (`type_id`),
-  KEY `project_id` (`project_id`),
-  KEY `parent_id` (`parent_id`),
-  
-  CONSTRAINT `narro_file_ibfk_10` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`),
-  CONSTRAINT `narro_file_ibfk_4` FOREIGN KEY (`parent_id`) REFERENCES `narro_file` (`file_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `narro_file_ibfk_9` FOREIGN KEY (`type_id`) REFERENCES `narro_file_type` (`file_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_file_progress`
---
-
-DROP TABLE IF EXISTS `narro_file_progress`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_file_progress` (
-  `file_progress_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `file_id` int(10) unsigned NOT NULL,
-  `language_id` int(10) unsigned NOT NULL,
-  `file_md5` varchar(32) DEFAULT NULL,
-  `header` text,
-  `total_text_count` int(10) NOT NULL,
-  `approved_text_count` int(10) NOT NULL,
-  `fuzzy_text_count` int(10) NOT NULL,
-  `progress_percent` int(10) NOT NULL,
-  `export` tinyint(1) DEFAULT '1',
-  PRIMARY KEY (`file_progress_id`),
-  UNIQUE KEY `file_id` (`file_id`,`language_id`),
-  KEY `language_id` (`language_id`),
-  KEY `file_id_2` (`file_id`),
-  KEY `file_id_3` (`file_id`,`language_id`,`export`),
-  CONSTRAINT `narro_file_progress_ibfk_1` FOREIGN KEY (`file_id`) REFERENCES `narro_file` (`file_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `narro_file_progress_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_file_type`
---
-
-DROP TABLE IF EXISTS `narro_file_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_file_type` (
-  `file_type_id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `file_type` varchar(32) NOT NULL,
-  PRIMARY KEY (`file_type_id`),
-  UNIQUE KEY `UQ_qdrupal_narro_file_type_1` (`file_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_language`
---
-
-DROP TABLE IF EXISTS `narro_language`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_language` (
-  `language_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `language_name` varchar(128) NOT NULL,
-  `language_code` varchar(64) NOT NULL,
-  `country_code` varchar(64) NOT NULL,
-  `dialect_code` varchar(64) DEFAULT NULL,
-  `encoding` varchar(10) NOT NULL,
-  `text_direction` varchar(3) NOT NULL DEFAULT 'ltr',
-  `special_characters` varchar(255) DEFAULT NULL,
-  `plural_form` varchar(255) DEFAULT '"Plural-Forms: nplurals=2; plural=n != 1;\\n"',
-  `active` tinyint(1) DEFAULT '1',
-  PRIMARY KEY (`language_id`),
-  UNIQUE KEY `language_name` (`language_name`),
-  UNIQUE KEY `language_code` (`language_code`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_permission`
---
-
-DROP TABLE IF EXISTS `narro_permission`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_permission` (
-  `permission_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `permission_name` varchar(128) NOT NULL,
-  PRIMARY KEY (`permission_id`),
-  UNIQUE KEY `permission_name` (`permission_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_project`
---
-
-DROP TABLE IF EXISTS `narro_project`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_project` (
-  `project_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `project_category_id` int(11) unsigned DEFAULT '1',
-  `project_name` varchar(255) NOT NULL,
-  `project_type` smallint(5) unsigned NOT NULL,
-  `project_description` varchar(255) DEFAULT NULL,
-  `data` text,
-  `active` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`project_id`),
-  UNIQUE KEY `project_name` (`project_name`),
-  KEY `project_type` (`project_type`),
-  KEY `narro_project_ibfk_2` (`project_category_id`),
-  KEY `active` (`active`),
-  CONSTRAINT `narro_project_ibfk_1` FOREIGN KEY (`project_type`) REFERENCES `narro_project_type` (`project_type_id`),
-  CONSTRAINT `narro_project_ibfk_2` FOREIGN KEY (`project_category_id`) REFERENCES `narro_project_category` (`project_category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_project_category`
---
-
-DROP TABLE IF EXISTS `narro_project_category`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_project_category` (
-  `project_category_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `category_name` varchar(255) NOT NULL,
-  `category_description` varchar(255) NOT NULL,
-  PRIMARY KEY (`project_category_id`),
-  UNIQUE KEY `category_name` (`category_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_project_progress`
---
-
-DROP TABLE IF EXISTS `narro_project_progress`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_project_progress` (
-  `project_progress_id` int(10) NOT NULL AUTO_INCREMENT,
-  `project_id` int(10) unsigned NOT NULL,
-  `language_id` int(10) unsigned NOT NULL,
-  `active` tinyint(1) DEFAULT '0',
-  `last_modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `total_text_count` int(10) unsigned NOT NULL,
-  `fuzzy_text_count` int(10) unsigned NOT NULL,
-  `approved_text_count` int(10) unsigned NOT NULL,
-  `progress_percent` int(10) unsigned NOT NULL,
-  `data` text,
-  PRIMARY KEY (`project_progress_id`),
-  UNIQUE KEY `project_id` (`project_id`,`language_id`),
-  KEY `language_id` (`language_id`),
-  KEY `project_id_2` (`project_id`),
-  CONSTRAINT `narro_project_progress_ibfk_1` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `narro_project_progress_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_project_type`
---
-
-DROP TABLE IF EXISTS `narro_project_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_project_type` (
-  `project_type_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
-  `project_type` varchar(64) NOT NULL,
-  PRIMARY KEY (`project_type_id`),
-  UNIQUE KEY `project_type` (`project_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_role`
---
-
-DROP TABLE IF EXISTS `narro_role`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_role` (
-  `role_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `role_name` varchar(128) NOT NULL,
-  PRIMARY KEY (`role_id`),
-  UNIQUE KEY `role_name` (`role_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_role_permission`
---
-
-DROP TABLE IF EXISTS `narro_role_permission`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_role_permission` (
-  `role_permission_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `role_id` int(10) unsigned NOT NULL,
-  `permission_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`role_permission_id`),
-  KEY `role_id` (`role_id`),
-  KEY `permission_id` (`permission_id`),
-  CONSTRAINT `narro_role_permission_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `narro_role` (`role_id`),
-  CONSTRAINT `narro_role_permission_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `narro_permission` (`permission_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_suggestion`
---
-
-DROP TABLE IF EXISTS `narro_suggestion`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_suggestion` (
-  `suggestion_id` integer(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned DEFAULT NULL,
-  `text_id` integer(10) unsigned NOT NULL,
-  `language_id` int(10) unsigned NOT NULL,
-  `suggestion_value` text NOT NULL,
-  `suggestion_value_md5` varchar(32) NOT NULL,
-  `suggestion_char_count` smallint(5) unsigned DEFAULT '0',
-  `suggestion_word_count` smallint(5) unsigned DEFAULT '0',
-  `has_comments` tinyint(1) DEFAULT '0',
-  `is_imported` tinyint(1) NOT NULL DEFAULT '0',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`suggestion_id`),
-  UNIQUE KEY `text_id_2` (`text_id`,`language_id`,`suggestion_value_md5`),
-  KEY `user_id` (`user_id`),
-  KEY `text_id` (`text_id`),
-  KEY `language_id` (`language_id`),
-  KEY `text_id_3` (`text_id`,`language_id`),
-  CONSTRAINT `narro_suggestion_ibfk_7` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`),
-  CONSTRAINT `narro_suggestion_ibfk_8` FOREIGN KEY (`text_id`) REFERENCES `narro_text` (`text_id`),
-  CONSTRAINT `narro_suggestion_ibfk_9` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `narro_suggestion_comment`
---
-
-DROP TABLE IF EXISTS `narro_suggestion_comment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_suggestion_comment` (
-  `comment_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `suggestion_id` integer(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `comment_text` text NOT NULL,
-  `comment_text_md5` varchar(128) NOT NULL,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`comment_id`),
-  UNIQUE KEY `suggestion_id_2` (`suggestion_id`,`user_id`,`comment_text_md5`),
-  KEY `suggestion_id` (`suggestion_id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `narro_suggestion_comment_ibfk_4` FOREIGN KEY (`suggestion_id`) REFERENCES `narro_suggestion` (`suggestion_id`),
-  CONSTRAINT `narro_suggestion_comment_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`)
+  comment_md5 varchar(32) DEFAULT NULL,
+  file_id int(10) unsigned NOT NULL,
+  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  modified datetime DEFAULT '0000-00-00 00:00:00',
+  active tinyint(1) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (context_id),
+  UNIQUE KEY fku_context_fk_text_id_fk_context_md5_fk_file_id_fk_comment_md5 (text_id,context_md5,file_id,comment_md5),
+  KEY fki_context_fk_text (text_id),
+  KEY fki_context_fk_file (file_id),
+  KEY fki_context_fk_project (project_id),
+  KEY fki_context_fk_context (context_md5),
+  KEY fki_context_fk_project_fk_active (project_id,active),
+  KEY fki_context_fk_active (active)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `narro_suggestion_vote`
---
-
-DROP TABLE IF EXISTS `narro_suggestion_vote`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_suggestion_vote` (
-  `suggestion_id` integer(10) unsigned NOT NULL,
-  `context_id` integer(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `vote_value` tinyint(3) NOT NULL,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime DEFAULT '0000-00-00 00:00:00',
-  UNIQUE KEY `suggestion_id` (`suggestion_id`,`user_id`,`context_id`),
-  KEY `suggestion_id_2` (`suggestion_id`),
-  KEY `user_id` (`user_id`),
-  KEY `context_id` (`context_id`),
-  CONSTRAINT `narro_suggestion_vote_ibfk_10` FOREIGN KEY (`suggestion_id`) REFERENCES `narro_suggestion` (`suggestion_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `narro_suggestion_vote_ibfk_7` FOREIGN KEY (`context_id`) REFERENCES `narro_context` (`context_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `narro_suggestion_vote_ibfk_9` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+DROP TABLE IF EXISTS narro_context_info;
+CREATE TABLE IF NOT EXISTS narro_context_info (
+  context_info_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  context_id bigint(20) unsigned NOT NULL,
+  language_id int(10) unsigned NOT NULL,
+  validator_user_id int(10) unsigned DEFAULT NULL,
+  valid_suggestion_id bigint(20) unsigned DEFAULT NULL,
+  has_suggestions tinyint(1) unsigned DEFAULT '0',
+  suggestion_access_key char(1) DEFAULT NULL,
+  suggestion_command_key char(1) DEFAULT NULL,
+  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  modified datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (context_info_id),
+  UNIQUE KEY fku_context_info_fk_context_id_fk_language_id (context_id,language_id),
+  KEY fki_context_info_fk_context_id (context_id),
+  KEY fki_context_info_fk_language_id (language_id),
+  KEY fki_context_info_fk_valid_suggestion_id (valid_suggestion_id),
+  KEY fki_context_info_fk_validator_user_id (validator_user_id),
+  KEY fki_context_info_fk_has_suggestions (has_suggestions)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `narro_text`
---
+DROP TABLE IF EXISTS narro_file;
+CREATE TABLE IF NOT EXISTS narro_file (
+  file_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  file_name varchar(255) NOT NULL,
+  file_path varchar(255) NOT NULL,
+  file_md5 varchar(32) DEFAULT NULL,
+  parent_id int(10) unsigned DEFAULT NULL,
+  type_id tinyint(3) unsigned NOT NULL,
+  project_id int(10) unsigned NOT NULL,
+  active tinyint(1) NOT NULL DEFAULT '1',
+  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  modified datetime DEFAULT '0000-00-00 00:00:00',
+  header text,
+  PRIMARY KEY (file_id),
+  UNIQUE KEY fku_file_fk_file_path_fk_project_id (file_path,project_id),
+  UNIQUE KEY fku_file_fk_file_name_fk_parent_id (file_name,parent_id),
+  KEY fki_file_fk_type_id (type_id),
+  KEY fki_file_fk_project_id (project_id),
+  KEY fki_file_fk_parent_id (parent_id),
+  KEY fki_file_fk_active (active)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `narro_text`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_text` (
-  `text_id` integer(10) unsigned NOT NULL AUTO_INCREMENT,
-  `text_value` text NOT NULL,
-  `text_value_md5` varchar(64) NOT NULL,
-  `text_char_count` smallint(5) unsigned NOT NULL DEFAULT '0',
-  `text_word_count` smallint(5) unsigned DEFAULT '0',
-  `has_comments` tinyint(1) DEFAULT '0',
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`text_id`),
-  UNIQUE KEY `string_value_md5` (`text_value_md5`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS narro_file_progress;
+CREATE TABLE IF NOT EXISTS narro_file_progress (
+  file_progress_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  file_id int(10) unsigned NOT NULL,
+  language_id int(10) unsigned NOT NULL,
+  file_md5 varchar(32) DEFAULT NULL,
+  header text,
+  total_text_count int(10) NOT NULL,
+  approved_text_count int(10) NOT NULL,
+  fuzzy_text_count int(10) NOT NULL,
+  progress_percent int(10) NOT NULL,
+  export tinyint(1) DEFAULT '1',
+  PRIMARY KEY (file_progress_id),
+  UNIQUE KEY fku_file_progress_fk_file_id_fk_language_id (file_id,language_id),
+  KEY fki_file_progress_fk_language_id (language_id),
+  KEY fki_file_progress_fk_file_id_ (file_id),
+  KEY fki_file_progress_fk_file_id_fk_language_id_fk_export (file_id,language_id,export)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `narro_text_comment`
---
+DROP TABLE IF EXISTS narro_file_type;
+CREATE TABLE IF NOT EXISTS narro_file_type (
+  file_type_id tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  file_type varchar(32) NOT NULL,
+  PRIMARY KEY (file_type_id),
+  UNIQUE KEY fku_file_type_fk_file_type (file_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `narro_text_comment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_text_comment` (
-  `text_comment_id` integer(10) unsigned NOT NULL AUTO_INCREMENT,
-  `text_id` integer(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `language_id` int(10) unsigned NOT NULL,
-  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified` datetime DEFAULT '0000-00-00 00:00:00',
-  `comment_text` text NOT NULL,
-  `comment_text_md5` varchar(128) NOT NULL,
-  PRIMARY KEY (`text_comment_id`),
-  KEY `text_id` (`text_id`),
-  KEY `user_id` (`user_id`),
-  KEY `language_id` (`language_id`),
-  CONSTRAINT `narro_text_comment_ibfk_10` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`),
-  CONSTRAINT `narro_text_comment_ibfk_11` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`),
-  CONSTRAINT `narro_text_comment_ibfk_9` FOREIGN KEY (`text_id`) REFERENCES `narro_text` (`text_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS narro_language;
+CREATE TABLE IF NOT EXISTS narro_language (
+  language_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  language_name varchar(128) NOT NULL,
+  language_code varchar(64) NOT NULL,
+  country_code varchar(64) NOT NULL,
+  dialect_code varchar(64) DEFAULT NULL,
+  encoding varchar(10) NOT NULL,
+  text_direction varchar(3) NOT NULL DEFAULT 'ltr',
+  special_characters varchar(255) DEFAULT NULL,
+  plural_form varchar(255) DEFAULT '"Plural-Forms: nplurals=2; plural=n != 1;\\n"',
+  active tinyint(1) DEFAULT '1',
+  PRIMARY KEY (language_id),
+  UNIQUE KEY fku_language_fk_language_name (language_name),
+  UNIQUE KEY fku_language_fk_language_code (language_code)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
---
--- Table structure for table `narro_user`
---
+DROP TABLE IF EXISTS narro_log;
+CREATE TABLE IF NOT EXISTS narro_log (
+  log_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  language_id int(10) unsigned DEFAULT NULL,
+  project_id int(10) unsigned DEFAULT NULL,
+  user_id int(10) unsigned DEFAULT NULL,
+  message text NOT NULL,
+  priority smallint(6) NOT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY (log_id),
+  KEY fki_log_fk_language_id_fk_project_id (language_id,project_id),
+  KEY fki_log_fk_project_id (project_id),
+  KEY fki_log_fk_user_id (user_id),
+  KEY fki_log_fk_language_id (language_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `narro_user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_user` (
-  `user_id` int(10) unsigned NOT NULL,
-  `username` varchar(128) NOT NULL,
+DROP TABLE IF EXISTS narro_permission;
+CREATE TABLE IF NOT EXISTS narro_permission (
+  permission_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  permission_name varchar(128) NOT NULL,
+  PRIMARY KEY (permission_id),
+  UNIQUE KEY fku_permission_fk_permission_name (permission_name)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_project;
+CREATE TABLE IF NOT EXISTS narro_project (
+  project_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  project_category_id int(11) unsigned DEFAULT '1',
+  project_name varchar(255) NOT NULL,
+  project_type smallint(5) unsigned NOT NULL,
+  project_description varchar(255) DEFAULT NULL,
+  `data` text,
+  active tinyint(3) unsigned NOT NULL DEFAULT '1',
+  PRIMARY KEY (project_id),
+  UNIQUE KEY fku_project_fk_project_name (project_name),
+  KEY fki_project_fk_project_type (project_type),
+  KEY fki_project_fk_project_category_id (project_category_id),
+  KEY fki_project_fk_active (active)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_project_category;
+CREATE TABLE IF NOT EXISTS narro_project_category (
+  project_category_id int(11) unsigned NOT NULL AUTO_INCREMENT,
+  category_name varchar(255) NOT NULL,
+  category_description varchar(255) NOT NULL,
+  PRIMARY KEY (project_category_id),
+  UNIQUE KEY fku_category_fk_category_name (category_name)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_project_progress;
+CREATE TABLE IF NOT EXISTS narro_project_progress (
+  project_progress_id int(10) NOT NULL AUTO_INCREMENT,
+  project_id int(10) unsigned NOT NULL,
+  language_id int(10) unsigned NOT NULL,
+  active tinyint(1) DEFAULT '0',
+  last_modified datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  total_text_count int(10) unsigned NOT NULL,
+  fuzzy_text_count int(10) unsigned NOT NULL,
+  approved_text_count int(10) unsigned NOT NULL,
+  progress_percent int(10) unsigned NOT NULL,
+  `data` text,
+  PRIMARY KEY (project_progress_id),
+  UNIQUE KEY fku_project_progress_fk_project_id_fk_language_id (project_id,language_id),
+  KEY fki_project_progress_fk_language_id (language_id),
+  KEY fki_project_progress_fk_project_id (project_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_project_type;
+CREATE TABLE IF NOT EXISTS narro_project_type (
+  project_type_id smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  project_type varchar(64) NOT NULL,
+  PRIMARY KEY (project_type_id),
+  UNIQUE KEY fku_project_type_fk_project_type (project_type)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_role;
+CREATE TABLE IF NOT EXISTS narro_role (
+  role_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  role_name varchar(128) NOT NULL,
+  PRIMARY KEY (role_id),
+  UNIQUE KEY fku_role_fk_role_name (role_name)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_role_permission;
+CREATE TABLE IF NOT EXISTS narro_role_permission (
+  role_permission_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  role_id int(10) unsigned NOT NULL,
+  permission_id int(10) unsigned NOT NULL,
+  PRIMARY KEY (role_permission_id),
+  KEY fki_role_permission_fk_role_id (role_id),
+  KEY fki_role_permission_fk_permission_id (permission_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_suggestion;
+CREATE TABLE IF NOT EXISTS narro_suggestion (
+  suggestion_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  user_id int(10) unsigned DEFAULT NULL,
+  text_id bigint(20) unsigned NOT NULL,
+  language_id int(10) unsigned NOT NULL,
+  suggestion_value text NOT NULL,
+  suggestion_value_md5 varchar(32) NOT NULL,
+  suggestion_char_count smallint(5) unsigned DEFAULT '0',
+  suggestion_word_count smallint(5) unsigned DEFAULT '0',
+  has_comments tinyint(1) DEFAULT '0',
+  is_imported tinyint(1) NOT NULL DEFAULT '0',
+  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  modified datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (suggestion_id),
+  UNIQUE KEY fku_suggestion_fk_text_id_fk_language_id_fk_suggestion_value_md5 (text_id,language_id,suggestion_value_md5),
+  KEY fki_suggestion_fk_user_id (user_id),
+  KEY fki_suggestion_fk_text_id (text_id),
+  KEY fki_suggestion_fk_language_id (language_id),
+  KEY fki_suggestion_fk_text_id_fk_language_id (text_id,language_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_suggestion_vote;
+CREATE TABLE IF NOT EXISTS narro_suggestion_vote (
+  suggestion_id bigint(20) unsigned NOT NULL,
+  context_id bigint(20) unsigned NOT NULL,
+  user_id int(10) unsigned NOT NULL,
+  vote_value tinyint(3) NOT NULL,
+  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  modified datetime DEFAULT '0000-00-00 00:00:00',
+  UNIQUE KEY fku_suggestion_vote_fk_suggestion_id_fk_user_id_fk_context_id (suggestion_id,user_id,context_id),
+  KEY fki_suggestion_vote_fk_suggestion_id (suggestion_id),
+  KEY fki_suggestion_vote_user_id (user_id),
+  KEY fki_suggestion_vote_context_id (context_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_text;
+CREATE TABLE IF NOT EXISTS narro_text (
+  text_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  text_value text NOT NULL,
+  text_value_md5 varchar(32) NOT NULL,
+  text_char_count smallint(5) unsigned NOT NULL DEFAULT '0',
+  text_word_count smallint(5) unsigned DEFAULT '0',
+  has_comments tinyint(1) DEFAULT '0',
+  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  modified datetime DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (text_id),
+  UNIQUE KEY fku_text_fk_text_value_md5 (text_value_md5)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_text_comment;
+CREATE TABLE IF NOT EXISTS narro_text_comment (
+  text_comment_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  text_id bigint(20) unsigned NOT NULL,
+  user_id int(10) unsigned NOT NULL,
+  language_id int(10) unsigned NOT NULL,
+  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  modified datetime DEFAULT '0000-00-00 00:00:00',
+  comment_text text NOT NULL,
+  comment_text_md5 varchar(128) NOT NULL,
+  PRIMARY KEY (text_comment_id),
+  KEY fki_text_comment_fk_text_id (text_id),
+  KEY fki_text_comment_fk_user_id (user_id),
+  KEY fki_text_comment_fk_language_id (language_id)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS narro_user;
+CREATE TABLE IF NOT EXISTS narro_user (
+  user_id int(10) unsigned NOT NULL,
+  username varchar(128) NOT NULL,
   `password` varchar(64) NOT NULL,
-  `email` varchar(128) NOT NULL,
+  email varchar(128) NOT NULL,
+  real_name varchar(255) DEFAULT NULL,
   `data` text,
-  PRIMARY KEY (`user_id`),
-  UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`)
+  PRIMARY KEY (user_id),
+  UNIQUE KEY fku_user_fk_username (username),
+  UNIQUE KEY fku_user_fk_email (email),
+  UNIQUE KEY fku_user_fk_real_name (real_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `narro_user_role`
---
+DROP TABLE IF EXISTS narro_user_role;
+CREATE TABLE IF NOT EXISTS narro_user_role (
+  user_role_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  user_id int(10) unsigned NOT NULL,
+  role_id int(10) unsigned NOT NULL,
+  project_id int(10) unsigned DEFAULT NULL,
+  language_id int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (user_role_id),
+  UNIQUE KEY fku_user_role_fk_user_id_fk_role_id_fk_project_id_fk_language_id (user_id,role_id,project_id,language_id),
+  KEY fki_user_role_fk_role_id (role_id),
+  KEY fki_user_role_fk_project_id (project_id),
+  KEY fki_user_role_fk_language_id (language_id),
+  KEY fki_user_role_fk_user_id (user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `narro_user_role`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `narro_user_role` (
-  `user_role_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned NOT NULL,
-  `role_id` int(10) unsigned NOT NULL,
-  `project_id` int(10) unsigned DEFAULT NULL,
-  `language_id` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`user_role_id`),
-  UNIQUE KEY `user_id` (`user_id`,`role_id`,`project_id`,`language_id`),
-  KEY `role_id` (`role_id`),
-  KEY `project_id` (`project_id`),
-  KEY `language_id` (`language_id`),
-  KEY `user_id_2` (`user_id`),
-  CONSTRAINT `narro_user_role_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`),
-  CONSTRAINT `narro_user_role_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `narro_role` (`role_id`),
-  CONSTRAINT `narro_user_role_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`),
-  CONSTRAINT `narro_user_role_ibfk_4` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'DumbGettextPo');
-INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Folder');
+ALTER TABLE `narro_context`
+  ADD CONSTRAINT fk_context_fk_file FOREIGN KEY (file_id) REFERENCES narro_file (file_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_context_fk_text FOREIGN KEY (text_id) REFERENCES narro_text (text_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_context_fk_project FOREIGN KEY (project_id) REFERENCES narro_project (project_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_context_info`
+  ADD CONSTRAINT fk_context_info_fk_user FOREIGN KEY (validator_user_id) REFERENCES narro_user (user_id) ON DELETE SET NULL ON UPDATE SET NULL,
+  ADD CONSTRAINT fk_context_info_fk_context FOREIGN KEY (context_id) REFERENCES narro_context (context_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_context_info_fk_language FOREIGN KEY (language_id) REFERENCES narro_language (language_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_context_info_fk_suggestion FOREIGN KEY (valid_suggestion_id) REFERENCES narro_suggestion (suggestion_id) ON DELETE SET NULL ON UPDATE SET NULL;
+
+ALTER TABLE `narro_file`
+  ADD CONSTRAINT fk_file_fk_file_type FOREIGN KEY (type_id) REFERENCES narro_file_type (file_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_file_fk_project FOREIGN KEY (project_id) REFERENCES narro_project (project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_file_fk_file FOREIGN KEY (parent_id) REFERENCES narro_file (file_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_file_progress`
+  ADD CONSTRAINT fk_file_progress_fk_file FOREIGN KEY (file_id) REFERENCES narro_file (file_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_file_progress_fk_language FOREIGN KEY (language_id) REFERENCES narro_language (language_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_log`
+  ADD CONSTRAINT fk_log_fk_language FOREIGN KEY (language_id) REFERENCES narro_language (language_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_log_fk_project FOREIGN KEY (project_id) REFERENCES narro_project (project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_log_fk_user FOREIGN KEY (user_id) REFERENCES narro_user (user_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_project`
+  ADD CONSTRAINT fk_project_fk_project_type FOREIGN KEY (project_type) REFERENCES narro_project_type (project_type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_project_fk_project_category FOREIGN KEY (project_category_id) REFERENCES narro_project_category (project_category_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_project_progress`
+  ADD CONSTRAINT fk_project_progress_fk_project FOREIGN KEY (project_id) REFERENCES narro_project (project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_project_progress_fk_language FOREIGN KEY (language_id) REFERENCES narro_language (language_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_role_permission`
+  ADD CONSTRAINT fk_role_permission_fk_permission FOREIGN KEY (permission_id) REFERENCES narro_permission (permission_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_role_permission_fk_role FOREIGN KEY (role_id) REFERENCES narro_role (role_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_suggestion`
+  ADD CONSTRAINT fk_suggestion_fk_user FOREIGN KEY (user_id) REFERENCES narro_user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_suggestion_fk_text FOREIGN KEY (text_id) REFERENCES narro_text (text_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_suggestion_fk_language FOREIGN KEY (language_id) REFERENCES narro_language (language_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_suggestion_vote`
+  ADD CONSTRAINT fk_suggestion_vote_fk_suggestion FOREIGN KEY (suggestion_id) REFERENCES narro_suggestion (suggestion_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_suggestion_vote_fk_context FOREIGN KEY (context_id) REFERENCES narro_context (context_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_suggestion_vote_fk_user FOREIGN KEY (user_id) REFERENCES narro_user (user_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_text_comment`
+  ADD CONSTRAINT fk_text_comment_fk_user FOREIGN KEY (user_id) REFERENCES narro_user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_text_comment_fk_language FOREIGN KEY (language_id) REFERENCES narro_language (language_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_text_comment_fk_text FOREIGN KEY (text_id) REFERENCES narro_text (text_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `narro_user_role`
+  ADD CONSTRAINT fk_user_role_fk_user FOREIGN KEY (user_id) REFERENCES narro_user (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_user_role_fk_project FOREIGN KEY (project_id) REFERENCES narro_project (project_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_user_role_fk_role FOREIGN KEY (role_id) REFERENCES narro_role (role_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT fk_user_role_fk_language FOREIGN KEY (language_id) REFERENCES narro_language (language_id) ON DELETE CASCADE ON UPDATE CASCADE;
+  
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'GettextPo');
-INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Html');
+INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'OpenOfficeSdf');
+INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Folder');
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'MozillaDtd');
-INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'MozillaInc');
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'MozillaIni');
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Narro');
-INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'OpenOfficeSdf');
-INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'PhpMyAdmin');
+INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'MozillaInc');
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Svg');
+INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'DumbGettextPo');
+INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'PhpMyAdmin');
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Unsupported');
-INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(13, 'Srt');
-
---
--- Dumping data for table `narro_language`
---
+INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Html');
+INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Srt');
 
 INSERT INTO `narro_language` (`language_id`, `language_name`, `language_code`, `country_code`, `dialect_code`, `encoding`, `text_direction`, `special_characters`, `plural_form`, `active`) VALUES(NULL, 'Romanian', 'ro', 'ro', NULL, 'UTF-8', 'ltr', 'ă î â ș ț Ă Î Â Ș Ț „ ” « »', '"Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2;\\n"', 1);
 INSERT INTO `narro_language` (`language_id`, `language_name`, `language_code`, `country_code`, `dialect_code`, `encoding`, `text_direction`, `special_characters`, `plural_form`, `active`) VALUES(NULL, 'French', 'fr', 'fr', NULL, 'UTF-8', 'ltr', '', '"Plural-Forms: nplurals=2; plural=n != 1;\\n"', 0);
@@ -627,10 +505,6 @@ INSERT INTO `narro_language` (`language_id`, `language_name`, `language_code`, `
 INSERT INTO `narro_language` (`language_id`, `language_name`, `language_code`, `country_code`, `dialect_code`, `encoding`, `text_direction`, `special_characters`, `plural_form`, `active`) VALUES(NULL, 'Esperanto', 'eo', 'eo', NULL, 'UTF-8', 'ltr', '', '"Plural-Forms: nplurals=2; plural=n != 1;\\n"', 0);
 INSERT INTO `narro_language` (`language_id`, `language_name`, `language_code`, `country_code`, `dialect_code`, `encoding`, `text_direction`, `special_characters`, `plural_form`, `active`) VALUES(NULL, 'Malay', 'ms', 'ms', NULL, 'UTF-8', 'ltr', 'a b c', '"Plural-Forms: nplurals=2; plural=n != 1;\\n"', 0);
 
---
--- Dumping data for table `narro_permission`
---
-
 INSERT INTO `narro_permission` (`permission_id`, `permission_name`) VALUES(NULL, 'Administrator');
 INSERT INTO `narro_permission` (`permission_id`, `permission_name`) VALUES(NULL, 'Can add context comments');
 INSERT INTO `narro_permission` (`permission_id`, `permission_name`) VALUES(NULL, 'Can add language');
@@ -656,40 +530,20 @@ INSERT INTO `narro_permission` (`permission_id`, `permission_name`) VALUES(NULL,
 INSERT INTO `narro_permission` (`permission_id`, `permission_name`) VALUES(NULL, 'Can upload project');
 INSERT INTO `narro_permission` (`permission_id`, `permission_name`) VALUES(NULL, 'Can vote');
 
---
--- Dumping data for table `narro_project_category`
---
-
 INSERT INTO `narro_project_category` (`project_category_id`, `category_name`, `category_description`) VALUES(NULL, 'General', '');
 
---
--- Dumping data for table `narro_project_type`
---
-
+INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'Mozilla');
+INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'OpenOffice');
+INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'Gettext');
+INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'Narro');
+INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'Svg');
 INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'DumbGettextPo');
 INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'Generic');
-INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'Gettext');
 INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'Html');
-INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'Mozilla');
-INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'Narro');
-INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'OpenOffice');
-INSERT INTO `narro_project_type` (`project_type_id`, `project_type`) VALUES(NULL, 'Svg');
-
---
--- Dumping data for table `narro_project`
---
 
 INSERT INTO `narro_project` (`project_id`, `project_category_id`, `project_name`, `project_type`, `project_description`, `data`, `active`) VALUES(NULL, 1, 'Narro', (SELECT `project_type_id` FROM `narro_project_type` WHERE `project_type`='Narro'), '', '', 1);
 
---
--- Dumping data for table `narro_user`
---
-
 INSERT INTO `narro_user` (`user_id`, `username`, `password`, `email`, `data`) VALUES(0, '', '', '', '');
-
---
--- Dumping data for table `narro_role`
---
 
 INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'Administrator');
 INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'Anonymous');
@@ -697,78 +551,5 @@ INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'Approver');
 INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'Project manager');
 INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'User');
 
-ALTER TABLE `narro_context` ADD `text_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `text_access_key`;
-ALTER TABLE `narro_context_info` ADD `suggestion_command_key` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `suggestion_access_key`;
-
-ALTER TABLE `narro_file`
-ADD UNIQUE `file_path` ( `file_path` , `project_id` )  ;
-ALTER TABLE `narro_file` ADD INDEX ( `active` ) ;
-
-CREATE TABLE IF NOT EXISTS `narro_log` (
-  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `language_id` int(10) unsigned DEFAULT NULL,
-  `project_id` int(10) unsigned DEFAULT NULL,
-  `user_id` int(10) unsigned DEFAULT NULL,
-  `message` text NOT NULL,
-  `priority` smallint(6) NOT NULL,
-  `date` datetime NOT NULL,
-  PRIMARY KEY (`log_id`),
-  KEY `language_id` (`language_id`,`project_id`),
-  KEY `project_id` (`project_id`),
-  KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
-ALTER TABLE `narro_log`
-  ADD CONSTRAINT `narro_log_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `narro_user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `narro_log_ibfk_1` FOREIGN KEY (`language_id`) REFERENCES `narro_language` (`language_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `narro_log_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `narro_project` (`project_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-  
-ALTER TABLE `narro_suggestion` DROP FOREIGN KEY `narro_suggestion_ibfk_9` ;
-ALTER TABLE `narro_suggestion` 
-  ADD CONSTRAINT `narro_suggestion_ibfk_9`
-  FOREIGN KEY (`language_id` )
-  REFERENCES `narro_language` (`language_id` )
-  ON DELETE CASCADE
-  ON UPDATE CASCADE;
-  
-ALTER TABLE `narro_context_info` DROP FOREIGN KEY `narro_context_info_ibfk_18` ;
-ALTER TABLE `narro_context_info` 
-  ADD CONSTRAINT `narro_context_info_ibfk_18`
-  FOREIGN KEY (`language_id` )
-  REFERENCES `narro_language` (`language_id` )
-  ON DELETE CASCADE
-  ON UPDATE CASCADE;
-
-ALTER TABLE `narro_text_comment` DROP FOREIGN KEY `narro_text_comment_ibfk_11` ;
-
-ALTER TABLE `narro_text_comment` ADD FOREIGN KEY ( `language_id` ) REFERENCES `narro_language` (
-`language_id`
-) ON DELETE CASCADE ON UPDATE CASCADE ;
-
-ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_2` ;
-
-ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `role_id` ) REFERENCES `narro_role` (
-`role_id`
-) ON DELETE CASCADE ON UPDATE CASCADE ;
-
-ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_3` ;
-
-ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `project_id` ) REFERENCES `narro_project` (
-`project_id`
-) ON DELETE CASCADE ON UPDATE CASCADE ;
-
-ALTER TABLE `narro_user_role` DROP FOREIGN KEY `narro_user_role_ibfk_4` ;
-
-ALTER TABLE `narro_user_role` ADD FOREIGN KEY ( `language_id` ) REFERENCES `narro_language` (
-`language_id`
-) ON DELETE CASCADE ON UPDATE CASCADE ;
-
-DROP TABLE `narro_suggestion_comment`;
-
-ALTER TABLE `narro_user` ADD `real_name` VARCHAR( 255 ) NULL AFTER `email` ;
-
-ALTER TABLE `narro_user` ADD UNIQUE (
-`real_name`
-);
-
-UPDATE narro_user SET real_name=username;
+SET FOREIGN_KEY_CHECKS=1;
+COMMIT;
