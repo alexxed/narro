@@ -119,7 +119,7 @@
         private function InitBuildDirectory(NarroProject $objProject) {
             NarroLogger::LogInfo(sprintf('Running hg clone %s %s', $this->strRepoUrl, $this->strHgDir));
             NarroUtils::Exec(
-                sprintf('hg clone %s %s', $this->strRepoUrl, $this->strHgDir),
+                sprintf('hg clone %s %s', escapeshellarg($this->strRepoUrl), escapeshellarg($this->strHgDir)),
                 $arrOutput,
                 $arrError,
                 $intRetVal,
@@ -237,7 +237,7 @@
             
             if (!
                 NarroUtils::Exec(
-                    sprintf('hg pull %s', $this->strRepoUrl),
+                    sprintf('hg pull %s', escapeshellarg($this->strRepoUrl)),
                     $arrOutput,
                     $arrError,
                     $intRetVal,
@@ -258,7 +258,7 @@
                     $intRetVal,
                     false,
                     array(),
-                    $this->strHgDir,
+                    escapeshellarg($this->strHgDir),
                     true
                 )
             )
@@ -273,7 +273,7 @@
                         $intRetVal,
                         false,
                         array(),
-                        $this->strHgDir,
+                        escapeshellarg($this->strHgDir),
                         true
                     )
                 )

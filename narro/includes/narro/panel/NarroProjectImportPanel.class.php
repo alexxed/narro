@@ -271,8 +271,8 @@
                         QApplication::$User->UserId,
                         NarroLanguage::SOURCE_LANGUAGE_CODE,
                         QApplication::$TargetLanguage->LanguageCode,
-                        $this->objProject->DefaultTemplatePath,
-                        $this->pnlTranslationsSource->Directory
+                        escapeshellarg($this->objProject->DefaultTemplatePath),
+                        escapeshellarg($this->pnlTranslationsSource->Directory)
                     );
                 }
                 catch (Exception $objEx) {

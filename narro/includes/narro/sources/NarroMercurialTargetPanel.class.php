@@ -134,14 +134,14 @@
                     'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_mercurial;cd %s_mercurial; cp -f -R %s/* .; hg addremove; hg commit -m "%s" %s; hg push %s%s',
                     __TMP_PATH__,
                     $strSSHKey . '_hgrc',
-                    $this->txtRepositoryUrl->Text,
+                    escapeshellarg($this->txtRepositoryUrl->Text),
                     $strSSHKey,
                     $strSSHKey,
                     $this->objProject->DefaultTranslationPath,
-                    $this->txtCommitMessage->Text,
+                    escapeshellarg($this->txtCommitMessage->Text),
                     (($this->pnlPatchViewer && count($this->pnlPatchViewer->SelectedFiles))?join(" ", $this->pnlPatchViewer->SelectedFiles):""),
                     (($this->chkForce->Checked)?'-f ':''),
-                    $this->txtRepositoryUrl->Text
+                    escapeshellarg($this->txtRepositoryUrl->Text)
                 ),
                 $arrOutput
             );
@@ -187,12 +187,12 @@
                 	'export HOME=%s;export HGRCPATH=%s; hg clone %s %s_mercurial;cd %s_mercurial; cp -f -R %s/* .; hg addremove; hg diff -w --nodates > %s_diff; hg commit -m "%s" %s; hg outgoing',
                     __TMP_PATH__,
                     $strSSHKey . '_hgrc',
-                    $this->txtRepositoryUrl->Text,
+                    escapeshellarg($this->txtRepositoryUrl->Text),
                     $strSSHKey,
                     $strSSHKey,
-                    $this->objProject->DefaultTranslationPath,
+                    escapeshellarg($this->objProject->DefaultTranslationPath),
                     $strSSHKey,
-                    $this->txtCommitMessage->Text,
+                    escapeshellarg($this->txtCommitMessage->Text),
                     ($this->pnlPatchViewer && count($this->pnlPatchViewer->SelectedFiles))?join(" ", $this->pnlPatchViewer->SelectedFiles):""
                 ),
                 $arrOutput

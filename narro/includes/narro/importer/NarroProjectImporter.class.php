@@ -647,8 +647,8 @@
                 NarroUtils::Exec(
                     sprintf(
                         'msgfmt -cv %s -o %s 2>&1',
-                        $this->strTranslationPath . '/narro.po',
-                        $this->strTranslationPath . '/narro.mo'
+                        escapeshellarg($this->strTranslationPath . '/narro.po'),
+                        escapeshellarg($this->strTranslationPath . '/narro.mo')
                     ),
                     $arrOutput,
                     $arrError,

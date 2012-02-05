@@ -440,7 +440,17 @@ class NarroDumbGettextPoFileImporter extends NarroFileImporter {
             unlink($strTranslatedFile . '~');
         }
 
-        exec(sprintf('msgcat %s -w 80 -o %s~', $strTranslatedFile, $strTranslatedFile));
+        NarroUtils::Exec(
+                sprintf('msgcat %s -w 80 -o %s~', escapeshellarg($strTranslatedFile), escapeshellarg($strTranslatedFile)),
+                $arrOutput,
+                $arrError,
+                $intRetVal,
+                false,
+                null,
+                __TMP_PATH__,
+                true
+            );
+        
         if (file_exists($strTranslatedFile . '~')) {
             unlink($strTranslatedFile);
             copy($strTranslatedFile . '~', $strTranslatedFile);

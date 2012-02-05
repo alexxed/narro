@@ -95,7 +95,7 @@
             $mixProcess = NarroUtils::Exec(
                 sprintf(
                 	'svn checkout %s %s_svn',
-                    $this->txtRepositoryUrl->Text,
+                    escapeshellarg($this->txtRepositoryUrl->Text),
                     $this->strSSHKey
                 ),
                 $arrOutput,
@@ -103,7 +103,7 @@
                 $intRetVal,
                 false,
                 array(
-                    'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+                    'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', escapeshellarg($this->txtUsername->Text), escapeshellarg($this->strSSHKey)),
             		'HOME' => __TMP_PATH__
                 ),
                 __TMP_PATH__,
@@ -120,7 +120,7 @@
                     $intRetVal,
                     false,
                     array(
-                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', escapeshellarg($this->txtUsername->Text), escapeshellarg($this->strSSHKey)),
                 		'HOME' => __TMP_PATH__
                     ),
                     $this->strSSHKey . '_svn',
@@ -138,7 +138,7 @@
                 $mixProcess = NarroUtils::Exec(
                     sprintf(
                     	'svn commit -m "%s" %s',
-                        $this->txtCommitMessage->Text,
+                        escapeshellarg($this->txtCommitMessage->Text),
                         (($this->pnlPatchViewer && count($this->pnlPatchViewer->SelectedFiles))?join(" ", $this->pnlPatchViewer->SelectedFiles):"")
                 	),
                     $arrOutput,
@@ -146,7 +146,7 @@
                     $intRetVal,
                     false,
                     array(
-                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', escapeshellarg($this->txtUsername->Text), $this->strSSHKey),
                         'HOME' => __TMP_PATH__
                     ),
                     $this->strSSHKey . '_svn',
@@ -169,7 +169,7 @@
                     $intRetVal,
                     false,
                     array(
-                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', $this->txtUsername->Text, $this->strSSHKey),
+                        'SVN_SSH' => sprintf('ssh -o StrictHostKeyChecking=no -l %s -p 22 -i %s', escapeshellarg($this->txtUsername->Text), $this->strSSHKey),
                 		'HOME' => __TMP_PATH__
                     ),
                     $this->strSSHKey . '_svn',
