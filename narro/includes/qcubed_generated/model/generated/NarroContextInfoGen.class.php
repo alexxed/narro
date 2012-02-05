@@ -32,7 +32,18 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroContextInfoGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['ContextInfoId'] = null;
+                $this->_arrHistory['ContextId'] = null;
+                $this->_arrHistory['LanguageId'] = null;
+                $this->_arrHistory['ValidatorUserId'] = null;
+                $this->_arrHistory['ValidSuggestionId'] = null;
+                $this->_arrHistory['HasSuggestions'] = null;
+                $this->_arrHistory['SuggestionAccessKey'] = null;
+                $this->_arrHistory['SuggestionCommandKey'] = null;
+                $this->_arrHistory['Created'] = null;
+                $this->_arrHistory['Modified'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -133,6 +144,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -576,6 +592,7 @@
 
 
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -821,6 +838,36 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['ContextInfoId']))
+                $this->_arrHistory['ContextInfoId'] = $this->ContextInfoId;
+            if (!isset($this->_arrHistory['ContextId']))
+                $this->_arrHistory['ContextId'] = $this->ContextId;
+            if (!isset($this->_arrHistory['LanguageId']))
+                $this->_arrHistory['LanguageId'] = $this->LanguageId;
+            if (!isset($this->_arrHistory['ValidatorUserId']))
+                $this->_arrHistory['ValidatorUserId'] = $this->ValidatorUserId;
+            if (!isset($this->_arrHistory['ValidSuggestionId']))
+                $this->_arrHistory['ValidSuggestionId'] = $this->ValidSuggestionId;
+            if (!isset($this->_arrHistory['HasSuggestions']))
+                $this->_arrHistory['HasSuggestions'] = $this->HasSuggestions;
+            if (!isset($this->_arrHistory['SuggestionAccessKey']))
+                $this->_arrHistory['SuggestionAccessKey'] = $this->SuggestionAccessKey;
+            if (!isset($this->_arrHistory['SuggestionCommandKey']))
+                $this->_arrHistory['SuggestionCommandKey'] = $this->SuggestionCommandKey;
+            if (!isset($this->_arrHistory['Created']))
+                $this->_arrHistory['Created'] = $this->Created;
+            if (!isset($this->_arrHistory['Modified']))
+                $this->_arrHistory['Modified'] = $this->Modified;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -872,20 +919,91 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['ContextId'] !== $this->ContextId ||
+                        (
+                            $this->ContextId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ContextId'] !== (string) $this->ContextId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`context_id` = ' . $objDatabase->SqlVariable($this->intContextId);
+                    if (
+                        $this->_arrHistory['LanguageId'] !== $this->LanguageId ||
+                        (
+                            $this->LanguageId instanceof QDateTime &&
+                            (string) $this->_arrHistory['LanguageId'] !== (string) $this->LanguageId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId);
+                    if (
+                        $this->_arrHistory['ValidatorUserId'] !== $this->ValidatorUserId ||
+                        (
+                            $this->ValidatorUserId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ValidatorUserId'] !== (string) $this->ValidatorUserId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`validator_user_id` = ' . $objDatabase->SqlVariable($this->intValidatorUserId);
+                    if (
+                        $this->_arrHistory['ValidSuggestionId'] !== $this->ValidSuggestionId ||
+                        (
+                            $this->ValidSuggestionId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ValidSuggestionId'] !== (string) $this->ValidSuggestionId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId);
+                    if (
+                        $this->_arrHistory['HasSuggestions'] !== $this->HasSuggestions ||
+                        (
+                            $this->HasSuggestions instanceof QDateTime &&
+                            (string) $this->_arrHistory['HasSuggestions'] !== (string) $this->HasSuggestions
+                        )
+                    )
+                        $arrUpdateChanges[] = '`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions);
+                    if (
+                        $this->_arrHistory['SuggestionAccessKey'] !== $this->SuggestionAccessKey ||
+                        (
+                            $this->SuggestionAccessKey instanceof QDateTime &&
+                            (string) $this->_arrHistory['SuggestionAccessKey'] !== (string) $this->SuggestionAccessKey
+                        )
+                    )
+                        $arrUpdateChanges[] = '`suggestion_access_key` = ' . $objDatabase->SqlVariable($this->strSuggestionAccessKey);
+                    if (
+                        $this->_arrHistory['SuggestionCommandKey'] !== $this->SuggestionCommandKey ||
+                        (
+                            $this->SuggestionCommandKey instanceof QDateTime &&
+                            (string) $this->_arrHistory['SuggestionCommandKey'] !== (string) $this->SuggestionCommandKey
+                        )
+                    )
+                        $arrUpdateChanges[] = '`suggestion_command_key` = ' . $objDatabase->SqlVariable($this->strSuggestionCommandKey);
+                    if (
+                        $this->_arrHistory['Created'] !== $this->Created ||
+                        (
+                            $this->Created instanceof QDateTime &&
+                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
+                        )
+                    )
+                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
+                    if (
+                        $this->_arrHistory['Modified'] !== $this->Modified ||
+                        (
+                            $this->Modified instanceof QDateTime &&
+                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
+                        )
+                    )
+                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_context_info`
 						SET
-							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ',
-							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
-							`validator_user_id` = ' . $objDatabase->SqlVariable($this->intValidatorUserId) . ',
-							`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
-							`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
-							`suggestion_access_key` = ' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . ',
-							`suggestion_command_key` = ' . $objDatabase->SqlVariable($this->strSuggestionCommandKey) . ',
-							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
-							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`context_info_id` = ' . $objDatabase->SqlVariable($this->intContextInfoId) . '
 					');
@@ -896,6 +1014,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

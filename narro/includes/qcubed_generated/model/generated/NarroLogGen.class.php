@@ -28,7 +28,15 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroLogGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['LogId'] = null;
+                $this->_arrHistory['LanguageId'] = null;
+                $this->_arrHistory['ProjectId'] = null;
+                $this->_arrHistory['UserId'] = null;
+                $this->_arrHistory['Message'] = null;
+                $this->_arrHistory['Priority'] = null;
+                $this->_arrHistory['Date'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -103,6 +111,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -518,6 +531,7 @@
 
 
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -721,6 +735,30 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['LogId']))
+                $this->_arrHistory['LogId'] = $this->LogId;
+            if (!isset($this->_arrHistory['LanguageId']))
+                $this->_arrHistory['LanguageId'] = $this->LanguageId;
+            if (!isset($this->_arrHistory['ProjectId']))
+                $this->_arrHistory['ProjectId'] = $this->ProjectId;
+            if (!isset($this->_arrHistory['UserId']))
+                $this->_arrHistory['UserId'] = $this->UserId;
+            if (!isset($this->_arrHistory['Message']))
+                $this->_arrHistory['Message'] = $this->Message;
+            if (!isset($this->_arrHistory['Priority']))
+                $this->_arrHistory['Priority'] = $this->Priority;
+            if (!isset($this->_arrHistory['Date']))
+                $this->_arrHistory['Date'] = $this->Date;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -766,17 +804,67 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['LanguageId'] !== $this->LanguageId ||
+                        (
+                            $this->LanguageId instanceof QDateTime &&
+                            (string) $this->_arrHistory['LanguageId'] !== (string) $this->LanguageId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId);
+                    if (
+                        $this->_arrHistory['ProjectId'] !== $this->ProjectId ||
+                        (
+                            $this->ProjectId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ProjectId'] !== (string) $this->ProjectId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId);
+                    if (
+                        $this->_arrHistory['UserId'] !== $this->UserId ||
+                        (
+                            $this->UserId instanceof QDateTime &&
+                            (string) $this->_arrHistory['UserId'] !== (string) $this->UserId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`user_id` = ' . $objDatabase->SqlVariable($this->intUserId);
+                    if (
+                        $this->_arrHistory['Message'] !== $this->Message ||
+                        (
+                            $this->Message instanceof QDateTime &&
+                            (string) $this->_arrHistory['Message'] !== (string) $this->Message
+                        )
+                    )
+                        $arrUpdateChanges[] = '`message` = ' . $objDatabase->SqlVariable($this->strMessage);
+                    if (
+                        $this->_arrHistory['Priority'] !== $this->Priority ||
+                        (
+                            $this->Priority instanceof QDateTime &&
+                            (string) $this->_arrHistory['Priority'] !== (string) $this->Priority
+                        )
+                    )
+                        $arrUpdateChanges[] = '`priority` = ' . $objDatabase->SqlVariable($this->intPriority);
+                    if (
+                        $this->_arrHistory['Date'] !== $this->Date ||
+                        (
+                            $this->Date instanceof QDateTime &&
+                            (string) $this->_arrHistory['Date'] !== (string) $this->Date
+                        )
+                    )
+                        $arrUpdateChanges[] = '`date` = ' . $objDatabase->SqlVariable($this->dttDate);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_log`
 						SET
-							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
-							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
-							`message` = ' . $objDatabase->SqlVariable($this->strMessage) . ',
-							`priority` = ' . $objDatabase->SqlVariable($this->intPriority) . ',
-							`date` = ' . $objDatabase->SqlVariable($this->dttDate) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`log_id` = ' . $objDatabase->SqlVariable($this->intLogId) . '
 					');
@@ -787,6 +875,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

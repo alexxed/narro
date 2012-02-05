@@ -36,7 +36,15 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroProjectGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['ProjectId'] = null;
+                $this->_arrHistory['ProjectCategoryId'] = null;
+                $this->_arrHistory['ProjectName'] = null;
+                $this->_arrHistory['ProjectType'] = null;
+                $this->_arrHistory['ProjectDescription'] = null;
+                $this->_arrHistory['Data'] = null;
+                $this->_arrHistory['Active'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -193,6 +201,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -772,6 +785,7 @@
 					$objToReturn->_objNarroUserRoleAsProject = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasproject__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -951,6 +965,30 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['ProjectId']))
+                $this->_arrHistory['ProjectId'] = $this->ProjectId;
+            if (!isset($this->_arrHistory['ProjectCategoryId']))
+                $this->_arrHistory['ProjectCategoryId'] = $this->ProjectCategoryId;
+            if (!isset($this->_arrHistory['ProjectName']))
+                $this->_arrHistory['ProjectName'] = $this->ProjectName;
+            if (!isset($this->_arrHistory['ProjectType']))
+                $this->_arrHistory['ProjectType'] = $this->ProjectType;
+            if (!isset($this->_arrHistory['ProjectDescription']))
+                $this->_arrHistory['ProjectDescription'] = $this->ProjectDescription;
+            if (!isset($this->_arrHistory['Data']))
+                $this->_arrHistory['Data'] = $this->Data;
+            if (!isset($this->_arrHistory['Active']))
+                $this->_arrHistory['Active'] = $this->Active;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -996,17 +1034,67 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['ProjectCategoryId'] !== $this->ProjectCategoryId ||
+                        (
+                            $this->ProjectCategoryId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ProjectCategoryId'] !== (string) $this->ProjectCategoryId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`project_category_id` = ' . $objDatabase->SqlVariable($this->intProjectCategoryId);
+                    if (
+                        $this->_arrHistory['ProjectName'] !== $this->ProjectName ||
+                        (
+                            $this->ProjectName instanceof QDateTime &&
+                            (string) $this->_arrHistory['ProjectName'] !== (string) $this->ProjectName
+                        )
+                    )
+                        $arrUpdateChanges[] = '`project_name` = ' . $objDatabase->SqlVariable($this->strProjectName);
+                    if (
+                        $this->_arrHistory['ProjectType'] !== $this->ProjectType ||
+                        (
+                            $this->ProjectType instanceof QDateTime &&
+                            (string) $this->_arrHistory['ProjectType'] !== (string) $this->ProjectType
+                        )
+                    )
+                        $arrUpdateChanges[] = '`project_type` = ' . $objDatabase->SqlVariable($this->intProjectType);
+                    if (
+                        $this->_arrHistory['ProjectDescription'] !== $this->ProjectDescription ||
+                        (
+                            $this->ProjectDescription instanceof QDateTime &&
+                            (string) $this->_arrHistory['ProjectDescription'] !== (string) $this->ProjectDescription
+                        )
+                    )
+                        $arrUpdateChanges[] = '`project_description` = ' . $objDatabase->SqlVariable($this->strProjectDescription);
+                    if (
+                        $this->_arrHistory['Data'] !== $this->Data ||
+                        (
+                            $this->Data instanceof QDateTime &&
+                            (string) $this->_arrHistory['Data'] !== (string) $this->Data
+                        )
+                    )
+                        $arrUpdateChanges[] = '`data` = ' . $objDatabase->SqlVariable($this->strData);
+                    if (
+                        $this->_arrHistory['Active'] !== $this->Active ||
+                        (
+                            $this->Active instanceof QDateTime &&
+                            (string) $this->_arrHistory['Active'] !== (string) $this->Active
+                        )
+                    )
+                        $arrUpdateChanges[] = '`active` = ' . $objDatabase->SqlVariable($this->intActive);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_project`
 						SET
-							`project_category_id` = ' . $objDatabase->SqlVariable($this->intProjectCategoryId) . ',
-							`project_name` = ' . $objDatabase->SqlVariable($this->strProjectName) . ',
-							`project_type` = ' . $objDatabase->SqlVariable($this->intProjectType) . ',
-							`project_description` = ' . $objDatabase->SqlVariable($this->strProjectDescription) . ',
-							`data` = ' . $objDatabase->SqlVariable($this->strData) . ',
-							`active` = ' . $objDatabase->SqlVariable($this->intActive) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
 					');
@@ -1017,6 +1105,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

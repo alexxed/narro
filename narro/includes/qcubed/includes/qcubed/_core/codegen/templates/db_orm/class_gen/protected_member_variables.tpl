@@ -83,3 +83,8 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;

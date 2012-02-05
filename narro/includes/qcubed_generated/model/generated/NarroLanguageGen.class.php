@@ -42,7 +42,18 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroLanguageGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['LanguageId'] = null;
+                $this->_arrHistory['LanguageName'] = null;
+                $this->_arrHistory['LanguageCode'] = null;
+                $this->_arrHistory['CountryCode'] = null;
+                $this->_arrHistory['DialectCode'] = null;
+                $this->_arrHistory['Encoding'] = null;
+                $this->_arrHistory['TextDirection'] = null;
+                $this->_arrHistory['SpecialCharacters'] = null;
+                $this->_arrHistory['PluralForm'] = null;
+                $this->_arrHistory['Active'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -261,6 +272,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -906,6 +922,7 @@
 					$objToReturn->_objNarroUserRoleAsLanguage = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -1005,6 +1022,36 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['LanguageId']))
+                $this->_arrHistory['LanguageId'] = $this->LanguageId;
+            if (!isset($this->_arrHistory['LanguageName']))
+                $this->_arrHistory['LanguageName'] = $this->LanguageName;
+            if (!isset($this->_arrHistory['LanguageCode']))
+                $this->_arrHistory['LanguageCode'] = $this->LanguageCode;
+            if (!isset($this->_arrHistory['CountryCode']))
+                $this->_arrHistory['CountryCode'] = $this->CountryCode;
+            if (!isset($this->_arrHistory['DialectCode']))
+                $this->_arrHistory['DialectCode'] = $this->DialectCode;
+            if (!isset($this->_arrHistory['Encoding']))
+                $this->_arrHistory['Encoding'] = $this->Encoding;
+            if (!isset($this->_arrHistory['TextDirection']))
+                $this->_arrHistory['TextDirection'] = $this->TextDirection;
+            if (!isset($this->_arrHistory['SpecialCharacters']))
+                $this->_arrHistory['SpecialCharacters'] = $this->SpecialCharacters;
+            if (!isset($this->_arrHistory['PluralForm']))
+                $this->_arrHistory['PluralForm'] = $this->PluralForm;
+            if (!isset($this->_arrHistory['Active']))
+                $this->_arrHistory['Active'] = $this->Active;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -1056,20 +1103,91 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['LanguageName'] !== $this->LanguageName ||
+                        (
+                            $this->LanguageName instanceof QDateTime &&
+                            (string) $this->_arrHistory['LanguageName'] !== (string) $this->LanguageName
+                        )
+                    )
+                        $arrUpdateChanges[] = '`language_name` = ' . $objDatabase->SqlVariable($this->strLanguageName);
+                    if (
+                        $this->_arrHistory['LanguageCode'] !== $this->LanguageCode ||
+                        (
+                            $this->LanguageCode instanceof QDateTime &&
+                            (string) $this->_arrHistory['LanguageCode'] !== (string) $this->LanguageCode
+                        )
+                    )
+                        $arrUpdateChanges[] = '`language_code` = ' . $objDatabase->SqlVariable($this->strLanguageCode);
+                    if (
+                        $this->_arrHistory['CountryCode'] !== $this->CountryCode ||
+                        (
+                            $this->CountryCode instanceof QDateTime &&
+                            (string) $this->_arrHistory['CountryCode'] !== (string) $this->CountryCode
+                        )
+                    )
+                        $arrUpdateChanges[] = '`country_code` = ' . $objDatabase->SqlVariable($this->strCountryCode);
+                    if (
+                        $this->_arrHistory['DialectCode'] !== $this->DialectCode ||
+                        (
+                            $this->DialectCode instanceof QDateTime &&
+                            (string) $this->_arrHistory['DialectCode'] !== (string) $this->DialectCode
+                        )
+                    )
+                        $arrUpdateChanges[] = '`dialect_code` = ' . $objDatabase->SqlVariable($this->strDialectCode);
+                    if (
+                        $this->_arrHistory['Encoding'] !== $this->Encoding ||
+                        (
+                            $this->Encoding instanceof QDateTime &&
+                            (string) $this->_arrHistory['Encoding'] !== (string) $this->Encoding
+                        )
+                    )
+                        $arrUpdateChanges[] = '`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding);
+                    if (
+                        $this->_arrHistory['TextDirection'] !== $this->TextDirection ||
+                        (
+                            $this->TextDirection instanceof QDateTime &&
+                            (string) $this->_arrHistory['TextDirection'] !== (string) $this->TextDirection
+                        )
+                    )
+                        $arrUpdateChanges[] = '`text_direction` = ' . $objDatabase->SqlVariable($this->strTextDirection);
+                    if (
+                        $this->_arrHistory['SpecialCharacters'] !== $this->SpecialCharacters ||
+                        (
+                            $this->SpecialCharacters instanceof QDateTime &&
+                            (string) $this->_arrHistory['SpecialCharacters'] !== (string) $this->SpecialCharacters
+                        )
+                    )
+                        $arrUpdateChanges[] = '`special_characters` = ' . $objDatabase->SqlVariable($this->strSpecialCharacters);
+                    if (
+                        $this->_arrHistory['PluralForm'] !== $this->PluralForm ||
+                        (
+                            $this->PluralForm instanceof QDateTime &&
+                            (string) $this->_arrHistory['PluralForm'] !== (string) $this->PluralForm
+                        )
+                    )
+                        $arrUpdateChanges[] = '`plural_form` = ' . $objDatabase->SqlVariable($this->strPluralForm);
+                    if (
+                        $this->_arrHistory['Active'] !== $this->Active ||
+                        (
+                            $this->Active instanceof QDateTime &&
+                            (string) $this->_arrHistory['Active'] !== (string) $this->Active
+                        )
+                    )
+                        $arrUpdateChanges[] = '`active` = ' . $objDatabase->SqlVariable($this->blnActive);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_language`
 						SET
-							`language_name` = ' . $objDatabase->SqlVariable($this->strLanguageName) . ',
-							`language_code` = ' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
-							`country_code` = ' . $objDatabase->SqlVariable($this->strCountryCode) . ',
-							`dialect_code` = ' . $objDatabase->SqlVariable($this->strDialectCode) . ',
-							`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding) . ',
-							`text_direction` = ' . $objDatabase->SqlVariable($this->strTextDirection) . ',
-							`special_characters` = ' . $objDatabase->SqlVariable($this->strSpecialCharacters) . ',
-							`plural_form` = ' . $objDatabase->SqlVariable($this->strPluralForm) . ',
-							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 					');
@@ -1080,6 +1198,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

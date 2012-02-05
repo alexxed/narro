@@ -23,7 +23,11 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroRolePermissionGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['RolePermissionId'] = null;
+                $this->_arrHistory['RoleId'] = null;
+                $this->_arrHistory['PermissionId'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -66,6 +70,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -449,6 +458,7 @@
 
 
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -580,6 +590,22 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['RolePermissionId']))
+                $this->_arrHistory['RolePermissionId'] = $this->RolePermissionId;
+            if (!isset($this->_arrHistory['RoleId']))
+                $this->_arrHistory['RoleId'] = $this->RoleId;
+            if (!isset($this->_arrHistory['PermissionId']))
+                $this->_arrHistory['PermissionId'] = $this->PermissionId;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -617,13 +643,35 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['RoleId'] !== $this->RoleId ||
+                        (
+                            $this->RoleId instanceof QDateTime &&
+                            (string) $this->_arrHistory['RoleId'] !== (string) $this->RoleId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`role_id` = ' . $objDatabase->SqlVariable($this->intRoleId);
+                    if (
+                        $this->_arrHistory['PermissionId'] !== $this->PermissionId ||
+                        (
+                            $this->PermissionId instanceof QDateTime &&
+                            (string) $this->_arrHistory['PermissionId'] !== (string) $this->PermissionId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_role_permission`
 						SET
-							`role_id` = ' . $objDatabase->SqlVariable($this->intRoleId) . ',
-							`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`role_permission_id` = ' . $objDatabase->SqlVariable($this->intRolePermissionId) . '
 					');
@@ -634,6 +682,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

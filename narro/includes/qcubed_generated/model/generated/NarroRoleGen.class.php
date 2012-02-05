@@ -24,7 +24,10 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroRoleGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['RoleId'] = null;
+                $this->_arrHistory['RoleName'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -92,6 +95,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -530,6 +538,7 @@
 					$objToReturn->_objNarroUserRoleAsRole = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasrole__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -613,6 +622,20 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['RoleId']))
+                $this->_arrHistory['RoleId'] = $this->RoleId;
+            if (!isset($this->_arrHistory['RoleName']))
+                $this->_arrHistory['RoleName'] = $this->RoleName;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -648,12 +671,27 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['RoleName'] !== $this->RoleName ||
+                        (
+                            $this->RoleName instanceof QDateTime &&
+                            (string) $this->_arrHistory['RoleName'] !== (string) $this->RoleName
+                        )
+                    )
+                        $arrUpdateChanges[] = '`role_name` = ' . $objDatabase->SqlVariable($this->strRoleName);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_role`
 						SET
-							`role_name` = ' . $objDatabase->SqlVariable($this->strRoleName) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`role_id` = ' . $objDatabase->SqlVariable($this->intRoleId) . '
 					');
@@ -664,6 +702,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

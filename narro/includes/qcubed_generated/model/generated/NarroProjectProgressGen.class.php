@@ -30,7 +30,18 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroProjectProgressGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['ProjectProgressId'] = null;
+                $this->_arrHistory['ProjectId'] = null;
+                $this->_arrHistory['LanguageId'] = null;
+                $this->_arrHistory['Active'] = null;
+                $this->_arrHistory['LastModified'] = null;
+                $this->_arrHistory['TotalTextCount'] = null;
+                $this->_arrHistory['FuzzyTextCount'] = null;
+                $this->_arrHistory['ApprovedTextCount'] = null;
+                $this->_arrHistory['ProgressPercent'] = null;
+                $this->_arrHistory['Data'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -129,6 +140,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -540,6 +556,7 @@
 
 
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -689,6 +706,36 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['ProjectProgressId']))
+                $this->_arrHistory['ProjectProgressId'] = $this->ProjectProgressId;
+            if (!isset($this->_arrHistory['ProjectId']))
+                $this->_arrHistory['ProjectId'] = $this->ProjectId;
+            if (!isset($this->_arrHistory['LanguageId']))
+                $this->_arrHistory['LanguageId'] = $this->LanguageId;
+            if (!isset($this->_arrHistory['Active']))
+                $this->_arrHistory['Active'] = $this->Active;
+            if (!isset($this->_arrHistory['LastModified']))
+                $this->_arrHistory['LastModified'] = $this->LastModified;
+            if (!isset($this->_arrHistory['TotalTextCount']))
+                $this->_arrHistory['TotalTextCount'] = $this->TotalTextCount;
+            if (!isset($this->_arrHistory['FuzzyTextCount']))
+                $this->_arrHistory['FuzzyTextCount'] = $this->FuzzyTextCount;
+            if (!isset($this->_arrHistory['ApprovedTextCount']))
+                $this->_arrHistory['ApprovedTextCount'] = $this->ApprovedTextCount;
+            if (!isset($this->_arrHistory['ProgressPercent']))
+                $this->_arrHistory['ProgressPercent'] = $this->ProgressPercent;
+            if (!isset($this->_arrHistory['Data']))
+                $this->_arrHistory['Data'] = $this->Data;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -740,20 +787,91 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['ProjectId'] !== $this->ProjectId ||
+                        (
+                            $this->ProjectId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ProjectId'] !== (string) $this->ProjectId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId);
+                    if (
+                        $this->_arrHistory['LanguageId'] !== $this->LanguageId ||
+                        (
+                            $this->LanguageId instanceof QDateTime &&
+                            (string) $this->_arrHistory['LanguageId'] !== (string) $this->LanguageId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId);
+                    if (
+                        $this->_arrHistory['Active'] !== $this->Active ||
+                        (
+                            $this->Active instanceof QDateTime &&
+                            (string) $this->_arrHistory['Active'] !== (string) $this->Active
+                        )
+                    )
+                        $arrUpdateChanges[] = '`active` = ' . $objDatabase->SqlVariable($this->blnActive);
+                    if (
+                        $this->_arrHistory['LastModified'] !== $this->LastModified ||
+                        (
+                            $this->LastModified instanceof QDateTime &&
+                            (string) $this->_arrHistory['LastModified'] !== (string) $this->LastModified
+                        )
+                    )
+                        $arrUpdateChanges[] = '`last_modified` = ' . $objDatabase->SqlVariable($this->dttLastModified);
+                    if (
+                        $this->_arrHistory['TotalTextCount'] !== $this->TotalTextCount ||
+                        (
+                            $this->TotalTextCount instanceof QDateTime &&
+                            (string) $this->_arrHistory['TotalTextCount'] !== (string) $this->TotalTextCount
+                        )
+                    )
+                        $arrUpdateChanges[] = '`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount);
+                    if (
+                        $this->_arrHistory['FuzzyTextCount'] !== $this->FuzzyTextCount ||
+                        (
+                            $this->FuzzyTextCount instanceof QDateTime &&
+                            (string) $this->_arrHistory['FuzzyTextCount'] !== (string) $this->FuzzyTextCount
+                        )
+                    )
+                        $arrUpdateChanges[] = '`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount);
+                    if (
+                        $this->_arrHistory['ApprovedTextCount'] !== $this->ApprovedTextCount ||
+                        (
+                            $this->ApprovedTextCount instanceof QDateTime &&
+                            (string) $this->_arrHistory['ApprovedTextCount'] !== (string) $this->ApprovedTextCount
+                        )
+                    )
+                        $arrUpdateChanges[] = '`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount);
+                    if (
+                        $this->_arrHistory['ProgressPercent'] !== $this->ProgressPercent ||
+                        (
+                            $this->ProgressPercent instanceof QDateTime &&
+                            (string) $this->_arrHistory['ProgressPercent'] !== (string) $this->ProgressPercent
+                        )
+                    )
+                        $arrUpdateChanges[] = '`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent);
+                    if (
+                        $this->_arrHistory['Data'] !== $this->Data ||
+                        (
+                            $this->Data instanceof QDateTime &&
+                            (string) $this->_arrHistory['Data'] !== (string) $this->Data
+                        )
+                    )
+                        $arrUpdateChanges[] = '`data` = ' . $objDatabase->SqlVariable($this->strData);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_project_progress`
 						SET
-							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
-							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . ',
-							`last_modified` = ' . $objDatabase->SqlVariable($this->dttLastModified) . ',
-							`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
-							`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
-							`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
-							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
-							`data` = ' . $objDatabase->SqlVariable($this->strData) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`project_progress_id` = ' . $objDatabase->SqlVariable($this->intProjectProgressId) . '
 					');
@@ -764,6 +882,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

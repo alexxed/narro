@@ -38,7 +38,21 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroContextGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['ContextId'] = null;
+                $this->_arrHistory['TextId'] = null;
+                $this->_arrHistory['TextAccessKey'] = null;
+                $this->_arrHistory['TextCommandKey'] = null;
+                $this->_arrHistory['ProjectId'] = null;
+                $this->_arrHistory['Context'] = null;
+                $this->_arrHistory['ContextMd5'] = null;
+                $this->_arrHistory['Comment'] = null;
+                $this->_arrHistory['CommentMd5'] = null;
+                $this->_arrHistory['FileId'] = null;
+                $this->_arrHistory['Created'] = null;
+                $this->_arrHistory['Modified'] = null;
+                $this->_arrHistory['Active'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -197,6 +211,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -727,6 +746,7 @@
 					$objToReturn->_objNarroSuggestionVoteAsContext = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteascontext__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -1016,6 +1036,42 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['ContextId']))
+                $this->_arrHistory['ContextId'] = $this->ContextId;
+            if (!isset($this->_arrHistory['TextId']))
+                $this->_arrHistory['TextId'] = $this->TextId;
+            if (!isset($this->_arrHistory['TextAccessKey']))
+                $this->_arrHistory['TextAccessKey'] = $this->TextAccessKey;
+            if (!isset($this->_arrHistory['TextCommandKey']))
+                $this->_arrHistory['TextCommandKey'] = $this->TextCommandKey;
+            if (!isset($this->_arrHistory['ProjectId']))
+                $this->_arrHistory['ProjectId'] = $this->ProjectId;
+            if (!isset($this->_arrHistory['Context']))
+                $this->_arrHistory['Context'] = $this->Context;
+            if (!isset($this->_arrHistory['ContextMd5']))
+                $this->_arrHistory['ContextMd5'] = $this->ContextMd5;
+            if (!isset($this->_arrHistory['Comment']))
+                $this->_arrHistory['Comment'] = $this->Comment;
+            if (!isset($this->_arrHistory['CommentMd5']))
+                $this->_arrHistory['CommentMd5'] = $this->CommentMd5;
+            if (!isset($this->_arrHistory['FileId']))
+                $this->_arrHistory['FileId'] = $this->FileId;
+            if (!isset($this->_arrHistory['Created']))
+                $this->_arrHistory['Created'] = $this->Created;
+            if (!isset($this->_arrHistory['Modified']))
+                $this->_arrHistory['Modified'] = $this->Modified;
+            if (!isset($this->_arrHistory['Active']))
+                $this->_arrHistory['Active'] = $this->Active;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -1073,23 +1129,115 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['TextId'] !== $this->TextId ||
+                        (
+                            $this->TextId instanceof QDateTime &&
+                            (string) $this->_arrHistory['TextId'] !== (string) $this->TextId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`text_id` = ' . $objDatabase->SqlVariable($this->intTextId);
+                    if (
+                        $this->_arrHistory['TextAccessKey'] !== $this->TextAccessKey ||
+                        (
+                            $this->TextAccessKey instanceof QDateTime &&
+                            (string) $this->_arrHistory['TextAccessKey'] !== (string) $this->TextAccessKey
+                        )
+                    )
+                        $arrUpdateChanges[] = '`text_access_key` = ' . $objDatabase->SqlVariable($this->strTextAccessKey);
+                    if (
+                        $this->_arrHistory['TextCommandKey'] !== $this->TextCommandKey ||
+                        (
+                            $this->TextCommandKey instanceof QDateTime &&
+                            (string) $this->_arrHistory['TextCommandKey'] !== (string) $this->TextCommandKey
+                        )
+                    )
+                        $arrUpdateChanges[] = '`text_command_key` = ' . $objDatabase->SqlVariable($this->strTextCommandKey);
+                    if (
+                        $this->_arrHistory['ProjectId'] !== $this->ProjectId ||
+                        (
+                            $this->ProjectId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ProjectId'] !== (string) $this->ProjectId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId);
+                    if (
+                        $this->_arrHistory['Context'] !== $this->Context ||
+                        (
+                            $this->Context instanceof QDateTime &&
+                            (string) $this->_arrHistory['Context'] !== (string) $this->Context
+                        )
+                    )
+                        $arrUpdateChanges[] = '`context` = ' . $objDatabase->SqlVariable($this->strContext);
+                    if (
+                        $this->_arrHistory['ContextMd5'] !== $this->ContextMd5 ||
+                        (
+                            $this->ContextMd5 instanceof QDateTime &&
+                            (string) $this->_arrHistory['ContextMd5'] !== (string) $this->ContextMd5
+                        )
+                    )
+                        $arrUpdateChanges[] = '`context_md5` = ' . $objDatabase->SqlVariable($this->strContextMd5);
+                    if (
+                        $this->_arrHistory['Comment'] !== $this->Comment ||
+                        (
+                            $this->Comment instanceof QDateTime &&
+                            (string) $this->_arrHistory['Comment'] !== (string) $this->Comment
+                        )
+                    )
+                        $arrUpdateChanges[] = '`comment` = ' . $objDatabase->SqlVariable($this->strComment);
+                    if (
+                        $this->_arrHistory['CommentMd5'] !== $this->CommentMd5 ||
+                        (
+                            $this->CommentMd5 instanceof QDateTime &&
+                            (string) $this->_arrHistory['CommentMd5'] !== (string) $this->CommentMd5
+                        )
+                    )
+                        $arrUpdateChanges[] = '`comment_md5` = ' . $objDatabase->SqlVariable($this->strCommentMd5);
+                    if (
+                        $this->_arrHistory['FileId'] !== $this->FileId ||
+                        (
+                            $this->FileId instanceof QDateTime &&
+                            (string) $this->_arrHistory['FileId'] !== (string) $this->FileId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`file_id` = ' . $objDatabase->SqlVariable($this->intFileId);
+                    if (
+                        $this->_arrHistory['Created'] !== $this->Created ||
+                        (
+                            $this->Created instanceof QDateTime &&
+                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
+                        )
+                    )
+                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
+                    if (
+                        $this->_arrHistory['Modified'] !== $this->Modified ||
+                        (
+                            $this->Modified instanceof QDateTime &&
+                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
+                        )
+                    )
+                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
+                    if (
+                        $this->_arrHistory['Active'] !== $this->Active ||
+                        (
+                            $this->Active instanceof QDateTime &&
+                            (string) $this->_arrHistory['Active'] !== (string) $this->Active
+                        )
+                    )
+                        $arrUpdateChanges[] = '`active` = ' . $objDatabase->SqlVariable($this->blnActive);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_context`
 						SET
-							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . ',
-							`text_access_key` = ' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
-							`text_command_key` = ' . $objDatabase->SqlVariable($this->strTextCommandKey) . ',
-							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							`context` = ' . $objDatabase->SqlVariable($this->strContext) . ',
-							`context_md5` = ' . $objDatabase->SqlVariable($this->strContextMd5) . ',
-							`comment` = ' . $objDatabase->SqlVariable($this->strComment) . ',
-							`comment_md5` = ' . $objDatabase->SqlVariable($this->strCommentMd5) . ',
-							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . ',
-							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
-							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . ',
-							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . '
 					');
@@ -1100,6 +1248,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

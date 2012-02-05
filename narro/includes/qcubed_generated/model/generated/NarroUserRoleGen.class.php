@@ -27,7 +27,13 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroUserRoleGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['UserRoleId'] = null;
+                $this->_arrHistory['UserId'] = null;
+                $this->_arrHistory['RoleId'] = null;
+                $this->_arrHistory['ProjectId'] = null;
+                $this->_arrHistory['LanguageId'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -86,6 +92,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -509,6 +520,7 @@
 
 
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -726,6 +738,26 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['UserRoleId']))
+                $this->_arrHistory['UserRoleId'] = $this->UserRoleId;
+            if (!isset($this->_arrHistory['UserId']))
+                $this->_arrHistory['UserId'] = $this->UserId;
+            if (!isset($this->_arrHistory['RoleId']))
+                $this->_arrHistory['RoleId'] = $this->RoleId;
+            if (!isset($this->_arrHistory['ProjectId']))
+                $this->_arrHistory['ProjectId'] = $this->ProjectId;
+            if (!isset($this->_arrHistory['LanguageId']))
+                $this->_arrHistory['LanguageId'] = $this->LanguageId;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -767,15 +799,51 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['UserId'] !== $this->UserId ||
+                        (
+                            $this->UserId instanceof QDateTime &&
+                            (string) $this->_arrHistory['UserId'] !== (string) $this->UserId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`user_id` = ' . $objDatabase->SqlVariable($this->intUserId);
+                    if (
+                        $this->_arrHistory['RoleId'] !== $this->RoleId ||
+                        (
+                            $this->RoleId instanceof QDateTime &&
+                            (string) $this->_arrHistory['RoleId'] !== (string) $this->RoleId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`role_id` = ' . $objDatabase->SqlVariable($this->intRoleId);
+                    if (
+                        $this->_arrHistory['ProjectId'] !== $this->ProjectId ||
+                        (
+                            $this->ProjectId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ProjectId'] !== (string) $this->ProjectId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId);
+                    if (
+                        $this->_arrHistory['LanguageId'] !== $this->LanguageId ||
+                        (
+                            $this->LanguageId instanceof QDateTime &&
+                            (string) $this->_arrHistory['LanguageId'] !== (string) $this->LanguageId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_user_role`
 						SET
-							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
-							`role_id` = ' . $objDatabase->SqlVariable($this->intRoleId) . ',
-							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`user_role_id` = ' . $objDatabase->SqlVariable($this->intUserRoleId) . '
 					');
@@ -786,6 +854,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

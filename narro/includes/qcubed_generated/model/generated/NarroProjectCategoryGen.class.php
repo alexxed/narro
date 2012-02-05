@@ -23,7 +23,11 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroProjectCategoryGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['ProjectCategoryId'] = null;
+                $this->_arrHistory['CategoryName'] = null;
+                $this->_arrHistory['CategoryDescription'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -84,6 +88,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -491,6 +500,7 @@
 					$objToReturn->_objNarroProjectAsProjectCategory = NarroProject::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narroprojectasprojectcategory__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -574,6 +584,22 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['ProjectCategoryId']))
+                $this->_arrHistory['ProjectCategoryId'] = $this->ProjectCategoryId;
+            if (!isset($this->_arrHistory['CategoryName']))
+                $this->_arrHistory['CategoryName'] = $this->CategoryName;
+            if (!isset($this->_arrHistory['CategoryDescription']))
+                $this->_arrHistory['CategoryDescription'] = $this->CategoryDescription;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -611,13 +637,35 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['CategoryName'] !== $this->CategoryName ||
+                        (
+                            $this->CategoryName instanceof QDateTime &&
+                            (string) $this->_arrHistory['CategoryName'] !== (string) $this->CategoryName
+                        )
+                    )
+                        $arrUpdateChanges[] = '`category_name` = ' . $objDatabase->SqlVariable($this->strCategoryName);
+                    if (
+                        $this->_arrHistory['CategoryDescription'] !== $this->CategoryDescription ||
+                        (
+                            $this->CategoryDescription instanceof QDateTime &&
+                            (string) $this->_arrHistory['CategoryDescription'] !== (string) $this->CategoryDescription
+                        )
+                    )
+                        $arrUpdateChanges[] = '`category_description` = ' . $objDatabase->SqlVariable($this->strCategoryDescription);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_project_category`
 						SET
-							`category_name` = ' . $objDatabase->SqlVariable($this->strCategoryName) . ',
-							`category_description` = ' . $objDatabase->SqlVariable($this->strCategoryDescription) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`project_category_id` = ' . $objDatabase->SqlVariable($this->intProjectCategoryId) . '
 					');
@@ -628,6 +676,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

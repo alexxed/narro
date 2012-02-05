@@ -37,7 +37,19 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroFileGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['FileId'] = null;
+                $this->_arrHistory['FileName'] = null;
+                $this->_arrHistory['FilePath'] = null;
+                $this->_arrHistory['FileMd5'] = null;
+                $this->_arrHistory['ParentId'] = null;
+                $this->_arrHistory['TypeId'] = null;
+                $this->_arrHistory['ProjectId'] = null;
+                $this->_arrHistory['Active'] = null;
+                $this->_arrHistory['Created'] = null;
+                $this->_arrHistory['Modified'] = null;
+                $this->_arrHistory['Header'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -195,6 +207,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -736,6 +753,7 @@
 					$objToReturn->_objNarroFileProgressAsFile = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressasfile__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -967,6 +985,38 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['FileId']))
+                $this->_arrHistory['FileId'] = $this->FileId;
+            if (!isset($this->_arrHistory['FileName']))
+                $this->_arrHistory['FileName'] = $this->FileName;
+            if (!isset($this->_arrHistory['FilePath']))
+                $this->_arrHistory['FilePath'] = $this->FilePath;
+            if (!isset($this->_arrHistory['FileMd5']))
+                $this->_arrHistory['FileMd5'] = $this->FileMd5;
+            if (!isset($this->_arrHistory['ParentId']))
+                $this->_arrHistory['ParentId'] = $this->ParentId;
+            if (!isset($this->_arrHistory['TypeId']))
+                $this->_arrHistory['TypeId'] = $this->TypeId;
+            if (!isset($this->_arrHistory['ProjectId']))
+                $this->_arrHistory['ProjectId'] = $this->ProjectId;
+            if (!isset($this->_arrHistory['Active']))
+                $this->_arrHistory['Active'] = $this->Active;
+            if (!isset($this->_arrHistory['Created']))
+                $this->_arrHistory['Created'] = $this->Created;
+            if (!isset($this->_arrHistory['Modified']))
+                $this->_arrHistory['Modified'] = $this->Modified;
+            if (!isset($this->_arrHistory['Header']))
+                $this->_arrHistory['Header'] = $this->Header;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -1020,21 +1070,99 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['FileName'] !== $this->FileName ||
+                        (
+                            $this->FileName instanceof QDateTime &&
+                            (string) $this->_arrHistory['FileName'] !== (string) $this->FileName
+                        )
+                    )
+                        $arrUpdateChanges[] = '`file_name` = ' . $objDatabase->SqlVariable($this->strFileName);
+                    if (
+                        $this->_arrHistory['FilePath'] !== $this->FilePath ||
+                        (
+                            $this->FilePath instanceof QDateTime &&
+                            (string) $this->_arrHistory['FilePath'] !== (string) $this->FilePath
+                        )
+                    )
+                        $arrUpdateChanges[] = '`file_path` = ' . $objDatabase->SqlVariable($this->strFilePath);
+                    if (
+                        $this->_arrHistory['FileMd5'] !== $this->FileMd5 ||
+                        (
+                            $this->FileMd5 instanceof QDateTime &&
+                            (string) $this->_arrHistory['FileMd5'] !== (string) $this->FileMd5
+                        )
+                    )
+                        $arrUpdateChanges[] = '`file_md5` = ' . $objDatabase->SqlVariable($this->strFileMd5);
+                    if (
+                        $this->_arrHistory['ParentId'] !== $this->ParentId ||
+                        (
+                            $this->ParentId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ParentId'] !== (string) $this->ParentId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`parent_id` = ' . $objDatabase->SqlVariable($this->intParentId);
+                    if (
+                        $this->_arrHistory['TypeId'] !== $this->TypeId ||
+                        (
+                            $this->TypeId instanceof QDateTime &&
+                            (string) $this->_arrHistory['TypeId'] !== (string) $this->TypeId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`type_id` = ' . $objDatabase->SqlVariable($this->intTypeId);
+                    if (
+                        $this->_arrHistory['ProjectId'] !== $this->ProjectId ||
+                        (
+                            $this->ProjectId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ProjectId'] !== (string) $this->ProjectId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId);
+                    if (
+                        $this->_arrHistory['Active'] !== $this->Active ||
+                        (
+                            $this->Active instanceof QDateTime &&
+                            (string) $this->_arrHistory['Active'] !== (string) $this->Active
+                        )
+                    )
+                        $arrUpdateChanges[] = '`active` = ' . $objDatabase->SqlVariable($this->blnActive);
+                    if (
+                        $this->_arrHistory['Created'] !== $this->Created ||
+                        (
+                            $this->Created instanceof QDateTime &&
+                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
+                        )
+                    )
+                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
+                    if (
+                        $this->_arrHistory['Modified'] !== $this->Modified ||
+                        (
+                            $this->Modified instanceof QDateTime &&
+                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
+                        )
+                    )
+                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
+                    if (
+                        $this->_arrHistory['Header'] !== $this->Header ||
+                        (
+                            $this->Header instanceof QDateTime &&
+                            (string) $this->_arrHistory['Header'] !== (string) $this->Header
+                        )
+                    )
+                        $arrUpdateChanges[] = '`header` = ' . $objDatabase->SqlVariable($this->strHeader);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_file`
 						SET
-							`file_name` = ' . $objDatabase->SqlVariable($this->strFileName) . ',
-							`file_path` = ' . $objDatabase->SqlVariable($this->strFilePath) . ',
-							`file_md5` = ' . $objDatabase->SqlVariable($this->strFileMd5) . ',
-							`parent_id` = ' . $objDatabase->SqlVariable($this->intParentId) . ',
-							`type_id` = ' . $objDatabase->SqlVariable($this->intTypeId) . ',
-							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
-							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . ',
-							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
-							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . ',
-							`header` = ' . $objDatabase->SqlVariable($this->strHeader) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
 					');
@@ -1045,6 +1173,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

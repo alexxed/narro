@@ -22,7 +22,10 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroPermissionGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['PermissionId'] = null;
+                $this->_arrHistory['PermissionName'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -74,6 +77,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -477,6 +485,7 @@
 					$objToReturn->_objNarroRolePermissionAsPermission = NarroRolePermission::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrorolepermissionaspermission__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -560,6 +569,20 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['PermissionId']))
+                $this->_arrHistory['PermissionId'] = $this->PermissionId;
+            if (!isset($this->_arrHistory['PermissionName']))
+                $this->_arrHistory['PermissionName'] = $this->PermissionName;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -595,12 +618,27 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['PermissionName'] !== $this->PermissionName ||
+                        (
+                            $this->PermissionName instanceof QDateTime &&
+                            (string) $this->_arrHistory['PermissionName'] !== (string) $this->PermissionName
+                        )
+                    )
+                        $arrUpdateChanges[] = '`permission_name` = ' . $objDatabase->SqlVariable($this->strPermissionName);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_permission`
 						SET
-							`permission_name` = ' . $objDatabase->SqlVariable($this->strPermissionName) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId) . '
 					');
@@ -611,6 +649,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

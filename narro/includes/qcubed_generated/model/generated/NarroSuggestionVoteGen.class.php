@@ -27,7 +27,14 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroSuggestionVoteGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['SuggestionId'] = null;
+                $this->_arrHistory['ContextId'] = null;
+                $this->_arrHistory['UserId'] = null;
+                $this->_arrHistory['VoteValue'] = null;
+                $this->_arrHistory['Created'] = null;
+                $this->_arrHistory['Modified'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -115,6 +122,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -539,6 +551,7 @@
 
 
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -726,6 +739,28 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['SuggestionId']))
+                $this->_arrHistory['SuggestionId'] = $this->SuggestionId;
+            if (!isset($this->_arrHistory['ContextId']))
+                $this->_arrHistory['ContextId'] = $this->ContextId;
+            if (!isset($this->_arrHistory['UserId']))
+                $this->_arrHistory['UserId'] = $this->UserId;
+            if (!isset($this->_arrHistory['VoteValue']))
+                $this->_arrHistory['VoteValue'] = $this->VoteValue;
+            if (!isset($this->_arrHistory['Created']))
+                $this->_arrHistory['Created'] = $this->Created;
+            if (!isset($this->_arrHistory['Modified']))
+                $this->_arrHistory['Modified'] = $this->Modified;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -770,17 +805,67 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['SuggestionId'] !== $this->SuggestionId ||
+                        (
+                            $this->SuggestionId instanceof QDateTime &&
+                            (string) $this->_arrHistory['SuggestionId'] !== (string) $this->SuggestionId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId);
+                    if (
+                        $this->_arrHistory['ContextId'] !== $this->ContextId ||
+                        (
+                            $this->ContextId instanceof QDateTime &&
+                            (string) $this->_arrHistory['ContextId'] !== (string) $this->ContextId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`context_id` = ' . $objDatabase->SqlVariable($this->intContextId);
+                    if (
+                        $this->_arrHistory['UserId'] !== $this->UserId ||
+                        (
+                            $this->UserId instanceof QDateTime &&
+                            (string) $this->_arrHistory['UserId'] !== (string) $this->UserId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`user_id` = ' . $objDatabase->SqlVariable($this->intUserId);
+                    if (
+                        $this->_arrHistory['VoteValue'] !== $this->VoteValue ||
+                        (
+                            $this->VoteValue instanceof QDateTime &&
+                            (string) $this->_arrHistory['VoteValue'] !== (string) $this->VoteValue
+                        )
+                    )
+                        $arrUpdateChanges[] = '`vote_value` = ' . $objDatabase->SqlVariable($this->intVoteValue);
+                    if (
+                        $this->_arrHistory['Created'] !== $this->Created ||
+                        (
+                            $this->Created instanceof QDateTime &&
+                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
+                        )
+                    )
+                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
+                    if (
+                        $this->_arrHistory['Modified'] !== $this->Modified ||
+                        (
+                            $this->Modified instanceof QDateTime &&
+                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
+                        )
+                    )
+                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_suggestion_vote`
 						SET
-							`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
-							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ',
-							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
-							`vote_value` = ' . $objDatabase->SqlVariable($this->intVoteValue) . ',
-							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
-							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`suggestion_id` = ' . $objDatabase->SqlVariable($this->__intSuggestionId) . ' AND
 							`context_id` = ' . $objDatabase->SqlVariable($this->__intContextId) . ' AND
@@ -793,6 +878,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 			$this->__intSuggestionId = $this->intSuggestionId;

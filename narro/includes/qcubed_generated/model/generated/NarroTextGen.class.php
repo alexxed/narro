@@ -32,7 +32,16 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroTextGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['TextId'] = null;
+                $this->_arrHistory['TextValue'] = null;
+                $this->_arrHistory['TextValueMd5'] = null;
+                $this->_arrHistory['TextCharCount'] = null;
+                $this->_arrHistory['TextWordCount'] = null;
+                $this->_arrHistory['HasComments'] = null;
+                $this->_arrHistory['Created'] = null;
+                $this->_arrHistory['Modified'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -164,6 +173,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -661,6 +675,7 @@
 					$objToReturn->_objNarroTextCommentAsText = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentastext__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -744,6 +759,32 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['TextId']))
+                $this->_arrHistory['TextId'] = $this->TextId;
+            if (!isset($this->_arrHistory['TextValue']))
+                $this->_arrHistory['TextValue'] = $this->TextValue;
+            if (!isset($this->_arrHistory['TextValueMd5']))
+                $this->_arrHistory['TextValueMd5'] = $this->TextValueMd5;
+            if (!isset($this->_arrHistory['TextCharCount']))
+                $this->_arrHistory['TextCharCount'] = $this->TextCharCount;
+            if (!isset($this->_arrHistory['TextWordCount']))
+                $this->_arrHistory['TextWordCount'] = $this->TextWordCount;
+            if (!isset($this->_arrHistory['HasComments']))
+                $this->_arrHistory['HasComments'] = $this->HasComments;
+            if (!isset($this->_arrHistory['Created']))
+                $this->_arrHistory['Created'] = $this->Created;
+            if (!isset($this->_arrHistory['Modified']))
+                $this->_arrHistory['Modified'] = $this->Modified;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -791,18 +832,75 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['TextValue'] !== $this->TextValue ||
+                        (
+                            $this->TextValue instanceof QDateTime &&
+                            (string) $this->_arrHistory['TextValue'] !== (string) $this->TextValue
+                        )
+                    )
+                        $arrUpdateChanges[] = '`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue);
+                    if (
+                        $this->_arrHistory['TextValueMd5'] !== $this->TextValueMd5 ||
+                        (
+                            $this->TextValueMd5 instanceof QDateTime &&
+                            (string) $this->_arrHistory['TextValueMd5'] !== (string) $this->TextValueMd5
+                        )
+                    )
+                        $arrUpdateChanges[] = '`text_value_md5` = ' . $objDatabase->SqlVariable($this->strTextValueMd5);
+                    if (
+                        $this->_arrHistory['TextCharCount'] !== $this->TextCharCount ||
+                        (
+                            $this->TextCharCount instanceof QDateTime &&
+                            (string) $this->_arrHistory['TextCharCount'] !== (string) $this->TextCharCount
+                        )
+                    )
+                        $arrUpdateChanges[] = '`text_char_count` = ' . $objDatabase->SqlVariable($this->intTextCharCount);
+                    if (
+                        $this->_arrHistory['TextWordCount'] !== $this->TextWordCount ||
+                        (
+                            $this->TextWordCount instanceof QDateTime &&
+                            (string) $this->_arrHistory['TextWordCount'] !== (string) $this->TextWordCount
+                        )
+                    )
+                        $arrUpdateChanges[] = '`text_word_count` = ' . $objDatabase->SqlVariable($this->intTextWordCount);
+                    if (
+                        $this->_arrHistory['HasComments'] !== $this->HasComments ||
+                        (
+                            $this->HasComments instanceof QDateTime &&
+                            (string) $this->_arrHistory['HasComments'] !== (string) $this->HasComments
+                        )
+                    )
+                        $arrUpdateChanges[] = '`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments);
+                    if (
+                        $this->_arrHistory['Created'] !== $this->Created ||
+                        (
+                            $this->Created instanceof QDateTime &&
+                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
+                        )
+                    )
+                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
+                    if (
+                        $this->_arrHistory['Modified'] !== $this->Modified ||
+                        (
+                            $this->Modified instanceof QDateTime &&
+                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
+                        )
+                    )
+                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_text`
 						SET
-							`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue) . ',
-							`text_value_md5` = ' . $objDatabase->SqlVariable($this->strTextValueMd5) . ',
-							`text_char_count` = ' . $objDatabase->SqlVariable($this->intTextCharCount) . ',
-							`text_word_count` = ' . $objDatabase->SqlVariable($this->intTextWordCount) . ',
-							`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments) . ',
-							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
-							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
 					');
@@ -813,6 +911,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 

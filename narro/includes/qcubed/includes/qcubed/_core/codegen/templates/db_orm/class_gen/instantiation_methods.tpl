@@ -194,6 +194,7 @@
 			}
 
 <% } %><% } %>
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 

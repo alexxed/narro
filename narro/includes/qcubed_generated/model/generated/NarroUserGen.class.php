@@ -36,7 +36,14 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroUserGen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+                $this->_arrHistory['UserId'] = null;
+                $this->_arrHistory['Username'] = null;
+                $this->_arrHistory['Password'] = null;
+                $this->_arrHistory['Email'] = null;
+                $this->_arrHistory['RealName'] = null;
+                $this->_arrHistory['Data'] = null;
+        }
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -210,6 +217,11 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
+
+        /**
+         * Associative array with database property fields as keys
+        */
+        protected $_arrHistory;
 
 
 
@@ -805,6 +817,7 @@
 					$objToReturn->_objNarroUserRoleAsUser = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
+            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -920,6 +933,28 @@
 
 
 
+        
+       /**
+        * Save the values loaded from the database to allow seeing what was modified
+        */
+        public function SaveHistory($blnReset = false) {
+            if ($blnReset)
+                $this->_arrHistory = array();
+
+            if (!isset($this->_arrHistory['UserId']))
+                $this->_arrHistory['UserId'] = $this->UserId;
+            if (!isset($this->_arrHistory['Username']))
+                $this->_arrHistory['Username'] = $this->Username;
+            if (!isset($this->_arrHistory['Password']))
+                $this->_arrHistory['Password'] = $this->Password;
+            if (!isset($this->_arrHistory['Email']))
+                $this->_arrHistory['Email'] = $this->Email;
+            if (!isset($this->_arrHistory['RealName']))
+                $this->_arrHistory['RealName'] = $this->RealName;
+            if (!isset($this->_arrHistory['Data']))
+                $this->_arrHistory['Data'] = $this->Data;
+        }
+
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
@@ -964,17 +999,67 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+                    if (
+                        $this->_arrHistory['UserId'] !== $this->UserId ||
+                        (
+                            $this->UserId instanceof QDateTime &&
+                            (string) $this->_arrHistory['UserId'] !== (string) $this->UserId
+                        )
+                    )
+                        $arrUpdateChanges[] = '`user_id` = ' . $objDatabase->SqlVariable($this->intUserId);
+                    if (
+                        $this->_arrHistory['Username'] !== $this->Username ||
+                        (
+                            $this->Username instanceof QDateTime &&
+                            (string) $this->_arrHistory['Username'] !== (string) $this->Username
+                        )
+                    )
+                        $arrUpdateChanges[] = '`username` = ' . $objDatabase->SqlVariable($this->strUsername);
+                    if (
+                        $this->_arrHistory['Password'] !== $this->Password ||
+                        (
+                            $this->Password instanceof QDateTime &&
+                            (string) $this->_arrHistory['Password'] !== (string) $this->Password
+                        )
+                    )
+                        $arrUpdateChanges[] = '`password` = ' . $objDatabase->SqlVariable($this->strPassword);
+                    if (
+                        $this->_arrHistory['Email'] !== $this->Email ||
+                        (
+                            $this->Email instanceof QDateTime &&
+                            (string) $this->_arrHistory['Email'] !== (string) $this->Email
+                        )
+                    )
+                        $arrUpdateChanges[] = '`email` = ' . $objDatabase->SqlVariable($this->strEmail);
+                    if (
+                        $this->_arrHistory['RealName'] !== $this->RealName ||
+                        (
+                            $this->RealName instanceof QDateTime &&
+                            (string) $this->_arrHistory['RealName'] !== (string) $this->RealName
+                        )
+                    )
+                        $arrUpdateChanges[] = '`real_name` = ' . $objDatabase->SqlVariable($this->strRealName);
+                    if (
+                        $this->_arrHistory['Data'] !== $this->Data ||
+                        (
+                            $this->Data instanceof QDateTime &&
+                            (string) $this->_arrHistory['Data'] !== (string) $this->Data
+                        )
+                    )
+                        $arrUpdateChanges[] = '`data` = ' . $objDatabase->SqlVariable($this->strData);
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_user`
 						SET
-							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
-							`username` = ' . $objDatabase->SqlVariable($this->strUsername) . ',
-							`password` = ' . $objDatabase->SqlVariable($this->strPassword) . ',
-							`email` = ' . $objDatabase->SqlVariable($this->strEmail) . ',
-							`real_name` = ' . $objDatabase->SqlVariable($this->strRealName) . ',
-							`data` = ' . $objDatabase->SqlVariable($this->strData) . '
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 							`user_id` = ' . $objDatabase->SqlVariable($this->__intUserId) . '
 					');
@@ -985,6 +1070,7 @@
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 			$this->__intUserId = $this->intUserId;

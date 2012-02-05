@@ -71,16 +71,31 @@
 	<% } %>
 <% } %>
 
+                    /**
+                     * Make sure we change only what's changed in this instance of the object
+                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
+                     */
+                    $arrUpdateChanges = array();
+<% foreach ($objTable->ColumnArray as $objColumn) { %>
+    <% if ((!$objColumn->Identity) && (!$objColumn->Timestamp)) { %>
+                    if (
+                        $this->_arrHistory['<%= $objColumn->PropertyName %>'] !== $this-><%= $objColumn->PropertyName %> ||
+                        (
+                            $this-><%= $objColumn->PropertyName %> instanceof QDateTime &&
+                            (string) $this->_arrHistory['<%= $objColumn->PropertyName %>'] !== (string) $this-><%= $objColumn->PropertyName %>
+                        )
+                    )
+                        $arrUpdateChanges[] = '<%= $strEscapeIdentifierBegin %><%= $objColumn->Name %><%= $strEscapeIdentifierEnd %> = ' . $objDatabase->SqlVariable($this-><%= $objColumn->VariableName %>);
+    <% } %>
+<% } %><%--%>;
+
+                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							<%= $strEscapeIdentifierBegin %><%= $objTable->Name %><%= $strEscapeIdentifierEnd %>
 						SET
-<% foreach ($objTable->ColumnArray as $objColumn) { %>
-	<% if ((!$objColumn->Identity) && (!$objColumn->Timestamp)) { %>
-							<%= $strEscapeIdentifierBegin %><%= $objColumn->Name %><%= $strEscapeIdentifierEnd %> = ' . $objDatabase->SqlVariable($this-><%= $objColumn->VariableName %>) . ',
-	<% } %>
-<% } %><%--%>
+                            ' . join(",\n", $arrUpdateChanges) . '
 						WHERE
 <% foreach ($objTable->PrimaryKeyColumnArray as $objColumn) { %>
 	<% if ($objColumn->Identity) { %>
@@ -92,35 +107,12 @@
 					');
 				}
 
-<% foreach ($objTable->ReverseReferenceArray as $objReverseReference) { %>
-	<% if ($objReverseReference->Unique) { %>
-		<% $objReverseReferenceTable = $objCodeGen->TableArray[strtolower($objReverseReference->Table)]; %>
-		<% $objReverseReferenceColumn = $objReverseReferenceTable->ColumnArray[strtolower($objReverseReference->Column)]; %>
-				// Update the adjoined <%= $objReverseReference->ObjectDescription %> object (if applicable)
-				// TODO: Make this into hard-coded SQL queries
-				if ($this->blnDirty<%= $objReverseReference->ObjectPropertyName %>) {
-					// Unassociate the old one (if applicable)
-					if ($objAssociated = <%= $objReverseReference->VariableType %>::LoadBy<%= $objReverseReferenceColumn->PropertyName %>(<%= $objCodeGen->ImplodeObjectArray(', ', '$this->', '', 'VariableName', $objTable->PrimaryKeyColumnArray) %>)) {
-						$objAssociated-><%= $objReverseReferenceColumn->PropertyName %> = null;
-						$objAssociated->Save();
-					}
-
-					// Associate the new one (if applicable)
-					if ($this-><%= $objReverseReference->ObjectMemberVariable %>) {
-						$this-><%= $objReverseReference->ObjectMemberVariable %>-><%= $objReverseReferenceColumn->PropertyName %> = $this-><%= $objTable->PrimaryKeyColumnArray[0]->VariableName %>;
-						$this-><%= $objReverseReference->ObjectMemberVariable %>->Save();
-					}
-
-					// Reset the "Dirty" flag
-					$this->blnDirty<%= $objReverseReference->ObjectPropertyName %> = false;
-				}
-	<% } %>
-<% } %>
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
 
+            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 <% foreach ($objTable->PrimaryKeyColumnArray as $objColumn) { %>

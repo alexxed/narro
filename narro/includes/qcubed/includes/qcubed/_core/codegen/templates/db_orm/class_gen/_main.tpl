@@ -19,7 +19,11 @@
 <%@ property_comments('objTable'); %>
 	 */
 	class <%= $objTable->ClassName %>Gen extends QBaseClass implements IteratorAggregate {
-
+        public function __construct() {
+        <% foreach ($objTable->ColumnArray as $objColumn) { %>
+                $this->_arrHistory['<%= $objColumn->PropertyName %>'] = null;
+        <% } %>
+        }
 		<%@ protected_member_variables('objTable'); %>
 
 
@@ -43,6 +47,7 @@
 		<%@ index_load_methods('objTable'); %>
 
 
+        <%@ class_history('objTable'); %>
 
 		//////////////////////////
 		// SAVE, DELETE AND RELOAD
