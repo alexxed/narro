@@ -36,7 +36,7 @@ class QCalendar extends QDateTimeTextBox {
 	protected $blnGotoCurrent = false;
 	protected $blnIsRTL = false;
 	protected $blnModified = false;
-	protected $strJqDateFormat = 'M d yy';
+    protected $strJqDateFormat = 'yy-mm-dd';
     protected $blnShowButtonPanel = true;
 
 	// map the JQuery datepicker format specs to QCodo QDateTime format specs.
@@ -85,7 +85,7 @@ class QCalendar extends QDateTimeTextBox {
 	}
 
 	public function Validate() {
-		return true;
+        return parent::Validate();
 	}
 
 	protected function makeJsProperty($strProp, $strKey) {
