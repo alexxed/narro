@@ -34,16 +34,6 @@
         define ('__SUBDIRECTORY__', '/narro');
     
         /**
-         * this constant allows any user do export files or import up to this defined size
-         * default is ~ 16MB
-         */
-        define ('__MAXIMUM_FILE_SIZE_TO_IMPORT__', 16000000);
-        define ('__MAXIMUM_FILE_SIZE_TO_EXPORT__', 16000000);
-        define ('__MAXIMUM_FILE_COUNT_TO_IMPORT__', 3000);
-        define ('__MAXIMUM_FILE_COUNT_TO_EXPORT__', 3000);
-        define ('__SOURCE_LANGUAGE_CODE__', 'en-US');
-    
-        /**
          * The database connection settings
          */
         define('DB_CONNECTION_1', serialize(array(
@@ -54,6 +44,16 @@
             'username' => 'narro',
             'password' => '',
             'profiling' => false)));
+    
+        /**
+         * this constant allows any user do export files or import up to this defined size
+         * default is ~ 16MB
+         */
+        define ('__MAXIMUM_FILE_SIZE_TO_IMPORT__', 16000000);
+        define ('__MAXIMUM_FILE_SIZE_TO_EXPORT__', 16000000);
+        define ('__MAXIMUM_FILE_COUNT_TO_IMPORT__', 3000);
+        define ('__MAXIMUM_FILE_COUNT_TO_EXPORT__', 3000);
+        define ('__SOURCE_LANGUAGE_CODE__', 'en-US');
     
     
         /**
