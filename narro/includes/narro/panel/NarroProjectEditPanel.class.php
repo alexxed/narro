@@ -39,6 +39,7 @@
 
         // Button Actions
         public $btnSave;
+        public $btnReset;
         public $btnCancel;
         public $btnDelete;
 
@@ -89,6 +90,7 @@
 
             // Create/Setup Button Action controls
             $this->btnSave_Create();
+            $this->btnReset_Create();
             $this->btnCancel_Create();
             $this->btnDelete_Create();
             
@@ -163,6 +165,14 @@
             $this->btnCancel->Text = t('Cancel');
             $this->btnCancel->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnCancel_Click'));
             $this->btnCancel->CausesValidation = false;
+        }
+        
+        protected function btnReset_Create() {
+            $this->btnReset = new QButton($this);
+            $this->btnReset->Text = t('Reset');
+            $this->btnReset->AddAction(new QClickEvent(), new QConfirmAction(sprintf(t('Are you SURE you want to RESET %s?\nAll the texts will be unapproved.\nThis will affect only the current locale. You need to run a new import after.\nThe texts and associated suggestions will NOT be deleted.\nThey will be preserved for use in other projects.'), addslashes($this->objProject->ProjectName))));
+            $this->btnReset->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnReset_Click'));
+            $this->btnReset->CausesValidation = false;
         }
 
         // Setup btnDelete
@@ -257,6 +267,23 @@
 
             $this->lblMessage->Text = t('Project saved sucessfully.');
 
+        }
+        
+        public function btnReset_Click($strFormId, $strControlId, $strParameter) {
+            NarroContextInfo::GetDatabase()->Query(
+            	sprintf(
+            		"DELETE FROM narro_context_info USING narro_context_info LEFT JOIN narro_context ON narro_context_info.context_id=narro_context.context_id WHERE narro_context_info.language_id=%d AND narro_context.project_id=%d",
+            		QApplication::GetLanguageId(),
+            		$this->objProject->ProjectId
+        		)
+    		);
+            
+            $this->objProject->CountAllTextsByLanguage();
+            $this->objProject->CountApprovedTextsByLanguage();
+            $this->objProject->CountAllWordsByLanguage();
+            $this->objProject->CountTranslatedTextsByLanguage();
+            
+            $this->lblMessage->Text = sprintf(t('The project was successfuly reset for %s. You need to import it again for this language to start over.'), QApplication::$TargetLanguage->LanguageName);
         }
 
         public function btnCancel_Click($strFormId, $strControlId, $strParameter) {

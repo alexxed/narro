@@ -79,5 +79,6 @@
 <?php $_CONTROL->btnCancel->Render() ?>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <?php $_CONTROL->btnDelete->Render() ?>
+<?php $_CONTROL->btnReset->Render() ?>
 <?php $_CONTROL->lblMessage->Render();?>
 </div>
