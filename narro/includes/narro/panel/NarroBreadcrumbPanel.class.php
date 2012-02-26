@@ -30,7 +30,7 @@
         }
 
         public function addElement($strText) {
-            $this->arrElements[] = htmlentities($strText);
+            $this->arrElements[] = $strText;
         }
 
         public function GetControlHTML() {
