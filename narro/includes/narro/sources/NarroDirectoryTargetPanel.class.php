@@ -203,15 +203,15 @@
                 $this->lblExport->Text = '';
                 try {
                     $strCommand = sprintf(
-                        '%s %s --export --project %d --user %d --template-lang %s --translation-lang %s --template-directory "%s" --translation-directory "%s" --exported-suggestion %d --export-author-list %s',
+                        '%s %s --export --project %d --user %d --template-lang %s --translation-lang %s --template-directory %s --translation-directory %s --exported-suggestion %d --export-author-list %s',
                         __PHP_CLI_PATH__,
                         escapeshellarg(sprintf('%s/includes/narro/importer/narro-cli.php', __DOCROOT__ . __SUBDIRECTORY__)),
                         $this->objProject->ProjectId,
                         QApplication::$User->UserId,
                         NarroLanguage::SOURCE_LANGUAGE_CODE,
                         QApplication::$TargetLanguage->LanguageCode,
-                        $this->objProject->DefaultTemplatePath,
-                        $this->objProject->DefaultTranslationPath,
+                        escapeshellarg($this->objProject->DefaultTemplatePath),
+                        escapeshellarg($this->objProject->DefaultTranslationPath),
                         $this->lstExportSuggestionType->SelectedValue,
                         escapeshellarg($this->txtAuthor->Text)
                     );

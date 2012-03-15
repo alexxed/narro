@@ -485,9 +485,9 @@
         public function GetContext($strOriginal, $strContext, $strComment) {
             foreach($this->arrContextInfo as $objContextInfo) {
                 if (
-                    $objContextInfo->Context->Context == $strContext &&
-                    $objContextInfo->Context->Comment == $strComment &&
-                    $objContextInfo->Context->Text->TextValue == $strOriginal
+                    $objContextInfo->Context->Context === $strContext &&
+                    $objContextInfo->Context->Comment === $strComment &&
+                    $objContextInfo->Context->Text->TextValue === $strOriginal
                 )
                     return $objContextInfo->Context;
             }
