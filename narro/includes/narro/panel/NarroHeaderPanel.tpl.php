@@ -45,7 +45,7 @@
                     NarroLink::UserPreferences(QApplication::GetUserId()),
                     __NARRO_IMAGE_ASSETS__
                 ) . ' ' .
-                '<a href="logout.php?l=' . QApplication::$TargetLanguage->LanguageCode . '" style="vertical-align:middle"><img src="assets/images/logout.png" alt="' . t('Logout') . '" border="0" title="' . t('Logout') . '" /></a>'
+                $_CONTROL->btnLogout->Render(false)
             );
     }
 ?>

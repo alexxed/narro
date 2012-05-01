@@ -17,6 +17,7 @@
      */
     class NarroHeaderPanel extends QPanel {
         public $lstLanguage;
+        public $btnLogout;
 
         public function __construct($objParentObject, $strControlId = null) {
             parent::__construct($objParentObject, $strControlId);
@@ -29,6 +30,19 @@
             foreach($arrLanguages as $objLanguage) {
                 $this->lstLanguage->AddItem(t($objLanguage->LanguageName), $objLanguage->LanguageCode, ($objLanguage->LanguageCode == QApplication::$TargetLanguage->LanguageCode));
             }
+            
+            $this->btnLogout = new QLinkButton($this);
+            $this->btnLogout->Text = '<img src="assets/images/logout.png" alt="' . t('Logout') . '" border="0" title="' . t('Logout') . '" />';
+            $this->btnLogout->HtmlEntities = false;
+            $this->btnLogout->ToolTip = t('Logout');
+            $this->btnLogout->SetCustomStyle('vertical-align', 'bottom');
+            $this->btnLogout->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnLogout_Click'));
+        }
+        
+        public function btnLogout_Click() {
+            QApplication::$Session->Destroy();
+            header('Location: projects.php');
+            exit;
         }
 
         public function lstLanguage_Change() {
