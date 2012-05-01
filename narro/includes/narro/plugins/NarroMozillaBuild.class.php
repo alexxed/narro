@@ -438,7 +438,7 @@
             }
             
             NarroUtils::Exec(
-                sprintf('make -s langpack-%s', QApplication::$TargetLanguage->LanguageCode),
+                sprintf('make -s langpack-%s', escapeshellarg(QApplication::$TargetLanguage->LanguageCode)),
                 $arrOutput,
                 $arrError,
                 $intRetVal,

@@ -512,7 +512,7 @@
             }
             
             NarroUtils::Exec(
-                sprintf('msgcat %s -w 80 -o %s~', $strTranslatedFile, $strTranslatedFile),
+                sprintf('msgcat %s -w 80 -o %s~', escapeshellarg($strTranslatedFile), escapeshellarg($strTranslatedFile)),
                 $arrOutput,
                 $arrError,
                 $intRetVal,
