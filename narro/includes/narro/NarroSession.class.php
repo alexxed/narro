@@ -38,6 +38,10 @@
             $_SESSION[$strName] = serialize($mixValue);
         }
         
+        public function RegenerateId() {
+            session_regenerate_id(true);
+        }
+        
         public function Destroy() {
             global $_SESSION;
             $_SESSION = array();

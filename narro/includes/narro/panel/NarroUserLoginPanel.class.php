@@ -119,6 +119,7 @@
                             }
     
                             $objUser->Reload();
+                            QApplication::$Session->RegenerateId();
                             QApplication::$Session->User = $objUser;
                             QApplication::Redirect(NarroLink::UserPreferences($objUser->UserId));
                             exit;
@@ -129,6 +130,7 @@
                             return false;
                         }
     
+                        QApplication::$Session->RegenerateId();
                         QApplication::$Session->User = $objUser;
                         QApplication::$User = $objUser;
                         
@@ -173,9 +175,10 @@
             $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text));
 
             if ($objUser instanceof NarroUser) {
+                QApplication::$Session->RegenerateId();
                 QApplication::$Session->User = $objUser;
-                
                 QApplication::$User = $objUser;
+                
                 if ($this->txtPreviousUrl)
                     QApplication::Redirect($this->txtPreviousUrl);
                 else
@@ -230,6 +233,7 @@
                     return false;
                 }
             
+                QApplication::$Session->RegenerateId();
                 QApplication::$Session->User = $objUser;
                 QApplication::$User = $objUser;
             
