@@ -206,13 +206,13 @@
                         '%s %s --export --project %d --user %d --template-lang %s --translation-lang %s --template-directory %s --translation-directory %s --exported-suggestion %d --export-author-list %s',
                         __PHP_CLI_PATH__,
                         escapeshellarg(sprintf('%s/includes/narro/importer/narro-cli.php', __DOCROOT__ . __SUBDIRECTORY__)),
-                        escapeshellarg($this->objProject->ProjectId),
-                        escapeshellarg(QApplication::$User->UserId),
+                        (int) $this->objProject->ProjectId,
+                        (int) QApplication::$User->UserId,
                         escapeshellarg(NarroLanguage::SOURCE_LANGUAGE_CODE),
                         escapeshellarg(QApplication::$TargetLanguage->LanguageCode),
                         escapeshellarg($this->objProject->DefaultTemplatePath),
                         escapeshellarg($this->objProject->DefaultTranslationPath),
-                        escapeshellarg($this->lstExportSuggestionType->SelectedValue),
+                        (int) $this->lstExportSuggestionType->SelectedValue,
                         escapeshellarg($this->txtAuthor->Text)
                     );
                 }

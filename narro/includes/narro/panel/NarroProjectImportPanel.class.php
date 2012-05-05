@@ -267,8 +267,8 @@
                             (($this->chkApproveOnlyNotApproved->Checked)?'':'--approve-already-approved ') .
                             ((!$this->chkImportSourceTexts->Checked || !QApplication::HasPermission('Can import project', $this->objProject->ProjectId))?'--only-suggestions ':'') .
                             ' --template-lang %s --translation-lang %s --template-directory %s --translation-directory %s',
-                        escapeshellarg($this->objProject->ProjectId),
-                        escapeshellarg(QApplication::$User->UserId),
+                        (int) $this->objProject->ProjectId,
+                        (int) QApplication::$User->UserId,
                         escapeshellarg(NarroLanguage::SOURCE_LANGUAGE_CODE),
                         escapeshellarg(QApplication::$TargetLanguage->LanguageCode),
                         escapeshellarg($this->objProject->DefaultTemplatePath),
