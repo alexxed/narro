@@ -186,3 +186,10 @@ INSERT INTO `narro_file_type` (
 VALUES (
 13 , 'Srt'
 );
+
+
+ALTER TABLE `narro_context_info` CHANGE `suggestion_access_key` `suggestion_access_key` VARCHAR( 10 ) NULL DEFAULT NULL ,
+CHANGE `suggestion_command_key` `suggestion_command_key` VARCHAR( 10 ) NULL DEFAULT NULL;
+
+ALTER TABLE `narro_context` CHANGE `text_access_key` `text_access_key` VARCHAR( 10 ) NULL DEFAULT NULL ,
+CHANGE `text_command_key` `text_command_key` VARCHAR( 10 ) NULL DEFAULT NULL;

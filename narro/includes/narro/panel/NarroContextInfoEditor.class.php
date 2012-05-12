@@ -76,8 +76,8 @@
                 $this->txtAccessKey->TextMode = QTextMode::SingleLine;
                 $this->txtAccessKey->Name = t('Access key');
                 $this->txtAccessKey->Instructions = sprintf(t('This is the letter that appears underlined in menus and buttons and you can use Alt + this letter to select, e.g. <b>%s</b>'), NarroString::Replace($this->objContextInfo->Context->TextAccessKey, sprintf('<u>%s</u>', $this->objContextInfo->Context->TextAccessKey), $this->objContextInfo->Context->Text->TextValue, 1));
-                $this->txtAccessKey->Columns = 1;
-                $this->txtAccessKey->MaxLength = 1;
+                $this->txtAccessKey->Columns = 5;
+                $this->txtAccessKey->MaxLength = 10;
                 $this->txtAccessKey->Text = $this->objContextInfo->SuggestionAccessKey;
             }
             
@@ -87,8 +87,8 @@
                 $this->txtCommandKey->TextMode = QTextMode::SingleLine;
                 $this->txtCommandKey->Name = t('Command key');
                 $this->txtCommandKey->Instructions = sprintf(t('This is the letter that appears in menus and buttons after the text and you can use Ctrl + this letter to select, e.g. <b>%s Ctrl+%s</b>'), NarroString::Replace($this->objContextInfo->Context->TextAccessKey, sprintf('<u>%s</u>', $this->objContextInfo->Context->TextAccessKey), $this->objContextInfo->Context->Text->TextValue, 1), $this->objContextInfo->Context->TextCommandKey);
-                $this->txtCommandKey->Columns = 1;
-                $this->txtCommandKey->MaxLength = 1;
+                $this->txtCommandKey->Columns = 5;
+                $this->txtCommandKey->MaxLength = 10;
                 $this->txtCommandKey->Text = $this->objContextInfo->SuggestionCommandKey;
             }
 
