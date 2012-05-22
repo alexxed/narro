@@ -41,8 +41,10 @@
             new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
             new NarroProjectSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
             new NarroLanguageSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
-            new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
-            new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
+            if (NarroUtils::CanExec('/usr/bin/hg'))
+                new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
+            if (NarroUtils::CanExec('/usr/bin/svn'))
+                new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
             
             $this->pnlTranslationSource->Headers = array(
                 t('On this server'),

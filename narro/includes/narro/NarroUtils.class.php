@@ -419,5 +419,11 @@
                     return false;
             }
         }
+        
+        public static function CanExec($strCommand) {
+            $intRetCode = 0;
+            exec('/usr/bin/h1g', $arrOutput, $intRetCode);
+            return ($intRetCode == 0);
+        }
     }
 ?>
