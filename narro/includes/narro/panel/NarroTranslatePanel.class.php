@@ -436,14 +436,14 @@
                         $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
                         $this->arrConditions[] = QQ::AndCondition(
                             QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch),
-                            QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QApplication::GetUserId())
+                            QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QApplication::GetLanguageId())
                         );
                         break;
                     case self::SEARCH_IN_AUTHORS:
                         $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
                         $this->arrConditions[] = QQ::AndCondition(
                             QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->RealName, $strLikeSearch),
-                            QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QApplication::GetUserId())
+                            QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QApplication::GetLanguageId())
                         );
                         break;
                     case self::SEARCH_IN_CONTEXTS:
@@ -459,11 +459,11 @@
                             QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch),
                             QQ::AndCondition(
                                 QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValue, $strLikeSearch),
-                                QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QApplication::GetUserId())
+                                QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QApplication::GetLanguageId())
                             ),
                             QQ::AndCondition(
                                 QQ::Like(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->User->RealName, $strLikeSearch),
-                                QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QApplication::GetUserId())
+                                QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QApplication::GetLanguageId())
                             ),
                             QQ::Like(QQN::NarroContextInfo()->Context->Context, $strLikeSearch),
                             QQ::Like(QQN::NarroContextInfo()->Context->Comment, $strLikeSearch)
