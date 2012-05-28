@@ -28,7 +28,7 @@
         protected $pnlMainTab;
         protected $pnlSelectedTab;
 
-        protected function Form_Create($strActiveTabTitle = null) {
+        protected function Form_Create() {
             parent::Form_Create();
             $this->pnlMainTab = new QTabs($this);
             
