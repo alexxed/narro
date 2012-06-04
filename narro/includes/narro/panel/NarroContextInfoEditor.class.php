@@ -493,12 +493,12 @@
         }
 
         public function btnSave_Click($strFormId, $strControlId, $strParameter) {
-            if ($this->txtAccessKey && $this->txtAccessKey->Text && $this->txtAccessKey->Text != $this->objContextInfo->SuggestionAccessKey) {
+            if ($this->txtAccessKey && $this->txtAccessKey->Text != $this->objContextInfo->SuggestionAccessKey) {
                 $this->objContextInfo->SuggestionAccessKey = $this->txtAccessKey->Text;
                 $this->objContextInfo->Save();
             }
             
-            if ($this->txtCommandKey && $this->txtCommandKey->Text && $this->txtCommandKey->Text != $this->objContextInfo->SuggestionCommandKey) {
+            if ($this->txtCommandKey && $this->txtCommandKey->Text != $this->objContextInfo->SuggestionCommandKey) {
                 $this->objContextInfo->SuggestionCommandKey = $this->txtCommandKey->Text;
                 $this->objContextInfo->Save();
             }
@@ -602,7 +602,7 @@
                 $objSuggestion = NarroSuggestion::Load($strParameter);
                 $strSuggestionValue = $objSuggestion->SuggestionValue;
                 
-                if ($this->txtAccessKey && $this->txtAccessKey->Text) {
+                if ($this->txtAccessKey) {
                     $this->objContextInfo->SuggestionAccessKey = $this->txtAccessKey->Text;
                 }
                 else {
