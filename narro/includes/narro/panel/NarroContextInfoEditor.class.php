@@ -616,7 +616,7 @@
                     }
                 }
                 
-                if ($this->txtCommandKey && $this->txtCommandKey->Text) {
+                if ($this->txtCommandKey) {
                     $this->objContextInfo->SuggestionCommandKey = $this->txtCommandKey->Text;
                 }
                 else {
