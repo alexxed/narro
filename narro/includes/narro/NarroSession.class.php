@@ -39,7 +39,10 @@
         }
         
         public function RegenerateId() {
-            session_regenerate_id(true);
+            global $_SESSION;
+            $_SESSION = array();
+            if (!session_regenerate_id(true))
+                throw new Exception('Failed to generate a new session id');
         }
         
         public function Destroy() {
