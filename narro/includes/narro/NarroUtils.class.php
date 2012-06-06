@@ -422,7 +422,7 @@
         
         public static function CanExec($strCommand) {
             $intRetCode = 0;
-            exec('/usr/bin/h1g', $arrOutput, $intRetCode);
+            exec($strCommand, $arrOutput, $intRetCode);
             return ($intRetCode == 0);
         }
     }
