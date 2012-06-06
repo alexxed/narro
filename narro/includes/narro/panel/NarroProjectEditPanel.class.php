@@ -223,7 +223,7 @@
                  * If a new project is added, the project directory and source and target are created
                  * Also sample export.sh and import.sh are written in the project directory, ready for use
                  */
-                $strProjectDir = __IMPORT_PATH__ . '/' . $this->objProject->ProjectId;
+                $strProjectDir = realpath(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId);
                 if (!file_exists($strProjectDir)) {
                     mkdir($strProjectDir, 0777);
                     chmod($strProjectDir, 0777);
