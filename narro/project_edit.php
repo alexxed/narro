@@ -71,9 +71,8 @@
             $this->pnlMainTab->Headers = $arrHeaders;
         }
         
-        protected function SetupNarroProject() {
+        protected function SetupNarroProject($intProjectId) {
             // Lookup Object PK information from Query String (if applicable)
-            $intProjectId = QApplication::QueryString('p');
             if (($intProjectId)) {
                 $this->objProject = NarroProject::Load(($intProjectId));
 
