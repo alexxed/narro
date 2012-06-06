@@ -39,9 +39,9 @@
             $objDirectoryPanel->Directory = $this->objProject->DefaultTemplatePath;
             new NarroUploadSourcePanel($objProject, $objLanguage, $this->pnlTextSource);
             new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTextSource);
-            if (NarroUtils::CanExec('/usr/bin/hg'))
+            if (NarroUtils::CanExec('/usr/bin/hg --help'))
                 new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTextSource);
-            if (NarroUtils::CanExec('/usr/bin/svn'))
+            if (NarroUtils::CanExec('/usr/bin/svn --help'))
                 new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTextSource);
             
             $this->pnlTextSource->Headers = array(

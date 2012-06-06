@@ -41,9 +41,9 @@
             new NarroWebSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
             new NarroProjectSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
             new NarroLanguageSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
-            if (NarroUtils::CanExec('/usr/bin/hg'))
+            if (NarroUtils::CanExec('/usr/bin/hg --help'))
                 new NarroMercurialSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
-            if (NarroUtils::CanExec('/usr/bin/svn'))
+            if (NarroUtils::CanExec('/usr/bin/svn --help'))
                 new NarroSvnSourcePanel($objProject, $objLanguage, $this->pnlTranslationSource);
             
             $this->pnlTranslationSource->Headers = array(
