@@ -68,15 +68,15 @@
         session_write_close();
         unset($_SESSION);
         $blnResultRestore = session_start();
-        if ($blnResultRestore) {
-            $blnResultRestore = $blnResultRestore && isset($_SESSION['test']);
-            session_destroy();
-        }
     }
 
     check_boolean('a session can be started', 'The session_start() function is returning false. Check the php.ini file to see if the session is set to start automatically or if /var/lib/php/session is writable', $blnResult);
     check_boolean('a session can be restored', 'The session_start() function is returning false. Check the php.ini file to see if the session is set to start automatically or if /var/lib/php/session is writable', $blnResultRestore);
+    check_boolean('a session can be restored correctly', 'The session_start() function is returning true, but the session is empty. Check the php.ini file to see if the session is set to start automatically or if /var/lib/php/session is writable', isset($_SESSION['test']));
     
+    if ($blnResultRestore) {
+        session_destroy();
+    }
 
     $link = mysql_connect($arrConData['server'].(($arrConData['port'])?':' . $arrConData['port']:''), $arrConData['username'], $arrConData['password']);
     check_boolean('Database server connection', sprintf('Unable to connect to the database. Please check database settings in file "%s"', __CONFIGURATION__. '/configuration.narro.inc.php'), $link);
