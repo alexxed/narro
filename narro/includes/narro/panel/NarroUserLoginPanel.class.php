@@ -179,10 +179,14 @@
                 QApplication::$Session->User = $objUser;
                 QApplication::$User = $objUser;
                 
-                if ($this->txtPreviousUrl)
-                    QApplication::Redirect($this->txtPreviousUrl);
-                else
-                    QApplication::Redirect(NarroLink::ProjectList());
+                if ($this->txtPreviousUrl) {
+                    header(sprintf('Location: %s', $this->txtPreviousUrl));
+                    exit;
+                }
+                else {
+                    header(sprintf('Location: %s', NarroLink::ProjectList()));
+                    exit;
+                }
             }
             else {
                 $this->lblMessage->ForeColor = 'red';
