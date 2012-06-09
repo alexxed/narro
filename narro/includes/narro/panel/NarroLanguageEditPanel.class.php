@@ -205,7 +205,7 @@
         // Protected Update Methods
         protected function UpdateNarroLanguageFields() {
             $this->objNarroLanguage->LanguageName = $this->txtLanguageName->Text;
-            $this->objNarroLanguage->LanguageCode = $this->txtLanguageCode->Text;
+            $this->objNarroLanguage->LanguageCode = trim($this->txtLanguageCode->Text);
             $this->objNarroLanguage->CountryCode = $this->txtCountryCode->Text;
             $this->objNarroLanguage->DialectCode = $this->txtDialectCode->Text;
             $this->objNarroLanguage->Encoding = $this->txtEncoding->Text;
