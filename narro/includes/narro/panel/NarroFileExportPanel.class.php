@@ -19,20 +19,20 @@
     class NarroFileExportPanel extends QPanel {
         protected $fileToUpload;
         protected $btnExport;
-        protected $objNarroFile;
+        protected $objFile;
 
-        public function __construct(NarroFile $objNarroFile, $objParentObject, $strControlId = null) {
+        public function __construct(NarroFile $objFile, $objParentObject, $strControlId = null) {
             parent::__construct($objParentObject, $strControlId);
 
-            $this->objNarroFile = $objNarroFile;
+            $this->objFile = $objFile;
 
             $this->btnExport = new QButton($this);
             $this->btnExport->Text = t('Download');
-            $this->btnExport->ActionParameter = $this->objNarroFile->FileId;
+            $this->btnExport->ActionParameter = $this->objFile->FileId;
             $this->btnExport->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnExport_Click'));
 
-            $strTemplateFile = $this->objNarroFile->Project->DefaultTemplatePath . $this->objNarroFile->FilePath;
-            if (file_exists($strTemplateFile) && (filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_EXPORT__ || QApplication::HasPermissionForThisLang('Can export file', $this->objNarroFile->ProjectId)) && file_exists($strTemplateFile))
+            $strTemplateFile = $this->objFile->Project->DefaultTemplatePath . $this->objFile->FilePath;
+            if (file_exists($strTemplateFile) && (filesize($strTemplateFile) < __MAXIMUM_FILE_SIZE_TO_EXPORT__ || QApplication::HasPermissionForThisLang('Can export file', $this->objFile->ProjectId)) && file_exists($strTemplateFile))
                 $this->blnDisplay = true;
             else
                 $this->blnDisplay = false;
@@ -48,29 +48,33 @@
         }
 
         public function btnExport_Click($strFormId, $strControlId, $strParameter) {
+           
             if (!$this->fileToUpload->Display) {
                 $this->fileToUpload->Display = true;
                 return false;
             }
 
-            $objFileImporter = NarroFileType::GetFileImporter($objFile->TypeId);
+            $objFileImporter = NarroFileType::GetFileImporter($this->objFile->TypeId);
             $objFileImporter->User = QApplication::$User;
-            $objFileImporter->Project = $this->objNarroFile->Project;
+            $objFileImporter->Project = $this->objFile->Project;
             $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
             $objFileImporter->TargetLanguage = QApplication::$TargetLanguage;
-            $objFileImporter->File = $this->objNarroFile;
+            $objFileImporter->File = $this->objFile;
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$TargetLanguage->LanguageCode);
-
+            QFirebug::error($objFileImporter);
+            
             if (file_exists($this->fileToUpload->File)) {
                 $objFileImporter->ExportFile($this->fileToUpload->File, $strTempFileName);
                 unlink($this->fileToUpload->File);
             }
             else
-                $objFileImporter->ExportFile($this->objNarroFile->Project->DefaultTemplatePath . $this->objNarroFile->FilePath, $strTempFileName);
-
+                $objFileImporter->ExportFile($this->objFile->Project->DefaultTemplatePath . $this->objFile->FilePath, $strTempFileName);
+            QFirebug::error($strFormId);
+            
+            return true;
             ob_clean();
-            header(sprintf('Content-Disposition: attachment; filename="%s"', $this->objNarroFile->FileName));
+            header(sprintf('Content-Disposition: attachment; filename="%s"', $this->objFile->FileName));
             readfile($strTempFileName);
             unlink($strTempFileName);
             exit;
