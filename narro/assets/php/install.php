@@ -70,13 +70,12 @@
         $blnResultRestore = session_start();
     }
 
-    check_boolean('a session can be started', 'The session_start() function is returning false. Check the php.ini file to see if the session is set to start automatically or if /var/lib/php/session is writable', $blnResult);
-    check_boolean('a session can be restored', 'The session_start() function is returning false. Check the php.ini file to see if the session is set to start automatically or if /var/lib/php/session is writable', $blnResultRestore);
-    check_boolean('a session can be restored correctly', 'The session_start() function is returning true, but the session is empty. Check the php.ini file to see if the session is set to start automatically or if /var/lib/php/session is writable', isset($_SESSION['test']));
+    check_boolean('a session can be started', sprintf('The session_start() function is returning false. Check the php.ini file to see if the session is set to start automatically or if %s is writable', session_save_path()), $blnResult);
+    check_boolean('a session can be restored', sprintf('The session_start() function is returning false. Check the php.ini file to see if the session is set to start automatically or if %s is writable', session_save_path()), $blnResultRestore);
+    check_boolean('a session can be restored correctly', sprintf('The session_start() function is returning true, but the session is empty. Check the php.ini file to see if the session is set to start automatically or if %s is writable', session_save_path()), isset($_SESSION['test']));
+    check_boolean('the default session save path is writable', sprintf('%s is not writable, so sessions cannot be started. chmod 777 or chown nobody/apache should fix this', session_save_path()), is_writable(session_save_path()));
     
-    if ($blnResultRestore) {
-        session_destroy();
-    }
+    session_destroy();
 
     $link = mysql_connect($arrConData['server'].(($arrConData['port'])?':' . $arrConData['port']:''), $arrConData['username'], $arrConData['password']);
     check_boolean('Database server connection', sprintf('Unable to connect to the database. Please check database settings in file "%s"', __CONFIGURATION__. '/configuration.narro.inc.php'), $link);
@@ -90,5 +89,4 @@
     check_boolean('mb_stripos present', 'This version of Narro needs mb_stripos, that\'s available only in php versions bigger than 5.2.0', function_exists('mb_stripos'));
     
     check_boolean('locale directory writable', sprintf('Please give write permissions for everyone (chmod 777) to the directory "%s"', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/'), is_writable(__DOCROOT__ . __SUBDIRECTORY__ . '/locale/'));
-    
     
