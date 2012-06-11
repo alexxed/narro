@@ -82,6 +82,7 @@
                 NarroProject::RegisterPreference('Mozilla release name', true, NarroProjectType::Mozilla, 'text', 'leave empty for central', '');
                 NarroProject::RegisterPreference('Firefox project name for this release', true, NarroProjectType::Mozilla, 'text', 'leave empty for Firefox, if this project would be Thunderbird Aurora, fill in the name of the Narro project that holds Firefox Aurora', '');
                 NarroProject::RegisterPreference('Thunderbird project name for this release', true, NarroProjectType::Mozilla, 'text', 'leave empty for Thunderbird and Firefox, if this project would be Seamonkey Aurora, fill in the name of the Narro project that holds Thunderbird Aurora', '');
+                NarroProject::RegisterPreference('Build a language pack after export', true, 'Yes', 'option', '', '', array('Yes', 'No'));
             }
             
         }
@@ -437,18 +438,20 @@
                 
             }
             
-            NarroUtils::Exec(
-                sprintf('make -s langpack-%s', escapeshellarg(QApplication::$TargetLanguage->LanguageCode)),
-                $arrOutput,
-                $arrError,
-                $intRetVal,
-                false,
-                array(
-                	'PYTHONPATH' => sprintf('%s/compare-locales/lib', $this->strObjDir)
-            	),
-                $this->strObjDir . '/' . $this->strApplicationType . '/locales',
-                true
-            );
+            if ($objProject->GetPreferenceValueByName('Build a language pack after export') == 'Yes') {
+                NarroUtils::Exec(
+                    sprintf('make -s langpack-%s', escapeshellarg(QApplication::$TargetLanguage->LanguageCode)),
+                    $arrOutput,
+                    $arrError,
+                    $intRetVal,
+                    false,
+                    array(
+                    	'PYTHONPATH' => sprintf('%s/compare-locales/lib', $this->strObjDir)
+                	),
+                    $this->strObjDir . '/' . $this->strApplicationType . '/locales',
+                    true
+                );
+            }
 
             if ($this->strApplicationType != 'browser') {
                 foreach(self::$arrBrowserDirList as $strDir) {
