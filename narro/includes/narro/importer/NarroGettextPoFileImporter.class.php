@@ -287,6 +287,8 @@
         }
 
         public function ExportFile($strTemplate, $strTranslatedFile) {
+            QFirebug::error($strTemplate);
+            
             $hndExportFile = fopen($strTranslatedFile, 'w');
             if (!$hndExportFile) {
                 NarroLogger::LogError(sprintf('Cannot create or write to "%s".', $strTranslatedFile));
@@ -732,6 +734,7 @@
          * @return string valid suggestion
          */
         protected function GetTranslation($strOriginal, $strOriginalAccKey = null, $strOriginalAccKeyPrefix = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
+            QFirebug::error($strOriginal);
             /**
              * The contexts are trimmed at import to avoid useless white space contexts, so we need to trim it when searching for it as well
              */
@@ -742,6 +745,8 @@
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
                         QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->File->Active, 1),
                         QQ::Equal(QQN::NarroContextInfo()->Context->TextAccessKey, $strOriginalAccKey),
                         QQ::Equal(QQN::NarroContextInfo()->Context->ContextMd5, md5($strContext)),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
@@ -753,6 +758,8 @@
                     QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->objProject->ProjectId),
                         QQ::Equal(QQN::NarroContextInfo()->Context->FileId, $this->objFile->FileId),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->Active, 1),
+                        QQ::Equal(QQN::NarroContextInfo()->Context->File->Active, 1),
                         QQ::Equal(QQN::NarroContextInfo()->Context->TextAccessKey, $strOriginalAccKey),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, md5($strOriginal)),
                         QQ::Equal(QQN::NarroContextInfo()->LanguageId, $this->objTargetLanguage->LanguageId)
@@ -762,6 +769,7 @@
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
                 $this->objCurrentContext = $objNarroContextInfo;
                 $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
+                QFirebug::error($strSuggestionValue . $objNarroContextInfo->ContextId);
 
                 if ($strSuggestionValue !== false) {
 
