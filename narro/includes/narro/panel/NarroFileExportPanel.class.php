@@ -62,7 +62,6 @@
             $objFileImporter->File = $this->objFile;
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$TargetLanguage->LanguageCode);
-            QFirebug::error($objFileImporter);
             
             if (file_exists($this->fileToUpload->File)) {
                 $objFileImporter->ExportFile($this->fileToUpload->File, $strTempFileName);
@@ -70,9 +69,7 @@
             }
             else
                 $objFileImporter->ExportFile($this->objFile->Project->DefaultTemplatePath . $this->objFile->FilePath, $strTempFileName);
-            QFirebug::error($strFormId);
             
-            return true;
             ob_clean();
             header(sprintf('Content-Disposition: attachment; filename="%s"', $this->objFile->FileName));
             readfile($strTempFileName);
