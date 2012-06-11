@@ -89,7 +89,9 @@
                 NarroLogger::LogInfo(file_get_contents($strProcLogFile));
 
             NarroUtils::RecursiveDelete($this->strWorkingDirectory . '/.hg');
-            NarroUtils::RecursiveDelete($this->strWorkingDirectory . '/.svn');
+            foreach(NarroUtils::SearchDirectoryByName($this->strWorkingDirectory, '.svn') as $strSvnDir) {
+                NarroUtils::RecursiveDelete($strSvnDir);
+            }
 
             $arrSearchResult = NarroUtils::SearchDirectoryByName($this->strWorkingDirectory, $this->objLanguage->LanguageCode);
 
@@ -110,7 +112,7 @@
                 if (file_exists(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode))
                     NarroUtils::RecursiveDelete(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode .'/*');
                 else {
-                    mkdir(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode, 0777);
+                    mkdir(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode, 0777, true);
                 }
                 NarroUtils::RecursiveCopy($this->strWorkingDirectory, __IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode);
                 NarroUtils::RecursiveChmod(__IMPORT_PATH__ . '/' . $this->objProject->ProjectId . '/' . $this->objLanguage->LanguageCode);
