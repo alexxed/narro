@@ -82,7 +82,7 @@
                 NarroProject::RegisterPreference('Mozilla release name', true, NarroProjectType::Mozilla, 'text', 'leave empty for central', '');
                 NarroProject::RegisterPreference('Firefox project name for this release', true, NarroProjectType::Mozilla, 'text', 'leave empty for Firefox, if this project would be Thunderbird Aurora, fill in the name of the Narro project that holds Firefox Aurora', '');
                 NarroProject::RegisterPreference('Thunderbird project name for this release', true, NarroProjectType::Mozilla, 'text', 'leave empty for Thunderbird and Firefox, if this project would be Seamonkey Aurora, fill in the name of the Narro project that holds Thunderbird Aurora', '');
-                NarroProject::RegisterPreference('Build a language pack after export', true, 'Yes', 'option', '', '', array('Yes', 'No'));
+                NarroProject::RegisterPreference('Build a language pack after export', true, NarroProjectType::Mozilla, 'option', t('Whether to build a language pack after the export process'), 'No', array('Yes', 'No'));
             }
             
         }
