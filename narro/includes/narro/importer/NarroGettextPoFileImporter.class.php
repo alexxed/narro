@@ -287,8 +287,6 @@
         }
 
         public function ExportFile($strTemplate, $strTranslatedFile) {
-            QFirebug::error($strTemplate);
-            
             $hndExportFile = fopen($strTranslatedFile, 'w');
             if (!$hndExportFile) {
                 NarroLogger::LogError(sprintf('Cannot create or write to "%s".', $strTranslatedFile));
@@ -734,7 +732,6 @@
          * @return string valid suggestion
          */
         protected function GetTranslation($strOriginal, $strOriginalAccKey = null, $strOriginalAccKeyPrefix = null, $strTranslation, $strTranslationAccKey = null, $strContext, $strComment = null) {
-            QFirebug::error($strOriginal);
             /**
              * The contexts are trimmed at import to avoid useless white space contexts, so we need to trim it when searching for it as well
              */
@@ -769,7 +766,6 @@
             if ( $objNarroContextInfo instanceof NarroContextInfo ) {
                 $this->objCurrentContext = $objNarroContextInfo;
                 $strSuggestionValue = $this->GetExportedSuggestion($objNarroContextInfo);
-                QFirebug::error($strSuggestionValue . $objNarroContextInfo->ContextId);
 
                 if ($strSuggestionValue !== false) {
 
