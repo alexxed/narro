@@ -18,6 +18,7 @@
     class NarroSession {
         public function __construct() {
             // 7 days
+            session_save_path(__TMP_PATH__);
             session_set_cookie_params(604800, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__, null, ($_SERVER["HTTPS"] != ''), true);
             session_name('narro');
             session_cache_expire(604800);
