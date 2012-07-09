@@ -172,9 +172,14 @@
         public function btnLogin_Click($strFormId, $strControlId, $strParameter) {
             if ($this->txtOpenId->Text != '') return $this->btnOpenIdLogin($strFormId, $strControlId, $strParameter);
             
-            $objUser = NarroUser::LoadByUsernameAndPassword($this->txtUsername->Text, md5($this->txtPassword->Text));
+            $objUser = NarroUser::LoadByUsername($this->txtUsername->Text);
+            
+            require_once(__NARRO_INCLUDES__ . '/PasswordHash.class.php');
+            
+            $objHasher = new PasswordHash(8, FALSE);
+            $blnLoginOk = $objHasher->CheckPassword($this->txtPassword->Text, $objUser->Password);
 
-            if ($objUser instanceof NarroUser) {
+            if ($blnLoginOk) {
                 QApplication::$Session->RegenerateId();
                 QApplication::$Session->User = $objUser;
                 QApplication::$User = $objUser;
@@ -187,6 +192,14 @@
                     header(sprintf('Location: %s', NarroLink::ProjectList()));
                     exit;
                 }
+            }
+            elseif ($objUser->Password == md5($this->txtPassword->Text)) {
+                require_once(__NARRO_INCLUDES__ . '/PasswordHash.class.php');
+                
+                $objHasher = new PasswordHash(8, FALSE);
+                
+                $objUser->Password = $objHasher->HashPassword($this->txtPassword->Text);
+                $objUser->Save();
             }
             else {
                 $this->lblMessage->ForeColor = 'red';

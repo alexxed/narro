@@ -134,8 +134,13 @@
         protected function UpdateNarroUserFields() {
             $this->objNarroUser->Username = $this->txtUsername->Text;
             $this->objNarroUser->RealName = $this->txtRealname->Text;
-            if ($this->txtPassword->Text)
-                $this->objNarroUser->Password = md5($this->txtPassword->Text);
+            if ($this->txtPassword->Text) {
+                require_once(__NARRO_INCLUDES__ . '/PasswordHash.class.php');
+                
+                $objHasher = new PasswordHash(8, FALSE);
+                
+                $this->objNarroUser->Password = $objHasher->HashPassword($this->txtPassword->Text);
+            }
             $this->objNarroUser->Email = $this->txtEmail->Text;
         }
 
