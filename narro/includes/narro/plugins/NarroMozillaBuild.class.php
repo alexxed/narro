@@ -398,8 +398,13 @@
             
             $this->CreateExportArchive($objProject);
             
-            NarroUtils::RecursiveChmod($this->strHgDir);
-            NarroUtils::RecursiveChmod($this->strObjDir);
+            try {
+                NarroUtils::RecursiveChmod($this->strHgDir);
+                NarroUtils::RecursiveChmod($this->strObjDir);
+            }
+            catch (Exception $objEx) {
+                NarroLogger::LogWarn($objEx->getMessage());
+            }
         
             return array($objProject);
         }
