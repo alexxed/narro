@@ -28,7 +28,7 @@
          * Common setup for setting up Narro in a subdirectory narro under a docroot
          * e.g. docroot is /var/www/html, you put Narro in /var/www/html/narro and access it at http://localhost/narro
          */
-        define ('__HTTP_URL__', 'http://' . $_SERVER['HTTP_HOST']);
+        define ('__HTTP_URL__', 'http' . (($_SERVER['HTTPS'])?'s':'') . '://' . $_SERVER['HTTP_HOST']);
         define ('__DOCROOT__', realpath(dirname(__FILE__) . '/../../'));
         define ('__VIRTUAL_DIRECTORY__', '');
         define ('__SUBDIRECTORY__', '/narro');
