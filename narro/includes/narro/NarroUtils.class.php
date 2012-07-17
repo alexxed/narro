@@ -405,7 +405,7 @@
                         return false;
                     }
                     
-                    NarroLogger::LogInfo(sprintf('Running "%s" in "%s"', $strCommand, is_null($cwd)?getcwd():$cwd));
+                    NarroLogger::LogDebug(sprintf('Running "%s" in "%s"', $strCommand, is_null($cwd)?getcwd():$cwd));
                                         
                     return true;
                 }
