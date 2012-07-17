@@ -535,8 +535,8 @@
                 NarroLogger::LogError(sprintf('Not exporting %s because it has errors: %s', $this->objFile->FilePath, join("\n", $arrOutput)));
                 unlink($strTranslatedFile);
             }
-            
-            @chmod($strTranslatedFile, 0666);
+            else
+                @chmod($strTranslatedFile, 0666);
         }
 
         public function ImportFile($strTemplate, $strTranslatedFile = null) {
