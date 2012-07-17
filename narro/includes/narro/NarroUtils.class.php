@@ -138,7 +138,7 @@
                     return true;
             }
 
-            if (is_file($strFilePath)) {
+            if (is_file($strFilePath) && !is_link($strFilePath)) {
                 if ($blnKeepExecutableFiles && is_executable($strFilePath))
                     $intFileMode = 0777;
 
