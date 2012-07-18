@@ -530,7 +530,7 @@
             if (file_exists($strTranslatedFile . '~'))
                 unlink($strTranslatedFile . '~');
             
-            NarroUtils::Exec(sprintf('msgfmt -cv "%s" -o /dev/null', $strTranslatedFile), $arrOutput, $arrError, $intRetVal);
+            NarroUtils::Exec(sprintf('msgfmt -cv "%s"', $strTranslatedFile), $arrOutput, $arrError, $intRetVal);
             if ($intRetVal != 0) {
                 NarroLogger::LogError(sprintf('Not exporting %s because it has errors: %s', $this->objFile->FilePath, join("\n", $arrOutput)));
                 unlink($strTranslatedFile);

@@ -948,7 +948,8 @@
             $objFileImporter->File = $objFile;
             QApplication::$PluginHandler->BeforeExportFile($objFile, $strTemplateFile, $strTranslatedFile);
             $blnMixResult = $objFileImporter->ExportFile($strTemplateFile, $strTranslatedFile);
-            QApplication::$PluginHandler->AfterExportFile($objFile, $strTemplateFile, $strTranslatedFile);
+            if (file_exists($strTranslatedFile))
+                QApplication::$PluginHandler->AfterExportFile($objFile, $strTemplateFile, $strTranslatedFile);
             $this->arrFileId[$objFile->FileId] = 1;
 
             return $blnMixResult;
