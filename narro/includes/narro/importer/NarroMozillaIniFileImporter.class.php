@@ -173,8 +173,8 @@
                         elseif (strstr($arrTranslation[$objNarroContextInfo->Context->Context], $objNarroContextInfo->Context->TextAccessKey))
                             $arrTranslation[$objNarroContextInfo->Context->Context] = NarroString::Replace($objNarroContextInfo->Context->TextAccessKey, '&' . $objNarroContextInfo->Context->TextAccessKey, $arrTranslation[$objNarroContextInfo->Context->Context], 1);
                         // access key is not present in the translation, set the first character from the translation as access key
-                        else
-                            $arrTranslation[$objNarroContextInfo->Context->Context] = '&' . $arrTranslation[$objNarroContextInfo->Context->Context];
+                        elseif ($strTextWithAccKey = $this->ApplySuitableAccessKey($arrTranslation[$objNarroContextInfo->Context->Context]))
+                            $arrTranslation[$objNarroContextInfo->Context->Context] = $strTextWithAccKey;
                     }
                 }
 
@@ -187,6 +187,24 @@
             }
 
             return $arrTranslation;
+        }
+
+        private function ApplySuitableAccessKey($strTranslation) {
+
+            $blnEntityStart = false;
+            for($i=0; $i < mb_strlen($strTranslation); $i++) {
+                $chr = mb_substr($strTranslation, $i, 1);
+                if (in_array($chr, array('%', '$')))
+                    $blnEntityStart = true;
+
+                if ($chr == ' ')
+                    $blnEntityStart = false;
+
+                if (!$blnEntityStart && preg_match('/[a-z]/i', $chr))
+                    return mb_substr($strTranslation, 0, $i) . '&' . mb_substr($strTranslation, $i);
+            }
+
+            return false;
         }
 
         /**
