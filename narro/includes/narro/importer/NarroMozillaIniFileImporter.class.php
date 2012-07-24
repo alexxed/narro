@@ -169,9 +169,6 @@
                         // is there a access key set in the translation ?
                         if ($objNarroContextInfo->SuggestionAccessKey && strstr($arrTranslation[$objNarroContextInfo->Context->Context], $objNarroContextInfo->SuggestionAccessKey))
                             $arrTranslation[$objNarroContextInfo->Context->Context] = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '&' . $objNarroContextInfo->SuggestionAccessKey, $arrTranslation[$objNarroContextInfo->Context->Context], 1);
-                        // is the source access key present in the translation ?
-                        elseif (strstr($arrTranslation[$objNarroContextInfo->Context->Context], $objNarroContextInfo->Context->TextAccessKey))
-                            $arrTranslation[$objNarroContextInfo->Context->Context] = NarroString::Replace($objNarroContextInfo->Context->TextAccessKey, '&' . $objNarroContextInfo->Context->TextAccessKey, $arrTranslation[$objNarroContextInfo->Context->Context], 1);
                         // access key is not present in the translation, set the first character from the translation as access key
                         elseif ($strTextWithAccKey = $this->ApplySuitableAccessKey($arrTranslation[$objNarroContextInfo->Context->Context]))
                             $arrTranslation[$objNarroContextInfo->Context->Context] = $strTextWithAccKey;

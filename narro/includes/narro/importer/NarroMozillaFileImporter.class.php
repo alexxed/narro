@@ -19,7 +19,7 @@
         protected $blnIsHeader = false;
         protected $blnHeaderFound = false;
         protected $blnFirstEntityFound = false;
-        
+
         protected function FileAsArray($strFile, $blnNoHeader = false) {
             $intTime = time();
 
@@ -67,37 +67,37 @@
                     $strPreviousLines = $strPreviousLines . $strLine . "\n";
                 }
             }
-            
+
             if (!$this->blnHeaderFound) {
                 $this->objFile->Header = null;
                 $this->objFile->Save();
             }
-            
+
             foreach ($arrKeys as $strKey=>$objEntity) {
                 /* @var $objEntity NarroFileEntity */
                 if (isset($strLastKey) && $strKey != $strLastKey)
                     $arrKeys[$strKey]->AfterValue .= "\n";
             }
-            
+
             if (isset($strLastKey) && $strPreviousLines)
                 $arrKeys[$strLastKey]->AfterValue .=  "\n" . $strPreviousLines;
 
             // NarroLogger::LogDebug(sprintf('Converted file to array in %s second(s)', (time() - $intTime)));
-            
+
             return $arrKeys;
         }
-        
+
         protected function GetLabelForAccessKey($strAccCtx, $arrTexts) {
             $arrPattern = array(
-            	'/^(.*)\.accesskey$/' => array('.label', '.message', '.title', '.button', '.placeholder', ''),
-            	'/^(.*)Access[kK]ey$/' => array('Label', 'Text', ''),
-            	'/^(.*)\.accessKey$/' => array('.label', '.message', '.title', ''),
-            	'/^(.*)\_accesskey$/' => array(''),
-            	'/^(.*)Accesskey$/' => array(''),
-            	'/^(.*)\.access$/' => array('', 'Button'),
-            	'/^accesskey\-(.*)$/' => array('button-')
-        	);
-            
+                '/^(.*)\.accesskey$/' => array('.label', '.message', '.title', '.button', '.placeholder', ''),
+                '/^(.*)Access[kK]ey$/' => array('Label', 'Text', ''),
+                '/^(.*)\.accessKey$/' => array('.label', '.message', '.title', ''),
+                '/^(.*)\_accesskey$/' => array(''),
+                '/^(.*)Accesskey$/' => array(''),
+                '/^(.*)\.access$/' => array('', 'Button'),
+                '/^accesskey\-(.*)$/' => array('button-')
+            );
+
             foreach($arrPattern as $strPattern=>$arrLabel) {
                 if (preg_match($strPattern, $strAccCtx, $arrMatches) === 1) {
                     foreach($arrLabel as $strLabel) {
@@ -108,21 +108,21 @@
                     }
                 }
             }
-            
+
             $arrKeys = array_keys($arrTexts);
             $arrKeysFlipped = array_flip($arrKeys);
             $strPreviousLabel = $arrKeys[$arrKeysFlipped[$strAccCtx] - 1];
             // NarroLogger::LogDebug(sprintf('No matching context found for access key context %s, previous context is %s', $strAccCtx, $strPreviousLabel));
-                        
+
             return false;
         }
-        
+
         protected function GetLabelForCommandKey($strAccCtx, $arrTexts) {
             $arrPattern = array(
-            	'/^(.*)\.key$/' => array('.label', '.message', '.title', '.button', '.placeholder', ''),
-            	'/^(.*)\.command[kK]ey$/' => array('.label', '.message', '.title', '')
+                '/^(.*)\.key$/' => array('.label', '.message', '.title', '.button', '.placeholder', ''),
+                '/^(.*)\.command[kK]ey$/' => array('.label', '.message', '.title', '')
             );
-        
+
             foreach($arrPattern as $strPattern=>$arrLabel) {
                 if (preg_match($strPattern, $strAccCtx, $arrMatches) === 1) {
                     foreach($arrLabel as $strLabel) {
@@ -133,12 +133,12 @@
                     }
                 }
             }
-        
+
             $arrKeys = array_keys($arrTexts);
             $arrKeysFlipped = array_flip($arrKeys);
             $strPreviousLabel = $arrKeys[$arrKeysFlipped[$strAccCtx] - 1];
             // NarroLogger::LogDebug(sprintf('No matching context found for command key context %s, previous context is %s', $strAccCtx, $strPreviousLabel));
-        
+
             return false;
         }
 
@@ -160,7 +160,7 @@
                             $arrTexts[$strLabelCtx]->AccessKeyCtx = $strContext;
                         }
                     }
-                    
+
                     if (stristr($strContext, '.key') || stristr($strContext, '.commandkey')) {
                         $strLabelCtx = $this->GetLabelForCommandKey($strContext, $arrTexts);
                         if ($strLabelCtx !== false) {
@@ -211,7 +211,7 @@
                     else
                         $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->AccessKeyCtx] = $objNarroContextInfo->Context->TextAccessKey;
                 }
-                
+
                 if ($objNarroContextInfo->Context->TextCommandKey) {
                     if ($objNarroContextInfo->SuggestionCommandKey && isset($arrTemplate[$objNarroContextInfo->Context->Context]->CommandKeyCtx))
                         $arrTranslation[$arrTemplate[$objNarroContextInfo->Context->Context]->CommandKeyCtx] = $objNarroContextInfo->SuggestionCommandKey;
@@ -242,7 +242,7 @@
                 $arrSourceKey = $this->GetAccessKeys($arrSourceKey);
                 if (isset($arrTransKey))
                     $arrTransKey = $this->GetAccessKeys($arrTransKey);
-                
+
                 foreach($arrSourceKey as $strKey=>$objEntity) {
                     /* @var $objEntity NarroFileEntity */
                     // if it's a matched access key or command key, keep going
