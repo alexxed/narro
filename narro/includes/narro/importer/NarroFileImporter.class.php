@@ -80,10 +80,16 @@
         protected $intExportedSuggestion = 1;
 
         /**
+         * Whether to import translations
+         * @var boolean
+         */
+        protected $blnImportSuggestions = true;
+
+        /**
          * Array of Narro user ids
          */
         protected $arrExportAuthorList;
-        
+
         /**
          * An array with all the context info objects from this file
          * @var NarroContextInfo[]
@@ -116,6 +122,7 @@
                 $this->blnSkipUntranslated = $objImporter->SkipUntranslated;
                 $this->blnApproveAlreadyApproved = $objImporter->ApproveAlreadyApproved;
                 $this->blnOnlySuggestions = $objImporter->OnlySuggestions;
+                $this->blnImportSuggestions = $objImporter->ImportSuggestions;
                 $this->intExportedSuggestion = $objImporter->ExportedSuggestion;
                 $this->arrExportAuthorList = $objImporter->ExportAuthorList;
             }
@@ -200,7 +207,7 @@
          */
         protected function AddTranslation($strOriginal, $strOriginalAccKey = null, $strTranslation, $strTranslationAccKey = null, $strContext = '', $strComment = null, $strOriginalCmdKey = null, $strTranslationCmdKey = null) {
             if ($strOriginal == '') return false;
-            
+
             $blnContextInfoChanged = false;
             $blnContextChanged = false;
 
@@ -331,7 +338,7 @@
                     $blnContextChanged = true;
                     $objContext->TextAccessKey = $strOriginalAccKey;
                 }
-                
+
                 if ($objContext->TextCommandKey != $strOriginalCmdKey) {
                     // NarroLogger::LogDebug('Text command key changed for this context');
                     $blnContextChanged = true;
@@ -358,7 +365,7 @@
             /**
              * Finally, we can process the suggestion if we got so far
              */
-            else {
+            elseif ($this->blnImportSuggestions) {
                 /**
                  * See if a suggestion already exists, fetch it
                  */
@@ -419,7 +426,7 @@
                     $blnContextInfoChanged = true;
                     $objContextInfo->SuggestionAccessKey = $strTranslationAccKey;
                 }
-                
+
                 if ($objContextInfo instanceof NarroContextInfo && !is_null($strTranslationCmdKey) && $objContextInfo->SuggestionCommandKey != $strTranslationCmdKey) {
                     // NarroLogger::LogDebug('Translation command key changed');
                     $blnContextInfoChanged = true;
@@ -553,13 +560,13 @@
         public function GetMostVotedSuggestion($intContextId, $intTextId, $intUserId) {
             $strQuery = sprintf(
                 'SELECT
-                	narro_suggestion_vote.suggestion_id, SUM(vote_value) as votes
+                    narro_suggestion_vote.suggestion_id, SUM(vote_value) as votes
                 FROM
-                	narro_suggestion_vote, narro_suggestion
+                    narro_suggestion_vote, narro_suggestion
                 WHERE
-                	narro_suggestion_vote.suggestion_id=narro_suggestion.suggestion_id AND
-                	narro_suggestion.text_id=%d AND
-                	narro_suggestion.language_id=%d
+                    narro_suggestion_vote.suggestion_id=narro_suggestion.suggestion_id AND
+                    narro_suggestion.text_id=%d AND
+                    narro_suggestion.language_id=%d
                 GROUP BY narro_suggestion_vote.suggestion_id
                 ORDER BY votes DESC
                 LIMIT 1',

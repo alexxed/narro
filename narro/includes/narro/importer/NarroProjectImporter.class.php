@@ -71,7 +71,13 @@
          * 6 = approved then the most recent suggestion from selected users in the given order
          */
         protected $intExportedSuggestion = 1;
-        
+
+        /**
+         * Whether to import translations
+         * @var boolean
+         */
+        protected $blnImportSuggestions = true;
+
         /**
          * Array of Narro user ids
          */
@@ -93,10 +99,10 @@
                         join(',', array_keys($this->arrFileId))
                     )
                 );
-                
+
                 NarroFile::GetDatabase()->NonQuery(
                     sprintf(
-                    	'UPDATE narro_context SET active=0 WHERE project_id=%d AND file_id NOT IN (%s)',
+                        'UPDATE narro_context SET active=0 WHERE project_id=%d AND file_id NOT IN (%s)',
                         $this->objProject->ProjectId,
                         join(',', array_keys($this->arrFileId))
                     )
@@ -237,12 +243,12 @@
             $this->objProject->CountAllTextsByLanguage();
             $this->objProject->CountApprovedTextsByLanguage();
             $this->objProject->CountTranslatedTextsByLanguage();
-            
+
             foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
                 if ($strValue != 0)
                 NarroLogger::LogInfo(stripslashes($strName) . ': ' . $strValue);
             }
-            
+
             if (SERVER_INSTANCE == 'dev') {
                 $strQueryData = '';
                 $intTimeSpentOnQueries = 0;
@@ -253,7 +259,7 @@
                 }
                 file_put_contents(__TMP_PATH__ . '/queries.csv', $strQueryData);
                 @chmod(__TMP_PATH__ . '/queries.csv', 0666);
-            
+
                 $strCacheData = '';
                 if (isset($GLOBALS['arrCacheQueries']) && is_array($GLOBALS['arrCacheQueries']))
                 foreach($GLOBALS['arrCacheQueries'] as $arrCacheData) {
@@ -261,12 +267,12 @@
                 }
                 file_put_contents(__TMP_PATH__ . '/cache.csv', $strCacheData);
                 @chmod(__TMP_PATH__ . '/cache.csv', 0666);
-            
+
                 NarroLogger::LogInfo(sprintf('%d queries in total, %d seconds spent on them', count(@$GLOBALS['arrQueries']), $intTimeSpentOnQueries));
                 NarroLogger::LogInfo(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
             }
         }
-        
+
         public function ImportFromXpi($strXpiFilePath) {
             $strWorkingDir = $strXpiFilePath . '_extract';
             mkdir($strWorkingDir, 0777);
@@ -285,51 +291,51 @@
                     default:
                         $strError = 'Error code: '. $intErrCode;
                 }
-            
+
                 throw new Exception(sprintf('Failed to uncompress %s: %s', $strXpiFilePath, $strError));
             }
 
             NarroUtils::RecursiveChmod($strWorkingDir);
-            
+
             // Search source directory
             $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode);
-            
+
             if ($arrSearchResult == false)
                 $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode . '-' . $this->objSourceLanguage->CountryCode);
-            
+
             if ($arrSearchResult == false)
                 $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode . '_' . $this->objSourceLanguage->CountryCode);
-            
-            
+
+
             if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
                 NarroLogger::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $strWorkingDir, $arrSearchResult[0], $this->objSourceLanguage->LanguageCode));
-                
+
                 $strTemplatePath = $arrSearchResult[0];
             }
-            
+
             // Search target directory
             $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode);
-            
+
             if ($arrSearchResult == false)
                 $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode . '-' . $this->objTargetLanguage->CountryCode);
-            
+
             if ($arrSearchResult == false)
                 $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode . '_' . $this->objTargetLanguage->CountryCode);
-            
-            
+
+
             if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
                 NarroLogger::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $strWorkingDir, $arrSearchResult[0], $this->objTargetLanguage->LanguageCode));
-            
+
                 $strTranslationPath = $arrSearchResult[0];
             }
-            
+
             if (isset($strTemplatePath) && isset($strTranslationPath)) {
                 $this->strTemplatePath = $strTemplatePath;
                 $this->strTranslationPath = $strTranslationPath;
-                
+
                 $this->ImportFromDirectory();
             }
-            
+
             NarroUtils::RecursiveDelete($strWorkingDir);
 
         }
@@ -341,7 +347,7 @@
              */
             $arrFiles = $this->ListDir($this->strTemplatePath);
             $intTotalFilesToProcess = count($arrFiles);
-            
+
             if ($intTotalFilesToProcess == 1 && pathinfo($arrFiles[0], PATHINFO_EXTENSION) == 'xpi')
                 return $this->ImportFromXpi($arrFiles[0]);
 
@@ -412,18 +418,18 @@
                             // NarroLogger::LogDebug(sprintf('Added folder "%s" from "%s"', $strDir, $strPath));
                             NarroImportStatistics::$arrStatistics['Imported folders']++;
                         }
-                        
+
                         $arrDirectories[$strPath] = $objFile->FileId;
-                        
+
                         if (!$objFile->Active) {
                             $objFile->Active = 1;
                             if ($this->blnOnlySuggestions == false)
                                 $objFile->Save();
                         }
-                        
+
                         // Create the file progress if needed
                         $objFile->FileProgressForCurrentLanguage;
-                                                
+
                         $this->arrFileId[$objFile->FileId] = 1;
                     }
                     $intParentId = $arrDirectories[$strPath];
@@ -485,13 +491,13 @@
                     // NarroLogger::LogDebug(sprintf('Added file "%s" from "%s"', $strFileName, $strPath));
                     NarroImportStatistics::$arrStatistics['Imported files']++;
                 }
-                
+
                 if ($objFile->Active == 0) {
                     $objFile->Active = 1;
                     if ($this->blnOnlySuggestions == false)
                         $objFile->Save();
                 }
-                
+
                 $this->arrFileId[$objFile->FileId] = 1;
 
                 $strTranslatedFileToImport = str_replace($this->strTemplatePath, $this->strTranslationPath, $strFileToImport);
@@ -505,7 +511,7 @@
                         // it's ok, equal strings won't be imported
                         $this->ImportFile($objFile, $strFileToImport);
                     }
-    
+
                     $intElapsedTime = time() - $intTime;
                     // NarroLogger::LogDebug(sprintf('Processed file "%s" in %d seconds, %d files left', str_replace($this->strTemplatePath, '', $strFileToImport), $intElapsedTime, (count($arrFiles) - $intFileNo - 1)));
                 }
@@ -668,12 +674,12 @@
             NarroProgress::ClearProgressFileName($this->objProject->ProjectId, 'export');
 
             QApplication::$PluginHandler->AfterExportProject($this->objProject);
-            
+
             foreach(NarroImportStatistics::$arrStatistics as $strName=>$strValue) {
                 if ($strValue != 0)
                 NarroLogger::LogInfo(stripslashes($strName) . ': ' . $strValue);
             }
-            
+
             if (SERVER_INSTANCE == 'dev') {
                 $strQueryData = '';
                 $intTimeSpentOnQueries = 0;
@@ -684,7 +690,7 @@
                 }
                 file_put_contents(__TMP_PATH__ . '/queries.csv', $strQueryData);
                 chmod(__TMP_PATH__ . '/queries.csv', 0666);
-                
+
                 $strCacheData = '';
                 if (isset($GLOBALS['arrCacheQueries']) && is_array($GLOBALS['arrCacheQueries']))
                 foreach($GLOBALS['arrCacheQueries'] as $arrCacheData) {
@@ -692,18 +698,18 @@
                 }
                 file_put_contents(__TMP_PATH__ . '/cache.csv', $strCacheData);
                 chmod(__TMP_PATH__ . '/cache.csv', 0666);
-                
+
                 NarroLogger::LogInfo(sprintf('%d queries in total, %d seconds spent on them', count(@$GLOBALS['arrQueries']), $intTimeSpentOnQueries));
                 NarroLogger::LogInfo(sprintf('%d cache queries in total, %s seconds spent on them', count(@$GLOBALS['arrCacheQueries']), intval(@$GLOBALS['arrCacheQueriesSpent'])));
             }
         }
-        
+
         public function ExportToXpi($strXpiFilePath) {
             $strArchive = $this->strTranslationPath . '/' . basename($strXpiFilePath);
             if (file_exists($strArchive)) {
                 unlink($strArchive);
             }
-            
+
             $strWorkingDir = $strXpiFilePath . '_extract';
             mkdir($strWorkingDir, 0777);
             NarroLogger::LogInfo(sprintf('Trying to uncompress %s', $strXpiFilePath));
@@ -721,54 +727,54 @@
                     default:
                         $strError = 'Error code: '. $intErrCode;
                 }
-            
+
                 throw new Exception(sprintf('Failed to uncompress %s: %s', $strXpiFilePath, $strError));
             }
-            
+
             NarroUtils::RecursiveChmod($strWorkingDir);
-            
+
             // Search source directory
             $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode);
-            
+
             if ($arrSearchResult == false)
             $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode . '-' . $this->objSourceLanguage->CountryCode);
-            
+
             if ($arrSearchResult == false)
             $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objSourceLanguage->LanguageCode . '_' . $this->objSourceLanguage->CountryCode);
-            
-            
+
+
             if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
                 NarroLogger::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $strWorkingDir, $arrSearchResult[0], $this->objSourceLanguage->LanguageCode));
-            
+
                 $strTemplatePath = $arrSearchResult[0];
             }
-            
+
             // Search target directory
             $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode);
-            
+
             if ($arrSearchResult == false)
             $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode . '-' . $this->objTargetLanguage->CountryCode);
-            
+
             if ($arrSearchResult == false)
             $arrSearchResult = NarroUtils::SearchDirectoryByName($strWorkingDir, $this->objTargetLanguage->LanguageCode . '_' . $this->objTargetLanguage->CountryCode);
-            
-            
+
+
             if (is_array($arrSearchResult) && count($arrSearchResult) == 1) {
                 NarroLogger::LogWarn(sprintf('Path changed from "%s" to "%s" because a directory named "%s" was found deeper in the given path.', $strWorkingDir, $arrSearchResult[0], $this->objTargetLanguage->LanguageCode));
-            
+
                 $strTranslationPath = $arrSearchResult[0];
             }
-            
+
             if (isset($strTemplatePath)) {
                 $strOldTemplatePath = $this->strTemplatePath;
                 $this->strTemplatePath = $strTemplatePath;
                 if (isset($strTranslationPath))
                     $this->strTranslationPath = $strTranslationPath;
-            
+
                 $this->ExportFromDirectory();
-                
+
                 $arrFiles = NarroUtils::ListDirectory($strWorkingDir, null, null, null, true);
-            
+
                 $objZipFile = new ZipArchive();
                 if ($objZipFile->open($strArchive, ZipArchive::OVERWRITE) === TRUE) {
                     foreach($arrFiles as $strFileName) {
@@ -787,18 +793,18 @@
                                     $strLastLocaleLine,
                                     $strLastLocaleLine . "\n" .
                                     sprintf(
-                                    	'locale %s %s %s',
-                                    	$arrMatches[1][count($arrMatches[2]) - 1],
-                                    	$this->objTargetLanguage->LanguageCode,
-                                    	preg_replace('/\/[^\/]+\/\s*$/m', '/' . $this->objTargetLanguage->LanguageCode . '/', $strLastLocalePath)
-                                	),
+                                        'locale %s %s %s',
+                                        $arrMatches[1][count($arrMatches[2]) - 1],
+                                        $this->objTargetLanguage->LanguageCode,
+                                        preg_replace('/\/[^\/]+\/\s*$/m', '/' . $this->objTargetLanguage->LanguageCode . '/', $strLastLocalePath)
+                                    ),
                                     $strManifest
                                 );
-                                
+
                             }
-                            
+
                         }
-                        
+
                         if ($strWorkingDir == $strFileName) continue;
                         if (is_dir($strFileName)) {
                             $objZipFile->addEmptyDir(str_replace($strWorkingDir . '/', '', $strFileName ));
@@ -821,7 +827,7 @@
                     return false;
                 }
             }
-            
+
             NarroUtils::RecursiveDelete($strWorkingDir);
             return true;
         }
@@ -836,7 +842,7 @@
             $arrFiles = $this->ListDir($this->strTemplatePath);
 
             $intTotalFilesToProcess = count($arrFiles);
-            
+
             if ($intTotalFilesToProcess == 1 && pathinfo($arrFiles[0], PATHINFO_EXTENSION) == 'xpi')
                 return $this->ExportToXpi($arrFiles[0]);
 
@@ -1005,6 +1011,7 @@
                 case "ApproveAlreadyApproved": return $this->blnApproveAlreadyApproved;
                 case "CheckEqual": return $this->blnCheckEqual;
                 case "ImportUnchangedFiles": return $this->blnImportUnchangedFiles;
+                case "ImportSuggestions": return $this->blnImportSuggestions;
                 case "OnlySuggestions": return $this->blnOnlySuggestions;
                 case "ExportedSuggestion": return $this->intExportedSuggestion;
                 case "CopyUnhandledFiles": return $this->blnCopyUnhandledFiles;
@@ -1027,12 +1034,12 @@
                     else {
                         if (!file_exists(dirname($mixValue)))
                             throw new Exception(sprintf('Cannot create "%s" because the parent directory "%s" does not exist', $mixValue, dirname($mixValue)));
-                        
+
                         if (!is_writable(dirname($mixValue)))
                             throw new Exception(sprintf('Cannot create "%s" because the parent directory "%s" is not writable', $mixValue, dirname($mixValue)));
-                        
+
                         chmod(dirname($mixValue), 0777);
-                        
+
                         if (mkdir($mixValue, 0777, true))
                             $this->strTranslationPath = $mixValue;
                         else
@@ -1049,12 +1056,12 @@
                     else {
                         if (!file_exists(dirname($mixValue)))
                         throw new Exception(sprintf('Cannot create "%s" because the parent directory "%s" does not exist', $mixValue, dirname($mixValue)));
-                        
+
                         if (!is_writable(dirname($mixValue)))
                         throw new Exception(sprintf('Cannot create "%s" because the parent directory "%s" is not writable', $mixValue, dirname($mixValue)));
-                        
+
                         chmod(dirname($mixValue), 0777);
-                                                
+
                         if (mkdir($mixValue, 0777, true))
                             $this->strTranslationPath = $mixValue;
                         else
@@ -1143,6 +1150,15 @@
                         throw $objExc;
                     }
 
+                case "ImportSuggestions":
+                    try {
+                        $this->blnImportSuggestions = QType::Cast($mixValue, QType::Boolean);
+                        break;
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+
                 case "CopyUnhandledFiles":
                     try {
                         $this->blnCopyUnhandledFiles = QType::Cast($mixValue, QType::Boolean);
@@ -1169,7 +1185,7 @@
                         $objExc->IncrementOffset();
                         throw $objExc;
                     }
-                    
+
                 case "ExportAuthorList":
                     try {
                         if (is_array($mixValue))
@@ -1179,7 +1195,7 @@
                             foreach($arrAuthor as $intIdx=>$strAuthor) {
                                 $arrAuthor[$intIdx] = trim($strAuthor);
                             }
-                            
+
                             foreach(NarroUser::QueryArray(QQ::In(QQN::NarroUser()->RealName, $arrAuthor)) as $objUser) {
                                 $this->arrExportAuthorList[] = $objUser->UserId;
                             }

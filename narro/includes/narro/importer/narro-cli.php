@@ -50,7 +50,8 @@
                     "--approve-already-approved   overwrite translations approved in Narro\n" .
                     "--import-unchanged-files     import files marked unchanged after the last import\n" .
                     "--only-suggestions           import only suggestions, don't add files, texts\n" .
-                    "                             or contexts\n",
+                    "                             or contexts\n" .
+                    "--no-suggestions             do not import suggestions\n",
                 basename(__FILE__),
                 NarroLanguage::SOURCE_LANGUAGE_CODE
             )
@@ -66,6 +67,7 @@
          * Get boolean options
          */
         $objNarroImporter->CheckEqual = !(bool) array_search('--do-not-check-equal', $argv);
+        $objNarroImporter->ImportSuggestions = !(bool) array_search('--no-suggestions', $argv);
         $objNarroImporter->Approve = (bool) array_search('--approve', $argv);
         $objNarroImporter->ApproveAlreadyApproved = (bool) array_search('--approve-already-approved', $argv);
         $objNarroImporter->OnlySuggestions = (bool) array_search('--only-suggestions', $argv);
@@ -197,7 +199,7 @@
 
         if (array_search('--exported-suggestion', $argv))
             $objNarroImporter->ExportedSuggestion = $argv[array_search('--exported-suggestion', $argv)+1];
-        
+
         if (array_search('--export-author-list', $argv) !== false)
             $objNarroImporter->ExportAuthorList = $argv[array_search('--export-author-list', $argv)+1];
 
