@@ -196,7 +196,7 @@
         public function GetAccessKeys($arrTexts) {
             $arrTexts = parent::GetAccessKeys($arrTexts);
             foreach($arrTexts as $strContext=>$objEntity) {
-                if (preg_match('/&([^\s])/', $objEntity->Value, $arrMatches)) {
+                if (preg_match('/&([^\s])/', html_entity_decode($objEntity->Value), $arrMatches)) {
                     $objEntity->AccessKey = $arrMatches[1];
                     $arrTexts[$strContext]->Value = str_replace($arrMatches[0], $arrMatches[1], $objEntity->Value);
                 }
