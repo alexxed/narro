@@ -62,7 +62,7 @@
                 return false;
             }
 
-            $objFileImporter = NarroFileType::GetFileImporter($objFile->TypeId);
+            $objFileImporter = NarroFileType::GetFileImporter($this->objNarroFile->TypeId);
             $objFileImporter->User = QApplication::$User;
             $objFileImporter->Project = $this->objNarroFile->Project;
             $objFileImporter->SourceLanguage = NarroLanguage::LoadByLanguageCode(NarroLanguage::SOURCE_LANGUAGE_CODE);
@@ -70,8 +70,9 @@
             $objFileImporter->CheckEqual = true;
             $objFileImporter->File = $this->objNarroFile;
             $objFileImporter->OnlySuggestions = !QApplication::HasPermissionForThisLang('Can approve', $this->objNarroFile->ProjectId);
-
+            $objFileImporter->ApproveAlreadyApproved = QApplication::HasPermissionForThisLang('Can approve', $this->objNarroFile->ProjectId);
             $objFileImporter->Approve = QApplication::HasPermissionForThisLang('Can approve', $this->objNarroFile->ProjectId);
+
 
             $strTempFileName = tempnam(__TMP_PATH__, QApplication::$TargetLanguage->LanguageCode);
 
