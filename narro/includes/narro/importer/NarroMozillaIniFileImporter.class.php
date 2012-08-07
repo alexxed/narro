@@ -168,7 +168,7 @@
                     else {
                         // is there a access key set in the translation ?
                         if ($objNarroContextInfo->SuggestionAccessKey && strstr($arrTranslation[$objNarroContextInfo->Context->Context], $objNarroContextInfo->SuggestionAccessKey))
-                            $arrTranslation[$objNarroContextInfo->Context->Context] = NarroString::Replace($objNarroContextInfo->SuggestionAccessKey, '&' . $objNarroContextInfo->SuggestionAccessKey, $arrTranslation[$objNarroContextInfo->Context->Context], 1);
+                            $arrTranslation[$objNarroContextInfo->Context->Context] = $this->ApplySuitableAccessKey($arrTranslation[$objNarroContextInfo->Context->Context], $objNarroContextInfo->SuggestionAccessKey);
                         // access key is not present in the translation, set the first character from the translation as access key
                         elseif ($strTextWithAccKey = $this->ApplySuitableAccessKey($arrTranslation[$objNarroContextInfo->Context->Context]))
                             $arrTranslation[$objNarroContextInfo->Context->Context] = $strTextWithAccKey;
@@ -186,7 +186,7 @@
             return $arrTranslation;
         }
 
-        private function ApplySuitableAccessKey($strTranslation) {
+        private function ApplySuitableAccessKey($strTranslation, $strPreferredAccKey = null) {
 
             $blnEntityStart = false;
             for($i=0; $i < mb_strlen($strTranslation); $i++) {
@@ -197,7 +197,7 @@
                 if ($chr == ' ')
                     $blnEntityStart = false;
 
-                if (!$blnEntityStart && preg_match('/[a-z]/i', $chr))
+                if (!$blnEntityStart && (preg_match('/[a-z]/i', $chr) || $chr == $strPreferredAccKey))
                     return mb_substr($strTranslation, 0, $i) . '&' . mb_substr($strTranslation, $i);
             }
 
