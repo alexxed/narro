@@ -67,11 +67,11 @@
             $this->dtgProjectList->AddColumn($this->colProjectName);
             $this->dtgProjectList->AddColumn($this->colLastActivity);
             $this->dtgProjectList->AddColumn($this->colPercentTranslated);
-            
+
             $colWordCount = new QDataGridColumn(t('Word count'));
             $colWordCount->Html = '<?=number_format($_ITEM->CountAllWordsByLanguage())?>';
             $colWordCount->HorizontalAlign = QHorizontalAlign::Right;
-            $this->dtgProjectList->AddColumn($colWordCount);
+            // $this->dtgProjectList->AddColumn($colWordCount);
 
             $this->dtgProjectList->SortColumnIndex = 1;
             $this->dtgProjectList->SortDirection = 1;
@@ -170,19 +170,19 @@
             $this->txtSearch->SetDataBinder("txtSearch_Autocomplete", $this);
             $this->txtSearch->AddAction(new QEnterKeyEvent(), new QAjaxControlAction($this, 'btnSearch_Click'));
         }
-        
+
         public function txtSearch_Autocomplete() {
             $arrReturn = array();
-            
+
             $arrConditions = array(QQ::Like(QQN::NarroProject()->ProjectName, '%' . $this->txtSearch->Text . '%'));
-            
+
             if (!QApplication::HasPermission('Administrator'))
                 $arrConditions[] = QQ::Equal(QQN::NarroProject()->Active, true);
-            
+
             foreach(NarroProject::QueryArray(QQ::AndCondition($arrConditions), array(QQ::LimitInfo(10, 0))) as $objProject) {
                 $arrReturn[] = $objProject->ProjectName;
             }
-            
+
             $this->txtSearch->DataSource = $arrReturn;
         }
 
@@ -204,7 +204,7 @@
             $objProgressBar = new NarroProjectTranslationProgressBar($objProject->_NarroProjectProgressAsProject, $this->dtgProjectList);
 
             QApplication::$PluginHandler->DisplayInProjectListInProgressColumn($objProject);
-            
+
             $strOutput = '';
             if (is_array(QApplication::$PluginHandler->PluginReturnValues)) {
                 foreach(QApplication::$PluginHandler->PluginReturnValues as $strPluginName=>$mixReturnValue) {
@@ -213,7 +213,7 @@
                     }
                 }
             }
-            
+
             return NarroLink::Translate($objProject->ProjectId, '', 0, '', 0, 0, 10, 0, 0, $objProgressBar->Render(false)) . $strOutput;
         }
 
