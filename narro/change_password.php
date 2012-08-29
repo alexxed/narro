@@ -53,7 +53,10 @@
         }
 
         protected function btnChangePassword_Click($strFormId, $strControlId, $strParameter) {
-            QApplication::$User->Password = md5($this->txtPassword->Text);
+            require_once(__NARRO_INCLUDES__ . '/PasswordHash.class.php');
+
+            $objHasher = new PasswordHash(8, FALSE);
+            QApplication::$User->Password = $objHasher->HashPassword($this->txtPassword->Text);
 
             try {
                 QApplication::$User->Save();

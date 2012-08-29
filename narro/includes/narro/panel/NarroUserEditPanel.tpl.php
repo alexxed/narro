@@ -18,7 +18,10 @@
 
 $_CONTROL->lblMessage->Render();
 
-if ($_CONTROL->objNarroUser->Password == md5('')) {
+require_once(__NARRO_INCLUDES__ . '/PasswordHash.class.php');
+$objHasher = new PasswordHash(8, FALSE);
+
+if ($_CONTROL->objNarroUser->Password == $objHasher->HashPassword('')) {
     _t('Note that you logged in using openid or an external database.');
     echo '<br />';
     _t('If you change your <b>username</b> or <b>password</b> here, you will have to login in the future with the data you enter here.');

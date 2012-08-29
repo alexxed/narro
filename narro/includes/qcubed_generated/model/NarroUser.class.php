@@ -35,7 +35,7 @@
         * @var array
         */
         public static $AvailablePreferences;
-                
+
         protected $arrPermissions;
         protected $arrPreferences;
         protected $objLanguage;
@@ -76,7 +76,7 @@
             else
                 return self::$AvailablePreferences[$strName]['default'];
         }
-        
+
         public static function RegisterPreference($strName, $strType = 'text', $strDescription = '', $strDefaultValue = '', $arrValues = array()) {
             self::$AvailablePreferences[$strName] = array('type'=> $strType, 'description'=>$strDescription, 'default'=>$strDefaultValue, 'values'=>$arrValues);
         }
@@ -127,7 +127,7 @@
 
                 $objCache->SaveData($objUser);
             }
-            
+
             return $objUser;
         }
 
@@ -219,7 +219,10 @@
             if ($strRealName)
                 $objUser->RealName = $strRealName;
             $objUser->Email = $strEmail;
-            $objUser->Password = md5($strPassword);
+            require_once(__NARRO_INCLUDES__ . '/PasswordHash.class.php');
+
+            $objHasher = new PasswordHash(8, FALSE);
+            $objUser->Password = $objHasher->HashPassword($strPassword);
 
             try {
                 $objUser->Save();
