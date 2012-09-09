@@ -57,8 +57,11 @@
                 return $strLink;
         }
 
-        public static function ProjectList($strLinkText = '', $intFilter = 0) {
-            $strLink = sprintf('projects.php?l=%s&f=%d', QApplication::$TargetLanguage->LanguageCode, $intFilter);
+        public static function ProjectList($strLinkText = '', $intFilter = 0, $strLanguageCode = null) {
+            if (is_null($strLanguageCode)) {
+                $strLanguageCode = QApplication::$TargetLanguage->LanguageCode;
+            }
+            $strLink = sprintf('projects.php?l=%s&f=%d', $strLanguageCode, $intFilter);
             if ($strLinkText != '')
                 return sprintf('<a href="%s">%s</a>', $strLink, $strLinkText);
             else
@@ -88,7 +91,7 @@
             else
                 return $strLink;
         }
-        
+
         /**
         * Creates a link to the review page
         *
@@ -134,7 +137,7 @@
                 else
             return $strLink;
         }
-        
+
 
         /**
          * Creates a link to the translation page
@@ -324,7 +327,7 @@
             else
                 return $strLink;
         }
-        
+
         public static function Log($strSearch = '', $strLinkText = '') {
             $strLink = sprintf('log.php?l=%s&s=%s', QApplication::$TargetLanguage->LanguageCode, $strSearch);
             if ($strLinkText != '')

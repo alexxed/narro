@@ -138,10 +138,15 @@
                         QApplication::$Session->User = $objUser;
                         QApplication::$User = $objUser;
 
-                        if ($this->txtPreviousUrl)
-                            QApplication::Redirect($this->txtPreviousUrl);
+                        if ($this->txtPreviousUrl) {
+                            $strUrl = preg_replace('/[\?\&]l\=[a-z0-9\-\_]+/', 'l=' . QApplication::$User->GetPreferenceValueByName('Language'), $this->txtPreviousUrl);
+                            if ($strUrl)
+                                QApplication::Redirect($strUrl);
+                            else
+                                QApplication::Redirect($this->txtPreviousUrl);
+                        }
                         else
-                            QApplication::Redirect(NarroLink::ProjectList());
+                            QApplication::Redirect(NarroLink::ProjectList(null, null, QApplication::$User->GetPreferenceValueByName('Language')));
 
                         exit;
                     }
@@ -187,15 +192,15 @@
                 QApplication::$Session->RegenerateId();
                 QApplication::$Session->User = $objUser;
                 QApplication::$User = $objUser;
-
                 if ($this->txtPreviousUrl) {
-                    header(sprintf('Location: %s', $this->txtPreviousUrl));
-                    exit;
+                    $strUrl = preg_replace('/[\?\&]l\=[a-z0-9\-\_]+/', 'l=' . QApplication::$User->GetPreferenceValueByName('Language'), $this->txtPreviousUrl);
+                    if ($strUrl)
+                        QApplication::Redirect($strUrl);
+                    else
+                        QApplication::Redirect($this->txtPreviousUrl);
                 }
-                else {
-                    header(sprintf('Location: %s', NarroLink::ProjectList()));
-                    exit;
-                }
+                else
+                    QApplication::Redirect(NarroLink::ProjectList(null, null, QApplication::$User->GetPreferenceValueByName('Language')));
             }
             elseif ($objUser->Password == md5($this->txtPassword->Text)) {
                 require_once(__NARRO_INCLUDES__ . '/PasswordHash.class.php');
@@ -258,10 +263,15 @@
                 QApplication::$Session->User = $objUser;
                 QApplication::$User = $objUser;
 
-                if ($this->txtPreviousUrl)
-                    QApplication::Redirect($this->txtPreviousUrl);
+                if ($this->txtPreviousUrl) {
+                    $strUrl = preg_replace('/[\?\&]l\=[a-z0-9\-\_]+/', 'l=' . QApplication::$User->GetPreferenceValueByName('Language'), $this->txtPreviousUrl);
+                    if ($strUrl)
+                        QApplication::Redirect($strUrl);
+                    else
+                        QApplication::Redirect($this->txtPreviousUrl);
+                }
                 else
-                    QApplication::Redirect(NarroLink::ProjectList());
+                    QApplication::Redirect(NarroLink::ProjectList(null, null, QApplication::$User->GetPreferenceValueByName('Language')));
 
                 exit;
             }
