@@ -139,7 +139,7 @@
                         QApplication::$User = $objUser;
 
                         if ($this->txtPreviousUrl) {
-                            $strUrl = preg_replace('/[\?\&]l\=[a-z0-9\-\_]+/', 'l=' . QApplication::$User->GetPreferenceValueByName('Language'), $this->txtPreviousUrl);
+                            $strUrl = preg_replace('/([\?\&]l\=)[a-z0-9\-\_]+/', '\1' . QApplication::$User->GetPreferenceValueByName('Language'), $this->txtPreviousUrl);
                             if ($strUrl)
                                 QApplication::Redirect($strUrl);
                             else
@@ -193,7 +193,7 @@
                 QApplication::$Session->User = $objUser;
                 QApplication::$User = $objUser;
                 if ($this->txtPreviousUrl) {
-                    $strUrl = preg_replace('/[\?\&]l\=[a-z0-9\-\_]+/', 'l=' . QApplication::$User->GetPreferenceValueByName('Language'), $this->txtPreviousUrl);
+                    $strUrl = preg_replace('/([\?\&]l\=)[a-z0-9\-\_]+/', '\1' . QApplication::$User->GetPreferenceValueByName('Language'), $this->txtPreviousUrl);
                     if ($strUrl)
                         QApplication::Redirect($strUrl);
                     else
@@ -264,7 +264,7 @@
                 QApplication::$User = $objUser;
 
                 if ($this->txtPreviousUrl) {
-                    $strUrl = preg_replace('/[\?\&]l\=[a-z0-9\-\_]+/', 'l=' . QApplication::$User->GetPreferenceValueByName('Language'), $this->txtPreviousUrl);
+                    $strUrl = preg_replace('/([\?\&]l\=)[a-z0-9\-\_]+/', '\1' . QApplication::$User->GetPreferenceValueByName('Language'), $this->txtPreviousUrl);
                     if ($strUrl)
                         QApplication::Redirect($strUrl);
                     else
