@@ -25,7 +25,7 @@
             header("Expires: 0");
             header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
             header("Cache-Control: private",false); // required for certain browsers
-            header("Content-Type: application/zip");
+            header("Content-Type: application/x-xpinstall");
             header("Content-Disposition: attachment; filename=\"" . basename($strFullPath) . "\";" );
             header("Content-Transfer-Encoding: binary");
             header("Content-Length: " . filesize($strFullPath));
@@ -46,21 +46,21 @@
             'services',
             'toolkit'
         );
-        
+
         public static $arrMailDirList = array(
             'editor',
             'mail'
         );
-        
+
         public static $arrMobileDirList = array(
             'mobile',
             'embedding'
         );
-        
+
         public static $arrCalendarDirList = array(
             'calendar'
         );
-        
+
         protected $strRepoUrl;
         protected $strReleaseName;
         protected $strHgDir;
@@ -75,7 +75,7 @@
             $this->strName = t('Mozilla build system (en-US sources, XPI generation, Compare Locales)');
             $this->blnEnable = $this->blnEnable;
             $this->Enable();
-            
+
             if ($this->blnEnable) {
                 NarroProject::RegisterPreference('Mozilla repository to build from', true, NarroProjectType::Mozilla, 'text', 'e.g. http://hg.mozilla.org/releases/mozilla-aurora/', '');
                 NarroProject::RegisterPreference('Mozilla application type', true, NarroProjectType::Mozilla, 'option', '', '', array('browser', 'mail', 'suite', 'calendar', 'mobile'));
@@ -84,39 +84,39 @@
                 NarroProject::RegisterPreference('Thunderbird project name for this release', true, NarroProjectType::Mozilla, 'text', 'leave empty for Thunderbird and Firefox, if this project would be Seamonkey Aurora, fill in the name of the Narro project that holds Thunderbird Aurora', '');
                 NarroProject::RegisterPreference('Build a language pack after export', true, NarroProjectType::Mozilla, 'option', t('Whether to build a language pack after the export process'), 'Yes', array('Yes', 'No'));
             }
-            
+
         }
-        
+
         private function SetupProject(NarroProject $objProject) {
             $this->strRepoUrl = $objProject->GetPreferenceValueByName('Mozilla repository to build from');
             NarroLogger::LogInfo(sprintf('Mozilla repository to build from %s', $this->strRepoUrl));
-            
+
             $this->strReleaseName = $objProject->GetPreferenceValueByName('Mozilla release name');
             NarroLogger::LogInfo(sprintf('Mozilla release name %s', $this->strReleaseName));
-            
+
             $this->strApplicationType = $objProject->GetPreferenceValueByName('Mozilla application type');
             NarroLogger::LogInfo(sprintf('Mozilla application type %s', $this->strApplicationType));
-            
+
             $this->strHgDir = sprintf('%s/project-%d-hg', __NARRO_DATA__ . '/mozilla-build', $objProject->ProjectId);
             NarroLogger::LogInfo(sprintf('Clone directory %s', $this->strHgDir));
-            
+
             $this->strObjDir = sprintf('%s/project-%d-obj', __NARRO_DATA__ . '/mozilla-build', $objProject->ProjectId);
             NarroLogger::LogInfo(sprintf('Build directory %s', $this->strObjDir));
-            
+
             $this->objFirefoxProject = NarroProject::LoadByProjectName($objProject->GetPreferenceValueByName('Firefox project name for this release'));
             if ($this->objFirefoxProject instanceof NarroProject)
                 NarroLogger::LogInfo(sprintf('Firefox project name for this release %s', $this->objFirefoxProject->ProjectName));
-            
+
             $this->objMailProject = NarroProject::LoadByProjectName($objProject->GetPreferenceValueByName('Thunderbird project name for this release'));
             if ($this->objMailProject instanceof NarroProject)
                 NarroLogger::LogInfo(sprintf('Thunderbird project name for this release %s', $this->objMailProject->ProjectName));
-            
+
             if (!file_exists(__NARRO_DATA__ . '/mozilla-build'))
                 mkdir(__NARRO_DATA__ . '/mozilla-build', 0777);
-            
+
             chmod(__NARRO_DATA__ . '/mozilla-build', 0777);
         }
-        
+
         private function InitBuildDirectory(NarroProject $objProject) {
             NarroLogger::LogInfo(sprintf('Running hg clone %s %s', $this->strRepoUrl, $this->strHgDir));
             NarroUtils::Exec(
@@ -126,41 +126,41 @@
                 $intRetVal,
                 false,
                 array(
-                	'PYTHONPATH' => sprintf('%s/compare-locales/lib', $this->strObjDir)
+                    'PYTHONPATH' => sprintf('%s/compare-locales/lib', $this->strObjDir)
                 ),
                 __TMP_PATH__,
                 true
             );
-            
+
             if ($retVal != 0) {
                 NarroLogger::LogError(sprintf('Cloning the Mercurial repository failed: %d', $retVal));
                 return false;
             }
-            
+
             mkdir($this->strObjDir, 0777);
             mkdir(sprintf('%s/dist', $this->strObjDir), 0777);
             mkdir(sprintf('%s/dist/install', $this->strObjDir), 0777);
             mkdir(sprintf('%s/dist/xpi-stage', $this->strObjDir), 0777);
         }
-        
+
         private function parse_l10n_ini_file($strHgDir, $strFilePath) {
             if (!file_exists($strHgDir . '/' . $strFilePath)) return array();
             $strL10nIni = preg_replace('/^#.*$/m', '', file_get_contents($strHgDir . '/' . $strFilePath));
             $blnIncludes = preg_match_all('/ = (.+\/l10n.ini)/mi', $strL10nIni, $arrIniFile);
             $arrDirs = array();
-        
+
             if ($blnIncludes)
             foreach($arrIniFile[1] as $strIniFilePath) {
                 $arrNewDirs = $this->parse_l10n_ini_file($strHgDir, $strIniFilePath);
                 if (count($arrNewDirs))
                 $arrDirs = array_merge($arrDirs, $arrNewDirs);
             }
-        
+
             $arrDirs = array_merge($arrDirs, $this->parse_l10n_ini_file_dirs($strHgDir, $strFilePath));
-        
+
             return $arrDirs;
         }
-        
+
         private function parse_l10n_ini_file_dirs($strHgDir, $strL10nIniFilePath) {
             if (!file_exists($strHgDir . '/' . $strL10nIniFilePath)) return array();
             $arrResult = array();
@@ -172,15 +172,15 @@
                     }
                 }
             }
-        
+
             return $arrResult;
         }
-        
+
         private function get_l10n_ini_dirs($strHgDir, $strApp) {
             $strL10nIniPath =  $strApp . '/locales/l10n' . (($this->strReleaseName)?'-' . $this->strReleaseName:'') . '.ini';
             if (!file_exists($strL10nIniPath))
                 $strL10nIniPath =  $strApp . '/locales/l10n.ini';
-                
+
             $arrResult = array();
             foreach($this->parse_l10n_ini_file($strHgDir, $strL10nIniPath) as $strDir) {
                 if ($strDir == '') continue;
@@ -191,16 +191,16 @@
                 elseif (file_exists($strHgDir . '/' . $strDir . '/resources/locale/en-US'))
                     $arrResult[$strDir . '/resources/locale/en-US'] = str_replace('mozilla/', '', $strDir);
             }
-            
+
             return $arrResult;
         }
-        
+
         private function UpdateBuildDirectory(NarroProject $objProject) {
-            
+
             $blnResult = chdir($this->strHgDir);
             if ($blnResult == false)
                 return false;
-            
+
             if (file_exists('/usr/bin/autoconf-2.13')) {
                 $strAutoConf = 'autoconf-2.13';
             }
@@ -213,12 +213,12 @@
                     return false;
                 }
             }
-            
+
             if (!file_exists('/usr/bin/python') && !file_exists('/usr/bin/python2.6')) {
                 NarroLogger::LogError('python or python2.6 not found in /usr/bin, aborting build');
                 return false;
             }
-            
+
             file_put_contents(
                 sprintf('%s/.mozconfig', $this->strHgDir),
                 sprintf("mk_add_options MOZ_OBJDIR=%s\n", $this->strObjDir) .
@@ -235,7 +235,7 @@
                 sprintf("ac_cv_path_PYTHON=/usr/bin/%s\n", (file_exists('/usr/bin/python2.6')?'python2.6':'python')) .
                 ((in_array($this->strApplicationType, array('suite')))?"ac_add_options --disable-mailnews\n":'')
             );
-            
+
             if (!
                 NarroUtils::Exec(
                     sprintf('hg pull %s', escapeshellarg($this->strRepoUrl)),
@@ -249,7 +249,7 @@
                 )
             )
                 return false;
-            
+
 
             if (!
                 NarroUtils::Exec(
@@ -264,7 +264,7 @@
                 )
             )
                 return false;
-            
+
             if (in_array($this->strApplicationType, array('suite', 'calendar', 'mail'))) {
                 if (!
                     NarroUtils::Exec(
@@ -280,7 +280,7 @@
                 )
                     return false;
             }
-            
+
             NarroUtils::Exec(
                 'make -sf client.mk configure',
                 $arrOutput,
@@ -292,7 +292,7 @@
                 true
             );
 
-            
+
             switch($this->strApplicationType) {
                 case 'browser':
                     NarroUtils::RecursiveDelete($objProject->DefaultTemplatePath . '/*');
@@ -302,7 +302,7 @@
                             NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
                     }
                     break;
-                    
+
                 case 'mail':
                     NarroUtils::RecursiveDelete($objProject->DefaultTemplatePath . '/*');
                     foreach($this->get_l10n_ini_dirs($this->strHgDir, $this->strApplicationType) as $strBuildPath=>$strLocalePath) {
@@ -311,7 +311,7 @@
                             NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
                     }
                     break;
-                    
+
                 case 'suite':
                     NarroUtils::RecursiveDelete($objProject->DefaultTemplatePath . '/*');
                     foreach($this->get_l10n_ini_dirs($this->strHgDir, $this->strApplicationType) as $strBuildPath=>$strLocalePath) {
@@ -320,7 +320,7 @@
                             NarroUtils::RecursiveCopy($strBuildPath, $objProject->DefaultTemplatePath . '/' . $strLocalePath);
                     }
                     break;
-                     
+
                 case 'calendar':
                     NarroUtils::RecursiveDelete($objProject->DefaultTemplatePath . '/*');
                     foreach($this->get_l10n_ini_dirs($this->strHgDir, $this->strApplicationType) as $strBuildPath=>$strLocalePath) {
@@ -339,17 +339,17 @@
                     }
                     break;
             }
-            
+
             NarroUtils::RecursiveChmod($objProject->DefaultTemplatePath);
         }
-        
+
         private function CreateExportArchive(NarroProject $objProject) {
             $strArchive = __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-en-US.zip';
             if (file_exists($strArchive))
                 unlink($strArchive);
-        
+
             $arrFiles = NarroUtils::ListDirectory($objProject->DefaultTemplatePath, null, null, null, true);
-        
+
             $objZipFile = new ZipArchive();
             if ($objZipFile->open($strArchive, ZipArchive::OVERWRITE) === TRUE) {
                 foreach($arrFiles as $strFileName) {
@@ -374,17 +374,17 @@
             }
             return true;
         }
-        
-        
+
+
         public function BeforeImportProject(NarroProject $objProject) {
             if (!QApplication::HasPermission('Administrator')) {
                 return false;
             }
-            
+
             if ($objProject->ProjectType != NarroProjectType::Mozilla) {
                 return false;
             }
-            
+
             $this->SetupProject($objProject);
             if (!$this->strApplicationType || !$this->strHgDir || !$this->strObjDir || !$this->strRepoUrl) {
                 return false;
@@ -393,11 +393,11 @@
                 NarroLogger::LogWarn(sprintf('Cloning an entire Mozilla repository from %s. This is going to take a while...', $this->strRepoUrl));
                 $this->InitBuildDirectory($objProject);
             }
-            
+
             $this->UpdateBuildDirectory($objProject);
-            
+
             $this->CreateExportArchive($objProject);
-            
+
             try {
                 NarroUtils::RecursiveChmod($this->strHgDir);
                 NarroUtils::RecursiveChmod($this->strObjDir);
@@ -405,25 +405,25 @@
             catch (Exception $objEx) {
                 NarroLogger::LogWarn($objEx->getMessage());
             }
-        
+
             return array($objProject);
         }
-        
+
         public function AfterExportProject(NarroProject $objProject) {
             if ($objProject->ProjectType != NarroProjectType::Mozilla) {
                 return false;
             }
-            
+
             $this->SetupProject($objProject);
             if (!$this->strApplicationType || !$this->strHgDir || !$this->strObjDir || !$this->strRepoUrl) {
                 return false;
             }
-            
+
             $blnResult = chdir($this->strObjDir . '/' . $this->strApplicationType . '/locales');
             if (!$blnResult) {
                 return false;
             }
-            
+
             if ($this->strApplicationType != 'browser') {
                 if (!$this->objFirefoxProject instanceof NarroProject) {
                     NarroLogger::LogError(sprintf('Associated Firefox project not set or does not exist'));
@@ -431,7 +431,7 @@
                 }
                 NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrBrowserDirList), $this->objFirefoxProject->DefaultTranslationPath));
                 NarroUtils::RecursiveCopy($this->objFirefoxProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
-                
+
                 if ($this->strApplicationType == 'suite') {
                     if (!$this->objMailProject instanceof NarroProject) {
                         NarroLogger::LogError(sprintf('Associated Thunderbird project not set or does not exist'));
@@ -440,9 +440,9 @@
                     NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrMailDirList), $this->objMailProject->DefaultTranslationPath));
                     NarroUtils::RecursiveCopy($this->objMailProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
                 }
-                
+
             }
-            
+
             if ($objProject->GetPreferenceValueByName('Build a language pack after export') == 'Yes') {
                 NarroUtils::Exec(
                     sprintf('make -s langpack-%s', escapeshellarg(QApplication::$TargetLanguage->LanguageCode)),
@@ -451,8 +451,8 @@
                     $intRetVal,
                     false,
                     array(
-                    	'PYTHONPATH' => sprintf('%s/compare-locales/lib', $this->strObjDir)
-                	),
+                        'PYTHONPATH' => sprintf('%s/compare-locales/lib', $this->strObjDir)
+                    ),
                     $this->strObjDir . '/' . $this->strApplicationType . '/locales',
                     true
                 );
@@ -463,15 +463,15 @@
                     NarroUtils::RecursiveDelete($objProject->DefaultTranslationPath . '/' . $strDir);
                 }
             }
-            
+
             if (in_array($this->strApplicationType, array('mobile', 'browser')))
                 $strXpiDir = sprintf('%s/dist', $this->strObjDir);
             else
                 $strXpiDir = sprintf('%s/mozilla/dist', $this->strObjDir);
-            
+
             foreach(NarroUtils::ListDirectory($strXpiDir, sprintf('/.*%s.langpack.xpi/', preg_quote(QApplication::$TargetLanguage->LanguageCode, '/'))) as $strFile) {
                 $strXpiFile = sprintf(
-                	'%s/%s/%s-%s.xpi',
+                    '%s/%s/%s-%s.xpi',
                     __IMPORT_PATH__,
                     $objProject->ProjectId,
                     $objProject->ProjectName,
@@ -483,18 +483,18 @@
                 );
                 chmod($strXpiFile, 0666);
             }
-            
+
             NarroUtils::RecursiveChmod($this->strHgDir);
             NarroUtils::RecursiveChmod($this->strObjDir);
-            
+
             return array($objProject);
         }
-        
+
         private function GetCompareLocales() {
             if (file_exists('/usr/bin/easy_install')) {
                 if (!file_exists(sprintf('%s/compare-locales/lib', $this->strObjDir)))
                     mkdir(sprintf('%s/compare-locales/lib', $this->strObjDir), 0777, true);
-                
+
                 if (!
                     NarroUtils::Exec(
                         sprintf('/usr/bin/easy_install --install-dir=%s/compare-locales/lib/ -U compare-locales', $this->strObjDir),
@@ -506,7 +506,7 @@
                     )
                 )
                     return false;
-                
+
                 return true;
             }
             else {
@@ -514,7 +514,7 @@
                 return false;
             }
         }
-        
+
         private function CompareLocales(NarroProject $objProject) {
             $this->SetupProject($objProject);
             if (!$this->strApplicationType || !$this->strHgDir || !$this->strObjDir || !$this->strRepoUrl) {
@@ -524,9 +524,9 @@
             NarroUtils::RecursiveChmod(sprintf('%s/compare-locales', $this->strObjDir));
             if(!$blnResult)
                 return false;
-            
+
             $strCompareLocales = sprintf(
-            	'%s/compare-locales/lib/compare-locales %s/%s/locales/l10n%s.ini %s/%s %s',
+                '%s/compare-locales/lib/compare-locales %s/%s/locales/l10n%s.ini %s/%s %s',
                 $this->strObjDir,
                 $this->strHgDir,
                 $this->strApplicationType,
@@ -535,10 +535,10 @@
                 $objProject->ProjectId,
                 QApplication::$TargetLanguage->LanguageCode
             );
-            
+
             if (!$strCompareLocales)
                 return false;
-            
+
             if ($this->strApplicationType != 'browser') {
                 if (!$this->objFirefoxProject instanceof NarroProject) {
                     NarroLogger::LogError(sprintf('Associated Firefox project not set or does not exist'));
@@ -546,7 +546,7 @@
                 }
                 NarroLogger::LogInfo(sprintf('Copying %s directories from %s', join(',', self::$arrBrowserDirList), $this->objFirefoxProject->DefaultTranslationPath));
                 NarroUtils::RecursiveCopy($this->objFirefoxProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
-                
+
                 if ($this->strApplicationType == 'suite') {
                     if (!$this->objMailProject instanceof NarroProject) {
                         NarroLogger::LogError(sprintf('Associated Thunderbird project not set or does not exist'));
@@ -556,7 +556,7 @@
                     NarroUtils::RecursiveCopy($this->objMailProject->DefaultTranslationPath, $objProject->DefaultTranslationPath);
                 }
             }
-                        
+
             NarroUtils::Exec(
                 $strCompareLocales,
                 $arrOutput,
@@ -567,21 +567,21 @@
                 null,
                 false
             );
-            
+
             if ($this->strApplicationType != 'browser') {
                 foreach(self::$arrBrowserDirList as $strDir) {
                     NarroUtils::RecursiveDelete($objProject->DefaultTranslationPath . '/' . $strDir);
                 }
             }
-            
+
             $strOutput = join("\n", $arrOutput);
-            
+
             $strOutput = preg_replace(
-            	'/within\s+([a-zA-Z0-9\.\-_]+)/',
-        	    sprintf(
-        	    	'within <a target="_blank" href="%s/translate.php?l=%s&p=%d&t=%d&in=%d&s=\1">\1</a>',
-        	    	__HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
-        	    	QApplication::$TargetLanguage->LanguageCode,
+                '/within\s+([a-zA-Z0-9\.\-_]+)/',
+                sprintf(
+                    'within <a target="_blank" href="%s/translate.php?l=%s&p=%d&t=%d&in=%d&s=\1">\1</a>',
+                    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
+                    QApplication::$TargetLanguage->LanguageCode,
                     $objProject->ProjectId,
                     NarroTranslatePanel::SHOW_ALL,
                     NarroTranslatePanel::SEARCH_IN_CONTEXTS
@@ -589,43 +589,43 @@
                 $strOutput
             );
             $strOutput = preg_replace(
-            	'/(\s+)\+([a-zA-Z0-9\.\-_]+)/',
-            	sprintf(
-            		'\1+<a target="_blank" href="%s/translate.php?l=%s&p=%d&t=%d&in=%d&s=\2">\2</a>',
-            	    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
-        	    	QApplication::$TargetLanguage->LanguageCode,
+                '/(\s+)\+([a-zA-Z0-9\.\-_]+)/',
+                sprintf(
+                    '\1+<a target="_blank" href="%s/translate.php?l=%s&p=%d&t=%d&in=%d&s=\2">\2</a>',
+                    __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__,
+                    QApplication::$TargetLanguage->LanguageCode,
                     $objProject->ProjectId,
                     NarroTranslatePanel::SHOW_ALL,
                     NarroTranslatePanel::SEARCH_IN_CONTEXTS
                 ),
                 $strOutput
             );
-                                            
+
             $strOutput = str_replace('ERROR', '<span style="background-color:red;font-weight:bold">ERROR</span>', $strOutput);
-            
+
             $strOutput = str_replace('WARNING', '<span style="background-color:orange;font-weight:bold">WARNING</span>', $strOutput);
-            
+
             return $strOutput;
         }
-        
+
         protected function GetOutputFileName(NarroProject $objProject) {
             return __IMPORT_PATH__ . '/' . $objProject->ProjectId . '/' . $objProject->ProjectName . '-' . QApplication::$TargetLanguage->LanguageCode . '.xpi';
         }
-        
+
         public function DisplayExportMessage(NarroProject $objProject, $strText = '') {
             if ($objProject->ProjectType != NarroProjectType::Mozilla) {
                 return array($objProject, '');
             }
-            
+
             $strExportText = $this->CompareLocales($objProject);
-            
+
             return array($objProject, '<br />' . $strExportText . '<br />' . $this->GetXpiLink($objProject));
         }
-        
+
         private function GetXpiLink(NarroProject $objProject) {
-            
+
             $strExportText = '';
-            
+
             if (file_exists($this->GetOutputFileName($objProject))) {
                 $strDownloadUrl = sprintf(
                     __HTTP_URL__ . __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__ . '/includes/narro/plugins/' . __CLASS__ . '.class.php?p=%d&pn=%s&l=%s',
@@ -641,15 +641,15 @@
                     $objDateSpan->SimpleDisplay()
                 );
             }
-        
+
             return $strExportText;
         }
-        
+
         public function DisplayInProjectListInProgressColumn(NarroProject $objProject, $strText = '') {
             if ($objProject->ProjectType != NarroProjectType::Mozilla) {
                 return array($objProject, '');
             }
-            
+
             return array($objProject, $this->GetXpiLink($objProject));
         }
     }
