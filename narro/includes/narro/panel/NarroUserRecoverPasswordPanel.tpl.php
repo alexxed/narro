@@ -26,6 +26,9 @@
             <td><?php $_CONTROL->txtUsername->Render() ?></td>
         </tr>
         <tr>
+            <td colspan="2"><h1 style="text-transform: uppercase;"><?php _t('or')?></h1></td>
+        </tr>
+        <tr>
             <td><?php echo t('Email')?>:</td>
             <td><?php $_CONTROL->txtEmail->Render() ?></td>
         </tr>
