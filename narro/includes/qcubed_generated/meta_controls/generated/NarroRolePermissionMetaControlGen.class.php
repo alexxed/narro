@@ -193,21 +193,30 @@
 		/**
 		 * Create and setup QListBox lstRole
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstRole_Create($strControlId = null) {
+		public function lstRole_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstRole = new QListBox($this->objParentObject, $strControlId);
 			$this->lstRole->Name = QApplication::Translate('Role');
 			$this->lstRole->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstRole->AddItem(QApplication::Translate('- Select One -'), null);
-			$objRoleArray = NarroRole::LoadAll();
-			if ($objRoleArray) foreach ($objRoleArray as $objRole) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objRoleCursor = NarroRole::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objRole = NarroRole::InstantiateCursor($objRoleCursor)) {
 				$objListItem = new QListItem($objRole->__toString(), $objRole->RoleId);
 				if (($this->objNarroRolePermission->Role) && ($this->objNarroRolePermission->Role->RoleId == $objRole->RoleId))
 					$objListItem->Selected = true;
 				$this->lstRole->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstRole;
 		}
 
@@ -227,21 +236,30 @@
 		/**
 		 * Create and setup QListBox lstPermission
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstPermission_Create($strControlId = null) {
+		public function lstPermission_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstPermission = new QListBox($this->objParentObject, $strControlId);
 			$this->lstPermission->Name = QApplication::Translate('Permission');
 			$this->lstPermission->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstPermission->AddItem(QApplication::Translate('- Select One -'), null);
-			$objPermissionArray = NarroPermission::LoadAll();
-			if ($objPermissionArray) foreach ($objPermissionArray as $objPermission) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objPermissionCursor = NarroPermission::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objPermission = NarroPermission::InstantiateCursor($objPermissionCursor)) {
 				$objListItem = new QListItem($objPermission->__toString(), $objPermission->PermissionId);
 				if (($this->objNarroRolePermission->Permission) && ($this->objNarroRolePermission->Permission->PermissionId == $objPermission->PermissionId))
 					$objListItem->Selected = true;
 				$this->lstPermission->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstPermission;
 		}
 

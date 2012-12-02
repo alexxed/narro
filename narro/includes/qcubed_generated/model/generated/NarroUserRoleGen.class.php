@@ -27,13 +27,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroUserRoleGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['UserRoleId'] = null;
-                $this->_arrHistory['UserId'] = null;
-                $this->_arrHistory['RoleId'] = null;
-                $this->_arrHistory['ProjectId'] = null;
-                $this->_arrHistory['LanguageId'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -92,11 +86,6 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
-
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
 
 
 
@@ -179,13 +168,25 @@
 		 * @return NarroUserRole
 		 */
 		public static function Load($intUserRoleId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroUserRole', $intUserRoleId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroUserRole::QuerySingle(
+			$objToReturn = NarroUserRole::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroUserRole()->UserRoleId, $intUserRoleId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -238,7 +239,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroUserRole-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_user_role');
-			NarroUserRole::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroUserRole::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_user_role');
 
 			// Set "CountOnly" option (if applicable)
@@ -351,6 +371,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroUserRole::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroUserRole objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -415,7 +460,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -424,11 +469,16 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'user_role_id', $strAliasPrefix . 'user_role_id');
-			$objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
-			$objBuilder->AddSelectItem($strTableName, 'role_id', $strAliasPrefix . 'role_id');
-			$objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
-			$objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'user_role_id', $strAliasPrefix . 'user_role_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'user_role_id', $strAliasPrefix . 'user_role_id');
+			    $objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
+			    $objBuilder->AddSelectItem($strTableName, 'role_id', $strAliasPrefix . 'role_id');
+			    $objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
+			    $objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+            }
 		}
 
 
@@ -459,15 +509,20 @@
 			$objToReturn = new NarroUserRole();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'user_role_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'user_role_id'] : $strAliasPrefix . 'user_role_id';
+			$strAlias = $strAliasPrefix . 'user_role_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intUserRoleId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'user_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'user_id'] : $strAliasPrefix . 'user_id';
+			$strAlias = $strAliasPrefix . 'user_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'role_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'role_id'] : $strAliasPrefix . 'role_id';
+			$strAlias = $strAliasPrefix . 'role_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intRoleId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_id'] : $strAliasPrefix . 'project_id';
+			$strAlias = $strAliasPrefix . 'project_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'language_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_id'] : $strAliasPrefix . 'language_id';
+			$strAlias = $strAliasPrefix . 'language_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -482,10 +537,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -520,7 +575,6 @@
 
 
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -559,11 +613,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroUserRole object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroUserRole next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroUserRole::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroUserRole object,
 		 * by UserRoleId Index(es)
@@ -579,7 +661,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroUserRole object,
 		 * by UserId, RoleId, ProjectId, LanguageId Index(es)
@@ -601,7 +683,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroUserRole objects,
 		 * by RoleId Index(es)
@@ -633,7 +715,7 @@
 				QQ::Equal(QQN::NarroUserRole()->RoleId, $intRoleId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroUserRole objects,
 		 * by ProjectId Index(es)
@@ -665,7 +747,7 @@
 				QQ::Equal(QQN::NarroUserRole()->ProjectId, $intProjectId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroUserRole objects,
 		 * by LanguageId Index(es)
@@ -697,7 +779,7 @@
 				QQ::Equal(QQN::NarroUserRole()->LanguageId, $intLanguageId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroUserRole objects,
 		 * by UserId Index(es)
@@ -738,25 +820,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['UserRoleId']))
-                $this->_arrHistory['UserRoleId'] = $this->UserRoleId;
-            if (!isset($this->_arrHistory['UserId']))
-                $this->_arrHistory['UserId'] = $this->UserId;
-            if (!isset($this->_arrHistory['RoleId']))
-                $this->_arrHistory['RoleId'] = $this->RoleId;
-            if (!isset($this->_arrHistory['ProjectId']))
-                $this->_arrHistory['ProjectId'] = $this->ProjectId;
-            if (!isset($this->_arrHistory['LanguageId']))
-                $this->_arrHistory['LanguageId'] = $this->LanguageId;
-        }
 
 
 		//////////////////////////
@@ -799,51 +862,15 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['UserId'] !== $this->UserId ||
-                        (
-                            $this->UserId instanceof QDateTime &&
-                            (string) $this->_arrHistory['UserId'] !== (string) $this->UserId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`user_id` = ' . $objDatabase->SqlVariable($this->intUserId);
-                    if (
-                        $this->_arrHistory['RoleId'] !== $this->RoleId ||
-                        (
-                            $this->RoleId instanceof QDateTime &&
-                            (string) $this->_arrHistory['RoleId'] !== (string) $this->RoleId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`role_id` = ' . $objDatabase->SqlVariable($this->intRoleId);
-                    if (
-                        $this->_arrHistory['ProjectId'] !== $this->ProjectId ||
-                        (
-                            $this->ProjectId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProjectId'] !== (string) $this->ProjectId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId);
-                    if (
-                        $this->_arrHistory['LanguageId'] !== $this->LanguageId ||
-                        (
-                            $this->LanguageId instanceof QDateTime &&
-                            (string) $this->_arrHistory['LanguageId'] !== (string) $this->LanguageId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_user_role`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
+							`role_id` = ' . $objDatabase->SqlVariable($this->intRoleId) . ',
+							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
+							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 						WHERE
 							`user_role_id` = ' . $objDatabase->SqlVariable($this->intUserRoleId) . '
 					');
@@ -854,10 +881,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -881,6 +909,19 @@
 					`narro_user_role`
 				WHERE
 					`user_role_id` = ' . $objDatabase->SqlVariable($this->intUserRoleId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroUserRole ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroUserRole', $this->intUserRoleId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -895,6 +936,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_user_role`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -908,6 +953,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_user_role`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -918,6 +967,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroUserRole object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroUserRole::Load($this->intUserRoleId);
@@ -1292,7 +1343,37 @@
 
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_user_role";
+		}
+
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroUserRole::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -1406,6 +1487,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intUserRoleId ));
+		}
+
 
 
 	}

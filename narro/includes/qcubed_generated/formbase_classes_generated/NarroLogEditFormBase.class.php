@@ -101,7 +101,6 @@
 			// Custom Validation Rules
 			// TODO: Be sure to set $blnToReturn to false if any custom validation fails!
 			
-
 			$blnFocused = false;
 			foreach ($this->GetErrorControls() as $objControl) {
 				// Set Focus to the top-most invalid control

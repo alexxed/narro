@@ -30,18 +30,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroFileProgressGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['FileProgressId'] = null;
-                $this->_arrHistory['FileId'] = null;
-                $this->_arrHistory['LanguageId'] = null;
-                $this->_arrHistory['FileMd5'] = null;
-                $this->_arrHistory['Header'] = null;
-                $this->_arrHistory['TotalTextCount'] = null;
-                $this->_arrHistory['ApprovedTextCount'] = null;
-                $this->_arrHistory['FuzzyTextCount'] = null;
-                $this->_arrHistory['ProgressPercent'] = null;
-                $this->_arrHistory['Export'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -142,11 +131,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -213,13 +197,25 @@
 		 * @return NarroFileProgress
 		 */
 		public static function Load($intFileProgressId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroFileProgress', $intFileProgressId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroFileProgress::QuerySingle(
+			$objToReturn = NarroFileProgress::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroFileProgress()->FileProgressId, $intFileProgressId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -272,7 +268,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroFileProgress-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_file_progress');
-			NarroFileProgress::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroFileProgress::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_file_progress');
 
 			// Set "CountOnly" option (if applicable)
@@ -385,6 +400,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroFileProgress::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroFileProgress objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -449,7 +489,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -458,16 +498,21 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'file_progress_id', $strAliasPrefix . 'file_progress_id');
-			$objBuilder->AddSelectItem($strTableName, 'file_id', $strAliasPrefix . 'file_id');
-			$objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
-			$objBuilder->AddSelectItem($strTableName, 'file_md5', $strAliasPrefix . 'file_md5');
-			$objBuilder->AddSelectItem($strTableName, 'header', $strAliasPrefix . 'header');
-			$objBuilder->AddSelectItem($strTableName, 'total_text_count', $strAliasPrefix . 'total_text_count');
-			$objBuilder->AddSelectItem($strTableName, 'approved_text_count', $strAliasPrefix . 'approved_text_count');
-			$objBuilder->AddSelectItem($strTableName, 'fuzzy_text_count', $strAliasPrefix . 'fuzzy_text_count');
-			$objBuilder->AddSelectItem($strTableName, 'progress_percent', $strAliasPrefix . 'progress_percent');
-			$objBuilder->AddSelectItem($strTableName, 'export', $strAliasPrefix . 'export');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'file_progress_id', $strAliasPrefix . 'file_progress_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'file_progress_id', $strAliasPrefix . 'file_progress_id');
+			    $objBuilder->AddSelectItem($strTableName, 'file_id', $strAliasPrefix . 'file_id');
+			    $objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+			    $objBuilder->AddSelectItem($strTableName, 'file_md5', $strAliasPrefix . 'file_md5');
+			    $objBuilder->AddSelectItem($strTableName, 'header', $strAliasPrefix . 'header');
+			    $objBuilder->AddSelectItem($strTableName, 'total_text_count', $strAliasPrefix . 'total_text_count');
+			    $objBuilder->AddSelectItem($strTableName, 'approved_text_count', $strAliasPrefix . 'approved_text_count');
+			    $objBuilder->AddSelectItem($strTableName, 'fuzzy_text_count', $strAliasPrefix . 'fuzzy_text_count');
+			    $objBuilder->AddSelectItem($strTableName, 'progress_percent', $strAliasPrefix . 'progress_percent');
+			    $objBuilder->AddSelectItem($strTableName, 'export', $strAliasPrefix . 'export');
+            }
 		}
 
 
@@ -498,25 +543,35 @@
 			$objToReturn = new NarroFileProgress();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'file_progress_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'file_progress_id'] : $strAliasPrefix . 'file_progress_id';
+			$strAlias = $strAliasPrefix . 'file_progress_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intFileProgressId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'file_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'file_id'] : $strAliasPrefix . 'file_id';
+			$strAlias = $strAliasPrefix . 'file_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intFileId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'language_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_id'] : $strAliasPrefix . 'language_id';
+			$strAlias = $strAliasPrefix . 'language_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'file_md5', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'file_md5'] : $strAliasPrefix . 'file_md5';
+			$strAlias = $strAliasPrefix . 'file_md5';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strFileMd5 = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'header', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'header'] : $strAliasPrefix . 'header';
+			$strAlias = $strAliasPrefix . 'header';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strHeader = $objDbRow->GetColumn($strAliasName, 'Blob');
-			$strAliasName = array_key_exists($strAliasPrefix . 'total_text_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'total_text_count'] : $strAliasPrefix . 'total_text_count';
+			$strAlias = $strAliasPrefix . 'total_text_count';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intTotalTextCount = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'approved_text_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'approved_text_count'] : $strAliasPrefix . 'approved_text_count';
+			$strAlias = $strAliasPrefix . 'approved_text_count';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intApprovedTextCount = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'fuzzy_text_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'fuzzy_text_count'] : $strAliasPrefix . 'fuzzy_text_count';
+			$strAlias = $strAliasPrefix . 'fuzzy_text_count';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intFuzzyTextCount = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'progress_percent', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'progress_percent'] : $strAliasPrefix . 'progress_percent';
+			$strAlias = $strAliasPrefix . 'progress_percent';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProgressPercent = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'export', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'export'] : $strAliasPrefix . 'export';
+			$strAlias = $strAliasPrefix . 'export';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->blnExport = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -531,10 +586,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -557,7 +612,6 @@
 
 
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -596,11 +650,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroFileProgress object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroFileProgress next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroFileProgress::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroFileProgress object,
 		 * by FileProgressId Index(es)
@@ -616,7 +698,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroFileProgress object,
 		 * by FileId, LanguageId Index(es)
@@ -634,7 +716,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroFileProgress objects,
 		 * by LanguageId Index(es)
@@ -666,7 +748,7 @@
 				QQ::Equal(QQN::NarroFileProgress()->LanguageId, $intLanguageId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroFileProgress objects,
 		 * by FileId Index(es)
@@ -698,7 +780,7 @@
 				QQ::Equal(QQN::NarroFileProgress()->FileId, $intFileId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroFileProgress objects,
 		 * by FileId, LanguageId, Export Index(es)
@@ -715,8 +797,8 @@
 					QQ::AndCondition(
 					QQ::Equal(QQN::NarroFileProgress()->FileId, $intFileId),
 					QQ::Equal(QQN::NarroFileProgress()->LanguageId, $intLanguageId),
-					QQ::Equal(QQN::NarroFileProgress()->Export, $blnExport)
-					),
+					QQ::Equal(QQN::NarroFileProgress()->Export, $blnExport)					)
+,
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -738,8 +820,8 @@
 				QQ::AndCondition(
 				QQ::Equal(QQN::NarroFileProgress()->FileId, $intFileId),
 				QQ::Equal(QQN::NarroFileProgress()->LanguageId, $intLanguageId),
-				QQ::Equal(QQN::NarroFileProgress()->Export, $blnExport)
-				)
+				QQ::Equal(QQN::NarroFileProgress()->Export, $blnExport)				)
+
 			);
 		}
 
@@ -751,35 +833,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['FileProgressId']))
-                $this->_arrHistory['FileProgressId'] = $this->FileProgressId;
-            if (!isset($this->_arrHistory['FileId']))
-                $this->_arrHistory['FileId'] = $this->FileId;
-            if (!isset($this->_arrHistory['LanguageId']))
-                $this->_arrHistory['LanguageId'] = $this->LanguageId;
-            if (!isset($this->_arrHistory['FileMd5']))
-                $this->_arrHistory['FileMd5'] = $this->FileMd5;
-            if (!isset($this->_arrHistory['Header']))
-                $this->_arrHistory['Header'] = $this->Header;
-            if (!isset($this->_arrHistory['TotalTextCount']))
-                $this->_arrHistory['TotalTextCount'] = $this->TotalTextCount;
-            if (!isset($this->_arrHistory['ApprovedTextCount']))
-                $this->_arrHistory['ApprovedTextCount'] = $this->ApprovedTextCount;
-            if (!isset($this->_arrHistory['FuzzyTextCount']))
-                $this->_arrHistory['FuzzyTextCount'] = $this->FuzzyTextCount;
-            if (!isset($this->_arrHistory['ProgressPercent']))
-                $this->_arrHistory['ProgressPercent'] = $this->ProgressPercent;
-            if (!isset($this->_arrHistory['Export']))
-                $this->_arrHistory['Export'] = $this->Export;
-        }
 
 
 		//////////////////////////
@@ -832,91 +885,20 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['FileId'] !== $this->FileId ||
-                        (
-                            $this->FileId instanceof QDateTime &&
-                            (string) $this->_arrHistory['FileId'] !== (string) $this->FileId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`file_id` = ' . $objDatabase->SqlVariable($this->intFileId);
-                    if (
-                        $this->_arrHistory['LanguageId'] !== $this->LanguageId ||
-                        (
-                            $this->LanguageId instanceof QDateTime &&
-                            (string) $this->_arrHistory['LanguageId'] !== (string) $this->LanguageId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId);
-                    if (
-                        $this->_arrHistory['FileMd5'] !== $this->FileMd5 ||
-                        (
-                            $this->FileMd5 instanceof QDateTime &&
-                            (string) $this->_arrHistory['FileMd5'] !== (string) $this->FileMd5
-                        )
-                    )
-                        $arrUpdateChanges[] = '`file_md5` = ' . $objDatabase->SqlVariable($this->strFileMd5);
-                    if (
-                        $this->_arrHistory['Header'] !== $this->Header ||
-                        (
-                            $this->Header instanceof QDateTime &&
-                            (string) $this->_arrHistory['Header'] !== (string) $this->Header
-                        )
-                    )
-                        $arrUpdateChanges[] = '`header` = ' . $objDatabase->SqlVariable($this->strHeader);
-                    if (
-                        $this->_arrHistory['TotalTextCount'] !== $this->TotalTextCount ||
-                        (
-                            $this->TotalTextCount instanceof QDateTime &&
-                            (string) $this->_arrHistory['TotalTextCount'] !== (string) $this->TotalTextCount
-                        )
-                    )
-                        $arrUpdateChanges[] = '`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount);
-                    if (
-                        $this->_arrHistory['ApprovedTextCount'] !== $this->ApprovedTextCount ||
-                        (
-                            $this->ApprovedTextCount instanceof QDateTime &&
-                            (string) $this->_arrHistory['ApprovedTextCount'] !== (string) $this->ApprovedTextCount
-                        )
-                    )
-                        $arrUpdateChanges[] = '`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount);
-                    if (
-                        $this->_arrHistory['FuzzyTextCount'] !== $this->FuzzyTextCount ||
-                        (
-                            $this->FuzzyTextCount instanceof QDateTime &&
-                            (string) $this->_arrHistory['FuzzyTextCount'] !== (string) $this->FuzzyTextCount
-                        )
-                    )
-                        $arrUpdateChanges[] = '`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount);
-                    if (
-                        $this->_arrHistory['ProgressPercent'] !== $this->ProgressPercent ||
-                        (
-                            $this->ProgressPercent instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProgressPercent'] !== (string) $this->ProgressPercent
-                        )
-                    )
-                        $arrUpdateChanges[] = '`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent);
-                    if (
-                        $this->_arrHistory['Export'] !== $this->Export ||
-                        (
-                            $this->Export instanceof QDateTime &&
-                            (string) $this->_arrHistory['Export'] !== (string) $this->Export
-                        )
-                    )
-                        $arrUpdateChanges[] = '`export` = ' . $objDatabase->SqlVariable($this->blnExport);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_file_progress`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . ',
+							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							`file_md5` = ' . $objDatabase->SqlVariable($this->strFileMd5) . ',
+							`header` = ' . $objDatabase->SqlVariable($this->strHeader) . ',
+							`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
+							`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
+							`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
+							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
+							`export` = ' . $objDatabase->SqlVariable($this->blnExport) . '
 						WHERE
 							`file_progress_id` = ' . $objDatabase->SqlVariable($this->intFileProgressId) . '
 					');
@@ -927,10 +909,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -954,6 +937,19 @@
 					`narro_file_progress`
 				WHERE
 					`file_progress_id` = ' . $objDatabase->SqlVariable($this->intFileProgressId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroFileProgress ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroFileProgress', $this->intFileProgressId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -968,6 +964,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_file_progress`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -981,6 +981,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_file_progress`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -991,6 +995,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroFileProgress object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroFileProgress::Load($this->intFileProgressId);
@@ -1376,7 +1382,37 @@
 
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_file_progress";
+		}
+
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroFileProgress::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -1498,6 +1534,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intFileProgressId ));
+		}
+
 
 
 	}

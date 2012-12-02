@@ -30,18 +30,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroProjectProgressGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['ProjectProgressId'] = null;
-                $this->_arrHistory['ProjectId'] = null;
-                $this->_arrHistory['LanguageId'] = null;
-                $this->_arrHistory['Active'] = null;
-                $this->_arrHistory['LastModified'] = null;
-                $this->_arrHistory['TotalTextCount'] = null;
-                $this->_arrHistory['FuzzyTextCount'] = null;
-                $this->_arrHistory['ApprovedTextCount'] = null;
-                $this->_arrHistory['ProgressPercent'] = null;
-                $this->_arrHistory['Data'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -141,11 +130,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -212,13 +196,25 @@
 		 * @return NarroProjectProgress
 		 */
 		public static function Load($intProjectProgressId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroProjectProgress', $intProjectProgressId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroProjectProgress::QuerySingle(
+			$objToReturn = NarroProjectProgress::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroProjectProgress()->ProjectProgressId, $intProjectProgressId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -271,7 +267,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroProjectProgress-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_project_progress');
-			NarroProjectProgress::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroProjectProgress::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_project_progress');
 
 			// Set "CountOnly" option (if applicable)
@@ -384,6 +399,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroProjectProgress::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroProjectProgress objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -448,7 +488,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -457,16 +497,21 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'project_progress_id', $strAliasPrefix . 'project_progress_id');
-			$objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
-			$objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
-			$objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
-			$objBuilder->AddSelectItem($strTableName, 'last_modified', $strAliasPrefix . 'last_modified');
-			$objBuilder->AddSelectItem($strTableName, 'total_text_count', $strAliasPrefix . 'total_text_count');
-			$objBuilder->AddSelectItem($strTableName, 'fuzzy_text_count', $strAliasPrefix . 'fuzzy_text_count');
-			$objBuilder->AddSelectItem($strTableName, 'approved_text_count', $strAliasPrefix . 'approved_text_count');
-			$objBuilder->AddSelectItem($strTableName, 'progress_percent', $strAliasPrefix . 'progress_percent');
-			$objBuilder->AddSelectItem($strTableName, 'data', $strAliasPrefix . 'data');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'project_progress_id', $strAliasPrefix . 'project_progress_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'project_progress_id', $strAliasPrefix . 'project_progress_id');
+			    $objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
+			    $objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+			    $objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
+			    $objBuilder->AddSelectItem($strTableName, 'last_modified', $strAliasPrefix . 'last_modified');
+			    $objBuilder->AddSelectItem($strTableName, 'total_text_count', $strAliasPrefix . 'total_text_count');
+			    $objBuilder->AddSelectItem($strTableName, 'fuzzy_text_count', $strAliasPrefix . 'fuzzy_text_count');
+			    $objBuilder->AddSelectItem($strTableName, 'approved_text_count', $strAliasPrefix . 'approved_text_count');
+			    $objBuilder->AddSelectItem($strTableName, 'progress_percent', $strAliasPrefix . 'progress_percent');
+			    $objBuilder->AddSelectItem($strTableName, 'data', $strAliasPrefix . 'data');
+            }
 		}
 
 
@@ -497,25 +542,35 @@
 			$objToReturn = new NarroProjectProgress();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_progress_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_progress_id'] : $strAliasPrefix . 'project_progress_id';
+			$strAlias = $strAliasPrefix . 'project_progress_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProjectProgressId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_id'] : $strAliasPrefix . 'project_id';
+			$strAlias = $strAliasPrefix . 'project_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'language_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_id'] : $strAliasPrefix . 'language_id';
+			$strAlias = $strAliasPrefix . 'language_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'active', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active'] : $strAliasPrefix . 'active';
+			$strAlias = $strAliasPrefix . 'active';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'last_modified', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'last_modified'] : $strAliasPrefix . 'last_modified';
+			$strAlias = $strAliasPrefix . 'last_modified';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttLastModified = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'total_text_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'total_text_count'] : $strAliasPrefix . 'total_text_count';
+			$strAlias = $strAliasPrefix . 'total_text_count';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intTotalTextCount = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'fuzzy_text_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'fuzzy_text_count'] : $strAliasPrefix . 'fuzzy_text_count';
+			$strAlias = $strAliasPrefix . 'fuzzy_text_count';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intFuzzyTextCount = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'approved_text_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'approved_text_count'] : $strAliasPrefix . 'approved_text_count';
+			$strAlias = $strAliasPrefix . 'approved_text_count';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intApprovedTextCount = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'progress_percent', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'progress_percent'] : $strAliasPrefix . 'progress_percent';
+			$strAlias = $strAliasPrefix . 'progress_percent';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProgressPercent = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'data', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'data'] : $strAliasPrefix . 'data';
+			$strAlias = $strAliasPrefix . 'data';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strData = $objDbRow->GetColumn($strAliasName, 'Blob');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -530,10 +585,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -556,7 +611,6 @@
 
 
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -595,11 +649,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroProjectProgress object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroProjectProgress next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroProjectProgress::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroProjectProgress object,
 		 * by ProjectProgressId Index(es)
@@ -615,7 +697,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroProjectProgress object,
 		 * by ProjectId, LanguageId Index(es)
@@ -633,7 +715,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroProjectProgress objects,
 		 * by LanguageId Index(es)
@@ -665,7 +747,7 @@
 				QQ::Equal(QQN::NarroProjectProgress()->LanguageId, $intLanguageId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroProjectProgress objects,
 		 * by ProjectId Index(es)
@@ -706,35 +788,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['ProjectProgressId']))
-                $this->_arrHistory['ProjectProgressId'] = $this->ProjectProgressId;
-            if (!isset($this->_arrHistory['ProjectId']))
-                $this->_arrHistory['ProjectId'] = $this->ProjectId;
-            if (!isset($this->_arrHistory['LanguageId']))
-                $this->_arrHistory['LanguageId'] = $this->LanguageId;
-            if (!isset($this->_arrHistory['Active']))
-                $this->_arrHistory['Active'] = $this->Active;
-            if (!isset($this->_arrHistory['LastModified']))
-                $this->_arrHistory['LastModified'] = $this->LastModified;
-            if (!isset($this->_arrHistory['TotalTextCount']))
-                $this->_arrHistory['TotalTextCount'] = $this->TotalTextCount;
-            if (!isset($this->_arrHistory['FuzzyTextCount']))
-                $this->_arrHistory['FuzzyTextCount'] = $this->FuzzyTextCount;
-            if (!isset($this->_arrHistory['ApprovedTextCount']))
-                $this->_arrHistory['ApprovedTextCount'] = $this->ApprovedTextCount;
-            if (!isset($this->_arrHistory['ProgressPercent']))
-                $this->_arrHistory['ProgressPercent'] = $this->ProgressPercent;
-            if (!isset($this->_arrHistory['Data']))
-                $this->_arrHistory['Data'] = $this->Data;
-        }
 
 
 		//////////////////////////
@@ -787,91 +840,20 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['ProjectId'] !== $this->ProjectId ||
-                        (
-                            $this->ProjectId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProjectId'] !== (string) $this->ProjectId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId);
-                    if (
-                        $this->_arrHistory['LanguageId'] !== $this->LanguageId ||
-                        (
-                            $this->LanguageId instanceof QDateTime &&
-                            (string) $this->_arrHistory['LanguageId'] !== (string) $this->LanguageId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId);
-                    if (
-                        $this->_arrHistory['Active'] !== $this->Active ||
-                        (
-                            $this->Active instanceof QDateTime &&
-                            (string) $this->_arrHistory['Active'] !== (string) $this->Active
-                        )
-                    )
-                        $arrUpdateChanges[] = '`active` = ' . $objDatabase->SqlVariable($this->blnActive);
-                    if (
-                        $this->_arrHistory['LastModified'] !== $this->LastModified ||
-                        (
-                            $this->LastModified instanceof QDateTime &&
-                            (string) $this->_arrHistory['LastModified'] !== (string) $this->LastModified
-                        )
-                    )
-                        $arrUpdateChanges[] = '`last_modified` = ' . $objDatabase->SqlVariable($this->dttLastModified);
-                    if (
-                        $this->_arrHistory['TotalTextCount'] !== $this->TotalTextCount ||
-                        (
-                            $this->TotalTextCount instanceof QDateTime &&
-                            (string) $this->_arrHistory['TotalTextCount'] !== (string) $this->TotalTextCount
-                        )
-                    )
-                        $arrUpdateChanges[] = '`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount);
-                    if (
-                        $this->_arrHistory['FuzzyTextCount'] !== $this->FuzzyTextCount ||
-                        (
-                            $this->FuzzyTextCount instanceof QDateTime &&
-                            (string) $this->_arrHistory['FuzzyTextCount'] !== (string) $this->FuzzyTextCount
-                        )
-                    )
-                        $arrUpdateChanges[] = '`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount);
-                    if (
-                        $this->_arrHistory['ApprovedTextCount'] !== $this->ApprovedTextCount ||
-                        (
-                            $this->ApprovedTextCount instanceof QDateTime &&
-                            (string) $this->_arrHistory['ApprovedTextCount'] !== (string) $this->ApprovedTextCount
-                        )
-                    )
-                        $arrUpdateChanges[] = '`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount);
-                    if (
-                        $this->_arrHistory['ProgressPercent'] !== $this->ProgressPercent ||
-                        (
-                            $this->ProgressPercent instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProgressPercent'] !== (string) $this->ProgressPercent
-                        )
-                    )
-                        $arrUpdateChanges[] = '`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent);
-                    if (
-                        $this->_arrHistory['Data'] !== $this->Data ||
-                        (
-                            $this->Data instanceof QDateTime &&
-                            (string) $this->_arrHistory['Data'] !== (string) $this->Data
-                        )
-                    )
-                        $arrUpdateChanges[] = '`data` = ' . $objDatabase->SqlVariable($this->strData);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_project_progress`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
+							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . ',
+							`last_modified` = ' . $objDatabase->SqlVariable($this->dttLastModified) . ',
+							`total_text_count` = ' . $objDatabase->SqlVariable($this->intTotalTextCount) . ',
+							`fuzzy_text_count` = ' . $objDatabase->SqlVariable($this->intFuzzyTextCount) . ',
+							`approved_text_count` = ' . $objDatabase->SqlVariable($this->intApprovedTextCount) . ',
+							`progress_percent` = ' . $objDatabase->SqlVariable($this->intProgressPercent) . ',
+							`data` = ' . $objDatabase->SqlVariable($this->strData) . '
 						WHERE
 							`project_progress_id` = ' . $objDatabase->SqlVariable($this->intProjectProgressId) . '
 					');
@@ -882,10 +864,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -909,6 +892,19 @@
 					`narro_project_progress`
 				WHERE
 					`project_progress_id` = ' . $objDatabase->SqlVariable($this->intProjectProgressId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroProjectProgress ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroProjectProgress', $this->intProjectProgressId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -923,6 +919,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_project_progress`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -936,6 +936,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_project_progress`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -946,6 +950,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroProjectProgress object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroProjectProgress::Load($this->intProjectProgressId);
@@ -1331,7 +1337,37 @@
 
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_project_progress";
+		}
+
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroProjectProgress::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -1455,6 +1491,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intProjectProgressId ));
+		}
+
 
 
 	}

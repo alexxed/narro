@@ -42,18 +42,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroLanguageGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['LanguageId'] = null;
-                $this->_arrHistory['LanguageName'] = null;
-                $this->_arrHistory['LanguageCode'] = null;
-                $this->_arrHistory['CountryCode'] = null;
-                $this->_arrHistory['DialectCode'] = null;
-                $this->_arrHistory['Encoding'] = null;
-                $this->_arrHistory['TextDirection'] = null;
-                $this->_arrHistory['SpecialCharacters'] = null;
-                $this->_arrHistory['PluralForm'] = null;
-                $this->_arrHistory['Active'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -273,11 +262,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -324,13 +308,25 @@
 		 * @return NarroLanguage
 		 */
 		public static function Load($intLanguageId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroLanguage', $intLanguageId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroLanguage::QuerySingle(
+			$objToReturn = NarroLanguage::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroLanguage()->LanguageId, $intLanguageId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -383,7 +379,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroLanguage-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_language');
-			NarroLanguage::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroLanguage::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_language');
 
 			// Set "CountOnly" option (if applicable)
@@ -496,6 +511,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroLanguage::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroLanguage objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -560,7 +600,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -569,16 +609,21 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
-			$objBuilder->AddSelectItem($strTableName, 'language_name', $strAliasPrefix . 'language_name');
-			$objBuilder->AddSelectItem($strTableName, 'language_code', $strAliasPrefix . 'language_code');
-			$objBuilder->AddSelectItem($strTableName, 'country_code', $strAliasPrefix . 'country_code');
-			$objBuilder->AddSelectItem($strTableName, 'dialect_code', $strAliasPrefix . 'dialect_code');
-			$objBuilder->AddSelectItem($strTableName, 'encoding', $strAliasPrefix . 'encoding');
-			$objBuilder->AddSelectItem($strTableName, 'text_direction', $strAliasPrefix . 'text_direction');
-			$objBuilder->AddSelectItem($strTableName, 'special_characters', $strAliasPrefix . 'special_characters');
-			$objBuilder->AddSelectItem($strTableName, 'plural_form', $strAliasPrefix . 'plural_form');
-			$objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+			    $objBuilder->AddSelectItem($strTableName, 'language_name', $strAliasPrefix . 'language_name');
+			    $objBuilder->AddSelectItem($strTableName, 'language_code', $strAliasPrefix . 'language_code');
+			    $objBuilder->AddSelectItem($strTableName, 'country_code', $strAliasPrefix . 'country_code');
+			    $objBuilder->AddSelectItem($strTableName, 'dialect_code', $strAliasPrefix . 'dialect_code');
+			    $objBuilder->AddSelectItem($strTableName, 'encoding', $strAliasPrefix . 'encoding');
+			    $objBuilder->AddSelectItem($strTableName, 'text_direction', $strAliasPrefix . 'text_direction');
+			    $objBuilder->AddSelectItem($strTableName, 'special_characters', $strAliasPrefix . 'special_characters');
+			    $objBuilder->AddSelectItem($strTableName, 'plural_form', $strAliasPrefix . 'plural_form');
+			    $objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
+            }
 		}
 
 
@@ -763,25 +808,35 @@
 			$objToReturn = new NarroLanguage();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'language_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_id'] : $strAliasPrefix . 'language_id';
+			$strAlias = $strAliasPrefix . 'language_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'language_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_name'] : $strAliasPrefix . 'language_name';
+			$strAlias = $strAliasPrefix . 'language_name';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strLanguageName = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'language_code', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_code'] : $strAliasPrefix . 'language_code';
+			$strAlias = $strAliasPrefix . 'language_code';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strLanguageCode = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'country_code', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'country_code'] : $strAliasPrefix . 'country_code';
+			$strAlias = $strAliasPrefix . 'country_code';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strCountryCode = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'dialect_code', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'dialect_code'] : $strAliasPrefix . 'dialect_code';
+			$strAlias = $strAliasPrefix . 'dialect_code';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strDialectCode = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'encoding', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'encoding'] : $strAliasPrefix . 'encoding';
+			$strAlias = $strAliasPrefix . 'encoding';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strEncoding = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_direction', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_direction'] : $strAliasPrefix . 'text_direction';
+			$strAlias = $strAliasPrefix . 'text_direction';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strTextDirection = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'special_characters', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'special_characters'] : $strAliasPrefix . 'special_characters';
+			$strAlias = $strAliasPrefix . 'special_characters';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strSpecialCharacters = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'plural_form', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'plural_form'] : $strAliasPrefix . 'plural_form';
+			$strAlias = $strAliasPrefix . 'plural_form';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strPluralForm = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'active', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active'] : $strAliasPrefix . 'active';
+			$strAlias = $strAliasPrefix . 'active';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -789,27 +844,62 @@
 					if ($objToReturn->LanguageId != $objPreviousItem->LanguageId) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroContextInfoAsLanguageArray, $objToReturn->_objNarroContextInfoAsLanguageArray) != null) {
+					$prevCnt = count($objPreviousItem->_objNarroContextInfoAsLanguageArray);
+					$cnt = count($objToReturn->_objNarroContextInfoAsLanguageArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroContextInfoAsLanguageArray, $objToReturn->_objNarroContextInfoAsLanguageArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroFileProgressAsLanguageArray, $objToReturn->_objNarroFileProgressAsLanguageArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroFileProgressAsLanguageArray);
+					$cnt = count($objToReturn->_objNarroFileProgressAsLanguageArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroFileProgressAsLanguageArray, $objToReturn->_objNarroFileProgressAsLanguageArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroLogAsLanguageArray, $objToReturn->_objNarroLogAsLanguageArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroLogAsLanguageArray);
+					$cnt = count($objToReturn->_objNarroLogAsLanguageArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroLogAsLanguageArray, $objToReturn->_objNarroLogAsLanguageArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroProjectProgressAsLanguageArray, $objToReturn->_objNarroProjectProgressAsLanguageArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroProjectProgressAsLanguageArray);
+					$cnt = count($objToReturn->_objNarroProjectProgressAsLanguageArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroProjectProgressAsLanguageArray, $objToReturn->_objNarroProjectProgressAsLanguageArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroSuggestionAsLanguageArray, $objToReturn->_objNarroSuggestionAsLanguageArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroSuggestionAsLanguageArray);
+					$cnt = count($objToReturn->_objNarroSuggestionAsLanguageArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroSuggestionAsLanguageArray, $objToReturn->_objNarroSuggestionAsLanguageArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroTextCommentAsLanguageArray, $objToReturn->_objNarroTextCommentAsLanguageArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroTextCommentAsLanguageArray);
+					$cnt = count($objToReturn->_objNarroTextCommentAsLanguageArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroTextCommentAsLanguageArray, $objToReturn->_objNarroTextCommentAsLanguageArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroUserRoleAsLanguageArray, $objToReturn->_objNarroUserRoleAsLanguageArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroUserRoleAsLanguageArray);
+					$cnt = count($objToReturn->_objNarroUserRoleAsLanguageArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroUserRoleAsLanguageArray, $objToReturn->_objNarroUserRoleAsLanguageArray)) {
 						continue;
 					}
+
 
 					// complete match - all primary key columns are the same
 					return null;
@@ -817,10 +907,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -922,7 +1012,6 @@
 					$objToReturn->_objNarroUserRoleAsLanguage = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleaslanguage__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -961,11 +1050,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroLanguage object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroLanguage next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroLanguage::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroLanguage object,
 		 * by LanguageId Index(es)
@@ -981,7 +1098,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroLanguage object,
 		 * by LanguageName Index(es)
@@ -997,7 +1114,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroLanguage object,
 		 * by LanguageCode Index(es)
@@ -1022,35 +1139,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['LanguageId']))
-                $this->_arrHistory['LanguageId'] = $this->LanguageId;
-            if (!isset($this->_arrHistory['LanguageName']))
-                $this->_arrHistory['LanguageName'] = $this->LanguageName;
-            if (!isset($this->_arrHistory['LanguageCode']))
-                $this->_arrHistory['LanguageCode'] = $this->LanguageCode;
-            if (!isset($this->_arrHistory['CountryCode']))
-                $this->_arrHistory['CountryCode'] = $this->CountryCode;
-            if (!isset($this->_arrHistory['DialectCode']))
-                $this->_arrHistory['DialectCode'] = $this->DialectCode;
-            if (!isset($this->_arrHistory['Encoding']))
-                $this->_arrHistory['Encoding'] = $this->Encoding;
-            if (!isset($this->_arrHistory['TextDirection']))
-                $this->_arrHistory['TextDirection'] = $this->TextDirection;
-            if (!isset($this->_arrHistory['SpecialCharacters']))
-                $this->_arrHistory['SpecialCharacters'] = $this->SpecialCharacters;
-            if (!isset($this->_arrHistory['PluralForm']))
-                $this->_arrHistory['PluralForm'] = $this->PluralForm;
-            if (!isset($this->_arrHistory['Active']))
-                $this->_arrHistory['Active'] = $this->Active;
-        }
 
 
 		//////////////////////////
@@ -1103,91 +1191,20 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['LanguageName'] !== $this->LanguageName ||
-                        (
-                            $this->LanguageName instanceof QDateTime &&
-                            (string) $this->_arrHistory['LanguageName'] !== (string) $this->LanguageName
-                        )
-                    )
-                        $arrUpdateChanges[] = '`language_name` = ' . $objDatabase->SqlVariable($this->strLanguageName);
-                    if (
-                        $this->_arrHistory['LanguageCode'] !== $this->LanguageCode ||
-                        (
-                            $this->LanguageCode instanceof QDateTime &&
-                            (string) $this->_arrHistory['LanguageCode'] !== (string) $this->LanguageCode
-                        )
-                    )
-                        $arrUpdateChanges[] = '`language_code` = ' . $objDatabase->SqlVariable($this->strLanguageCode);
-                    if (
-                        $this->_arrHistory['CountryCode'] !== $this->CountryCode ||
-                        (
-                            $this->CountryCode instanceof QDateTime &&
-                            (string) $this->_arrHistory['CountryCode'] !== (string) $this->CountryCode
-                        )
-                    )
-                        $arrUpdateChanges[] = '`country_code` = ' . $objDatabase->SqlVariable($this->strCountryCode);
-                    if (
-                        $this->_arrHistory['DialectCode'] !== $this->DialectCode ||
-                        (
-                            $this->DialectCode instanceof QDateTime &&
-                            (string) $this->_arrHistory['DialectCode'] !== (string) $this->DialectCode
-                        )
-                    )
-                        $arrUpdateChanges[] = '`dialect_code` = ' . $objDatabase->SqlVariable($this->strDialectCode);
-                    if (
-                        $this->_arrHistory['Encoding'] !== $this->Encoding ||
-                        (
-                            $this->Encoding instanceof QDateTime &&
-                            (string) $this->_arrHistory['Encoding'] !== (string) $this->Encoding
-                        )
-                    )
-                        $arrUpdateChanges[] = '`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding);
-                    if (
-                        $this->_arrHistory['TextDirection'] !== $this->TextDirection ||
-                        (
-                            $this->TextDirection instanceof QDateTime &&
-                            (string) $this->_arrHistory['TextDirection'] !== (string) $this->TextDirection
-                        )
-                    )
-                        $arrUpdateChanges[] = '`text_direction` = ' . $objDatabase->SqlVariable($this->strTextDirection);
-                    if (
-                        $this->_arrHistory['SpecialCharacters'] !== $this->SpecialCharacters ||
-                        (
-                            $this->SpecialCharacters instanceof QDateTime &&
-                            (string) $this->_arrHistory['SpecialCharacters'] !== (string) $this->SpecialCharacters
-                        )
-                    )
-                        $arrUpdateChanges[] = '`special_characters` = ' . $objDatabase->SqlVariable($this->strSpecialCharacters);
-                    if (
-                        $this->_arrHistory['PluralForm'] !== $this->PluralForm ||
-                        (
-                            $this->PluralForm instanceof QDateTime &&
-                            (string) $this->_arrHistory['PluralForm'] !== (string) $this->PluralForm
-                        )
-                    )
-                        $arrUpdateChanges[] = '`plural_form` = ' . $objDatabase->SqlVariable($this->strPluralForm);
-                    if (
-                        $this->_arrHistory['Active'] !== $this->Active ||
-                        (
-                            $this->Active instanceof QDateTime &&
-                            (string) $this->_arrHistory['Active'] !== (string) $this->Active
-                        )
-                    )
-                        $arrUpdateChanges[] = '`active` = ' . $objDatabase->SqlVariable($this->blnActive);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_language`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`language_name` = ' . $objDatabase->SqlVariable($this->strLanguageName) . ',
+							`language_code` = ' . $objDatabase->SqlVariable($this->strLanguageCode) . ',
+							`country_code` = ' . $objDatabase->SqlVariable($this->strCountryCode) . ',
+							`dialect_code` = ' . $objDatabase->SqlVariable($this->strDialectCode) . ',
+							`encoding` = ' . $objDatabase->SqlVariable($this->strEncoding) . ',
+							`text_direction` = ' . $objDatabase->SqlVariable($this->strTextDirection) . ',
+							`special_characters` = ' . $objDatabase->SqlVariable($this->strSpecialCharacters) . ',
+							`plural_form` = ' . $objDatabase->SqlVariable($this->strPluralForm) . ',
+							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . '
 						WHERE
 							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 					');
@@ -1198,10 +1215,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -1225,6 +1243,19 @@
 					`narro_language`
 				WHERE
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroLanguage ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroLanguage', $this->intLanguageId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -1239,6 +1270,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_language`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1252,6 +1287,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_language`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1262,6 +1301,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroLanguage object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroLanguage::Load($this->intLanguageId);
@@ -1663,8 +1704,8 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-			
-		
+
+
 		// Related Objects' Methods for NarroContextInfoAsLanguage
 		//-------------------------------------------------------------------
 
@@ -1717,7 +1758,7 @@
 				SET
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 				WHERE
-					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . '
+					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . ' 
 			');
 		}
 
@@ -1813,8 +1854,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroFileProgressAsLanguage
 		//-------------------------------------------------------------------
 
@@ -1867,7 +1907,7 @@
 				SET
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 				WHERE
-					`file_progress_id` = ' . $objDatabase->SqlVariable($objNarroFileProgress->FileProgressId) . '
+					`file_progress_id` = ' . $objDatabase->SqlVariable($objNarroFileProgress->FileProgressId) . ' 
 			');
 		}
 
@@ -1963,8 +2003,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroLogAsLanguage
 		//-------------------------------------------------------------------
 
@@ -2017,7 +2056,7 @@
 				SET
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 				WHERE
-					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . '
+					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . ' 
 			');
 		}
 
@@ -2113,8 +2152,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroProjectProgressAsLanguage
 		//-------------------------------------------------------------------
 
@@ -2167,7 +2205,7 @@
 				SET
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 				WHERE
-					`project_progress_id` = ' . $objDatabase->SqlVariable($objNarroProjectProgress->ProjectProgressId) . '
+					`project_progress_id` = ' . $objDatabase->SqlVariable($objNarroProjectProgress->ProjectProgressId) . ' 
 			');
 		}
 
@@ -2263,8 +2301,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroSuggestionAsLanguage
 		//-------------------------------------------------------------------
 
@@ -2317,7 +2354,7 @@
 				SET
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestion->SuggestionId) . '
+					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestion->SuggestionId) . ' 
 			');
 		}
 
@@ -2413,8 +2450,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroTextCommentAsLanguage
 		//-------------------------------------------------------------------
 
@@ -2467,7 +2503,7 @@
 				SET
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 				WHERE
-					`text_comment_id` = ' . $objDatabase->SqlVariable($objNarroTextComment->TextCommentId) . '
+					`text_comment_id` = ' . $objDatabase->SqlVariable($objNarroTextComment->TextCommentId) . ' 
 			');
 		}
 
@@ -2563,8 +2599,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroUserRoleAsLanguage
 		//-------------------------------------------------------------------
 
@@ -2617,7 +2652,7 @@
 				SET
 					`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . '
 				WHERE
-					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . '
+					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . ' 
 			');
 		}
 
@@ -2714,8 +2749,37 @@
 		}
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_language";
+		}
 
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroLanguage::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -2825,6 +2889,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intLanguageId ));
+		}
+
 
 
 	}

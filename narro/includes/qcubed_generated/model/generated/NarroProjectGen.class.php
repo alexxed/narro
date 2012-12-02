@@ -36,15 +36,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroProjectGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['ProjectId'] = null;
-                $this->_arrHistory['ProjectCategoryId'] = null;
-                $this->_arrHistory['ProjectName'] = null;
-                $this->_arrHistory['ProjectType'] = null;
-                $this->_arrHistory['ProjectDescription'] = null;
-                $this->_arrHistory['Data'] = null;
-                $this->_arrHistory['Active'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -202,11 +194,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -260,13 +247,25 @@
 		 * @return NarroProject
 		 */
 		public static function Load($intProjectId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroProject', $intProjectId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroProject::QuerySingle(
+			$objToReturn = NarroProject::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroProject()->ProjectId, $intProjectId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -319,7 +318,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroProject-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_project');
-			NarroProject::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroProject::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_project');
 
 			// Set "CountOnly" option (if applicable)
@@ -432,6 +450,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroProject::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroProject objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -496,7 +539,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -505,13 +548,18 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
-			$objBuilder->AddSelectItem($strTableName, 'project_category_id', $strAliasPrefix . 'project_category_id');
-			$objBuilder->AddSelectItem($strTableName, 'project_name', $strAliasPrefix . 'project_name');
-			$objBuilder->AddSelectItem($strTableName, 'project_type', $strAliasPrefix . 'project_type');
-			$objBuilder->AddSelectItem($strTableName, 'project_description', $strAliasPrefix . 'project_description');
-			$objBuilder->AddSelectItem($strTableName, 'data', $strAliasPrefix . 'data');
-			$objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
+			    $objBuilder->AddSelectItem($strTableName, 'project_category_id', $strAliasPrefix . 'project_category_id');
+			    $objBuilder->AddSelectItem($strTableName, 'project_name', $strAliasPrefix . 'project_name');
+			    $objBuilder->AddSelectItem($strTableName, 'project_type', $strAliasPrefix . 'project_type');
+			    $objBuilder->AddSelectItem($strTableName, 'project_description', $strAliasPrefix . 'project_description');
+			    $objBuilder->AddSelectItem($strTableName, 'data', $strAliasPrefix . 'data');
+			    $objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
+            }
 		}
 
 
@@ -658,19 +706,26 @@
 			$objToReturn = new NarroProject();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_id'] : $strAliasPrefix . 'project_id';
+			$strAlias = $strAliasPrefix . 'project_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_category_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_category_id'] : $strAliasPrefix . 'project_category_id';
+			$strAlias = $strAliasPrefix . 'project_category_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProjectCategoryId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_name'] : $strAliasPrefix . 'project_name';
+			$strAlias = $strAliasPrefix . 'project_name';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strProjectName = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_type', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_type'] : $strAliasPrefix . 'project_type';
+			$strAlias = $strAliasPrefix . 'project_type';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProjectType = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_description', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_description'] : $strAliasPrefix . 'project_description';
+			$strAlias = $strAliasPrefix . 'project_description';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strProjectDescription = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'data', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'data'] : $strAliasPrefix . 'data';
+			$strAlias = $strAliasPrefix . 'data';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strData = $objDbRow->GetColumn($strAliasName, 'Blob');
-			$strAliasName = array_key_exists($strAliasPrefix . 'active', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active'] : $strAliasPrefix . 'active';
+			$strAlias = $strAliasPrefix . 'active';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intActive = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -678,21 +733,46 @@
 					if ($objToReturn->ProjectId != $objPreviousItem->ProjectId) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroContextAsProjectArray, $objToReturn->_objNarroContextAsProjectArray) != null) {
+					$prevCnt = count($objPreviousItem->_objNarroContextAsProjectArray);
+					$cnt = count($objToReturn->_objNarroContextAsProjectArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroContextAsProjectArray, $objToReturn->_objNarroContextAsProjectArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroFileAsProjectArray, $objToReturn->_objNarroFileAsProjectArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroFileAsProjectArray);
+					$cnt = count($objToReturn->_objNarroFileAsProjectArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroFileAsProjectArray, $objToReturn->_objNarroFileAsProjectArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroLogAsProjectArray, $objToReturn->_objNarroLogAsProjectArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroLogAsProjectArray);
+					$cnt = count($objToReturn->_objNarroLogAsProjectArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroLogAsProjectArray, $objToReturn->_objNarroLogAsProjectArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroProjectProgressAsProjectArray, $objToReturn->_objNarroProjectProgressAsProjectArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroProjectProgressAsProjectArray);
+					$cnt = count($objToReturn->_objNarroProjectProgressAsProjectArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroProjectProgressAsProjectArray, $objToReturn->_objNarroProjectProgressAsProjectArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroUserRoleAsProjectArray, $objToReturn->_objNarroUserRoleAsProjectArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroUserRoleAsProjectArray);
+					$cnt = count($objToReturn->_objNarroUserRoleAsProjectArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroUserRoleAsProjectArray, $objToReturn->_objNarroUserRoleAsProjectArray)) {
 						continue;
 					}
+
 
 					// complete match - all primary key columns are the same
 					return null;
@@ -700,10 +780,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -785,7 +865,6 @@
 					$objToReturn->_objNarroUserRoleAsProject = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasproject__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -824,11 +903,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroProject object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroProject next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroProject::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroProject object,
 		 * by ProjectId Index(es)
@@ -844,7 +951,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroProject object,
 		 * by ProjectName Index(es)
@@ -860,7 +967,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroProject objects,
 		 * by ProjectType Index(es)
@@ -892,7 +999,7 @@
 				QQ::Equal(QQN::NarroProject()->ProjectType, $intProjectType)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroProject objects,
 		 * by ProjectCategoryId Index(es)
@@ -924,7 +1031,7 @@
 				QQ::Equal(QQN::NarroProject()->ProjectCategoryId, $intProjectCategoryId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroProject objects,
 		 * by Active Index(es)
@@ -965,29 +1072,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['ProjectId']))
-                $this->_arrHistory['ProjectId'] = $this->ProjectId;
-            if (!isset($this->_arrHistory['ProjectCategoryId']))
-                $this->_arrHistory['ProjectCategoryId'] = $this->ProjectCategoryId;
-            if (!isset($this->_arrHistory['ProjectName']))
-                $this->_arrHistory['ProjectName'] = $this->ProjectName;
-            if (!isset($this->_arrHistory['ProjectType']))
-                $this->_arrHistory['ProjectType'] = $this->ProjectType;
-            if (!isset($this->_arrHistory['ProjectDescription']))
-                $this->_arrHistory['ProjectDescription'] = $this->ProjectDescription;
-            if (!isset($this->_arrHistory['Data']))
-                $this->_arrHistory['Data'] = $this->Data;
-            if (!isset($this->_arrHistory['Active']))
-                $this->_arrHistory['Active'] = $this->Active;
-        }
 
 
 		//////////////////////////
@@ -1034,67 +1118,17 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['ProjectCategoryId'] !== $this->ProjectCategoryId ||
-                        (
-                            $this->ProjectCategoryId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProjectCategoryId'] !== (string) $this->ProjectCategoryId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`project_category_id` = ' . $objDatabase->SqlVariable($this->intProjectCategoryId);
-                    if (
-                        $this->_arrHistory['ProjectName'] !== $this->ProjectName ||
-                        (
-                            $this->ProjectName instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProjectName'] !== (string) $this->ProjectName
-                        )
-                    )
-                        $arrUpdateChanges[] = '`project_name` = ' . $objDatabase->SqlVariable($this->strProjectName);
-                    if (
-                        $this->_arrHistory['ProjectType'] !== $this->ProjectType ||
-                        (
-                            $this->ProjectType instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProjectType'] !== (string) $this->ProjectType
-                        )
-                    )
-                        $arrUpdateChanges[] = '`project_type` = ' . $objDatabase->SqlVariable($this->intProjectType);
-                    if (
-                        $this->_arrHistory['ProjectDescription'] !== $this->ProjectDescription ||
-                        (
-                            $this->ProjectDescription instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProjectDescription'] !== (string) $this->ProjectDescription
-                        )
-                    )
-                        $arrUpdateChanges[] = '`project_description` = ' . $objDatabase->SqlVariable($this->strProjectDescription);
-                    if (
-                        $this->_arrHistory['Data'] !== $this->Data ||
-                        (
-                            $this->Data instanceof QDateTime &&
-                            (string) $this->_arrHistory['Data'] !== (string) $this->Data
-                        )
-                    )
-                        $arrUpdateChanges[] = '`data` = ' . $objDatabase->SqlVariable($this->strData);
-                    if (
-                        $this->_arrHistory['Active'] !== $this->Active ||
-                        (
-                            $this->Active instanceof QDateTime &&
-                            (string) $this->_arrHistory['Active'] !== (string) $this->Active
-                        )
-                    )
-                        $arrUpdateChanges[] = '`active` = ' . $objDatabase->SqlVariable($this->intActive);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_project`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`project_category_id` = ' . $objDatabase->SqlVariable($this->intProjectCategoryId) . ',
+							`project_name` = ' . $objDatabase->SqlVariable($this->strProjectName) . ',
+							`project_type` = ' . $objDatabase->SqlVariable($this->intProjectType) . ',
+							`project_description` = ' . $objDatabase->SqlVariable($this->strProjectDescription) . ',
+							`data` = ' . $objDatabase->SqlVariable($this->strData) . ',
+							`active` = ' . $objDatabase->SqlVariable($this->intActive) . '
 						WHERE
 							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
 					');
@@ -1105,10 +1139,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -1132,6 +1167,19 @@
 					`narro_project`
 				WHERE
 					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroProject ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroProject', $this->intProjectId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -1146,6 +1194,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_project`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1159,6 +1211,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_project`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1169,6 +1225,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroProject object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroProject::Load($this->intProjectId);
@@ -1522,8 +1580,8 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-			
-		
+
+
 		// Related Objects' Methods for NarroContextAsProject
 		//-------------------------------------------------------------------
 
@@ -1576,7 +1634,7 @@
 				SET
 					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
 				WHERE
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . '
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . ' 
 			');
 		}
 
@@ -1672,8 +1730,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroFileAsProject
 		//-------------------------------------------------------------------
 
@@ -1726,7 +1783,7 @@
 				SET
 					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
 				WHERE
-					`file_id` = ' . $objDatabase->SqlVariable($objNarroFile->FileId) . '
+					`file_id` = ' . $objDatabase->SqlVariable($objNarroFile->FileId) . ' 
 			');
 		}
 
@@ -1822,8 +1879,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroLogAsProject
 		//-------------------------------------------------------------------
 
@@ -1876,7 +1932,7 @@
 				SET
 					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
 				WHERE
-					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . '
+					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . ' 
 			');
 		}
 
@@ -1972,8 +2028,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroProjectProgressAsProject
 		//-------------------------------------------------------------------
 
@@ -2026,7 +2081,7 @@
 				SET
 					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
 				WHERE
-					`project_progress_id` = ' . $objDatabase->SqlVariable($objNarroProjectProgress->ProjectProgressId) . '
+					`project_progress_id` = ' . $objDatabase->SqlVariable($objNarroProjectProgress->ProjectProgressId) . ' 
 			');
 		}
 
@@ -2122,8 +2177,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroUserRoleAsProject
 		//-------------------------------------------------------------------
 
@@ -2176,7 +2230,7 @@
 				SET
 					`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . '
 				WHERE
-					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . '
+					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . ' 
 			');
 		}
 
@@ -2273,8 +2327,37 @@
 		}
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_project";
+		}
 
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroProject::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -2378,6 +2461,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intProjectId ));
+		}
+
 
 
 	}

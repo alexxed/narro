@@ -120,7 +120,6 @@
 				$this->lstParent->Warning = QApplication::Translate("Already in Use");
 			}
 
-
 			$blnFocused = false;
 			foreach ($this->GetErrorControls() as $objControl) {
 				// Set Focus to the top-most invalid control

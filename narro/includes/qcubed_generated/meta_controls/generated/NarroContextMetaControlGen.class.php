@@ -313,21 +313,30 @@
 		/**
 		 * Create and setup QListBox lstText
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstText_Create($strControlId = null) {
+		public function lstText_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstText = new QListBox($this->objParentObject, $strControlId);
 			$this->lstText->Name = QApplication::Translate('Text');
 			$this->lstText->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstText->AddItem(QApplication::Translate('- Select One -'), null);
-			$objTextArray = NarroText::LoadAll();
-			if ($objTextArray) foreach ($objTextArray as $objText) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objTextCursor = NarroText::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objText = NarroText::InstantiateCursor($objTextCursor)) {
 				$objListItem = new QListItem($objText->__toString(), $objText->TextId);
 				if (($this->objNarroContext->Text) && ($this->objNarroContext->Text->TextId == $objText->TextId))
 					$objListItem->Selected = true;
 				$this->lstText->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstText;
 		}
 
@@ -397,21 +406,30 @@
 		/**
 		 * Create and setup QListBox lstProject
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstProject_Create($strControlId = null) {
+		public function lstProject_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstProject = new QListBox($this->objParentObject, $strControlId);
 			$this->lstProject->Name = QApplication::Translate('Project');
 			$this->lstProject->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstProject->AddItem(QApplication::Translate('- Select One -'), null);
-			$objProjectArray = NarroProject::LoadAll();
-			if ($objProjectArray) foreach ($objProjectArray as $objProject) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objProjectCursor = NarroProject::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objProject = NarroProject::InstantiateCursor($objProjectCursor)) {
 				$objListItem = new QListItem($objProject->__toString(), $objProject->ProjectId);
 				if (($this->objNarroContext->Project) && ($this->objNarroContext->Project->ProjectId == $objProject->ProjectId))
 					$objListItem->Selected = true;
 				$this->lstProject->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstProject;
 		}
 
@@ -535,21 +553,30 @@
 		/**
 		 * Create and setup QListBox lstFile
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstFile_Create($strControlId = null) {
+		public function lstFile_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstFile = new QListBox($this->objParentObject, $strControlId);
 			$this->lstFile->Name = QApplication::Translate('File');
 			$this->lstFile->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstFile->AddItem(QApplication::Translate('- Select One -'), null);
-			$objFileArray = NarroFile::LoadAll();
-			if ($objFileArray) foreach ($objFileArray as $objFile) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objFileCursor = NarroFile::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objFile = NarroFile::InstantiateCursor($objFileCursor)) {
 				$objListItem = new QListItem($objFile->__toString(), $objFile->FileId);
 				if (($this->objNarroContext->File) && ($this->objNarroContext->File->FileId == $objFile->FileId))
 					$objListItem->Selected = true;
 				$this->lstFile->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstFile;
 		}
 

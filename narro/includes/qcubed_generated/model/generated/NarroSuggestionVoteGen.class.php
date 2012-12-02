@@ -27,14 +27,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroSuggestionVoteGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['SuggestionId'] = null;
-                $this->_arrHistory['ContextId'] = null;
-                $this->_arrHistory['UserId'] = null;
-                $this->_arrHistory['VoteValue'] = null;
-                $this->_arrHistory['Created'] = null;
-                $this->_arrHistory['Modified'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -123,11 +116,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -195,15 +183,21 @@
 
 		/**
 		 * Load a NarroSuggestionVote from PK Info
-		 * @param integer $intSuggestionId
-		 * @param integer $intContextId
-		 * @param integer $intUserId
+		 * @param integer $intSuggestionId		 * @param integer $intContextId		 * @param integer $intUserId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
 		 * @return NarroSuggestionVote
 		 */
 		public static function Load($intSuggestionId, $intContextId, $intUserId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroSuggestionVote', $intSuggestionId, $intContextId, $intUserId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroSuggestionVote::QuerySingle(
+			$objToReturn = NarroSuggestionVote::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $intSuggestionId),
 					QQ::Equal(QQN::NarroSuggestionVote()->ContextId, $intContextId),
@@ -211,6 +205,10 @@
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -263,7 +261,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroSuggestionVote-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_suggestion_vote');
-			NarroSuggestionVote::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroSuggestionVote::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_suggestion_vote');
 
 			// Set "CountOnly" option (if applicable)
@@ -376,6 +393,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroSuggestionVote::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroSuggestionVote objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -440,7 +482,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -449,12 +491,19 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'suggestion_id', $strAliasPrefix . 'suggestion_id');
-			$objBuilder->AddSelectItem($strTableName, 'context_id', $strAliasPrefix . 'context_id');
-			$objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
-			$objBuilder->AddSelectItem($strTableName, 'vote_value', $strAliasPrefix . 'vote_value');
-			$objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
-			$objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'suggestion_id', $strAliasPrefix . 'suggestion_id');
+			    $objBuilder->AddSelectItem($strTableName, 'context_id', $strAliasPrefix . 'context_id');
+			    $objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'suggestion_id', $strAliasPrefix . 'suggestion_id');
+			    $objBuilder->AddSelectItem($strTableName, 'context_id', $strAliasPrefix . 'context_id');
+			    $objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
+			    $objBuilder->AddSelectItem($strTableName, 'vote_value', $strAliasPrefix . 'vote_value');
+			    $objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
+			    $objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+            }
 		}
 
 
@@ -485,20 +534,26 @@
 			$objToReturn = new NarroSuggestionVote();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_id'] : $strAliasPrefix . 'suggestion_id';
+			$strAlias = $strAliasPrefix . 'suggestion_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intSuggestionId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$objToReturn->__intSuggestionId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'context_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'context_id'] : $strAliasPrefix . 'context_id';
+			$strAlias = $strAliasPrefix . 'context_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intContextId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$objToReturn->__intContextId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'user_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'user_id'] : $strAliasPrefix . 'user_id';
+			$strAlias = $strAliasPrefix . 'user_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$objToReturn->__intUserId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'vote_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'vote_value'] : $strAliasPrefix . 'vote_value';
+			$strAlias = $strAliasPrefix . 'vote_value';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intVoteValue = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created'] : $strAliasPrefix . 'created';
+			$strAlias = $strAliasPrefix . 'created';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'modified', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'modified'] : $strAliasPrefix . 'modified';
+			$strAlias = $strAliasPrefix . 'modified';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttModified = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -519,10 +574,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -551,7 +606,6 @@
 
 
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -590,11 +644,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroSuggestionVote object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroSuggestionVote next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroSuggestionVote::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroSuggestionVote object,
 		 * by SuggestionId, ContextId, UserId Index(es)
@@ -614,7 +696,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroSuggestionVote object,
 		 * by SuggestionId, UserId, ContextId Index(es)
@@ -634,7 +716,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroSuggestionVote objects,
 		 * by SuggestionId Index(es)
@@ -666,7 +748,7 @@
 				QQ::Equal(QQN::NarroSuggestionVote()->SuggestionId, $intSuggestionId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroSuggestionVote objects,
 		 * by UserId Index(es)
@@ -698,7 +780,7 @@
 				QQ::Equal(QQN::NarroSuggestionVote()->UserId, $intUserId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroSuggestionVote objects,
 		 * by ContextId Index(es)
@@ -739,27 +821,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['SuggestionId']))
-                $this->_arrHistory['SuggestionId'] = $this->SuggestionId;
-            if (!isset($this->_arrHistory['ContextId']))
-                $this->_arrHistory['ContextId'] = $this->ContextId;
-            if (!isset($this->_arrHistory['UserId']))
-                $this->_arrHistory['UserId'] = $this->UserId;
-            if (!isset($this->_arrHistory['VoteValue']))
-                $this->_arrHistory['VoteValue'] = $this->VoteValue;
-            if (!isset($this->_arrHistory['Created']))
-                $this->_arrHistory['Created'] = $this->Created;
-            if (!isset($this->_arrHistory['Modified']))
-                $this->_arrHistory['Modified'] = $this->Modified;
-        }
 
 
 		//////////////////////////
@@ -805,70 +866,20 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['SuggestionId'] !== $this->SuggestionId ||
-                        (
-                            $this->SuggestionId instanceof QDateTime &&
-                            (string) $this->_arrHistory['SuggestionId'] !== (string) $this->SuggestionId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId);
-                    if (
-                        $this->_arrHistory['ContextId'] !== $this->ContextId ||
-                        (
-                            $this->ContextId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ContextId'] !== (string) $this->ContextId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`context_id` = ' . $objDatabase->SqlVariable($this->intContextId);
-                    if (
-                        $this->_arrHistory['UserId'] !== $this->UserId ||
-                        (
-                            $this->UserId instanceof QDateTime &&
-                            (string) $this->_arrHistory['UserId'] !== (string) $this->UserId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`user_id` = ' . $objDatabase->SqlVariable($this->intUserId);
-                    if (
-                        $this->_arrHistory['VoteValue'] !== $this->VoteValue ||
-                        (
-                            $this->VoteValue instanceof QDateTime &&
-                            (string) $this->_arrHistory['VoteValue'] !== (string) $this->VoteValue
-                        )
-                    )
-                        $arrUpdateChanges[] = '`vote_value` = ' . $objDatabase->SqlVariable($this->intVoteValue);
-                    if (
-                        $this->_arrHistory['Created'] !== $this->Created ||
-                        (
-                            $this->Created instanceof QDateTime &&
-                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
-                        )
-                    )
-                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
-                    if (
-                        $this->_arrHistory['Modified'] !== $this->Modified ||
-                        (
-                            $this->Modified instanceof QDateTime &&
-                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
-                        )
-                    )
-                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_suggestion_vote`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . ',
+							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ',
+							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
+							`vote_value` = ' . $objDatabase->SqlVariable($this->intVoteValue) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . '
 						WHERE
-							`suggestion_id` = ' . $objDatabase->SqlVariable($this->__intSuggestionId) . ' AND
-							`context_id` = ' . $objDatabase->SqlVariable($this->__intContextId) . ' AND
+							`suggestion_id` = ' . $objDatabase->SqlVariable($this->__intSuggestionId) . ' AND 
+							`context_id` = ' . $objDatabase->SqlVariable($this->__intContextId) . ' AND 
 							`user_id` = ' . $objDatabase->SqlVariable($this->__intUserId) . '
 					');
 				}
@@ -878,13 +889,14 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 			$this->__intSuggestionId = $this->intSuggestionId;
 			$this->__intContextId = $this->intContextId;
 			$this->__intUserId = $this->intUserId;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -910,6 +922,19 @@
 					`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . ' AND
 					`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ' AND
 					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroSuggestionVote ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroSuggestionVote', $this->intSuggestionId, $this->intContextId, $this->intUserId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -924,6 +949,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_suggestion_vote`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -937,6 +966,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_suggestion_vote`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -947,6 +980,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroSuggestionVote object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroSuggestionVote::Load($this->intSuggestionId, $this->intContextId, $this->intUserId);
@@ -1312,7 +1347,37 @@
 
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_suggestion_vote";
+		}
+
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroSuggestionVote::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -1428,6 +1493,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  array( $this->intSuggestionId,  $this->intContextId,  $this->intUserId) ));
+		}
+
 
 
 	}

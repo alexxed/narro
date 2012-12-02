@@ -37,7 +37,6 @@
 			$this->UseAjax = true;
 		}
 
-
 		/**
 		 * Given the description of the Column's contents, this is a simple, express
 		 * way of adding a column to this NarroRolePermission datagrid.  The description of a column's
@@ -127,7 +126,6 @@
 			return $objNewColumn;
 		}
 
-
 		/**
 		 * Similar to MetaAddColumn, except it creates a column for a Type-based Id.  You MUST specify
 		 * the name of the Type class that this will attempt to use $NameArray against.
@@ -181,7 +179,6 @@
 			return $objNewColumn;
 		}
 
-
 		/**
 		 * Will add an "edit" link-based column, using a standard HREF link to redirect the user to a page
 		 * that must be specified.
@@ -224,7 +221,6 @@
 			return $colEditColumn;
 		}
 
-
 		/**
 		 * Default / simple DataBinder for this Meta DataGrid.  This can easily be overridden
 		 * by calling SetDataBinder() on this DataGrid with another DataBinder of your choice.
@@ -260,7 +256,6 @@
 			// Set the DataSource to be a Query result from NarroRolePermission, given the clauses above
 			$this->DataSource = NarroRolePermission::QueryArray($objConditions, $objClauses);
 		}
-
 
 		/**
 		 * Used internally by the Meta-based Add Column tools.
@@ -300,7 +295,6 @@
 			else
 				throw new QCallerException('Invalid Content type');
 		}
-
 		/**
 		 * This will get the value of $strName
 		 *

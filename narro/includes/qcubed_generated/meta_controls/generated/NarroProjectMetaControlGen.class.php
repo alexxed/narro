@@ -241,19 +241,28 @@
 		/**
 		 * Create and setup QListBox lstProjectCategory
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstProjectCategory_Create($strControlId = null) {
+		public function lstProjectCategory_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstProjectCategory = new QListBox($this->objParentObject, $strControlId);
 			$this->lstProjectCategory->Name = QApplication::Translate('Project Category');
 			$this->lstProjectCategory->AddItem(QApplication::Translate('- Select One -'), null);
-			$objProjectCategoryArray = NarroProjectCategory::LoadAll();
-			if ($objProjectCategoryArray) foreach ($objProjectCategoryArray as $objProjectCategory) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objProjectCategoryCursor = NarroProjectCategory::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objProjectCategory = NarroProjectCategory::InstantiateCursor($objProjectCategoryCursor)) {
 				$objListItem = new QListItem($objProjectCategory->__toString(), $objProjectCategory->ProjectCategoryId);
 				if (($this->objNarroProject->ProjectCategory) && ($this->objNarroProject->ProjectCategory->ProjectCategoryId == $objProjectCategory->ProjectCategoryId))
 					$objListItem->Selected = true;
 				$this->lstProjectCategory->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstProjectCategory;
 		}
 

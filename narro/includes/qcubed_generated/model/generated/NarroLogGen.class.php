@@ -28,15 +28,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroLogGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['LogId'] = null;
-                $this->_arrHistory['LanguageId'] = null;
-                $this->_arrHistory['ProjectId'] = null;
-                $this->_arrHistory['UserId'] = null;
-                $this->_arrHistory['Message'] = null;
-                $this->_arrHistory['Priority'] = null;
-                $this->_arrHistory['Date'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -112,11 +104,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -190,13 +177,25 @@
 		 * @return NarroLog
 		 */
 		public static function Load($intLogId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroLog', $intLogId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroLog::QuerySingle(
+			$objToReturn = NarroLog::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroLog()->LogId, $intLogId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -249,7 +248,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroLog-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_log');
-			NarroLog::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroLog::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_log');
 
 			// Set "CountOnly" option (if applicable)
@@ -362,6 +380,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroLog::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroLog objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -426,7 +469,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -435,13 +478,18 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'log_id', $strAliasPrefix . 'log_id');
-			$objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
-			$objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
-			$objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
-			$objBuilder->AddSelectItem($strTableName, 'message', $strAliasPrefix . 'message');
-			$objBuilder->AddSelectItem($strTableName, 'priority', $strAliasPrefix . 'priority');
-			$objBuilder->AddSelectItem($strTableName, 'date', $strAliasPrefix . 'date');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'log_id', $strAliasPrefix . 'log_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'log_id', $strAliasPrefix . 'log_id');
+			    $objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+			    $objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
+			    $objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
+			    $objBuilder->AddSelectItem($strTableName, 'message', $strAliasPrefix . 'message');
+			    $objBuilder->AddSelectItem($strTableName, 'priority', $strAliasPrefix . 'priority');
+			    $objBuilder->AddSelectItem($strTableName, 'date', $strAliasPrefix . 'date');
+            }
 		}
 
 
@@ -472,19 +520,26 @@
 			$objToReturn = new NarroLog();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'log_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'log_id'] : $strAliasPrefix . 'log_id';
+			$strAlias = $strAliasPrefix . 'log_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intLogId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'language_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_id'] : $strAliasPrefix . 'language_id';
+			$strAlias = $strAliasPrefix . 'language_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_id'] : $strAliasPrefix . 'project_id';
+			$strAlias = $strAliasPrefix . 'project_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'user_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'user_id'] : $strAliasPrefix . 'user_id';
+			$strAlias = $strAliasPrefix . 'user_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'message', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'message'] : $strAliasPrefix . 'message';
+			$strAlias = $strAliasPrefix . 'message';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strMessage = $objDbRow->GetColumn($strAliasName, 'Blob');
-			$strAliasName = array_key_exists($strAliasPrefix . 'priority', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'priority'] : $strAliasPrefix . 'priority';
+			$strAlias = $strAliasPrefix . 'priority';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intPriority = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'date', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'date'] : $strAliasPrefix . 'date';
+			$strAlias = $strAliasPrefix . 'date';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttDate = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -499,10 +554,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -531,7 +586,6 @@
 
 
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -570,11 +624,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroLog object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroLog next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroLog::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroLog object,
 		 * by LogId Index(es)
@@ -590,7 +672,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroLog objects,
 		 * by LanguageId, ProjectId Index(es)
@@ -605,8 +687,8 @@
 				return NarroLog::QueryArray(
 					QQ::AndCondition(
 					QQ::Equal(QQN::NarroLog()->LanguageId, $intLanguageId),
-					QQ::Equal(QQN::NarroLog()->ProjectId, $intProjectId)
-					),
+					QQ::Equal(QQN::NarroLog()->ProjectId, $intProjectId)					)
+,
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -626,11 +708,11 @@
 			return NarroLog::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::NarroLog()->LanguageId, $intLanguageId),
-				QQ::Equal(QQN::NarroLog()->ProjectId, $intProjectId)
-				)
+				QQ::Equal(QQN::NarroLog()->ProjectId, $intProjectId)				)
+
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroLog objects,
 		 * by ProjectId Index(es)
@@ -662,7 +744,7 @@
 				QQ::Equal(QQN::NarroLog()->ProjectId, $intProjectId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroLog objects,
 		 * by UserId Index(es)
@@ -694,7 +776,7 @@
 				QQ::Equal(QQN::NarroLog()->UserId, $intUserId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroLog objects,
 		 * by LanguageId Index(es)
@@ -735,29 +817,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['LogId']))
-                $this->_arrHistory['LogId'] = $this->LogId;
-            if (!isset($this->_arrHistory['LanguageId']))
-                $this->_arrHistory['LanguageId'] = $this->LanguageId;
-            if (!isset($this->_arrHistory['ProjectId']))
-                $this->_arrHistory['ProjectId'] = $this->ProjectId;
-            if (!isset($this->_arrHistory['UserId']))
-                $this->_arrHistory['UserId'] = $this->UserId;
-            if (!isset($this->_arrHistory['Message']))
-                $this->_arrHistory['Message'] = $this->Message;
-            if (!isset($this->_arrHistory['Priority']))
-                $this->_arrHistory['Priority'] = $this->Priority;
-            if (!isset($this->_arrHistory['Date']))
-                $this->_arrHistory['Date'] = $this->Date;
-        }
 
 
 		//////////////////////////
@@ -804,67 +863,17 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['LanguageId'] !== $this->LanguageId ||
-                        (
-                            $this->LanguageId instanceof QDateTime &&
-                            (string) $this->_arrHistory['LanguageId'] !== (string) $this->LanguageId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId);
-                    if (
-                        $this->_arrHistory['ProjectId'] !== $this->ProjectId ||
-                        (
-                            $this->ProjectId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProjectId'] !== (string) $this->ProjectId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId);
-                    if (
-                        $this->_arrHistory['UserId'] !== $this->UserId ||
-                        (
-                            $this->UserId instanceof QDateTime &&
-                            (string) $this->_arrHistory['UserId'] !== (string) $this->UserId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`user_id` = ' . $objDatabase->SqlVariable($this->intUserId);
-                    if (
-                        $this->_arrHistory['Message'] !== $this->Message ||
-                        (
-                            $this->Message instanceof QDateTime &&
-                            (string) $this->_arrHistory['Message'] !== (string) $this->Message
-                        )
-                    )
-                        $arrUpdateChanges[] = '`message` = ' . $objDatabase->SqlVariable($this->strMessage);
-                    if (
-                        $this->_arrHistory['Priority'] !== $this->Priority ||
-                        (
-                            $this->Priority instanceof QDateTime &&
-                            (string) $this->_arrHistory['Priority'] !== (string) $this->Priority
-                        )
-                    )
-                        $arrUpdateChanges[] = '`priority` = ' . $objDatabase->SqlVariable($this->intPriority);
-                    if (
-                        $this->_arrHistory['Date'] !== $this->Date ||
-                        (
-                            $this->Date instanceof QDateTime &&
-                            (string) $this->_arrHistory['Date'] !== (string) $this->Date
-                        )
-                    )
-                        $arrUpdateChanges[] = '`date` = ' . $objDatabase->SqlVariable($this->dttDate);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_log`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
+							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
+							`message` = ' . $objDatabase->SqlVariable($this->strMessage) . ',
+							`priority` = ' . $objDatabase->SqlVariable($this->intPriority) . ',
+							`date` = ' . $objDatabase->SqlVariable($this->dttDate) . '
 						WHERE
 							`log_id` = ' . $objDatabase->SqlVariable($this->intLogId) . '
 					');
@@ -875,10 +884,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -902,6 +912,19 @@
 					`narro_log`
 				WHERE
 					`log_id` = ' . $objDatabase->SqlVariable($this->intLogId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroLog ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroLog', $this->intLogId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -916,6 +939,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_log`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -929,6 +956,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_log`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -939,6 +970,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroLog object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroLog::Load($this->intLogId);
@@ -1308,7 +1341,37 @@
 
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_log";
+		}
+
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroLog::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -1426,6 +1489,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intLogId ));
+		}
+
 
 
 	}

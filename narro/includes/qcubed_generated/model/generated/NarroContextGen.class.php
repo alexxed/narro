@@ -38,21 +38,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroContextGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['ContextId'] = null;
-                $this->_arrHistory['TextId'] = null;
-                $this->_arrHistory['TextAccessKey'] = null;
-                $this->_arrHistory['TextCommandKey'] = null;
-                $this->_arrHistory['ProjectId'] = null;
-                $this->_arrHistory['Context'] = null;
-                $this->_arrHistory['ContextMd5'] = null;
-                $this->_arrHistory['Comment'] = null;
-                $this->_arrHistory['CommentMd5'] = null;
-                $this->_arrHistory['FileId'] = null;
-                $this->_arrHistory['Created'] = null;
-                $this->_arrHistory['Modified'] = null;
-                $this->_arrHistory['Active'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -212,11 +198,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -296,13 +277,25 @@
 		 * @return NarroContext
 		 */
 		public static function Load($intContextId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroContext', $intContextId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroContext::QuerySingle(
+			$objToReturn = NarroContext::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroContext()->ContextId, $intContextId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -355,7 +348,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroContext-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_context');
-			NarroContext::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroContext::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_context');
 
 			// Set "CountOnly" option (if applicable)
@@ -468,6 +480,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroContext::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroContext objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -532,7 +569,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -541,19 +578,24 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'context_id', $strAliasPrefix . 'context_id');
-			$objBuilder->AddSelectItem($strTableName, 'text_id', $strAliasPrefix . 'text_id');
-			$objBuilder->AddSelectItem($strTableName, 'text_access_key', $strAliasPrefix . 'text_access_key');
-			$objBuilder->AddSelectItem($strTableName, 'text_command_key', $strAliasPrefix . 'text_command_key');
-			$objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
-			$objBuilder->AddSelectItem($strTableName, 'context', $strAliasPrefix . 'context');
-			$objBuilder->AddSelectItem($strTableName, 'context_md5', $strAliasPrefix . 'context_md5');
-			$objBuilder->AddSelectItem($strTableName, 'comment', $strAliasPrefix . 'comment');
-			$objBuilder->AddSelectItem($strTableName, 'comment_md5', $strAliasPrefix . 'comment_md5');
-			$objBuilder->AddSelectItem($strTableName, 'file_id', $strAliasPrefix . 'file_id');
-			$objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
-			$objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
-			$objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'context_id', $strAliasPrefix . 'context_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'context_id', $strAliasPrefix . 'context_id');
+			    $objBuilder->AddSelectItem($strTableName, 'text_id', $strAliasPrefix . 'text_id');
+			    $objBuilder->AddSelectItem($strTableName, 'text_access_key', $strAliasPrefix . 'text_access_key');
+			    $objBuilder->AddSelectItem($strTableName, 'text_command_key', $strAliasPrefix . 'text_command_key');
+			    $objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
+			    $objBuilder->AddSelectItem($strTableName, 'context', $strAliasPrefix . 'context');
+			    $objBuilder->AddSelectItem($strTableName, 'context_md5', $strAliasPrefix . 'context_md5');
+			    $objBuilder->AddSelectItem($strTableName, 'comment', $strAliasPrefix . 'comment');
+			    $objBuilder->AddSelectItem($strTableName, 'comment_md5', $strAliasPrefix . 'comment_md5');
+			    $objBuilder->AddSelectItem($strTableName, 'file_id', $strAliasPrefix . 'file_id');
+			    $objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
+			    $objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+			    $objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
+            }
 		}
 
 
@@ -643,31 +685,44 @@
 			$objToReturn = new NarroContext();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'context_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'context_id'] : $strAliasPrefix . 'context_id';
+			$strAlias = $strAliasPrefix . 'context_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intContextId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_id'] : $strAliasPrefix . 'text_id';
+			$strAlias = $strAliasPrefix . 'text_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intTextId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_access_key', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_access_key'] : $strAliasPrefix . 'text_access_key';
+			$strAlias = $strAliasPrefix . 'text_access_key';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strTextAccessKey = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_command_key', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_command_key'] : $strAliasPrefix . 'text_command_key';
+			$strAlias = $strAliasPrefix . 'text_command_key';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strTextCommandKey = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_id'] : $strAliasPrefix . 'project_id';
+			$strAlias = $strAliasPrefix . 'project_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'context', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'context'] : $strAliasPrefix . 'context';
+			$strAlias = $strAliasPrefix . 'context';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strContext = $objDbRow->GetColumn($strAliasName, 'Blob');
-			$strAliasName = array_key_exists($strAliasPrefix . 'context_md5', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'context_md5'] : $strAliasPrefix . 'context_md5';
+			$strAlias = $strAliasPrefix . 'context_md5';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strContextMd5 = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'comment', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'comment'] : $strAliasPrefix . 'comment';
+			$strAlias = $strAliasPrefix . 'comment';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strComment = $objDbRow->GetColumn($strAliasName, 'Blob');
-			$strAliasName = array_key_exists($strAliasPrefix . 'comment_md5', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'comment_md5'] : $strAliasPrefix . 'comment_md5';
+			$strAlias = $strAliasPrefix . 'comment_md5';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strCommentMd5 = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'file_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'file_id'] : $strAliasPrefix . 'file_id';
+			$strAlias = $strAliasPrefix . 'file_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intFileId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created'] : $strAliasPrefix . 'created';
+			$strAlias = $strAliasPrefix . 'created';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'modified', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'modified'] : $strAliasPrefix . 'modified';
+			$strAlias = $strAliasPrefix . 'modified';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttModified = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'active', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active'] : $strAliasPrefix . 'active';
+			$strAlias = $strAliasPrefix . 'active';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasName, 'Bit');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -675,12 +730,22 @@
 					if ($objToReturn->ContextId != $objPreviousItem->ContextId) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroContextInfoAsContextArray, $objToReturn->_objNarroContextInfoAsContextArray) != null) {
+					$prevCnt = count($objPreviousItem->_objNarroContextInfoAsContextArray);
+					$cnt = count($objToReturn->_objNarroContextInfoAsContextArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroContextInfoAsContextArray, $objToReturn->_objNarroContextInfoAsContextArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroSuggestionVoteAsContextArray, $objToReturn->_objNarroSuggestionVoteAsContextArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroSuggestionVoteAsContextArray);
+					$cnt = count($objToReturn->_objNarroSuggestionVoteAsContextArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroSuggestionVoteAsContextArray, $objToReturn->_objNarroSuggestionVoteAsContextArray)) {
 						continue;
 					}
+
 
 					// complete match - all primary key columns are the same
 					return null;
@@ -688,10 +753,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -746,7 +811,6 @@
 					$objToReturn->_objNarroSuggestionVoteAsContext = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteascontext__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -785,11 +849,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroContext object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroContext next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroContext::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroContext object,
 		 * by ContextId Index(es)
@@ -805,7 +897,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroContext object,
 		 * by TextId, ContextMd5, FileId, CommentMd5 Index(es)
@@ -827,7 +919,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContext objects,
 		 * by TextId Index(es)
@@ -859,7 +951,7 @@
 				QQ::Equal(QQN::NarroContext()->TextId, $intTextId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContext objects,
 		 * by FileId Index(es)
@@ -891,7 +983,7 @@
 				QQ::Equal(QQN::NarroContext()->FileId, $intFileId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContext objects,
 		 * by ProjectId Index(es)
@@ -923,7 +1015,7 @@
 				QQ::Equal(QQN::NarroContext()->ProjectId, $intProjectId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContext objects,
 		 * by ContextMd5 Index(es)
@@ -955,7 +1047,7 @@
 				QQ::Equal(QQN::NarroContext()->ContextMd5, $strContextMd5)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContext objects,
 		 * by ProjectId, Active Index(es)
@@ -970,8 +1062,8 @@
 				return NarroContext::QueryArray(
 					QQ::AndCondition(
 					QQ::Equal(QQN::NarroContext()->ProjectId, $intProjectId),
-					QQ::Equal(QQN::NarroContext()->Active, $blnActive)
-					),
+					QQ::Equal(QQN::NarroContext()->Active, $blnActive)					)
+,
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -991,11 +1083,11 @@
 			return NarroContext::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::NarroContext()->ProjectId, $intProjectId),
-				QQ::Equal(QQN::NarroContext()->Active, $blnActive)
-				)
+				QQ::Equal(QQN::NarroContext()->Active, $blnActive)				)
+
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContext objects,
 		 * by Active Index(es)
@@ -1036,41 +1128,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['ContextId']))
-                $this->_arrHistory['ContextId'] = $this->ContextId;
-            if (!isset($this->_arrHistory['TextId']))
-                $this->_arrHistory['TextId'] = $this->TextId;
-            if (!isset($this->_arrHistory['TextAccessKey']))
-                $this->_arrHistory['TextAccessKey'] = $this->TextAccessKey;
-            if (!isset($this->_arrHistory['TextCommandKey']))
-                $this->_arrHistory['TextCommandKey'] = $this->TextCommandKey;
-            if (!isset($this->_arrHistory['ProjectId']))
-                $this->_arrHistory['ProjectId'] = $this->ProjectId;
-            if (!isset($this->_arrHistory['Context']))
-                $this->_arrHistory['Context'] = $this->Context;
-            if (!isset($this->_arrHistory['ContextMd5']))
-                $this->_arrHistory['ContextMd5'] = $this->ContextMd5;
-            if (!isset($this->_arrHistory['Comment']))
-                $this->_arrHistory['Comment'] = $this->Comment;
-            if (!isset($this->_arrHistory['CommentMd5']))
-                $this->_arrHistory['CommentMd5'] = $this->CommentMd5;
-            if (!isset($this->_arrHistory['FileId']))
-                $this->_arrHistory['FileId'] = $this->FileId;
-            if (!isset($this->_arrHistory['Created']))
-                $this->_arrHistory['Created'] = $this->Created;
-            if (!isset($this->_arrHistory['Modified']))
-                $this->_arrHistory['Modified'] = $this->Modified;
-            if (!isset($this->_arrHistory['Active']))
-                $this->_arrHistory['Active'] = $this->Active;
-        }
 
 
 		//////////////////////////
@@ -1129,115 +1186,23 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['TextId'] !== $this->TextId ||
-                        (
-                            $this->TextId instanceof QDateTime &&
-                            (string) $this->_arrHistory['TextId'] !== (string) $this->TextId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`text_id` = ' . $objDatabase->SqlVariable($this->intTextId);
-                    if (
-                        $this->_arrHistory['TextAccessKey'] !== $this->TextAccessKey ||
-                        (
-                            $this->TextAccessKey instanceof QDateTime &&
-                            (string) $this->_arrHistory['TextAccessKey'] !== (string) $this->TextAccessKey
-                        )
-                    )
-                        $arrUpdateChanges[] = '`text_access_key` = ' . $objDatabase->SqlVariable($this->strTextAccessKey);
-                    if (
-                        $this->_arrHistory['TextCommandKey'] !== $this->TextCommandKey ||
-                        (
-                            $this->TextCommandKey instanceof QDateTime &&
-                            (string) $this->_arrHistory['TextCommandKey'] !== (string) $this->TextCommandKey
-                        )
-                    )
-                        $arrUpdateChanges[] = '`text_command_key` = ' . $objDatabase->SqlVariable($this->strTextCommandKey);
-                    if (
-                        $this->_arrHistory['ProjectId'] !== $this->ProjectId ||
-                        (
-                            $this->ProjectId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProjectId'] !== (string) $this->ProjectId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId);
-                    if (
-                        $this->_arrHistory['Context'] !== $this->Context ||
-                        (
-                            $this->Context instanceof QDateTime &&
-                            (string) $this->_arrHistory['Context'] !== (string) $this->Context
-                        )
-                    )
-                        $arrUpdateChanges[] = '`context` = ' . $objDatabase->SqlVariable($this->strContext);
-                    if (
-                        $this->_arrHistory['ContextMd5'] !== $this->ContextMd5 ||
-                        (
-                            $this->ContextMd5 instanceof QDateTime &&
-                            (string) $this->_arrHistory['ContextMd5'] !== (string) $this->ContextMd5
-                        )
-                    )
-                        $arrUpdateChanges[] = '`context_md5` = ' . $objDatabase->SqlVariable($this->strContextMd5);
-                    if (
-                        $this->_arrHistory['Comment'] !== $this->Comment ||
-                        (
-                            $this->Comment instanceof QDateTime &&
-                            (string) $this->_arrHistory['Comment'] !== (string) $this->Comment
-                        )
-                    )
-                        $arrUpdateChanges[] = '`comment` = ' . $objDatabase->SqlVariable($this->strComment);
-                    if (
-                        $this->_arrHistory['CommentMd5'] !== $this->CommentMd5 ||
-                        (
-                            $this->CommentMd5 instanceof QDateTime &&
-                            (string) $this->_arrHistory['CommentMd5'] !== (string) $this->CommentMd5
-                        )
-                    )
-                        $arrUpdateChanges[] = '`comment_md5` = ' . $objDatabase->SqlVariable($this->strCommentMd5);
-                    if (
-                        $this->_arrHistory['FileId'] !== $this->FileId ||
-                        (
-                            $this->FileId instanceof QDateTime &&
-                            (string) $this->_arrHistory['FileId'] !== (string) $this->FileId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`file_id` = ' . $objDatabase->SqlVariable($this->intFileId);
-                    if (
-                        $this->_arrHistory['Created'] !== $this->Created ||
-                        (
-                            $this->Created instanceof QDateTime &&
-                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
-                        )
-                    )
-                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
-                    if (
-                        $this->_arrHistory['Modified'] !== $this->Modified ||
-                        (
-                            $this->Modified instanceof QDateTime &&
-                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
-                        )
-                    )
-                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
-                    if (
-                        $this->_arrHistory['Active'] !== $this->Active ||
-                        (
-                            $this->Active instanceof QDateTime &&
-                            (string) $this->_arrHistory['Active'] !== (string) $this->Active
-                        )
-                    )
-                        $arrUpdateChanges[] = '`active` = ' . $objDatabase->SqlVariable($this->blnActive);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_context`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . ',
+							`text_access_key` = ' . $objDatabase->SqlVariable($this->strTextAccessKey) . ',
+							`text_command_key` = ' . $objDatabase->SqlVariable($this->strTextCommandKey) . ',
+							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
+							`context` = ' . $objDatabase->SqlVariable($this->strContext) . ',
+							`context_md5` = ' . $objDatabase->SqlVariable($this->strContextMd5) . ',
+							`comment` = ' . $objDatabase->SqlVariable($this->strComment) . ',
+							`comment_md5` = ' . $objDatabase->SqlVariable($this->strCommentMd5) . ',
+							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . ',
+							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . '
 						WHERE
 							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . '
 					');
@@ -1248,10 +1213,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -1275,6 +1241,19 @@
 					`narro_context`
 				WHERE
 					`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroContext ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroContext', $this->intContextId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -1289,6 +1268,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_context`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1302,6 +1285,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_context`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1312,6 +1299,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroContext object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroContext::Load($this->intContextId);
@@ -1837,8 +1826,8 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-			
-		
+
+
 		// Related Objects' Methods for NarroContextInfoAsContext
 		//-------------------------------------------------------------------
 
@@ -1891,7 +1880,7 @@
 				SET
 					`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . '
 				WHERE
-					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . '
+					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . ' 
 			');
 		}
 
@@ -1987,8 +1976,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroSuggestionVoteAsContext
 		//-------------------------------------------------------------------
 
@@ -2043,7 +2031,7 @@
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
 					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
-					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . '
+					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . ' 
 			');
 		}
 
@@ -2144,8 +2132,37 @@
 		}
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_context";
+		}
 
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroContext::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -2289,6 +2306,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intContextId ));
+		}
+
 
 
 	}

@@ -36,14 +36,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroUserGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['UserId'] = null;
-                $this->_arrHistory['Username'] = null;
-                $this->_arrHistory['Password'] = null;
-                $this->_arrHistory['Email'] = null;
-                $this->_arrHistory['RealName'] = null;
-                $this->_arrHistory['Data'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -218,11 +211,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -265,13 +253,25 @@
 		 * @return NarroUser
 		 */
 		public static function Load($intUserId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroUser', $intUserId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroUser::QuerySingle(
+			$objToReturn = NarroUser::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroUser()->UserId, $intUserId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -324,7 +324,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroUser-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_user');
-			NarroUser::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroUser::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_user');
 
 			// Set "CountOnly" option (if applicable)
@@ -437,6 +456,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroUser::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroUser objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -501,7 +545,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -510,12 +554,17 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
-			$objBuilder->AddSelectItem($strTableName, 'username', $strAliasPrefix . 'username');
-			$objBuilder->AddSelectItem($strTableName, 'password', $strAliasPrefix . 'password');
-			$objBuilder->AddSelectItem($strTableName, 'email', $strAliasPrefix . 'email');
-			$objBuilder->AddSelectItem($strTableName, 'real_name', $strAliasPrefix . 'real_name');
-			$objBuilder->AddSelectItem($strTableName, 'data', $strAliasPrefix . 'data');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
+			    $objBuilder->AddSelectItem($strTableName, 'username', $strAliasPrefix . 'username');
+			    $objBuilder->AddSelectItem($strTableName, 'password', $strAliasPrefix . 'password');
+			    $objBuilder->AddSelectItem($strTableName, 'email', $strAliasPrefix . 'email');
+			    $objBuilder->AddSelectItem($strTableName, 'real_name', $strAliasPrefix . 'real_name');
+			    $objBuilder->AddSelectItem($strTableName, 'data', $strAliasPrefix . 'data');
+            }
 		}
 
 
@@ -681,18 +730,24 @@
 			$objToReturn = new NarroUser();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'user_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'user_id'] : $strAliasPrefix . 'user_id';
+			$strAlias = $strAliasPrefix . 'user_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasName, 'Integer');
 			$objToReturn->__intUserId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'username', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'username'] : $strAliasPrefix . 'username';
+			$strAlias = $strAliasPrefix . 'username';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strUsername = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'password', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'password'] : $strAliasPrefix . 'password';
+			$strAlias = $strAliasPrefix . 'password';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strPassword = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'email', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'email'] : $strAliasPrefix . 'email';
+			$strAlias = $strAliasPrefix . 'email';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strEmail = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'real_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'real_name'] : $strAliasPrefix . 'real_name';
+			$strAlias = $strAliasPrefix . 'real_name';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strRealName = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'data', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'data'] : $strAliasPrefix . 'data';
+			$strAlias = $strAliasPrefix . 'data';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strData = $objDbRow->GetColumn($strAliasName, 'Blob');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -700,24 +755,54 @@
 					if ($objToReturn->UserId != $objPreviousItem->UserId) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroContextInfoAsValidatorUserArray, $objToReturn->_objNarroContextInfoAsValidatorUserArray) != null) {
+					$prevCnt = count($objPreviousItem->_objNarroContextInfoAsValidatorUserArray);
+					$cnt = count($objToReturn->_objNarroContextInfoAsValidatorUserArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroContextInfoAsValidatorUserArray, $objToReturn->_objNarroContextInfoAsValidatorUserArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroLogAsUserArray, $objToReturn->_objNarroLogAsUserArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroLogAsUserArray);
+					$cnt = count($objToReturn->_objNarroLogAsUserArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroLogAsUserArray, $objToReturn->_objNarroLogAsUserArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroSuggestionAsUserArray, $objToReturn->_objNarroSuggestionAsUserArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroSuggestionAsUserArray);
+					$cnt = count($objToReturn->_objNarroSuggestionAsUserArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroSuggestionAsUserArray, $objToReturn->_objNarroSuggestionAsUserArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroSuggestionVoteAsUserArray, $objToReturn->_objNarroSuggestionVoteAsUserArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroSuggestionVoteAsUserArray);
+					$cnt = count($objToReturn->_objNarroSuggestionVoteAsUserArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroSuggestionVoteAsUserArray, $objToReturn->_objNarroSuggestionVoteAsUserArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroTextCommentAsUserArray, $objToReturn->_objNarroTextCommentAsUserArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroTextCommentAsUserArray);
+					$cnt = count($objToReturn->_objNarroTextCommentAsUserArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroTextCommentAsUserArray, $objToReturn->_objNarroTextCommentAsUserArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroUserRoleAsUserArray, $objToReturn->_objNarroUserRoleAsUserArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroUserRoleAsUserArray);
+					$cnt = count($objToReturn->_objNarroUserRoleAsUserArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroUserRoleAsUserArray, $objToReturn->_objNarroUserRoleAsUserArray)) {
 						continue;
 					}
+
 
 					// complete match - all primary key columns are the same
 					return null;
@@ -725,10 +810,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -817,7 +902,6 @@
 					$objToReturn->_objNarroUserRoleAsUser = NarroUserRole::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrouserroleasuser__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -856,11 +940,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroUser object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroUser next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroUser::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroUser object,
 		 * by UserId Index(es)
@@ -876,7 +988,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroUser object,
 		 * by Username Index(es)
@@ -892,7 +1004,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroUser object,
 		 * by Email Index(es)
@@ -908,7 +1020,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroUser object,
 		 * by RealName Index(es)
@@ -933,27 +1045,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['UserId']))
-                $this->_arrHistory['UserId'] = $this->UserId;
-            if (!isset($this->_arrHistory['Username']))
-                $this->_arrHistory['Username'] = $this->Username;
-            if (!isset($this->_arrHistory['Password']))
-                $this->_arrHistory['Password'] = $this->Password;
-            if (!isset($this->_arrHistory['Email']))
-                $this->_arrHistory['Email'] = $this->Email;
-            if (!isset($this->_arrHistory['RealName']))
-                $this->_arrHistory['RealName'] = $this->RealName;
-            if (!isset($this->_arrHistory['Data']))
-                $this->_arrHistory['Data'] = $this->Data;
-        }
 
 
 		//////////////////////////
@@ -999,67 +1090,17 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['UserId'] !== $this->UserId ||
-                        (
-                            $this->UserId instanceof QDateTime &&
-                            (string) $this->_arrHistory['UserId'] !== (string) $this->UserId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`user_id` = ' . $objDatabase->SqlVariable($this->intUserId);
-                    if (
-                        $this->_arrHistory['Username'] !== $this->Username ||
-                        (
-                            $this->Username instanceof QDateTime &&
-                            (string) $this->_arrHistory['Username'] !== (string) $this->Username
-                        )
-                    )
-                        $arrUpdateChanges[] = '`username` = ' . $objDatabase->SqlVariable($this->strUsername);
-                    if (
-                        $this->_arrHistory['Password'] !== $this->Password ||
-                        (
-                            $this->Password instanceof QDateTime &&
-                            (string) $this->_arrHistory['Password'] !== (string) $this->Password
-                        )
-                    )
-                        $arrUpdateChanges[] = '`password` = ' . $objDatabase->SqlVariable($this->strPassword);
-                    if (
-                        $this->_arrHistory['Email'] !== $this->Email ||
-                        (
-                            $this->Email instanceof QDateTime &&
-                            (string) $this->_arrHistory['Email'] !== (string) $this->Email
-                        )
-                    )
-                        $arrUpdateChanges[] = '`email` = ' . $objDatabase->SqlVariable($this->strEmail);
-                    if (
-                        $this->_arrHistory['RealName'] !== $this->RealName ||
-                        (
-                            $this->RealName instanceof QDateTime &&
-                            (string) $this->_arrHistory['RealName'] !== (string) $this->RealName
-                        )
-                    )
-                        $arrUpdateChanges[] = '`real_name` = ' . $objDatabase->SqlVariable($this->strRealName);
-                    if (
-                        $this->_arrHistory['Data'] !== $this->Data ||
-                        (
-                            $this->Data instanceof QDateTime &&
-                            (string) $this->_arrHistory['Data'] !== (string) $this->Data
-                        )
-                    )
-                        $arrUpdateChanges[] = '`data` = ' . $objDatabase->SqlVariable($this->strData);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_user`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
+							`username` = ' . $objDatabase->SqlVariable($this->strUsername) . ',
+							`password` = ' . $objDatabase->SqlVariable($this->strPassword) . ',
+							`email` = ' . $objDatabase->SqlVariable($this->strEmail) . ',
+							`real_name` = ' . $objDatabase->SqlVariable($this->strRealName) . ',
+							`data` = ' . $objDatabase->SqlVariable($this->strData) . '
 						WHERE
 							`user_id` = ' . $objDatabase->SqlVariable($this->__intUserId) . '
 					');
@@ -1070,11 +1111,12 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 			$this->__intUserId = $this->intUserId;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -1098,6 +1140,19 @@
 					`narro_user`
 				WHERE
 					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroUser ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroUser', $this->intUserId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -1112,6 +1167,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_user`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1125,6 +1184,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_user`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1135,6 +1198,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroUser object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroUser::Load($this->intUserId);
@@ -1451,8 +1516,8 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-			
-		
+
+
 		// Related Objects' Methods for NarroContextInfoAsValidatorUser
 		//-------------------------------------------------------------------
 
@@ -1505,7 +1570,7 @@
 				SET
 					`validator_user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '
 				WHERE
-					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . '
+					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . ' 
 			');
 		}
 
@@ -1601,8 +1666,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroLogAsUser
 		//-------------------------------------------------------------------
 
@@ -1655,7 +1719,7 @@
 				SET
 					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '
 				WHERE
-					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . '
+					`log_id` = ' . $objDatabase->SqlVariable($objNarroLog->LogId) . ' 
 			');
 		}
 
@@ -1751,8 +1815,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroSuggestionAsUser
 		//-------------------------------------------------------------------
 
@@ -1805,7 +1868,7 @@
 				SET
 					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '
 				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestion->SuggestionId) . '
+					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestion->SuggestionId) . ' 
 			');
 		}
 
@@ -1901,8 +1964,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroSuggestionVoteAsUser
 		//-------------------------------------------------------------------
 
@@ -1957,7 +2019,7 @@
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
 					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
-					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . '
+					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . ' 
 			');
 		}
 
@@ -2057,8 +2119,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroTextCommentAsUser
 		//-------------------------------------------------------------------
 
@@ -2111,7 +2172,7 @@
 				SET
 					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '
 				WHERE
-					`text_comment_id` = ' . $objDatabase->SqlVariable($objNarroTextComment->TextCommentId) . '
+					`text_comment_id` = ' . $objDatabase->SqlVariable($objNarroTextComment->TextCommentId) . ' 
 			');
 		}
 
@@ -2207,8 +2268,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroUserRoleAsUser
 		//-------------------------------------------------------------------
 
@@ -2261,7 +2321,7 @@
 				SET
 					`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . '
 				WHERE
-					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . '
+					`user_role_id` = ' . $objDatabase->SqlVariable($objNarroUserRole->UserRoleId) . ' 
 			');
 		}
 
@@ -2358,8 +2418,37 @@
 		}
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_user";
+		}
 
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroUser::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -2453,6 +2542,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intUserId ));
+		}
+
 
 
 	}

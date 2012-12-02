@@ -277,21 +277,30 @@
 		/**
 		 * Create and setup QListBox lstFile
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstFile_Create($strControlId = null) {
+		public function lstFile_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstFile = new QListBox($this->objParentObject, $strControlId);
 			$this->lstFile->Name = QApplication::Translate('File');
 			$this->lstFile->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstFile->AddItem(QApplication::Translate('- Select One -'), null);
-			$objFileArray = NarroFile::LoadAll();
-			if ($objFileArray) foreach ($objFileArray as $objFile) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objFileCursor = NarroFile::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objFile = NarroFile::InstantiateCursor($objFileCursor)) {
 				$objListItem = new QListItem($objFile->__toString(), $objFile->FileId);
 				if (($this->objNarroFileProgress->File) && ($this->objNarroFileProgress->File->FileId == $objFile->FileId))
 					$objListItem->Selected = true;
 				$this->lstFile->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstFile;
 		}
 
@@ -311,21 +320,30 @@
 		/**
 		 * Create and setup QListBox lstLanguage
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstLanguage_Create($strControlId = null) {
+		public function lstLanguage_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstLanguage = new QListBox($this->objParentObject, $strControlId);
 			$this->lstLanguage->Name = QApplication::Translate('Language');
 			$this->lstLanguage->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstLanguage->AddItem(QApplication::Translate('- Select One -'), null);
-			$objLanguageArray = NarroLanguage::LoadAll();
-			if ($objLanguageArray) foreach ($objLanguageArray as $objLanguage) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objLanguageCursor = NarroLanguage::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objLanguage = NarroLanguage::InstantiateCursor($objLanguageCursor)) {
 				$objListItem = new QListItem($objLanguage->__toString(), $objLanguage->LanguageId);
 				if (($this->objNarroFileProgress->Language) && ($this->objNarroFileProgress->Language->LanguageId == $objLanguage->LanguageId))
 					$objListItem->Selected = true;
 				$this->lstLanguage->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstLanguage;
 		}
 

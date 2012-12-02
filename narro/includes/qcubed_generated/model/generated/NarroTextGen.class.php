@@ -32,16 +32,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroTextGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['TextId'] = null;
-                $this->_arrHistory['TextValue'] = null;
-                $this->_arrHistory['TextValueMd5'] = null;
-                $this->_arrHistory['TextCharCount'] = null;
-                $this->_arrHistory['TextWordCount'] = null;
-                $this->_arrHistory['HasComments'] = null;
-                $this->_arrHistory['Created'] = null;
-                $this->_arrHistory['Modified'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -174,11 +165,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -223,13 +209,25 @@
 		 * @return NarroText
 		 */
 		public static function Load($intTextId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroText', $intTextId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroText::QuerySingle(
+			$objToReturn = NarroText::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroText()->TextId, $intTextId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -282,7 +280,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroText-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_text');
-			NarroText::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroText::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_text');
 
 			// Set "CountOnly" option (if applicable)
@@ -395,6 +412,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroText::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroText objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -459,7 +501,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -468,14 +510,19 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'text_id', $strAliasPrefix . 'text_id');
-			$objBuilder->AddSelectItem($strTableName, 'text_value', $strAliasPrefix . 'text_value');
-			$objBuilder->AddSelectItem($strTableName, 'text_value_md5', $strAliasPrefix . 'text_value_md5');
-			$objBuilder->AddSelectItem($strTableName, 'text_char_count', $strAliasPrefix . 'text_char_count');
-			$objBuilder->AddSelectItem($strTableName, 'text_word_count', $strAliasPrefix . 'text_word_count');
-			$objBuilder->AddSelectItem($strTableName, 'has_comments', $strAliasPrefix . 'has_comments');
-			$objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
-			$objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'text_id', $strAliasPrefix . 'text_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'text_id', $strAliasPrefix . 'text_id');
+			    $objBuilder->AddSelectItem($strTableName, 'text_value', $strAliasPrefix . 'text_value');
+			    $objBuilder->AddSelectItem($strTableName, 'text_value_md5', $strAliasPrefix . 'text_value_md5');
+			    $objBuilder->AddSelectItem($strTableName, 'text_char_count', $strAliasPrefix . 'text_char_count');
+			    $objBuilder->AddSelectItem($strTableName, 'text_word_count', $strAliasPrefix . 'text_word_count');
+			    $objBuilder->AddSelectItem($strTableName, 'has_comments', $strAliasPrefix . 'has_comments');
+			    $objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
+			    $objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+            }
 		}
 
 
@@ -584,21 +631,29 @@
 			$objToReturn = new NarroText();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_id'] : $strAliasPrefix . 'text_id';
+			$strAlias = $strAliasPrefix . 'text_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intTextId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_value'] : $strAliasPrefix . 'text_value';
+			$strAlias = $strAliasPrefix . 'text_value';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strTextValue = $objDbRow->GetColumn($strAliasName, 'Blob');
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_value_md5', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_value_md5'] : $strAliasPrefix . 'text_value_md5';
+			$strAlias = $strAliasPrefix . 'text_value_md5';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strTextValueMd5 = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_char_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_char_count'] : $strAliasPrefix . 'text_char_count';
+			$strAlias = $strAliasPrefix . 'text_char_count';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intTextCharCount = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_word_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_word_count'] : $strAliasPrefix . 'text_word_count';
+			$strAlias = $strAliasPrefix . 'text_word_count';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intTextWordCount = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'has_comments', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'has_comments'] : $strAliasPrefix . 'has_comments';
+			$strAlias = $strAliasPrefix . 'has_comments';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->blnHasComments = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created'] : $strAliasPrefix . 'created';
+			$strAlias = $strAliasPrefix . 'created';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'modified', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'modified'] : $strAliasPrefix . 'modified';
+			$strAlias = $strAliasPrefix . 'modified';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttModified = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -606,15 +661,30 @@
 					if ($objToReturn->TextId != $objPreviousItem->TextId) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroContextAsTextArray, $objToReturn->_objNarroContextAsTextArray) != null) {
+					$prevCnt = count($objPreviousItem->_objNarroContextAsTextArray);
+					$cnt = count($objToReturn->_objNarroContextAsTextArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroContextAsTextArray, $objToReturn->_objNarroContextAsTextArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroSuggestionAsTextArray, $objToReturn->_objNarroSuggestionAsTextArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroSuggestionAsTextArray);
+					$cnt = count($objToReturn->_objNarroSuggestionAsTextArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroSuggestionAsTextArray, $objToReturn->_objNarroSuggestionAsTextArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroTextCommentAsTextArray, $objToReturn->_objNarroTextCommentAsTextArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroTextCommentAsTextArray);
+					$cnt = count($objToReturn->_objNarroTextCommentAsTextArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroTextCommentAsTextArray, $objToReturn->_objNarroTextCommentAsTextArray)) {
 						continue;
 					}
+
 
 					// complete match - all primary key columns are the same
 					return null;
@@ -622,10 +692,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -675,7 +745,6 @@
 					$objToReturn->_objNarroTextCommentAsText = NarroTextComment::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrotextcommentastext__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -714,11 +783,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroText object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroText next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroText::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroText object,
 		 * by TextId Index(es)
@@ -734,7 +831,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroText object,
 		 * by TextValueMd5 Index(es)
@@ -759,31 +856,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['TextId']))
-                $this->_arrHistory['TextId'] = $this->TextId;
-            if (!isset($this->_arrHistory['TextValue']))
-                $this->_arrHistory['TextValue'] = $this->TextValue;
-            if (!isset($this->_arrHistory['TextValueMd5']))
-                $this->_arrHistory['TextValueMd5'] = $this->TextValueMd5;
-            if (!isset($this->_arrHistory['TextCharCount']))
-                $this->_arrHistory['TextCharCount'] = $this->TextCharCount;
-            if (!isset($this->_arrHistory['TextWordCount']))
-                $this->_arrHistory['TextWordCount'] = $this->TextWordCount;
-            if (!isset($this->_arrHistory['HasComments']))
-                $this->_arrHistory['HasComments'] = $this->HasComments;
-            if (!isset($this->_arrHistory['Created']))
-                $this->_arrHistory['Created'] = $this->Created;
-            if (!isset($this->_arrHistory['Modified']))
-                $this->_arrHistory['Modified'] = $this->Modified;
-        }
 
 
 		//////////////////////////
@@ -832,75 +904,18 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['TextValue'] !== $this->TextValue ||
-                        (
-                            $this->TextValue instanceof QDateTime &&
-                            (string) $this->_arrHistory['TextValue'] !== (string) $this->TextValue
-                        )
-                    )
-                        $arrUpdateChanges[] = '`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue);
-                    if (
-                        $this->_arrHistory['TextValueMd5'] !== $this->TextValueMd5 ||
-                        (
-                            $this->TextValueMd5 instanceof QDateTime &&
-                            (string) $this->_arrHistory['TextValueMd5'] !== (string) $this->TextValueMd5
-                        )
-                    )
-                        $arrUpdateChanges[] = '`text_value_md5` = ' . $objDatabase->SqlVariable($this->strTextValueMd5);
-                    if (
-                        $this->_arrHistory['TextCharCount'] !== $this->TextCharCount ||
-                        (
-                            $this->TextCharCount instanceof QDateTime &&
-                            (string) $this->_arrHistory['TextCharCount'] !== (string) $this->TextCharCount
-                        )
-                    )
-                        $arrUpdateChanges[] = '`text_char_count` = ' . $objDatabase->SqlVariable($this->intTextCharCount);
-                    if (
-                        $this->_arrHistory['TextWordCount'] !== $this->TextWordCount ||
-                        (
-                            $this->TextWordCount instanceof QDateTime &&
-                            (string) $this->_arrHistory['TextWordCount'] !== (string) $this->TextWordCount
-                        )
-                    )
-                        $arrUpdateChanges[] = '`text_word_count` = ' . $objDatabase->SqlVariable($this->intTextWordCount);
-                    if (
-                        $this->_arrHistory['HasComments'] !== $this->HasComments ||
-                        (
-                            $this->HasComments instanceof QDateTime &&
-                            (string) $this->_arrHistory['HasComments'] !== (string) $this->HasComments
-                        )
-                    )
-                        $arrUpdateChanges[] = '`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments);
-                    if (
-                        $this->_arrHistory['Created'] !== $this->Created ||
-                        (
-                            $this->Created instanceof QDateTime &&
-                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
-                        )
-                    )
-                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
-                    if (
-                        $this->_arrHistory['Modified'] !== $this->Modified ||
-                        (
-                            $this->Modified instanceof QDateTime &&
-                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
-                        )
-                    )
-                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_text`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`text_value` = ' . $objDatabase->SqlVariable($this->strTextValue) . ',
+							`text_value_md5` = ' . $objDatabase->SqlVariable($this->strTextValueMd5) . ',
+							`text_char_count` = ' . $objDatabase->SqlVariable($this->intTextCharCount) . ',
+							`text_word_count` = ' . $objDatabase->SqlVariable($this->intTextWordCount) . ',
+							`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . '
 						WHERE
 							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
 					');
@@ -911,10 +926,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -938,6 +954,19 @@
 					`narro_text`
 				WHERE
 					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroText ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroText', $this->intTextId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -952,6 +981,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_text`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -965,6 +998,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_text`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -975,6 +1012,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroText object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroText::Load($this->intTextId);
@@ -1270,8 +1309,8 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-			
-		
+
+
 		// Related Objects' Methods for NarroContextAsText
 		//-------------------------------------------------------------------
 
@@ -1324,7 +1363,7 @@
 				SET
 					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
 				WHERE
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . '
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . ' 
 			');
 		}
 
@@ -1420,8 +1459,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroSuggestionAsText
 		//-------------------------------------------------------------------
 
@@ -1474,7 +1512,7 @@
 				SET
 					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
 				WHERE
-					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestion->SuggestionId) . '
+					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestion->SuggestionId) . ' 
 			');
 		}
 
@@ -1570,8 +1608,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroTextCommentAsText
 		//-------------------------------------------------------------------
 
@@ -1624,7 +1661,7 @@
 				SET
 					`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . '
 				WHERE
-					`text_comment_id` = ' . $objDatabase->SqlVariable($objNarroTextComment->TextCommentId) . '
+					`text_comment_id` = ' . $objDatabase->SqlVariable($objNarroTextComment->TextCommentId) . ' 
 			');
 		}
 
@@ -1721,8 +1758,37 @@
 		}
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_text";
+		}
 
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroText::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -1828,6 +1894,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intTextId ));
+		}
+
 
 
 	}

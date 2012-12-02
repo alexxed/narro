@@ -225,21 +225,30 @@
 		/**
 		 * Create and setup QListBox lstSuggestion
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstSuggestion_Create($strControlId = null) {
+		public function lstSuggestion_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstSuggestion = new QListBox($this->objParentObject, $strControlId);
 			$this->lstSuggestion->Name = QApplication::Translate('Suggestion');
 			$this->lstSuggestion->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstSuggestion->AddItem(QApplication::Translate('- Select One -'), null);
-			$objSuggestionArray = NarroSuggestion::LoadAll();
-			if ($objSuggestionArray) foreach ($objSuggestionArray as $objSuggestion) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objSuggestionCursor = NarroSuggestion::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objSuggestion = NarroSuggestion::InstantiateCursor($objSuggestionCursor)) {
 				$objListItem = new QListItem($objSuggestion->__toString(), $objSuggestion->SuggestionId);
 				if (($this->objNarroSuggestionVote->Suggestion) && ($this->objNarroSuggestionVote->Suggestion->SuggestionId == $objSuggestion->SuggestionId))
 					$objListItem->Selected = true;
 				$this->lstSuggestion->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstSuggestion;
 		}
 
@@ -259,21 +268,30 @@
 		/**
 		 * Create and setup QListBox lstContext
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstContext_Create($strControlId = null) {
+		public function lstContext_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstContext = new QListBox($this->objParentObject, $strControlId);
 			$this->lstContext->Name = QApplication::Translate('Context');
 			$this->lstContext->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstContext->AddItem(QApplication::Translate('- Select One -'), null);
-			$objContextArray = NarroContext::LoadAll();
-			if ($objContextArray) foreach ($objContextArray as $objContext) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objContextCursor = NarroContext::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objContext = NarroContext::InstantiateCursor($objContextCursor)) {
 				$objListItem = new QListItem($objContext->__toString(), $objContext->ContextId);
 				if (($this->objNarroSuggestionVote->Context) && ($this->objNarroSuggestionVote->Context->ContextId == $objContext->ContextId))
 					$objListItem->Selected = true;
 				$this->lstContext->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstContext;
 		}
 
@@ -293,21 +311,30 @@
 		/**
 		 * Create and setup QListBox lstUser
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstUser_Create($strControlId = null) {
+		public function lstUser_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstUser = new QListBox($this->objParentObject, $strControlId);
 			$this->lstUser->Name = QApplication::Translate('User');
 			$this->lstUser->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstUser->AddItem(QApplication::Translate('- Select One -'), null);
-			$objUserArray = NarroUser::LoadAll();
-			if ($objUserArray) foreach ($objUserArray as $objUser) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objUserCursor = NarroUser::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objUser = NarroUser::InstantiateCursor($objUserCursor)) {
 				$objListItem = new QListItem($objUser->__toString(), $objUser->UserId);
 				if (($this->objNarroSuggestionVote->User) && ($this->objNarroSuggestionVote->User->UserId == $objUser->UserId))
 					$objListItem->Selected = true;
 				$this->lstUser->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstUser;
 		}
 

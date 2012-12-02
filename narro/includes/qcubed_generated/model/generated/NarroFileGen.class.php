@@ -37,19 +37,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroFileGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['FileId'] = null;
-                $this->_arrHistory['FileName'] = null;
-                $this->_arrHistory['FilePath'] = null;
-                $this->_arrHistory['FileMd5'] = null;
-                $this->_arrHistory['ParentId'] = null;
-                $this->_arrHistory['TypeId'] = null;
-                $this->_arrHistory['ProjectId'] = null;
-                $this->_arrHistory['Active'] = null;
-                $this->_arrHistory['Created'] = null;
-                $this->_arrHistory['Modified'] = null;
-                $this->_arrHistory['Header'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -208,11 +196,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -280,13 +263,25 @@
 		 * @return NarroFile
 		 */
 		public static function Load($intFileId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroFile', $intFileId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroFile::QuerySingle(
+			$objToReturn = NarroFile::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroFile()->FileId, $intFileId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -339,7 +334,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroFile-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_file');
-			NarroFile::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroFile::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_file');
 
 			// Set "CountOnly" option (if applicable)
@@ -452,6 +466,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroFile::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroFile objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -516,7 +555,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -525,17 +564,22 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'file_id', $strAliasPrefix . 'file_id');
-			$objBuilder->AddSelectItem($strTableName, 'file_name', $strAliasPrefix . 'file_name');
-			$objBuilder->AddSelectItem($strTableName, 'file_path', $strAliasPrefix . 'file_path');
-			$objBuilder->AddSelectItem($strTableName, 'file_md5', $strAliasPrefix . 'file_md5');
-			$objBuilder->AddSelectItem($strTableName, 'parent_id', $strAliasPrefix . 'parent_id');
-			$objBuilder->AddSelectItem($strTableName, 'type_id', $strAliasPrefix . 'type_id');
-			$objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
-			$objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
-			$objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
-			$objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
-			$objBuilder->AddSelectItem($strTableName, 'header', $strAliasPrefix . 'header');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'file_id', $strAliasPrefix . 'file_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'file_id', $strAliasPrefix . 'file_id');
+			    $objBuilder->AddSelectItem($strTableName, 'file_name', $strAliasPrefix . 'file_name');
+			    $objBuilder->AddSelectItem($strTableName, 'file_path', $strAliasPrefix . 'file_path');
+			    $objBuilder->AddSelectItem($strTableName, 'file_md5', $strAliasPrefix . 'file_md5');
+			    $objBuilder->AddSelectItem($strTableName, 'parent_id', $strAliasPrefix . 'parent_id');
+			    $objBuilder->AddSelectItem($strTableName, 'type_id', $strAliasPrefix . 'type_id');
+			    $objBuilder->AddSelectItem($strTableName, 'project_id', $strAliasPrefix . 'project_id');
+			    $objBuilder->AddSelectItem($strTableName, 'active', $strAliasPrefix . 'active');
+			    $objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
+			    $objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+			    $objBuilder->AddSelectItem($strTableName, 'header', $strAliasPrefix . 'header');
+            }
 		}
 
 
@@ -644,27 +688,38 @@
 			$objToReturn = new NarroFile();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'file_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'file_id'] : $strAliasPrefix . 'file_id';
+			$strAlias = $strAliasPrefix . 'file_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intFileId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'file_name', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'file_name'] : $strAliasPrefix . 'file_name';
+			$strAlias = $strAliasPrefix . 'file_name';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strFileName = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'file_path', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'file_path'] : $strAliasPrefix . 'file_path';
+			$strAlias = $strAliasPrefix . 'file_path';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strFilePath = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'file_md5', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'file_md5'] : $strAliasPrefix . 'file_md5';
+			$strAlias = $strAliasPrefix . 'file_md5';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strFileMd5 = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'parent_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'parent_id'] : $strAliasPrefix . 'parent_id';
+			$strAlias = $strAliasPrefix . 'parent_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intParentId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'type_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'type_id'] : $strAliasPrefix . 'type_id';
+			$strAlias = $strAliasPrefix . 'type_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intTypeId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'project_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'project_id'] : $strAliasPrefix . 'project_id';
+			$strAlias = $strAliasPrefix . 'project_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProjectId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'active', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'active'] : $strAliasPrefix . 'active';
+			$strAlias = $strAliasPrefix . 'active';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->blnActive = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created'] : $strAliasPrefix . 'created';
+			$strAlias = $strAliasPrefix . 'created';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'modified', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'modified'] : $strAliasPrefix . 'modified';
+			$strAlias = $strAliasPrefix . 'modified';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttModified = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'header', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'header'] : $strAliasPrefix . 'header';
+			$strAlias = $strAliasPrefix . 'header';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strHeader = $objDbRow->GetColumn($strAliasName, 'Blob');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -672,15 +727,30 @@
 					if ($objToReturn->FileId != $objPreviousItem->FileId) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroContextAsFileArray, $objToReturn->_objNarroContextAsFileArray) != null) {
+					$prevCnt = count($objPreviousItem->_objNarroContextAsFileArray);
+					$cnt = count($objToReturn->_objNarroContextAsFileArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroContextAsFileArray, $objToReturn->_objNarroContextAsFileArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objChildNarroFileArray, $objToReturn->_objChildNarroFileArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objChildNarroFileArray);
+					$cnt = count($objToReturn->_objChildNarroFileArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objChildNarroFileArray, $objToReturn->_objChildNarroFileArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroFileProgressAsFileArray, $objToReturn->_objNarroFileProgressAsFileArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroFileProgressAsFileArray);
+					$cnt = count($objToReturn->_objNarroFileProgressAsFileArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroFileProgressAsFileArray, $objToReturn->_objNarroFileProgressAsFileArray)) {
 						continue;
 					}
+
 
 					// complete match - all primary key columns are the same
 					return null;
@@ -688,10 +758,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -753,7 +823,6 @@
 					$objToReturn->_objNarroFileProgressAsFile = NarroFileProgress::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrofileprogressasfile__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -792,11 +861,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroFile object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroFile next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroFile::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroFile object,
 		 * by FileId Index(es)
@@ -812,7 +909,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroFile object,
 		 * by FilePath, ProjectId Index(es)
@@ -830,7 +927,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroFile object,
 		 * by FileName, ParentId Index(es)
@@ -848,7 +945,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroFile objects,
 		 * by TypeId Index(es)
@@ -880,7 +977,7 @@
 				QQ::Equal(QQN::NarroFile()->TypeId, $intTypeId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroFile objects,
 		 * by ProjectId Index(es)
@@ -912,7 +1009,7 @@
 				QQ::Equal(QQN::NarroFile()->ProjectId, $intProjectId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroFile objects,
 		 * by ParentId Index(es)
@@ -944,7 +1041,7 @@
 				QQ::Equal(QQN::NarroFile()->ParentId, $intParentId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroFile objects,
 		 * by Active Index(es)
@@ -985,37 +1082,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['FileId']))
-                $this->_arrHistory['FileId'] = $this->FileId;
-            if (!isset($this->_arrHistory['FileName']))
-                $this->_arrHistory['FileName'] = $this->FileName;
-            if (!isset($this->_arrHistory['FilePath']))
-                $this->_arrHistory['FilePath'] = $this->FilePath;
-            if (!isset($this->_arrHistory['FileMd5']))
-                $this->_arrHistory['FileMd5'] = $this->FileMd5;
-            if (!isset($this->_arrHistory['ParentId']))
-                $this->_arrHistory['ParentId'] = $this->ParentId;
-            if (!isset($this->_arrHistory['TypeId']))
-                $this->_arrHistory['TypeId'] = $this->TypeId;
-            if (!isset($this->_arrHistory['ProjectId']))
-                $this->_arrHistory['ProjectId'] = $this->ProjectId;
-            if (!isset($this->_arrHistory['Active']))
-                $this->_arrHistory['Active'] = $this->Active;
-            if (!isset($this->_arrHistory['Created']))
-                $this->_arrHistory['Created'] = $this->Created;
-            if (!isset($this->_arrHistory['Modified']))
-                $this->_arrHistory['Modified'] = $this->Modified;
-            if (!isset($this->_arrHistory['Header']))
-                $this->_arrHistory['Header'] = $this->Header;
-        }
 
 
 		//////////////////////////
@@ -1070,99 +1136,21 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['FileName'] !== $this->FileName ||
-                        (
-                            $this->FileName instanceof QDateTime &&
-                            (string) $this->_arrHistory['FileName'] !== (string) $this->FileName
-                        )
-                    )
-                        $arrUpdateChanges[] = '`file_name` = ' . $objDatabase->SqlVariable($this->strFileName);
-                    if (
-                        $this->_arrHistory['FilePath'] !== $this->FilePath ||
-                        (
-                            $this->FilePath instanceof QDateTime &&
-                            (string) $this->_arrHistory['FilePath'] !== (string) $this->FilePath
-                        )
-                    )
-                        $arrUpdateChanges[] = '`file_path` = ' . $objDatabase->SqlVariable($this->strFilePath);
-                    if (
-                        $this->_arrHistory['FileMd5'] !== $this->FileMd5 ||
-                        (
-                            $this->FileMd5 instanceof QDateTime &&
-                            (string) $this->_arrHistory['FileMd5'] !== (string) $this->FileMd5
-                        )
-                    )
-                        $arrUpdateChanges[] = '`file_md5` = ' . $objDatabase->SqlVariable($this->strFileMd5);
-                    if (
-                        $this->_arrHistory['ParentId'] !== $this->ParentId ||
-                        (
-                            $this->ParentId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ParentId'] !== (string) $this->ParentId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`parent_id` = ' . $objDatabase->SqlVariable($this->intParentId);
-                    if (
-                        $this->_arrHistory['TypeId'] !== $this->TypeId ||
-                        (
-                            $this->TypeId instanceof QDateTime &&
-                            (string) $this->_arrHistory['TypeId'] !== (string) $this->TypeId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`type_id` = ' . $objDatabase->SqlVariable($this->intTypeId);
-                    if (
-                        $this->_arrHistory['ProjectId'] !== $this->ProjectId ||
-                        (
-                            $this->ProjectId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ProjectId'] !== (string) $this->ProjectId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId);
-                    if (
-                        $this->_arrHistory['Active'] !== $this->Active ||
-                        (
-                            $this->Active instanceof QDateTime &&
-                            (string) $this->_arrHistory['Active'] !== (string) $this->Active
-                        )
-                    )
-                        $arrUpdateChanges[] = '`active` = ' . $objDatabase->SqlVariable($this->blnActive);
-                    if (
-                        $this->_arrHistory['Created'] !== $this->Created ||
-                        (
-                            $this->Created instanceof QDateTime &&
-                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
-                        )
-                    )
-                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
-                    if (
-                        $this->_arrHistory['Modified'] !== $this->Modified ||
-                        (
-                            $this->Modified instanceof QDateTime &&
-                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
-                        )
-                    )
-                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
-                    if (
-                        $this->_arrHistory['Header'] !== $this->Header ||
-                        (
-                            $this->Header instanceof QDateTime &&
-                            (string) $this->_arrHistory['Header'] !== (string) $this->Header
-                        )
-                    )
-                        $arrUpdateChanges[] = '`header` = ' . $objDatabase->SqlVariable($this->strHeader);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_file`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`file_name` = ' . $objDatabase->SqlVariable($this->strFileName) . ',
+							`file_path` = ' . $objDatabase->SqlVariable($this->strFilePath) . ',
+							`file_md5` = ' . $objDatabase->SqlVariable($this->strFileMd5) . ',
+							`parent_id` = ' . $objDatabase->SqlVariable($this->intParentId) . ',
+							`type_id` = ' . $objDatabase->SqlVariable($this->intTypeId) . ',
+							`project_id` = ' . $objDatabase->SqlVariable($this->intProjectId) . ',
+							`active` = ' . $objDatabase->SqlVariable($this->blnActive) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . ',
+							`header` = ' . $objDatabase->SqlVariable($this->strHeader) . '
 						WHERE
 							`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
 					');
@@ -1173,10 +1161,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -1200,6 +1189,19 @@
 					`narro_file`
 				WHERE
 					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroFile ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroFile', $this->intFileId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -1214,6 +1216,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_file`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1227,6 +1233,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_file`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1237,6 +1247,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroFile object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroFile::Load($this->intFileId);
@@ -1689,8 +1701,8 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-			
-		
+
+
 		// Related Objects' Methods for NarroContextAsFile
 		//-------------------------------------------------------------------
 
@@ -1743,7 +1755,7 @@
 				SET
 					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
 				WHERE
-					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . '
+					`context_id` = ' . $objDatabase->SqlVariable($objNarroContext->ContextId) . ' 
 			');
 		}
 
@@ -1839,8 +1851,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for ChildNarroFile
 		//-------------------------------------------------------------------
 
@@ -1893,7 +1904,7 @@
 				SET
 					`parent_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
 				WHERE
-					`file_id` = ' . $objDatabase->SqlVariable($objNarroFile->FileId) . '
+					`file_id` = ' . $objDatabase->SqlVariable($objNarroFile->FileId) . ' 
 			');
 		}
 
@@ -1989,8 +2000,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroFileProgressAsFile
 		//-------------------------------------------------------------------
 
@@ -2043,7 +2053,7 @@
 				SET
 					`file_id` = ' . $objDatabase->SqlVariable($this->intFileId) . '
 				WHERE
-					`file_progress_id` = ' . $objDatabase->SqlVariable($objNarroFileProgress->FileProgressId) . '
+					`file_progress_id` = ' . $objDatabase->SqlVariable($objNarroFileProgress->FileProgressId) . ' 
 			');
 		}
 
@@ -2140,8 +2150,37 @@
 		}
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_file";
+		}
 
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroFile::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -2271,6 +2310,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intFileId ));
+		}
+
 
 
 	}

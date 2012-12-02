@@ -23,11 +23,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroRolePermissionGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['RolePermissionId'] = null;
-                $this->_arrHistory['RoleId'] = null;
-                $this->_arrHistory['PermissionId'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -70,11 +66,6 @@
 		 * @var bool __blnRestored;
 		 */
 		protected $__blnRestored;
-
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
 
 
 
@@ -135,13 +126,25 @@
 		 * @return NarroRolePermission
 		 */
 		public static function Load($intRolePermissionId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroRolePermission', $intRolePermissionId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroRolePermission::QuerySingle(
+			$objToReturn = NarroRolePermission::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroRolePermission()->RolePermissionId, $intRolePermissionId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -194,7 +197,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroRolePermission-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_role_permission');
-			NarroRolePermission::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroRolePermission::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_role_permission');
 
 			// Set "CountOnly" option (if applicable)
@@ -307,6 +329,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroRolePermission::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroRolePermission objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -371,7 +418,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -380,9 +427,14 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'role_permission_id', $strAliasPrefix . 'role_permission_id');
-			$objBuilder->AddSelectItem($strTableName, 'role_id', $strAliasPrefix . 'role_id');
-			$objBuilder->AddSelectItem($strTableName, 'permission_id', $strAliasPrefix . 'permission_id');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'role_permission_id', $strAliasPrefix . 'role_permission_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'role_permission_id', $strAliasPrefix . 'role_permission_id');
+			    $objBuilder->AddSelectItem($strTableName, 'role_id', $strAliasPrefix . 'role_id');
+			    $objBuilder->AddSelectItem($strTableName, 'permission_id', $strAliasPrefix . 'permission_id');
+            }
 		}
 
 
@@ -413,11 +465,14 @@
 			$objToReturn = new NarroRolePermission();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'role_permission_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'role_permission_id'] : $strAliasPrefix . 'role_permission_id';
+			$strAlias = $strAliasPrefix . 'role_permission_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intRolePermissionId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'role_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'role_id'] : $strAliasPrefix . 'role_id';
+			$strAlias = $strAliasPrefix . 'role_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intRoleId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'permission_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'permission_id'] : $strAliasPrefix . 'permission_id';
+			$strAlias = $strAliasPrefix . 'permission_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intPermissionId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -432,10 +487,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -458,7 +513,6 @@
 
 
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -497,11 +551,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroRolePermission object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroRolePermission next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroRolePermission::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroRolePermission object,
 		 * by RolePermissionId Index(es)
@@ -517,7 +599,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroRolePermission objects,
 		 * by RoleId Index(es)
@@ -549,7 +631,7 @@
 				QQ::Equal(QQN::NarroRolePermission()->RoleId, $intRoleId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroRolePermission objects,
 		 * by PermissionId Index(es)
@@ -590,21 +672,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['RolePermissionId']))
-                $this->_arrHistory['RolePermissionId'] = $this->RolePermissionId;
-            if (!isset($this->_arrHistory['RoleId']))
-                $this->_arrHistory['RoleId'] = $this->RoleId;
-            if (!isset($this->_arrHistory['PermissionId']))
-                $this->_arrHistory['PermissionId'] = $this->PermissionId;
-        }
 
 
 		//////////////////////////
@@ -643,35 +710,13 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['RoleId'] !== $this->RoleId ||
-                        (
-                            $this->RoleId instanceof QDateTime &&
-                            (string) $this->_arrHistory['RoleId'] !== (string) $this->RoleId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`role_id` = ' . $objDatabase->SqlVariable($this->intRoleId);
-                    if (
-                        $this->_arrHistory['PermissionId'] !== $this->PermissionId ||
-                        (
-                            $this->PermissionId instanceof QDateTime &&
-                            (string) $this->_arrHistory['PermissionId'] !== (string) $this->PermissionId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_role_permission`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`role_id` = ' . $objDatabase->SqlVariable($this->intRoleId) . ',
+							`permission_id` = ' . $objDatabase->SqlVariable($this->intPermissionId) . '
 						WHERE
 							`role_permission_id` = ' . $objDatabase->SqlVariable($this->intRolePermissionId) . '
 					');
@@ -682,10 +727,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -709,6 +755,19 @@
 					`narro_role_permission`
 				WHERE
 					`role_permission_id` = ' . $objDatabase->SqlVariable($this->intRolePermissionId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroRolePermission ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroRolePermission', $this->intRolePermissionId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -723,6 +782,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_role_permission`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -736,6 +799,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_role_permission`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -746,6 +813,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroRolePermission object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroRolePermission::Load($this->intRolePermissionId);
@@ -984,7 +1053,37 @@
 
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_role_permission";
+		}
+
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroRolePermission::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -1078,6 +1177,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intRolePermissionId ));
+		}
+
 
 
 	}

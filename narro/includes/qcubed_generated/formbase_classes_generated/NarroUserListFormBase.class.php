@@ -45,7 +45,7 @@
 
 			// Add Pagination (if desired)
 			$this->dtgNarroUsers->Paginator = new QPaginator($this->dtgNarroUsers);
-			$this->dtgNarroUsers->ItemsPerPage = 20;
+			$this->dtgNarroUsers->ItemsPerPage = __FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
 
 			// Use the MetaDataGrid functionality to add Columns for this datagrid
 

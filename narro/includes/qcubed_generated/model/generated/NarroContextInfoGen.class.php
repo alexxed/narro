@@ -18,32 +18,21 @@
 	 * @property-read integer $ContextInfoId the value for intContextInfoId (Read-Only PK)
 	 * @property integer $ContextId the value for intContextId (Not Null)
 	 * @property integer $LanguageId the value for intLanguageId (Not Null)
-	 * @property integer $ValidatorUserId the value for intValidatorUserId 
-	 * @property integer $ValidSuggestionId the value for intValidSuggestionId 
-	 * @property boolean $HasSuggestions the value for blnHasSuggestions 
-	 * @property string $SuggestionAccessKey the value for strSuggestionAccessKey 
-	 * @property string $SuggestionCommandKey the value for strSuggestionCommandKey 
+	 * @property integer $ValidatorUserId the value for intValidatorUserId
+	 * @property integer $ValidSuggestionId the value for intValidSuggestionId
+	 * @property boolean $HasSuggestions the value for blnHasSuggestions
+	 * @property string $SuggestionAccessKey the value for strSuggestionAccessKey
+	 * @property string $SuggestionCommandKey the value for strSuggestionCommandKey
 	 * @property QDateTime $Created the value for dttCreated (Not Null)
-	 * @property QDateTime $Modified the value for dttModified 
+	 * @property QDateTime $Modified the value for dttModified
 	 * @property NarroContext $Context the value for the NarroContext object referenced by intContextId (Not Null)
 	 * @property NarroLanguage $Language the value for the NarroLanguage object referenced by intLanguageId (Not Null)
-	 * @property NarroUser $ValidatorUser the value for the NarroUser object referenced by intValidatorUserId 
-	 * @property NarroSuggestion $ValidSuggestion the value for the NarroSuggestion object referenced by intValidSuggestionId 
+	 * @property NarroUser $ValidatorUser the value for the NarroUser object referenced by intValidatorUserId
+	 * @property NarroSuggestion $ValidSuggestion the value for the NarroSuggestion object referenced by intValidSuggestionId
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroContextInfoGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['ContextInfoId'] = null;
-                $this->_arrHistory['ContextId'] = null;
-                $this->_arrHistory['LanguageId'] = null;
-                $this->_arrHistory['ValidatorUserId'] = null;
-                $this->_arrHistory['ValidSuggestionId'] = null;
-                $this->_arrHistory['HasSuggestions'] = null;
-                $this->_arrHistory['SuggestionAccessKey'] = null;
-                $this->_arrHistory['SuggestionCommandKey'] = null;
-                $this->_arrHistory['Created'] = null;
-                $this->_arrHistory['Modified'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -145,11 +134,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -236,13 +220,25 @@
 		 * @return NarroContextInfo
 		 */
 		public static function Load($intContextInfoId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroContextInfo', $intContextInfoId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroContextInfo::QuerySingle(
+			$objToReturn = NarroContextInfo::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroContextInfo()->ContextInfoId, $intContextInfoId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -295,7 +291,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroContextInfo-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_context_info');
-			NarroContextInfo::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroContextInfo::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_context_info');
 
 			// Set "CountOnly" option (if applicable)
@@ -408,6 +423,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroContextInfo::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroContextInfo objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -472,7 +512,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -481,16 +521,21 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'context_info_id', $strAliasPrefix . 'context_info_id');
-			$objBuilder->AddSelectItem($strTableName, 'context_id', $strAliasPrefix . 'context_id');
-			$objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
-			$objBuilder->AddSelectItem($strTableName, 'validator_user_id', $strAliasPrefix . 'validator_user_id');
-			$objBuilder->AddSelectItem($strTableName, 'valid_suggestion_id', $strAliasPrefix . 'valid_suggestion_id');
-			$objBuilder->AddSelectItem($strTableName, 'has_suggestions', $strAliasPrefix . 'has_suggestions');
-			$objBuilder->AddSelectItem($strTableName, 'suggestion_access_key', $strAliasPrefix . 'suggestion_access_key');
-			$objBuilder->AddSelectItem($strTableName, 'suggestion_command_key', $strAliasPrefix . 'suggestion_command_key');
-			$objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
-			$objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'context_info_id', $strAliasPrefix . 'context_info_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'context_info_id', $strAliasPrefix . 'context_info_id');
+			    $objBuilder->AddSelectItem($strTableName, 'context_id', $strAliasPrefix . 'context_id');
+			    $objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+			    $objBuilder->AddSelectItem($strTableName, 'validator_user_id', $strAliasPrefix . 'validator_user_id');
+			    $objBuilder->AddSelectItem($strTableName, 'valid_suggestion_id', $strAliasPrefix . 'valid_suggestion_id');
+			    $objBuilder->AddSelectItem($strTableName, 'has_suggestions', $strAliasPrefix . 'has_suggestions');
+			    $objBuilder->AddSelectItem($strTableName, 'suggestion_access_key', $strAliasPrefix . 'suggestion_access_key');
+			    $objBuilder->AddSelectItem($strTableName, 'suggestion_command_key', $strAliasPrefix . 'suggestion_command_key');
+			    $objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
+			    $objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+            }
 		}
 
 
@@ -521,25 +566,35 @@
 			$objToReturn = new NarroContextInfo();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'context_info_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'context_info_id'] : $strAliasPrefix . 'context_info_id';
+			$strAlias = $strAliasPrefix . 'context_info_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intContextInfoId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'context_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'context_id'] : $strAliasPrefix . 'context_id';
+			$strAlias = $strAliasPrefix . 'context_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intContextId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'language_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_id'] : $strAliasPrefix . 'language_id';
+			$strAlias = $strAliasPrefix . 'language_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'validator_user_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'validator_user_id'] : $strAliasPrefix . 'validator_user_id';
+			$strAlias = $strAliasPrefix . 'validator_user_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intValidatorUserId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'valid_suggestion_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'valid_suggestion_id'] : $strAliasPrefix . 'valid_suggestion_id';
+			$strAlias = $strAliasPrefix . 'valid_suggestion_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intValidSuggestionId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'has_suggestions', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'has_suggestions'] : $strAliasPrefix . 'has_suggestions';
+			$strAlias = $strAliasPrefix . 'has_suggestions';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->blnHasSuggestions = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_access_key', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_access_key'] : $strAliasPrefix . 'suggestion_access_key';
+			$strAlias = $strAliasPrefix . 'suggestion_access_key';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strSuggestionAccessKey = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_command_key', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_command_key'] : $strAliasPrefix . 'suggestion_command_key';
+			$strAlias = $strAliasPrefix . 'suggestion_command_key';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strSuggestionCommandKey = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created'] : $strAliasPrefix . 'created';
+			$strAlias = $strAliasPrefix . 'created';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'modified', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'modified'] : $strAliasPrefix . 'modified';
+			$strAlias = $strAliasPrefix . 'modified';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttModified = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -554,10 +609,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -592,7 +647,6 @@
 
 
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -631,11 +685,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroContextInfo object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroContextInfo next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroContextInfo::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroContextInfo object,
 		 * by ContextInfoId Index(es)
@@ -651,7 +733,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroContextInfo object,
 		 * by ContextId, LanguageId Index(es)
@@ -669,7 +751,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContextInfo objects,
 		 * by ContextId Index(es)
@@ -701,7 +783,7 @@
 				QQ::Equal(QQN::NarroContextInfo()->ContextId, $intContextId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContextInfo objects,
 		 * by LanguageId Index(es)
@@ -733,7 +815,7 @@
 				QQ::Equal(QQN::NarroContextInfo()->LanguageId, $intLanguageId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContextInfo objects,
 		 * by ValidSuggestionId Index(es)
@@ -765,7 +847,7 @@
 				QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, $intValidSuggestionId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContextInfo objects,
 		 * by ValidatorUserId Index(es)
@@ -797,7 +879,7 @@
 				QQ::Equal(QQN::NarroContextInfo()->ValidatorUserId, $intValidatorUserId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroContextInfo objects,
 		 * by HasSuggestions Index(es)
@@ -838,35 +920,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['ContextInfoId']))
-                $this->_arrHistory['ContextInfoId'] = $this->ContextInfoId;
-            if (!isset($this->_arrHistory['ContextId']))
-                $this->_arrHistory['ContextId'] = $this->ContextId;
-            if (!isset($this->_arrHistory['LanguageId']))
-                $this->_arrHistory['LanguageId'] = $this->LanguageId;
-            if (!isset($this->_arrHistory['ValidatorUserId']))
-                $this->_arrHistory['ValidatorUserId'] = $this->ValidatorUserId;
-            if (!isset($this->_arrHistory['ValidSuggestionId']))
-                $this->_arrHistory['ValidSuggestionId'] = $this->ValidSuggestionId;
-            if (!isset($this->_arrHistory['HasSuggestions']))
-                $this->_arrHistory['HasSuggestions'] = $this->HasSuggestions;
-            if (!isset($this->_arrHistory['SuggestionAccessKey']))
-                $this->_arrHistory['SuggestionAccessKey'] = $this->SuggestionAccessKey;
-            if (!isset($this->_arrHistory['SuggestionCommandKey']))
-                $this->_arrHistory['SuggestionCommandKey'] = $this->SuggestionCommandKey;
-            if (!isset($this->_arrHistory['Created']))
-                $this->_arrHistory['Created'] = $this->Created;
-            if (!isset($this->_arrHistory['Modified']))
-                $this->_arrHistory['Modified'] = $this->Modified;
-        }
 
 
 		//////////////////////////
@@ -919,91 +972,20 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['ContextId'] !== $this->ContextId ||
-                        (
-                            $this->ContextId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ContextId'] !== (string) $this->ContextId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`context_id` = ' . $objDatabase->SqlVariable($this->intContextId);
-                    if (
-                        $this->_arrHistory['LanguageId'] !== $this->LanguageId ||
-                        (
-                            $this->LanguageId instanceof QDateTime &&
-                            (string) $this->_arrHistory['LanguageId'] !== (string) $this->LanguageId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId);
-                    if (
-                        $this->_arrHistory['ValidatorUserId'] !== $this->ValidatorUserId ||
-                        (
-                            $this->ValidatorUserId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ValidatorUserId'] !== (string) $this->ValidatorUserId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`validator_user_id` = ' . $objDatabase->SqlVariable($this->intValidatorUserId);
-                    if (
-                        $this->_arrHistory['ValidSuggestionId'] !== $this->ValidSuggestionId ||
-                        (
-                            $this->ValidSuggestionId instanceof QDateTime &&
-                            (string) $this->_arrHistory['ValidSuggestionId'] !== (string) $this->ValidSuggestionId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId);
-                    if (
-                        $this->_arrHistory['HasSuggestions'] !== $this->HasSuggestions ||
-                        (
-                            $this->HasSuggestions instanceof QDateTime &&
-                            (string) $this->_arrHistory['HasSuggestions'] !== (string) $this->HasSuggestions
-                        )
-                    )
-                        $arrUpdateChanges[] = '`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions);
-                    if (
-                        $this->_arrHistory['SuggestionAccessKey'] !== $this->SuggestionAccessKey ||
-                        (
-                            $this->SuggestionAccessKey instanceof QDateTime &&
-                            (string) $this->_arrHistory['SuggestionAccessKey'] !== (string) $this->SuggestionAccessKey
-                        )
-                    )
-                        $arrUpdateChanges[] = '`suggestion_access_key` = ' . $objDatabase->SqlVariable($this->strSuggestionAccessKey);
-                    if (
-                        $this->_arrHistory['SuggestionCommandKey'] !== $this->SuggestionCommandKey ||
-                        (
-                            $this->SuggestionCommandKey instanceof QDateTime &&
-                            (string) $this->_arrHistory['SuggestionCommandKey'] !== (string) $this->SuggestionCommandKey
-                        )
-                    )
-                        $arrUpdateChanges[] = '`suggestion_command_key` = ' . $objDatabase->SqlVariable($this->strSuggestionCommandKey);
-                    if (
-                        $this->_arrHistory['Created'] !== $this->Created ||
-                        (
-                            $this->Created instanceof QDateTime &&
-                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
-                        )
-                    )
-                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
-                    if (
-                        $this->_arrHistory['Modified'] !== $this->Modified ||
-                        (
-                            $this->Modified instanceof QDateTime &&
-                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
-                        )
-                    )
-                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_context_info`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`context_id` = ' . $objDatabase->SqlVariable($this->intContextId) . ',
+							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							`validator_user_id` = ' . $objDatabase->SqlVariable($this->intValidatorUserId) . ',
+							`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intValidSuggestionId) . ',
+							`has_suggestions` = ' . $objDatabase->SqlVariable($this->blnHasSuggestions) . ',
+							`suggestion_access_key` = ' . $objDatabase->SqlVariable($this->strSuggestionAccessKey) . ',
+							`suggestion_command_key` = ' . $objDatabase->SqlVariable($this->strSuggestionCommandKey) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . '
 						WHERE
 							`context_info_id` = ' . $objDatabase->SqlVariable($this->intContextInfoId) . '
 					');
@@ -1014,10 +996,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -1041,6 +1024,19 @@
 					`narro_context_info`
 				WHERE
 					`context_info_id` = ' . $objDatabase->SqlVariable($this->intContextInfoId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroContextInfo ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroContextInfo', $this->intContextInfoId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -1055,6 +1051,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_context_info`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1068,6 +1068,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_context_info`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1078,6 +1082,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroContextInfo object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroContextInfo::Load($this->intContextInfoId);
@@ -1135,35 +1141,35 @@
 
 				case 'ValidatorUserId':
 					/**
-					 * Gets the value for intValidatorUserId 
+					 * Gets the value for intValidatorUserId
 					 * @return integer
 					 */
 					return $this->intValidatorUserId;
 
 				case 'ValidSuggestionId':
 					/**
-					 * Gets the value for intValidSuggestionId 
+					 * Gets the value for intValidSuggestionId
 					 * @return integer
 					 */
 					return $this->intValidSuggestionId;
 
 				case 'HasSuggestions':
 					/**
-					 * Gets the value for blnHasSuggestions 
+					 * Gets the value for blnHasSuggestions
 					 * @return boolean
 					 */
 					return $this->blnHasSuggestions;
 
 				case 'SuggestionAccessKey':
 					/**
-					 * Gets the value for strSuggestionAccessKey 
+					 * Gets the value for strSuggestionAccessKey
 					 * @return string
 					 */
 					return $this->strSuggestionAccessKey;
 
 				case 'SuggestionCommandKey':
 					/**
-					 * Gets the value for strSuggestionCommandKey 
+					 * Gets the value for strSuggestionCommandKey
 					 * @return string
 					 */
 					return $this->strSuggestionCommandKey;
@@ -1177,7 +1183,7 @@
 
 				case 'Modified':
 					/**
-					 * Gets the value for dttModified 
+					 * Gets the value for dttModified
 					 * @return QDateTime
 					 */
 					return $this->dttModified;
@@ -1216,7 +1222,7 @@
 
 				case 'ValidatorUser':
 					/**
-					 * Gets the value for the NarroUser object referenced by intValidatorUserId 
+					 * Gets the value for the NarroUser object referenced by intValidatorUserId
 					 * @return NarroUser
 					 */
 					try {
@@ -1230,7 +1236,7 @@
 
 				case 'ValidSuggestion':
 					/**
-					 * Gets the value for the NarroSuggestion object referenced by intValidSuggestionId 
+					 * Gets the value for the NarroSuggestion object referenced by intValidSuggestionId
 					 * @return NarroSuggestion
 					 */
 					try {
@@ -1305,7 +1311,7 @@
 
 				case 'ValidatorUserId':
 					/**
-					 * Sets the value for intValidatorUserId 
+					 * Sets the value for intValidatorUserId
 					 * @param integer $mixValue
 					 * @return integer
 					 */
@@ -1319,7 +1325,7 @@
 
 				case 'ValidSuggestionId':
 					/**
-					 * Sets the value for intValidSuggestionId 
+					 * Sets the value for intValidSuggestionId
 					 * @param integer $mixValue
 					 * @return integer
 					 */
@@ -1333,7 +1339,7 @@
 
 				case 'HasSuggestions':
 					/**
-					 * Sets the value for blnHasSuggestions 
+					 * Sets the value for blnHasSuggestions
 					 * @param boolean $mixValue
 					 * @return boolean
 					 */
@@ -1346,7 +1352,7 @@
 
 				case 'SuggestionAccessKey':
 					/**
-					 * Sets the value for strSuggestionAccessKey 
+					 * Sets the value for strSuggestionAccessKey
 					 * @param string $mixValue
 					 * @return string
 					 */
@@ -1359,7 +1365,7 @@
 
 				case 'SuggestionCommandKey':
 					/**
-					 * Sets the value for strSuggestionCommandKey 
+					 * Sets the value for strSuggestionCommandKey
 					 * @param string $mixValue
 					 * @return string
 					 */
@@ -1385,7 +1391,7 @@
 
 				case 'Modified':
 					/**
-					 * Sets the value for dttModified 
+					 * Sets the value for dttModified
 					 * @param QDateTime $mixValue
 					 * @return QDateTime
 					 */
@@ -1466,7 +1472,7 @@
 
 				case 'ValidatorUser':
 					/**
-					 * Sets the value for the NarroUser object referenced by intValidatorUserId 
+					 * Sets the value for the NarroUser object referenced by intValidatorUserId
 					 * @param NarroUser $mixValue
 					 * @return NarroUser
 					 */
@@ -1498,7 +1504,7 @@
 
 				case 'ValidSuggestion':
 					/**
-					 * Sets the value for the NarroSuggestion object referenced by intValidSuggestionId 
+					 * Sets the value for the NarroSuggestion object referenced by intValidSuggestionId
 					 * @param NarroSuggestion $mixValue
 					 * @return NarroSuggestion
 					 */
@@ -1558,6 +1564,36 @@
 
 
 
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
+
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_context_info";
+		}
+
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroContextInfo::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -1695,6 +1731,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intContextInfoId ));
+		}
+
 
 
 	}

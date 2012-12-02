@@ -37,20 +37,7 @@
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class NarroSuggestionGen extends QBaseClass implements IteratorAggregate {
-        public function __construct() {
-                $this->_arrHistory['SuggestionId'] = null;
-                $this->_arrHistory['UserId'] = null;
-                $this->_arrHistory['TextId'] = null;
-                $this->_arrHistory['LanguageId'] = null;
-                $this->_arrHistory['SuggestionValue'] = null;
-                $this->_arrHistory['SuggestionValueMd5'] = null;
-                $this->_arrHistory['SuggestionCharCount'] = null;
-                $this->_arrHistory['SuggestionWordCount'] = null;
-                $this->_arrHistory['HasComments'] = null;
-                $this->_arrHistory['IsImported'] = null;
-                $this->_arrHistory['Created'] = null;
-                $this->_arrHistory['Modified'] = null;
-        }
+
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
@@ -199,11 +186,6 @@
 		 */
 		protected $__blnRestored;
 
-        /**
-         * Associative array with database property fields as keys
-        */
-        protected $_arrHistory;
-
 
 
 
@@ -282,13 +264,25 @@
 		 * @return NarroSuggestion
 		 */
 		public static function Load($intSuggestionId, $objOptionalClauses = null) {
+			$strCacheKey = false;
+			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroSuggestion', $intSuggestionId);
+				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
+				if ($objCachedObject !== false) {
+					return $objCachedObject;
+				}
+			}
 			// Use QuerySingle to Perform the Query
-			return NarroSuggestion::QuerySingle(
+			$objToReturn = NarroSuggestion::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::NarroSuggestion()->SuggestionId, $intSuggestionId)
 				),
 				$objOptionalClauses
 			);
+			if ($strCacheKey !== false) {
+				QApplication::$objCacheProvider->Set($strCacheKey, $objToReturn);
+			}
+			return $objToReturn;
 		}
 
 		/**
@@ -341,7 +335,26 @@
 
 			// Create/Build out the QueryBuilder object with NarroSuggestion-specific SELET and FROM fields
 			$objQueryBuilder = new QQueryBuilder($objDatabase, 'narro_suggestion');
-			NarroSuggestion::GetSelectFields($objQueryBuilder);
+
+			$blnAddAllFieldsToSelect = true;
+			if ($objDatabase->OnlyFullGroupBy) {
+				// see if we have any group by or aggregation clauses, if yes, don't add the fields to select clause
+				if ($objOptionalClauses instanceof QQClause) {
+					if ($objOptionalClauses instanceof QQAggregationClause || $objOptionalClauses instanceof QQGroupBy) {
+						$blnAddAllFieldsToSelect = false;
+					}
+				} else if (is_array($objOptionalClauses)) {
+					foreach ($objOptionalClauses as $objClause) {
+						if ($objClause instanceof QQAggregationClause || $objClause instanceof QQGroupBy) {
+							$blnAddAllFieldsToSelect = false;
+							break;
+						}
+					}
+				}
+			}
+			if ($blnAddAllFieldsToSelect) {
+				NarroSuggestion::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+			}
 			$objQueryBuilder->AddFromItem('narro_suggestion');
 
 			// Set "CountOnly" option (if applicable)
@@ -454,6 +467,31 @@
 		}
 
 		/**
+		 * Static Qcodo query method to issue a query and get a cursor to progressively fetch its results.
+		 * Uses BuildQueryStatment to perform most of the work.
+		 * @param QQCondition $objConditions any conditions on the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
+		 * @return QDatabaseResultBase the cursor resource instance
+		 */
+		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
+			// Get the query statement
+			try {
+				$strQuery = NarroSuggestion::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+
+			// Perform the query
+			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
+
+			// Return the results cursor
+			$objDbResult->QueryBuilder = $objQueryBuilder;
+			return $objDbResult;
+		}
+
+		/**
 		 * Static Qcubed Query method to query for a count of NarroSuggestion objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
@@ -518,7 +556,7 @@
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
-		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null) {
+		public static function GetSelectFields(QQueryBuilder $objBuilder, $strPrefix = null, QQSelect $objSelect = null) {
 			if ($strPrefix) {
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
@@ -527,18 +565,23 @@
 				$strAliasPrefix = '';
 			}
 
-			$objBuilder->AddSelectItem($strTableName, 'suggestion_id', $strAliasPrefix . 'suggestion_id');
-			$objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
-			$objBuilder->AddSelectItem($strTableName, 'text_id', $strAliasPrefix . 'text_id');
-			$objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
-			$objBuilder->AddSelectItem($strTableName, 'suggestion_value', $strAliasPrefix . 'suggestion_value');
-			$objBuilder->AddSelectItem($strTableName, 'suggestion_value_md5', $strAliasPrefix . 'suggestion_value_md5');
-			$objBuilder->AddSelectItem($strTableName, 'suggestion_char_count', $strAliasPrefix . 'suggestion_char_count');
-			$objBuilder->AddSelectItem($strTableName, 'suggestion_word_count', $strAliasPrefix . 'suggestion_word_count');
-			$objBuilder->AddSelectItem($strTableName, 'has_comments', $strAliasPrefix . 'has_comments');
-			$objBuilder->AddSelectItem($strTableName, 'is_imported', $strAliasPrefix . 'is_imported');
-			$objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
-			$objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+            if ($objSelect) {
+			    $objBuilder->AddSelectItem($strTableName, 'suggestion_id', $strAliasPrefix . 'suggestion_id');
+                $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
+            } else {
+			    $objBuilder->AddSelectItem($strTableName, 'suggestion_id', $strAliasPrefix . 'suggestion_id');
+			    $objBuilder->AddSelectItem($strTableName, 'user_id', $strAliasPrefix . 'user_id');
+			    $objBuilder->AddSelectItem($strTableName, 'text_id', $strAliasPrefix . 'text_id');
+			    $objBuilder->AddSelectItem($strTableName, 'language_id', $strAliasPrefix . 'language_id');
+			    $objBuilder->AddSelectItem($strTableName, 'suggestion_value', $strAliasPrefix . 'suggestion_value');
+			    $objBuilder->AddSelectItem($strTableName, 'suggestion_value_md5', $strAliasPrefix . 'suggestion_value_md5');
+			    $objBuilder->AddSelectItem($strTableName, 'suggestion_char_count', $strAliasPrefix . 'suggestion_char_count');
+			    $objBuilder->AddSelectItem($strTableName, 'suggestion_word_count', $strAliasPrefix . 'suggestion_word_count');
+			    $objBuilder->AddSelectItem($strTableName, 'has_comments', $strAliasPrefix . 'has_comments');
+			    $objBuilder->AddSelectItem($strTableName, 'is_imported', $strAliasPrefix . 'is_imported');
+			    $objBuilder->AddSelectItem($strTableName, 'created', $strAliasPrefix . 'created');
+			    $objBuilder->AddSelectItem($strTableName, 'modified', $strAliasPrefix . 'modified');
+            }
 		}
 
 
@@ -628,29 +671,41 @@
 			$objToReturn = new NarroSuggestion();
 			$objToReturn->__blnRestored = true;
 
-			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_id'] : $strAliasPrefix . 'suggestion_id';
+			$strAlias = $strAliasPrefix . 'suggestion_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intSuggestionId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'user_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'user_id'] : $strAliasPrefix . 'user_id';
+			$strAlias = $strAliasPrefix . 'user_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intUserId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'text_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'text_id'] : $strAliasPrefix . 'text_id';
+			$strAlias = $strAliasPrefix . 'text_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intTextId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'language_id', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'language_id'] : $strAliasPrefix . 'language_id';
+			$strAlias = $strAliasPrefix . 'language_id';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intLanguageId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_value', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_value'] : $strAliasPrefix . 'suggestion_value';
+			$strAlias = $strAliasPrefix . 'suggestion_value';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strSuggestionValue = $objDbRow->GetColumn($strAliasName, 'Blob');
-			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_value_md5', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_value_md5'] : $strAliasPrefix . 'suggestion_value_md5';
+			$strAlias = $strAliasPrefix . 'suggestion_value_md5';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strSuggestionValueMd5 = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_char_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_char_count'] : $strAliasPrefix . 'suggestion_char_count';
+			$strAlias = $strAliasPrefix . 'suggestion_char_count';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intSuggestionCharCount = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'suggestion_word_count', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'suggestion_word_count'] : $strAliasPrefix . 'suggestion_word_count';
+			$strAlias = $strAliasPrefix . 'suggestion_word_count';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intSuggestionWordCount = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAliasName = array_key_exists($strAliasPrefix . 'has_comments', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'has_comments'] : $strAliasPrefix . 'has_comments';
+			$strAlias = $strAliasPrefix . 'has_comments';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->blnHasComments = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'is_imported', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'is_imported'] : $strAliasPrefix . 'is_imported';
+			$strAlias = $strAliasPrefix . 'is_imported';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->blnIsImported = $objDbRow->GetColumn($strAliasName, 'Bit');
-			$strAliasName = array_key_exists($strAliasPrefix . 'created', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'created'] : $strAliasPrefix . 'created';
+			$strAlias = $strAliasPrefix . 'created';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttCreated = $objDbRow->GetColumn($strAliasName, 'DateTime');
-			$strAliasName = array_key_exists($strAliasPrefix . 'modified', $strColumnAliasArray) ? $strColumnAliasArray[$strAliasPrefix . 'modified'] : $strAliasPrefix . 'modified';
+			$strAlias = $strAliasPrefix . 'modified';
+			$strAliasName = array_key_exists($strAlias, $strColumnAliasArray) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttModified = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
 			if (isset($arrPreviousItems) && is_array($arrPreviousItems)) {
@@ -658,12 +713,22 @@
 					if ($objToReturn->SuggestionId != $objPreviousItem->SuggestionId) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroContextInfoAsValidSuggestionArray, $objToReturn->_objNarroContextInfoAsValidSuggestionArray) != null) {
+					$prevCnt = count($objPreviousItem->_objNarroContextInfoAsValidSuggestionArray);
+					$cnt = count($objToReturn->_objNarroContextInfoAsValidSuggestionArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroContextInfoAsValidSuggestionArray, $objToReturn->_objNarroContextInfoAsValidSuggestionArray)) {
 						continue;
 					}
-					if (array_diff($objPreviousItem->_objNarroSuggestionVoteAsSuggestionArray, $objToReturn->_objNarroSuggestionVoteAsSuggestionArray) != null) {
+
+					$prevCnt = count($objPreviousItem->_objNarroSuggestionVoteAsSuggestionArray);
+					$cnt = count($objToReturn->_objNarroSuggestionVoteAsSuggestionArray);
+					if ($prevCnt != $cnt)
+					    continue;
+					if ($prevCnt == 0 || $cnt == 0 || !array_diff($objPreviousItem->_objNarroSuggestionVoteAsSuggestionArray, $objToReturn->_objNarroSuggestionVoteAsSuggestionArray)) {
 						continue;
 					}
+
 
 					// complete match - all primary key columns are the same
 					return null;
@@ -671,10 +736,10 @@
 			}
 
 			// Instantiate Virtual Attributes
+			$strVirtualPrefix = $strAliasPrefix . '__';
+			$strVirtualPrefixLength = strlen($strVirtualPrefix);
 			foreach ($objDbRow->GetColumnNameArray() as $strColumnName => $mixValue) {
-				$strVirtualPrefix = $strAliasPrefix . '__';
-				$strVirtualPrefixLength = strlen($strVirtualPrefix);
-				if (substr($strColumnName, 0, $strVirtualPrefixLength) == $strVirtualPrefix)
+				if (strncmp($strColumnName, $strVirtualPrefix, $strVirtualPrefixLength) == 0)
 					$objToReturn->__strVirtualAttributeArray[substr($strColumnName, $strVirtualPrefixLength)] = $mixValue;
 			}
 
@@ -729,7 +794,6 @@
 					$objToReturn->_objNarroSuggestionVoteAsSuggestion = NarroSuggestionVote::InstantiateDbRow($objDbRow, $strAliasPrefix . 'narrosuggestionvoteassuggestion__', $strExpandAsArrayNodes, null, $strColumnAliasArray);
 			}
 
-            $objToReturn->SaveHistory(false);
 			return $objToReturn;
 		}
 
@@ -768,11 +832,39 @@
 		}
 
 
+		/**
+		 * Instantiate a single NarroSuggestion object from a query cursor (e.g. a DB ResultSet).
+		 * Cursor is automatically moved to the "next row" of the result set.
+		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
+		 * @param QDatabaseResultBase $objDbResult cursor resource
+		 * @return NarroSuggestion next row resulting from the query
+		 */
+		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
+			// If blank resultset, then return empty result
+			if (!$objDbResult) return null;
+
+			// If empty resultset, then return empty result
+			$objDbRow = $objDbResult->GetNextRow();
+			if (!$objDbRow) return null;
+
+			// We need the Column Aliases
+			$strColumnAliasArray = $objDbResult->QueryBuilder->ColumnAliasArray;
+			if (!$strColumnAliasArray) $strColumnAliasArray = array();
+
+			// Pull Expansions (if applicable)
+			$strExpandAsArrayNodes = $objDbResult->QueryBuilder->ExpandAsArrayNodes;
+
+			// Load up the return result with a row and return it
+			return NarroSuggestion::InstantiateDbRow($objDbRow, null, $strExpandAsArrayNodes, null, $strColumnAliasArray);
+		}
+
+
+
 
 		///////////////////////////////////////////////////
 		// INDEX-BASED LOAD METHODS (Single Load and Array)
 		///////////////////////////////////////////////////
-			
+
 		/**
 		 * Load a single NarroSuggestion object,
 		 * by SuggestionId Index(es)
@@ -788,7 +880,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load a single NarroSuggestion object,
 		 * by TextId, LanguageId, SuggestionValueMd5 Index(es)
@@ -808,7 +900,7 @@
 				$objOptionalClauses
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroSuggestion objects,
 		 * by UserId Index(es)
@@ -840,7 +932,7 @@
 				QQ::Equal(QQN::NarroSuggestion()->UserId, $intUserId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroSuggestion objects,
 		 * by TextId Index(es)
@@ -872,7 +964,7 @@
 				QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroSuggestion objects,
 		 * by LanguageId Index(es)
@@ -904,7 +996,7 @@
 				QQ::Equal(QQN::NarroSuggestion()->LanguageId, $intLanguageId)
 			);
 		}
-			
+
 		/**
 		 * Load an array of NarroSuggestion objects,
 		 * by TextId, LanguageId Index(es)
@@ -919,8 +1011,8 @@
 				return NarroSuggestion::QueryArray(
 					QQ::AndCondition(
 					QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId),
-					QQ::Equal(QQN::NarroSuggestion()->LanguageId, $intLanguageId)
-					),
+					QQ::Equal(QQN::NarroSuggestion()->LanguageId, $intLanguageId)					)
+,
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -940,8 +1032,8 @@
 			return NarroSuggestion::QueryCount(
 				QQ::AndCondition(
 				QQ::Equal(QQN::NarroSuggestion()->TextId, $intTextId),
-				QQ::Equal(QQN::NarroSuggestion()->LanguageId, $intLanguageId)
-				)
+				QQ::Equal(QQN::NarroSuggestion()->LanguageId, $intLanguageId)				)
+
 			);
 		}
 
@@ -953,39 +1045,6 @@
 
 
 
-        
-       /**
-        * Save the values loaded from the database to allow seeing what was modified
-        */
-        public function SaveHistory($blnReset = false) {
-            if ($blnReset)
-                $this->_arrHistory = array();
-
-            if (!isset($this->_arrHistory['SuggestionId']))
-                $this->_arrHistory['SuggestionId'] = $this->SuggestionId;
-            if (!isset($this->_arrHistory['UserId']))
-                $this->_arrHistory['UserId'] = $this->UserId;
-            if (!isset($this->_arrHistory['TextId']))
-                $this->_arrHistory['TextId'] = $this->TextId;
-            if (!isset($this->_arrHistory['LanguageId']))
-                $this->_arrHistory['LanguageId'] = $this->LanguageId;
-            if (!isset($this->_arrHistory['SuggestionValue']))
-                $this->_arrHistory['SuggestionValue'] = $this->SuggestionValue;
-            if (!isset($this->_arrHistory['SuggestionValueMd5']))
-                $this->_arrHistory['SuggestionValueMd5'] = $this->SuggestionValueMd5;
-            if (!isset($this->_arrHistory['SuggestionCharCount']))
-                $this->_arrHistory['SuggestionCharCount'] = $this->SuggestionCharCount;
-            if (!isset($this->_arrHistory['SuggestionWordCount']))
-                $this->_arrHistory['SuggestionWordCount'] = $this->SuggestionWordCount;
-            if (!isset($this->_arrHistory['HasComments']))
-                $this->_arrHistory['HasComments'] = $this->HasComments;
-            if (!isset($this->_arrHistory['IsImported']))
-                $this->_arrHistory['IsImported'] = $this->IsImported;
-            if (!isset($this->_arrHistory['Created']))
-                $this->_arrHistory['Created'] = $this->Created;
-            if (!isset($this->_arrHistory['Modified']))
-                $this->_arrHistory['Modified'] = $this->Modified;
-        }
 
 
 		//////////////////////////
@@ -1042,107 +1101,22 @@
 
 					// First checking for Optimistic Locking constraints (if applicable)
 
-                    /**
-                     * Make sure we change only what's changed in this instance of the object
-                     * @author Alexandru Szasz <alexandru.szasz@lingo24.com>
-                     */
-                    $arrUpdateChanges = array();
-                    if (
-                        $this->_arrHistory['UserId'] !== $this->UserId ||
-                        (
-                            $this->UserId instanceof QDateTime &&
-                            (string) $this->_arrHistory['UserId'] !== (string) $this->UserId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`user_id` = ' . $objDatabase->SqlVariable($this->intUserId);
-                    if (
-                        $this->_arrHistory['TextId'] !== $this->TextId ||
-                        (
-                            $this->TextId instanceof QDateTime &&
-                            (string) $this->_arrHistory['TextId'] !== (string) $this->TextId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`text_id` = ' . $objDatabase->SqlVariable($this->intTextId);
-                    if (
-                        $this->_arrHistory['LanguageId'] !== $this->LanguageId ||
-                        (
-                            $this->LanguageId instanceof QDateTime &&
-                            (string) $this->_arrHistory['LanguageId'] !== (string) $this->LanguageId
-                        )
-                    )
-                        $arrUpdateChanges[] = '`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId);
-                    if (
-                        $this->_arrHistory['SuggestionValue'] !== $this->SuggestionValue ||
-                        (
-                            $this->SuggestionValue instanceof QDateTime &&
-                            (string) $this->_arrHistory['SuggestionValue'] !== (string) $this->SuggestionValue
-                        )
-                    )
-                        $arrUpdateChanges[] = '`suggestion_value` = ' . $objDatabase->SqlVariable($this->strSuggestionValue);
-                    if (
-                        $this->_arrHistory['SuggestionValueMd5'] !== $this->SuggestionValueMd5 ||
-                        (
-                            $this->SuggestionValueMd5 instanceof QDateTime &&
-                            (string) $this->_arrHistory['SuggestionValueMd5'] !== (string) $this->SuggestionValueMd5
-                        )
-                    )
-                        $arrUpdateChanges[] = '`suggestion_value_md5` = ' . $objDatabase->SqlVariable($this->strSuggestionValueMd5);
-                    if (
-                        $this->_arrHistory['SuggestionCharCount'] !== $this->SuggestionCharCount ||
-                        (
-                            $this->SuggestionCharCount instanceof QDateTime &&
-                            (string) $this->_arrHistory['SuggestionCharCount'] !== (string) $this->SuggestionCharCount
-                        )
-                    )
-                        $arrUpdateChanges[] = '`suggestion_char_count` = ' . $objDatabase->SqlVariable($this->intSuggestionCharCount);
-                    if (
-                        $this->_arrHistory['SuggestionWordCount'] !== $this->SuggestionWordCount ||
-                        (
-                            $this->SuggestionWordCount instanceof QDateTime &&
-                            (string) $this->_arrHistory['SuggestionWordCount'] !== (string) $this->SuggestionWordCount
-                        )
-                    )
-                        $arrUpdateChanges[] = '`suggestion_word_count` = ' . $objDatabase->SqlVariable($this->intSuggestionWordCount);
-                    if (
-                        $this->_arrHistory['HasComments'] !== $this->HasComments ||
-                        (
-                            $this->HasComments instanceof QDateTime &&
-                            (string) $this->_arrHistory['HasComments'] !== (string) $this->HasComments
-                        )
-                    )
-                        $arrUpdateChanges[] = '`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments);
-                    if (
-                        $this->_arrHistory['IsImported'] !== $this->IsImported ||
-                        (
-                            $this->IsImported instanceof QDateTime &&
-                            (string) $this->_arrHistory['IsImported'] !== (string) $this->IsImported
-                        )
-                    )
-                        $arrUpdateChanges[] = '`is_imported` = ' . $objDatabase->SqlVariable($this->blnIsImported);
-                    if (
-                        $this->_arrHistory['Created'] !== $this->Created ||
-                        (
-                            $this->Created instanceof QDateTime &&
-                            (string) $this->_arrHistory['Created'] !== (string) $this->Created
-                        )
-                    )
-                        $arrUpdateChanges[] = '`created` = ' . $objDatabase->SqlVariable($this->dttCreated);
-                    if (
-                        $this->_arrHistory['Modified'] !== $this->Modified ||
-                        (
-                            $this->Modified instanceof QDateTime &&
-                            (string) $this->_arrHistory['Modified'] !== (string) $this->Modified
-                        )
-                    )
-                        $arrUpdateChanges[] = '`modified` = ' . $objDatabase->SqlVariable($this->dttModified);
-
-                    if (count($arrUpdateChanges) == 0) return false;
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
 							`narro_suggestion`
 						SET
-                            ' . join(",\n", $arrUpdateChanges) . '
+							`user_id` = ' . $objDatabase->SqlVariable($this->intUserId) . ',
+							`text_id` = ' . $objDatabase->SqlVariable($this->intTextId) . ',
+							`language_id` = ' . $objDatabase->SqlVariable($this->intLanguageId) . ',
+							`suggestion_value` = ' . $objDatabase->SqlVariable($this->strSuggestionValue) . ',
+							`suggestion_value_md5` = ' . $objDatabase->SqlVariable($this->strSuggestionValueMd5) . ',
+							`suggestion_char_count` = ' . $objDatabase->SqlVariable($this->intSuggestionCharCount) . ',
+							`suggestion_word_count` = ' . $objDatabase->SqlVariable($this->intSuggestionWordCount) . ',
+							`has_comments` = ' . $objDatabase->SqlVariable($this->blnHasComments) . ',
+							`is_imported` = ' . $objDatabase->SqlVariable($this->blnIsImported) . ',
+							`created` = ' . $objDatabase->SqlVariable($this->dttCreated) . ',
+							`modified` = ' . $objDatabase->SqlVariable($this->dttModified) . '
 						WHERE
 							`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
 					');
@@ -1153,10 +1127,11 @@
 				throw $objExc;
 			}
 
-            $blnInserted = (!$this->__blnRestored) || ($blnForceInsert);
 			// Update __blnRestored and any Non-Identity PK Columns (if applicable)
 			$this->__blnRestored = true;
 
+
+			$this->DeleteCache();
 
 			// Return
 			return $mixToReturn;
@@ -1180,6 +1155,19 @@
 					`narro_suggestion`
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '');
+
+			$this->DeleteCache();
+		}
+
+        /**
+ 	     * Delete this NarroSuggestion ONLY from the cache
+ 		 * @return void
+		 */
+		public function DeleteCache() {
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey('narro', 'NarroSuggestion', $this->intSuggestionId);
+				QApplication::$objCacheProvider->Delete($strCacheKey);
+			}
 		}
 
 		/**
@@ -1194,6 +1182,10 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`narro_suggestion`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1207,6 +1199,10 @@
 			// Perform the Query
 			$objDatabase->NonQuery('
 				TRUNCATE `narro_suggestion`');
+
+			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
+				QApplication::$objCacheProvider->DeleteAll();
+			}
 		}
 
 		/**
@@ -1217,6 +1213,8 @@
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
 				throw new QCallerException('Cannot call Reload() on a new, unsaved NarroSuggestion object.');
+
+			$this->DeleteCache();
 
 			// Reload the Object
 			$objReloaded = NarroSuggestion::Load($this->intSuggestionId);
@@ -1721,8 +1719,8 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-			
-		
+
+
 		// Related Objects' Methods for NarroContextInfoAsValidSuggestion
 		//-------------------------------------------------------------------
 
@@ -1775,7 +1773,7 @@
 				SET
 					`valid_suggestion_id` = ' . $objDatabase->SqlVariable($this->intSuggestionId) . '
 				WHERE
-					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . '
+					`context_info_id` = ' . $objDatabase->SqlVariable($objNarroContextInfo->ContextInfoId) . ' 
 			');
 		}
 
@@ -1871,8 +1869,7 @@
 			');
 		}
 
-			
-		
+
 		// Related Objects' Methods for NarroSuggestionVoteAsSuggestion
 		//-------------------------------------------------------------------
 
@@ -1927,7 +1924,7 @@
 				WHERE
 					`suggestion_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->SuggestionId) . ' AND
 					`context_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->ContextId) . ' AND
-					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . '
+					`user_id` = ' . $objDatabase->SqlVariable($objNarroSuggestionVote->UserId) . ' 
 			');
 		}
 
@@ -2028,8 +2025,37 @@
 		}
 
 
+		
+		///////////////////////////////
+		// METHODS TO EXTRACT INFO ABOUT THE CLASS
+		///////////////////////////////
 
+		/**
+		 * Static method to retrieve the Database object that owns this class.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetTableName() {
+			return "narro_suggestion";
+		}
 
+		/**
+		 * Static method to retrieve the Table name from which this class has been created.
+		 * @return string Name of the table from which this class has been created.
+		 */
+		public static function GetDatabaseName() {
+			return QApplication::$Database[NarroSuggestion::GetDatabaseIndex()]->Database;
+		}
+
+		/**
+		 * Static method to retrieve the Database index in the configuration.inc.php file.
+		 * This can be useful when there are two databases of the same name which create
+		 * confusion for the developer. There are no internal uses of this function but are
+		 * here to help retrieve info if need be!
+		 * @return int position or index of the database in the config file.
+		 */
+		public static function GetDatabaseIndex() {
+			return 1;
+		}
 
 		////////////////////////////////////////
 		// METHODS for SOAP-BASED WEB SERVICES
@@ -2169,6 +2195,22 @@
 		public function getJson() {
 			return json_encode($this->getIterator());
 		}
+
+		/**
+		 * Default "toJsObject" handler
+		 * Specifies how the object should be displayed in JQuery UI lists and menus. Note that these lists use
+		 * value and label differently.
+		 *
+		 * value 	= The short form of what to display in the list and selection.
+		 * label 	= [optional] If defined, is what is displayed in the menu
+		 * id 		= Primary key of object.
+		 *
+		 * @return an array that specifies how to display the object
+		 */
+		public function toJsObject () {
+			return JavaScriptHelper::toJsObject(array('value' => $this->__toString(), 'id' =>  $this->intSuggestionId ));
+		}
+
 
 
 	}

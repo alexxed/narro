@@ -277,21 +277,30 @@
 		/**
 		 * Create and setup QListBox lstProject
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstProject_Create($strControlId = null) {
+		public function lstProject_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstProject = new QListBox($this->objParentObject, $strControlId);
 			$this->lstProject->Name = QApplication::Translate('Project');
 			$this->lstProject->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstProject->AddItem(QApplication::Translate('- Select One -'), null);
-			$objProjectArray = NarroProject::LoadAll();
-			if ($objProjectArray) foreach ($objProjectArray as $objProject) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objProjectCursor = NarroProject::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objProject = NarroProject::InstantiateCursor($objProjectCursor)) {
 				$objListItem = new QListItem($objProject->__toString(), $objProject->ProjectId);
 				if (($this->objNarroProjectProgress->Project) && ($this->objNarroProjectProgress->Project->ProjectId == $objProject->ProjectId))
 					$objListItem->Selected = true;
 				$this->lstProject->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstProject;
 		}
 
@@ -311,21 +320,30 @@
 		/**
 		 * Create and setup QListBox lstLanguage
 		 * @param string $strControlId optional ControlId to use
+		 * @param QQCondition $objConditions override the default condition of QQ::All() to the query, itself
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause object or array of QQClause objects for the query
 		 * @return QListBox
 		 */
-		public function lstLanguage_Create($strControlId = null) {
+		public function lstLanguage_Create($strControlId = null, QQCondition $objCondition = null, $objOptionalClauses = null) {
 			$this->lstLanguage = new QListBox($this->objParentObject, $strControlId);
 			$this->lstLanguage->Name = QApplication::Translate('Language');
 			$this->lstLanguage->Required = true;
 			if (!$this->blnEditMode)
 				$this->lstLanguage->AddItem(QApplication::Translate('- Select One -'), null);
-			$objLanguageArray = NarroLanguage::LoadAll();
-			if ($objLanguageArray) foreach ($objLanguageArray as $objLanguage) {
+
+			// Setup and perform the Query
+			if (is_null($objCondition)) $objCondition = QQ::All();
+			$objLanguageCursor = NarroLanguage::QueryCursor($objCondition, $objOptionalClauses);
+
+			// Iterate through the Cursor
+			while ($objLanguage = NarroLanguage::InstantiateCursor($objLanguageCursor)) {
 				$objListItem = new QListItem($objLanguage->__toString(), $objLanguage->LanguageId);
 				if (($this->objNarroProjectProgress->Language) && ($this->objNarroProjectProgress->Language->LanguageId == $objLanguage->LanguageId))
 					$objListItem->Selected = true;
 				$this->lstLanguage->AddItem($objListItem);
 			}
+
+			// Return the QListBox
 			return $this->lstLanguage;
 		}
 
