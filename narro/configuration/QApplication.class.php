@@ -70,6 +70,8 @@
                     require_once($strFilePath);
                 elseif (file_exists($strFilePath = sprintf('%s/%s.php', __NARRO_INCLUDES__, str_replace('_', '/', $strClassName))))
                     require_once($strFilePath);
+                elseif (file_exists($strFilePath = sprintf('%s/%s/includes/QFirebug/includes/%s.class.php', __DOCROOT__, __SUBDIRECTORY__, $strClassName)))
+                    require_once($strFilePath);
                 else
                     throw new Exception(sprintf('Cannot find the file that contains the class "%s"', $strClassName));
             }
@@ -158,18 +160,18 @@
                         $objGuessedLanguage = null;
                     }
                 }
-                
+
                 if (!$objGuessedLanguage) {
                     $objGuessedLanguage = QApplication::GetBrowserLanguage();
                     if (!$objGuessedLanguage instanceof NarroLanguage || !$objGuessedLanguage->Active) {
                         $objGuessedLanguage = null;
                     }
                 }
-                
+
                 if (!$objGuessedLanguage) {
                     $objGuessedLanguage = NarroLanguage::QuerySingle(QQ::Equal(QQN::NarroLanguage()->Active, true));
                 }
-                
+
                 if (!$objGuessedLanguage) {
                     die('There are no active languages in the database.');
                 }
@@ -182,7 +184,7 @@
                         QApplication::$TargetLanguage = $objGuessedLanguage;
                 }
             }
-            
+
             if (QApplication::$TargetLanguage->Active == false && !isset($argv))
                 die(sprintf('The language %s is not active. Please ask the administrator to activate or check your URL if this is not the language you wanted.', QApplication::$TargetLanguage->LanguageName));
         }
@@ -195,20 +197,20 @@
             elseif (is_array($argv) && array_search('--user', $argv) !== false) {
                 QApplication::$User = NarroUser::LoadByUserId((int) $argv[array_search('--user', $argv)+1]);
             }
-            
+
             if (!QApplication::$User instanceof NarroUser) {
                 QApplication::$User = NarroUser::LoadAnonymousUser();
                 QApplication::$Session->User = QApplication::$User;
             }
-            
+
             if (!QApplication::$User instanceof NarroUser)
                 // @todo add handling here
                 throw new Exception('Could not create an instance of NarroUser');
         }
-        
+
         public static function GetProjectId() {
             global $argv;
-            
+
             // project log via browser
             if (isset($_REQUEST['p']) && is_numeric($_REQUEST['p']))
                 return (int) $_REQUEST['p'];
@@ -232,9 +234,9 @@
                 QApplication::$LanguageCode = QApplication::$TargetLanguage->LanguageCode;
             else
                 QApplication::$LanguageCode = QApplication::$User->GetPreferenceValueByName('Application language');
-            
+
             define('__LOCALE_DIRECTORY__', __DOCROOT__ . __SUBDIRECTORY__ . '/locale/' . QApplication::$LanguageCode);
-            
+
             QI18n::Initialize('NarroPoParser');
         }
     }
