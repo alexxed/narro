@@ -27,14 +27,14 @@
         protected $strLink;
         protected $btnRefresh;
         protected $objWaitIcon;
-        
+
         public function __construct(NarroProjectProgress $objProjectProgress, $objParentObject, $strControlId = null) {
             $this->objProjectProgress = $objProjectProgress;
             parent::__construct($objParentObject, $strControlId);
-            
+
             $this->objWaitIcon = new QWaitIcon($this);
             $this->objWaitIcon->Text = sprintf('<img src="%s/spinner_16.gif" title="Refreshing progress..." />', __NARRO_IMAGE_ASSETS__);
-            
+
             $this->btnRefresh = new QImageButton($this);
             $this->btnRefresh->ImageUrl = __NARRO_IMAGE_ASSETS__ . '/refresh.png';
             $this->btnRefresh->Height = 20;
@@ -43,9 +43,8 @@
             $this->btnRefresh->AddAction(new QClickEvent(), new QJavaScriptAction('this.style.display="none"'));
             $this->btnRefresh->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnRefresh_Click', $this->objWaitIcon));
 
-            $this->strDisplayStyle = QDisplayStyle::InlineBlock;
             $this->strInstructions = t('Hover over the bar to get some details, click on the refresh button to refresh it');
-            
+
             $this->Total = $this->objProjectProgress->TotalTextCount;
             $this->Translated = $this->objProjectProgress->ApprovedTextCount;
             $this->Fuzzy = $this->objProjectProgress->FuzzyTextCount;
@@ -60,7 +59,7 @@
         protected function GetControlHtml() {
             return $this->btnRefresh->Render(false) . $this->objWaitIcon->Render(false) . parent::GetControlHtml();
         }
-        
+
         public function btnRefresh_Click($strFormId, $strControlId, $strParameter) {
             $this->Total = $this->objProjectProgress->Project->CountAllTextsByLanguage($this->ProjectProgress->LanguageId);
             $this->Translated = $this->objProjectProgress->Project->CountApprovedTextsByLanguage($this->ProjectProgress->LanguageId);
@@ -83,7 +82,7 @@
                         $objExc->IncrementOffset();
                         throw $objExc;
                     }
-                    
+
                 case "ProjectProgress":
                     try {
                         $this->objProjectProgress = QType::Cast($mixValue, 'NarroProjectProgress');

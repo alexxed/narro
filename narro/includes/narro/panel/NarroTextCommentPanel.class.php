@@ -30,13 +30,13 @@
                 $objExc->IncrementOffset();
                 throw $objExc;
             }
-            
+
             $this->blnAutoRenderChildren = true;
-            
+
             $this->intTextId = $objText->TextId;
-            
+
             $this->strText = sprintf('<span class="instructions">%s</span>', t('User comments'));
-            
+
             $this->dtgComments = new NarroTextCommentDataGrid($this);
             $colComment = $this->dtgComments->MetaAddColumn(QQN::NarroTextComment()->CommentText);
             $colComment->HtmlEntities = false;
@@ -49,7 +49,7 @@
                 QQ::Expand(QQN::NarroTextComment()->Language),
                 QQ::Expand(QQN::NarroTextComment()->User)
             );
-            
+
             $this->txtComment = new QTextBox($this);
             $this->txtComment->Name = t('Comment');
             $this->txtComment->TextMode = QTextMode::MultiLine;
@@ -59,7 +59,7 @@
             $this->txtComment->CssClass = 'comment';
             $this->txtComment->DisplayStyle = QDisplayStyle::Block;
             $this->txtComment->Display = QApplication::HasPermissionForThisLang('Can comment');
-            
+
             $this->btnSave = new QImageButton($this);
             $this->btnSave->AlternateText = t('Add comment');
             $this->btnSave->CssClass = 'imgbutton save';
@@ -68,7 +68,7 @@
             $this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
             $this->btnSave->Display = QApplication::HasPermissionForThisLang('Can comment');
         }
-        
+
         public function colComment_Render(NarroTextComment $objComment) {
             return sprintf(
             	'%s<br /><small>-- <a href="%s" tabindex="-1">%s</a> in %s, %s ago</small>',
@@ -76,10 +76,10 @@
             	NarroLink::UserProfile($objComment->UserId),
             	$objComment->User->RealName,
             	$objComment->Language->LanguageName,
-                new QDateTimeSpan(time() - strtotime($objComment->Created))
+                (new QDateTimeSpan(time() - strtotime($objComment->Created)))->SimpleDisplay()
             );
         }
-        
+
         public function btnSave_Click() {
             if (trim($this->txtComment->Text)) {
                 $objComment = new NarroTextComment();
@@ -90,7 +90,7 @@
                 $objComment->CommentText = $this->txtComment->Text;
                 $objComment->CommentTextMd5 = md5($objComment->CommentText);
                 $objComment->Save();
-                
+
                 $this->dtgComments->Refresh();
             }
         }

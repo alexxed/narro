@@ -42,7 +42,7 @@
 
         public $chkApprove;
         public $chkRefresh;
-        
+
         public $pnlGlossary;
 
         public $intTotalItemCount = 0;
@@ -81,7 +81,7 @@
             $this->chkLast = new QCheckBox($this, 'endReached');
             if (SERVER_INSTANCE != 'dev')
                 $this->chkLast->DisplayStyle = QDisplayStyle::None;
-            
+
             $this->chkRequestMoreSent = new QCheckBox($this, 'requestMoreSent');
             if (SERVER_INSTANCE != 'dev')
                 $this->chkRequestMoreSent->DisplayStyle = QDisplayStyle::None;
@@ -97,7 +97,7 @@
             $this->btnMore = new QButton($this);
             $this->btnMore->Text = t('More');
             $this->btnMore->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnMore_Click', $this->objMoreWaitIcon));
-            
+
             $this->lstProject_Create();
 
             $this->txtFile_Create();
@@ -120,7 +120,7 @@
 
             $this->chkRefresh_Create();
             $this->chkApprove_Create();
-            
+
             $this->pnlGlossary = new NarroSuggestionSearchPanel($this);
             $this->pnlGlossary->Instructions = t('Put the text in quotes to do an exact search, e.g. "file". Press Enter to search.');
 
@@ -128,22 +128,21 @@
             $this->dtrText_Conditions(false);
             $this->dtrText_Bind(null, null, null, false);
         }
-        
+
         protected function txtFile_Create() {
             $this->txtFile = new QTextBox($this, 'filename');
             $this->txtFile->Text = t('all files');
-            $this->txtFile->RenderWithNameCssClass = 'inline_block';
             if (QApplication::QueryString('f'))
                 $this->txtFile->Text = QApplication::QueryString('f');
         }
-        
+
         public function chkApprove_Create() {
             $this->chkApprove = new QCheckBox($this);
             $this->chkApprove->Name = t('Approve added translations');
             $this->chkApprove->Checked = true;
             $this->chkApprove->Display = QApplication::HasPermissionForThisLang('Can approve');
         }
-        
+
         public function chkRefresh_Create() {
             $this->chkRefresh = new QCheckBox($this);
             $this->chkRefresh->Name = t('Refresh after saving');
@@ -152,7 +151,6 @@
 
         public function txtSearch_Create() {
             $this->txtSearch = new QTextBox($this, 'search');
-            $this->txtSearch->RenderWithNameCssClass = 'inline_block';
             $this->txtSearch->ToolTip = t("'exact' does an exact search");
             if (QApplication::QueryString('s'))
                 $this->txtSearch->Text = QApplication::QueryString('s');
@@ -161,7 +159,6 @@
         public function lstProject_Create() {
             $this->lstProject = new QListBox($this);
             $this->lstProject->AddItem(t('all projects'));
-            $this->lstProject->RenderWithNameCssClass = 'inline_block';
             foreach(NarroProject::LoadArrayByActive(1, array(QQ::OrderBy(QQN::NarroProject()->ProjectName))) as $objProject)
                 $this->lstProject->AddItem($objProject->ProjectName, $objProject->ProjectId);
             $this->lstProject->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
@@ -171,24 +168,21 @@
 
         public function btnSearch_Create() {
             $this->btnSearch = new QButton($this);
-            $this->btnSearch->RenderWithNameCssClass = 'inline_block';
             $this->btnSearch->PrimaryButton = true;
             $this->btnSearch->Text = t('Search');
             $this->btnSearch->ToolTip = t('Or hit enter');
             $this->btnSearch->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
         }
-        
+
         public function txtReplace_Create() {
             $this->txtReplace = new QTextBox($this, 'replace');
-            $this->txtReplace->RenderWithNameCssClass = 'inline_block';
             $this->txtReplace->Name = t('and translate it with');
             $this->txtReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TEXTS);
             $this->txtReplace->ToolTip = t('Exact and case sensitive.');
         }
-                
+
         public function btnReplace_Create() {
             $this->btnReplace = new QButton($this);
-            $this->btnReplace->RenderWithNameCssClass = 'inline_block';
             $this->btnReplace->Display = QApplication::HasPermissionForThisLang('Can approve') && ($this->lstSearchIn->SelectedValue == self::SEARCH_IN_TEXTS);
             $this->btnReplace->Text = t('Translate');
             $this->btnReplace->ToolTip = t('This will translate all occurences with what you enter here. If the approve checkbox found above is checked, the replacements will also be approved everywhere.');
@@ -207,7 +201,7 @@
             );
             $this->btnReplace->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnReplace_Click', $this->objWaitIcon));
         }
-        
+
         public function dtrText_Create() {
             $this->dtrText = new QDataRepeater($this);
             $this->dtrText->Template = dirname(__FILE__) . '/NarroTranslatePanel_DataRepeater.tpl.php';
@@ -218,14 +212,13 @@
             $this->dtrText->Paginator->UseAjax = true;
             $this->dtrText->UseAjax = true;
             $this->dtrText->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
-            
+
             // Let's create a second paginator
             $this->dtrText->PaginatorAlternate = new QPaginator($this);
         }
 
         public function lstSortDir_Create() {
             $this->lstSortDir = new QListBox($this);
-            $this->lstSortDir->RenderWithNameCssClass = 'inline_block';
             $this->lstSortDir->AddItem(t('ascending'), 1, true);
             $this->lstSortDir->AddItem(t('descending'), 0);
             $this->lstSortDir->AddAction(new QChangeEvent(), new QAjaxControlAction($this, 'btnSearch_Click', $this->objWaitIcon));
@@ -235,7 +228,6 @@
 
         public function lstFilter_Create() {
             $this->lstFilter = new QListBox($this);
-            $this->lstFilter->RenderWithNameCssClass = 'inline_block';
             $this->lstFilter->Name = t('Show');
             $this->lstFilter->AddItem(t('all texts'), self::SHOW_ALL);
             $this->lstFilter->AddItem(t('untranslated texts'), self::SHOW_NOT_TRANSLATED, true);
@@ -252,7 +244,6 @@
 
         public function lstSort_Create() {
             $this->lstSort = new QListBox($this);
-            $this->lstSort->RenderWithNameCssClass = 'inline_block';
             $this->lstSort->AddItem(t('sorted by age'));
             $this->lstSort->AddItem(t('sorted by texts'), self::SORT_TEXT);
             $this->lstSort->AddItem(t('sorted by translations'), self::SORT_TRANSLATION);
@@ -265,7 +256,6 @@
         public function lstSearchIn_Create() {
             $this->lstSearchIn = new QListBox($this);
             $this->lstSearchIn->Name = t('Search');
-            $this->lstSearchIn->RenderWithNameCssClass = 'inline_block';
             $this->lstSearchIn->ToolTip = t('where to search');
             $this->lstSearchIn->AddItem(t('texts'), self::SEARCH_IN_TEXTS);
             $this->lstSearchIn->AddItem(t('translations'), self::SEARCH_IN_TRANSLATIONS);
@@ -285,7 +275,7 @@
             $this->btnLess->Display = ($this->intStart > 0);
             $this->btnLess->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnLess_Click', $this->objWaitIcon));
         }
-        
+
         public function btnLess_Click($strFormId = null, $strControlId = null, $strParameter = null) {
             $this->intStart = max (0, $this->intStart -= 10);
             $this->dtrText_Conditions(false);
@@ -336,7 +326,7 @@
                 QQ::Expand(QQN::NarroContextInfo()->Context->Project),
                 QQ::Expand(QQN::NarroContextInfo()->ValidSuggestion)
             );
-            
+
             if ($this->lstProject->SelectedValue > 0)
                 $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->Context->ProjectId, $this->lstProject->SelectedValue);
 
@@ -359,11 +349,11 @@
                 case self::SHOW_APPROVED_AND_NOT_APPROVED:
                     $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->HasSuggestions, true);
                     break;
-                    
+
                 case self::SHOW_NOT_APPROVED_AND_NOT_TRANSLATED:
                     $this->arrConditions[] = QQ::IsNull(QQN::NarroContextInfo()->ValidSuggestionId);
                     break;
-                    
+
                 case self::SHOW_NOT_APPROVED_AND_WITHOUT_VOTES:
                     $this->arrConditions[] = QQ::Equal(
                         QQ::SubSql(
@@ -373,7 +363,7 @@
                         0
                     );
                     break;
-                    
+
                 case self::SHOW_NOT_APPROVED_AND_WITH_VOTES:
                     $this->arrConditions[] = QQ::NotEqual(
                         QQ::SubSql(
@@ -383,31 +373,31 @@
                         0
                     );
                     break;
-                    
+
                 case self::SHOW_IDENTICAL_APPROVED:
                     $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
                     $this->arrClauses[] = QQ::Distinct();
-                    
+
                     $this->arrConditions[] = QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValueMd5),
                         QQ::Equal(QQN::NarroContextInfo()->ValidSuggestionId, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionId),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QQN::NarroContextInfo()->LanguageId)
                     );
                     break;
-                    
+
                 case self::SHOW_IDENTICAL:
                     $this->arrClauses[] = QQ::ExpandAsArray(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText);
                     $this->arrClauses[] = QQ::Distinct();
-                    
+
                     $this->arrConditions[] = QQ::AndCondition(
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->TextValueMd5, QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->SuggestionValueMd5),
                         QQ::Equal(QQN::NarroContextInfo()->Context->Text->NarroSuggestionAsText->LanguageId, QQN::NarroContextInfo()->LanguageId)
                     );
                     break;
-                                             
+
                 case self::SHOW_ALL:
                 default:
-                    
+
 
             }
 
@@ -418,7 +408,7 @@
                     $this->arrConditions[] = QQ::Equal(QQN::NarroContextInfo()->Context->File->FilePath, substr($this->txtFile->Text, 1, -1));
                 else
                     $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->File->FilePath, '%' . $this->txtFile->Text . '%');
-                
+
 
             if ($this->txtSearch->Text) {
                 if (preg_match("/^'.+'$/", $this->txtSearch->Text))
@@ -427,7 +417,7 @@
                     $strLikeSearch = substr($this->txtSearch->Text, 1, -1);
                 else
                     $strLikeSearch = '%' . $this->txtSearch->Text . '%';
-                
+
                 switch($this->lstSearchIn->SelectedValue) {
                     case self::SEARCH_IN_TEXTS:
                         $this->arrConditions[] = QQ::Like(QQN::NarroContextInfo()->Context->Text->TextValue, $strLikeSearch);
@@ -489,29 +479,29 @@
 
         public function dtrText_Bind($strFormId = null, $strControlId = null, $strParameter = null, $blnReset = false) {
             if ($blnReset) $this->dtrText->RemoveChildControls(true);
-            
+
             $arrClausesWithLimit = $this->arrClauses;
             $arrClausesWithLimit[] = $this->dtrText->LimitClause;
-            
+
             $this->dtrText->DataSource = NarroContextInfo::QueryArray(
                 QQ::AndCondition($this->arrConditions),
                 $arrClausesWithLimit
             );
-            
+
             if ($this->lstProject->SelectedValue) {
                 $this->intTotalItemCount = NarroContextInfo::QueryCount(
                     QQ::AndCondition($this->arrConditions),
                     $this->arrClauses
                 );
-                
+
                 $this->dtrText->TotalItemCount = $this->intTotalItemCount;
             }
             else
                 $this->intTotalItemCount = 0;
-            
+
             if ($this->blnNewEditorCreated == false)
                 $this->intTotalItemCount = $this->intStart + count($this->dtrText->DataSource);
-            
+
             if ($this->intStart == 0)
                 $this->btnLess->Display = false;
 
@@ -528,20 +518,20 @@
                 if ($txtTranslation instanceof QTextBox)
                     $txtTranslation->Focus();
             }
-            
+
             $this->chkRequestMoreSent->Checked = false;
         }
-        
+
         public function btnReplace_Click() {
-            
+
             if (!QApplication::HasPermissionForThisLang('Can approve')) return false;
-            
+
             if ($this->txtReplace->Display == false)
                 $this->txtReplace->Display = true;
             else {
                 if ($this->txtSearch->Text == '') return false;
                 if ($this->txtReplace->Text == '') return false;
-                
+
                 $strQuery = NarroContextInfo::GetQueryForConditions($objQueryBuilder, QQ::AndCondition($this->arrConditions), $this->arrClauses);
                 $objDbResult = NarroContextInfo::GetDatabase()->Query($strQuery);
                 if ($objDbResult) {
@@ -555,14 +545,14 @@
                             continue;
                         else
                             $arrProcessed[] = $objContextInfo->ContextInfoId;
-                        
+
                         $objReplaceSuggestion = null;
-                        
+
                         if (preg_match("/^'.*'$/", $this->txtSearch->Text))
                             $strToReplace = substr($this->txtSearch->Text, 1, -1);
                         else
                             $strToReplace = $this->txtSearch->Text;
-                        
+
                         if ($strToReplace == $objContextInfo->Context->Text->TextValue) {
                             $objReplaceSuggestion = NarroSuggestion::LoadByTextIdLanguageIdSuggestionValueMd5($objContextInfo->Context->TextId, QApplication::GetLanguageId(), md5($this->txtReplace->Text));
                             if (!$objReplaceSuggestion) {
@@ -577,15 +567,15 @@
                                 $objSuggestion->Modified = null;
                                 $objSuggestion->Save();
                                 $intTranslations++;
-                                
+
                                 $objReplaceSuggestion = $objSuggestion;
                             }
-                            
+
                         }
-                        
+
                         if ($objReplaceSuggestion instanceof NarroSuggestion) {
                             $intReplaceCnt++;
-                            
+
                             if ($objContextInfo->ValidSuggestionId != $objReplaceSuggestion->SuggestionId || $this->chkApprove->Checked) {
                                 if ($objContextInfo->ValidSuggestionId == null)
                                     $intApproved++;
@@ -596,7 +586,7 @@
                             }
                         }
                     }
-                    
+
                     $this->dtrText->RemoveChildControls(true);
                     $this->btnReplace->Refresh();
                     QApplication::ExecuteJavaScript(
@@ -607,7 +597,7 @@
                         )
                     );
                 }
-                
+
             }
         }
     }

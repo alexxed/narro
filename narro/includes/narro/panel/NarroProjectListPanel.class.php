@@ -137,7 +137,7 @@
 
             // Datagrid Paginator
             $this->dtgProjectList->Paginator = new QPaginator($this->dtgProjectList);
-            $this->dtgProjectList->PaginatorAlternate = new QPaginator($this->dtgProjectList);
+            //$this->dtgProjectList->PaginatorAlternate = new QPaginator($this->dtgProjectList);
             $this->dtgProjectList->ItemsPerPage = QApplication::$User->GetPreferenceValueByName('Items per page');
 
             // Specify Whether or Not to Refresh using Ajax

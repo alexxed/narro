@@ -41,8 +41,6 @@
             $colUsername->Html = '<?=NarroLink::UserProfile($_ITEM->UserId, $_ITEM->Username)?>';
             $colCnt = new QDataGridColumn(t('Translations'));
             $colCnt->Html = '<?=$_ITEM->GetVirtualAttribute("suggestion_cnt")?>';
-            $colCnt->OrderByClause = QQ::OrderBy('__suggestion_cnt', 1);
-            $colCnt->ReverseOrderByClause = QQ::OrderBy('__suggestion_cnt', 0);
             $pnlTranslators->SortColumnIndex = 1;
             $pnlTranslators->ShowHeader = false;
             $pnlTranslators->SortDirection = 1;
@@ -54,7 +52,7 @@
                 ($objProject)?QQ::Equal(QQN::NarroUser()->NarroSuggestionAsUser->Text->NarroContextAsText->ProjectId, $objProject->ProjectId):QQ::All()
             );
             $pnlTranslators->AdditionalClauses = array(QQ::Count(QQN::NarroUser()->NarroSuggestionAsUser->SuggestionId, 'suggestion_cnt'), QQ::GroupBy(QQN::NarroUser()->UserId));
-            
+
             $pnlReviewers = new NarroUserDataGrid($this->tabTop);
             $pnlReviewers->CssClass = 'datagrid';
             $colUsername = $pnlReviewers->MetaAddColumn(QQN::NarroUser()->Username);
@@ -62,8 +60,6 @@
             $colUsername->Html = '<?=NarroLink::UserProfile($_ITEM->UserId, $_ITEM->Username)?>';
             $colCnt = new QDataGridColumn(t('Reviewers'));
             $colCnt->Html = '<?=$_ITEM->GetVirtualAttribute("suggestion_cnt")?>';
-            $colCnt->OrderByClause = QQ::OrderBy('__suggestion_cnt', 1);
-            $colCnt->ReverseOrderByClause = QQ::OrderBy('__suggestion_cnt', 0);
             $pnlReviewers->SortColumnIndex = 1;
             $pnlReviewers->ShowHeader = false;
             $pnlReviewers->SortDirection = 1;
@@ -75,7 +71,7 @@
                 ($objProject)?QQ::Equal(QQN::NarroUser()->NarroContextInfoAsValidatorUser->Context->ProjectId, $objProject->ProjectId):QQ::All()
             );
             $pnlReviewers->AdditionalClauses = array(QQ::Count(QQN::NarroUser()->NarroContextInfoAsValidatorUser->ValidSuggestionId, 'suggestion_cnt'), QQ::GroupBy(QQN::NarroUser()->UserId));
-            
+
             $pnlVoters = new NarroUserDataGrid($this->tabTop);
             $pnlVoters->CssClass = 'datagrid';
             $colUsername = $pnlVoters->MetaAddColumn(QQN::NarroUser()->Username);
@@ -83,8 +79,6 @@
             $colUsername->Html = '<?=NarroLink::UserProfile($_ITEM->UserId, $_ITEM->Username)?>';
             $colCnt = new QDataGridColumn(t('Reviewers'));
             $colCnt->Html = '<?=$_ITEM->GetVirtualAttribute("suggestion_cnt")?>';
-            $colCnt->OrderByClause = QQ::OrderBy('__suggestion_cnt', 1);
-            $colCnt->ReverseOrderByClause = QQ::OrderBy('__suggestion_cnt', 0);
             $pnlVoters->SortColumnIndex = 1;
             $pnlVoters->ShowHeader = false;
             $pnlVoters->SortDirection = 1;
@@ -96,7 +90,7 @@
                 ($objProject)?QQ::Equal(QQN::NarroUser()->NarroSuggestionVoteAsUser->Suggestion->Text->NarroContextAsText->ProjectId, $objProject->ProjectId):QQ::All()
             );
             $pnlVoters->AdditionalClauses = array(QQ::Count(QQN::NarroUser()->NarroSuggestionVoteAsUser->SuggestionId, 'suggestion_cnt'), QQ::GroupBy(QQN::NarroUser()->UserId));
-            
+
             $pnlComments = new NarroUserDataGrid($this->tabTop);
             $pnlComments->CssClass = 'datagrid';
             $colUsername = $pnlComments->MetaAddColumn(QQN::NarroUser()->Username);
@@ -104,8 +98,6 @@
             $colUsername->Html = '<?=NarroLink::UserProfile($_ITEM->UserId, $_ITEM->Username)?>';
             $colCnt = new QDataGridColumn(t('Reviewers'));
             $colCnt->Html = '<?=$_ITEM->GetVirtualAttribute("suggestion_cnt")?>';
-            $colCnt->OrderByClause = QQ::OrderBy('__suggestion_cnt', 1);
-            $colCnt->ReverseOrderByClause = QQ::OrderBy('__suggestion_cnt', 0);
             $pnlComments->SortColumnIndex = 1;
             $pnlComments->ShowHeader = false;
             $pnlComments->SortDirection = 1;
@@ -116,8 +108,8 @@
                 QQ::NotEqual(QQN::NarroUser()->UserId, NarroUser::ANONYMOUS_USER_ID)
             );
             $pnlComments->AdditionalClauses = array(QQ::Count(QQN::NarroUser()->NarroTextCommentAsUser->TextCommentId, 'suggestion_cnt'), QQ::GroupBy(QQN::NarroUser()->UserId));
-            
+
             $this->tabTop->Headers = array(t('Translators'), t('Reviewers'), t('Voters'), t('Comments'));
-            
+
         }
     }

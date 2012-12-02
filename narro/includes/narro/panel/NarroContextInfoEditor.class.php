@@ -55,7 +55,7 @@
 
             $this->chkChanged = new QCheckBox($this);
             $this->chkChanged->DisplayStyle = QDisplayStyle::None;
-            
+
             $this->txtTranslation = new QTextBox($this);
             $this->txtTranslation->ActionParameter = $objContextInfo->ContextInfoId;
             $this->txtTranslation->TextMode = QTextMode::MultiLine;
@@ -80,7 +80,7 @@
                 $this->txtAccessKey->MaxLength = 10;
                 $this->txtAccessKey->Text = $this->objContextInfo->SuggestionAccessKey;
             }
-            
+
             if ($this->objContextInfo->Context->TextCommandKey) {
                 $this->txtCommandKey = new QTextBox($this);
                 $this->txtCommandKey->ToolTip = sprintf(t('Command key (original command key: %s)'), $this->objContextInfo->Context->TextCommandKey);
@@ -109,24 +109,23 @@
             $this->lblText->CssClass = 'originalText';
             $this->lblText->Text = NarroString::ShowLeadingAndTrailingSpaces(NarroString::HtmlEntities($this->objContextInfo->Context->Text->TextValue));
             $this->lblText->HtmlEntities = false;
-            
+
             $this->lblText->Text = str_replace("\n", '<span class="newline_block" title="Enter">&nbsp;</span><br />', $this->lblText->Text);
-            
+
 
             $this->btnHelp_Create();
-            
+
             $this->btnSave = new QButton($this);
             $this->btnSave->Text = t('Save');
             $this->btnSave->CssClass = $this->btnSave->CssClass . ' save';
-            $this->btnSave->DisplayStyle = QDisplayStyle::InlineBlock;
             $this->btnSave->Display = QApplication::HasPermissionForThisLang('Can suggest');
-            
+
             if (QApplication::$User->GetPreferenceValueByName('Automatically save translations') == 'Yes') {
                 $this->btnSave->DisplayStyle = QDisplayStyle::None;
                 $this->btnSave->TabIndex = -1;
             }
-            
-            
+
+
             $this->btnSave->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnSave_Click'));
 
             $this->btnKeepUntranslated_Create();
@@ -136,7 +135,7 @@
             $this->txtTranslation->AddAction(new QFocusEvent(), new QJavaScriptAction(sprintf('ctx_editor_focus("%s", "%s", "%s", "%s", "%s", "%s")', $this->ControlId, $this->txtTranslation->ControlId, $this->btnCopy->ControlId, $this->btnHelp->ControlId, $this->lblContextInfo->ControlId, $this->chkChanged->ControlId)));
 
             $this->txtTranslation->AddAction(new QChangeEvent(), new QJavaScriptAction(sprintf('jQuery("#%s").attr("checked", true);', $this->chkChanged->ControlId)));
-            
+
             if (QApplication::$User->GetPreferenceValueByName('Automatically save translations') == 'Yes')
                 $this->txtTranslation->AddAction(new QFocusEvent(), new QAjaxControlAction($this, 'txtTranslation_Focus'));
 
@@ -164,25 +163,24 @@
                 $this->dtgTranslation_Create();
 
             $this->strTemplate = dirname(__FILE__) . '/' . __CLASS__ . '.tpl.php';
-            
+
             if ($this->txtTranslation->ReadOnly)
                 $this->btnHelp_Click($this->Form->FormId, $this->btnHelp->ControlId, '');
         }
-        
+
         public function btnHelp_Create() {
             $this->btnHelp = new QLinkButton($this);
-            $this->btnHelp->DisplayStyle = QDisplayStyle::InlineBlock;
             $this->btnHelp->CssClass = 'help';
             $this->btnHelp->ToolTip = $this->btnHelp->Text;
             $this->btnHelp->TabIndex = -1;
             $this->btnHelp->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnHelp_Click'));
             $this->btnHelp_Update();
         }
-        
+
         public function btnHelp_Update() {
             $intComments = $this->objContextInfo->Context->Text->CountNarroTextCommentsAsText();
             $intTranslations = NarroSuggestion::CountByTextIdLanguageId($this->objContextInfo->Context->TextId, QApplication::GetLanguageId());
-            
+
             if ($intComments == 0 && $intTranslations == 0)
                 $this->btnHelp->Text = sprintf(t('No translations, no comments'));
             elseif ($intComments > 0 && $intTranslations == 0)
@@ -192,7 +190,7 @@
             elseif ($intComments > 0 && $intTranslations > 0)
                 $this->btnHelp->Text = sprintf(t('%d translations, %d comments'), $intTranslations, $intComments);
         }
-        
+
         public function btnKeepUntranslated_Create($strControlId = null) {
             $this->btnKeepUntranslated = new QButton($this, $strControlId);
             $this->btnKeepUntranslated->ToolTip = t('Keep untranslated');
@@ -202,14 +200,13 @@
             $this->btnKeepUntranslated->Display =
                 QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId) ||
                 QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId);
-            $this->btnKeepUntranslated->DisplayStyle = QDisplayStyle::InlineBlock;
             $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
             $this->btnKeepUntranslated->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnKeepUntranslated_Click'));
         }
-        
+
         public function btnSaveIgnore_Create() {
             if ($this->btnSaveIgnore instanceof QLinkButton) return true;
-            
+
             $this->btnSaveIgnore = new QButton($this);
             $this->btnSaveIgnore->Text = t('Ignore and save');
             $this->btnSaveIgnore->DisplayStyle = QDisplayStyle::Block;
@@ -281,7 +278,6 @@
                     $btnDelete = new QLabel($this->dtgTranslation, $strControlId);
                     $btnDelete->ToolTip = t('Delete');
                     $btnDelete->CssClass = 'ui-icon ui-icon-circle-close';
-                    $btnDelete->DisplayStyle = QDisplayStyle::InlineBlock;
                     $btnDelete->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     $btnDelete->AddAction(new QClickEvent(), new QConfirmAction(t('Are you sure you want to delete this suggestion?')));
                     if (QApplication::$UseAjax)
@@ -304,7 +300,6 @@
                     $btnVoteUp->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
                     $btnVoteUp->ToolTip = t('Vote up');
                     $btnVoteUp->CssClass = 'ui-icon ui-icon-circle-arrow-n';
-                    $btnVoteUp->DisplayStyle = QDisplayStyle::InlineBlock;
                     $btnVoteUp->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     if (QApplication::$UseAjax)
                         $btnVoteUp->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
@@ -315,7 +310,7 @@
                 }
 
                 $btnVoteUp->ActionParameter = $objSuggestion->SuggestionId;
-                
+
                 $strControlId = 'votdn' . $this->objContextInfo->ContextInfoId . 's' . $objSuggestion->SuggestionId;
                 $btnVoteDown = $this->dtgTranslation->GetChildControl($strControlId);
                 if (!$btnVoteDown) {
@@ -323,16 +318,15 @@
                     $btnVoteDown->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId);
                     $btnVoteDown->ToolTip = t('Vote down');
                     $btnVoteDown->CssClass = 'ui-icon ui-icon-circle-arrow-s';
-                    $btnVoteDown->DisplayStyle = QDisplayStyle::InlineBlock;
                     $btnVoteDown->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     if (QApplication::$UseAjax)
                         $btnVoteDown->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnVote_Click'));
                     else
                         $btnVoteDown->AddAction(new QClickEvent(), new QServerControlAction($this, 'btnVote_Click')
                     );
-                
+
                 }
-                
+
                 $btnVoteDown->ActionParameter = $objSuggestion->SuggestionId;
             }
 
@@ -345,7 +339,6 @@
                     $btnApprove = new QLabel($this->dtgTranslation, $strControlId);
                     $btnApprove->CssClass = 'ui-icon ui-icon-check';
                     $btnApprove->ToolTip = t('Approve');
-                    $btnApprove->DisplayStyle = QDisplayStyle::InlineBlock;
                     $btnApprove->AddAction(new QClickEvent(), new QJavaScriptAction(sprintf('this.disabled=\'disabled\'')));
                     if (QApplication::$UseAjax)
                         $btnApprove->AddAction(new QClickEvent(), new QAjaxControlAction($this, 'btnApprove_Click'));
@@ -364,7 +357,7 @@
 
             if (isset($btnVoteDown))
                 $strText .= '&nbsp;' . $btnVoteDown->Render(false);
-            
+
             if (isset($btnApprove))
                 $strText .= '&nbsp;&nbsp;' . $btnApprove->Render(false);
 
@@ -416,37 +409,37 @@
         public function btnHelp_Click($strFormId, $strControlId, $strParameter) {
             if ($this->btnHelp->Display == false)
                 return false;
-            
+
             if (!$this->dtgTranslation)
                 $this->dtgTranslation_Create();
 
             if (!$this->lblContextInfo)
                 $this->lblContextInfo_Create();
-            
+
             if (!$this->pnlComment)
                 $this->pnlComment_Create();
 
             $this->dtgTranslation->Display = true;
             $this->lblContextInfo->Display = true;
             $this->btnHelp->Display = false;
-            
+
             $this->txtTranslation->Display = true;
             $this->btnSave->Display = true;
             $this->btnCopy->Display = QApplication::HasPermissionForThisLang('Can suggest');
             $this->btnKeepUntranslated->Display = QApplication::HasPermissionForThisLang('Can vote', $this->objContextInfo->Context->ProjectId) ||
                 QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId);
-            
+
             if ($strParameter != '1')
                 $this->txtTranslation->Focus();
         }
-        
+
         public function pnlComment_Create() {
             $this->pnlComment = new NarroTextCommentPanel($this->objContextInfo->Context->Text, $this);
         }
 
         public function Validate() {
             if ($_POST['Qform__FormControl'] == $this->btnSaveIgnore->ControlId) return true;
-            
+
             $blnEmpty = ($this->txtTranslation->Text == '');
             $blnCanSuggest = QApplication::HasPermissionForThisLang('Can suggest', $this->objContextInfo->Context->ProjectId);
 
@@ -497,12 +490,12 @@
                 $this->objContextInfo->SuggestionAccessKey = $this->txtAccessKey->Text;
                 $this->objContextInfo->Save();
             }
-            
+
             if ($this->txtCommandKey && $this->txtCommandKey->Text != $this->objContextInfo->SuggestionCommandKey) {
                 $this->objContextInfo->SuggestionCommandKey = $this->txtCommandKey->Text;
                 $this->objContextInfo->Save();
             }
-            
+
             if ($this->txtTranslation->Text != '' && ($this->chkChanged->Checked || ($this->btnSaveIgnore && $this->btnSaveIgnore->ControlId == $strControlId))) {
                 if (!$this->btnSaveIgnore && !$this->Validate()) {
                     $this->btnSaveIgnore_Create();
@@ -514,7 +507,7 @@
                     $this->chkChanged->Checked = false;
                     return false;
                 }
-                
+
                 if ($this->btnSaveIgnore) {
                     $this->btnSaveIgnore->Display = false;
                     $this->btnSave->Display = true;
@@ -529,11 +522,11 @@
                     $objSuggestion->SuggestionValue = $this->txtTranslation->Text;
                     $objSuggestion->UserId = QApplication::GetUserId();
                     $objSuggestion->Save();
-                    
+
                     $this->objContextInfo->HasSuggestions = 1;
                     $this->objContextInfo->Modified = QDateTime::Now();;
                     $this->objContextInfo->Save();
-                    
+
                     QApplication::ExecuteJavaScript(
                     	sprintf(
                     		'jQuery(\'#%s\').after(\'&nbsp;<small style="padding: 2px;" class="ui-state-highlight ui-corner-all"><span style="width:16px; height: 16px; display:inline-block" class="ui-icon ui-icon-info"></span>&nbsp;%s.</small>\')',
@@ -545,16 +538,16 @@
                     if ($this->dtgTranslation)
                         $this->dtgTranslation->MarkAsModified();
                 }
-                
+
                 if ($this->ParentControl->ParentControl->chkApprove->Checked == true) {
                     $this->btnApprove_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
                 }
                 else {
                     if ($this->ParentControl->ParentControl->chkRefresh->Checked && $strControlId != $this->btnKeepUntranslated->ControlId)
                         $this->ParentControl->ParentControl->btnSearch_Click();
-                    
+
                     $this->btnHelp_Update();
-                    
+
                     foreach($this->Form->GetAllControls() as $ctl) {
                         if ($ctl instanceof NarroContextInfoEditor) {
                             if ($ctl->Text->Text == $this->lblText->Text) {
@@ -601,7 +594,7 @@
 
                 $objSuggestion = NarroSuggestion::Load($strParameter);
                 $strSuggestionValue = $objSuggestion->SuggestionValue;
-                
+
                 if ($this->txtAccessKey) {
                     $this->objContextInfo->SuggestionAccessKey = $this->txtAccessKey->Text;
                 }
@@ -615,7 +608,7 @@
                             $this->objContextInfo->SuggestionAccessKey = mb_strtoupper($this->objContextInfo->Context->TextAccessKey);
                     }
                 }
-                
+
                 if ($this->txtCommandKey) {
                     $this->objContextInfo->SuggestionCommandKey = $this->txtCommandKey->Text;
                 }
@@ -637,10 +630,10 @@
 
                 if ($this->dtgTranslation)
                     $this->dtgTranslation->MarkAsModified();
-                
+
                 if ($this->ParentControl->ParentControl->chkRefresh->Checked && $strControlId != $this->btnKeepUntranslated->ControlId)
                     $this->ParentControl->ParentControl->btnSearch_Click();
-                
+
                 $this->btnHelp_Update();
             }
         }
@@ -751,36 +744,36 @@
                 $objNarroSuggestionVote->UserId = QApplication::GetUserId();
                 $objNarroSuggestionVote->Created = QDateTime::Now();
             }
-            
+
             if (strpos($strControlId, 'votdn') === 0)
                 $objNarroSuggestionVote->VoteValue = -1;
             else
                 $objNarroSuggestionVote->VoteValue = 1;
-            
+
             $objNarroSuggestionVote->Modified = QDateTime::Now();;
             $objNarroSuggestionVote->Save();
-            
+
             $this->objContextInfo->Modified = QDateTime::Now();;
             $this->objContextInfo->Save();
-            
+
             if ($this->ParentControl->ParentControl->chkRefresh->Checked && $strControlId != $this->btnKeepUntranslated->ControlId)
                 $this->ParentControl->ParentControl->btnSearch_Click();
 
             $this->lblText->Warning = t('Thank you for your vote. You can change it anytime by voting another suggestion.');
 
         }
-        
+
         public function btnKeepUntranslated_Click($strFormId, $strControlId, $strParameter) {
             if (QApplication::HasPermissionForThisLang('Can suggest', $this->objContextInfo->Context->ProjectId)) {
                 $this->txtTranslation->Text = $this->objContextInfo->Context->Text->TextValue;
                 $this->chkChanged->Checked = true;
                 $objSuggestion = $this->btnSave_Click($strFormId, $strControlId, $strParameter);
             }
-            
+
             if (!QApplication::HasPermissionForThisLang('Can approve', $this->objContextInfo->Context->ProjectId) && $objSuggestion instanceof NarroSuggestion) {
                 $this->btnVote_Click($strFormId, $strControlId, $objSuggestion->SuggestionId);
             }
-            
+
             $this->btnHelp_Click($strFormId, $strControlId, $strParameter);
         }
 
