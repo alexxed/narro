@@ -362,7 +362,7 @@ ALTER TABLE `narro_user_role`
   ADD CONSTRAINT fk_user_role_fk_project FOREIGN KEY (project_id) REFERENCES narro_project (project_id) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT fk_user_role_fk_role FOREIGN KEY (role_id) REFERENCES narro_role (role_id) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT fk_user_role_fk_language FOREIGN KEY (language_id) REFERENCES narro_language (language_id) ON DELETE CASCADE ON UPDATE CASCADE;
-  
+
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'GettextPo');
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'OpenOfficeSdf');
 INSERT INTO `narro_file_type` (`file_type_id`, `file_type`) VALUES(NULL, 'Folder');
@@ -550,6 +550,21 @@ INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'Anonymous');
 INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'Approver');
 INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'Project manager');
 INSERT INTO `narro_role` (`role_id`, `role_name`) VALUES(NULL, 'User');
+
+CREATE TABLE `narro_session` (
+  `id` varchar(255) NOT NULL,
+  `last_access_time` int(11) DEFAULT NULL,
+  `data` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `narro_form_state` (
+  `page_id` varchar(255) NOT NULL,
+  `save_time` int(11) DEFAULT NULL,
+  `session_id` varchar(255) DEFAULT NULL,
+  `state_data` text,
+  PRIMARY KEY (`page_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 SET FOREIGN_KEY_CHECKS=1;
 COMMIT;

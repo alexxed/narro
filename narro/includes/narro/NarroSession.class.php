@@ -18,14 +18,12 @@
     class NarroSession {
         public function __construct() {
             // 7 days
-            session_save_path(__TMP_PATH__);
             session_set_cookie_params(604800, __VIRTUAL_DIRECTORY__ . __SUBDIRECTORY__, null, ($_SERVER["HTTPS"] != ''), true);
             session_name('narro');
             session_cache_expire(604800);
             $blnResult = session_start();
             if (!$blnResult)
                 throw new Exception('Failed to start a session');
-            
             global $_SESSION;
         }
         public function __get($strName) {
@@ -38,14 +36,14 @@
             global $_SESSION;
             $_SESSION[$strName] = serialize($mixValue);
         }
-        
+
         public function RegenerateId() {
             global $_SESSION;
             $_SESSION = array();
             if (!session_regenerate_id(true))
                 throw new Exception('Failed to generate a new session id');
         }
-        
+
         public function Destroy() {
             global $_SESSION;
             $_SESSION = array();
