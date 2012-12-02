@@ -1,0 +1,3 @@
+[submodule "narro/qcubed-framework"]
+	path = narro/qcubed-framework
+	url = git://github.com/qcubed/framework.git
