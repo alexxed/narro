@@ -1,0 +1,1 @@
+![https://lh5.googleusercontent.com/-luOKoTQjcqU/TqB7-uAS7DI/AAAAAAAAL48/5ify1tELb-M/s512/Narro%252520-%252520Translation%252520page.png](https://lh5.googleusercontent.com/-luOKoTQjcqU/TqB7-uAS7DI/AAAAAAAAL48/5ify1tELb-M/s512/Narro%252520-%252520Translation%252520page.png)
